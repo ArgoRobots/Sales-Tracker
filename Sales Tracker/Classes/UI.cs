@@ -195,7 +195,7 @@ namespace Sales_Tracker.Classes
                 ArgoProject.SaveAll();
                 MainMenu_Form.Instance.Saved_Label.Text = "Saved";
 
-                Timer timer = new()
+                System.Windows.Forms.Timer timer = new()
                 {
                     Interval = 3000
                 };

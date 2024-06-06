@@ -13,6 +13,9 @@
     <Compile Update="MainMenu_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Products_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Startup\Menus\ConfigureProject_Form.cs">
       <SubType>Form</SubType>
     </Compile>

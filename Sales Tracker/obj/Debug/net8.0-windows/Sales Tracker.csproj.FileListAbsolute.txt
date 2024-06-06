@@ -13,3 +13,4 @@ C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sale
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.CoreCompileInputs.cache
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.CustomMessage_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Menus.ConfigureProject_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.sourcelink.json

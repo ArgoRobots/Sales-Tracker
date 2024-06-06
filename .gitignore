@@ -1,0 +1,5 @@
+*.vsidx
+*.cache
+/main/Argo Studio/obj/Debug
+/main/Argo Studio/bin
+/main/.vs
