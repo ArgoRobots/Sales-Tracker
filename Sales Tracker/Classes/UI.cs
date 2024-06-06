@@ -1,6 +1,6 @@
 ﻿using Guna.UI2.WinForms;
-using System.Drawing.Drawing2D;
 using Sales_Tracker.Properties;
+using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.Classes
 {
@@ -10,7 +10,6 @@ namespace Sales_Tracker.Classes
         {
             // Main menu controls
             ConstructFileMenu();
-            ConstructViewMenu();
             ConstructHelpMenu();
             MainMenu_Form.Instance.ConstructMessage_Panel();
         }
@@ -159,10 +158,10 @@ namespace Sales_Tracker.Classes
         }
 
         // fileMenu
-        public static Guna2Panel fileMenu, viewMenu;
+        public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(250, 9 * 22 + 10 + 20));
+            fileMenu = ConstructPanelForMenu(new Size(250, 8 * 22 + 10 + 20));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New project", 240, true, flowPanel);
@@ -236,95 +235,6 @@ namespace Sales_Tracker.Classes
 
             };
             ConstructKeyShortcut("F2", menuBtn);
-
-            menuBtn = ConstructBtnForMenu("View", 240, false, flowPanel);
-            menuBtn.Image = Resources.RightArrowGray;
-            menuBtn.ImageSize = new Size(11, 11);
-            menuBtn.ImageOffset = new Point(100, 0);
-            menuBtn.Click += (sender, e) =>
-            {
-                Guna2Button btn = (Guna2Button)sender;
-                SetViewMenu();
-                btn.Tag = viewMenu;
-                MainMenu_Form.Instance.OpenMenu();
-            };
-            menuBtn.MouseEnter += (sender, e) =>
-            {
-                Guna2Button btn = (Guna2Button)sender;
-                SetViewMenu();
-                btn.Tag = viewMenu;
-            };
-            menuBtn.MouseLeave += MainMenu_Form.Instance.CloseMenu;
-        }
-        private static void ConstructViewMenu()
-        {
-            viewMenu = ConstructPanelForMenu(new Size(280, 6 * 22 + 10 + 10));
-            viewMenu.MouseEnter += MainMenu_Form.Instance.KeepMenuOpen;
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)viewMenu.Controls[0];
-
-            Guna2Button menuBtn = ConstructBtnForMenu("Hide ViewCube", 270, true, flowPanel);
-            menuBtn.MouseEnter += MainMenu_Form.Instance.KeepMenuOpen;
-            menuBtn.Click += (sender, e) =>
-            {
-
-            };
-            ConstructKeyShortcut("Ctrl+V+C", menuBtn);
-
-            menuBtn = ConstructBtnForMenu("Hide ", 270, true, flowPanel);
-            menuBtn.MouseEnter += MainMenu_Form.Instance.KeepMenuOpen;
-            menuBtn.Click += (sender, e) =>
-            {
-
-            };
-            ConstructKeyShortcut("Ctrl+V+", menuBtn);
-
-            menuBtn = ConstructBtnForMenu("Hide ", 270, true, flowPanel);
-            menuBtn.MouseEnter += MainMenu_Form.Instance.KeepMenuOpen;
-            menuBtn.Click += (sender, e) =>
-            {
-
-            };
-            ConstructKeyShortcut("Ctrl+V+", menuBtn);
-
-            menuBtn = ConstructBtnForMenu("Show logs", 270, true, flowPanel);
-            menuBtn.MouseEnter += MainMenu_Form.Instance.KeepMenuOpen;
-            menuBtn.Click += (sender, e) =>
-            {
-
-            };
-            ConstructKeyShortcut("Ctrl+L+", menuBtn);
-
-            menuBtn = ConstructBtnForMenu("Hide", 270, true, flowPanel);
-            menuBtn.MouseEnter += MainMenu_Form.Instance.KeepMenuOpen;
-            menuBtn.Click += (sender, e) =>
-            {
-
-            };
-            ConstructKeyShortcut("Ctrl+V+", menuBtn);
-
-            CosntructSeperator(240, flowPanel);
-
-            menuBtn = ConstructBtnForMenu("Reset to default layout", 270, true, flowPanel);
-            menuBtn.MouseEnter += MainMenu_Form.Instance.KeepMenuOpen;
-            menuBtn.Click += (sender, e) =>
-            {
-
-            };
-            ConstructKeyShortcut("Ctrl+V+R", menuBtn);
-        }
-        private static void SetViewMenu()
-        {
-            if (!MainMenu_Form.Instance.Controls.Contains(viewMenu))
-            {
-                viewMenu.Location = new Point(fileMenu.Left + fileMenu.Width, fileMenu.Top + fileMenu.Height - 22 - 5);
-                MainMenu_Form.Instance.Controls.Add(viewMenu);
-                viewMenu.BringToFront();
-            }
-            else
-            {
-                // Reset timer
-                MainMenu_Form.Instance.KeepMenuOpen(null, null);
-            }
         }
 
         // helpMenu
@@ -379,7 +289,10 @@ namespace Sales_Tracker.Classes
         // Close all panels
         public static void CloseAllPanels(object sender, EventArgs e)
         {
-
+            MainMenu_Form.Instance.Controls.Remove(fileMenu);
+            MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
+            MainMenu_Form.Instance.Controls.Remove(helpMenu);
+            MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Sales_Tracker.Startup;
+using System.Text;
 
 namespace Sales_Tracker.Classes
 {
@@ -31,7 +32,7 @@ namespace Sales_Tracker.Classes
         }
         public static bool AreAnyChangesMade()
         {
-            if (MainControls_Form.thingsThatHaveChangedInFile.Count > 0)
+            if (Products_Form.thingsThatHaveChangedInFile.Count > 0)
             {
                 return true;
             }
@@ -39,7 +40,7 @@ namespace Sales_Tracker.Classes
         }
         public static void ResetChanges()
         {
-            MainControls_Form.thingsThatHaveChangedInFile.Clear();
+            Products_Form.thingsThatHaveChangedInFile.Clear();
         }
         public static void OpenProject()
         {

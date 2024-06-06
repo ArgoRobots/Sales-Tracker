@@ -43,7 +43,7 @@ namespace Sales_Tracker.Startup
                 return;
             }
 
-            string[] projectDirs = value.Split(new char[] { ',' });
+            string[] projectDirs = value.Split([',']);
             Array.Reverse(projectDirs);  // Reverse the array so it loads in the correct order
 
             foreach (string projectDir in projectDirs)
@@ -73,10 +73,10 @@ namespace Sales_Tracker.Startup
                         }
 
                         // Save new ProjectDirectory
-                        Sales_Tracker.Properties.Settings.Default.ProjectDirectory = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
-                        Sales_Tracker.Properties.Settings.Default.Save();
+                        Properties.Settings.Default.ProjectDirectory = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
+                        Properties.Settings.Default.Save();
 
-                        Directories.SetDirectoriesFor(Sales_Tracker.Properties.Settings.Default.ProjectDirectory, projectName);
+                        Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, projectName);
                         Directories.InitDataFile();
 
                         List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
@@ -111,7 +111,7 @@ namespace Sales_Tracker.Startup
             Parent?.Hide();
 
             // Add event to close FormStartup when FormMainMenu is closed
-            Form FormMainMenu = new Sales_Tracker.MainMenu_Form();
+            Form FormMainMenu = new MainMenu_Form();
             FormMainMenu.FormClosed += (s, args) => Startup_Form.Instance.Close();
 
             FormMainMenu.Show();

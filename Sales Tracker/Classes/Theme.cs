@@ -1,16 +1,11 @@
 ﻿using Guna.UI2.WinForms;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Sales_Tracker.Classes
 {
     internal static class Theme
     {
-        public static string theme = Sales_Tracker.Properties.Settings.Default.ColorTheme;
+        public static string theme = Properties.Settings.Default.ColorTheme;
         public static void SetThemeForControl(List<Control> list)
         {
             foreach (Control control in list)

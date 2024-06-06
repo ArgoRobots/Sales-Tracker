@@ -12,6 +12,7 @@ namespace Sales_Tracker
         {
             InitializeComponent();
             Instance = this;
+            UI.ConstructControls();
         }
 
         // Form
@@ -111,63 +112,14 @@ namespace Sales_Tracker
                         }
                         break;
 
-                    case Keys.C:  // Copy
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL C.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
-                    case Keys.X:  // Cut
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL X.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
-                    case Keys.V:  // Paste
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL V.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
-                    case Keys.H:  // Help
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL H.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
-                    case Keys.Y:  // Redo
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL Y.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
-                    case Keys.Z:  // Undo
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL Z.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
                     case Keys.E:  // Export
                         new Export_Form().ShowDialog();
-                        break;
-
-                    case Keys.D:  // Duplicate
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL D.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
-                    case Keys.Add:  // Zoom in
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL +.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        break;
-
-                    case Keys.Subtract:  // Zoom out
-                        CustomMessageBox.Show("Argo Studio", "You pressed CTRL -.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                         break;
 
                     case Keys.L:  // Open logs
                         OpenLogs();
                         break;
                 }
-            }
-
-            else if (e.KeyCode == Keys.Delete)  // Delete
-            {
-                // If the Program Machines form is open
-                if (MachineProgrammer_Button.Visible)
-                {
-                    CustomMessageBox.Show("Argo Studio", "You pressed Delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                }
-            }
-            else if (e.KeyCode == Keys.F2)  // Take screenshot
-            {
-                CustomMessageBox.Show("Argo Studio", "You pressed F2.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
             else if (e.Alt & e.KeyCode == Keys.F4)  // Close program
             {
@@ -204,7 +156,7 @@ namespace Sales_Tracker
 
         // TOP BAR
         // Don't initiate these yet because it resets every time a program is loaded
-        public Variable_Form formVariable;
+        public Products_Form formProducts;
 
         public void SwitchMainForm(Form form, object btnSender)
         {
@@ -226,12 +178,13 @@ namespace Sales_Tracker
             if (Controls.Contains(UI.fileMenu))
             {
                 Controls.Remove(UI.fileMenu);
+                File_Button.Image = Resources.FileGray;
             }
             else
             {
                 UI.CloseAllPanels(null, null);
                 File_Button.Image = Resources.FileWhite;
-                UI.fileMenu.Location = new Point(File_Button.Left + PartsBack_Panel.Width, 30);
+                UI.fileMenu.Location = new Point(File_Button.Left, 30);
                 Controls.Add(UI.fileMenu);
                 UI.fileMenu.BringToFront();
             }
@@ -259,12 +212,13 @@ namespace Sales_Tracker
             if (Controls.Contains(UI.helpMenu))
             {
                 Controls.Remove(UI.helpMenu);
+                Help_Button.Image = Resources.HelpGray;
             }
             else
             {
                 UI.CloseAllPanels(null, null);
                 Help_Button.Image = Resources.HelpWhite;
-                UI.helpMenu.Location = new Point(Help_Button.Left - UI.helpMenu.Width + Help_Button.Width + PartsBack_Panel.Width, 30);
+                UI.helpMenu.Location = new Point(Help_Button.Left - UI.helpMenu.Width + Help_Button.Width, 30);
                 Controls.Add(UI.helpMenu);
                 UI.helpMenu.BringToFront();
             }

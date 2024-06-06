@@ -1,6 +1,4 @@
 ﻿using Sales_Tracker.Classes;
-using System;
-using Sales_Tracker;
 
 namespace Sales_Tracker.Startup.Menus
 {
@@ -29,8 +27,8 @@ namespace Sales_Tracker.Startup.Menus
         private void ConfigureProject_form_Load(object sender, EventArgs e)
         {
             // Set default name. Choose a name that doesn't already exist in the directory
-            if (!Directory.Exists(Sales_Tracker.Properties.Settings.Default.ProjectDirectory + @"\ArgoProject") &&
-                !File.Exists(Sales_Tracker.Properties.Settings.Default.ProjectDirectory + @"\ArgoProject.ArgoProject"))
+            if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject") &&
+                !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject.ArgoProject"))
             {
                 ProjectName_textBox.Text = "ArgoProject";
             }
@@ -39,8 +37,8 @@ namespace Sales_Tracker.Startup.Menus
                 int count = 2;
                 while (true)
                 {
-                    if (!Directory.Exists(Sales_Tracker.Properties.Settings.Default.ProjectDirectory + @"\ArgoProject (" + count + ")") &&
-                        !File.Exists(Sales_Tracker.Properties.Settings.Default.ProjectDirectory + @"\ArgoProject (" + count + ").ArgoProject"))
+                    if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject (" + count + ")") &&
+                        !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject (" + count + ").ArgoProject"))
                     {
                         ProjectName_textBox.Text = "ArgoProject (" + count + ")";
                         break;
@@ -50,15 +48,15 @@ namespace Sales_Tracker.Startup.Menus
             }
 
             // Set default file location
-            if (Sales_Tracker.Properties.Settings.Default.ProjectDirectory == "")
+            if (Properties.Settings.Default.ProjectDirectory == "")
             {
-                Sales_Tracker.Properties.Settings.Default.ProjectDirectory = Directories.desktop_dir;
-                Sales_Tracker.Properties.Settings.Default.Save();
-                Directory_textBox.Text = Sales_Tracker.Properties.Settings.Default.ProjectDirectory;
+                Properties.Settings.Default.ProjectDirectory = Directories.desktop_dir;
+                Properties.Settings.Default.Save();
+                Directory_textBox.Text = Properties.Settings.Default.ProjectDirectory;
             }
             else
             {
-                Directory_textBox.Text = Sales_Tracker.Properties.Settings.Default.ProjectDirectory;
+                Directory_textBox.Text = Properties.Settings.Default.ProjectDirectory;
             }
         }
         private void ConfigureProject_Form_Shown(object sender, EventArgs e)
@@ -107,8 +105,6 @@ namespace Sales_Tracker.Startup.Menus
 
             // Create directories and files
             Directories.CreateDirectory(Directories.project_dir, true);
-            Directories.CreateDirectory(Directories.buildMachines_commands_dir, false);
-            Directories.CreateDirectory(Directories.robotArms_programs_dir, false);
             Directories.CreateDirectory(Directories.logs_dir, false);
             ArgoProject.SaveAll();
 
@@ -135,8 +131,8 @@ namespace Sales_Tracker.Startup.Menus
                 selectedDirectory = Directory_textBox.Text;
             }
             // Save
-            Sales_Tracker.Properties.Settings.Default.ProjectDirectory = selectedDirectory;
-            Sales_Tracker.Properties.Settings.Default.Save();
+            Properties.Settings.Default.ProjectDirectory = selectedDirectory;
+            Properties.Settings.Default.Save();
         }
 
 
@@ -180,8 +176,8 @@ namespace Sales_Tracker.Startup.Menus
                 WarningDir_Label.Visible = false;
             }
             // Save
-            Sales_Tracker.Properties.Settings.Default.ProjectDirectory = Directory_textBox.Text;
-            Sales_Tracker.Properties.Settings.Default.Save();
+            Properties.Settings.Default.ProjectDirectory = Directory_textBox.Text;
+            Properties.Settings.Default.Save();
         }
     }
 }

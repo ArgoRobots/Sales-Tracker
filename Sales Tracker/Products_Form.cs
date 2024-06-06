@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Sales_Tracker
+﻿namespace Sales_Tracker
 {
     public partial class Products_Form : Form
     {
+        public readonly static List<string> thingsThatHaveChangedInFile = new();
+        // Init
+        public static Products_Form Instance { get; set; }
         public Products_Form()
         {
             InitializeComponent();
+            Instance = this;
         }
     }
 }

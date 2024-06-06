@@ -6,8 +6,8 @@ namespace Sales_Tracker.Classes
     static class Directories
     {
         // Directories
-        public static string projectName, project_dir, argoProject_dir, argoProject_file, appData_dir, appDataCongig_file, buildMachines_commands_dir, buildMachines_dir,
-            buildMachines_commands_data_file, robotArm_dir, robotArm_data_file, robotArms_programs_dir, logs_dir, desktop_dir;
+        public static string projectName, project_dir, argoProject_dir, argoProject_file, appData_dir, appDataCongig_file, buildMachines_dir,
+            logs_dir, desktop_dir;
 
         public static void SetDirectoriesFor(string projectDir, string project_name)
         {
@@ -20,17 +20,6 @@ namespace Sales_Tracker.Classes
 
             // MACHINE PROGRAMMER
             buildMachines_dir = project_dir + @"\build machines\";
-
-            // Commands
-            buildMachines_commands_dir = buildMachines_dir + @"\commands\";
-            buildMachines_commands_data_file = buildMachines_commands_dir + @"\data.txt";
-
-            // ROBOT PROGRAMER
-            robotArm_dir = project_dir + @"\robot arms\";
-            robotArm_data_file = robotArm_dir + @"\data.txt";
-
-            // Programs
-            robotArms_programs_dir = robotArm_dir + @"\programs\";
 
             // Logs
             logs_dir = project_dir + @"\logs\";
