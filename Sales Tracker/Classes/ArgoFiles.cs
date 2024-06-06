@@ -13,7 +13,7 @@ namespace Sales_Tracker.Classes
 
             // Assuming you have a ResourceManager instance ready, 
             // or you can create/load it dynamically here
-            ResourceManager rm = Sales_Tracker.Properties.Resources.ResourceManager;
+            ResourceManager rm = Properties.Resources.ResourceManager;
 
             // Extract icon from resources
             Icon icon = (Icon)rm.GetObject(resourceName);
@@ -27,14 +27,14 @@ namespace Sales_Tracker.Classes
                     icon.Save(fs);
                 }
 
-                var className = $"ArgoStudio{extension.Replace(".", "")}";
+                var className = $"ArgoSalesTracker{extension.Replace(".", "")}";
                 using (var key = Registry.ClassesRoot.CreateSubKey(extension))
                 {
                     key.SetValue("", className);
                 }
                 using (var key = Registry.ClassesRoot.CreateSubKey(className))
                 {
-                    key.SetValue("", $"Argo Studio {extension} File");
+                    key.SetValue("", $"Argo Sales Tracker {extension} File");
                 }
                 using (var key = Registry.ClassesRoot.CreateSubKey($@"{className}\DefaultIcon"))
                 {

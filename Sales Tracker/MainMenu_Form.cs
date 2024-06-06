@@ -6,6 +6,8 @@ namespace Sales_Tracker
 {
     public partial class MainMenu_Form : Form
     {
+        public readonly static List<string> thingsThatHaveChangedInFile = [];
+
         // Init
         public static MainMenu_Form Instance { get; set; }
         public MainMenu_Form()
@@ -245,12 +247,24 @@ namespace Sales_Tracker
             }
         }
 
-
+        // Controls
+        private void Purchases_Button_Click(object sender, EventArgs e)
+        {
+            LoadPurchases();
+        }
+        private void Sales_Button_Click(object sender, EventArgs e)
+        {
+            LoadSales();
+        }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
 
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
@@ -317,7 +331,7 @@ namespace Sales_Tracker
             picture.Click += MessagePanelClose;
             messagePanel.Controls.Add(picture);
         }
-        public void SetMessage(string text)
+        private void SetMessage(string text)
         {
             Label label = (Label)messagePanel.Controls.Find("label", false).FirstOrDefault();
             label.Text = text;
@@ -349,6 +363,152 @@ namespace Sales_Tracker
             else
             {
                 LogForm.BringToFront();
+            }
+        }
+
+
+        // DataGridView
+        private enum Options
+        {
+            Purchases,
+            Sales
+        }
+        private Options Selected;
+        private enum PurchaseColumns
+        {
+            PurchaseID,
+            BuyerName,
+            ItemName,
+            Quantity,
+            PricePerUnit,
+            TotalPrice,
+            Tax,
+            Shipping
+        }
+
+        private enum SalesColumns
+        {
+            SalesID,
+            CustomerName,
+            ItemName,
+            Quantity,
+            PricePerUnit,
+            TotalPrice,
+            Tax,
+            Shipping
+        }
+        private void AddRowsFromFile()
+        {
+            string filePath = GetFilePathForDataGridView();
+
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FailedToWriteToFile(Directories.projectName);
+                return;
+            }
+
+            // Add all rows to dataGridView_list
+            DataGridView.Rows.Clear();
+
+            string[] lines = Directories.ReadAllLinesInFile(filePath);
+            for (int i = 1; i < lines.Length; i++)
+            {
+                DataGridView.Rows.Add(lines[i]);
+            }
+        }
+        private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            SaveDataGridViewToFile();
+        }
+        private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            SaveDataGridViewToFile();
+        }
+        private void SaveDataGridViewToFile()
+        {
+            string filePath = GetFilePathForDataGridView();
+
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FailedToWriteToFile(Directories.projectName);
+                return;
+            }
+
+            List<string> linesInDataGridView = [];
+
+            // Write all the rows in the dataGridView_list in file
+            for (int i = 0; i < DataGridView.Rows.Count; i++)
+            {
+                linesInDataGridView.Add(DataGridView.Rows[i].Cells[0].Value.ToString());
+            }
+            Directories.WriteLinesToFile(filePath, linesInDataGridView);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+        }
+        private void LoadPurchases()
+        {
+            DataGridView.Columns.Clear();
+            DataGridView.Rows.Clear();
+
+            foreach (var column in Enum.GetValues(typeof(PurchaseColumns)))
+            {
+                DataGridView.Columns.Add(column.ToString(), column.ToString().Replace("_", " "));
+            }
+
+            DataGridView.Rows.Add("P001", "Laptop", "2", "1000", "2000", "200", "50");
+
+            UpdateTotals(PurchaseColumns.Quantity.ToString(), PurchaseColumns.TotalPrice.ToString(), PurchaseColumns.Tax.ToString(), PurchaseColumns.Shipping.ToString());
+            Selected = Options.Purchases;
+
+            AddRowsFromFile();
+        }
+        private void LoadSales()
+        {
+            DataGridView.Columns.Clear();
+            DataGridView.Rows.Clear();
+
+            foreach (var column in Enum.GetValues(typeof(SalesColumns)))
+            {
+                DataGridView.Columns.Add(column.ToString(), column.ToString().Replace("_", " "));
+            }
+
+            DataGridView.Rows.Add("S001", "John Doe", "Laptop", "1", "1200", "1200", "120", "30");
+
+            UpdateTotals(SalesColumns.Quantity.ToString(), SalesColumns.TotalPrice.ToString(), SalesColumns.Tax.ToString(), SalesColumns.Shipping.ToString());
+            Selected = Options.Sales;
+
+            AddRowsFromFile();
+        }
+        private void UpdateTotals(string quantityColumn, string totalPriceColumn, string taxColumn, string shippingColumn)
+        {
+            int totalQuantity = 0;
+            decimal totalPrice = 0;
+            decimal totalTax = 0;
+            decimal totalShipping = 0;
+
+            foreach (DataGridViewRow row in DataGridView.Rows)
+            {
+                if (row.IsNewRow) { continue; };
+
+                totalQuantity += Convert.ToInt32(row.Cells[quantityColumn].Value);
+                totalTax += Convert.ToDecimal(row.Cells[taxColumn].Value);
+                totalShipping += Convert.ToDecimal(row.Cells[shippingColumn].Value);
+                totalPrice += Convert.ToDecimal(row.Cells[totalPriceColumn].Value);
+            }
+
+            Quantity_Label.Text = $"${totalQuantity}";
+            Tax_Label.Text = $"${totalTax:C}";
+            Shipping_Label.Text = $"${totalShipping:C}";
+            Price_Label.Text = $"${totalPrice:C}";
+        }
+        private string GetFilePathForDataGridView()
+        {
+            if (Selected == Options.Purchases)
+            {
+                return Directories.purchases_file;
+            }
+            else
+            {
+                return Directories.sales_file;
             }
         }
 

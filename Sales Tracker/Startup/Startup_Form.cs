@@ -22,10 +22,7 @@ namespace Sales_Tracker.Startup
             else { SwitchMainForm(formGetStarted); }
 
             // TO DO: make this only run once, during progam installation
-            ArgoFiles.RegisterFileIcon(".ArgoProject", "A logo", 0);
-            ArgoFiles.RegisterFileIcon(".ArgoApp", "A logo", 0);
-            ArgoFiles.RegisterFileIcon(".ArgoSequence", "A logo", 0);
-            ArgoFiles.RegisterFileIcon(".ArgoFunction", "A logo", 0);
+            ArgoFiles.RegisterFileIcon(".ArgoCompany", "A_logo", 0);
         }
 
         public readonly Form formGetStarted = new GetStarted_Form();
