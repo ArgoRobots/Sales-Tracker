@@ -27,20 +27,20 @@ namespace Sales_Tracker.Startup.Menus
         private void ConfigureProject_form_Load(object sender, EventArgs e)
         {
             // Set default name. Choose a name that doesn't already exist in the directory
-            if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject") &&
-                !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject.ArgoProject"))
+            if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoCompany") &&
+                !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoCompany.ArgoCompany"))
             {
-                ProjectName_textBox.Text = "ArgoProject";
+                ProjectName_textBox.Text = "ArgoCompany";
             }
             else
             {
                 int count = 2;
                 while (true)
                 {
-                    if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject (" + count + ")") &&
-                        !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoProject (" + count + ").ArgoProject"))
+                    if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoCompany (" + count + ")") &&
+                        !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\ArgoCompany (" + count + ").ArgoCompany"))
                     {
-                        ProjectName_textBox.Text = "ArgoProject (" + count + ")";
+                        ProjectName_textBox.Text = "ArgoCompany (" + count + ")";
                         break;
                     }
                     count++;
@@ -86,13 +86,13 @@ namespace Sales_Tracker.Startup.Menus
             if (Directory_textBox.Text == "")
             {
                 Directory_textBox.Focus();
-                CustomMessageBox.Show("Argo Studio", "Select a directory to create the project", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Argo Sales Tracker", "Select a directory to create the project", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
 
-            if (File.Exists(selectedDirectory + @"\" + ProjectName_textBox.Text + ".ArgoProject"))
+            if (File.Exists(selectedDirectory + @"\" + ProjectName_textBox.Text + ".ArgoCompany"))
             {
-                CustomMessageBox.Show("Argo Studio", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Argo Sales Tracker", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
 
@@ -106,13 +106,13 @@ namespace Sales_Tracker.Startup.Menus
             // Create directories and files
             Directories.CreateDirectory(Directories.project_dir, true);
             Directories.CreateDirectory(Directories.logs_dir, false);
-            ArgoProject.SaveAll();
+            ArgoCompany.SaveAll();
 
             // Save recently opened projects
-            DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoProject_file, DataFileManager.MaxValueForRecentProjects);
+            DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoCompany_file, DataFileManager.MaxValueForRecentProjects);
             DataFileManager.Save(Directories.appDataCongig_file);
 
-            ArgoProject.CreateMutex(projectName);
+            ArgoCompany.CreateMutex(projectName);
 
             // Add event to close FormStartup when FormMainMenu is closed
             Form FormMainMenu = new MainMenu_Form();

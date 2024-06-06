@@ -67,7 +67,7 @@ namespace Sales_Tracker.Startup
                         Guna2Button Gbtn = (Guna2Button)sender;
 
                         string projectName = Path.GetFileNameWithoutExtension(Gbtn.Tag.ToString());
-                        if (!ArgoProject.OnlyAllowOneInstanceOfAProject(projectName))
+                        if (!ArgoCompany.OnlyAllowOneInstanceOfAProject(projectName))
                         {
                             return;
                         }
@@ -80,7 +80,7 @@ namespace Sales_Tracker.Startup
                         Directories.InitDataFile();
 
                         List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                        Directories.ImportArgoTarFile(Directories.argoProject_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
+                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
 
                         ShowMainMenu();
                     };
@@ -90,20 +90,20 @@ namespace Sales_Tracker.Startup
         }
         private void GetStarted_Form_Shown(object sender, EventArgs e)
         {
-            ArgoProject.CheckForUnsavedWork();
+            ArgoCompany.CheckForUnsavedWork();
         }
 
         // Event handlers
-        private void CreateNewProject_Click(object sender, EventArgs e)
+        private void CreateNewCompany_Click(object sender, EventArgs e)
         {
             Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormConfigureProject);
         }
 
 
         // Open project     
-        private void OpenProject_Button_Click(object sender, EventArgs e)
+        private void OpenCompany_Button_Click(object sender, EventArgs e)
         {
-            ArgoProject.OpenProject();
+            ArgoCompany.OpenProject();
         }
         public void ShowMainMenu()
         {

@@ -2,9 +2,9 @@
 {
     class UserSettings
     {
-        public static void SaveUserSettings()
+        public static void ResetAllToDefault()
         {
-            Properties.Settings.Default.ColorTheme = "";
+            Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();
         }
     }

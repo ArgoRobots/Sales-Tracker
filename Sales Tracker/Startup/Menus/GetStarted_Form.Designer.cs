@@ -29,103 +29,103 @@ namespace Sales_Tracker.Startup
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            label1 = new System.Windows.Forms.Label();
-            OpenRecent_FlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            BlankProject_Button = new Guna.UI2.WinForms.Guna2Button();
-            LblOpenRecent = new System.Windows.Forms.Label();
-            OpenProject_Button = new Guna.UI2.WinForms.Guna2Button();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            label1 = new Label();
+            OpenRecent_FlowLayoutPanel = new FlowLayoutPanel();
+            CreateCompany_Button = new Guna.UI2.WinForms.Guna2Button();
+            LblOpenRecent = new Label();
+            OpenCompany_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new System.Drawing.Font("Segoe UI Semibold", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            label1.Location = new System.Drawing.Point(22, 9);
+            label1.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
+            label1.Location = new Point(22, 9);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(181, 41);
+            label1.Size = new Size(268, 41);
             label1.TabIndex = 0;
-            label1.Text = "Argo Studio";
+            label1.Text = "Argo Sales Tracker";
             // 
             // OpenRecent_FlowLayoutPanel
             // 
             OpenRecent_FlowLayoutPanel.AutoSize = true;
-            OpenRecent_FlowLayoutPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            OpenRecent_FlowLayoutPanel.Location = new System.Drawing.Point(29, 101);
-            OpenRecent_FlowLayoutPanel.MaximumSize = new System.Drawing.Size(260, 350);
+            OpenRecent_FlowLayoutPanel.BorderStyle = BorderStyle.FixedSingle;
+            OpenRecent_FlowLayoutPanel.Location = new Point(29, 101);
+            OpenRecent_FlowLayoutPanel.MaximumSize = new Size(260, 350);
             OpenRecent_FlowLayoutPanel.Name = "OpenRecent_FlowLayoutPanel";
-            OpenRecent_FlowLayoutPanel.Size = new System.Drawing.Size(260, 350);
+            OpenRecent_FlowLayoutPanel.Size = new Size(260, 350);
             OpenRecent_FlowLayoutPanel.TabIndex = 1;
             // 
-            // BlankProject_Button
+            // CreateCompany_Button
             // 
-            BlankProject_Button.BorderThickness = 1;
-            BlankProject_Button.CustomizableEdges = customizableEdges1;
-            BlankProject_Button.FillColor = System.Drawing.Color.FromArgb(240, 240, 240);
-            BlankProject_Button.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            BlankProject_Button.ForeColor = System.Drawing.Color.Black;
-            BlankProject_Button.Image = Properties.Resources.CreateFile;
-            BlankProject_Button.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            BlankProject_Button.ImageOffset = new System.Drawing.Point(5, 0);
-            BlankProject_Button.ImageSize = new System.Drawing.Size(30, 30);
-            BlankProject_Button.Location = new System.Drawing.Point(305, 101);
-            BlankProject_Button.Margin = new System.Windows.Forms.Padding(10);
-            BlankProject_Button.Name = "BlankProject_Button";
-            BlankProject_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            BlankProject_Button.Size = new System.Drawing.Size(279, 69);
-            BlankProject_Button.TabIndex = 2;
-            BlankProject_Button.Text = "Create a new project";
-            BlankProject_Button.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            BlankProject_Button.TextOffset = new System.Drawing.Point(10, 0);
-            BlankProject_Button.Click += CreateNewProject_Click;
+            CreateCompany_Button.BorderThickness = 1;
+            CreateCompany_Button.CustomizableEdges = customizableEdges5;
+            CreateCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
+            CreateCompany_Button.Font = new Font("Segoe UI", 12F);
+            CreateCompany_Button.ForeColor = Color.Black;
+            CreateCompany_Button.Image = Properties.Resources.CreateFile;
+            CreateCompany_Button.ImageAlign = HorizontalAlignment.Left;
+            CreateCompany_Button.ImageOffset = new Point(5, 0);
+            CreateCompany_Button.ImageSize = new Size(30, 30);
+            CreateCompany_Button.Location = new Point(305, 101);
+            CreateCompany_Button.Margin = new Padding(10);
+            CreateCompany_Button.Name = "CreateCompany_Button";
+            CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            CreateCompany_Button.Size = new Size(279, 69);
+            CreateCompany_Button.TabIndex = 2;
+            CreateCompany_Button.Text = "Create a new company";
+            CreateCompany_Button.TextAlign = HorizontalAlignment.Left;
+            CreateCompany_Button.TextOffset = new Point(10, 0);
+            CreateCompany_Button.Click += CreateNewCompany_Click;
             // 
             // LblOpenRecent
             // 
             LblOpenRecent.AutoSize = true;
-            LblOpenRecent.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            LblOpenRecent.Location = new System.Drawing.Point(25, 73);
+            LblOpenRecent.Font = new Font("Segoe UI", 12F);
+            LblOpenRecent.Location = new Point(25, 73);
             LblOpenRecent.Name = "LblOpenRecent";
-            LblOpenRecent.Size = new System.Drawing.Size(95, 21);
+            LblOpenRecent.Size = new Size(95, 21);
             LblOpenRecent.TabIndex = 0;
             LblOpenRecent.Text = "Open recent";
             // 
-            // OpenProject_Button
+            // OpenCompany_Button
             // 
-            OpenProject_Button.BorderThickness = 1;
-            OpenProject_Button.CustomizableEdges = customizableEdges3;
-            OpenProject_Button.FillColor = System.Drawing.Color.FromArgb(240, 240, 240);
-            OpenProject_Button.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            OpenProject_Button.ForeColor = System.Drawing.Color.Black;
-            OpenProject_Button.Image = Properties.Resources.OpenFolder;
-            OpenProject_Button.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            OpenProject_Button.ImageOffset = new System.Drawing.Point(5, 0);
-            OpenProject_Button.ImageSize = new System.Drawing.Size(30, 30);
-            OpenProject_Button.Location = new System.Drawing.Point(305, 185);
-            OpenProject_Button.Margin = new System.Windows.Forms.Padding(10);
-            OpenProject_Button.Name = "OpenProject_Button";
-            OpenProject_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            OpenProject_Button.Size = new System.Drawing.Size(279, 69);
-            OpenProject_Button.TabIndex = 3;
-            OpenProject_Button.Text = "Open a project";
-            OpenProject_Button.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            OpenProject_Button.TextOffset = new System.Drawing.Point(10, 0);
-            OpenProject_Button.Click += OpenProject_Button_Click;
+            OpenCompany_Button.BorderThickness = 1;
+            OpenCompany_Button.CustomizableEdges = customizableEdges7;
+            OpenCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
+            OpenCompany_Button.Font = new Font("Segoe UI", 12F);
+            OpenCompany_Button.ForeColor = Color.Black;
+            OpenCompany_Button.Image = Properties.Resources.OpenFolder;
+            OpenCompany_Button.ImageAlign = HorizontalAlignment.Left;
+            OpenCompany_Button.ImageOffset = new Point(5, 0);
+            OpenCompany_Button.ImageSize = new Size(30, 30);
+            OpenCompany_Button.Location = new Point(305, 185);
+            OpenCompany_Button.Margin = new Padding(10);
+            OpenCompany_Button.Name = "OpenCompany_Button";
+            OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            OpenCompany_Button.Size = new Size(279, 69);
+            OpenCompany_Button.TabIndex = 3;
+            OpenCompany_Button.Text = "Open a company";
+            OpenCompany_Button.TextAlign = HorizontalAlignment.Left;
+            OpenCompany_Button.TextOffset = new Point(10, 0);
+            OpenCompany_Button.Click += OpenCompany_Button_Click;
             // 
             // GetStarted_Form
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            BackColor = System.Drawing.Color.FromArgb(250, 250, 250);
-            ClientSize = new System.Drawing.Size(880, 550);
-            Controls.Add(OpenProject_Button);
-            Controls.Add(BlankProject_Button);
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            BackColor = Color.FromArgb(250, 250, 250);
+            ClientSize = new Size(880, 550);
+            Controls.Add(OpenCompany_Button);
+            Controls.Add(CreateCompany_Button);
             Controls.Add(label1);
             Controls.Add(OpenRecent_FlowLayoutPanel);
             Controls.Add(LblOpenRecent);
-            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            FormBorderStyle = FormBorderStyle.None;
             Name = "GetStarted_Form";
             Shown += GetStarted_Form_Shown;
             ResumeLayout(false);
@@ -137,7 +137,7 @@ namespace Sales_Tracker.Startup
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.FlowLayoutPanel OpenRecent_FlowLayoutPanel;
         private System.Windows.Forms.Label LblOpenRecent;
-        private Guna.UI2.WinForms.Guna2Button BlankProject_Button;
-        private Guna.UI2.WinForms.Guna2Button OpenProject_Button;
+        private Guna.UI2.WinForms.Guna2Button CreateCompany_Button;
+        private Guna.UI2.WinForms.Guna2Button OpenCompany_Button;
     }
 }

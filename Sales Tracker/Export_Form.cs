@@ -98,7 +98,7 @@ namespace Sales_Tracker
             {
                 case ".ArgoProject (backup)":
                     Directories.CreateBackup(Directory_TextBox.Text + "\\" + Name_TextBox.Text, ".ArgoProject");
-                    CustomMessageBox.Show("Argo Studio", $"Successfully backed up '{Directories.projectName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker", $"Successfully backed up '{Directories.projectName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     Close();
                     break;
 

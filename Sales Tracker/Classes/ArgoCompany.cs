@@ -3,11 +3,11 @@ using System.Text;
 
 namespace Sales_Tracker.Classes
 {
-    internal static class ArgoProject
+    internal static class ArgoCompany
     {
         public static void SaveAll()
         {
-            Directories.CreateArgoTarFileFromDirectory(Directories.project_dir, Directories.argoProject_dir, ".ArgoProject", true);
+            Directories.CreateArgoTarFileFromDirectory(Directories.project_dir, Directories.argoCompany_dir, ".ArgoCompany", true);
             ResetChanges();
         }
         public static void SaveAs()
@@ -23,12 +23,8 @@ namespace Sales_Tracker.Classes
                 string newDir = dialog.SelectedPath;
 
                 // Copy the project to a new location
-                Directories.CopyFile(Directories.argoProject_file, newDir + Directories.projectName + ".ArgoProject");
+                Directories.CopyFile(Directories.argoCompany_file, newDir + Directories.projectName + ".ArgoCompany");
             }
-        }
-        public static void SaveAsLatest()
-        {
-
         }
         public static bool AreAnyChangesMade()
         {
@@ -47,7 +43,7 @@ namespace Sales_Tracker.Classes
             // Select file
             OpenFileDialog dialog = new()
             {
-                Filter = "Argo project (*.ArgoProject)|*.ArgoProject"
+                Filter = "Argo project (*.ArgoCompany)|*.ArgoCompany"
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -65,11 +61,11 @@ namespace Sales_Tracker.Classes
                 Directories.InitDataFile();
 
                 // Save recently opened projects
-                DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoProject_file, DataFileManager.MaxValueForRecentProjects);
+                DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoCompany_file, DataFileManager.MaxValueForRecentProjects);
                 DataFileManager.Save(Directories.appDataCongig_file);
 
                 List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                Directories.ImportArgoTarFile(Directories.argoProject_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
+                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
 
                 GetStarted_Form.Instance.ShowMainMenu();
             }
@@ -86,16 +82,16 @@ namespace Sales_Tracker.Classes
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 // If this project is already open
-                if (Directories.argoProject_file == dialog.FileName)
+                if (Directories.argoCompany_file == dialog.FileName)
                 {
-                    CustomMessageBox.Show("Argo Studio", "This project is already open", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker", "This project is already open", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return;
                 }
 
                 // Save current project
                 if (AreAnyChangesMade())
                 {
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Studio", "Would you like to save your changes before opening a new project?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Would you like to save your changes before opening a new project?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
                     switch (result)
                     {
@@ -122,11 +118,11 @@ namespace Sales_Tracker.Classes
                 Directories.InitDataFile();
 
                 // Save recently opened projects
-                DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoProject_file, DataFileManager.MaxValueForRecentProjects);
+                DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoCompany_file, DataFileManager.MaxValueForRecentProjects);
                 DataFileManager.Save(Directories.appDataCongig_file);
 
                 List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                Directories.ImportArgoTarFile(Directories.argoProject_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
+                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
             }
         }
 
@@ -136,7 +132,7 @@ namespace Sales_Tracker.Classes
         {
             if (!CreateMutex(projectFilePath))
             {
-                CustomMessageBox.Show("Argo Studio", "This project is already open in another instance of Argo Studio", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Argo Sales Tracker", "This project is already open in another instance of Argo Studio", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 applicationMutex.Dispose();
                 return false;
             }
@@ -180,10 +176,10 @@ namespace Sales_Tracker.Classes
 
             foreach (string project in projects)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Studio", $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(project)}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(project)}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
                 if (result == CustomMessageBoxResult.Yes)
                 {
-                    CustomMessageBox.Show("Argo Studio", $"You will be promted to select a folder to save the unsaved work.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker", $"You will be promted to select a folder to save the unsaved work.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
 
                     // Select folder
                     Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
@@ -202,7 +198,7 @@ namespace Sales_Tracker.Classes
                         // Delete the temp folder
                         Directories.DeleteDirectory(project, true);
 
-                        Directories.ImportArgoTarFile(Directories.argoProject_file, Directories.appData_dir, "Argo project", projects, false);
+                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", projects, false);
 
                         wasProjectSaved = true;
                     }

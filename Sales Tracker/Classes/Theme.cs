@@ -119,9 +119,12 @@ namespace Sales_Tracker.Classes
 
                         case Guna2CircleButton guna2CircleButton:
                             guna2CircleButton.FillColor = CustomColors.controlBack;
-                            guna2CircleButton.BackColor = CustomColors.controlBack;
                             guna2CircleButton.HoverState.FillColor = CustomColors.controlBack;
                             guna2CircleButton.HoverState.BorderColor = CustomColors.controlBorder;
+                            break;
+                        case Guna2ToggleSwitch guna2ToggleSwitch:
+                            guna2ToggleSwitch.CheckedState.FillColor = CustomColors.accent_blue;
+                            guna2ToggleSwitch.UncheckedState.FillColor = CustomColors.controlBack;
                             break;
                     }
                 }

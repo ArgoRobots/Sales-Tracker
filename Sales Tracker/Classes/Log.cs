@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
         public static string logText;
 
         /// <summary>
-        ///  0 = [Error], 1 = [Debug], 2 = [General], 3 = [Machine Programmer], 4 = [Robot Programmer]
+        ///  0 = [Error], 1 = [Debug], 2 = [General], 3 = [Product manager]
         /// </summary>
         public static void Write(byte index, string text)
         {
@@ -28,11 +28,7 @@ namespace Sales_Tracker.Classes
                     break;
 
                 case 3:
-                    newText += "[Machine Programmer] ";
-                    break;
-
-                case 4:
-                    newText += "[Robot Programmer] ";
+                    newText += "[Product manager] ";
                     break;
             }
             newText += text + "\n";
@@ -79,7 +75,7 @@ namespace Sales_Tracker.Classes
             // Show error
             if (showMessageBox)
             {
-                CustomMessageBox.Show("Argo Studio", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
 
             // Log error
@@ -217,119 +213,6 @@ namespace Sales_Tracker.Classes
                 $"\nSource:'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
-        }
-
-
-
-        // MachineProgrammer
-        public static void FailedToLoadVariables(
-           string appName,
-           string filePath,
-           [CallerLineNumber] int lineNumber = 0,
-           [CallerMemberName] string caller = null)
-        {
-            Error($"Error-7vbn2y: Failed to load variables in app '{appName}' because file does not exist:" +
-                $"\n'{filePath}.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-        public static void FailedToLoadEvents(
-           string appName,
-           string filePath,
-           [CallerLineNumber] int lineNumber = 0,
-           [CallerMemberName] string caller = null)
-        {
-            Error($"Error-jt56yr: Failed to load events in app '{appName}' because file does not exist:" +
-                $"\n'{filePath}.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-        public static void FailedToSortAListOfNamesBecauseOfNullOrWhitespace(
-         string filePath,
-         [CallerLineNumber] int lineNumber = 0,
-         [CallerMemberName] string caller = null)
-        {
-            Error("Error-gyymw9: Failed to sort a list of names because the first line in the file:" +
-                $"\n'{filePath}' is null or whitespace.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-
-
-        // MainControls_form errors
-        public static void FailedToLoadProgram(
-            string selectedProgramName,
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error($"Error-ypum7h: Failed to load program '{selectedProgramName}' because file does not exist:" +
-                $"\n'{filePath}.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-        public static void FailedToDeleteProgram(
-            string selectedLoadedProgramName,
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error($"Error-96s70p: Failed to delete program '{selectedLoadedProgramName}' because file does not exist:" +
-                $"\n'{filePath}.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-        public static void FailedToSaveProgram(
-            string selectedLoadedProgramName,
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error("Error-t3skfz: Failed to save program '" + selectedLoadedProgramName + "' because file does not exist:" +
-                $"\n'{filePath}.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-
-
-        // Serial com
-        public static void SerialComReceivedIncorrectFormat(
-            string serialPortName,
-            string robotName,
-            string data,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error($"Error-wucgn3: Serial port '{serialPortName} ({robotName})' received a string in an incorrect format:" +
-                $"\n'{data}'",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-
-        public static void SerialComFailedToConnect(
-            string serialPortName,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error($"Error-something: Serial port '{serialPortName}' failed to connect.",
-                "https://www.google.com",
-                true,
                 lineNumber,
                 caller);
         }

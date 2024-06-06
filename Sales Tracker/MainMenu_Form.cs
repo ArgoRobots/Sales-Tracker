@@ -12,7 +12,28 @@ namespace Sales_Tracker
         {
             InitializeComponent();
             Instance = this;
+
             UI.ConstructControls();
+            SearchBox.ConstructSearchBox();
+            UpdateTheme();
+        }
+        public void UpdateTheme()
+        {
+            string theme = Theme.SetThemeForForm(this);
+            if (theme == "Light")
+            {
+
+            }
+            else if (theme == "Dark")
+            {
+
+            }
+
+            Top_Panel.BackColor = CustomColors.background3;
+            MainTop_Panel.FillColor = CustomColors.background4;
+            File_Button.FillColor = CustomColors.background3;
+            Save_Button.FillColor = CustomColors.background3;
+            Help_Button.FillColor = CustomColors.background3;
         }
 
         // Form
@@ -60,7 +81,7 @@ namespace Sales_Tracker
                 }
             }
 
-            if (ArgoProject.AreAnyChangesMade())
+            if (ArgoCompany.AreAnyChangesMade())
             {
                 if (AskUserToSaveBeforeClosing()) { e.Cancel = true; return; }
             }
@@ -75,12 +96,12 @@ namespace Sales_Tracker
         /// <returns>Returns true if the user cancels. Returns false if the user saves.</returns>
         private static bool AskUserToSaveBeforeClosing()
         {
-            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Studio", "Save changes to the following items?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Save changes to the following items?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
             switch (result)
             {
                 case CustomMessageBoxResult.Save:
-                    ArgoProject.SaveAll();
+                    ArgoCompany.SaveAll();
                     break;
                 case CustomMessageBoxResult.DontSave:
                     // Do nothing so the temp directory is deleted
@@ -104,11 +125,11 @@ namespace Sales_Tracker
                     case Keys.S:  // Save
                         if (e.Shift)
                         {
-                            ArgoProject.SaveAll();
+                            ArgoCompany.SaveAll();
                         }
                         else  // Save as
                         {
-                            ArgoProject.SaveAs();
+                            ArgoCompany.SaveAs();
                         }
                         break;
 
@@ -224,6 +245,15 @@ namespace Sales_Tracker
             }
         }
 
+
+        private void ManageProducts_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
 
         // Message panel
         public Guna2Panel messagePanel;

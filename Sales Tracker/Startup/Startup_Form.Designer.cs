@@ -40,7 +40,7 @@
             MinimumSize = new Size(500, 400);
             Name = "Startup_Form";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Argo Studio";
+            Text = "Argo Sales Tracker";
             ResumeLayout(false);
         }
 

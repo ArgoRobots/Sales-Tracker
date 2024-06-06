@@ -6,7 +6,7 @@ namespace Sales_Tracker.Classes
     static class Directories
     {
         // Directories
-        public static string projectName, project_dir, argoProject_dir, argoProject_file, appData_dir, appDataCongig_file, buildMachines_dir,
+        public static string projectName, project_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, buildMachines_dir,
             logs_dir, desktop_dir;
 
         public static void SetDirectoriesFor(string projectDir, string project_name)
@@ -15,8 +15,8 @@ namespace Sales_Tracker.Classes
 
             project_dir = appData_dir + project_name;
 
-            argoProject_dir = projectDir;
-            argoProject_file = projectDir + "\\" + project_name + ".ArgoProject";
+            argoCompany_dir = projectDir;
+            argoCompany_file = projectDir + "\\" + project_name + ".ArgoCompany";
 
             // MACHINE PROGRAMMER
             buildMachines_dir = project_dir + @"\build machines\";
@@ -388,7 +388,7 @@ namespace Sales_Tracker.Classes
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, string thingBeingImported, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
-            string tempDir = destinationDirectory + "\\" + ArgoProject.GetUniqueProjectIdentifier(appData_dir);
+            string tempDir = destinationDirectory + "\\" + ArgoCompany.GetUniqueProjectIdentifier(appData_dir);
             string extractedDir = GetTopDirectoryFromTarFile(sourceFile);
 
             // Check if the thing already exists
@@ -500,7 +500,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void CreateBackup(string destinationDirectory, string fileExtension)
         {
-            ArgoProject.SaveAll();
+            ArgoCompany.SaveAll();
 
             string tarName = destinationDirectory;
             string folderName = new DirectoryInfo(destinationDirectory).Name;
@@ -527,7 +527,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Copy the directory to the new location, and rename it so the tar file will have the new name
-            CopyFile(argoProject_file, tarName + fileExtension);
+            CopyFile(argoCompany_file, tarName + fileExtension);
 
             // Move the file into a temp folder so it can be zipped. Use tarName to make sure the folder name does not already exist
             CreateDirectory(tarName, true);
