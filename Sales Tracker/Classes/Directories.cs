@@ -1,0 +1,581 @@
+﻿using System.Formats.Tar;
+using System.IO.Compression;
+
+namespace Sales_Tracker.Classes
+{
+    static class Directories
+    {
+        // Directories
+        public static string projectName, project_dir, argoProject_dir, argoProject_file, appData_dir, appDataCongig_file, buildMachines_commands_dir, buildMachines_dir,
+            buildMachines_commands_data_file, robotArm_dir, robotArm_data_file, robotArms_programs_dir, logs_dir, desktop_dir;
+
+        public static void SetDirectoriesFor(string projectDir, string project_name)
+        {
+            projectName = project_name;
+
+            project_dir = appData_dir + project_name;
+
+            argoProject_dir = projectDir;
+            argoProject_file = projectDir + "\\" + project_name + ".ArgoProject";
+
+            // MACHINE PROGRAMMER
+            buildMachines_dir = project_dir + @"\build machines\";
+
+            // Commands
+            buildMachines_commands_dir = buildMachines_dir + @"\commands\";
+            buildMachines_commands_data_file = buildMachines_commands_dir + @"\data.txt";
+
+            // ROBOT PROGRAMER
+            robotArm_dir = project_dir + @"\robot arms\";
+            robotArm_data_file = robotArm_dir + @"\data.txt";
+
+            // Programs
+            robotArms_programs_dir = robotArm_dir + @"\programs\";
+
+            // Logs
+            logs_dir = project_dir + @"\logs\";
+        }
+        public static void SetUniversalDirectories()
+        {
+            // App data
+            appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo Studio\";
+            appDataCongig_file = appData_dir + "ArgoStudio.config";
+
+            // Other
+            desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        }
+
+        public static void InitDataFile()
+        {
+            if (!Directory.Exists(appData_dir))
+            {
+                CreateDirectory(appData_dir, false);
+            }
+            if (!File.Exists(appDataCongig_file))
+            {
+                CreateFile(appDataCongig_file);
+
+                DataFileManager.SetValue(appDataCongig_file, DataFileManager.AppDataSettings.RPTutorial, "true");
+                DataFileManager.Save(appDataCongig_file);
+            }
+        }
+
+
+        // Directories
+        /// <summary>
+        /// Creates a directory.
+        /// </summary>
+        public static bool CreateDirectory(string directory, bool hidden)
+        {
+            if (Directory.Exists(directory))
+            {
+                Log.Error_DirectoryAlreadyExists(directory);
+                return false;
+            }
+
+            DirectoryInfo di = Directory.CreateDirectory(directory);
+            if (hidden)
+            {
+                di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Copies an existing directory to a new directory.
+        /// </summary>
+        public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive, bool overWrite)
+        {
+            // https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
+
+            // Get information about the source directory
+            var dir = new DirectoryInfo(sourceDir);
+
+            // Check if the source directory exists
+            if (!dir.Exists)
+            {
+                Log.Error_FileDoesNotExist(dir.FullName);
+            }
+
+            // Cache directories before we start copying
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Create the destination directory
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy to the destination directory
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                File.Copy(file.FullName, targetFilePath, overWrite);
+            }
+
+            // If recursive and copying subdirectories, recursively call this method
+            if (recursive)
+            {
+                foreach (DirectoryInfo subDir in dirs)
+                {
+                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                    CopyDirectory(subDir.FullName, newDestinationDir, true, overWrite);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes a directory. If recursive is true, then the subdirectories will also be deleted.
+        /// </summary>
+        public static bool DeleteDirectory(string directory, bool recursive)
+        {
+            if (!Directory.Exists(directory))
+            {
+                Log.Error_DirectoryDoesNotExist(directory);
+                return false;
+            }
+
+            Directory.Delete(directory, recursive);
+            return true;
+        }
+        /// <summary>
+        /// Moves a folder. Gives an option to rename the directory.
+        /// </summary>
+        public static bool MoveDirectory(string source, string destination)
+        {
+            if (!Directory.Exists(source))
+            {
+                Log.Error_SourceDirectoryDoesNotExist(source);
+                return false;
+            }
+            if (Directory.Exists(destination))
+            {
+                Log.Error_DestinationDirectoryAlreadyExists(destination);
+                return false;
+            }
+
+            Directory.Move(source, destination);
+            return true;
+        }
+
+        /// <summary>
+        /// Rename folders without having to provide the full path for the new name.
+        /// </summary>
+        public static void RenameFolder(string oldFolderPath, string newFolderName)
+        {
+            var directoryInfo = new DirectoryInfo(oldFolderPath);
+            string newFolderPath = Path.Combine(directoryInfo.Parent.FullName, newFolderName);
+
+            Directory.Move(oldFolderPath, newFolderPath);
+        }
+        public static void MakeDirectoryHidden(string directory)
+        {
+            var folder = new DirectoryInfo(directory);
+
+            if (folder.Exists)
+            {
+                folder.Attributes |= FileAttributes.Hidden;
+            }
+        }
+
+
+
+        // Files
+        /// <summary>
+        /// Creates a file.
+        /// </summary>
+        public static bool CreateFile(string directory)
+        {
+            if (File.Exists(directory))
+            {
+                Log.Error_FileAlreadyExists(directory);
+                return false;
+            }
+
+            File.Create(directory).Close();
+            return true;
+        }
+        /// <summary>
+        /// Copies a file.
+        /// </summary>
+        public static bool CopyFile(string source, string destination)
+        {
+            if (!File.Exists(source))
+            {
+                Log.Error_FileDoesNotExist(destination);
+                return false;
+            }
+            if (File.Exists(destination))
+            {
+                Log.Error_DestinationFileAlreadyExists(destination);
+                return false;
+            }
+
+            File.Copy(source, destination);
+            return true;
+        }
+
+        /// <summary>
+        /// Deletes a file.
+        /// </summary>
+        public static bool DeleteFile(string directory)
+        {
+            if (!File.Exists(directory))
+            {
+                Log.Error_FileDoesNotExist(directory);
+                return false;
+            }
+
+            File.Delete(directory);
+            return true;
+        }
+
+        /// <summary>
+        /// Moves a file. Gives an option to rename the file.
+        /// </summary>
+        public static bool MoveFile(string sourceFileName, string destinationFileName)
+        {
+            if (!File.Exists(sourceFileName))
+            {
+                Log.Error_FileDoesNotExist(destinationFileName);
+                return false;
+            }
+            if (File.Exists(destinationFileName))
+            {
+                Log.Error_DestinationFileAlreadyExists(sourceFileName);
+                return false;
+            }
+            if (sourceFileName == destinationFileName)
+            {
+                Log.Error_TheSourceAndDestinationAreTheSame(sourceFileName, destinationFileName);
+                return false;
+            }
+
+            File.Move(sourceFileName, destinationFileName);
+            return true;
+        }
+
+        // Write to file
+        public static bool WriteLinesToFile(string filePath, IEnumerable<string> lines)
+        {
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FileDoesNotExist(filePath);
+                return false;
+            }
+            try
+            {
+                using FileStream fs = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                using StreamWriter writer = new(fs);
+                foreach (var line in lines)
+                {
+                    writer.WriteLine(line);
+                }
+            }
+            catch
+            {
+                Log.Error_FailedToWriteToFile(filePath);
+            }
+            return true;
+        }
+        public static void WriteTextToFile(string filePath, string content)
+        {
+            try
+            {
+                using FileStream fs = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                using StreamWriter writer = new(fs);
+                writer.Write(content);
+            }
+            catch
+            {
+                Log.Error_FailedToWriteToFile(filePath);
+            }
+        }
+
+
+        // Create a zip file
+        public static void CreateZIPFile(string sourceDirectory, string destinationZipFilePath)
+        {
+            ZipFile.CreateFromDirectory(sourceDirectory, destinationZipFilePath);
+        }
+
+        // Read file
+        /// <summary>
+        /// Reads all lines from the specified file.
+        /// </summary>
+        /// <returns>An array of strings from the file.</returns>
+        public static string[] ReadAllLinesInFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FileDoesNotExist(filePath);
+                return Array.Empty<string>();
+            }
+
+            List<string> lines = new();
+            try
+            {
+                using StreamReader reader = new(filePath);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    lines.Add(line);
+                }
+            }
+            catch
+            {
+                Log.Error_FailedToReadFile(filePath);
+            }
+
+            return lines.ToArray();
+        }
+
+
+
+        /// <summary>
+        /// Creates an Argo txt file from a file.
+        /// </summary>
+        public static bool CreateArgoTxtFileFromFile(string sourceFileDirectory, string destinationDirectory, string fileExtension)
+        {
+            string sourceName = Path.GetFileName(sourceFileDirectory);
+
+            // Remove " (Main)" from file name
+            sourceName = sourceName.Replace(" (Main)", "");
+
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(sourceName);
+            string argoFileDirectory = destinationDirectory + @"\" + fileNameWithoutExtension;
+
+            if (File.Exists(argoFileDirectory + fileExtension))
+            {
+                List<string> files_list = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
+
+                // Get a new name for the file
+                sourceName = Tools.AddNumberForAStringThatAlreadyExists(fileNameWithoutExtension, files_list);
+                argoFileDirectory = destinationDirectory + @"\" + sourceName;
+            }
+            CopyFile(sourceFileDirectory, argoFileDirectory + fileExtension);
+
+            Log.Write(4, $"Exported '{Path.GetFileNameWithoutExtension(sourceName)}'");
+
+            return true;
+        }
+
+        /// <summary>
+        /// Creates an Argo Tar file from a directory.
+        /// </summary>
+        public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationDirectory, string fileExtension, bool overWrite)
+        {
+            string directoryName = Path.GetFileName(sourceDirectory);
+            string tarName = destinationDirectory + @"\" + directoryName;
+
+            if (File.Exists(tarName + fileExtension))
+            {
+                if (overWrite)
+                {
+                    DeleteFile(tarName + fileExtension);
+                }
+                else
+                {
+                    List<string> files_list = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
+
+                    // Get a new name for the file
+                    string newFileName = Tools.AddNumberForAStringThatAlreadyExists(directoryName, files_list);
+                    tarName = destinationDirectory + @"\" + newFileName;
+
+                    // Rename the directory temporarily so the tar file will have the new name
+                    RenameFolder(sourceDirectory, tarName);
+
+                    TarFile.CreateFromDirectory(tarName, tarName + fileExtension, true);
+
+                    // Rename the directory back to the original name
+                    RenameFolder(tarName, sourceDirectory);
+                }
+            }
+
+            TarFile.CreateFromDirectory(sourceDirectory, tarName + fileExtension, true);
+        }
+
+        /// <summary>
+        /// Imports an Argo Tar file into a directory.
+        /// </summary>
+        /// <returns> The file name wihtout the (num) and the extension. </returns>
+        public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, string thingBeingImported, List<string> listOfThingNames, bool askUserToRename)
+        {
+            string thingName = Path.GetFileNameWithoutExtension(sourceFile);
+            string tempDir = destinationDirectory + "\\" + ArgoProject.GetUniqueProjectIdentifier(appData_dir);
+            string extractedDir = GetTopDirectoryFromTarFile(sourceFile);
+
+            // Check if the thing already exists
+            if (listOfThingNames.Contains(thingName))
+            {
+                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(thingName, listOfThingNames);
+
+                CustomMessageBoxResult? result = null;
+                if (askUserToRename)
+                {
+                    result = CustomMessageBox.Show(
+                        $"Rename {thingBeingImported}",
+                        $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {thingBeingImported} with the same name.",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.YesNo);
+                }
+                if (result == CustomMessageBoxResult.Yes || !askUserToRename)
+                {
+                    // Extract the tab to a temp folder becuase there is already a thing with the same name,
+                    // that way the thing can be renamed.
+                    CreateDirectory(tempDir, true);
+                    TarFile.ExtractToDirectory(sourceFile, tempDir, false);
+
+                    // Rename thing in file and move it out of the temp directory
+                    Directory.Move(tempDir + "\\" + thingName, destinationDirectory + "\\" + suggestedThingName);
+                    DeleteDirectory(tempDir, true);
+
+                    thingName = suggestedThingName;
+                    extractedDir = suggestedThingName;
+                }
+                else { return null; }
+            }
+            else
+            {
+                // Extract normally
+                TarFile.ExtractToDirectory(sourceFile, destinationDirectory, false);
+            }
+
+            // If the .ArgoPoject file was renamed
+            if (thingName != extractedDir)
+            {
+                RenameFolder(destinationDirectory + "\\" + extractedDir, destinationDirectory + "\\" + thingName);
+            }
+
+            MakeDirectoryHidden(destinationDirectory + "\\" + thingName);
+
+            return thingName;
+        }
+        /// <summary>
+        /// Reads a TAR file and returns the name of the top-most directory or file.
+        /// </summary>
+        /// <returns>The name of the top-most directory found in the TAR file, or null if no directories are found.</returns>
+        public static string GetTopDirectoryFromTarFile(string sourceFile)
+        {
+            using FileStream fs = new(sourceFile, FileMode.Open);
+            using TarReader reader = new(fs);
+            TarEntry entry;
+            while ((entry = reader.GetNextEntry()) != null)
+            {
+                if (entry.EntryType == TarEntryType.Directory)
+                {
+                    string[] pathSegments = entry.Name.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (pathSegments.Length > 0)
+                    {
+                        return pathSegments[0];
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Imports an Argo txt file into a directory.
+        /// </summary>
+        /// <returns> The file name wihtout the (num) and the extension. </returns>
+        public static string ImportArgoTxtFile(string sourceFile, string destinationDirectory, string thingBeingImported, List<string> listOfThingNames)
+        {
+            string thingName = Path.GetFileNameWithoutExtension(sourceFile);
+
+            // Remove " (Main)" from thing name because we don't want "Tab 1" and "Tab 1 (Main)" for example
+            listOfThingNames = listOfThingNames.Select(name => name.Replace(" (Main)", "")).ToList();
+
+            // Check if the thing already exists
+            if (listOfThingNames.Contains(thingName))
+            {
+                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(thingName, listOfThingNames);
+
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    $"Rename {thingBeingImported}",
+                    $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {thingBeingImported} with the same name.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo);
+
+                if (result == CustomMessageBoxResult.Yes)
+                {
+                    thingName = suggestedThingName;
+                }
+                else { return ""; }
+            }
+
+            CopyFile(sourceFile, destinationDirectory + thingName + ".txt");
+
+            return thingName;
+        }
+
+        /// <summary>
+        /// This also saves all.
+        /// </summary>
+        public static void CreateBackup(string destinationDirectory, string fileExtension)
+        {
+            ArgoProject.SaveAll();
+
+            string tarName = destinationDirectory;
+            string folderName = new DirectoryInfo(destinationDirectory).Name;
+            string newFileExtension = fileExtension;
+
+            if (fileExtension == ".ArgoProject")
+            {
+                newFileExtension = ".zip";
+            }
+
+            if (File.Exists(destinationDirectory + newFileExtension))
+            {
+                int count = 2;
+
+                while (true)
+                {
+                    if (!File.Exists(destinationDirectory + "-" + count + newFileExtension))
+                    {
+                        tarName = destinationDirectory + "-" + count;
+                        break;
+                    }
+                    count++;
+                }
+            }
+
+            // Copy the directory to the new location, and rename it so the tar file will have the new name
+            CopyFile(argoProject_file, tarName + fileExtension);
+
+            // Move the file into a temp folder so it can be zipped. Use tarName to make sure the folder name does not already exist
+            CreateDirectory(tarName, true);
+            MoveFile(tarName + fileExtension, tarName + "\\" + folderName + fileExtension);
+
+            ZipFile.CreateFromDirectory(tarName, tarName + ".zip");
+
+            DeleteDirectory(tarName, true);
+
+            Log.Write(4, $"Backed up '{folderName}'");
+        }
+        /// <summary>
+        /// Returns a list of all the files in the directory. Also remove the file extension.
+        /// </summary>
+        public static List<string> GetListOfAllFilesWithoutExtensionInDirectory(string directory)
+        {
+            return Directory.GetFiles(directory)
+                  .Select(Path.GetFileNameWithoutExtension)
+                  .ToList();
+        }
+        /// <summary>
+        /// Returns a list of all the directories in the specified directory.
+        /// </summary>
+        public static List<string> GetListOfAllDirectoriesInDirectory(string directory)
+        {
+
+            return Directory.GetDirectories(directory).ToList();
+        }
+        /// <summary>
+        /// Returns a list of all the directory names in the specified directory.
+        /// </summary>
+        public static List<string> GetListOfAllDirectoryNamesInDirectory(string directory)
+        {
+
+            return Directory.GetDirectories(directory)
+                .Select(Path.GetFileName)
+                .ToList();
+        }
+    }
+}

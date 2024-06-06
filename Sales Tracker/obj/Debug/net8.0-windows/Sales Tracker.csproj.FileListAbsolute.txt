@@ -1,0 +1,15 @@
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.AssemblyReference.cache
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Classes.BaseForm.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Log_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.MainMenu_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Properties.Resources.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.ConfigureProject_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.GetStarted_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Startup_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.GenerateResource.cache
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.AssemblyInfoInputs.cache
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.AssemblyInfo.cs
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.CoreCompileInputs.cache
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.CustomMessage_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Menus.ConfigureProject_Form.resources

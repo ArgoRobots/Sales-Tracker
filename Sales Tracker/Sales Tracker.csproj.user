@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="Classes\BaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="CustomMessage_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Log_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainMenu_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Startup\Menus\ConfigureProject_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Startup\Menus\GetStarted_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Startup\Startup_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
