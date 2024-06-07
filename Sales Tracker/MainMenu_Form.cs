@@ -17,7 +17,31 @@ namespace Sales_Tracker
 
             UI.ConstructControls();
             SearchBox.ConstructSearchBox();
+
+            SetPropertiesForDataGridView();
+            SetCompanyLabel();
             UpdateTheme();
+        }
+        private void SetPropertiesForDataGridView()
+        {
+            Items_DataGridView.ReadOnly = true;
+            Items_DataGridView.AllowUserToAddRows = false;
+            Items_DataGridView.AllowUserToResizeRows = false;
+            Items_DataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            Items_DataGridView.RowTemplate.Height = 25;
+            Items_DataGridView.ColumnHeadersHeight = 30;
+            Items_DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing; // Disable header height resizing
+            Items_DataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
+            Items_DataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
+            Items_DataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
+            Items_DataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            Items_DataGridView.Theme = CustomColors.dataGridViewTheme;
+        }
+
+        private void SetCompanyLabel()
+        {
+            CompanyName_Label.Text = Directories.companyName;
+            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width;
         }
         public void UpdateTheme()
         {
@@ -31,8 +55,9 @@ namespace Sales_Tracker
 
             }
 
-            Top_Panel.BackColor = CustomColors.background3;
             MainTop_Panel.FillColor = CustomColors.background4;
+            Edit_Button.FillColor = CustomColors.background4;
+            Top_Panel.BackColor = CustomColors.background3;
             File_Button.FillColor = CustomColors.background3;
             Save_Button.FillColor = CustomColors.background3;
             Help_Button.FillColor = CustomColors.background3;
@@ -89,7 +114,7 @@ namespace Sales_Tracker
             }
 
             // Delete hidden directory
-            Directories.DeleteDirectory(Directories.project_dir, true);
+            Directories.DeleteDirectory(Directories.company_dir, true);
         }
 
         /// <summary>
@@ -117,6 +142,7 @@ namespace Sales_Tracker
 
             return false;
         }
+
         // Keyboard shortcuts
         private void MainMenu_form_KeyDown(object sender, KeyEventArgs e)
         {
@@ -247,6 +273,7 @@ namespace Sales_Tracker
             }
         }
 
+
         // Controls
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
@@ -266,7 +293,242 @@ namespace Sales_Tracker
         }
         private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            FilterData();
+        }
+        private void Edit_Button_Click(object sender, EventArgs e)
+        {
 
+        }
+
+
+        // DataGridView
+        private bool isDataGridViewLoading;
+        private enum Options
+        {
+            Purchases,
+            Sales
+        }
+        private Options Selected;
+        private enum PurchaseColumns
+        {
+            PurchaseID,
+            BuyerName,
+            ItemName,
+            Date,
+            Quantity,
+            PricePerUnit,
+            Shipping,
+            Tax,
+            TotalPrice
+        }
+        private enum SalesColumns
+        {
+            SalesID,
+            CustomerName,
+            ItemName,
+            Date,
+            Quantity,
+            PricePerUnit,
+            Shipping,
+            Tax,
+            TotalPrice
+        }
+        private readonly Dictionary<PurchaseColumns, string> PurchaseColumnHeaders = new()
+        {
+            { PurchaseColumns.PurchaseID, "Purchase ID" },
+            { PurchaseColumns.BuyerName, "Buyer Name" },
+            { PurchaseColumns.ItemName, "Item Name" },
+            { PurchaseColumns.Date, "Date" },
+            { PurchaseColumns.Quantity, "Quantity" },
+            { PurchaseColumns.PricePerUnit, "Price Per Unit" },
+            { PurchaseColumns.Shipping, "Shipping" },
+            { PurchaseColumns.Tax, "Tax" },
+            { PurchaseColumns.TotalPrice, "Total Price" }
+        };
+
+        private readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
+        {
+            { SalesColumns.SalesID, "Sales ID" },
+            { SalesColumns.CustomerName, "Customer Name" },
+            { SalesColumns.ItemName, "Item Name" },
+            { SalesColumns.Date, "Date" },
+            { SalesColumns.Quantity, "Quantity" },
+            { SalesColumns.PricePerUnit, "Price Per Unit" },
+            { SalesColumns.Shipping, "Shipping" },
+            { SalesColumns.Tax, "Tax" },
+            { SalesColumns.TotalPrice, "Total Price" }
+        };
+
+        private void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        {
+            AlignTotalLabels();
+        }
+        private void AddRowsFromFile()
+        {
+            string filePath = GetFilePathForDataGridView();
+
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FailedToWriteToFile(Directories.companyName);
+                return;
+            }
+
+            // Add all rows to dataGridView_list
+            Items_DataGridView.Rows.Clear();
+
+            string[] lines = Directories.ReadAllLinesInFile(filePath);
+            for (int i = 1; i < lines.Length; i++)
+            {
+                Items_DataGridView.Rows.Add(lines[i]);
+            }
+        }
+        private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            SaveDataGridViewToFile();
+        }
+        private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            SaveDataGridViewToFile();
+        }
+        private void SaveDataGridViewToFile()
+        {
+            string filePath = GetFilePathForDataGridView();
+
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FailedToWriteToFile(Directories.companyName);
+                return;
+            }
+
+            List<string> linesInDataGridView = [];
+
+            // Write all the rows in the dataGridView_list in file
+            for (int i = 0; i < Items_DataGridView.Rows.Count; i++)
+            {
+                linesInDataGridView.Add(Items_DataGridView.Rows[i].Cells[0].Value.ToString());
+            }
+            Directories.WriteLinesToFile(filePath, linesInDataGridView);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+        }
+        private void LoadPurchases()
+        {
+            isDataGridViewLoading = true;
+            Items_DataGridView.Columns.Clear();
+            Items_DataGridView.Rows.Clear();
+
+            foreach (var column in Enum.GetValues(typeof(PurchaseColumns)))
+            {
+                Items_DataGridView.Columns.Add(column.ToString(), PurchaseColumnHeaders[(PurchaseColumns)column]);
+            }
+
+            Items_DataGridView.Rows.Add("P001", "Laptop", "2", "1000", "2000", "200", "50");
+            Selected = Options.Purchases;
+
+            AddRowsFromFile();
+            FilterData();
+            UpdateTotals();
+            isDataGridViewLoading = false;
+            AlignTotalLabels();
+        }
+        private void LoadSales()
+        {
+            isDataGridViewLoading = true;
+            Items_DataGridView.Columns.Clear();
+            Items_DataGridView.Rows.Clear();
+
+            foreach (var column in Enum.GetValues(typeof(SalesColumns)))
+            {
+                Items_DataGridView.Columns.Add(column.ToString(), SalesColumnHeaders[(SalesColumns)column]);
+            }
+
+            Items_DataGridView.Rows.Add("S001", "John Doe", "Laptop", "1", "1200", "1200", "120", "30");
+            Selected = Options.Sales;
+
+            AddRowsFromFile();
+            FilterData();
+            UpdateTotals();
+            AlignTotalLabels();
+            isDataGridViewLoading = false;
+        }
+        private void UpdateTotals()
+        {
+            int totalQuantity = 0;
+            decimal totalPrice = 0;
+            decimal totalTax = 0;
+            decimal totalShipping = 0;
+
+            foreach (DataGridViewRow row in Items_DataGridView.Rows)
+            {
+                if (Selected == Options.Purchases)
+                {
+                    totalQuantity += Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
+                    totalPrice += Convert.ToDecimal(row.Cells[PurchaseColumns.TotalPrice.ToString()].Value);
+                    totalTax += Convert.ToDecimal(row.Cells[PurchaseColumns.Tax.ToString()].Value);
+                    totalShipping += Convert.ToDecimal(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
+                }
+                else if (Selected == Options.Sales)
+                {
+                    totalQuantity += Convert.ToInt32(row.Cells[SalesColumns.Quantity.ToString()].Value);
+                    totalPrice += Convert.ToDecimal(row.Cells[SalesColumns.TotalPrice.ToString()].Value);
+                    totalTax += Convert.ToDecimal(row.Cells[SalesColumns.Tax.ToString()].Value);
+                    totalShipping += Convert.ToDecimal(row.Cells[SalesColumns.Shipping.ToString()].Value);
+                }
+            }
+
+            Quantity_Label.Text = $"Quantity: {totalQuantity}";
+            Tax_Label.Text = $"Tax: {totalTax:C}";
+            Shipping_Label.Text = $"Shipping: {totalShipping:C}";
+            Price_Label.Text = $"Price: {totalPrice:C}";
+        }
+        private void AlignTotalLabels()
+        {
+            if (isDataGridViewLoading)
+            {
+                return;
+            }
+
+            string quantityColumn, taxColumn, shippingColumn, totalPriceColumn;
+
+            if (Selected == Options.Purchases)
+            {
+                quantityColumn = PurchaseColumns.Quantity.ToString();
+                taxColumn = PurchaseColumns.Tax.ToString();
+                shippingColumn = PurchaseColumns.Shipping.ToString();
+                totalPriceColumn = PurchaseColumns.TotalPrice.ToString();
+            }
+            else
+            {
+                quantityColumn = SalesColumns.Quantity.ToString();
+                taxColumn = SalesColumns.Tax.ToString();
+                shippingColumn = SalesColumns.Shipping.ToString();
+                totalPriceColumn = SalesColumns.TotalPrice.ToString();
+            }
+
+            Quantity_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[quantityColumn].Index, -1, true).Left;
+            Quantity_Label.Width = Items_DataGridView.Columns[quantityColumn].Width;
+
+            Tax_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[taxColumn].Index, -1, true).Left;
+            Tax_Label.Width = Items_DataGridView.Columns[taxColumn].Width;
+
+            Shipping_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[shippingColumn].Index, -1, true).Left;
+            Shipping_Label.Width = Items_DataGridView.Columns[shippingColumn].Width;
+
+            Price_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
+            Price_Label.Width = Items_DataGridView.Columns[totalPriceColumn].Width;
+        }
+        private void FilterData()
+        {
+        }
+        private string GetFilePathForDataGridView()
+        {
+            if (Selected == Options.Purchases)
+            {
+                return Directories.purchases_file;
+            }
+            else
+            {
+                return Directories.sales_file;
+            }
         }
 
         // Message panel
@@ -366,152 +628,7 @@ namespace Sales_Tracker
             }
         }
 
-
-        // DataGridView
-        private enum Options
-        {
-            Purchases,
-            Sales
-        }
-        private Options Selected;
-        private enum PurchaseColumns
-        {
-            PurchaseID,
-            BuyerName,
-            ItemName,
-            Quantity,
-            PricePerUnit,
-            TotalPrice,
-            Tax,
-            Shipping
-        }
-
-        private enum SalesColumns
-        {
-            SalesID,
-            CustomerName,
-            ItemName,
-            Quantity,
-            PricePerUnit,
-            TotalPrice,
-            Tax,
-            Shipping
-        }
-        private void AddRowsFromFile()
-        {
-            string filePath = GetFilePathForDataGridView();
-
-            if (!File.Exists(filePath))
-            {
-                Log.Error_FailedToWriteToFile(Directories.projectName);
-                return;
-            }
-
-            // Add all rows to dataGridView_list
-            DataGridView.Rows.Clear();
-
-            string[] lines = Directories.ReadAllLinesInFile(filePath);
-            for (int i = 1; i < lines.Length; i++)
-            {
-                DataGridView.Rows.Add(lines[i]);
-            }
-        }
-        private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            SaveDataGridViewToFile();
-        }
-        private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            SaveDataGridViewToFile();
-        }
-        private void SaveDataGridViewToFile()
-        {
-            string filePath = GetFilePathForDataGridView();
-
-            if (!File.Exists(filePath))
-            {
-                Log.Error_FailedToWriteToFile(Directories.projectName);
-                return;
-            }
-
-            List<string> linesInDataGridView = [];
-
-            // Write all the rows in the dataGridView_list in file
-            for (int i = 0; i < DataGridView.Rows.Count; i++)
-            {
-                linesInDataGridView.Add(DataGridView.Rows[i].Cells[0].Value.ToString());
-            }
-            Directories.WriteLinesToFile(filePath, linesInDataGridView);
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
-        }
-        private void LoadPurchases()
-        {
-            DataGridView.Columns.Clear();
-            DataGridView.Rows.Clear();
-
-            foreach (var column in Enum.GetValues(typeof(PurchaseColumns)))
-            {
-                DataGridView.Columns.Add(column.ToString(), column.ToString().Replace("_", " "));
-            }
-
-            DataGridView.Rows.Add("P001", "Laptop", "2", "1000", "2000", "200", "50");
-
-            UpdateTotals(PurchaseColumns.Quantity.ToString(), PurchaseColumns.TotalPrice.ToString(), PurchaseColumns.Tax.ToString(), PurchaseColumns.Shipping.ToString());
-            Selected = Options.Purchases;
-
-            AddRowsFromFile();
-        }
-        private void LoadSales()
-        {
-            DataGridView.Columns.Clear();
-            DataGridView.Rows.Clear();
-
-            foreach (var column in Enum.GetValues(typeof(SalesColumns)))
-            {
-                DataGridView.Columns.Add(column.ToString(), column.ToString().Replace("_", " "));
-            }
-
-            DataGridView.Rows.Add("S001", "John Doe", "Laptop", "1", "1200", "1200", "120", "30");
-
-            UpdateTotals(SalesColumns.Quantity.ToString(), SalesColumns.TotalPrice.ToString(), SalesColumns.Tax.ToString(), SalesColumns.Shipping.ToString());
-            Selected = Options.Sales;
-
-            AddRowsFromFile();
-        }
-        private void UpdateTotals(string quantityColumn, string totalPriceColumn, string taxColumn, string shippingColumn)
-        {
-            int totalQuantity = 0;
-            decimal totalPrice = 0;
-            decimal totalTax = 0;
-            decimal totalShipping = 0;
-
-            foreach (DataGridViewRow row in DataGridView.Rows)
-            {
-                if (row.IsNewRow) { continue; };
-
-                totalQuantity += Convert.ToInt32(row.Cells[quantityColumn].Value);
-                totalTax += Convert.ToDecimal(row.Cells[taxColumn].Value);
-                totalShipping += Convert.ToDecimal(row.Cells[shippingColumn].Value);
-                totalPrice += Convert.ToDecimal(row.Cells[totalPriceColumn].Value);
-            }
-
-            Quantity_Label.Text = $"${totalQuantity}";
-            Tax_Label.Text = $"${totalTax:C}";
-            Shipping_Label.Text = $"${totalShipping:C}";
-            Price_Label.Text = $"${totalPrice:C}";
-        }
-        private string GetFilePathForDataGridView()
-        {
-            if (Selected == Options.Purchases)
-            {
-                return Directories.purchases_file;
-            }
-            else
-            {
-                return Directories.sales_file;
-            }
-        }
-
+        // Misc.
         private void CloseAllPanels(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);

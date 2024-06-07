@@ -104,7 +104,7 @@ namespace Sales_Tracker.Startup.Menus
             Directories.InitDataFile();
 
             // Create directories and files
-            Directories.CreateDirectory(Directories.project_dir, true);
+            Directories.CreateDirectory(Directories.company_dir, true);
             Directories.CreateDirectory(Directories.logs_dir, false);
             ArgoCompany.SaveAll();
 

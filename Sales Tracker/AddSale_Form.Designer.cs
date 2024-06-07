@@ -1,6 +1,6 @@
 ﻿namespace Sales_Tracker
 {
-    partial class Products_Form
+    partial class AddSale_Form
     {
         /// <summary>
         /// Required designer variable.
@@ -30,13 +30,13 @@
         {
             SuspendLayout();
             // 
-            // Products_Form
+            // AddSale_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Name = "Products_Form";
+            Name = "AddSale_Form";
             StartPosition = FormStartPosition.CenterScreen;
             ResumeLayout(false);
         }

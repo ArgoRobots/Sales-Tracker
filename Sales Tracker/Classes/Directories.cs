@@ -6,23 +6,23 @@ namespace Sales_Tracker.Classes
     static class Directories
     {
         // Directories
-        public static string projectName, project_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
+        public static string companyName, company_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
           sales_file, logs_dir, desktop_dir;
 
         public static void SetDirectoriesFor(string projectDir, string project_name)
         {
-            projectName = project_name;
+            companyName = project_name;
 
-            project_dir = appData_dir + project_name;
+            company_dir = appData_dir + project_name;
 
             argoCompany_dir = projectDir;
             argoCompany_file = projectDir + "\\" + project_name + ".ArgoCompany";
 
-            purchases_file = project_dir + @"\purchases.txt";
-            sales_file = project_dir + @"\sales.txt";
+            purchases_file = company_dir + @"\purchases.txt";
+            sales_file = company_dir + @"\sales.txt";
 
             // Logs
-            logs_dir = project_dir + @"\logs\";
+            logs_dir = company_dir + @"\logs\";
         }
         public static void SetUniversalDirectories()
         {

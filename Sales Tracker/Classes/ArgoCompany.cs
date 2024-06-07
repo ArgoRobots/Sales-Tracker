@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
     {
         public static void SaveAll()
         {
-            Directories.CreateArgoTarFileFromDirectory(Directories.project_dir, Directories.argoCompany_dir, ".ArgoCompany", true);
+            Directories.CreateArgoTarFileFromDirectory(Directories.company_dir, Directories.argoCompany_dir, ".ArgoCompany", true);
             ResetChanges();
         }
         public static void SaveAs()
@@ -23,7 +23,7 @@ namespace Sales_Tracker.Classes
                 string newDir = dialog.SelectedPath;
 
                 // Copy the project to a new location
-                Directories.CopyFile(Directories.argoCompany_file, newDir + Directories.projectName + ".ArgoCompany");
+                Directories.CopyFile(Directories.argoCompany_file, newDir + Directories.companyName + ".ArgoCompany");
             }
         }
         public static bool AreAnyChangesMade()
@@ -108,7 +108,7 @@ namespace Sales_Tracker.Classes
                     }
                 }
 
-                Directories.DeleteDirectory(Directories.project_dir, true);
+                Directories.DeleteDirectory(Directories.company_dir, true);
 
                 // Save new ProjectDirectory
                 Sales_Tracker.Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;

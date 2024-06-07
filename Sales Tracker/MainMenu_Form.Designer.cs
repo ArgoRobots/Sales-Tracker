@@ -29,37 +29,40 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            Edit_Button = new Guna.UI2.WinForms.Guna2Button();
             ColorTheme_label = new Label();
             DarkMode_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
             ManageProducts_Button = new Guna.UI2.WinForms.Guna2Button();
-            label1 = new Label();
+            CompanyName_Label = new Label();
             MessagePanel_timer = new System.Windows.Forms.Timer(components);
             Top_Panel = new Panel();
             Saved_Label = new Label();
@@ -72,38 +75,57 @@
             Totals_Label = new Label();
             Total_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Tax_Label = new Label();
-            TaxText_Label = new Label();
             Shipping_Label = new Label();
-            ShippingText_Label = new Label();
             Price_Label = new Label();
-            PriceText_Label = new Label();
             Quantity_Label = new Label();
-            QuantityText_Label = new Label();
             TimeRange_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-            DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
+            Items_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
             HideMenu_timer = new System.Windows.Forms.Timer(components);
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Main_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)DataGridView).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)Items_DataGridView).BeginInit();
             SuspendLayout();
             // 
             // MainTop_Panel
             // 
             MainTop_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             MainTop_Panel.BackColor = Color.FromArgb(242, 242, 242);
+            MainTop_Panel.Controls.Add(Edit_Button);
             MainTop_Panel.Controls.Add(ColorTheme_label);
             MainTop_Panel.Controls.Add(DarkMode_ToggleSwitch);
             MainTop_Panel.Controls.Add(ManageProducts_Button);
-            MainTop_Panel.Controls.Add(label1);
-            MainTop_Panel.CustomizableEdges = customizableEdges5;
+            MainTop_Panel.Controls.Add(CompanyName_Label);
+            MainTop_Panel.CustomizableEdges = customizableEdges7;
             MainTop_Panel.Location = new Point(0, 30);
             MainTop_Panel.Name = "MainTop_Panel";
-            MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges8;
             MainTop_Panel.Size = new Size(1604, 80);
             MainTop_Panel.TabIndex = 6;
             MainTop_Panel.Click += CloseAllPanels;
+            // 
+            // Edit_Button
+            // 
+            Edit_Button.BackColor = Color.Transparent;
+            Edit_Button.BorderColor = Color.Empty;
+            Edit_Button.CustomizableEdges = customizableEdges1;
+            Edit_Button.DisabledState.BorderColor = Color.DarkGray;
+            Edit_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Edit_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Edit_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Edit_Button.FillColor = Color.Empty;
+            Edit_Button.Font = new Font("Segoe UI", 9F);
+            Edit_Button.ForeColor = Color.White;
+            Edit_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
+            Edit_Button.Image = Properties.Resources.edit;
+            Edit_Button.ImageSize = new Size(18, 18);
+            Edit_Button.Location = new Point(186, 25);
+            Edit_Button.Name = "Edit_Button";
+            Edit_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Edit_Button.Size = new Size(30, 30);
+            Edit_Button.TabIndex = 6;
+            Edit_Button.Click += Edit_Button_Click;
             // 
             // ColorTheme_label
             // 
@@ -127,10 +149,10 @@
             DarkMode_ToggleSwitch.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             DarkMode_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
             DarkMode_ToggleSwitch.CheckedState.InnerColor = Color.White;
-            DarkMode_ToggleSwitch.CustomizableEdges = customizableEdges1;
+            DarkMode_ToggleSwitch.CustomizableEdges = customizableEdges3;
             DarkMode_ToggleSwitch.Location = new Point(1388, 30);
             DarkMode_ToggleSwitch.Name = "DarkMode_ToggleSwitch";
-            DarkMode_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            DarkMode_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges4;
             DarkMode_ToggleSwitch.Size = new Size(40, 20);
             DarkMode_ToggleSwitch.TabIndex = 10;
             DarkMode_ToggleSwitch.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -146,29 +168,29 @@
             ManageProducts_Button.BorderColor = Color.LightGray;
             ManageProducts_Button.BorderRadius = 2;
             ManageProducts_Button.BorderThickness = 1;
-            ManageProducts_Button.CustomizableEdges = customizableEdges3;
+            ManageProducts_Button.CustomizableEdges = customizableEdges5;
             ManageProducts_Button.FillColor = Color.White;
             ManageProducts_Button.Font = new Font("Segoe UI", 9.5F);
             ManageProducts_Button.ForeColor = Color.Black;
             ManageProducts_Button.Location = new Point(1448, 24);
             ManageProducts_Button.Margin = new Padding(4, 3, 4, 3);
             ManageProducts_Button.Name = "ManageProducts_Button";
-            ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ManageProducts_Button.Size = new Size(143, 32);
             ManageProducts_Button.TabIndex = 9;
             ManageProducts_Button.Text = "Manage products";
             ManageProducts_Button.Click += ManageProducts_Button_Click;
             // 
-            // label1
+            // CompanyName_Label
             // 
-            label1.AutoSize = true;
-            label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            label1.Location = new Point(12, 25);
-            label1.Name = "label1";
-            label1.Size = new Size(168, 30);
-            label1.TabIndex = 1;
-            label1.Text = "Company name";
+            CompanyName_Label.AutoSize = true;
+            CompanyName_Label.BackColor = Color.Transparent;
+            CompanyName_Label.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            CompanyName_Label.Location = new Point(12, 25);
+            CompanyName_Label.Name = "CompanyName_Label";
+            CompanyName_Label.Size = new Size(168, 30);
+            CompanyName_Label.TabIndex = 1;
+            CompanyName_Label.Text = "Company name";
             // 
             // MessagePanel_timer
             // 
@@ -192,6 +214,7 @@
             // Saved_Label
             // 
             Saved_Label.AutoSize = true;
+            Saved_Label.BackColor = Color.Transparent;
             Saved_Label.Font = new Font("Segoe UI", 11.25F);
             Saved_Label.Location = new Point(78, 5);
             Saved_Label.Name = "Saved_Label";
@@ -203,7 +226,8 @@
             // Help_Button
             // 
             Help_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Help_Button.CustomizableEdges = customizableEdges7;
+            Help_Button.BackColor = Color.Transparent;
+            Help_Button.CustomizableEdges = customizableEdges9;
             Help_Button.DisabledState.BorderColor = Color.DarkGray;
             Help_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Help_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -216,15 +240,16 @@
             Help_Button.Location = new Point(1574, 0);
             Help_Button.Name = "Help_Button";
             Help_Button.PressedColor = Color.Empty;
-            Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Help_Button.Size = new Size(30, 30);
             Help_Button.TabIndex = 5;
             Help_Button.Click += Help_Button_Click;
             // 
             // Save_Button
             // 
+            Save_Button.BackColor = Color.Transparent;
             Save_Button.BorderColor = Color.Empty;
-            Save_Button.CustomizableEdges = customizableEdges9;
+            Save_Button.CustomizableEdges = customizableEdges11;
             Save_Button.DisabledState.BorderColor = Color.DarkGray;
             Save_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Save_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -237,7 +262,7 @@
             Save_Button.ImageSize = new Size(18, 18);
             Save_Button.Location = new Point(42, 0);
             Save_Button.Name = "Save_Button";
-            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Save_Button.Size = new Size(30, 30);
             Save_Button.TabIndex = 4;
             Save_Button.Click += Save_Button_Click;
@@ -246,8 +271,9 @@
             // 
             // File_Button
             // 
+            File_Button.BackColor = Color.Transparent;
             File_Button.BorderColor = Color.Empty;
-            File_Button.CustomizableEdges = customizableEdges11;
+            File_Button.CustomizableEdges = customizableEdges13;
             File_Button.DisabledState.BorderColor = Color.DarkGray;
             File_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             File_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -260,7 +286,7 @@
             File_Button.ImageSize = new Size(35, 25);
             File_Button.Location = new Point(0, 0);
             File_Button.Name = "File_Button";
-            File_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            File_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             File_Button.Size = new Size(42, 30);
             File_Button.TabIndex = 3;
             File_Button.Click += File_Button_Click;
@@ -274,18 +300,19 @@
             Main_Panel.Controls.Add(Totals_Label);
             Main_Panel.Controls.Add(Total_Panel);
             Main_Panel.Controls.Add(TimeRange_ComboBox);
-            Main_Panel.Controls.Add(DataGridView);
-            Main_Panel.CustomizableEdges = customizableEdges21;
+            Main_Panel.Controls.Add(Items_DataGridView);
+            Main_Panel.CustomizableEdges = customizableEdges23;
             Main_Panel.Location = new Point(0, 110);
             Main_Panel.Name = "Main_Panel";
-            Main_Panel.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            Main_Panel.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Main_Panel.Size = new Size(1604, 930);
             Main_Panel.TabIndex = 8;
             Main_Panel.Click += CloseAllPanels;
             // 
             // Sales_Button
             // 
-            Sales_Button.CustomizableEdges = customizableEdges13;
+            Sales_Button.BorderRadius = 2;
+            Sales_Button.CustomizableEdges = customizableEdges15;
             Sales_Button.DisabledState.BorderColor = Color.DarkGray;
             Sales_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Sales_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -294,7 +321,7 @@
             Sales_Button.ForeColor = Color.White;
             Sales_Button.Location = new Point(211, 44);
             Sales_Button.Name = "Sales_Button";
-            Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Sales_Button.Size = new Size(150, 35);
             Sales_Button.TabIndex = 7;
             Sales_Button.Text = "Sales";
@@ -302,7 +329,8 @@
             // 
             // Purchases_Button
             // 
-            Purchases_Button.CustomizableEdges = customizableEdges15;
+            Purchases_Button.BorderRadius = 2;
+            Purchases_Button.CustomizableEdges = customizableEdges17;
             Purchases_Button.DisabledState.BorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -311,7 +339,7 @@
             Purchases_Button.ForeColor = Color.White;
             Purchases_Button.Location = new Point(55, 44);
             Purchases_Button.Name = "Purchases_Button";
-            Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
             Purchases_Button.Size = new Size(150, 35);
             Purchases_Button.TabIndex = 6;
             Purchases_Button.Text = "Purchases";
@@ -321,124 +349,76 @@
             // 
             Totals_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             Totals_Label.AutoSize = true;
+            Totals_Label.BackColor = Color.Transparent;
             Totals_Label.Font = new Font("Segoe UI", 11.25F);
             Totals_Label.Location = new Point(95, 847);
             Totals_Label.Name = "Totals_Label";
             Totals_Label.Size = new Size(51, 20);
             Totals_Label.TabIndex = 5;
             Totals_Label.Text = "Totals:";
-            Totals_Label.Visible = false;
             // 
             // Total_Panel
             // 
             Total_Panel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Total_Panel.Controls.Add(Tax_Label);
-            Total_Panel.Controls.Add(TaxText_Label);
             Total_Panel.Controls.Add(Shipping_Label);
-            Total_Panel.Controls.Add(ShippingText_Label);
             Total_Panel.Controls.Add(Price_Label);
-            Total_Panel.Controls.Add(PriceText_Label);
             Total_Panel.Controls.Add(Quantity_Label);
-            Total_Panel.Controls.Add(QuantityText_Label);
-            Total_Panel.CustomizableEdges = customizableEdges17;
+            Total_Panel.CustomizableEdges = customizableEdges19;
             Total_Panel.Location = new Point(152, 832);
             Total_Panel.Name = "Total_Panel";
-            Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges20;
             Total_Panel.Size = new Size(1300, 50);
             Total_Panel.TabIndex = 2;
             // 
             // Tax_Label
             // 
             Tax_Label.AutoSize = true;
+            Tax_Label.BackColor = Color.Transparent;
             Tax_Label.Font = new Font("Segoe UI", 11.25F);
-            Tax_Label.Location = new Point(749, 15);
+            Tax_Label.Location = new Point(710, 15);
             Tax_Label.Name = "Tax_Label";
-            Tax_Label.Size = new Size(17, 20);
-            Tax_Label.TabIndex = 10;
-            Tax_Label.Text = "1";
-            Tax_Label.Visible = false;
-            // 
-            // TaxText_Label
-            // 
-            TaxText_Label.AutoSize = true;
-            TaxText_Label.Font = new Font("Segoe UI", 11.25F);
-            TaxText_Label.Location = new Point(710, 15);
-            TaxText_Label.Name = "TaxText_Label";
-            TaxText_Label.Size = new Size(33, 20);
-            TaxText_Label.TabIndex = 9;
-            TaxText_Label.Text = "Tax:";
-            TaxText_Label.Visible = false;
+            Tax_Label.Size = new Size(33, 20);
+            Tax_Label.TabIndex = 9;
+            Tax_Label.Text = "Tax:";
             // 
             // Shipping_Label
             // 
             Shipping_Label.AutoSize = true;
+            Shipping_Label.BackColor = Color.Transparent;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F);
-            Shipping_Label.Location = new Point(591, 15);
+            Shipping_Label.Location = new Point(518, 15);
             Shipping_Label.Name = "Shipping_Label";
-            Shipping_Label.Size = new Size(17, 20);
-            Shipping_Label.TabIndex = 8;
-            Shipping_Label.Text = "1";
-            Shipping_Label.Visible = false;
-            // 
-            // ShippingText_Label
-            // 
-            ShippingText_Label.AutoSize = true;
-            ShippingText_Label.Font = new Font("Segoe UI", 11.25F);
-            ShippingText_Label.Location = new Point(518, 15);
-            ShippingText_Label.Name = "ShippingText_Label";
-            ShippingText_Label.Size = new Size(67, 20);
-            ShippingText_Label.TabIndex = 7;
-            ShippingText_Label.Text = "Shpping:";
-            ShippingText_Label.Visible = false;
+            Shipping_Label.Size = new Size(67, 20);
+            Shipping_Label.TabIndex = 7;
+            Shipping_Label.Text = "Shpping:";
             // 
             // Price_Label
             // 
             Price_Label.AutoSize = true;
+            Price_Label.BackColor = Color.Transparent;
             Price_Label.Font = new Font("Segoe UI", 11.25F);
-            Price_Label.Location = new Point(915, 15);
+            Price_Label.Location = new Point(865, 15);
             Price_Label.Name = "Price_Label";
-            Price_Label.Size = new Size(17, 20);
-            Price_Label.TabIndex = 6;
-            Price_Label.Text = "1";
-            Price_Label.Visible = false;
-            // 
-            // PriceText_Label
-            // 
-            PriceText_Label.AutoSize = true;
-            PriceText_Label.Font = new Font("Segoe UI", 11.25F);
-            PriceText_Label.Location = new Point(865, 15);
-            PriceText_Label.Name = "PriceText_Label";
-            PriceText_Label.Size = new Size(44, 20);
-            PriceText_Label.TabIndex = 5;
-            PriceText_Label.Text = "Price:";
-            PriceText_Label.Visible = false;
+            Price_Label.Size = new Size(44, 20);
+            Price_Label.TabIndex = 5;
+            Price_Label.Text = "Price:";
             // 
             // Quantity_Label
             // 
             Quantity_Label.AutoSize = true;
+            Quantity_Label.BackColor = Color.Transparent;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F);
-            Quantity_Label.Location = new Point(420, 15);
+            Quantity_Label.Location = new Point(349, 15);
             Quantity_Label.Name = "Quantity_Label";
-            Quantity_Label.Size = new Size(17, 20);
-            Quantity_Label.TabIndex = 4;
-            Quantity_Label.Text = "1";
-            Quantity_Label.Visible = false;
-            // 
-            // QuantityText_Label
-            // 
-            QuantityText_Label.AutoSize = true;
-            QuantityText_Label.Font = new Font("Segoe UI", 11.25F);
-            QuantityText_Label.Location = new Point(349, 15);
-            QuantityText_Label.Name = "QuantityText_Label";
-            QuantityText_Label.Size = new Size(68, 20);
-            QuantityText_Label.TabIndex = 3;
-            QuantityText_Label.Text = "Quantity:";
-            QuantityText_Label.Visible = false;
+            Quantity_Label.Size = new Size(68, 20);
+            Quantity_Label.TabIndex = 3;
+            Quantity_Label.Text = "Quantity:";
             // 
             // TimeRange_ComboBox
             // 
             TimeRange_ComboBox.BackColor = Color.Transparent;
-            TimeRange_ComboBox.CustomizableEdges = customizableEdges19;
+            TimeRange_ComboBox.CustomizableEdges = customizableEdges21;
             TimeRange_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             TimeRange_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             TimeRange_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
@@ -447,18 +427,18 @@
             TimeRange_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             TimeRange_ComboBox.ItemHeight = 30;
             TimeRange_ComboBox.Items.AddRange(new object[] { "24 hours", "48 hours", "5 days", "10 days", "30 days", "100 days", "1 year", "2 years", "3 years", "5 years", "10 years", "All time" });
-            TimeRange_ComboBox.Location = new Point(1415, 76);
+            TimeRange_ComboBox.Location = new Point(1415, 35);
             TimeRange_ComboBox.Name = "TimeRange_ComboBox";
-            TimeRange_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            TimeRange_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
             TimeRange_ComboBox.Size = new Size(140, 36);
             TimeRange_ComboBox.TabIndex = 1;
             TimeRange_ComboBox.SelectedIndexChanged += TimeRange_ComboBox_SelectedIndexChanged;
             // 
-            // DataGridView
+            // Items_DataGridView
             // 
             dataGridViewCellStyle1.BackColor = Color.White;
-            DataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            DataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Items_DataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            Items_DataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(100, 88, 255);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
@@ -466,9 +446,9 @@
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            DataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            DataGridView.ColumnHeadersHeight = 4;
-            DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            Items_DataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            Items_DataGridView.ColumnHeadersHeight = 4;
+            Items_DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.White;
             dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
@@ -476,36 +456,37 @@
             dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(231, 229, 255);
             dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(71, 69, 94);
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
-            DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
-            DataGridView.GridColor = Color.FromArgb(231, 229, 255);
-            DataGridView.Location = new Point(152, 476);
-            DataGridView.Name = "DataGridView";
-            DataGridView.RowHeadersVisible = false;
-            DataGridView.Size = new Size(1300, 350);
-            DataGridView.TabIndex = 0;
-            DataGridView.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
-            DataGridView.ThemeStyle.AlternatingRowsStyle.Font = null;
-            DataGridView.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.Empty;
-            DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = Color.Empty;
-            DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.Empty;
-            DataGridView.ThemeStyle.BackColor = Color.White;
-            DataGridView.ThemeStyle.GridColor = Color.FromArgb(231, 229, 255);
-            DataGridView.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(100, 88, 255);
-            DataGridView.ThemeStyle.HeaderStyle.BorderStyle = DataGridViewHeaderBorderStyle.None;
-            DataGridView.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F);
-            DataGridView.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            DataGridView.ThemeStyle.HeaderStyle.HeaightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            DataGridView.ThemeStyle.HeaderStyle.Height = 4;
-            DataGridView.ThemeStyle.ReadOnly = false;
-            DataGridView.ThemeStyle.RowsStyle.BackColor = Color.White;
-            DataGridView.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            DataGridView.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
-            DataGridView.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 69, 94);
-            DataGridView.ThemeStyle.RowsStyle.Height = 25;
-            DataGridView.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            DataGridView.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            DataGridView.RowsAdded += DataGridView_RowsAdded;
-            DataGridView.RowsRemoved += DataGridView_RowsRemoved;
+            Items_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
+            Items_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
+            Items_DataGridView.Location = new Point(152, 476);
+            Items_DataGridView.Name = "Items_DataGridView";
+            Items_DataGridView.RowHeadersVisible = false;
+            Items_DataGridView.Size = new Size(1300, 350);
+            Items_DataGridView.TabIndex = 0;
+            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
+            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.Font = null;
+            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.Empty;
+            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = Color.Empty;
+            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.Empty;
+            Items_DataGridView.ThemeStyle.BackColor = Color.White;
+            Items_DataGridView.ThemeStyle.GridColor = Color.FromArgb(231, 229, 255);
+            Items_DataGridView.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(100, 88, 255);
+            Items_DataGridView.ThemeStyle.HeaderStyle.BorderStyle = DataGridViewHeaderBorderStyle.None;
+            Items_DataGridView.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F);
+            Items_DataGridView.ThemeStyle.HeaderStyle.ForeColor = Color.White;
+            Items_DataGridView.ThemeStyle.HeaderStyle.HeaightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            Items_DataGridView.ThemeStyle.HeaderStyle.Height = 4;
+            Items_DataGridView.ThemeStyle.ReadOnly = false;
+            Items_DataGridView.ThemeStyle.RowsStyle.BackColor = Color.White;
+            Items_DataGridView.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            Items_DataGridView.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
+            Items_DataGridView.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 69, 94);
+            Items_DataGridView.ThemeStyle.RowsStyle.Height = 25;
+            Items_DataGridView.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
+            Items_DataGridView.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
+            Items_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            Items_DataGridView.RowsAdded += DataGridView_RowsAdded;
+            Items_DataGridView.RowsRemoved += DataGridView_RowsRemoved;
             // 
             // HideMenu_timer
             // 
@@ -539,7 +520,7 @@
             Main_Panel.PerformLayout();
             Total_Panel.ResumeLayout(false);
             Total_Panel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)DataGridView).EndInit();
+            ((System.ComponentModel.ISupportInitialize)Items_DataGridView).EndInit();
             ResumeLayout(false);
         }
 
@@ -553,11 +534,11 @@
         public Guna.UI2.WinForms.Guna2Panel Main_Panel;
         public System.Windows.Forms.Timer HideMenu_timer;
         public System.Windows.Forms.Label Saved_Label;
-        private Label label1;
+        private Label CompanyName_Label;
         private Guna.UI2.WinForms.Guna2Button ManageProducts_Button;
         private Guna.UI2.WinForms.Guna2ToggleSwitch DarkMode_ToggleSwitch;
         private Label ColorTheme_label;
-        private Guna.UI2.WinForms.Guna2DataGridView DataGridView;
+        private Guna.UI2.WinForms.Guna2DataGridView Items_DataGridView;
         private Guna.UI2.WinForms.Guna2ComboBox TimeRange_ComboBox;
         public Label Totals_Label;
         private Guna.UI2.WinForms.Guna2Panel Total_Panel;
@@ -568,8 +549,8 @@
         public Label Shipping_Label;
         public Label ShippingText_Label;
         public Label Tax_Label;
-        public Label TaxText_Label;
         private Guna.UI2.WinForms.Guna2Button Sales_Button;
         private Guna.UI2.WinForms.Guna2Button Purchases_Button;
+        public Guna.UI2.WinForms.Guna2Button Edit_Button;
     }
 }
