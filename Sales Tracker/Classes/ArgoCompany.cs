@@ -43,7 +43,7 @@ namespace Sales_Tracker.Classes
             // Select file
             OpenFileDialog dialog = new()
             {
-                Filter = "Argo project (*.ArgoCompany)|*.ArgoCompany"
+                Filter = "Argo company (*.ArgoCompany)|*.ArgoCompany"
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -54,10 +54,10 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Save new ProjectDirectory
-                Sales_Tracker.Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
-                Sales_Tracker.Properties.Settings.Default.Save();
+                Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
+                Properties.Settings.Default.Save();
 
-                Directories.SetDirectoriesFor(Sales_Tracker.Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
+                Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
                 Directories.InitDataFile();
 
                 // Save recently opened projects
@@ -76,7 +76,7 @@ namespace Sales_Tracker.Classes
             // Select file
             OpenFileDialog dialog = new()
             {
-                Filter = "Argo project (*.ArgoProject)|*.ArgoProject"
+                Filter = "Argo company (*.ArgoCompany)|*.ArgoCompany"
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -111,10 +111,10 @@ namespace Sales_Tracker.Classes
                 Directories.DeleteDirectory(Directories.company_dir, true);
 
                 // Save new ProjectDirectory
-                Sales_Tracker.Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
-                Sales_Tracker.Properties.Settings.Default.Save();
+                Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
+                Properties.Settings.Default.Save();
 
-                Directories.SetDirectoriesFor(Sales_Tracker.Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
+                Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
                 Directories.InitDataFile();
 
                 // Save recently opened projects
@@ -187,10 +187,10 @@ namespace Sales_Tracker.Classes
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
                         // Save new ProjectDirectory
-                        Sales_Tracker.Properties.Settings.Default.ProjectDirectory = dialog.SelectedPath;
-                        Sales_Tracker.Properties.Settings.Default.Save();
+                        Properties.Settings.Default.ProjectDirectory = dialog.SelectedPath;
+                        Properties.Settings.Default.Save();
 
-                        Directories.SetDirectoriesFor(Sales_Tracker.Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(project));
+                        Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(project));
                         Directories.InitDataFile();
 
                         SaveAll();

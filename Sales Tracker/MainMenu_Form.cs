@@ -20,6 +20,7 @@ namespace Sales_Tracker
 
             SetPropertiesForDataGridView();
             SetCompanyLabel();
+            LoadSales();
             UpdateTheme();
         }
         private void SetPropertiesForDataGridView()
@@ -282,6 +283,14 @@ namespace Sales_Tracker
         {
             LoadSales();
         }
+        private void AddPurchase_Button_Click(object sender, EventArgs e)
+        {
+            new AddPurchase_Form().ShowDialog();
+        }
+        private void AddSale_Button_Click(object sender, EventArgs e)
+        {
+
+        }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
 
@@ -302,13 +311,13 @@ namespace Sales_Tracker
 
         // DataGridView
         private bool isDataGridViewLoading;
-        private enum Options
+        public enum Options
         {
             Purchases,
             Sales
         }
-        private Options Selected;
-        private enum PurchaseColumns
+        public Options Selected;
+        public enum PurchaseColumns
         {
             PurchaseID,
             BuyerName,
@@ -320,7 +329,7 @@ namespace Sales_Tracker
             Tax,
             TotalPrice
         }
-        private enum SalesColumns
+        public enum SalesColumns
         {
             SalesID,
             CustomerName,
@@ -332,7 +341,7 @@ namespace Sales_Tracker
             Tax,
             TotalPrice
         }
-        private readonly Dictionary<PurchaseColumns, string> PurchaseColumnHeaders = new()
+        public readonly Dictionary<PurchaseColumns, string> PurchaseColumnHeaders = new()
         {
             { PurchaseColumns.PurchaseID, "Purchase ID" },
             { PurchaseColumns.BuyerName, "Buyer name" },
@@ -345,7 +354,7 @@ namespace Sales_Tracker
             { PurchaseColumns.TotalPrice, "Total price" }
         };
 
-        private readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
+        public readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
         {
             { SalesColumns.SalesID, "Sales ID" },
             { SalesColumns.CustomerName, "Customer name" },
@@ -375,17 +384,20 @@ namespace Sales_Tracker
             Items_DataGridView.Rows.Clear();
 
             string[] lines = Directories.ReadAllLinesInFile(filePath);
-            for (int i = 1; i < lines.Length; i++)
+            foreach (string line in lines)
             {
-                Items_DataGridView.Rows.Add(lines[i]);
+                string[] cellValues = line.Split(',');
+                Items_DataGridView.Rows.Add(cellValues);
             }
         }
         private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
+            UpdateTotals();
             SaveDataGridViewToFile();
         }
         private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
+            UpdateTotals();
             SaveDataGridViewToFile();
         }
         private void SaveDataGridViewToFile()
@@ -400,26 +412,36 @@ namespace Sales_Tracker
 
             List<string> linesInDataGridView = [];
 
-            // Write all the rows in the dataGridView_list in file
+            // Write all the rows in the DataGridView to file
             for (int i = 0; i < Items_DataGridView.Rows.Count; i++)
             {
-                linesInDataGridView.Add(Items_DataGridView.Rows[i].Cells[0].Value.ToString());
+                DataGridViewRow row = Items_DataGridView.Rows[i];
+                List<string> cellValues = [];
+
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    cellValues.Add(cell.Value?.ToString() ?? string.Empty);
+                }
+
+                string line = string.Join(",", cellValues); // Join cell values with a comma
+                linesInDataGridView.Add(line);
             }
+
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
-        private void LoadPurchases()
+        public void LoadPurchases()
         {
             isDataGridViewLoading = true;
             Items_DataGridView.Columns.Clear();
             Items_DataGridView.Rows.Clear();
 
+            // Load columns
             foreach (var column in Enum.GetValues(typeof(PurchaseColumns)))
             {
                 Items_DataGridView.Columns.Add(column.ToString(), PurchaseColumnHeaders[(PurchaseColumns)column]);
             }
 
-            Items_DataGridView.Rows.Add("P001", "Laptop", "2", "1000", "2000", "200", "50");
             Selected = Options.Purchases;
 
             AddRowsFromFile();
@@ -428,18 +450,18 @@ namespace Sales_Tracker
             isDataGridViewLoading = false;
             AlignTotalLabels();
         }
-        private void LoadSales()
+        public void LoadSales()
         {
             isDataGridViewLoading = true;
             Items_DataGridView.Columns.Clear();
             Items_DataGridView.Rows.Clear();
 
+            // Load columns
             foreach (var column in Enum.GetValues(typeof(SalesColumns)))
             {
                 Items_DataGridView.Columns.Add(column.ToString(), SalesColumnHeaders[(SalesColumns)column]);
             }
 
-            Items_DataGridView.Rows.Add("S001", "John Doe", "Laptop", "1", "1200", "1200", "120", "30");
             Selected = Options.Sales;
 
             AddRowsFromFile();
@@ -450,6 +472,11 @@ namespace Sales_Tracker
         }
         private void UpdateTotals()
         {
+            if (isDataGridViewLoading)
+            {
+                return;
+            }
+
             int totalQuantity = 0;
             decimal totalPrice = 0;
             decimal totalTax = 0;
@@ -464,7 +491,7 @@ namespace Sales_Tracker
                     totalTax += Convert.ToDecimal(row.Cells[PurchaseColumns.Tax.ToString()].Value);
                     totalShipping += Convert.ToDecimal(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
                 }
-                else if (Selected == Options.Sales)
+                else
                 {
                     totalQuantity += Convert.ToInt32(row.Cells[SalesColumns.Quantity.ToString()].Value);
                     totalPrice += Convert.ToDecimal(row.Cells[SalesColumns.TotalPrice.ToString()].Value);

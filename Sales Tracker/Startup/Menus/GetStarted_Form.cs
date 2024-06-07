@@ -14,6 +14,7 @@ namespace Sales_Tracker.Startup
 
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
+            Directories.InitDataFile();
             LoadListOfRecentProjects();
 
             // Enable vertical scroll

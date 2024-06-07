@@ -27,8 +27,8 @@ namespace Sales_Tracker.Classes
         public static void SetUniversalDirectories()
         {
             // App data
-            appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo Studio\";
-            appDataCongig_file = appData_dir + "ArgoStudio.config";
+            appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+            appDataCongig_file = appData_dir + "ArgoSalesTracker.config";
 
             // Other
             desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -553,7 +553,6 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static List<string> GetListOfAllDirectoriesInDirectory(string directory)
         {
-
             return Directory.GetDirectories(directory).ToList();
         }
         /// <summary>

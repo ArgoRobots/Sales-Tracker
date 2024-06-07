@@ -122,9 +122,17 @@ namespace Sales_Tracker.Classes
                             guna2CircleButton.HoverState.FillColor = CustomColors.controlBack;
                             guna2CircleButton.HoverState.BorderColor = CustomColors.controlBorder;
                             break;
+
                         case Guna2ToggleSwitch guna2ToggleSwitch:
                             guna2ToggleSwitch.CheckedState.FillColor = CustomColors.accent_blue;
                             guna2ToggleSwitch.UncheckedState.FillColor = CustomColors.controlBack;
+                            break;
+
+                        case Guna2DateTimePicker guna2DateTimePicker:
+                            guna2DateTimePicker.FillColor = CustomColors.controlBack;
+                            guna2DateTimePicker.ForeColor = CustomColors.text;
+                            guna2DateTimePicker.BorderColor = CustomColors.controlBorder;
+                            guna2DateTimePicker.HoverState.BorderColor = CustomColors.accent_blue;
                             break;
                     }
                 }
