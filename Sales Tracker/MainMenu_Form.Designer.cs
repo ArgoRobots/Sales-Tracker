@@ -311,14 +311,17 @@
             // 
             // Sales_Button
             // 
+            Sales_Button.BorderColor = Color.LightGray;
             Sales_Button.BorderRadius = 2;
+            Sales_Button.BorderThickness = 1;
             Sales_Button.CustomizableEdges = customizableEdges15;
             Sales_Button.DisabledState.BorderColor = Color.DarkGray;
             Sales_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Sales_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             Sales_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Sales_Button.FillColor = Color.White;
             Sales_Button.Font = new Font("Segoe UI", 9F);
-            Sales_Button.ForeColor = Color.White;
+            Sales_Button.ForeColor = Color.Black;
             Sales_Button.Location = new Point(211, 44);
             Sales_Button.Name = "Sales_Button";
             Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
@@ -329,14 +332,17 @@
             // 
             // Purchases_Button
             // 
+            Purchases_Button.BorderColor = Color.LightGray;
             Purchases_Button.BorderRadius = 2;
+            Purchases_Button.BorderThickness = 1;
             Purchases_Button.CustomizableEdges = customizableEdges17;
             Purchases_Button.DisabledState.BorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             Purchases_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Purchases_Button.FillColor = Color.White;
             Purchases_Button.Font = new Font("Segoe UI", 9F);
-            Purchases_Button.ForeColor = Color.White;
+            Purchases_Button.ForeColor = Color.Black;
             Purchases_Button.Location = new Point(55, 44);
             Purchases_Button.Name = "Purchases_Button";
             Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
@@ -538,7 +544,6 @@
         private Guna.UI2.WinForms.Guna2Button ManageProducts_Button;
         private Guna.UI2.WinForms.Guna2ToggleSwitch DarkMode_ToggleSwitch;
         private Label ColorTheme_label;
-        private Guna.UI2.WinForms.Guna2DataGridView Items_DataGridView;
         private Guna.UI2.WinForms.Guna2ComboBox TimeRange_ComboBox;
         public Label Totals_Label;
         private Guna.UI2.WinForms.Guna2Panel Total_Panel;
@@ -552,5 +557,6 @@
         private Guna.UI2.WinForms.Guna2Button Sales_Button;
         private Guna.UI2.WinForms.Guna2Button Purchases_Button;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
+        public Guna.UI2.WinForms.Guna2DataGridView Items_DataGridView;
     }
 }

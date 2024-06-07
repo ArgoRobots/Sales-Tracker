@@ -37,7 +37,6 @@ namespace Sales_Tracker
             Items_DataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
             Items_DataGridView.Theme = CustomColors.dataGridViewTheme;
         }
-
         private void SetCompanyLabel()
         {
             CompanyName_Label.Text = Directories.companyName;
@@ -336,29 +335,28 @@ namespace Sales_Tracker
         private readonly Dictionary<PurchaseColumns, string> PurchaseColumnHeaders = new()
         {
             { PurchaseColumns.PurchaseID, "Purchase ID" },
-            { PurchaseColumns.BuyerName, "Buyer Name" },
-            { PurchaseColumns.ItemName, "Item Name" },
+            { PurchaseColumns.BuyerName, "Buyer name" },
+            { PurchaseColumns.ItemName, "Item name" },
             { PurchaseColumns.Date, "Date" },
             { PurchaseColumns.Quantity, "Quantity" },
-            { PurchaseColumns.PricePerUnit, "Price Per Unit" },
+            { PurchaseColumns.PricePerUnit, "Price per unit" },
             { PurchaseColumns.Shipping, "Shipping" },
             { PurchaseColumns.Tax, "Tax" },
-            { PurchaseColumns.TotalPrice, "Total Price" }
+            { PurchaseColumns.TotalPrice, "Total price" }
         };
 
         private readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
         {
             { SalesColumns.SalesID, "Sales ID" },
-            { SalesColumns.CustomerName, "Customer Name" },
-            { SalesColumns.ItemName, "Item Name" },
+            { SalesColumns.CustomerName, "Customer name" },
+            { SalesColumns.ItemName, "Item name" },
             { SalesColumns.Date, "Date" },
             { SalesColumns.Quantity, "Quantity" },
-            { SalesColumns.PricePerUnit, "Price Per Unit" },
+            { SalesColumns.PricePerUnit, "Price per unit" },
             { SalesColumns.Shipping, "Shipping" },
             { SalesColumns.Tax, "Tax" },
-            { SalesColumns.TotalPrice, "Total Price" }
+            { SalesColumns.TotalPrice, "Total price" }
         };
-
         private void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             AlignTotalLabels();
@@ -530,6 +528,7 @@ namespace Sales_Tracker
                 return Directories.sales_file;
             }
         }
+
 
         // Message panel
         public Guna2Panel messagePanel;
