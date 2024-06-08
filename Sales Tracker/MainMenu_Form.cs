@@ -285,7 +285,16 @@ namespace Sales_Tracker
         {
             new AddSale_Form().ShowDialog();
         }
-        public List<Product> productsList = [];
+        public List<Product> productSaleList = [];
+        public List<Product> productPurchaseList = [];
+        public List<string> GetAllProductSaleNames()
+        {
+            return productSaleList.Select(s => s.ProductName).ToList();
+        }
+        public List<string> GetAllProductPurchaseNames()
+        {
+            return productPurchaseList.Select(p => p.ProductName).ToList();
+        }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
             new Products_Form().ShowDialog();
@@ -366,12 +375,13 @@ namespace Sales_Tracker
         private void ConstructDataGridViews()
         {
             Purchases_DataGridView = new Guna2DataGridView();
-            InitializeDataGridView(Purchases_DataGridView);
+            Size size = new(1300, 350);
+            InitializeDataGridView(Purchases_DataGridView, size);
 
             Sales_DataGridView = new Guna2DataGridView();
-            InitializeDataGridView(Sales_DataGridView);
+            InitializeDataGridView(Sales_DataGridView, size);
         }
-        private void InitializeDataGridView(Guna2DataGridView dataGridView)
+        public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
         {
             dataGridView.ReadOnly = true;
             dataGridView.AllowUserToAddRows = false;
@@ -387,13 +397,13 @@ namespace Sales_Tracker
             dataGridView.Theme = CustomColors.dataGridViewTheme;
             dataGridView.BackgroundColor = CustomColors.controlBack;
             dataGridView.Anchor = AnchorStyles.Bottom;
-            dataGridView.Size = new Size(1300, 350);
+            dataGridView.Size = size;
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsAdded += DataGridView_RowsAdded;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.KeyDown += DataGridView_KeyDown;
         }
-        private void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        public void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             AlignTotalLabels();
         }
@@ -473,12 +483,7 @@ namespace Sales_Tracker
             selectedDataGridView.Columns.Clear();
             selectedDataGridView.Rows.Clear();
 
-            // Load columns
-            foreach (var column in Enum.GetValues(typeof(PurchaseColumns)))
-            {
-                selectedDataGridView.Columns.Add(column.ToString(), PurchaseColumnHeaders[(PurchaseColumns)column]);
-            }
-
+            LoadColumnsInDataGridView(selectedDataGridView, PurchaseColumnHeaders);
             Selected = Options.Purchases;
 
             AddRowsFromFile();
@@ -494,12 +499,7 @@ namespace Sales_Tracker
             selectedDataGridView.Columns.Clear();
             selectedDataGridView.Rows.Clear();
 
-            // Load columns
-            foreach (var column in Enum.GetValues(typeof(SalesColumns)))
-            {
-                selectedDataGridView.Columns.Add(column.ToString(), SalesColumnHeaders[(SalesColumns)column]);
-            }
-
+            LoadColumnsInDataGridView(selectedDataGridView, SalesColumnHeaders);
             Selected = Options.Sales;
 
             AddRowsFromFile();
@@ -507,6 +507,14 @@ namespace Sales_Tracker
             UpdateTotals();
             isDataGridViewLoading = false;
             AlignTotalLabels();
+        }
+        public void LoadColumnsInDataGridView<TEnum>(DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
+        {
+            // Load columns
+            foreach (var column in Enum.GetValues(typeof(TEnum)))
+            {
+                dataGridView.Columns.Add(column.ToString(), columnHeaders[(TEnum)column]);
+            }
         }
         private void CenterSelectedDataGridView()
         {

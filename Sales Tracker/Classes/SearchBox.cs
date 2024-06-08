@@ -39,7 +39,7 @@ namespace Sales_Tracker.Classes
             SearchResultBox.Controls.Clear();
 
             // Simple search function
-            List<ResultsMeta> metaList = new();
+            List<ResultsMeta> metaList = [];
             foreach (string result in resultNames_list)
             {
                 if (textBox.Text == "")
@@ -98,6 +98,11 @@ namespace Sales_Tracker.Classes
                 SearchResultBox.Height = 40;
                 SearchResultBox.AutoScroll = false;
             }
+            else if (metaList.Count == 0)
+            {
+                controlToAddSearchBox.Controls.Remove(SearchResultBoxContainer);
+                return;
+            }
             else
             {
                 SearchResultBox.Height = metaList.Count * 24 + 2;
@@ -106,7 +111,14 @@ namespace Sales_Tracker.Classes
             }
 
             // Show variable box
-            SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left, textBox.Parent.Top + textBox.Top + textBox.Height);
+            if (textBox.Parent is Form)
+            {
+                SearchResultBoxContainer.Location = new Point(textBox.Left, textBox.Top + textBox.Height);
+            }
+            else
+            {
+                SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left, textBox.Top + textBox.Parent.Top + textBox.Height);
+            }
             controlToAddSearchBox.Controls.Add(SearchResultBoxContainer);
             SearchResultBoxContainer.BringToFront();
         }

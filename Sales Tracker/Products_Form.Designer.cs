@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             CountryOfOrigin_Label = new Label();
             CountryOfOrigin_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             SellerName_Label = new Label();
@@ -44,10 +44,13 @@
             ProductName_Label = new Label();
             ProductName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddProduct_Button = new Guna.UI2.WinForms.Guna2Button();
+            Purchase_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
+            Sale_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
             SuspendLayout();
             // 
             // CountryOfOrigin_Label
             // 
+            CountryOfOrigin_Label.Anchor = AnchorStyles.Top;
             CountryOfOrigin_Label.AutoSize = true;
             CountryOfOrigin_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             CountryOfOrigin_Label.Location = new Point(473, 80);
@@ -58,7 +61,8 @@
             // 
             // CountryOfOrigin_TextBox
             // 
-            CountryOfOrigin_TextBox.CustomizableEdges = customizableEdges9;
+            CountryOfOrigin_TextBox.Anchor = AnchorStyles.Top;
+            CountryOfOrigin_TextBox.CustomizableEdges = customizableEdges1;
             CountryOfOrigin_TextBox.DefaultText = "";
             CountryOfOrigin_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             CountryOfOrigin_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -73,23 +77,26 @@
             CountryOfOrigin_TextBox.PasswordChar = '\0';
             CountryOfOrigin_TextBox.PlaceholderText = "";
             CountryOfOrigin_TextBox.SelectedText = "";
-            CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CountryOfOrigin_TextBox.Size = new Size(200, 36);
             CountryOfOrigin_TextBox.TabIndex = 12;
+            CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
             // 
             // SellerName_Label
             // 
+            SellerName_Label.Anchor = AnchorStyles.Top;
             SellerName_Label.AutoSize = true;
             SellerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             SellerName_Label.Location = new Point(267, 80);
             SellerName_Label.Name = "SellerName_Label";
-            SellerName_Label.Size = new Size(46, 20);
+            SellerName_Label.Size = new Size(87, 20);
             SellerName_Label.TabIndex = 11;
-            SellerName_Label.Text = "Seller";
+            SellerName_Label.Text = "Seller name";
             // 
             // SellerName_TextBox
             // 
-            SellerName_TextBox.CustomizableEdges = customizableEdges11;
+            SellerName_TextBox.Anchor = AnchorStyles.Top;
+            SellerName_TextBox.CustomizableEdges = customizableEdges3;
             SellerName_TextBox.DefaultText = "";
             SellerName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             SellerName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -104,12 +111,14 @@
             SellerName_TextBox.PasswordChar = '\0';
             SellerName_TextBox.PlaceholderText = "";
             SellerName_TextBox.SelectedText = "";
-            SellerName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            SellerName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             SellerName_TextBox.Size = new Size(200, 36);
             SellerName_TextBox.TabIndex = 10;
+            SellerName_TextBox.TextChanged += ValidateInputs;
             // 
             // label2
             // 
+            label2.Anchor = AnchorStyles.Top;
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.Location = new Point(303, 20);
@@ -120,6 +129,7 @@
             // 
             // ProductName_Label
             // 
+            ProductName_Label.Anchor = AnchorStyles.Top;
             ProductName_Label.AutoSize = true;
             ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ProductName_Label.Location = new Point(61, 80);
@@ -130,7 +140,8 @@
             // 
             // ProductName_TextBox
             // 
-            ProductName_TextBox.CustomizableEdges = customizableEdges13;
+            ProductName_TextBox.Anchor = AnchorStyles.Top;
+            ProductName_TextBox.CustomizableEdges = customizableEdges5;
             ProductName_TextBox.DefaultText = "";
             ProductName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             ProductName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -145,36 +156,81 @@
             ProductName_TextBox.PasswordChar = '\0';
             ProductName_TextBox.PlaceholderText = "";
             ProductName_TextBox.SelectedText = "";
-            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 7;
+            ProductName_TextBox.TextChanged += ValidateInputs;
             // 
             // AddProduct_Button
             // 
-            AddProduct_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddProduct_Button.Anchor = AnchorStyles.Top;
             AddProduct_Button.BackColor = Color.Transparent;
             AddProduct_Button.BorderColor = Color.LightGray;
             AddProduct_Button.BorderRadius = 2;
             AddProduct_Button.BorderThickness = 1;
-            AddProduct_Button.CustomizableEdges = customizableEdges15;
+            AddProduct_Button.CustomizableEdges = customizableEdges7;
             AddProduct_Button.Enabled = false;
             AddProduct_Button.FillColor = Color.White;
             AddProduct_Button.Font = new Font("Segoe UI", 9.5F);
             AddProduct_Button.ForeColor = Color.Black;
-            AddProduct_Button.Location = new Point(296, 196);
+            AddProduct_Button.Location = new Point(296, 180);
             AddProduct_Button.Margin = new Padding(4, 3, 4, 3);
             AddProduct_Button.Name = "AddProduct_Button";
-            AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             AddProduct_Button.Size = new Size(143, 32);
             AddProduct_Button.TabIndex = 18;
-            AddProduct_Button.Text = "Add produvct";
+            AddProduct_Button.Text = "Add product";
             AddProduct_Button.Click += AddPurchase_Button_Click;
+            // 
+            // Purchase_RadioButton
+            // 
+            Purchase_RadioButton.Anchor = AnchorStyles.Top;
+            Purchase_RadioButton.AutoSize = true;
+            Purchase_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Purchase_RadioButton.CheckedState.BorderThickness = 0;
+            Purchase_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            Purchase_RadioButton.CheckedState.InnerColor = Color.White;
+            Purchase_RadioButton.CheckedState.InnerOffset = -4;
+            Purchase_RadioButton.Font = new Font("Segoe UI", 11F);
+            Purchase_RadioButton.Location = new Point(61, 150);
+            Purchase_RadioButton.Name = "Purchase_RadioButton";
+            Purchase_RadioButton.Size = new Size(111, 24);
+            Purchase_RadioButton.TabIndex = 19;
+            Purchase_RadioButton.Text = "For purchase";
+            Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            Purchase_RadioButton.UncheckedState.BorderThickness = 2;
+            Purchase_RadioButton.UncheckedState.FillColor = Color.Transparent;
+            Purchase_RadioButton.UncheckedState.InnerColor = Color.Transparent;
+            Purchase_RadioButton.CheckedChanged += Purchase_RadioButton_CheckedChanged;
+            // 
+            // Sale_RadioButton
+            // 
+            Sale_RadioButton.Anchor = AnchorStyles.Top;
+            Sale_RadioButton.AutoSize = true;
+            Sale_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Sale_RadioButton.CheckedState.BorderThickness = 0;
+            Sale_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            Sale_RadioButton.CheckedState.InnerColor = Color.White;
+            Sale_RadioButton.CheckedState.InnerOffset = -4;
+            Sale_RadioButton.Font = new Font("Segoe UI", 11F);
+            Sale_RadioButton.Location = new Point(178, 150);
+            Sale_RadioButton.Name = "Sale_RadioButton";
+            Sale_RadioButton.Size = new Size(78, 24);
+            Sale_RadioButton.TabIndex = 20;
+            Sale_RadioButton.Text = "For sale";
+            Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            Sale_RadioButton.UncheckedState.BorderThickness = 2;
+            Sale_RadioButton.UncheckedState.FillColor = Color.Transparent;
+            Sale_RadioButton.UncheckedState.InnerColor = Color.Transparent;
+            Sale_RadioButton.CheckedChanged += Sale_RadioButton_CheckedChanged;
             // 
             // Products_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(734, 261);
+            ClientSize = new Size(734, 521);
+            Controls.Add(Sale_RadioButton);
+            Controls.Add(Purchase_RadioButton);
             Controls.Add(AddProduct_Button);
             Controls.Add(CountryOfOrigin_Label);
             Controls.Add(CountryOfOrigin_TextBox);
@@ -185,6 +241,7 @@
             Controls.Add(ProductName_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Name = "Products_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             ResumeLayout(false);
             PerformLayout();
@@ -200,5 +257,7 @@
         private Label ProductName_Label;
         private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
         private Guna.UI2.WinForms.Guna2Button AddProduct_Button;
+        private Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
+        private Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
     }
 }

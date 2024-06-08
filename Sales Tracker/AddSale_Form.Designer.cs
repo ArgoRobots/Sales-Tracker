@@ -61,13 +61,14 @@
             ItemName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             BuyerName_Label = new Label();
             BuyerName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            label2 = new Label();
+            AddSale_Label = new Label();
             SaleID_Label = new Label();
             SaleID_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             SuspendLayout();
             // 
             // Date_DateTimePicker
             // 
+            Date_DateTimePicker.Anchor = AnchorStyles.Top;
             Date_DateTimePicker.Checked = true;
             Date_DateTimePicker.CustomizableEdges = customizableEdges1;
             Date_DateTimePicker.FillColor = Color.White;
@@ -85,6 +86,7 @@
             // 
             // Date_Label
             // 
+            Date_Label.Anchor = AnchorStyles.Top;
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Date_Label.Location = new Point(55, 170);
@@ -95,7 +97,7 @@
             // 
             // AddSale_Button
             // 
-            AddSale_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddSale_Button.Anchor = AnchorStyles.Top;
             AddSale_Button.BackColor = Color.Transparent;
             AddSale_Button.BorderColor = Color.LightGray;
             AddSale_Button.BorderRadius = 2;
@@ -116,6 +118,7 @@
             // 
             // Tax_Label
             // 
+            Tax_Label.Anchor = AnchorStyles.Top;
             Tax_Label.AutoSize = true;
             Tax_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Tax_Label.Location = new Point(579, 170);
@@ -126,6 +129,7 @@
             // 
             // Tax_TextBox
             // 
+            Tax_TextBox.Anchor = AnchorStyles.Top;
             Tax_TextBox.CustomizableEdges = customizableEdges5;
             Tax_TextBox.DefaultText = "";
             Tax_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -148,6 +152,7 @@
             // 
             // Shipping_Label
             // 
+            Shipping_Label.Anchor = AnchorStyles.Top;
             Shipping_Label.AutoSize = true;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Shipping_Label.Location = new Point(473, 170);
@@ -158,6 +163,7 @@
             // 
             // Shipping_TextBox
             // 
+            Shipping_TextBox.Anchor = AnchorStyles.Top;
             Shipping_TextBox.CustomizableEdges = customizableEdges7;
             Shipping_TextBox.DefaultText = "";
             Shipping_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -180,6 +186,7 @@
             // 
             // PricePerUnit_Label
             // 
+            PricePerUnit_Label.Anchor = AnchorStyles.Top;
             PricePerUnit_Label.AutoSize = true;
             PricePerUnit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PricePerUnit_Label.Location = new Point(367, 170);
@@ -190,6 +197,7 @@
             // 
             // PricePerUnit_TextBox
             // 
+            PricePerUnit_TextBox.Anchor = AnchorStyles.Top;
             PricePerUnit_TextBox.CustomizableEdges = customizableEdges9;
             PricePerUnit_TextBox.DefaultText = "";
             PricePerUnit_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -212,6 +220,7 @@
             // 
             // Quantity_Label
             // 
+            Quantity_Label.Anchor = AnchorStyles.Top;
             Quantity_Label.AutoSize = true;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Quantity_Label.Location = new Point(261, 170);
@@ -222,6 +231,7 @@
             // 
             // Quantity_TextBox
             // 
+            Quantity_TextBox.Anchor = AnchorStyles.Top;
             Quantity_TextBox.CustomizableEdges = customizableEdges11;
             Quantity_TextBox.DefaultText = "";
             Quantity_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -244,6 +254,7 @@
             // 
             // ItemName_Label
             // 
+            ItemName_Label.Anchor = AnchorStyles.Top;
             ItemName_Label.AutoSize = true;
             ItemName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ItemName_Label.Location = new Point(473, 80);
@@ -254,6 +265,7 @@
             // 
             // ItemName_TextBox
             // 
+            ItemName_TextBox.Anchor = AnchorStyles.Top;
             ItemName_TextBox.CustomizableEdges = customizableEdges13;
             ItemName_TextBox.DefaultText = "";
             ItemName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -276,6 +288,7 @@
             // 
             // BuyerName_Label
             // 
+            BuyerName_Label.Anchor = AnchorStyles.Top;
             BuyerName_Label.AutoSize = true;
             BuyerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             BuyerName_Label.Location = new Point(267, 80);
@@ -286,6 +299,7 @@
             // 
             // BuyerName_TextBox
             // 
+            BuyerName_TextBox.Anchor = AnchorStyles.Top;
             BuyerName_TextBox.CustomizableEdges = customizableEdges15;
             BuyerName_TextBox.DefaultText = "";
             BuyerName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -306,18 +320,20 @@
             BuyerName_TextBox.TabIndex = 26;
             BuyerName_TextBox.TextChanged += ValidateInputs;
             // 
-            // label2
+            // AddSale_Label
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(321, 20);
-            label2.Name = "label2";
-            label2.Size = new Size(93, 30);
-            label2.TabIndex = 25;
-            label2.Text = "Add sale";
+            AddSale_Label.Anchor = AnchorStyles.Top;
+            AddSale_Label.AutoSize = true;
+            AddSale_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            AddSale_Label.Location = new Point(321, 20);
+            AddSale_Label.Name = "AddSale_Label";
+            AddSale_Label.Size = new Size(93, 30);
+            AddSale_Label.TabIndex = 25;
+            AddSale_Label.Text = "Add sale";
             // 
             // SaleID_Label
             // 
+            SaleID_Label.Anchor = AnchorStyles.Top;
             SaleID_Label.AutoSize = true;
             SaleID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             SaleID_Label.Location = new Point(61, 80);
@@ -328,6 +344,7 @@
             // 
             // SaleID_TextBox
             // 
+            SaleID_TextBox.Anchor = AnchorStyles.Top;
             SaleID_TextBox.CustomizableEdges = customizableEdges17;
             SaleID_TextBox.DefaultText = "";
             SaleID_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -352,7 +369,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(734, 391);
+            ClientSize = new Size(734, 321);
             Controls.Add(Date_DateTimePicker);
             Controls.Add(Date_Label);
             Controls.Add(AddSale_Button);
@@ -368,11 +385,12 @@
             Controls.Add(ItemName_TextBox);
             Controls.Add(BuyerName_Label);
             Controls.Add(BuyerName_TextBox);
-            Controls.Add(label2);
+            Controls.Add(AddSale_Label);
             Controls.Add(SaleID_Label);
             Controls.Add(SaleID_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Name = "AddSale_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             TextChanged += ValidateInputs;
             ResumeLayout(false);
@@ -396,7 +414,7 @@
         private Guna.UI2.WinForms.Guna2TextBox ItemName_TextBox;
         private Label BuyerName_Label;
         private Guna.UI2.WinForms.Guna2TextBox BuyerName_TextBox;
-        private Label label2;
+        private Label AddSale_Label;
         private Label SaleID_Label;
         private Guna.UI2.WinForms.Guna2TextBox SaleID_TextBox;
     }

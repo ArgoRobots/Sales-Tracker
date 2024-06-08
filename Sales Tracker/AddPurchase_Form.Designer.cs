@@ -54,7 +54,7 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             PurchaseID_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             PurchaseID_Label = new Label();
-            label2 = new Label();
+            AddPurchase_Label = new Label();
             BuyerName_Label = new Label();
             BuyerName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ItemName_Label = new Label();
@@ -77,6 +77,7 @@
             // 
             // PurchaseID_TextBox
             // 
+            PurchaseID_TextBox.Anchor = AnchorStyles.Top;
             PurchaseID_TextBox.CustomizableEdges = customizableEdges1;
             PurchaseID_TextBox.DefaultText = "";
             PurchaseID_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -99,6 +100,7 @@
             // 
             // PurchaseID_Label
             // 
+            PurchaseID_Label.Anchor = AnchorStyles.Top;
             PurchaseID_Label.AutoSize = true;
             PurchaseID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PurchaseID_Label.Location = new Point(61, 80);
@@ -107,18 +109,20 @@
             PurchaseID_Label.TabIndex = 1;
             PurchaseID_Label.Text = "Purchase ID";
             // 
-            // label2
+            // AddPurchase_Label
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(297, 20);
-            label2.Name = "label2";
-            label2.Size = new Size(141, 30);
-            label2.TabIndex = 2;
-            label2.Text = "Add purchase";
+            AddPurchase_Label.Anchor = AnchorStyles.Top;
+            AddPurchase_Label.AutoSize = true;
+            AddPurchase_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            AddPurchase_Label.Location = new Point(297, 20);
+            AddPurchase_Label.Name = "AddPurchase_Label";
+            AddPurchase_Label.Size = new Size(141, 30);
+            AddPurchase_Label.TabIndex = 2;
+            AddPurchase_Label.Text = "Add purchase";
             // 
             // BuyerName_Label
             // 
+            BuyerName_Label.Anchor = AnchorStyles.Top;
             BuyerName_Label.AutoSize = true;
             BuyerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             BuyerName_Label.Location = new Point(267, 80);
@@ -129,6 +133,7 @@
             // 
             // BuyerName_TextBox
             // 
+            BuyerName_TextBox.Anchor = AnchorStyles.Top;
             BuyerName_TextBox.CustomizableEdges = customizableEdges3;
             BuyerName_TextBox.DefaultText = "";
             BuyerName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -151,6 +156,7 @@
             // 
             // ItemName_Label
             // 
+            ItemName_Label.Anchor = AnchorStyles.Top;
             ItemName_Label.AutoSize = true;
             ItemName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ItemName_Label.Location = new Point(473, 80);
@@ -161,6 +167,7 @@
             // 
             // ItemName_TextBox
             // 
+            ItemName_TextBox.Anchor = AnchorStyles.Top;
             ItemName_TextBox.CustomizableEdges = customizableEdges5;
             ItemName_TextBox.DefaultText = "";
             ItemName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -183,6 +190,7 @@
             // 
             // Quantity_Label
             // 
+            Quantity_Label.Anchor = AnchorStyles.Top;
             Quantity_Label.AutoSize = true;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Quantity_Label.Location = new Point(261, 170);
@@ -193,6 +201,7 @@
             // 
             // Quantity_TextBox
             // 
+            Quantity_TextBox.Anchor = AnchorStyles.Top;
             Quantity_TextBox.CustomizableEdges = customizableEdges7;
             Quantity_TextBox.DefaultText = "";
             Quantity_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -215,6 +224,7 @@
             // 
             // PricePerUnit_Label
             // 
+            PricePerUnit_Label.Anchor = AnchorStyles.Top;
             PricePerUnit_Label.AutoSize = true;
             PricePerUnit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PricePerUnit_Label.Location = new Point(367, 170);
@@ -225,6 +235,7 @@
             // 
             // PricePerUnit_TextBox
             // 
+            PricePerUnit_TextBox.Anchor = AnchorStyles.Top;
             PricePerUnit_TextBox.CustomizableEdges = customizableEdges9;
             PricePerUnit_TextBox.DefaultText = "";
             PricePerUnit_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -247,6 +258,7 @@
             // 
             // Shipping_Label
             // 
+            Shipping_Label.Anchor = AnchorStyles.Top;
             Shipping_Label.AutoSize = true;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Shipping_Label.Location = new Point(473, 170);
@@ -257,6 +269,7 @@
             // 
             // Shipping_TextBox
             // 
+            Shipping_TextBox.Anchor = AnchorStyles.Top;
             Shipping_TextBox.CustomizableEdges = customizableEdges11;
             Shipping_TextBox.DefaultText = "";
             Shipping_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -279,6 +292,7 @@
             // 
             // Tax_Label
             // 
+            Tax_Label.Anchor = AnchorStyles.Top;
             Tax_Label.AutoSize = true;
             Tax_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Tax_Label.Location = new Point(579, 170);
@@ -289,6 +303,7 @@
             // 
             // Tax_TextBox
             // 
+            Tax_TextBox.Anchor = AnchorStyles.Top;
             Tax_TextBox.CustomizableEdges = customizableEdges13;
             Tax_TextBox.DefaultText = "";
             Tax_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
@@ -311,7 +326,7 @@
             // 
             // AddPurchase_Button
             // 
-            AddPurchase_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddPurchase_Button.Anchor = AnchorStyles.Top;
             AddPurchase_Button.BackColor = Color.Transparent;
             AddPurchase_Button.BorderColor = Color.LightGray;
             AddPurchase_Button.BorderRadius = 2;
@@ -332,7 +347,7 @@
             // 
             // ImportAmazon_Button
             // 
-            ImportAmazon_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ImportAmazon_Button.Anchor = AnchorStyles.Top;
             ImportAmazon_Button.BackColor = Color.Transparent;
             ImportAmazon_Button.BorderColor = Color.LightGray;
             ImportAmazon_Button.BorderRadius = 2;
@@ -352,7 +367,7 @@
             // 
             // ImportEbay_Button
             // 
-            ImportEbay_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ImportEbay_Button.Anchor = AnchorStyles.Top;
             ImportEbay_Button.BackColor = Color.Transparent;
             ImportEbay_Button.BorderColor = Color.LightGray;
             ImportEbay_Button.BorderRadius = 2;
@@ -372,7 +387,7 @@
             // 
             // ImportBLANK_Button
             // 
-            ImportBLANK_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ImportBLANK_Button.Anchor = AnchorStyles.Top;
             ImportBLANK_Button.BackColor = Color.Transparent;
             ImportBLANK_Button.BorderColor = Color.LightGray;
             ImportBLANK_Button.BorderRadius = 2;
@@ -392,6 +407,7 @@
             // 
             // Date_Label
             // 
+            Date_Label.Anchor = AnchorStyles.Top;
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Date_Label.Location = new Point(55, 170);
@@ -402,6 +418,7 @@
             // 
             // Date_DateTimePicker
             // 
+            Date_DateTimePicker.Anchor = AnchorStyles.Top;
             Date_DateTimePicker.Checked = true;
             Date_DateTimePicker.CustomizableEdges = customizableEdges23;
             Date_DateTimePicker.FillColor = Color.White;
@@ -440,11 +457,12 @@
             Controls.Add(ItemName_TextBox);
             Controls.Add(BuyerName_Label);
             Controls.Add(BuyerName_TextBox);
-            Controls.Add(label2);
+            Controls.Add(AddPurchase_Label);
             Controls.Add(PurchaseID_Label);
             Controls.Add(PurchaseID_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Name = "AddPurchase_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             TextChanged += ValidateInputs;
             ResumeLayout(false);
@@ -455,7 +473,7 @@
 
         private Guna.UI2.WinForms.Guna2TextBox PurchaseID_TextBox;
         private Label PurchaseID_Label;
-        private Label label2;
+        private Label AddPurchase_Label;
         private Label BuyerName_Label;
         private Guna.UI2.WinForms.Guna2TextBox BuyerName_TextBox;
         private Label ItemName_Label;

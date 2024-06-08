@@ -9,6 +9,7 @@ namespace Sales_Tracker
         {
             InitializeComponent();
             AddEventHandlersToTextBoxes();
+            AddSearchBoxEvents();
             UpdateTheme();
         }
         private void AddEventHandlersToTextBoxes()
@@ -27,6 +28,14 @@ namespace Sales_Tracker
 
             Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+        }
+        private void AddSearchBoxEvents()
+        {
+            int maxHeight = 150;
+            ItemName_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemName_TextBox, MainMenu_Form.Instance.GetAllProductPurchaseNames(), this, maxHeight); };
+            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemName_TextBox, MainMenu_Form.Instance.GetAllProductPurchaseNames(), this, AddPurchase_Button, maxHeight); };
+            ItemName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemName_TextBox, this, AddPurchase_Label, e); };
         }
         public void UpdateTheme()
         {
