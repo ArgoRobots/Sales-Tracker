@@ -83,6 +83,7 @@
             Date_DateTimePicker.TabIndex = 43;
             Date_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             Date_DateTimePicker.ValueChanged += ValidateInputs;
+            Date_DateTimePicker.Click += CloseAllPanels;
             // 
             // Date_Label
             // 
@@ -94,6 +95,7 @@
             Date_Label.Size = new Size(41, 20);
             Date_Label.TabIndex = 42;
             Date_Label.Text = "Date";
+            Date_Label.Click += CloseAllPanels;
             // 
             // AddSale_Button
             // 
@@ -126,6 +128,7 @@
             Tax_Label.Size = new Size(30, 20);
             Tax_Label.TabIndex = 37;
             Tax_Label.Text = "Tax";
+            Tax_Label.Click += CloseAllPanels;
             // 
             // Tax_TextBox
             // 
@@ -149,6 +152,7 @@
             Tax_TextBox.Size = new Size(100, 36);
             Tax_TextBox.TabIndex = 36;
             Tax_TextBox.TextChanged += ValidateInputs;
+            Tax_TextBox.Click += CloseAllPanels;
             // 
             // Shipping_Label
             // 
@@ -160,6 +164,7 @@
             Shipping_Label.Size = new Size(68, 20);
             Shipping_Label.TabIndex = 35;
             Shipping_Label.Text = "Shipping";
+            Shipping_Label.Click += CloseAllPanels;
             // 
             // Shipping_TextBox
             // 
@@ -183,6 +188,7 @@
             Shipping_TextBox.Size = new Size(100, 36);
             Shipping_TextBox.TabIndex = 34;
             Shipping_TextBox.TextChanged += ValidateInputs;
+            Shipping_TextBox.Click += CloseAllPanels;
             // 
             // PricePerUnit_Label
             // 
@@ -194,6 +200,7 @@
             PricePerUnit_Label.Size = new Size(96, 20);
             PricePerUnit_Label.TabIndex = 33;
             PricePerUnit_Label.Text = "Price per unit";
+            PricePerUnit_Label.Click += CloseAllPanels;
             // 
             // PricePerUnit_TextBox
             // 
@@ -217,6 +224,7 @@
             PricePerUnit_TextBox.Size = new Size(100, 36);
             PricePerUnit_TextBox.TabIndex = 32;
             PricePerUnit_TextBox.TextChanged += ValidateInputs;
+            PricePerUnit_TextBox.Click += CloseAllPanels;
             // 
             // Quantity_Label
             // 
@@ -228,6 +236,7 @@
             Quantity_Label.Size = new Size(65, 20);
             Quantity_Label.TabIndex = 31;
             Quantity_Label.Text = "Quantity";
+            Quantity_Label.Click += CloseAllPanels;
             // 
             // Quantity_TextBox
             // 
@@ -251,6 +260,7 @@
             Quantity_TextBox.Size = new Size(100, 36);
             Quantity_TextBox.TabIndex = 30;
             Quantity_TextBox.TextChanged += ValidateInputs;
+            Quantity_TextBox.Click += CloseAllPanels;
             // 
             // ItemName_Label
             // 
@@ -262,6 +272,7 @@
             ItemName_Label.Size = new Size(80, 20);
             ItemName_Label.TabIndex = 29;
             ItemName_Label.Text = "Item name";
+            ItemName_Label.Click += CloseAllPanels;
             // 
             // ItemName_TextBox
             // 
@@ -285,6 +296,7 @@
             ItemName_TextBox.Size = new Size(200, 36);
             ItemName_TextBox.TabIndex = 28;
             ItemName_TextBox.TextChanged += ValidateInputs;
+            ItemName_TextBox.Click += CloseAllPanels;
             // 
             // BuyerName_Label
             // 
@@ -296,6 +308,7 @@
             BuyerName_Label.Size = new Size(87, 20);
             BuyerName_Label.TabIndex = 27;
             BuyerName_Label.Text = "Buyer name";
+            BuyerName_Label.Click += CloseAllPanels;
             // 
             // BuyerName_TextBox
             // 
@@ -319,6 +332,7 @@
             BuyerName_TextBox.Size = new Size(200, 36);
             BuyerName_TextBox.TabIndex = 26;
             BuyerName_TextBox.TextChanged += ValidateInputs;
+            BuyerName_TextBox.Click += CloseAllPanels;
             // 
             // AddSale_Label
             // 
@@ -330,6 +344,7 @@
             AddSale_Label.Size = new Size(93, 30);
             AddSale_Label.TabIndex = 25;
             AddSale_Label.Text = "Add sale";
+            AddSale_Label.Click += CloseAllPanels;
             // 
             // SaleID_Label
             // 
@@ -341,6 +356,7 @@
             SaleID_Label.Size = new Size(56, 20);
             SaleID_Label.TabIndex = 24;
             SaleID_Label.Text = "Sale ID";
+            SaleID_Label.Click += CloseAllPanels;
             // 
             // SaleID_TextBox
             // 
@@ -364,6 +380,7 @@
             SaleID_TextBox.Size = new Size(200, 36);
             SaleID_TextBox.TabIndex = 23;
             SaleID_TextBox.TextChanged += ValidateInputs;
+            SaleID_TextBox.Click += CloseAllPanels;
             // 
             // AddSale_Form
             // 
@@ -393,6 +410,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             TextChanged += ValidateInputs;
+            Click += CloseAllPanels;
             ResumeLayout(false);
             PerformLayout();
         }

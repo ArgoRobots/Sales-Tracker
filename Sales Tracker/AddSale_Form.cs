@@ -5,9 +5,12 @@ namespace Sales_Tracker
     public partial class AddSale_Form : Form
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static AddSale_Form Instance { get; set; }
         public AddSale_Form()
         {
             InitializeComponent();
+            Instance = this;
+
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             UpdateTheme();
@@ -86,6 +89,10 @@ namespace Sales_Tracker
                                    Date_DateTimePicker.Value != null;
 
             AddSale_Button.Enabled = allFieldsFilled;
+        }
+        public void CloseAllPanels(object sender, EventArgs e)
+        {
+            SearchBox.CloseVariableBox(this);
         }
     }
 }

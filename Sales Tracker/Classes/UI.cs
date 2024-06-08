@@ -278,6 +278,15 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Controls.Remove(helpMenu);
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
+
+            if (Tools.IsFormOpen(typeof(AddPurchase_Form)))
+            {
+                AddPurchase_Form.Instance.CloseAllPanels(null, null);
+            }
+            else if (Tools.IsFormOpen(typeof(AddSale_Form)))
+            {
+                AddSale_Form.Instance.CloseAllPanels(null, null);
+            }
         }
     }
 }

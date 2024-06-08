@@ -100,7 +100,7 @@ namespace Sales_Tracker.Classes
             }
             else if (metaList.Count == 0)
             {
-                controlToAddSearchBox.Controls.Remove(SearchResultBoxContainer);
+                CloseVariableBox(controlToAddSearchBox);
                 return;
             }
             else

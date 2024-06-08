@@ -5,9 +5,12 @@ namespace Sales_Tracker
     public partial class AddPurchase_Form : Form
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static AddPurchase_Form Instance { get; set; }
         public AddPurchase_Form()
         {
             InitializeComponent();
+            Instance = this;
+
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             UpdateTheme();
@@ -54,6 +57,8 @@ namespace Sales_Tracker
         // Event handlers
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.Options.Sales)
             {
                 MainMenu_Form.Instance.Purchases_Button.PerformClick();
@@ -75,15 +80,15 @@ namespace Sales_Tracker
         }
         private void ImportAmazon_Button_Click(object sender, EventArgs e)
         {
-
+            CloseAllPanels(null, null);
         }
         private void ImportEbay_Button_Click(object sender, EventArgs e)
         {
-
+            CloseAllPanels(null, null);
         }
         private void ImportBLANK_Button_Click(object sender, EventArgs e)
         {
-
+            CloseAllPanels(null, null);
         }
 
 
@@ -100,6 +105,10 @@ namespace Sales_Tracker
                                    Date_DateTimePicker.Value != null;
 
             AddPurchase_Button.Enabled = allFieldsFilled;
+        }
+        public void CloseAllPanels(object sender, EventArgs e)
+        {
+            SearchBox.CloseVariableBox(this);
         }
     }
 }
