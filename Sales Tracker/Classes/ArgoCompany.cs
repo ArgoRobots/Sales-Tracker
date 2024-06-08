@@ -28,7 +28,9 @@ namespace Sales_Tracker.Classes
         }
         public static bool AreAnyChangesMade()
         {
-            if (Products_Form.thingsThatHaveChangedInFile.Count > 0)
+            if (Products_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                AddSale_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                AddPurchase_Form.thingsThatHaveChangedInFile.Count > 0)
             {
                 return true;
             }

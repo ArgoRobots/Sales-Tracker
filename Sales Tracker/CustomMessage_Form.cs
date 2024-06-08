@@ -160,9 +160,9 @@ namespace Sales_Tracker
             // Add list of things that has changed to panel
             int top = 5;
 
-            //top = AddListForThingsChanged("Machine Programmer", MachineProgrammer.thingsThatHaveChangedInFile, top);
-            //top = AddListForThingsChanged("Robot Programmer", RobotProgrammer.MainControls_Form.thingsThatHaveChangedInFile, top);
-
+            top = AddListForThingsChanged("Purchases", AddPurchase_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Sales", AddSale_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Products", Products_Form.thingsThatHaveChangedInFile, top);
 
             // This is a dummy control to add extra space at the end, even when the panel is scrollable
             Changed_Panel.Controls.Add(new Label()

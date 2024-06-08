@@ -86,7 +86,7 @@
             PurchaseID_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PurchaseID_TextBox.Font = new Font("Segoe UI", 9F);
             PurchaseID_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PurchaseID_TextBox.Location = new Point(61, 102);
+            PurchaseID_TextBox.Location = new Point(61, 103);
             PurchaseID_TextBox.MaxLength = 32;
             PurchaseID_TextBox.Name = "PurchaseID_TextBox";
             PurchaseID_TextBox.PasswordChar = '\0';
@@ -101,7 +101,7 @@
             // 
             PurchaseID_Label.AutoSize = true;
             PurchaseID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PurchaseID_Label.Location = new Point(61, 79);
+            PurchaseID_Label.Location = new Point(61, 80);
             PurchaseID_Label.Name = "PurchaseID_Label";
             PurchaseID_Label.Size = new Size(86, 20);
             PurchaseID_Label.TabIndex = 1;
@@ -121,7 +121,7 @@
             // 
             BuyerName_Label.AutoSize = true;
             BuyerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            BuyerName_Label.Location = new Point(267, 79);
+            BuyerName_Label.Location = new Point(267, 80);
             BuyerName_Label.Name = "BuyerName_Label";
             BuyerName_Label.Size = new Size(87, 20);
             BuyerName_Label.TabIndex = 4;
@@ -138,7 +138,7 @@
             BuyerName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             BuyerName_TextBox.Font = new Font("Segoe UI", 9F);
             BuyerName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            BuyerName_TextBox.Location = new Point(267, 102);
+            BuyerName_TextBox.Location = new Point(267, 103);
             BuyerName_TextBox.MaxLength = 32;
             BuyerName_TextBox.Name = "BuyerName_TextBox";
             BuyerName_TextBox.PasswordChar = '\0';
@@ -153,7 +153,7 @@
             // 
             ItemName_Label.AutoSize = true;
             ItemName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ItemName_Label.Location = new Point(473, 79);
+            ItemName_Label.Location = new Point(473, 80);
             ItemName_Label.Name = "ItemName_Label";
             ItemName_Label.Size = new Size(80, 20);
             ItemName_Label.TabIndex = 6;
@@ -170,7 +170,7 @@
             ItemName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             ItemName_TextBox.Font = new Font("Segoe UI", 9F);
             ItemName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ItemName_TextBox.Location = new Point(473, 102);
+            ItemName_TextBox.Location = new Point(473, 103);
             ItemName_TextBox.MaxLength = 32;
             ItemName_TextBox.Name = "ItemName_TextBox";
             ItemName_TextBox.PasswordChar = '\0';
@@ -185,7 +185,7 @@
             // 
             Quantity_Label.AutoSize = true;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Quantity_Label.Location = new Point(261, 169);
+            Quantity_Label.Location = new Point(261, 170);
             Quantity_Label.Name = "Quantity_Label";
             Quantity_Label.Size = new Size(65, 20);
             Quantity_Label.TabIndex = 8;
@@ -202,7 +202,7 @@
             Quantity_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Quantity_TextBox.Font = new Font("Segoe UI", 9F);
             Quantity_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Quantity_TextBox.Location = new Point(261, 192);
+            Quantity_TextBox.Location = new Point(261, 193);
             Quantity_TextBox.MaxLength = 10;
             Quantity_TextBox.Name = "Quantity_TextBox";
             Quantity_TextBox.PasswordChar = '\0';
@@ -217,7 +217,7 @@
             // 
             PricePerUnit_Label.AutoSize = true;
             PricePerUnit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PricePerUnit_Label.Location = new Point(367, 169);
+            PricePerUnit_Label.Location = new Point(367, 170);
             PricePerUnit_Label.Name = "PricePerUnit_Label";
             PricePerUnit_Label.Size = new Size(96, 20);
             PricePerUnit_Label.TabIndex = 10;
@@ -234,7 +234,7 @@
             PricePerUnit_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PricePerUnit_TextBox.Font = new Font("Segoe UI", 9F);
             PricePerUnit_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PricePerUnit_TextBox.Location = new Point(367, 192);
+            PricePerUnit_TextBox.Location = new Point(367, 193);
             PricePerUnit_TextBox.MaxLength = 10;
             PricePerUnit_TextBox.Name = "PricePerUnit_TextBox";
             PricePerUnit_TextBox.PasswordChar = '\0';
@@ -249,7 +249,7 @@
             // 
             Shipping_Label.AutoSize = true;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Shipping_Label.Location = new Point(473, 169);
+            Shipping_Label.Location = new Point(473, 170);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(68, 20);
             Shipping_Label.TabIndex = 12;
@@ -266,7 +266,7 @@
             Shipping_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Shipping_TextBox.Font = new Font("Segoe UI", 9F);
             Shipping_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Shipping_TextBox.Location = new Point(473, 192);
+            Shipping_TextBox.Location = new Point(473, 193);
             Shipping_TextBox.MaxLength = 10;
             Shipping_TextBox.Name = "Shipping_TextBox";
             Shipping_TextBox.PasswordChar = '\0';
@@ -281,7 +281,7 @@
             // 
             Tax_Label.AutoSize = true;
             Tax_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tax_Label.Location = new Point(579, 169);
+            Tax_Label.Location = new Point(579, 170);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(30, 20);
             Tax_Label.TabIndex = 14;
@@ -298,7 +298,7 @@
             Tax_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Tax_TextBox.Font = new Font("Segoe UI", 9F);
             Tax_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Tax_TextBox.Location = new Point(579, 192);
+            Tax_TextBox.Location = new Point(579, 193);
             Tax_TextBox.MaxLength = 10;
             Tax_TextBox.Name = "Tax_TextBox";
             Tax_TextBox.PasswordChar = '\0';
@@ -341,7 +341,7 @@
             ImportAmazon_Button.FillColor = Color.White;
             ImportAmazon_Button.Font = new Font("Segoe UI", 9.5F);
             ImportAmazon_Button.ForeColor = Color.Black;
-            ImportAmazon_Button.Location = new Point(104, 323);
+            ImportAmazon_Button.Location = new Point(104, 329);
             ImportAmazon_Button.Margin = new Padding(4, 3, 4, 3);
             ImportAmazon_Button.Name = "ImportAmazon_Button";
             ImportAmazon_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
@@ -361,7 +361,7 @@
             ImportEbay_Button.FillColor = Color.White;
             ImportEbay_Button.Font = new Font("Segoe UI", 9.5F);
             ImportEbay_Button.ForeColor = Color.Black;
-            ImportEbay_Button.Location = new Point(282, 323);
+            ImportEbay_Button.Location = new Point(282, 329);
             ImportEbay_Button.Margin = new Padding(4, 3, 4, 3);
             ImportEbay_Button.Name = "ImportEbay_Button";
             ImportEbay_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
@@ -381,7 +381,7 @@
             ImportBLANK_Button.FillColor = Color.White;
             ImportBLANK_Button.Font = new Font("Segoe UI", 9.5F);
             ImportBLANK_Button.ForeColor = Color.Black;
-            ImportBLANK_Button.Location = new Point(460, 323);
+            ImportBLANK_Button.Location = new Point(460, 329);
             ImportBLANK_Button.Margin = new Padding(4, 3, 4, 3);
             ImportBLANK_Button.Name = "ImportBLANK_Button";
             ImportBLANK_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
@@ -394,7 +394,7 @@
             // 
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Date_Label.Location = new Point(55, 169);
+            Date_Label.Location = new Point(55, 170);
             Date_Label.Name = "Date_Label";
             Date_Label.Size = new Size(41, 20);
             Date_Label.TabIndex = 21;
@@ -407,7 +407,7 @@
             Date_DateTimePicker.FillColor = Color.White;
             Date_DateTimePicker.Font = new Font("Segoe UI", 9F);
             Date_DateTimePicker.Format = DateTimePickerFormat.Long;
-            Date_DateTimePicker.Location = new Point(55, 192);
+            Date_DateTimePicker.Location = new Point(55, 193);
             Date_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             Date_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             Date_DateTimePicker.Name = "Date_DateTimePicker";

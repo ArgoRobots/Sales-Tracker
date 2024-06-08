@@ -31,6 +31,10 @@
             components = new System.ComponentModel.Container();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -53,15 +57,10 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
+            AddPurchase_Button = new Guna.UI2.WinForms.Guna2Button();
             Edit_Button = new Guna.UI2.WinForms.Guna2Button();
             ColorTheme_label = new Label();
             DarkMode_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
@@ -83,15 +82,11 @@
             Price_Label = new Label();
             Quantity_Label = new Label();
             TimeRange_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-            Items_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
             HideMenu_timer = new System.Windows.Forms.Timer(components);
-            AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
-            AddPurchase_Button = new Guna.UI2.WinForms.Guna2Button();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Main_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)Items_DataGridView).BeginInit();
             SuspendLayout();
             // 
             // MainTop_Panel
@@ -112,6 +107,52 @@
             MainTop_Panel.Size = new Size(1604, 80);
             MainTop_Panel.TabIndex = 6;
             MainTop_Panel.Click += CloseAllPanels;
+            // 
+            // AddSale_Button
+            // 
+            AddSale_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddSale_Button.BackColor = Color.Transparent;
+            AddSale_Button.BorderColor = Color.LightGray;
+            AddSale_Button.BorderRadius = 2;
+            AddSale_Button.BorderThickness = 1;
+            AddSale_Button.CustomizableEdges = customizableEdges1;
+            AddSale_Button.DisabledState.BorderColor = Color.DarkGray;
+            AddSale_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AddSale_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AddSale_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AddSale_Button.FillColor = Color.White;
+            AddSale_Button.Font = new Font("Segoe UI", 9F);
+            AddSale_Button.ForeColor = Color.Black;
+            AddSale_Button.Location = new Point(1284, 24);
+            AddSale_Button.Name = "AddSale_Button";
+            AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            AddSale_Button.Size = new Size(150, 32);
+            AddSale_Button.TabIndex = 13;
+            AddSale_Button.Text = "Add sale";
+            AddSale_Button.Click += AddSale_Button_Click;
+            // 
+            // AddPurchase_Button
+            // 
+            AddPurchase_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddPurchase_Button.BackColor = Color.Transparent;
+            AddPurchase_Button.BorderColor = Color.LightGray;
+            AddPurchase_Button.BorderRadius = 2;
+            AddPurchase_Button.BorderThickness = 1;
+            AddPurchase_Button.CustomizableEdges = customizableEdges3;
+            AddPurchase_Button.DisabledState.BorderColor = Color.DarkGray;
+            AddPurchase_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            AddPurchase_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            AddPurchase_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            AddPurchase_Button.FillColor = Color.White;
+            AddPurchase_Button.Font = new Font("Segoe UI", 9F);
+            AddPurchase_Button.ForeColor = Color.Black;
+            AddPurchase_Button.Location = new Point(1128, 24);
+            AddPurchase_Button.Name = "AddPurchase_Button";
+            AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            AddPurchase_Button.Size = new Size(150, 32);
+            AddPurchase_Button.TabIndex = 12;
+            AddPurchase_Button.Text = "Add Purchase";
+            AddPurchase_Button.Click += AddPurchase_Button_Click;
             // 
             // Edit_Button
             // 
@@ -308,7 +349,6 @@
             Main_Panel.Controls.Add(Totals_Label);
             Main_Panel.Controls.Add(Total_Panel);
             Main_Panel.Controls.Add(TimeRange_ComboBox);
-            Main_Panel.Controls.Add(Items_DataGridView);
             Main_Panel.CustomizableEdges = customizableEdges27;
             Main_Panel.Location = new Point(0, 110);
             Main_Panel.Name = "Main_Panel";
@@ -433,6 +473,7 @@
             // 
             // TimeRange_ComboBox
             // 
+            TimeRange_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             TimeRange_ComboBox.BackColor = Color.Transparent;
             TimeRange_ComboBox.CustomizableEdges = customizableEdges25;
             TimeRange_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
@@ -450,108 +491,10 @@
             TimeRange_ComboBox.TabIndex = 1;
             TimeRange_ComboBox.SelectedIndexChanged += TimeRange_ComboBox_SelectedIndexChanged;
             // 
-            // Items_DataGridView
-            // 
-            dataGridViewCellStyle1.BackColor = Color.White;
-            Items_DataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            Items_DataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(100, 88, 255);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            Items_DataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            Items_DataGridView.ColumnHeadersHeight = 4;
-            Items_DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = Color.White;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle3.ForeColor = Color.FromArgb(71, 69, 94);
-            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
-            Items_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
-            Items_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
-            Items_DataGridView.Location = new Point(152, 476);
-            Items_DataGridView.Name = "Items_DataGridView";
-            Items_DataGridView.RowHeadersVisible = false;
-            Items_DataGridView.Size = new Size(1300, 350);
-            Items_DataGridView.TabIndex = 0;
-            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
-            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.Font = null;
-            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.ForeColor = Color.Empty;
-            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = Color.Empty;
-            Items_DataGridView.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.Empty;
-            Items_DataGridView.ThemeStyle.BackColor = Color.White;
-            Items_DataGridView.ThemeStyle.GridColor = Color.FromArgb(231, 229, 255);
-            Items_DataGridView.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(100, 88, 255);
-            Items_DataGridView.ThemeStyle.HeaderStyle.BorderStyle = DataGridViewHeaderBorderStyle.None;
-            Items_DataGridView.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F);
-            Items_DataGridView.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            Items_DataGridView.ThemeStyle.HeaderStyle.HeaightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            Items_DataGridView.ThemeStyle.HeaderStyle.Height = 4;
-            Items_DataGridView.ThemeStyle.ReadOnly = false;
-            Items_DataGridView.ThemeStyle.RowsStyle.BackColor = Color.White;
-            Items_DataGridView.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            Items_DataGridView.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
-            Items_DataGridView.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 69, 94);
-            Items_DataGridView.ThemeStyle.RowsStyle.Height = 25;
-            Items_DataGridView.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            Items_DataGridView.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            Items_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
-            Items_DataGridView.RowsAdded += DataGridView_RowsAdded;
-            Items_DataGridView.RowsRemoved += DataGridView_RowsRemoved;
-            // 
             // HideMenu_timer
             // 
             HideMenu_timer.Interval = 800;
             HideMenu_timer.Tick += HideMenu_timer_Tick;
-            // 
-            // AddSale_Button
-            // 
-            AddSale_Button.BackColor = Color.Transparent;
-            AddSale_Button.BorderColor = Color.LightGray;
-            AddSale_Button.BorderRadius = 2;
-            AddSale_Button.BorderThickness = 1;
-            AddSale_Button.CustomizableEdges = customizableEdges1;
-            AddSale_Button.DisabledState.BorderColor = Color.DarkGray;
-            AddSale_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            AddSale_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            AddSale_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            AddSale_Button.FillColor = Color.White;
-            AddSale_Button.Font = new Font("Segoe UI", 9F);
-            AddSale_Button.ForeColor = Color.Black;
-            AddSale_Button.Location = new Point(1284, 24);
-            AddSale_Button.Name = "AddSale_Button";
-            AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            AddSale_Button.Size = new Size(150, 32);
-            AddSale_Button.TabIndex = 13;
-            AddSale_Button.Text = "Add sale";
-            AddSale_Button.Click += AddSale_Button_Click;
-            // 
-            // AddPurchase_Button
-            // 
-            AddPurchase_Button.BackColor = Color.Transparent;
-            AddPurchase_Button.BorderColor = Color.LightGray;
-            AddPurchase_Button.BorderRadius = 2;
-            AddPurchase_Button.BorderThickness = 1;
-            AddPurchase_Button.CustomizableEdges = customizableEdges3;
-            AddPurchase_Button.DisabledState.BorderColor = Color.DarkGray;
-            AddPurchase_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            AddPurchase_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            AddPurchase_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            AddPurchase_Button.FillColor = Color.White;
-            AddPurchase_Button.Font = new Font("Segoe UI", 9F);
-            AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(1128, 24);
-            AddPurchase_Button.Name = "AddPurchase_Button";
-            AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            AddPurchase_Button.Size = new Size(150, 32);
-            AddPurchase_Button.TabIndex = 12;
-            AddPurchase_Button.Text = "Add Purchase";
-            AddPurchase_Button.Click += AddPurchase_Button_Click;
             // 
             // MainMenu_Form
             // 
@@ -580,7 +523,6 @@
             Main_Panel.PerformLayout();
             Total_Panel.ResumeLayout(false);
             Total_Panel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)Items_DataGridView).EndInit();
             ResumeLayout(false);
         }
 
@@ -609,10 +551,9 @@
         public Label ShippingText_Label;
         public Label Tax_Label;
         private Guna.UI2.WinForms.Guna2Button Sales_Button;
-        private Guna.UI2.WinForms.Guna2Button Purchases_Button;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
-        public Guna.UI2.WinForms.Guna2DataGridView Items_DataGridView;
         private Guna.UI2.WinForms.Guna2Button AddSale_Button;
         private Guna.UI2.WinForms.Guna2Button AddPurchase_Button;
+        public Guna.UI2.WinForms.Guna2Button Purchases_Button;
     }
 }

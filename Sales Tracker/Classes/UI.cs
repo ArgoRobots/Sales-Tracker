@@ -161,7 +161,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(250, 7 * 22 + 10 + 20));
+            fileMenu = ConstructPanelForMenu(new Size(250, 5 * 22 + 10 + 20));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", 240, true, flowPanel);
@@ -176,34 +176,13 @@ namespace Sales_Tracker.Classes
                 ArgoCompany.OpenProjectWhenAProgramIsAlreadyOpen();
             };
 
-            menuBtn = ConstructBtnForMenu("Upload", 240, true, flowPanel);
-            menuBtn.Click += (sender, e) =>
-            {
-
-            };
-
             CosntructSeperator(240, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Save", 240, true, flowPanel);
             menuBtn.Name = "Save";
             menuBtn.Click += (sender, e) =>
             {
-                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.accent_green;
-                MainMenu_Form.Instance.Saved_Label.Text = "Saving...";
-                MainMenu_Form.Instance.Saved_Label.Visible = true;
-                ArgoCompany.SaveAll();
-                MainMenu_Form.Instance.Saved_Label.Text = "Saved";
-
-                System.Windows.Forms.Timer timer = new()
-                {
-                    Interval = 3000
-                };
-                timer.Tick += (sender, e) =>
-                {
-                    MainMenu_Form.Instance.Saved_Label.Visible = false;
-                    timer.Stop();
-                };
-                timer.Start();
+                SaveAll();
             };
             ConstructKeyShortcut("Ctrl+S", menuBtn);
 
@@ -222,13 +201,25 @@ namespace Sales_Tracker.Classes
             ConstructKeyShortcut("Ctrl+E", menuBtn);
 
             CosntructSeperator(240, flowPanel);
+        }
+        public static void SaveAll()
+        {
+            MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.accent_green;
+            MainMenu_Form.Instance.Saved_Label.Text = "Saving...";
+            MainMenu_Form.Instance.Saved_Label.Visible = true;
+            ArgoCompany.SaveAll();
+            MainMenu_Form.Instance.Saved_Label.Text = "Saved";
 
-            menuBtn = ConstructBtnForMenu("Capture image", 240, true, flowPanel);
-            menuBtn.Click += (sender, e) =>
+            System.Windows.Forms.Timer timer = new()
             {
-
+                Interval = 3000
             };
-            ConstructKeyShortcut("F2", menuBtn);
+            timer.Tick += (sender, e) =>
+            {
+                MainMenu_Form.Instance.Saved_Label.Visible = false;
+                timer.Stop();
+            };
+            timer.Start();
         }
 
         // helpMenu

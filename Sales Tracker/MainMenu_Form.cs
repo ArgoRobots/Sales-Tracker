@@ -18,25 +18,12 @@ namespace Sales_Tracker
             UI.ConstructControls();
             SearchBox.ConstructSearchBox();
 
-            SetPropertiesForDataGridView();
+            ConstructDataGridViews();
             SetCompanyLabel();
             LoadSales();
+            LoadPurchases();
+            Sales_Button.PerformClick();
             UpdateTheme();
-        }
-        private void SetPropertiesForDataGridView()
-        {
-            Items_DataGridView.ReadOnly = true;
-            Items_DataGridView.AllowUserToAddRows = false;
-            Items_DataGridView.AllowUserToResizeRows = false;
-            Items_DataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            Items_DataGridView.RowTemplate.Height = 25;
-            Items_DataGridView.ColumnHeadersHeight = 30;
-            Items_DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing; // Disable header height resizing
-            Items_DataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
-            Items_DataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
-            Items_DataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
-            Items_DataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-            Items_DataGridView.Theme = CustomColors.dataGridViewTheme;
         }
         private void SetCompanyLabel()
         {
@@ -150,14 +137,14 @@ namespace Sales_Tracker
             {
                 switch (e.KeyCode)
                 {
-                    case Keys.S:  // Save
-                        if (e.Shift)
-                        {
-                            ArgoCompany.SaveAll();
-                        }
-                        else  // Save as
+                    case Keys.S:
+                        if (e.Shift)  // Save as
                         {
                             ArgoCompany.SaveAs();
+                        }
+                        else  // Save
+                        {
+                            UI.SaveAll();
                         }
                         break;
 
@@ -243,8 +230,7 @@ namespace Sales_Tracker
         private void Save_Button_Click(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
-            Guna2Button saveBtn = (Guna2Button)UI.fileMenu.Controls[0].Controls.Find("Save", false).FirstOrDefault();
-            saveBtn.PerformClick();
+            UI.SaveAll();
         }
         private void Save_Button_MouseDown(object sender, MouseEventArgs e)
         {
@@ -277,11 +263,19 @@ namespace Sales_Tracker
         // Controls
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
-            LoadPurchases();
+            selectedDataGridView = Purchases_DataGridView;
+            Main_Panel.Controls.Add(Purchases_DataGridView);
+            CenterSelectedDataGridView();
+            Main_Panel.Controls.Remove(Sales_DataGridView);
+            Selected = Options.Purchases;
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
-            LoadSales();
+            selectedDataGridView = Sales_DataGridView;
+            Main_Panel.Controls.Add(Sales_DataGridView);
+            CenterSelectedDataGridView();
+            Main_Panel.Controls.Remove(Purchases_DataGridView);
+            Selected = Options.Sales;
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -289,11 +283,12 @@ namespace Sales_Tracker
         }
         private void AddSale_Button_Click(object sender, EventArgs e)
         {
-
+            new AddSale_Form().ShowDialog();
         }
+        public List<Product> productsList = [];
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
-
+            new Products_Form().ShowDialog();
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -366,6 +361,38 @@ namespace Sales_Tracker
             { SalesColumns.Tax, "Tax" },
             { SalesColumns.TotalPrice, "Total price" }
         };
+        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
+        public Guna2DataGridView selectedDataGridView;
+        private void ConstructDataGridViews()
+        {
+            Purchases_DataGridView = new Guna2DataGridView();
+            InitializeDataGridView(Purchases_DataGridView);
+
+            Sales_DataGridView = new Guna2DataGridView();
+            InitializeDataGridView(Sales_DataGridView);
+        }
+        private void InitializeDataGridView(Guna2DataGridView dataGridView)
+        {
+            dataGridView.ReadOnly = true;
+            dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToResizeRows = false;
+            dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dataGridView.ColumnHeadersHeight = 30;
+            dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridView.RowTemplate.Height = 25;
+            dataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
+            dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
+            dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
+            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            dataGridView.Theme = CustomColors.dataGridViewTheme;
+            dataGridView.BackgroundColor = CustomColors.controlBack;
+            dataGridView.Anchor = AnchorStyles.Bottom;
+            dataGridView.Size = new Size(1300, 350);
+            dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            dataGridView.RowsAdded += DataGridView_RowsAdded;
+            dataGridView.RowsRemoved += DataGridView_RowsRemoved;
+            dataGridView.KeyDown += DataGridView_KeyDown;
+        }
         private void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             AlignTotalLabels();
@@ -381,13 +408,13 @@ namespace Sales_Tracker
             }
 
             // Add all rows to dataGridView_list
-            Items_DataGridView.Rows.Clear();
+            selectedDataGridView.Rows.Clear();
 
             string[] lines = Directories.ReadAllLinesInFile(filePath);
             foreach (string line in lines)
             {
                 string[] cellValues = line.Split(',');
-                Items_DataGridView.Rows.Add(cellValues);
+                selectedDataGridView.Rows.Add(cellValues);
             }
         }
         private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -400,8 +427,17 @@ namespace Sales_Tracker
             UpdateTotals();
             SaveDataGridViewToFile();
         }
+        private void DataGridView_KeyDown(object? sender, KeyEventArgs e)
+        {
+
+        }
         private void SaveDataGridViewToFile()
         {
+            if (isDataGridViewLoading)
+            {
+                return;
+            }
+
             string filePath = GetFilePathForDataGridView();
 
             if (!File.Exists(filePath))
@@ -413,9 +449,9 @@ namespace Sales_Tracker
             List<string> linesInDataGridView = [];
 
             // Write all the rows in the DataGridView to file
-            for (int i = 0; i < Items_DataGridView.Rows.Count; i++)
+            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
             {
-                DataGridViewRow row = Items_DataGridView.Rows[i];
+                DataGridViewRow row = selectedDataGridView.Rows[i];
                 List<string> cellValues = [];
 
                 foreach (DataGridViewCell cell in row.Cells)
@@ -432,14 +468,15 @@ namespace Sales_Tracker
         }
         public void LoadPurchases()
         {
+            selectedDataGridView = Purchases_DataGridView;
             isDataGridViewLoading = true;
-            Items_DataGridView.Columns.Clear();
-            Items_DataGridView.Rows.Clear();
+            selectedDataGridView.Columns.Clear();
+            selectedDataGridView.Rows.Clear();
 
             // Load columns
             foreach (var column in Enum.GetValues(typeof(PurchaseColumns)))
             {
-                Items_DataGridView.Columns.Add(column.ToString(), PurchaseColumnHeaders[(PurchaseColumns)column]);
+                selectedDataGridView.Columns.Add(column.ToString(), PurchaseColumnHeaders[(PurchaseColumns)column]);
             }
 
             Selected = Options.Purchases;
@@ -452,14 +489,15 @@ namespace Sales_Tracker
         }
         public void LoadSales()
         {
+            selectedDataGridView = Sales_DataGridView;
             isDataGridViewLoading = true;
-            Items_DataGridView.Columns.Clear();
-            Items_DataGridView.Rows.Clear();
+            selectedDataGridView.Columns.Clear();
+            selectedDataGridView.Rows.Clear();
 
             // Load columns
             foreach (var column in Enum.GetValues(typeof(SalesColumns)))
             {
-                Items_DataGridView.Columns.Add(column.ToString(), SalesColumnHeaders[(SalesColumns)column]);
+                selectedDataGridView.Columns.Add(column.ToString(), SalesColumnHeaders[(SalesColumns)column]);
             }
 
             Selected = Options.Sales;
@@ -467,8 +505,13 @@ namespace Sales_Tracker
             AddRowsFromFile();
             FilterData();
             UpdateTotals();
-            AlignTotalLabels();
             isDataGridViewLoading = false;
+            AlignTotalLabels();
+        }
+        private void CenterSelectedDataGridView()
+        {
+            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2, Main_Panel.Height - selectedDataGridView.Height - 100);
+            Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height + 10);
         }
         private void UpdateTotals()
         {
@@ -482,7 +525,7 @@ namespace Sales_Tracker
             decimal totalTax = 0;
             decimal totalShipping = 0;
 
-            foreach (DataGridViewRow row in Items_DataGridView.Rows)
+            foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
                 if (Selected == Options.Purchases)
                 {
@@ -529,17 +572,17 @@ namespace Sales_Tracker
                 totalPriceColumn = SalesColumns.TotalPrice.ToString();
             }
 
-            Quantity_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[quantityColumn].Index, -1, true).Left;
-            Quantity_Label.Width = Items_DataGridView.Columns[quantityColumn].Width;
+            Quantity_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
+            Quantity_Label.Width = selectedDataGridView.Columns[quantityColumn].Width;
 
-            Tax_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[taxColumn].Index, -1, true).Left;
-            Tax_Label.Width = Items_DataGridView.Columns[taxColumn].Width;
+            Tax_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[taxColumn].Index, -1, true).Left;
+            Tax_Label.Width = selectedDataGridView.Columns[taxColumn].Width;
 
-            Shipping_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[shippingColumn].Index, -1, true).Left;
-            Shipping_Label.Width = Items_DataGridView.Columns[shippingColumn].Width;
+            Shipping_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[shippingColumn].Index, -1, true).Left;
+            Shipping_Label.Width = selectedDataGridView.Columns[shippingColumn].Width;
 
-            Price_Label.Left = Items_DataGridView.GetCellDisplayRectangle(Items_DataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
-            Price_Label.Width = Items_DataGridView.Columns[totalPriceColumn].Width;
+            Price_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
+            Price_Label.Width = selectedDataGridView.Columns[totalPriceColumn].Width;
         }
         private void FilterData()
         {

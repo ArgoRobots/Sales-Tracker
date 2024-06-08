@@ -4,6 +4,7 @@ namespace Sales_Tracker
 {
     public partial class AddPurchase_Form : Form
     {
+        public readonly static List<string> thingsThatHaveChangedInFile = [];
         public AddPurchase_Form()
         {
             InitializeComponent();
@@ -46,7 +47,7 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.Options.Sales)
             {
-                MainMenu_Form.Instance.LoadPurchases();
+                MainMenu_Form.Instance.Purchases_Button.PerformClick();
             }
 
             // Retrieve the input values
@@ -60,7 +61,8 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
 
-            MainMenu_Form.Instance.Items_DataGridView.Rows.Add(purchaseID, buyerName, itemName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
         }
         private void ImportAmazon_Button_Click(object sender, EventArgs e)
         {
