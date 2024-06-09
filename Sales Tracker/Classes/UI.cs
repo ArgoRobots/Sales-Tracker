@@ -11,6 +11,7 @@ namespace Sales_Tracker.Classes
             // Main menu controls
             ConstructFileMenu();
             ConstructHelpMenu();
+            ConstructRightClickRename();
             MainMenu_Form.Instance.ConstructMessage_Panel();
         }
 
@@ -271,6 +272,50 @@ namespace Sales_Tracker.Classes
             };
         }
 
+
+        // Rename
+        public static Guna2TextBox rename_textBox;
+        public static void ConstructRightClickRename()
+        {
+            rename_textBox = new Guna2TextBox
+            {
+                Font = new Font("Segoe UI", 10),
+                Height = 23,
+                Top = 1,
+                MaxLength = 30,
+                ForeColor = CustomColors.text,
+                FillColor = CustomColors.controlBack,
+                BorderStyle = DashStyle.Solid,
+                TextOffset = new Point(-3, 0),
+                BorderThickness = 1,
+                ShortcutsEnabled = false
+            };
+            if (Theme.theme == "Dark")
+            {
+                rename_textBox.BorderColor = Color.White;
+                rename_textBox.HoverState.BorderColor = Color.White;
+                rename_textBox.FocusedState.BorderColor = Color.White;
+            }
+            else
+            {
+                rename_textBox.BorderColor = Color.Black;
+                rename_textBox.HoverState.BorderColor = Color.Black;
+                rename_textBox.FocusedState.BorderColor = Color.Black;
+            }
+
+            rename_textBox.KeyDown += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
+                    MainMenu_Form.Instance.RenameCompany();
+                    MainMenu_Form.Instance.Controls.Remove(rename_textBox);
+                    rename_textBox.Text = "";
+                }
+            };
+        }
+
+
         // Close all panels
         public static void CloseAllPanels(object sender, EventArgs e)
         {
@@ -278,6 +323,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Controls.Remove(helpMenu);
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
+            MainMenu_Form.Instance.RenameCompany();
 
             if (Tools.IsFormOpen(typeof(AddPurchase_Form)))
             {

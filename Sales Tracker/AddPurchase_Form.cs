@@ -17,8 +17,12 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
+            PurchaseID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+
             BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             BuyerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+
+            ItemName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
 
             Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
             Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;

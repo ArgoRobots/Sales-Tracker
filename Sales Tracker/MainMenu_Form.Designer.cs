@@ -167,7 +167,7 @@
             Edit_Button.Font = new Font("Segoe UI", 9F);
             Edit_Button.ForeColor = Color.White;
             Edit_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
-            Edit_Button.Image = Properties.Resources.edit;
+            Edit_Button.Image = Properties.Resources.EditBlack;
             Edit_Button.ImageSize = new Size(18, 18);
             Edit_Button.Location = new Point(186, 25);
             Edit_Button.Name = "Edit_Button";

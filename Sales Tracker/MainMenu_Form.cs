@@ -29,7 +29,11 @@ namespace Sales_Tracker
         private void SetCompanyLabel()
         {
             CompanyName_Label.Text = Directories.companyName;
-            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width;
+            MoveEditButton();
+        }
+        private void MoveEditButton()
+        {
+            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 10;
         }
         private void LoadProducts()
         {
@@ -58,11 +62,11 @@ namespace Sales_Tracker
             string theme = Theme.SetThemeForForm(this);
             if (theme == "Light")
             {
-
+                Edit_Button.Image = Resources.EditBlack;
             }
             else if (theme == "Dark")
             {
-
+                Edit_Button.Image = Resources.EditWhite;
             }
 
             MainTop_Panel.FillColor = CustomColors.background4;
@@ -124,7 +128,7 @@ namespace Sales_Tracker
             }
 
             // Delete hidden directory
-            Directories.DeleteDirectory(Directories.company_dir, true);
+            Directories.DeleteDirectory(Directories.tempCompany_dir, true);
         }
 
         /// <summary>
@@ -332,7 +336,36 @@ namespace Sales_Tracker
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
+            UI.rename_textBox.Text = CompanyName_Label.Text;
+            UI.rename_textBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
+            UI.rename_textBox.Size = new Size(200, CompanyName_Label.Height + 2);
+            UI.rename_textBox.Font = CompanyName_Label.Font;
+            Controls.Add(UI.rename_textBox);
+            UI.rename_textBox.Focus();
+            UI.rename_textBox.SelectAll();
+            UI.rename_textBox.BringToFront();
+            MainTop_Panel.Controls.Remove(Edit_Button);
+            MainTop_Panel.Controls.Remove(CompanyName_Label);
+        }
+        public void RenameCompany()
+        {
+            if (!Controls.Contains(UI.rename_textBox) || UI.rename_textBox.Text == CompanyName_Label.Text)
+            {
+                return;
+            }
+            CompanyName_Label.Text = UI.rename_textBox.Text;
 
+            string newDir = Directories.argoCompany_dir + "\\" + UI.rename_textBox.Text + ".ArgoCompany";
+            Directories.MoveFile(Directories.argoCompany_file, newDir);
+            Directories.argoCompany_file = newDir;
+
+            newDir = Directories.appData_dir + UI.rename_textBox.Text;
+            Directories.RenameFolder(Directories.tempCompany_dir, newDir);
+            Directories.tempCompany_dir = newDir;
+
+            MoveEditButton();
+            MainTop_Panel.Controls.Add(Edit_Button);
+            MainTop_Panel.Controls.Add(CompanyName_Label);
         }
 
 

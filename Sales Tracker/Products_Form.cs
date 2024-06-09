@@ -23,10 +23,8 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
-            ProductName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
-            SellerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
 
-            SellerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             SellerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
 
             CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;

@@ -104,7 +104,7 @@ namespace Sales_Tracker.Startup.Menus
             Directories.InitDataFile();
 
             // Create directories and files
-            Directories.CreateDirectory(Directories.company_dir, true);
+            Directories.CreateDirectory(Directories.tempCompany_dir, true);
             Directories.CreateDirectory(Directories.logs_dir, false);
             Directories.CreateFile(Directories.purchases_file);
             Directories.CreateFile(Directories.sales_file);

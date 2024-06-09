@@ -251,7 +251,7 @@
             FileType_ComboBox.Font = new Font("Segoe UI", 10F);
             FileType_ComboBox.ForeColor = Color.Black;
             FileType_ComboBox.ItemHeight = 40;
-            FileType_ComboBox.Items.AddRange(new object[] { ".ArgoProject (backup)", ".stl", ".obj", ".step" });
+            FileType_ComboBox.Items.AddRange(new object[] { ".ArgoProject (backup)" });
             FileType_ComboBox.Location = new Point(26, 208);
             FileType_ComboBox.Margin = new Padding(3, 4, 3, 4);
             FileType_ComboBox.Name = "FileType_ComboBox";
