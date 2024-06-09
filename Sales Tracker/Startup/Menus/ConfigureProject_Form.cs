@@ -2,7 +2,7 @@
 
 namespace Sales_Tracker.Startup.Menus
 {
-    public partial class ConfigureProject_Form : Form
+    public partial class ConfigureProject_Form : BaseForm
     {
         // Init.
         public static ConfigureProject_Form Instance { get; set; }

@@ -309,8 +309,6 @@ namespace Sales_Tracker.Classes
                 {
                     e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
                     MainMenu_Form.Instance.RenameCompany();
-                    MainMenu_Form.Instance.Controls.Remove(rename_textBox);
-                    rename_textBox.Text = "";
                 }
             };
         }

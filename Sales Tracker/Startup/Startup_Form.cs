@@ -3,7 +3,7 @@ using Sales_Tracker.Startup.Menus;
 
 namespace Sales_Tracker.Startup
 {
-    public partial class Startup_Form : Form
+    public partial class Startup_Form : BaseForm
     {
         // Init
         public static Startup_Form Instance { get; set; }

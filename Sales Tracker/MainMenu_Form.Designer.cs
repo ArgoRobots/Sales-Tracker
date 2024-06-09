@@ -187,6 +187,7 @@
             ColorTheme_label.Size = new Size(83, 20);
             ColorTheme_label.TabIndex = 11;
             ColorTheme_label.Text = "Dark mode";
+            ColorTheme_label.Click += CloseAllPanels;
             // 
             // DarkMode_ToggleSwitch
             // 
@@ -271,6 +272,7 @@
             Saved_Label.TabIndex = 2;
             Saved_Label.Text = "Saved";
             Saved_Label.Visible = false;
+            Saved_Label.Click += CloseAllPanels;
             // 
             // Help_Button
             // 
@@ -412,6 +414,7 @@
             Totals_Label.Size = new Size(51, 20);
             Totals_Label.TabIndex = 5;
             Totals_Label.Text = "Totals:";
+            Totals_Label.Click += CloseAllPanels;
             // 
             // Total_Panel
             // 
@@ -426,6 +429,7 @@
             Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Total_Panel.Size = new Size(1300, 50);
             Total_Panel.TabIndex = 2;
+            Total_Panel.Click += CloseAllPanels;
             // 
             // Tax_Label
             // 
@@ -437,6 +441,7 @@
             Tax_Label.Size = new Size(33, 20);
             Tax_Label.TabIndex = 9;
             Tax_Label.Text = "Tax:";
+            Tax_Label.Click += CloseAllPanels;
             // 
             // Shipping_Label
             // 
@@ -448,6 +453,7 @@
             Shipping_Label.Size = new Size(67, 20);
             Shipping_Label.TabIndex = 7;
             Shipping_Label.Text = "Shpping:";
+            Shipping_Label.Click += CloseAllPanels;
             // 
             // Price_Label
             // 
@@ -459,6 +465,7 @@
             Price_Label.Size = new Size(44, 20);
             Price_Label.TabIndex = 5;
             Price_Label.Text = "Price:";
+            Price_Label.Click += CloseAllPanels;
             // 
             // Quantity_Label
             // 
@@ -470,6 +477,7 @@
             Quantity_Label.Size = new Size(68, 20);
             Quantity_Label.TabIndex = 3;
             Quantity_Label.Text = "Quantity:";
+            Quantity_Label.Click += CloseAllPanels;
             // 
             // TimeRange_ComboBox
             // 
@@ -490,6 +498,7 @@
             TimeRange_ComboBox.Size = new Size(140, 36);
             TimeRange_ComboBox.TabIndex = 1;
             TimeRange_ComboBox.SelectedIndexChanged += TimeRange_ComboBox_SelectedIndexChanged;
+            TimeRange_ComboBox.Click += CloseAllPanels;
             // 
             // HideMenu_timer
             // 

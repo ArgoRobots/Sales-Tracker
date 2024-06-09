@@ -3,7 +3,7 @@ using Sales_Tracker.Classes;
 
 namespace Sales_Tracker
 {
-    public partial class Products_Form : Form
+    public partial class Products_Form : BaseForm
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         // Init

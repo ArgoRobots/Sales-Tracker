@@ -3,7 +3,7 @@ using Sales_Tracker.Classes;
 
 namespace Sales_Tracker.Startup
 {
-    public partial class GetStarted_Form : Form
+    public partial class GetStarted_Form : BaseForm
     {
         // Init.
         public static GetStarted_Form Instance { get; set; }

@@ -4,7 +4,7 @@ using Sales_Tracker.Properties;
 
 namespace Sales_Tracker
 {
-    public partial class MainMenu_Form : Form
+    public partial class MainMenu_Form : BaseForm
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
 
@@ -290,6 +290,7 @@ namespace Sales_Tracker
         // Controls
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             selectedDataGridView = Purchases_DataGridView;
             Main_Panel.Controls.Add(Purchases_DataGridView);
             CenterSelectedDataGridView();
@@ -298,6 +299,7 @@ namespace Sales_Tracker
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             selectedDataGridView = Sales_DataGridView;
             Main_Panel.Controls.Add(Sales_DataGridView);
             CenterSelectedDataGridView();
@@ -306,10 +308,12 @@ namespace Sales_Tracker
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             new AddPurchase_Form().ShowDialog();
         }
         private void AddSale_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             new AddSale_Form().ShowDialog();
         }
         public List<Product> productSaleList = [];
@@ -328,10 +332,11 @@ namespace Sales_Tracker
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
-
+            CloseAllPanels(null, null);
         }
         private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             FilterData();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
@@ -349,7 +354,15 @@ namespace Sales_Tracker
         }
         public void RenameCompany()
         {
-            if (!Controls.Contains(UI.rename_textBox) || UI.rename_textBox.Text == CompanyName_Label.Text)
+            if (!Controls.Contains(UI.rename_textBox))
+            {
+                return;
+            }
+            Controls.Remove(UI.rename_textBox);
+            MainTop_Panel.Controls.Add(Edit_Button);
+            MainTop_Panel.Controls.Add(CompanyName_Label);
+
+            if (UI.rename_textBox.Text == CompanyName_Label.Text)
             {
                 return;
             }
@@ -363,9 +376,9 @@ namespace Sales_Tracker
             Directories.RenameFolder(Directories.tempCompany_dir, newDir);
             Directories.tempCompany_dir = newDir;
 
+            UI.rename_textBox.Text = "";
+
             MoveEditButton();
-            MainTop_Panel.Controls.Add(Edit_Button);
-            MainTop_Panel.Controls.Add(CompanyName_Label);
         }
 
 
@@ -456,6 +469,7 @@ namespace Sales_Tracker
             dataGridView.BackgroundColor = CustomColors.controlBack;
             dataGridView.Anchor = AnchorStyles.Bottom;
             dataGridView.Size = size;
+            dataGridView.Click += CloseAllPanels;
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsAdded += DataGridView_RowsAdded;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;

@@ -4,7 +4,7 @@ using Sales_Tracker.Properties;
 
 namespace Sales_Tracker
 {
-    public partial class CustomMessage_Form : Form
+    public partial class CustomMessage_Form : BaseForm
     {
         public static CustomMessage_Form Instance { get; set; }
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
