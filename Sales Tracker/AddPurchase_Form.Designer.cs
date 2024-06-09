@@ -478,6 +478,7 @@
             Controls.Add(PurchaseID_Label);
             Controls.Add(PurchaseID_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MinimumSize = new Size(750, 360);
             Name = "AddPurchase_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

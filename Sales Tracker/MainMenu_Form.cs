@@ -20,6 +20,7 @@ namespace Sales_Tracker
 
             ConstructDataGridViews();
             SetCompanyLabel();
+            LoadProducts();
             LoadSales();
             LoadPurchases();
             Sales_Button.PerformClick();
@@ -29,6 +30,28 @@ namespace Sales_Tracker
         {
             CompanyName_Label.Text = Directories.companyName;
             Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width;
+        }
+        private void LoadProducts()
+        {
+            string[] lines = Directories.ReadAllLinesInFile(Directories.productPurchases_file);
+            foreach (string line in lines)
+            {
+                string[] fields = line.Split(',');
+                if (fields.Length >= 3)
+                {
+                    productPurchaseList.Add(new Product(fields[0], fields[1], fields[2]));
+                }
+            }
+
+            lines = Directories.ReadAllLinesInFile(Directories.productSales_file);
+            foreach (string line in lines)
+            {
+                string[] fields = line.Split(',');
+                if (fields.Length >= 3)
+                {
+                    productSaleList.Add(new Product(fields[0], fields[1], fields[2]));
+                }
+            }
         }
         public void UpdateTheme()
         {
@@ -314,11 +337,13 @@ namespace Sales_Tracker
 
 
         // DataGridView
-        private bool isDataGridViewLoading;
+        public bool isDataGridViewLoading;
         public enum Options
         {
             Purchases,
-            Sales
+            Sales,
+            ProductPurchases,
+            ProducSales
         }
         public Options Selected;
         public enum PurchaseColumns
@@ -523,7 +548,7 @@ namespace Sales_Tracker
         }
         private void UpdateTotals()
         {
-            if (isDataGridViewLoading)
+            if (isDataGridViewLoading || Selected == Options.ProductPurchases || Selected == Options.ProducSales)
             {
                 return;
             }
@@ -601,9 +626,17 @@ namespace Sales_Tracker
             {
                 return Directories.purchases_file;
             }
-            else
+            else if (Selected == Options.Sales)
             {
                 return Directories.sales_file;
+            }
+            else if (Selected == Options.Purchases)
+            {
+                return Directories.productPurchases_file;
+            }
+            else
+            {
+                return Directories.productSales_file;
             }
         }
 

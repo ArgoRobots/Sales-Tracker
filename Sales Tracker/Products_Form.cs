@@ -8,12 +8,16 @@ namespace Sales_Tracker
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         // Init
         public static Products_Form Instance { get; set; }
+        private MainMenu_Form.Options oldOption;
         public Products_Form()
         {
             InitializeComponent();
             Instance = this;
+
+            oldOption = MainMenu_Form.Instance.Selected;
             AddEventHandlersToTextBoxes();
             ConstructDataGridViews();
+            LoadProducts();
             UpdateTheme();
             Purchase_RadioButton.Checked = true;
         }
@@ -28,7 +32,42 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             CountryOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
         }
+        private void LoadProducts()
+        {
+            MainMenu_Form.Instance.isDataGridViewLoading = true;
 
+            foreach (Product product in MainMenu_Form.Instance.productPurchaseList)
+            {
+                Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                MainMenu_Form.Instance.productPurchaseList.Add(product);
+            }
+            foreach (Product product in MainMenu_Form.Instance.productSaleList)
+            {
+                Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                Sales_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                MainMenu_Form.Instance.productSaleList.Add(product);
+            }
+            MainMenu_Form.Instance.isDataGridViewLoading = false;
+        }
+        public void UpdateTheme()
+        {
+            string theme = Theme.SetThemeForForm(this);
+            if (theme == "Light")
+            {
+
+            }
+            else if (theme == "Dark")
+            {
+
+            }
+        }
+
+
+        // Form
+        private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            MainMenu_Form.Instance.Selected = oldOption;
+        }
 
         // DataGridView
         public enum Columns
@@ -43,7 +82,7 @@ namespace Sales_Tracker
             { Columns.SellerName, "Seller name" },
             { Columns.CountryOfOrigin, "Country of origin" },
         };
-        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView, selectedDataGridView;
+        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         private const byte heightForDataGridView = 230;
         private void ConstructDataGridViews()
         {
@@ -59,18 +98,6 @@ namespace Sales_Tracker
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.Instance.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, heightForDataGridView);
-        }
-        public void UpdateTheme()
-        {
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
         }
 
         // Event handlers
@@ -101,20 +128,24 @@ namespace Sales_Tracker
         }
         private void CenterSelectedDataGridView()
         {
-            if (selectedDataGridView == null) { return; }
-            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2, heightForDataGridView);
+            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2, heightForDataGridView);
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
             Controls.Add(Purchases_DataGridView);
-            CenterSelectedDataGridView();
             Controls.Remove(Sales_DataGridView);
+            MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductPurchases;
+            CenterSelectedDataGridView();
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
             Controls.Add(Sales_DataGridView);
-            CenterSelectedDataGridView();
             Controls.Remove(Purchases_DataGridView);
+            MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProducSales;
+            CenterSelectedDataGridView();
         }
     }
 }

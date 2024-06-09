@@ -406,6 +406,7 @@
             Controls.Add(SaleID_Label);
             Controls.Add(SaleID_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MinimumSize = new Size(750, 360);
             Name = "AddSale_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
