@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "/5DfhjjKmIM=",
+  "dgSpecHash": "PT8B1mgR6j4=",
   "success": true,
   "projectFilePath": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Sales Tracker.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\evand\\.nuget\\packages\\guna.charts.winforms\\1.0.9\\guna.charts.winforms.1.0.9.nupkg.sha512",
     "C:\\Users\\evand\\.nuget\\packages\\guna.ui2.winforms\\2.0.4.6\\guna.ui2.winforms.2.0.4.6.nupkg.sha512",
     "C:\\Users\\evand\\.nuget\\packages\\ookii.dialogs.winforms\\4.0.0\\ookii.dialogs.winforms.4.0.0.nupkg.sha512",
     "C:\\Users\\evand\\.nuget\\packages\\system.codedom\\7.0.0\\system.codedom.7.0.0.nupkg.sha512",

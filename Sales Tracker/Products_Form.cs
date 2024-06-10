@@ -8,7 +8,7 @@ namespace Sales_Tracker
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         // Init
         public static Products_Form Instance { get; set; }
-        private MainMenu_Form.Options oldOption;
+        private readonly MainMenu_Form.Options oldOption;
         public Products_Form()
         {
             InitializeComponent();
@@ -88,13 +88,13 @@ namespace Sales_Tracker
             Purchases_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            MainMenu_Form.Instance.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
+            MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, heightForDataGridView);
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            MainMenu_Form.Instance.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
+            MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, heightForDataGridView);
         }
 

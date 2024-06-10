@@ -24,6 +24,7 @@ namespace Sales_Tracker
             LoadSales();
             LoadPurchases();
             Sales_Button.PerformClick();
+            LoadGraphs();
             UpdateTheme();
         }
         private void SetCompanyLabel()
@@ -33,7 +34,7 @@ namespace Sales_Tracker
         }
         private void MoveEditButton()
         {
-            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 10;
+            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
         }
         private void LoadProducts()
         {
@@ -56,6 +57,31 @@ namespace Sales_Tracker
                     productSaleList.Add(new Product(fields[0], fields[1], fields[2]));
                 }
             }
+        }
+        private void ApplyConfig()
+        {
+            if (DarkMode_ToggleSwitch.Checked)
+            {
+                Bar_GunaChart.ApplyConfig(Graphs.Dark.Config(), Color.FromArgb(38, 41, 59));
+                Pie_GunaChart.ApplyConfig(Graphs.Dark.Config(), Color.FromArgb(38, 41, 59));
+                Bar2_GunaChart.ApplyConfig(Graphs.Dark.Config(), Color.FromArgb(38, 41, 59));
+            }
+            else
+            {
+                Bar_GunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
+                Pie_GunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
+                Bar2_GunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
+            }
+        }
+        private void LoadGraphs()
+        {
+            Bar_GunaChart.Datasets.Clear();
+            Graphs.Bar.Example(Bar_GunaChart);
+            Pie_GunaChart.Datasets.Clear();
+            Graphs.Pie.Example(Pie_GunaChart);
+            Bar2_GunaChart.Datasets.Clear();
+            Graphs.Pie.Example(Bar2_GunaChart);
+            ApplyConfig();
         }
         public void UpdateTheme()
         {
@@ -88,10 +114,21 @@ namespace Sales_Tracker
             {
                 messagePanel.Location = new Point((Width - messagePanel.Width) / 2, Height - messagePanel.Height - 80);
             }
-        }
-        private void MainMenu_form_ResizeBegin(object sender, EventArgs e)
-        {
+
             UI.CloseAllPanels(null, null);
+            Bar_GunaChart.Width = Width / 3 - 30;
+            Bar_GunaChart.Left = 20;
+
+            Pie_GunaChart.Width = Bar_GunaChart.Width;
+            Pie_GunaChart.Left = (Width / 2) - (Pie_GunaChart.Width / 2) - 8;
+
+            Bar2_GunaChart.Width = Bar_GunaChart.Width;
+            Bar2_GunaChart.Left = Width - Bar_GunaChart.Width - 35;
+
+            selectedDataGridView.Width = Width - 50;
+            selectedDataGridView.Left = 18;
+            Total_Panel.Width = selectedDataGridView.Width;
+            Total_Panel.Left = selectedDataGridView.Left;
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -333,6 +370,7 @@ namespace Sales_Tracker
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            ApplyConfig();
         }
         private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -580,7 +618,7 @@ namespace Sales_Tracker
             isDataGridViewLoading = false;
             AlignTotalLabels();
         }
-        public void LoadColumnsInDataGridView<TEnum>(DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
+        public static void LoadColumnsInDataGridView<TEnum>(DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
         {
             // Load columns
             foreach (var column in Enum.GetValues(typeof(TEnum)))

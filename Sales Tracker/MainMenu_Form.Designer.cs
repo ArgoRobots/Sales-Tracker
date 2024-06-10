@@ -49,6 +49,51 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.Charts.WinForms.ChartFont chartFont1 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont2 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont3 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont4 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid1 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick1 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont5 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid2 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick2 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont6 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid3 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.PointLabel pointLabel1 = new Guna.Charts.WinForms.PointLabel();
+            Guna.Charts.WinForms.ChartFont chartFont7 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Tick tick3 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont8 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont9 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont10 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont11 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont12 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid4 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick4 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont13 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid5 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick5 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont14 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid6 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.PointLabel pointLabel2 = new Guna.Charts.WinForms.PointLabel();
+            Guna.Charts.WinForms.ChartFont chartFont15 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Tick tick6 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont16 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont17 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont18 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont19 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont20 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid7 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick7 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont21 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid8 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick8 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont22 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid9 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.PointLabel pointLabel3 = new Guna.Charts.WinForms.PointLabel();
+            Guna.Charts.WinForms.ChartFont chartFont23 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Tick tick9 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont24 = new Guna.Charts.WinForms.ChartFont();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -73,6 +118,9 @@
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             File_Button = new Guna.UI2.WinForms.Guna2Button();
             Main_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            Bar2_GunaChart = new Guna.Charts.WinForms.GunaChart();
+            Pie_GunaChart = new Guna.Charts.WinForms.GunaChart();
+            Bar_GunaChart = new Guna.Charts.WinForms.GunaChart();
             Sales_Button = new Guna.UI2.WinForms.Guna2Button();
             Purchases_Button = new Guna.UI2.WinForms.Guna2Button();
             Totals_Label = new Label();
@@ -346,6 +394,9 @@
             // 
             Main_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Main_Panel.BackColor = Color.FromArgb(250, 250, 250);
+            Main_Panel.Controls.Add(Bar2_GunaChart);
+            Main_Panel.Controls.Add(Pie_GunaChart);
+            Main_Panel.Controls.Add(Bar_GunaChart);
             Main_Panel.Controls.Add(Sales_Button);
             Main_Panel.Controls.Add(Purchases_Button);
             Main_Panel.Controls.Add(Totals_Label);
@@ -358,6 +409,111 @@
             Main_Panel.Size = new Size(1604, 930);
             Main_Panel.TabIndex = 8;
             Main_Panel.Click += CloseAllPanels;
+            // 
+            // Bar2_GunaChart
+            // 
+            Bar2_GunaChart.Anchor = AnchorStyles.Top;
+            chartFont1.FontName = "Arial";
+            Bar2_GunaChart.Legend.LabelFont = chartFont1;
+            Bar2_GunaChart.Location = new Point(1047, 80);
+            Bar2_GunaChart.Name = "Bar2_GunaChart";
+            Bar2_GunaChart.Size = new Size(491, 330);
+            Bar2_GunaChart.TabIndex = 10;
+            chartFont2.FontName = "Arial";
+            chartFont2.Size = 12;
+            chartFont2.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Bar2_GunaChart.Title.Font = chartFont2;
+            chartFont3.FontName = "Arial";
+            Bar2_GunaChart.Tooltips.BodyFont = chartFont3;
+            chartFont4.FontName = "Arial";
+            chartFont4.Size = 9;
+            chartFont4.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Bar2_GunaChart.Tooltips.TitleFont = chartFont4;
+            Bar2_GunaChart.XAxes.GridLines = grid1;
+            chartFont5.FontName = "Arial";
+            tick1.Font = chartFont5;
+            Bar2_GunaChart.XAxes.Ticks = tick1;
+            Bar2_GunaChart.YAxes.GridLines = grid2;
+            chartFont6.FontName = "Arial";
+            tick2.Font = chartFont6;
+            Bar2_GunaChart.YAxes.Ticks = tick2;
+            Bar2_GunaChart.ZAxes.GridLines = grid3;
+            chartFont7.FontName = "Arial";
+            pointLabel1.Font = chartFont7;
+            Bar2_GunaChart.ZAxes.PointLabels = pointLabel1;
+            chartFont8.FontName = "Arial";
+            tick3.Font = chartFont8;
+            Bar2_GunaChart.ZAxes.Ticks = tick3;
+            // 
+            // Pie_GunaChart
+            // 
+            Pie_GunaChart.Anchor = AnchorStyles.Top;
+            chartFont9.FontName = "Arial";
+            Pie_GunaChart.Legend.LabelFont = chartFont9;
+            Pie_GunaChart.Location = new Point(557, 80);
+            Pie_GunaChart.Name = "Pie_GunaChart";
+            Pie_GunaChart.Size = new Size(484, 330);
+            Pie_GunaChart.TabIndex = 9;
+            chartFont10.FontName = "Arial";
+            chartFont10.Size = 12;
+            chartFont10.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Pie_GunaChart.Title.Font = chartFont10;
+            chartFont11.FontName = "Arial";
+            Pie_GunaChart.Tooltips.BodyFont = chartFont11;
+            chartFont12.FontName = "Arial";
+            chartFont12.Size = 9;
+            chartFont12.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Pie_GunaChart.Tooltips.TitleFont = chartFont12;
+            Pie_GunaChart.XAxes.GridLines = grid4;
+            chartFont13.FontName = "Arial";
+            tick4.Font = chartFont13;
+            Pie_GunaChart.XAxes.Ticks = tick4;
+            Pie_GunaChart.YAxes.GridLines = grid5;
+            chartFont14.FontName = "Arial";
+            tick5.Font = chartFont14;
+            Pie_GunaChart.YAxes.Ticks = tick5;
+            Pie_GunaChart.ZAxes.GridLines = grid6;
+            chartFont15.FontName = "Arial";
+            pointLabel2.Font = chartFont15;
+            Pie_GunaChart.ZAxes.PointLabels = pointLabel2;
+            chartFont16.FontName = "Arial";
+            tick6.Font = chartFont16;
+            Pie_GunaChart.ZAxes.Ticks = tick6;
+            // 
+            // Bar_GunaChart
+            // 
+            Bar_GunaChart.Anchor = AnchorStyles.Top;
+            chartFont17.FontName = "Arial";
+            Bar_GunaChart.Legend.LabelFont = chartFont17;
+            Bar_GunaChart.Location = new Point(67, 80);
+            Bar_GunaChart.Name = "Bar_GunaChart";
+            Bar_GunaChart.Size = new Size(484, 330);
+            Bar_GunaChart.TabIndex = 8;
+            chartFont18.FontName = "Arial";
+            chartFont18.Size = 12;
+            chartFont18.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Bar_GunaChart.Title.Font = chartFont18;
+            chartFont19.FontName = "Arial";
+            Bar_GunaChart.Tooltips.BodyFont = chartFont19;
+            chartFont20.FontName = "Arial";
+            chartFont20.Size = 9;
+            chartFont20.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Bar_GunaChart.Tooltips.TitleFont = chartFont20;
+            Bar_GunaChart.XAxes.GridLines = grid7;
+            chartFont21.FontName = "Arial";
+            tick7.Font = chartFont21;
+            Bar_GunaChart.XAxes.Ticks = tick7;
+            Bar_GunaChart.YAxes.GridLines = grid8;
+            chartFont22.FontName = "Arial";
+            tick8.Font = chartFont22;
+            Bar_GunaChart.YAxes.Ticks = tick8;
+            Bar_GunaChart.ZAxes.GridLines = grid9;
+            chartFont23.FontName = "Arial";
+            pointLabel3.Font = chartFont23;
+            Bar_GunaChart.ZAxes.PointLabels = pointLabel3;
+            chartFont24.FontName = "Arial";
+            tick9.Font = chartFont24;
+            Bar_GunaChart.ZAxes.Ticks = tick9;
             // 
             // Sales_Button
             // 
@@ -373,7 +529,7 @@
             Sales_Button.FillColor = Color.White;
             Sales_Button.Font = new Font("Segoe UI", 9F);
             Sales_Button.ForeColor = Color.Black;
-            Sales_Button.Location = new Point(211, 44);
+            Sales_Button.Location = new Point(176, 20);
             Sales_Button.Name = "Sales_Button";
             Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
             Sales_Button.Size = new Size(150, 35);
@@ -395,7 +551,7 @@
             Purchases_Button.FillColor = Color.White;
             Purchases_Button.Font = new Font("Segoe UI", 9F);
             Purchases_Button.ForeColor = Color.Black;
-            Purchases_Button.Location = new Point(55, 44);
+            Purchases_Button.Location = new Point(20, 20);
             Purchases_Button.Name = "Purchases_Button";
             Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Purchases_Button.Size = new Size(150, 35);
@@ -492,7 +648,7 @@
             TimeRange_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             TimeRange_ComboBox.ItemHeight = 30;
             TimeRange_ComboBox.Items.AddRange(new object[] { "24 hours", "48 hours", "5 days", "10 days", "30 days", "100 days", "1 year", "2 years", "3 years", "5 years", "10 years", "All time" });
-            TimeRange_ComboBox.Location = new Point(1415, 35);
+            TimeRange_ComboBox.Location = new Point(1444, 20);
             TimeRange_ComboBox.Name = "TimeRange_ComboBox";
             TimeRange_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
             TimeRange_ComboBox.Size = new Size(140, 36);
@@ -521,7 +677,6 @@
             WindowState = FormWindowState.Maximized;
             FormClosing += MainMenu_form_FormClosing;
             Shown += MainMenu_form_Shown;
-            ResizeBegin += MainMenu_form_ResizeBegin;
             KeyDown += MainMenu_form_KeyDown;
             Resize += MainMenu_form_Resize;
             MainTop_Panel.ResumeLayout(false);
@@ -564,5 +719,8 @@
         private Guna.UI2.WinForms.Guna2Button AddSale_Button;
         private Guna.UI2.WinForms.Guna2Button AddPurchase_Button;
         public Guna.UI2.WinForms.Guna2Button Purchases_Button;
+        private Guna.Charts.WinForms.GunaChart Bar_GunaChart;
+        private Guna.Charts.WinForms.GunaChart Pie_GunaChart;
+        private Guna.Charts.WinForms.GunaChart Bar2_GunaChart;
     }
 }

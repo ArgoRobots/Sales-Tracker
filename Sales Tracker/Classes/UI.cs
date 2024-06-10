@@ -200,8 +200,6 @@ namespace Sales_Tracker.Classes
                 new Export_Form().ShowDialog();
             };
             ConstructKeyShortcut("Ctrl+E", menuBtn);
-
-            CosntructSeperator(240, flowPanel);
         }
         public static void SaveAll()
         {
