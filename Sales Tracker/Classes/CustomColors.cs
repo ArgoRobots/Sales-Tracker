@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.Classes
+﻿using static Sales_Tracker.Classes.Theme;
+
+namespace Sales_Tracker.Classes
 {
     static internal class CustomColors
     {
@@ -38,17 +40,7 @@
 
         public static void SetColors()
         {
-            if (Theme.theme == "Windows theme")
-            {
-                int value = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
-
-                if (value == 0)
-                    Theme.theme = "Dark";
-                else if (value == 1)
-                    Theme.theme = "Light";
-            }
-
-            if (Theme.theme == "Dark")
+            if (CurrentTheme == ThemeType.Dark)
             {
                 controlBack = Color.FromArgb(62, 62, 66);
                 controlDisabledBack = Color.Gray;

@@ -1,4 +1,5 @@
 ﻿using Guna.Charts.WinForms;
+using Sales_Tracker.Classes;
 
 namespace Sales_Tracker.Graphs
 {
@@ -7,9 +8,8 @@ namespace Sales_Tracker.Graphs
         public static ChartConfig Config()
         {
             ChartConfig config = new();
-            Color gridColor = Color.FromArgb(49, 52, 82);
-            Color foreColor = Color.FromArgb(177, 182, 205);
-            Color[] colors = [Color.FromArgb(140, 81, 165), Color.FromArgb(203, 94, 152), Color.FromArgb(244, 123, 138), Color.FromArgb(255, 163, 127), Color.FromArgb(255, 210, 133)];
+            Color gridColor = CustomColors.grayText;
+            Color foreColor = CustomColors.text;
 
             var chartFont = new ChartFont()
             {
@@ -40,13 +40,7 @@ namespace Sales_Tracker.Graphs
             config.ZAxes.PointLabels.Font = chartFont;
             config.ZAxes.PointLabels.ForeColor = foreColor;
 
-            config.PaletteCustomColors.FillColors.AddRange(colors);
-            config.PaletteCustomColors.BorderColors.AddRange(colors);
-            config.PaletteCustomColors.PointFillColors.AddRange(colors);
-            config.PaletteCustomColors.PointBorderColors.AddRange(colors);
-
             return config;
         }
-
     }
 }

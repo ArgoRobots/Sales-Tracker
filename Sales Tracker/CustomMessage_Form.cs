@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
 {
@@ -13,16 +14,7 @@ namespace Sales_Tracker
             Instance = this;
             DoubleBuffered = true;
 
-            // Set theme
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
+            Theme.SetThemeForForm(this);
 
             SetMessageBox(title, message, icon, buttons);
         }

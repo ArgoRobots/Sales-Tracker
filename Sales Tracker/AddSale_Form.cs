@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
 {
@@ -13,7 +14,7 @@ namespace Sales_Tracker
 
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
-            UpdateTheme();
+            Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -44,18 +45,6 @@ namespace Sales_Tracker
             ItemName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemName_TextBox, this, AddSale_Label, e); };
         }
-        public void UpdateTheme()
-        {
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
-        }
 
         // Event handlers
         private void AddSale_Button_Click(object sender, EventArgs e)
@@ -78,6 +67,7 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(saleID, buyerName, itemName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
+            Log.Write(3, $"Added sale '{ItemName_TextBox.Text}'");
         }
 
         // Functions

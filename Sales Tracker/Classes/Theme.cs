@@ -1,11 +1,36 @@
-﻿using Guna.UI2.WinForms;
+﻿using Guna.Charts.WinForms;
+using Guna.UI2.WinForms;
 using System.Runtime.InteropServices;
 
 namespace Sales_Tracker.Classes
 {
     internal static class Theme
     {
-        public static string theme = Properties.Settings.Default.ColorTheme;
+        public enum ThemeType
+        {
+            Light,
+            Dark
+        }
+        public static ThemeType CurrentTheme
+        {
+            get
+            {
+                if (Enum.TryParse(Properties.Settings.Default.ColorTheme, out ThemeType theme))
+                {
+                    return theme;
+                }
+                else
+                {
+                    // Default to Dark if parsing fails
+                    return ThemeType.Dark;
+                }
+            }
+            set
+            {
+                Properties.Settings.Default.ColorTheme = value.ToString();
+                Properties.Settings.Default.Save();
+            }
+        }
         public static void SetThemeForControl(List<Control> list)
         {
             foreach (Control control in list)
@@ -134,6 +159,17 @@ namespace Sales_Tracker.Classes
                             guna2DateTimePicker.BorderColor = CustomColors.controlBorder;
                             guna2DateTimePicker.HoverState.BorderColor = CustomColors.accent_blue;
                             break;
+
+                        case GunaChart gunaChart:
+                            if (CurrentTheme == ThemeType.Dark)
+                            {
+                                gunaChart.ApplyConfig(Graphs.Dark.Config(), CustomColors.background4);
+                            }
+                            else
+                            {
+                                gunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
+                            }
+                            break;
                     }
                 }
             }
@@ -152,7 +188,7 @@ namespace Sales_Tracker.Classes
             // Revert the button's appearance when it loses focus
             btn.BorderColor = CustomColors.controlBorder;
         }
-        public static string SetThemeForForm(Form form)
+        public static void SetThemeForForm(Form form)
         {
             form.BackColor = CustomColors.mainBackground;
 
@@ -164,7 +200,6 @@ namespace Sales_Tracker.Classes
 
             SetThemeForControl(list);
             UseImmersiveDarkMode(form.Handle, true);
-            return theme;
         }
 
 
@@ -176,7 +211,7 @@ namespace Sales_Tracker.Classes
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
         public static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
         {
-            if (theme == "Dark")
+            if (CurrentTheme == ThemeType.Dark)
             {
                 if (IsWindows10OrGreater(17763))
                 {

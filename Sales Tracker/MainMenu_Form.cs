@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
 {
@@ -25,6 +26,7 @@ namespace Sales_Tracker
             LoadPurchases();
             Sales_Button.PerformClick();
             LoadGraphs();
+            LoadDataFromSetting();
             UpdateTheme();
         }
         private void SetCompanyLabel()
@@ -58,41 +60,48 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void ApplyConfig()
-        {
-            if (DarkMode_ToggleSwitch.Checked)
-            {
-                Bar_GunaChart.ApplyConfig(Graphs.Dark.Config(), Color.FromArgb(38, 41, 59));
-                Pie_GunaChart.ApplyConfig(Graphs.Dark.Config(), Color.FromArgb(38, 41, 59));
-                Bar2_GunaChart.ApplyConfig(Graphs.Dark.Config(), Color.FromArgb(38, 41, 59));
-            }
-            else
-            {
-                Bar_GunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
-                Pie_GunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
-                Bar2_GunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
-            }
-        }
         private void LoadGraphs()
         {
             Bar_GunaChart.Datasets.Clear();
-            Graphs.Bar.Example(Bar_GunaChart);
             Pie_GunaChart.Datasets.Clear();
-            Graphs.Pie.Example(Pie_GunaChart);
             Bar2_GunaChart.Datasets.Clear();
-            Graphs.Pie.Example(Bar2_GunaChart);
-            ApplyConfig();
-        }
-        public void UpdateTheme()
-        {
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
+
+            if (Selected == Options.Sales)
             {
-                Edit_Button.Image = Resources.EditBlack;
+                Graphs.Bar.LoadTotalMoneyIntoChart(Sales_DataGridView, Bar_GunaChart);
             }
-            else if (theme == "Dark")
+            else
+            {
+                Graphs.Bar.LoadTotalMoneyIntoChart(Purchases_DataGridView, Bar_GunaChart);
+            }
+
+            Bar_GunaChart.XAxes.GridLines.Display = false;
+            Bar_GunaChart.Legend.Display = false;
+
+            Bar2_GunaChart.XAxes.GridLines.Display = false;
+            Bar2_GunaChart.Legend.Display = false;
+        }
+        private bool DoNotUpdateTheme;
+        private void LoadDataFromSetting()
+        {
+            if (CurrentTheme == ThemeType.Dark)
+            {
+                DoNotUpdateTheme = true;
+                DarkMode_ToggleSwitch.Checked = true;
+                DoNotUpdateTheme = false;
+            }
+        }
+        private void UpdateTheme()
+        {
+            CustomColors.SetColors();
+            Theme.SetThemeForForm(this);
+            if (CurrentTheme == ThemeType.Dark)
             {
                 Edit_Button.Image = Resources.EditWhite;
+            }
+            else
+            {
+                Edit_Button.Image = Resources.EditBlack;
             }
 
             MainTop_Panel.FillColor = CustomColors.background4;
@@ -116,6 +125,10 @@ namespace Sales_Tracker
             }
 
             UI.CloseAllPanels(null, null);
+            ResizeControls();
+        }
+        private void ResizeControls()
+        {
             Bar_GunaChart.Width = Width / 3 - 30;
             Bar_GunaChart.Left = 20;
 
@@ -331,6 +344,7 @@ namespace Sales_Tracker
             selectedDataGridView = Purchases_DataGridView;
             Main_Panel.Controls.Add(Purchases_DataGridView);
             CenterSelectedDataGridView();
+            ResizeControls();
             Main_Panel.Controls.Remove(Sales_DataGridView);
             Selected = Options.Purchases;
         }
@@ -340,6 +354,7 @@ namespace Sales_Tracker
             selectedDataGridView = Sales_DataGridView;
             Main_Panel.Controls.Add(Sales_DataGridView);
             CenterSelectedDataGridView();
+            ResizeControls();
             Main_Panel.Controls.Remove(Purchases_DataGridView);
             Selected = Options.Sales;
         }
@@ -369,8 +384,19 @@ namespace Sales_Tracker
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
+            if (DoNotUpdateTheme) { return; }
+
             CloseAllPanels(null, null);
-            ApplyConfig();
+
+            if (CurrentTheme == ThemeType.Dark)
+            {
+                CurrentTheme = ThemeType.Light;
+            }
+            else
+            {
+                CurrentTheme = ThemeType.Dark;
+            }
+            UpdateTheme();
         }
         private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -427,7 +453,7 @@ namespace Sales_Tracker
             Purchases,
             Sales,
             ProductPurchases,
-            ProducSales
+            ProductSales
         }
         public Options Selected;
         public enum PurchaseColumns
@@ -539,13 +565,21 @@ namespace Sales_Tracker
         }
         private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            UpdateTotals();
             SaveDataGridViewToFile();
+            DataGridViewRowChanged();
         }
         private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            UpdateTotals();
             SaveDataGridViewToFile();
+            DataGridViewRowChanged();
+        }
+        private void DataGridViewRowChanged()
+        {
+            if (Selected == Options.Sales || Selected == Options.Purchases)
+            {
+                UpdateTotals();
+                LoadGraphs();
+            }
         }
         private void DataGridView_KeyDown(object? sender, KeyEventArgs e)
         {
@@ -618,12 +652,17 @@ namespace Sales_Tracker
             isDataGridViewLoading = false;
             AlignTotalLabels();
         }
-        public static void LoadColumnsInDataGridView<TEnum>(DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
+        public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
         {
-            // Load columns
             foreach (var column in Enum.GetValues(typeof(TEnum)))
             {
                 dataGridView.Columns.Add(column.ToString(), columnHeaders[(TEnum)column]);
+            }
+
+            foreach (DataGridViewColumn column in dataGridView.Columns)
+            {
+                column.HeaderCell.Style.BackColor = CustomColors.background2;
+                column.HeaderCell.Style.SelectionBackColor = CustomColors.background2;
             }
         }
         private void CenterSelectedDataGridView()
@@ -633,7 +672,7 @@ namespace Sales_Tracker
         }
         private void UpdateTotals()
         {
-            if (isDataGridViewLoading || Selected == Options.ProductPurchases || Selected == Options.ProducSales)
+            if (isDataGridViewLoading || Selected == Options.ProductPurchases || Selected == Options.ProductSales)
             {
                 return;
             }
@@ -715,14 +754,15 @@ namespace Sales_Tracker
             {
                 return Directories.sales_file;
             }
-            else if (Selected == Options.Purchases)
+            else if (Selected == Options.ProductPurchases)
             {
                 return Directories.productPurchases_file;
             }
-            else
+            else if (Selected == Options.ProductSales)
             {
                 return Directories.productSales_file;
             }
+            return "";
         }
 
 

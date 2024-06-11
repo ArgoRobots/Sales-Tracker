@@ -7,17 +7,7 @@ namespace Sales_Tracker
         public Export_Form()
         {
             InitializeComponent();
-
-            // Set theme
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
+            Theme.SetThemeForForm(this);
         }
         private void Export_Form_Load(object sender, EventArgs e)
         {

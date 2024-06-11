@@ -22,19 +22,7 @@ namespace Sales_Tracker.Startup
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Visible = false;
             OpenRecent_FlowLayoutPanel.AutoScroll = true;
 
-            UpdateTheme();
-        }
-        private void UpdateTheme()
-        {
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
+            Theme.SetThemeForForm(this);
         }
         private void LoadListOfRecentProjects()
         {

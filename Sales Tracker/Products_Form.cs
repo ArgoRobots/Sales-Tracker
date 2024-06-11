@@ -18,7 +18,7 @@ namespace Sales_Tracker
             AddEventHandlersToTextBoxes();
             ConstructDataGridViews();
             LoadProducts();
-            UpdateTheme();
+            Theme.SetThemeForForm(this);
             Purchase_RadioButton.Checked = true;
         }
         private void AddEventHandlersToTextBoxes()
@@ -37,27 +37,12 @@ namespace Sales_Tracker
             foreach (Product product in MainMenu_Form.Instance.productPurchaseList)
             {
                 Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.Instance.productPurchaseList.Add(product);
             }
             foreach (Product product in MainMenu_Form.Instance.productSaleList)
             {
-                Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
                 Sales_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.Instance.productSaleList.Add(product);
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
-        }
-        public void UpdateTheme()
-        {
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
         }
 
 
@@ -113,6 +98,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.productSaleList.Add(product);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
+            Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
         }
 
         // Functions
@@ -142,7 +128,7 @@ namespace Sales_Tracker
             Controls.Add(Sales_DataGridView);
             Controls.Remove(Purchases_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProducSales;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductSales;
             CenterSelectedDataGridView();
         }
     }

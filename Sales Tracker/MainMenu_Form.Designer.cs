@@ -413,6 +413,7 @@
             // Bar2_GunaChart
             // 
             Bar2_GunaChart.Anchor = AnchorStyles.Top;
+            Bar2_GunaChart.Legend.Display = false;
             chartFont1.FontName = "Arial";
             Bar2_GunaChart.Legend.LabelFont = chartFont1;
             Bar2_GunaChart.Location = new Point(1047, 80);
@@ -448,6 +449,7 @@
             // Pie_GunaChart
             // 
             Pie_GunaChart.Anchor = AnchorStyles.Top;
+            Pie_GunaChart.Legend.Display = false;
             chartFont9.FontName = "Arial";
             Pie_GunaChart.Legend.LabelFont = chartFont9;
             Pie_GunaChart.Location = new Point(557, 80);
@@ -483,6 +485,7 @@
             // Bar_GunaChart
             // 
             Bar_GunaChart.Anchor = AnchorStyles.Top;
+            Bar_GunaChart.Legend.Display = false;
             chartFont17.FontName = "Arial";
             Bar_GunaChart.Legend.LabelFont = chartFont17;
             Bar_GunaChart.Location = new Point(67, 80);

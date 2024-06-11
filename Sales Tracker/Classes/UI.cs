@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Properties;
 using System.Drawing.Drawing2D;
+using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker.Classes
 {
@@ -288,7 +289,7 @@ namespace Sales_Tracker.Classes
                 BorderThickness = 1,
                 ShortcutsEnabled = false
             };
-            if (Theme.theme == "Dark")
+            if (CurrentTheme == ThemeType.Dark)
             {
                 rename_textBox.BorderColor = Color.White;
                 rename_textBox.HoverState.BorderColor = Color.White;

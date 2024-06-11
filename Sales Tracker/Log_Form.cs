@@ -13,16 +13,7 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
-            // Set theme
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
+            Theme.SetThemeForForm(this);
 
             // Hide caret
             RichTextBox.MouseDown += (sender2, e2) =>

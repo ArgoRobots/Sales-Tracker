@@ -11,16 +11,7 @@ namespace Sales_Tracker.Startup.Menus
             InitializeComponent();
             Instance = this;
 
-            // Set theme
-            string theme = Theme.SetThemeForForm(this);
-            if (theme == "Light")
-            {
-
-            }
-            else if (theme == "Dark")
-            {
-
-            }
+            Theme.SetThemeForForm(this);
         }
 
         // Form
