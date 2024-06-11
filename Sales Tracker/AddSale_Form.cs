@@ -1,5 +1,4 @@
 ﻿using Sales_Tracker.Classes;
-using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
 {
@@ -14,6 +13,7 @@ namespace Sales_Tracker
 
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
+            Date_DateTimePicker.Value = DateTime.Now;
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -51,7 +51,8 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.Options.Purchases)
             {
-                MainMenu_Form.Instance.Save_Button.PerformClick();
+                MainMenu_Form.Instance.Sales_Button.PerformClick();
+                MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Sales_DataGridView;
             }
 
             // Retrieve the input values
@@ -82,9 +83,9 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
                                    Date_DateTimePicker.Value != null;
 
-            AddSale_Button.Enabled = allFieldsFilled;
+            AddSale_Button.Enabled = allFieldsFilled && (int)AddSale_Button.Tag == 1;
         }
-        public void CloseAllPanels(object sender, EventArgs e)
+        public void CloseAllPanels(object? sender, EventArgs? e)
         {
             SearchBox.CloseVariableBox(this);
         }

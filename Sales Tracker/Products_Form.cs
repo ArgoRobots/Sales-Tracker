@@ -9,12 +9,14 @@ namespace Sales_Tracker
         // Init
         public static Products_Form Instance { get; set; }
         private readonly MainMenu_Form.Options oldOption;
+        Guna2DataGridView oldselectedDataGridView;
         public Products_Form()
         {
             InitializeComponent();
             Instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
+            oldselectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             AddEventHandlersToTextBoxes();
             ConstructDataGridViews();
             LoadProducts();
@@ -50,6 +52,7 @@ namespace Sales_Tracker
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.selectedDataGridView = oldselectedDataGridView;
         }
 
         // DataGridView

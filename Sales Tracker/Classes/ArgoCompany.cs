@@ -39,6 +39,8 @@ namespace Sales_Tracker.Classes
         public static void ResetChanges()
         {
             Products_Form.thingsThatHaveChangedInFile.Clear();
+            AddSale_Form.thingsThatHaveChangedInFile.Clear();
+            AddPurchase_Form.thingsThatHaveChangedInFile.Clear();
         }
         public static void OpenProject()
         {

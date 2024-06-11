@@ -118,6 +118,9 @@
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             File_Button = new Guna.UI2.WinForms.Guna2Button();
             Main_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            Bar2_Label = new Label();
+            Pie_Label = new Label();
+            Bar_Label = new Label();
             Bar2_GunaChart = new Guna.Charts.WinForms.GunaChart();
             Pie_GunaChart = new Guna.Charts.WinForms.GunaChart();
             Bar_GunaChart = new Guna.Charts.WinForms.GunaChart();
@@ -230,7 +233,7 @@
             ColorTheme_label.AutoSize = true;
             ColorTheme_label.BackColor = Color.Transparent;
             ColorTheme_label.Font = new Font("Segoe UI", 11.25F);
-            ColorTheme_label.Location = new Point(993, 30);
+            ColorTheme_label.Location = new Point(983, 30);
             ColorTheme_label.Name = "ColorTheme_label";
             ColorTheme_label.Size = new Size(83, 20);
             ColorTheme_label.TabIndex = 11;
@@ -248,7 +251,7 @@
             DarkMode_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
             DarkMode_ToggleSwitch.CheckedState.InnerColor = Color.White;
             DarkMode_ToggleSwitch.CustomizableEdges = customizableEdges7;
-            DarkMode_ToggleSwitch.Location = new Point(1082, 30);
+            DarkMode_ToggleSwitch.Location = new Point(1072, 30);
             DarkMode_ToggleSwitch.Name = "DarkMode_ToggleSwitch";
             DarkMode_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges8;
             DarkMode_ToggleSwitch.Size = new Size(40, 20);
@@ -394,6 +397,9 @@
             // 
             Main_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Main_Panel.BackColor = Color.FromArgb(250, 250, 250);
+            Main_Panel.Controls.Add(Bar2_Label);
+            Main_Panel.Controls.Add(Pie_Label);
+            Main_Panel.Controls.Add(Bar_Label);
             Main_Panel.Controls.Add(Bar2_GunaChart);
             Main_Panel.Controls.Add(Pie_GunaChart);
             Main_Panel.Controls.Add(Bar_GunaChart);
@@ -410,10 +416,46 @@
             Main_Panel.TabIndex = 8;
             Main_Panel.Click += CloseAllPanels;
             // 
+            // Bar2_Label
+            // 
+            Bar2_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Bar2_Label.AutoSize = true;
+            Bar2_Label.BackColor = Color.Transparent;
+            Bar2_Label.Font = new Font("Segoe UI", 12F);
+            Bar2_Label.Location = new Point(1047, 56);
+            Bar2_Label.Name = "Bar2_Label";
+            Bar2_Label.Size = new Size(39, 21);
+            Bar2_Label.TabIndex = 16;
+            Bar2_Label.Text = "Title";
+            // 
+            // Pie_Label
+            // 
+            Pie_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Pie_Label.AutoSize = true;
+            Pie_Label.BackColor = Color.Transparent;
+            Pie_Label.Font = new Font("Segoe UI", 12F);
+            Pie_Label.Location = new Point(557, 56);
+            Pie_Label.Name = "Pie_Label";
+            Pie_Label.Size = new Size(39, 21);
+            Pie_Label.TabIndex = 15;
+            Pie_Label.Text = "Title";
+            // 
+            // Bar_Label
+            // 
+            Bar_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Bar_Label.AutoSize = true;
+            Bar_Label.BackColor = Color.Transparent;
+            Bar_Label.Font = new Font("Segoe UI", 12F);
+            Bar_Label.Location = new Point(67, 56);
+            Bar_Label.Name = "Bar_Label";
+            Bar_Label.Size = new Size(39, 21);
+            Bar_Label.TabIndex = 14;
+            Bar_Label.Text = "Title";
+            // 
             // Bar2_GunaChart
             // 
             Bar2_GunaChart.Anchor = AnchorStyles.Top;
-            Bar2_GunaChart.Legend.Display = false;
+            Bar2_GunaChart.BackColor = Color.White;
             chartFont1.FontName = "Arial";
             Bar2_GunaChart.Legend.LabelFont = chartFont1;
             Bar2_GunaChart.Location = new Point(1047, 80);
@@ -449,7 +491,7 @@
             // Pie_GunaChart
             // 
             Pie_GunaChart.Anchor = AnchorStyles.Top;
-            Pie_GunaChart.Legend.Display = false;
+            Pie_GunaChart.BackColor = Color.White;
             chartFont9.FontName = "Arial";
             Pie_GunaChart.Legend.LabelFont = chartFont9;
             Pie_GunaChart.Location = new Point(557, 80);
@@ -485,7 +527,7 @@
             // Bar_GunaChart
             // 
             Bar_GunaChart.Anchor = AnchorStyles.Top;
-            Bar_GunaChart.Legend.Display = false;
+            Bar_GunaChart.BackColor = Color.White;
             chartFont17.FontName = "Arial";
             Bar_GunaChart.Legend.LabelFont = chartFont17;
             Bar_GunaChart.Location = new Point(67, 80);
@@ -532,7 +574,7 @@
             Sales_Button.FillColor = Color.White;
             Sales_Button.Font = new Font("Segoe UI", 9F);
             Sales_Button.ForeColor = Color.Black;
-            Sales_Button.Location = new Point(176, 20);
+            Sales_Button.Location = new Point(176, 10);
             Sales_Button.Name = "Sales_Button";
             Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
             Sales_Button.Size = new Size(150, 35);
@@ -554,7 +596,7 @@
             Purchases_Button.FillColor = Color.White;
             Purchases_Button.Font = new Font("Segoe UI", 9F);
             Purchases_Button.ForeColor = Color.Black;
-            Purchases_Button.Location = new Point(20, 20);
+            Purchases_Button.Location = new Point(20, 10);
             Purchases_Button.Name = "Purchases_Button";
             Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Purchases_Button.Size = new Size(150, 35);
@@ -651,18 +693,13 @@
             TimeRange_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             TimeRange_ComboBox.ItemHeight = 30;
             TimeRange_ComboBox.Items.AddRange(new object[] { "24 hours", "48 hours", "5 days", "10 days", "30 days", "100 days", "1 year", "2 years", "3 years", "5 years", "10 years", "All time" });
-            TimeRange_ComboBox.Location = new Point(1444, 20);
+            TimeRange_ComboBox.Location = new Point(1444, 10);
             TimeRange_ComboBox.Name = "TimeRange_ComboBox";
             TimeRange_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
             TimeRange_ComboBox.Size = new Size(140, 36);
             TimeRange_ComboBox.TabIndex = 1;
             TimeRange_ComboBox.SelectedIndexChanged += TimeRange_ComboBox_SelectedIndexChanged;
             TimeRange_ComboBox.Click += CloseAllPanels;
-            // 
-            // HideMenu_timer
-            // 
-            HideMenu_timer.Interval = 800;
-            HideMenu_timer.Tick += HideMenu_timer_Tick;
             // 
             // MainMenu_Form
             // 
@@ -717,7 +754,6 @@
         public Label Shipping_Label;
         public Label ShippingText_Label;
         public Label Tax_Label;
-        private Guna.UI2.WinForms.Guna2Button Sales_Button;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
         private Guna.UI2.WinForms.Guna2Button AddSale_Button;
         private Guna.UI2.WinForms.Guna2Button AddPurchase_Button;
@@ -725,5 +761,9 @@
         private Guna.Charts.WinForms.GunaChart Bar_GunaChart;
         private Guna.Charts.WinForms.GunaChart Pie_GunaChart;
         private Guna.Charts.WinForms.GunaChart Bar2_GunaChart;
+        private Label Bar2_Label;
+        private Label Pie_Label;
+        private Label Bar_Label;
+        public Guna.UI2.WinForms.Guna2Button Sales_Button;
     }
 }

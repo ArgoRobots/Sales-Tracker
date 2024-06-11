@@ -163,7 +163,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(250, 5 * 22 + 10 + 20));
+            fileMenu = ConstructPanelForMenu(new Size(250, 5 * 22 + 10 + 10));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", 240, true, flowPanel);
@@ -314,7 +314,7 @@ namespace Sales_Tracker.Classes
 
 
         // Close all panels
-        public static void CloseAllPanels(object sender, EventArgs e)
+        public static void CloseAllPanels(object? sender, EventArgs? e)
         {
             MainMenu_Form.Instance.Controls.Remove(fileMenu);
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;

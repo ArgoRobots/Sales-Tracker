@@ -1,6 +1,8 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
+using Sales_Tracker.Graphs;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Sales_Tracker.Classes
 {
@@ -140,6 +142,12 @@ namespace Sales_Tracker.Classes
                         case Guna2DataGridView guna2DataGridView:
                             guna2DataGridView.Theme = CustomColors.dataGridViewTheme;
                             guna2DataGridView.BackgroundColor = CustomColors.controlBack;
+
+                            foreach (DataGridViewColumn column in guna2DataGridView.Columns)
+                            {
+                                column.HeaderCell.Style.BackColor = CustomColors.background2;
+                                column.HeaderCell.Style.SelectionBackColor = CustomColors.background2;
+                            }
                             break;
 
                         case Guna2CircleButton guna2CircleButton:
@@ -163,11 +171,11 @@ namespace Sales_Tracker.Classes
                         case GunaChart gunaChart:
                             if (CurrentTheme == ThemeType.Dark)
                             {
-                                gunaChart.ApplyConfig(Graphs.Dark.Config(), CustomColors.background4);
+                                gunaChart.ApplyConfig(Dark.Config(), CustomColors.background4);
                             }
                             else
                             {
-                                gunaChart.ApplyConfig(Graphs.Light.Config(), Color.White);
+                                gunaChart.ApplyConfig(Light.Config(), Color.White);
                             }
                             break;
                     }

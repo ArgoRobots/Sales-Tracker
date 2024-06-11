@@ -1,29 +1,48 @@
 ﻿using Guna.Charts.WinForms;
+using Guna.UI2.WinForms;
+using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker.Graphs
 {
     class Pie
     {
-        public static void Example(GunaChart chart)
+        public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
         {
-            string[] months = { "January", "February", "March", "April" };
-
-            // Chart configuration  
             chart.Legend.Position = LegendPosition.Right;
             chart.XAxes.Display = false;
             chart.YAxes.Display = false;
 
-            // Create a new dataset 
-            GunaPieDataset dataset = new();
-            var r = new Random();
-            for (int i = 0; i < months.Length; i++)
+            if (dataGridView.Rows.Count == 0)
             {
-                // Random number
-                int num = r.Next(10, 100);
-
-                dataset.DataPoints.Add(months[i], num);
+                chart.Datasets.Clear();
+                chart.Update();
+                return;
             }
 
+            GunaPieDataset dataset = new();
+
+            double totalTax = 0;
+            double totalShipping = 0;
+            double totalCost = 0;
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
+                double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
+                double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
+                double cost = quantity * pricePerUnit;
+
+                totalTax += tax;
+                totalShipping += shipping;
+                totalCost += cost;
+            }
+
+            dataset.DataPoints.Add("Tax", totalTax);
+            dataset.DataPoints.Add("Shipping", totalShipping);
+            dataset.DataPoints.Add("Cost", totalCost);
+
+            chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
             chart.Update();
         }

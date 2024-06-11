@@ -255,7 +255,7 @@ namespace Sales_Tracker.Classes
 
             if (button != null)
             {
-                button.Enabled = false;
+                button.Tag = 0;
             }
         }
         private static void SetTextBoxToValid(Guna2TextBox gTextBox, Guna2Button button)
@@ -267,7 +267,7 @@ namespace Sales_Tracker.Classes
 
             if (button != null)
             {
-                button.Enabled = true;
+                button.Tag = 1;
             }
         }
 

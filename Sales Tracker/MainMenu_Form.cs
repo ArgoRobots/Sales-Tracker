@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
 using static Sales_Tracker.Classes.Theme;
 
@@ -25,7 +26,6 @@ namespace Sales_Tracker
             LoadSales();
             LoadPurchases();
             Sales_Button.PerformClick();
-            LoadGraphs();
             LoadDataFromSetting();
             UpdateTheme();
         }
@@ -62,24 +62,22 @@ namespace Sales_Tracker
         }
         private void LoadGraphs()
         {
-            Bar_GunaChart.Datasets.Clear();
-            Pie_GunaChart.Datasets.Clear();
-            Bar2_GunaChart.Datasets.Clear();
-
             if (Selected == Options.Sales)
             {
-                Graphs.Bar.LoadTotalMoneyIntoChart(Sales_DataGridView, Bar_GunaChart);
+                Bar_Label.Text = "Total revenue: $";
+                Bar.LoadTotalsIntoChart(Sales_DataGridView, Bar_GunaChart);
+                Pie_Label.Text = "Distribution of revenue";
+                Pie.LoadDistributionIntoChart(Sales_DataGridView, Pie_GunaChart);
             }
             else
             {
-                Graphs.Bar.LoadTotalMoneyIntoChart(Purchases_DataGridView, Bar_GunaChart);
+                Bar_Label.Text = "Total expenses $";
+                Bar.LoadTotalsIntoChart(Purchases_DataGridView, Bar_GunaChart);
+                Pie_Label.Text = "Distribution of expenses";
+                Pie.LoadDistributionIntoChart(Purchases_DataGridView, Pie_GunaChart);
             }
-
-            Bar_GunaChart.XAxes.GridLines.Display = false;
-            Bar_GunaChart.Legend.Display = false;
-
-            Bar2_GunaChart.XAxes.GridLines.Display = false;
-            Bar2_GunaChart.Legend.Display = false;
+            Bar2_Label.Text = "Total profits: $";
+            Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart);
         }
         private bool DoNotUpdateTheme;
         private void LoadDataFromSetting()
@@ -119,11 +117,6 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
-            if (Controls.Contains(messagePanel))
-            {
-                messagePanel.Location = new Point((Width - messagePanel.Width) / 2, Height - messagePanel.Height - 80);
-            }
-
             UI.CloseAllPanels(null, null);
             ResizeControls();
         }
@@ -131,17 +124,25 @@ namespace Sales_Tracker
         {
             Bar_GunaChart.Width = Width / 3 - 30;
             Bar_GunaChart.Left = 20;
+            Bar_Label.Left = Bar_GunaChart.Left;
 
             Pie_GunaChart.Width = Bar_GunaChart.Width;
             Pie_GunaChart.Left = (Width / 2) - (Pie_GunaChart.Width / 2) - 8;
+            Pie_Label.Left = Pie_GunaChart.Left;
 
             Bar2_GunaChart.Width = Bar_GunaChart.Width;
             Bar2_GunaChart.Left = Width - Bar_GunaChart.Width - 35;
+            Bar2_Label.Left = Bar2_GunaChart.Left;
 
             selectedDataGridView.Width = Width - 50;
             selectedDataGridView.Left = 18;
             Total_Panel.Width = selectedDataGridView.Width;
             Total_Panel.Left = selectedDataGridView.Left;
+
+            if (Controls.Contains(messagePanel))
+            {
+                messagePanel.Location = new Point((Width - messagePanel.Width) / 2, Height - messagePanel.Height - 80);
+            }
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -243,34 +244,9 @@ namespace Sales_Tracker
             }
         }
 
-        // Cascading menus
-        Guna2Panel menuToHide;
-        private void HideMenu_timer_Tick(object sender, EventArgs e)
-        {
-            menuToHide.Parent?.Controls.Remove(menuToHide);
-            HideMenu_timer.Enabled = false;
-        }
-        public void OpenMenu()
-        {
-            HideMenu_timer.Enabled = false;
-        }
-        public void CloseMenu(object sender, EventArgs e)
-        {
-            Guna2Button btn = (Guna2Button)sender;
-            menuToHide = (Guna2Panel)btn.Tag;
-            HideMenu_timer.Enabled = false;
-            HideMenu_timer.Enabled = true;
-        }
-        public void KeepMenuOpen(object sender, EventArgs e)
-        {
-            HideMenu_timer.Enabled = false;
-        }
-
 
         // TOP BAR
         // Don't initiate these yet because it resets every time a program is loaded
-        public Products_Form formProducts;
-
         public void SwitchMainForm(Form form, object btnSender)
         {
             Guna2Button btn = (Guna2Button)btnSender;
@@ -347,6 +323,8 @@ namespace Sales_Tracker
             ResizeControls();
             Main_Panel.Controls.Remove(Sales_DataGridView);
             Selected = Options.Purchases;
+            LoadGraphs();
+            UpdateTotals();
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
@@ -357,6 +335,8 @@ namespace Sales_Tracker
             ResizeControls();
             Main_Panel.Controls.Remove(Purchases_DataGridView);
             Selected = Options.Sales;
+            LoadGraphs();
+            UpdateTotals();
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -401,7 +381,6 @@ namespace Sales_Tracker
         private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            FilterData();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -448,6 +427,7 @@ namespace Sales_Tracker
 
         // DataGridView
         public bool isDataGridViewLoading;
+        public Options Selected;
         public enum Options
         {
             Purchases,
@@ -455,7 +435,6 @@ namespace Sales_Tracker
             ProductPurchases,
             ProductSales
         }
-        public Options Selected;
         public enum PurchaseColumns
         {
             PurchaseID,
@@ -492,7 +471,6 @@ namespace Sales_Tracker
             { PurchaseColumns.Tax, "Tax" },
             { PurchaseColumns.TotalPrice, "Total price" }
         };
-
         public readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
         {
             { SalesColumns.SalesID, "Sales ID" },
@@ -505,7 +483,7 @@ namespace Sales_Tracker
             { SalesColumns.Tax, "Tax" },
             { SalesColumns.TotalPrice, "Total price" }
         };
-        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
+        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         public Guna2DataGridView selectedDataGridView;
         private void ConstructDataGridViews()
         {
@@ -631,7 +609,6 @@ namespace Sales_Tracker
             Selected = Options.Purchases;
 
             AddRowsFromFile();
-            FilterData();
             UpdateTotals();
             isDataGridViewLoading = false;
             AlignTotalLabels();
@@ -647,7 +624,6 @@ namespace Sales_Tracker
             Selected = Options.Sales;
 
             AddRowsFromFile();
-            FilterData();
             UpdateTotals();
             isDataGridViewLoading = false;
             AlignTotalLabels();
@@ -740,9 +716,6 @@ namespace Sales_Tracker
 
             Price_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
             Price_Label.Width = selectedDataGridView.Columns[totalPriceColumn].Width;
-        }
-        private void FilterData()
-        {
         }
         private string GetFilePathForDataGridView()
         {
@@ -864,7 +837,7 @@ namespace Sales_Tracker
         }
 
         // Misc.
-        private void CloseAllPanels(object sender, EventArgs e)
+        private void CloseAllPanels(object? sender, EventArgs? e)
         {
             UI.CloseAllPanels(null, null);
         }

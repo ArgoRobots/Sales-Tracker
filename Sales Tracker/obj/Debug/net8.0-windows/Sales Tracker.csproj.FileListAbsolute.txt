@@ -1,8 +1,25 @@
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.exe
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.dll.config
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.deps.json
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.runtimeconfig.json
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.dll
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.pdb
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Guna.Charts.WinForms.dll
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Guna.UI2.dll
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Ookii.Dialogs.WinForms.dll
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\System.Management.dll
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\runtimes\win\lib\net7.0\System.Management.dll
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.AssemblyReference.cache
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.AddPurchase_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.AddSale_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Classes.BaseForm.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.CustomMessage_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Export_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Log_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.MainMenu_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Products_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Properties.Resources.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Menus.ConfigureProject_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.GetStarted_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Startup_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.GenerateResource.cache
@@ -10,27 +27,10 @@ C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sale
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.AssemblyInfoInputs.cache
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.AssemblyInfo.cs
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.CoreCompileInputs.cache
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.CustomMessage_Form.resources
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Menus.ConfigureProject_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.sourcelink.json
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Export_Form.resources
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Products_Form.resources
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.exe
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.dll.config
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.deps.json
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.runtimeconfig.json
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.dll
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Sales Tracker.pdb
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Guna.UI2.dll
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Ookii.Dialogs.WinForms.dll
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\System.Management.dll
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\runtimes\win\lib\net7.0\System.Management.dll
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tr.74E33DCB.Up2Date
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.dll
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\refint\Sales Tracker.dll
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.pdb
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.genruntimeconfig.cache
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\ref\Sales Tracker.dll
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.AddPurchase_Form.resources
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.AddSale_Form.resources
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\bin\Debug\net8.0-windows\Guna.Charts.WinForms.dll

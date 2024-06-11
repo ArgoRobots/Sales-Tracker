@@ -52,7 +52,7 @@
           "dependencies": {
             "Guna.Charts.WinForms": {
               "target": "Package",
-              "version": "[1.0.9, )"
+              "version": "[1.0.8, )"
             },
             "Guna.UI2.WinForms": {
               "target": "Package",
