@@ -3,15 +3,15 @@
   "WorkspaceRootPath": "C:\\Users\\evand\\Desktop\\Sales Tracker\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\graphs\\bar.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\graphs\\bar.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\graphs\\pie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\graphs\\pie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|C:\\Users\\evand\\Desktop\\Sales Tracker\\sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,15 +34,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Pie.cs",
-              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Graphs\\Pie.cs",
-              "RelativeDocumentMoniker": "Sales Tracker\\Graphs\\Pie.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Graphs\\Pie.cs",
-              "RelativeToolTip": "Sales Tracker\\Graphs\\Pie.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAfAAAA",
+              "DocumentIndex": 0,
+              "Title": "Bar.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Graphs\\Bar.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Graphs\\Bar.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Graphs\\Bar.cs",
+              "RelativeToolTip": "Sales Tracker\\Graphs\\Bar.cs",
+              "ViewState": "AQIAAHMAAAAAAAAAAAAwwIEAAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-11T20:29:38.182Z",
+              "WhenOpened": "2024-06-11T21:56:18.766Z",
               "EditorCaption": ""
             },
             {
@@ -59,13 +59,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MainMenu_Form.cs",
               "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\MainMenu_Form.cs",
               "RelativeDocumentMoniker": "Sales Tracker\\MainMenu_Form.cs",
               "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\MainMenu_Form.cs",
               "RelativeToolTip": "Sales Tracker\\MainMenu_Form.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAAAAAA",
+              "ViewState": "AQIAAB0AAAAAAAAAAAAQwGkAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-11T09:31:58.357Z",
               "EditorCaption": ""

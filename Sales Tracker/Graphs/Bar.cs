@@ -1,6 +1,8 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using System.Data;
+using System.Windows.Forms;
 using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker.Graphs
@@ -12,7 +14,7 @@ namespace Sales_Tracker.Graphs
             chart.XAxes.GridLines.Display = false;
             chart.Legend.Display = false;
         }
-        public static void LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
+        public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
         {
             ConfigureChart(chart);
 
@@ -20,7 +22,7 @@ namespace Sales_Tracker.Graphs
             {
                 chart.Datasets.Clear();
                 chart.Update();
-                return;
+                return 0;
             }
 
             GunaBarDataset dataset = new()
@@ -29,32 +31,11 @@ namespace Sales_Tracker.Graphs
                 FillColors = [CustomColors.accent_blue]
             };
 
-            DateTime minDate = DateTime.MaxValue;
-            DateTime maxDate = DateTime.MinValue;
+            double grandTotal = 0;
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(dataGridView.Rows);
 
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
-                if (date < minDate) { minDate = date; }
-                if (date > maxDate) { maxDate = date; }
-            }
-
-            // Determine the grouping type
-            TimeSpan dateRange = maxDate - minDate;
-            string dateFormat;
-
-            if (dateRange.TotalDays > 365) // More than a year
-            {
-                dateFormat = "yyyy";
-            }
-            else if (dateRange.TotalDays > 30) // More than a month
-            {
-                dateFormat = "yyyy-MM";
-            }
-            else // Default to days
-            {
-                dateFormat = "yyyy-MM-dd";
-            }
+            string dateFormat = GetDateFormat(maxDate - minDate);
 
             // Group and sum the total revenue based on the determined date format
             Dictionary<string, double> revenueByDate = [];
@@ -68,6 +49,7 @@ namespace Sales_Tracker.Graphs
                 double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
 
                 double totalRevenue = quantity * pricePerUnit + shipping + tax;
+                grandTotal += totalRevenue;
                 string formattedDate = date.ToString(dateFormat);
 
                 if (revenueByDate.ContainsKey(formattedDate))
@@ -80,37 +62,24 @@ namespace Sales_Tracker.Graphs
                 }
             }
 
-            // Sort the dictionary by date keys
-            var sortedRevenueByDate = revenueByDate.OrderBy(kvp => DateTime.ParseExact(kvp.Key, dateFormat, null));
-
-            // Add the data points to the dataset
-            foreach (KeyValuePair<string, double> kvp in sortedRevenueByDate)
-            {
-                dataset.DataPoints.Add(kvp.Key, kvp.Value);
-            }
-
-            if (dataset.DataPoints.Count == 1)
-            {
-                dataset.BarPercentage = 0.2f;
-            }
-            else if (dataset.DataPoints.Count < 3)
-            {
-                dataset.BarPercentage = 0.4f;
-            }
+            SortAndAddDataSetAndSetBarPercentage(revenueByDate, dateFormat, dataset);
 
             // Update the chart
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
             chart.Update();
+
+            return grandTotal;
         }
-        public static void LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart)
+        public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
             ConfigureChart(chart);
 
             if (salesDataGridView.Rows.Count == 0 && purchasesDataGridView.Rows.Count == 0)
             {
                 chart.Datasets.Clear();
-                chart.Update(); return;
+                chart.Update();
+                return 0;
             }
 
             GunaBarDataset dataset = new()
@@ -119,39 +88,11 @@ namespace Sales_Tracker.Graphs
                 FillColors = [CustomColors.accent_blue]
             };
 
-            DateTime minDate = DateTime.MaxValue;
-            DateTime maxDate = DateTime.MinValue;
+            double grandTotal = 0;
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows, purchasesDataGridView.Rows);
 
-            // Determine the minimum and maximum date from sales and purchases
-            foreach (DataGridViewRow row in salesDataGridView.Rows)
-            {
-                DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
-                if (date < minDate) { minDate = date; }
-                if (date > maxDate) { maxDate = date; }
-            }
-            foreach (DataGridViewRow row in purchasesDataGridView.Rows)
-            {
-                DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
-                if (date < minDate) { minDate = date; }
-                if (date > maxDate) { maxDate = date; }
-            }
-
-            // Determine the grouping type
-            TimeSpan dateRange = maxDate - minDate;
-            string dateFormat;
-
-            if (dateRange.TotalDays > 365) // More than a year
-            {
-                dateFormat = "yyyy";
-            }
-            else if (dateRange.TotalDays > 30) // More than a month
-            {
-                dateFormat = "yyyy-MM";
-            }
-            else // Default to days
-            {
-                dateFormat = "yyyy-MM-dd";
-            }
+            string dateFormat = GetDateFormat(maxDate - minDate);
 
             // Group and sum the total profit based on the determined date format
             Dictionary<string, double> profitByDate = [];
@@ -184,8 +125,8 @@ namespace Sales_Tracker.Graphs
                 double costPerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
                 double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
-                double totalCost = quantity * costPerUnit + shipping + tax;
 
+                double totalCost = quantity * costPerUnit + shipping + tax;
                 string formattedDate = date.ToString(dateFormat);
 
                 if (profitByDate.ContainsKey(formattedDate))
@@ -198,15 +139,35 @@ namespace Sales_Tracker.Graphs
                 }
             }
 
-            // Sort the dictionary by date keys
-            var sortedProfitByDate = profitByDate.OrderBy(kvp => DateTime.ParseExact(kvp.Key, dateFormat, null));
+            // get grandTotal
+            foreach (KeyValuePair<string, double> item in profitByDate)
+            {
+                grandTotal += item.Value;
+            }
 
-            // Add the data points to the dataset
+            SortAndAddDataSetAndSetBarPercentage(profitByDate, dateFormat, dataset);
+
+            // Update the chart
+            chart.Datasets.Clear();
+            chart.Datasets.Add(dataset);
+            chart.Update();
+
+            return grandTotal;
+        }
+
+        // Functions
+        private static void SortAndAddDataSetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, GunaBarDataset dataset)
+        {
+            // Sort the dictionary by date keys
+            IOrderedEnumerable<KeyValuePair<string, double>> sortedProfitByDate = list.OrderBy(kvp => DateTime.ParseExact(kvp.Key, dateFormat, null));
+
+            // Add dataset
             foreach (KeyValuePair<string, double> kvp in sortedProfitByDate)
             {
                 dataset.DataPoints.Add(kvp.Key, kvp.Value);
             }
 
+            // Set BarPercentage
             if (dataset.DataPoints.Count == 1)
             {
                 dataset.BarPercentage = 0.2f;
@@ -215,11 +176,40 @@ namespace Sales_Tracker.Graphs
             {
                 dataset.BarPercentage = 0.4f;
             }
+        }
+        private static string GetDateFormat(TimeSpan dateRange)
+        {
+            if (dateRange.TotalDays > 365)  // More than a year
+            {
+                return "yyyy";
+            }
+            else if (dateRange.TotalDays > 30)  // More than a month
+            {
+                return "yyyy-MM";
+            }
+            else // Default to days
+            {
+                return "yyyy-MM-dd";
+            }
+        }
+        private static (DateTime minDate, DateTime maxDate) GetMinMaxDate(params DataGridViewRowCollection[] rowCollections)
+        {
+            DateTime minDate = DateTime.MaxValue;
+            DateTime maxDate = DateTime.MinValue;
 
-            // Update the chart
-            chart.Datasets.Clear();
-            chart.Datasets.Add(dataset);
-            chart.Update();
+            foreach (var rows in rowCollections)
+            {
+                foreach (DataGridViewRow row in rows)
+                {
+                    if (row.Cells[PurchaseColumns.Date.ToString()].Value != null)
+                    {
+                        DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
+                        if (date < minDate) { minDate = date; }
+                        if (date > maxDate) { maxDate = date; }
+                    }
+                }
+            }
+            return (minDate, maxDate);
         }
     }
 }

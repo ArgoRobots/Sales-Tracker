@@ -60,24 +60,51 @@ namespace Sales_Tracker
                 }
             }
         }
+        public void LoadSales()
+        {
+            selectedDataGridView = Sales_DataGridView;
+            isDataGridViewLoading = true;
+
+            LoadColumnsInDataGridView(selectedDataGridView, SalesColumnHeaders);
+            Selected = Options.Sales;
+
+            AddRowsFromFile();
+            UpdateTotals();
+            isDataGridViewLoading = false;
+            AlignTotalLabels();
+        }
+        public void LoadPurchases()
+        {
+            selectedDataGridView = Purchases_DataGridView;
+            isDataGridViewLoading = true;
+
+            LoadColumnsInDataGridView(selectedDataGridView, PurchaseColumnHeaders);
+            Selected = Options.Purchases;
+
+            AddRowsFromFile();
+            UpdateTotals();
+            isDataGridViewLoading = false;
+            AlignTotalLabels();
+        }
         private void LoadGraphs()
         {
+            double total;
             if (Selected == Options.Sales)
             {
-                Bar_Label.Text = "Total revenue: $";
-                Bar.LoadTotalsIntoChart(Sales_DataGridView, Bar_GunaChart);
-                Pie_Label.Text = "Distribution of revenue";
+                total = Bar.LoadTotalsIntoChart(Sales_DataGridView, Bar_GunaChart);
+                Bar_Label.Text = $"Total revenue: ${total}";
                 Pie.LoadDistributionIntoChart(Sales_DataGridView, Pie_GunaChart);
+                Pie_Label.Text = "Distribution of revenue";
             }
             else
             {
-                Bar_Label.Text = "Total expenses $";
-                Bar.LoadTotalsIntoChart(Purchases_DataGridView, Bar_GunaChart);
-                Pie_Label.Text = "Distribution of expenses";
+                total = Bar.LoadTotalsIntoChart(Purchases_DataGridView, Bar_GunaChart);
+                Bar_Label.Text = $"Total expenses ${total}";
                 Pie.LoadDistributionIntoChart(Purchases_DataGridView, Pie_GunaChart);
+                Pie_Label.Text = "Distribution of expenses";
             }
-            Bar2_Label.Text = "Total profits: $";
-            Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart);
+            total = Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart);
+            Bar2_Label.Text = $"Total profits: ${total}";
         }
         private bool DoNotUpdateTheme;
         private void LoadDataFromSetting()
@@ -597,36 +624,6 @@ namespace Sales_Tracker
 
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
-        }
-        public void LoadPurchases()
-        {
-            selectedDataGridView = Purchases_DataGridView;
-            isDataGridViewLoading = true;
-            selectedDataGridView.Columns.Clear();
-            selectedDataGridView.Rows.Clear();
-
-            LoadColumnsInDataGridView(selectedDataGridView, PurchaseColumnHeaders);
-            Selected = Options.Purchases;
-
-            AddRowsFromFile();
-            UpdateTotals();
-            isDataGridViewLoading = false;
-            AlignTotalLabels();
-        }
-        public void LoadSales()
-        {
-            selectedDataGridView = Sales_DataGridView;
-            isDataGridViewLoading = true;
-            selectedDataGridView.Columns.Clear();
-            selectedDataGridView.Rows.Clear();
-
-            LoadColumnsInDataGridView(selectedDataGridView, SalesColumnHeaders);
-            Selected = Options.Sales;
-
-            AddRowsFromFile();
-            UpdateTotals();
-            isDataGridViewLoading = false;
-            AlignTotalLabels();
         }
         public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
         {
