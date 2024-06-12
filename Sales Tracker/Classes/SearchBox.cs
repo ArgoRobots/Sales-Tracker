@@ -293,7 +293,7 @@ namespace Sales_Tracker.Classes
             controlToRemoveSearchBox.Controls.Remove(SearchResultBoxContainer);
             SearchResultBox.Controls.Clear();
         }
-        public static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        public static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object? sender, PreviewKeyDownEventArgs e)
         {
             // Some key presses, such as the TAB, RETURN, ESC, and arrow keys, are ignored by some controls because they are not considered input key presses.
             // You can handle PreviewKeyDown and set them as input key.

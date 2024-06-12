@@ -5,7 +5,7 @@ namespace Sales_Tracker.Startup.Menus
     public partial class ConfigureProject_Form : BaseForm
     {
         // Init.
-        public static ConfigureProject_Form Instance { get; set; }
+        public static ConfigureProject_Form Instance { get; private set; }
         public ConfigureProject_Form()
         {
             InitializeComponent();

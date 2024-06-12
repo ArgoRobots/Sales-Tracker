@@ -7,7 +7,7 @@ namespace Sales_Tracker
     public partial class Log_Form : BaseForm
     {
         // Init
-        public static Log_Form Instance { get; set; }
+        public static Log_Form Instance { get; private set; }
         public Log_Form()
         {
             InitializeComponent();

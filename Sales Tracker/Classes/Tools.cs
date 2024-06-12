@@ -67,7 +67,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Allow numbers, one period, and one minus sign at the front.
         /// </summary>
-        public static void OnlyAllowNumbersAndOneDecimalInGunaTextBox(object sender, KeyPressEventArgs e)
+        public static void OnlyAllowNumbersAndOneDecimalInGunaTextBox(object? sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
                 (e.KeyChar != '.' || (sender as Guna2TextBox).Text.Contains('.')))
@@ -75,21 +75,21 @@ namespace Sales_Tracker.Classes
                 e.Handled = true;
             }
         }
-        public static void OnlyAllowNumbersInTextBox(object sender, KeyPressEventArgs e)
+        public static void OnlyAllowNumbersInTextBox(object? sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
             }
         }
-        public static void OnlyAllowLettersInTextBox(object sender, KeyPressEventArgs e)
+        public static void OnlyAllowLettersInTextBox(object? sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
             {
                 e.Handled = true;
             }
         }
-        public static void MakeSureTextIsNotSelectedAndCursorIsAtEnd(object sender, EventArgs e)
+        public static void MakeSureTextIsNotSelectedAndCursorIsAtEnd(object? sender, EventArgs e)
         {
             Guna2TextBox senderTextBox = (Guna2TextBox)sender;
             senderTextBox.SelectionStart = senderTextBox.Text.Length;

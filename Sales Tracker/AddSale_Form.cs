@@ -5,7 +5,7 @@ namespace Sales_Tracker
     public partial class AddSale_Form : BaseForm
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
-        public static AddSale_Form Instance { get; set; }
+        public static AddSale_Form Instance { get; private set; }
         public AddSale_Form()
         {
             InitializeComponent();
@@ -40,8 +40,8 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             int maxHeight = 150;
-            ItemName_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemName_TextBox, MainMenu_Form.Instance.GetAllProductSaleNames(), this, maxHeight); };
-            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemName_TextBox, MainMenu_Form.Instance.GetAllProductSaleNames(), this, AddSale_Button, maxHeight); };
+            ItemName_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductCategorySaleNames(), this, maxHeight); };
+            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductCategorySaleNames(), this, AddSale_Button, maxHeight); };
             ItemName_TextBox.TextChanged += ValidateInputs;
             ItemName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemName_TextBox, this, AddSale_Label, e); };
@@ -60,21 +60,21 @@ namespace Sales_Tracker
             string saleID = SaleID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string itemName = ItemName_TextBox.Text;
-            string categoryName = ItemCategory_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+            Product? product = MainMenu_Form.GetProductByName(MainMenu_Form.Instance.productCategorySaleList, itemName);
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(saleID, buyerName, itemName, categoryName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(saleID, buyerName, itemName, product?.ProductName ?? "error not found", date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
             Log.Write(3, $"Added sale '{ItemName_TextBox.Text}'");
         }
 
         // Functions
-        private void ValidateInputs(object sender, EventArgs e)
+        private void ValidateInputs(object? sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(SaleID_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) &&
@@ -83,7 +83,6 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
-                                   Date_DateTimePicker.Value != null &&
                                    (int)AddSale_Button.Tag == 1;
 
             AddSale_Button.Enabled = allFieldsFilled;

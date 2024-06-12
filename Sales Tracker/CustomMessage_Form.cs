@@ -7,7 +7,7 @@ namespace Sales_Tracker
 {
     public partial class CustomMessage_Form : BaseForm
     {
-        public static CustomMessage_Form Instance { get; set; }
+        public static CustomMessage_Form Instance { get; private set; }
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             InitializeComponent();

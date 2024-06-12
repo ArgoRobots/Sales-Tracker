@@ -7,7 +7,7 @@ namespace Sales_Tracker
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         // Init
-        public static Products_Form Instance { get; set; }
+        public static Products_Form Instance { get; private set; }
         private readonly MainMenu_Form.Options oldOption;
         Guna2DataGridView oldselectedDataGridView;
         public Products_Form()
@@ -18,6 +18,7 @@ namespace Sales_Tracker
             oldOption = MainMenu_Form.Instance.Selected;
             oldselectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             AddEventHandlersToTextBoxes();
+            AddSearchBoxEvents();
             ConstructDataGridViews();
             LoadProducts();
             Theme.SetThemeForForm(this);
@@ -32,17 +33,43 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             CountryOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
         }
+        private void AddSearchBoxEvents()
+        {
+            int maxHeight = 150;
+            ItemCategory_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemCategory_TextBox, GetListForSearchBox(), this, maxHeight); };
+            ItemCategory_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemCategory_TextBox, GetListForSearchBox(), this, AddProduct_Button, maxHeight); };
+            ItemCategory_TextBox.TextChanged += ValidateInputs;
+            ItemCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            ItemCategory_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemCategory_TextBox, this, AddProduct_Label, e); };
+        }
+        private List<string> GetListForSearchBox()
+        {
+            if (Purchase_RadioButton.Checked)
+            {
+                return MainMenu_Form.Instance.GetProductCategoryPurchaseNames();
+            }
+            else
+            {
+                return MainMenu_Form.Instance.GetProductCategorySaleNames();
+            }
+        }
         private void LoadProducts()
         {
             MainMenu_Form.Instance.isDataGridViewLoading = true;
 
-            foreach (Product product in MainMenu_Form.Instance.productPurchaseList)
+            foreach (Category category in MainMenu_Form.Instance.productCategoryPurchaseList)
             {
-                Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                foreach (Product product in category.ProductList)
+                {
+                    Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                }
             }
-            foreach (Product product in MainMenu_Form.Instance.productSaleList)
+            foreach (Category category in MainMenu_Form.Instance.productCategorySaleList)
             {
-                Sales_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                foreach (Product product in category.ProductList)
+                {
+                    Sales_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                }
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
         }
@@ -72,7 +99,7 @@ namespace Sales_Tracker
         private const byte heightForDataGridView = 230;
         private void ConstructDataGridViews()
         {
-            Size size = new(690, 280);
+            Size size = new(840, 280);
             Purchases_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
@@ -87,18 +114,18 @@ namespace Sales_Tracker
         }
 
         // Event handlers
-        private void AddPurchase_Button_Click(object sender, EventArgs e)
+        private void AddProduct_Button_Click(object sender, EventArgs e)
         {
             Product product = new(ProductName_TextBox.Text, SellerName_TextBox.Text, CountryOfOrigin_TextBox.Text);
             if (Purchase_RadioButton.Checked)
             {
                 Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.Instance.productPurchaseList.Add(product);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, ItemCategory_TextBox.Text, product);
             }
             else
             {
                 Sales_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.Instance.productSaleList.Add(product);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, ItemCategory_TextBox.Text, product);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");

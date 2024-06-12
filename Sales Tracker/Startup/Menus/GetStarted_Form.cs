@@ -6,7 +6,7 @@ namespace Sales_Tracker.Startup
     public partial class GetStarted_Form : BaseForm
     {
         // Init.
-        public static GetStarted_Form Instance { get; set; }
+        public static GetStarted_Form Instance { get; private set; }
         public GetStarted_Form()
         {
             InitializeComponent();

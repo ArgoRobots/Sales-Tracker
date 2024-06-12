@@ -11,7 +11,7 @@ namespace Sales_Tracker
         public readonly static List<string> thingsThatHaveChangedInFile = [];
 
         // Init
-        public static MainMenu_Form Instance { get; set; }
+        public static MainMenu_Form? Instance { get; private set; }
         public MainMenu_Form()
         {
             InitializeComponent();
@@ -40,23 +40,27 @@ namespace Sales_Tracker
         }
         private void LoadProducts()
         {
-            string[] lines = Directories.ReadAllLinesInFile(Directories.productPurchases_file);
+            LoadProductsFromFile(Directories.productPurchases_file, productCategoryPurchaseList);
+            LoadProductsFromFile(Directories.productSales_file, productCategorySaleList);
+        }
+        private static void LoadProductsFromFile(string filePath, List<Category> categoryList)
+        {
+            string[] lines = Directories.ReadAllLinesInFile(filePath);
             foreach (string line in lines)
             {
                 string[] fields = line.Split(',');
-                if (fields.Length >= 3)
+                if (fields.Length == 4)
                 {
-                    productPurchaseList.Add(new Product(fields[0], fields[1], fields[2]));
-                }
-            }
+                    string categoryName = fields[2];
+                    Category category = categoryList.FirstOrDefault(c => c.Name == categoryName);
 
-            lines = Directories.ReadAllLinesInFile(Directories.productSales_file);
-            foreach (string line in lines)
-            {
-                string[] fields = line.Split(',');
-                if (fields.Length >= 3)
-                {
-                    productSaleList.Add(new Product(fields[0], fields[1], fields[2]));
+                    if (category == null)
+                    {
+                        category = new Category(categoryName);
+                        categoryList.Add(category);
+                    }
+
+                    category.AddProduct(new Product(fields[0], fields[1], fields[3]));
                 }
             }
         }
@@ -383,15 +387,45 @@ namespace Sales_Tracker
         {
 
         }
-        public List<Product> productSaleList = [];
-        public List<Product> productPurchaseList = [];
-        public List<string> GetAllProductSaleNames()
+        public List<Category> productCategorySaleList = [];
+        public List<Category> productCategoryPurchaseList = [];
+        public List<string> GetProductCategorySaleNames()
         {
-            return productSaleList.Select(s => s.ProductName).ToList();
+            return productCategorySaleList.Select(s => s.Name).ToList();
         }
-        public List<string> GetAllProductPurchaseNames()
+        public List<string> GetProductCategoryPurchaseNames()
         {
-            return productPurchaseList.Select(p => p.ProductName).ToList();
+            return productCategoryPurchaseList.Select(p => p.Name).ToList();
+        }
+        public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
+        {
+            Category? category = GetCategoryByName(categoryList, categoryName);
+            category?.AddProduct(product);
+        }
+        public static Category? GetCategoryByName(List<Category> categoryList, string categoryName)
+        {
+            foreach (Category category in categoryList)
+            {
+                if (category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return category;
+                }
+            }
+            return null;
+        }
+        public static Product? GetProductByName(List<Category> categoryList, string productName)
+        {
+            foreach (Category category in categoryList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.ProductName.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return product;
+                    }
+                }
+            }
+            return null;
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -553,7 +587,7 @@ namespace Sales_Tracker
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.KeyDown += DataGridView_KeyDown;
         }
-        private void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        private void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
         {
             string type = "", columnName = "";
             byte logIndex = 0;
@@ -585,7 +619,7 @@ namespace Sales_Tracker
 
             Log.Write(logIndex, $"Deleted {type} '{name}'");
         }
-        public void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        public void DataGridView_ColumnWidthChanged(object? sender, DataGridViewColumnEventArgs e)
         {
             AlignTotalLabels();
         }
@@ -609,12 +643,12 @@ namespace Sales_Tracker
                 selectedDataGridView.Rows.Add(cellValues);
             }
         }
-        private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void DataGridView_RowsAdded(object? sender, DataGridViewRowsAddedEventArgs e)
         {
             SaveDataGridViewToFile();
             DataGridViewRowChanged();
         }
-        private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        private void DataGridView_RowsRemoved(object? sender, DataGridViewRowsRemovedEventArgs e)
         {
             SaveDataGridViewToFile();
             DataGridViewRowChanged();
@@ -659,7 +693,7 @@ namespace Sales_Tracker
                     cellValues.Add(cell.Value?.ToString() ?? string.Empty);
                 }
 
-                string line = string.Join(",", cellValues); // Join cell values with a comma
+                string line = string.Join(",", cellValues);  // Join cell values with a comma
                 linesInDataGridView.Add(line);
             }
 
@@ -757,23 +791,14 @@ namespace Sales_Tracker
         }
         private string GetFilePathForDataGridView()
         {
-            if (Selected == Options.Purchases)
+            return Selected switch
             {
-                return Directories.purchases_file;
-            }
-            else if (Selected == Options.Sales)
-            {
-                return Directories.sales_file;
-            }
-            else if (Selected == Options.ProductPurchases)
-            {
-                return Directories.productPurchases_file;
-            }
-            else if (Selected == Options.ProductSales)
-            {
-                return Directories.productSales_file;
-            }
-            return "";
+                Options.Purchases => Directories.purchases_file,
+                Options.Sales => Directories.sales_file,
+                Options.ProductPurchases => Directories.productPurchases_file,
+                Options.ProductSales => Directories.productSales_file,
+                _ => ""
+            };
         }
 
 
@@ -844,7 +869,7 @@ namespace Sales_Tracker
             Label label = (Label)messagePanel.Controls.Find("label", false).FirstOrDefault();
             label.Text = text;
         }
-        private void MessagePanelClose(object sender, EventArgs e)
+        private void MessagePanelClose(object? sender, EventArgs e)
         {
             Controls.Remove(messagePanel);
             MessagePanel_timer.Enabled = false;
