@@ -11,7 +11,7 @@ namespace Sales_Tracker.Classes
         {
             SearchResultBoxContainer = new Guna2Panel
             {
-                Width = 180,
+                Width = 200,
                 BorderStyle = DashStyle.Solid,
                 BorderColor = Color.Gray,
                 BorderThickness = 1,
@@ -21,7 +21,7 @@ namespace Sales_Tracker.Classes
             };
             SearchResultBox = new Guna2Panel
             {
-                Width = 177,
+                Width = 197,
                 Location = new Point(1, 1),
                 FillColor = CustomColors.controlBack
             };
@@ -69,7 +69,7 @@ namespace Sales_Tracker.Classes
             // Add variables to variableBox
             for (int i = 0; i < metaList.Count; i++)
             {
-                Guna2Button gBtn = UI.ConstructGBtn(null, metaList[i].name, 0, new Size(177, 24), new Point(1, i * 24 + 1), SearchResultBox);
+                Guna2Button gBtn = UI.ConstructGBtn(null, metaList[i].name, 0, new Size(197, 24), new Point(1, i * 24 + 1), SearchResultBox);
                 gBtn.Font = new Font("Segoe UI", 10);
                 gBtn.FillColor = CustomColors.controlBack;
                 gBtn.ForeColor = CustomColors.text;

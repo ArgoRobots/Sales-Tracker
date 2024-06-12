@@ -42,6 +42,7 @@ namespace Sales_Tracker
             int maxHeight = 150;
             ItemName_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemName_TextBox, MainMenu_Form.Instance.GetAllProductPurchaseNames(), this, maxHeight); };
             ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemName_TextBox, MainMenu_Form.Instance.GetAllProductPurchaseNames(), this, AddPurchase_Button, maxHeight); };
+            ItemName_TextBox.TextChanged += ValidateInputs;
             ItemName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemName_TextBox, this, AddPurchase_Label, e); };
         }
@@ -62,6 +63,7 @@ namespace Sales_Tracker
             string purchaseID = PurchaseID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string itemName = ItemName_TextBox.Text;
+            string categoryName = ItemCategory_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
@@ -69,7 +71,7 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
             Log.Write(3, $"Added purchase '{ItemName_TextBox.Text}'");
         }
@@ -97,9 +99,10 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
-                                   Date_DateTimePicker.Value != null;
+                                   Date_DateTimePicker.Value != null &&
+                                   (int)AddPurchase_Button.Tag == 1;
 
-            AddPurchase_Button.Enabled = allFieldsFilled && (int)AddPurchase_Button.Tag == 1;
+            AddPurchase_Button.Enabled = allFieldsFilled;
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {

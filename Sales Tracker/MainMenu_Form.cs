@@ -375,6 +375,14 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             new AddSale_Form().ShowDialog();
         }
+        private void ManageProducts_Button_Click(object sender, EventArgs e)
+        {
+            new Products_Form().ShowDialog();
+        }
+        private void ManageCategories_Button_Click(object sender, EventArgs e)
+        {
+
+        }
         public List<Product> productSaleList = [];
         public List<Product> productPurchaseList = [];
         public List<string> GetAllProductSaleNames()
@@ -384,10 +392,6 @@ namespace Sales_Tracker
         public List<string> GetAllProductPurchaseNames()
         {
             return productPurchaseList.Select(p => p.ProductName).ToList();
-        }
-        private void ManageProducts_Button_Click(object sender, EventArgs e)
-        {
-            new Products_Form().ShowDialog();
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -467,6 +471,7 @@ namespace Sales_Tracker
             PurchaseID,
             BuyerName,
             ItemName,
+            CategoryName,
             Date,
             Quantity,
             PricePerUnit,
@@ -479,6 +484,7 @@ namespace Sales_Tracker
             SalesID,
             CustomerName,
             ItemName,
+            CategoryName,
             Date,
             Quantity,
             PricePerUnit,
@@ -491,6 +497,7 @@ namespace Sales_Tracker
             { PurchaseColumns.PurchaseID, "Purchase ID" },
             { PurchaseColumns.BuyerName, "Buyer name" },
             { PurchaseColumns.ItemName, "Item name" },
+            { PurchaseColumns.CategoryName, "Category name" },
             { PurchaseColumns.Date, "Date" },
             { PurchaseColumns.Quantity, "Quantity" },
             { PurchaseColumns.PricePerUnit, "Price per unit" },
@@ -503,6 +510,7 @@ namespace Sales_Tracker
             { SalesColumns.SalesID, "Sales ID" },
             { SalesColumns.CustomerName, "Customer name" },
             { SalesColumns.ItemName, "Item name" },
+            { SalesColumns.CategoryName, "Category name" },
             { SalesColumns.Date, "Date" },
             { SalesColumns.Quantity, "Quantity" },
             { SalesColumns.PricePerUnit, "Price per unit" },
@@ -542,7 +550,40 @@ namespace Sales_Tracker
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsAdded += DataGridView_RowsAdded;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
+            dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.KeyDown += DataGridView_KeyDown;
+        }
+        private void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            string type = "", columnName = "";
+            byte logIndex = 0;
+
+            switch (Selected)
+            {
+                case Options.Purchases:
+                    type = "purchase";
+                    columnName = PurchaseColumns.ItemName.ToString();
+                    logIndex = 2;
+                    break;
+                case Options.Sales:
+                    type = "sale";
+                    columnName = SalesColumns.ItemName.ToString();
+                    logIndex = 2;
+                    break;
+                case Options.ProductPurchases:
+                    type = "product for purchase";
+                    columnName = Products_Form.Columns.ProductName.ToString();
+                    logIndex = 3;
+                    break;
+                case Options.ProductSales:
+                    type = "product for sale";
+                    columnName = Products_Form.Columns.ProductName.ToString();
+                    logIndex = 3;
+                    break;
+            }
+            string name = e.Row.Cells[columnName].Value?.ToString();
+
+            Log.Write(logIndex, $"Deleted {type} '{name}'");
         }
         public void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {

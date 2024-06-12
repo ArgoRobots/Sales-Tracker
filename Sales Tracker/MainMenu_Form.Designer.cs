@@ -29,10 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -41,14 +39,31 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.Charts.WinForms.ChartFont chartFont1 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont2 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont3 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.ChartFont chartFont4 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid1 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick1 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont5 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid2 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.Tick tick2 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont6 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Grid grid3 = new Guna.Charts.WinForms.Grid();
+            Guna.Charts.WinForms.PointLabel pointLabel1 = new Guna.Charts.WinForms.PointLabel();
+            Guna.Charts.WinForms.ChartFont chartFont7 = new Guna.Charts.WinForms.ChartFont();
+            Guna.Charts.WinForms.Tick tick3 = new Guna.Charts.WinForms.Tick();
+            Guna.Charts.WinForms.ChartFont chartFont8 = new Guna.Charts.WinForms.ChartFont();
             Guna.Charts.WinForms.ChartFont chartFont9 = new Guna.Charts.WinForms.ChartFont();
             Guna.Charts.WinForms.ChartFont chartFont10 = new Guna.Charts.WinForms.ChartFont();
             Guna.Charts.WinForms.ChartFont chartFont11 = new Guna.Charts.WinForms.ChartFont();
@@ -79,29 +94,16 @@
             Guna.Charts.WinForms.ChartFont chartFont23 = new Guna.Charts.WinForms.ChartFont();
             Guna.Charts.WinForms.Tick tick9 = new Guna.Charts.WinForms.Tick();
             Guna.Charts.WinForms.ChartFont chartFont24 = new Guna.Charts.WinForms.ChartFont();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.Charts.WinForms.ChartFont chartFont1 = new Guna.Charts.WinForms.ChartFont();
-            Guna.Charts.WinForms.ChartFont chartFont2 = new Guna.Charts.WinForms.ChartFont();
-            Guna.Charts.WinForms.ChartFont chartFont3 = new Guna.Charts.WinForms.ChartFont();
-            Guna.Charts.WinForms.ChartFont chartFont4 = new Guna.Charts.WinForms.ChartFont();
-            Guna.Charts.WinForms.Grid grid1 = new Guna.Charts.WinForms.Grid();
-            Guna.Charts.WinForms.Tick tick1 = new Guna.Charts.WinForms.Tick();
-            Guna.Charts.WinForms.ChartFont chartFont5 = new Guna.Charts.WinForms.ChartFont();
-            Guna.Charts.WinForms.Grid grid2 = new Guna.Charts.WinForms.Grid();
-            Guna.Charts.WinForms.Tick tick2 = new Guna.Charts.WinForms.Tick();
-            Guna.Charts.WinForms.ChartFont chartFont6 = new Guna.Charts.WinForms.ChartFont();
-            Guna.Charts.WinForms.Grid grid3 = new Guna.Charts.WinForms.Grid();
-            Guna.Charts.WinForms.PointLabel pointLabel1 = new Guna.Charts.WinForms.PointLabel();
-            Guna.Charts.WinForms.ChartFont chartFont7 = new Guna.Charts.WinForms.ChartFont();
-            Guna.Charts.WinForms.Tick tick3 = new Guna.Charts.WinForms.Tick();
-            Guna.Charts.WinForms.ChartFont chartFont8 = new Guna.Charts.WinForms.ChartFont();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -118,6 +120,7 @@
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             File_Button = new Guna.UI2.WinForms.Guna2Button();
             Main_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            Pie_GunaChart = new Guna.Charts.WinForms.GunaChart();
             Bar2_Label = new Label();
             Pie_Label = new Label();
             Bar_Label = new Label();
@@ -133,7 +136,7 @@
             Quantity_Label = new Label();
             TimeRange_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             HideMenu_timer = new System.Windows.Forms.Timer(components);
-            Pie_GunaChart = new Guna.Charts.WinForms.GunaChart();
+            ManageCategories_Button = new Guna.UI2.WinForms.Guna2Button();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Main_Panel.SuspendLayout();
@@ -144,6 +147,7 @@
             // 
             MainTop_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             MainTop_Panel.BackColor = Color.FromArgb(242, 242, 242);
+            MainTop_Panel.Controls.Add(ManageCategories_Button);
             MainTop_Panel.Controls.Add(AddSale_Button);
             MainTop_Panel.Controls.Add(AddPurchase_Button);
             MainTop_Panel.Controls.Add(Edit_Button);
@@ -151,10 +155,10 @@
             MainTop_Panel.Controls.Add(DarkMode_ToggleSwitch);
             MainTop_Panel.Controls.Add(ManageProducts_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
-            MainTop_Panel.CustomizableEdges = customizableEdges11;
+            MainTop_Panel.CustomizableEdges = customizableEdges13;
             MainTop_Panel.Location = new Point(0, 30);
             MainTop_Panel.Name = "MainTop_Panel";
-            MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges14;
             MainTop_Panel.Size = new Size(1604, 80);
             MainTop_Panel.TabIndex = 6;
             MainTop_Panel.Click += CloseAllPanels;
@@ -166,7 +170,7 @@
             AddSale_Button.BorderColor = Color.LightGray;
             AddSale_Button.BorderRadius = 2;
             AddSale_Button.BorderThickness = 1;
-            AddSale_Button.CustomizableEdges = customizableEdges1;
+            AddSale_Button.CustomizableEdges = customizableEdges3;
             AddSale_Button.DisabledState.BorderColor = Color.DarkGray;
             AddSale_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddSale_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -174,9 +178,9 @@
             AddSale_Button.FillColor = Color.White;
             AddSale_Button.Font = new Font("Segoe UI", 9F);
             AddSale_Button.ForeColor = Color.Black;
-            AddSale_Button.Location = new Point(1284, 24);
+            AddSale_Button.Location = new Point(1119, 24);
             AddSale_Button.Name = "AddSale_Button";
-            AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddSale_Button.Size = new Size(150, 32);
             AddSale_Button.TabIndex = 13;
             AddSale_Button.Text = "Add sale";
@@ -189,7 +193,7 @@
             AddPurchase_Button.BorderColor = Color.LightGray;
             AddPurchase_Button.BorderRadius = 2;
             AddPurchase_Button.BorderThickness = 1;
-            AddPurchase_Button.CustomizableEdges = customizableEdges3;
+            AddPurchase_Button.CustomizableEdges = customizableEdges5;
             AddPurchase_Button.DisabledState.BorderColor = Color.DarkGray;
             AddPurchase_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             AddPurchase_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -197,9 +201,9 @@
             AddPurchase_Button.FillColor = Color.White;
             AddPurchase_Button.Font = new Font("Segoe UI", 9F);
             AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(1128, 24);
+            AddPurchase_Button.Location = new Point(963, 24);
             AddPurchase_Button.Name = "AddPurchase_Button";
-            AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             AddPurchase_Button.Size = new Size(150, 32);
             AddPurchase_Button.TabIndex = 12;
             AddPurchase_Button.Text = "Add Purchase";
@@ -209,7 +213,7 @@
             // 
             Edit_Button.BackColor = Color.Transparent;
             Edit_Button.BorderColor = Color.Empty;
-            Edit_Button.CustomizableEdges = customizableEdges5;
+            Edit_Button.CustomizableEdges = customizableEdges7;
             Edit_Button.DisabledState.BorderColor = Color.DarkGray;
             Edit_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Edit_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -222,7 +226,7 @@
             Edit_Button.ImageSize = new Size(18, 18);
             Edit_Button.Location = new Point(186, 25);
             Edit_Button.Name = "Edit_Button";
-            Edit_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Edit_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Edit_Button.Size = new Size(30, 30);
             Edit_Button.TabIndex = 6;
             Edit_Button.Click += Edit_Button_Click;
@@ -233,7 +237,7 @@
             ColorTheme_label.AutoSize = true;
             ColorTheme_label.BackColor = Color.Transparent;
             ColorTheme_label.Font = new Font("Segoe UI", 11.25F);
-            ColorTheme_label.Location = new Point(983, 30);
+            ColorTheme_label.Location = new Point(818, 30);
             ColorTheme_label.Name = "ColorTheme_label";
             ColorTheme_label.Size = new Size(83, 20);
             ColorTheme_label.TabIndex = 11;
@@ -250,10 +254,10 @@
             DarkMode_ToggleSwitch.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             DarkMode_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
             DarkMode_ToggleSwitch.CheckedState.InnerColor = Color.White;
-            DarkMode_ToggleSwitch.CustomizableEdges = customizableEdges7;
-            DarkMode_ToggleSwitch.Location = new Point(1072, 30);
+            DarkMode_ToggleSwitch.CustomizableEdges = customizableEdges9;
+            DarkMode_ToggleSwitch.Location = new Point(907, 30);
             DarkMode_ToggleSwitch.Name = "DarkMode_ToggleSwitch";
-            DarkMode_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            DarkMode_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges10;
             DarkMode_ToggleSwitch.Size = new Size(40, 20);
             DarkMode_ToggleSwitch.TabIndex = 10;
             DarkMode_ToggleSwitch.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -269,14 +273,14 @@
             ManageProducts_Button.BorderColor = Color.LightGray;
             ManageProducts_Button.BorderRadius = 2;
             ManageProducts_Button.BorderThickness = 1;
-            ManageProducts_Button.CustomizableEdges = customizableEdges9;
+            ManageProducts_Button.CustomizableEdges = customizableEdges11;
             ManageProducts_Button.FillColor = Color.White;
             ManageProducts_Button.Font = new Font("Segoe UI", 9.5F);
             ManageProducts_Button.ForeColor = Color.Black;
-            ManageProducts_Button.Location = new Point(1441, 24);
+            ManageProducts_Button.Location = new Point(1276, 24);
             ManageProducts_Button.Margin = new Padding(4, 3, 4, 3);
             ManageProducts_Button.Name = "ManageProducts_Button";
-            ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             ManageProducts_Button.Size = new Size(150, 32);
             ManageProducts_Button.TabIndex = 9;
             ManageProducts_Button.Text = "Manage products";
@@ -329,7 +333,7 @@
             // 
             Help_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             Help_Button.BackColor = Color.Transparent;
-            Help_Button.CustomizableEdges = customizableEdges13;
+            Help_Button.CustomizableEdges = customizableEdges15;
             Help_Button.DisabledState.BorderColor = Color.DarkGray;
             Help_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Help_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -342,7 +346,7 @@
             Help_Button.Location = new Point(1574, 0);
             Help_Button.Name = "Help_Button";
             Help_Button.PressedColor = Color.Empty;
-            Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Help_Button.Size = new Size(30, 30);
             Help_Button.TabIndex = 5;
             Help_Button.Click += Help_Button_Click;
@@ -351,7 +355,7 @@
             // 
             Save_Button.BackColor = Color.Transparent;
             Save_Button.BorderColor = Color.Empty;
-            Save_Button.CustomizableEdges = customizableEdges15;
+            Save_Button.CustomizableEdges = customizableEdges17;
             Save_Button.DisabledState.BorderColor = Color.DarkGray;
             Save_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Save_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -364,7 +368,7 @@
             Save_Button.ImageSize = new Size(18, 18);
             Save_Button.Location = new Point(42, 0);
             Save_Button.Name = "Save_Button";
-            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
             Save_Button.Size = new Size(30, 30);
             Save_Button.TabIndex = 4;
             Save_Button.Click += Save_Button_Click;
@@ -375,7 +379,7 @@
             // 
             File_Button.BackColor = Color.Transparent;
             File_Button.BorderColor = Color.Empty;
-            File_Button.CustomizableEdges = customizableEdges17;
+            File_Button.CustomizableEdges = customizableEdges19;
             File_Button.DisabledState.BorderColor = Color.DarkGray;
             File_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             File_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -388,7 +392,7 @@
             File_Button.ImageSize = new Size(35, 25);
             File_Button.Location = new Point(0, 0);
             File_Button.Name = "File_Button";
-            File_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            File_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
             File_Button.Size = new Size(42, 30);
             File_Button.TabIndex = 3;
             File_Button.Click += File_Button_Click;
@@ -408,13 +412,49 @@
             Main_Panel.Controls.Add(Totals_Label);
             Main_Panel.Controls.Add(Total_Panel);
             Main_Panel.Controls.Add(TimeRange_ComboBox);
-            Main_Panel.CustomizableEdges = customizableEdges27;
+            Main_Panel.CustomizableEdges = customizableEdges29;
             Main_Panel.Location = new Point(0, 110);
             Main_Panel.Name = "Main_Panel";
-            Main_Panel.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            Main_Panel.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Main_Panel.Size = new Size(1604, 930);
             Main_Panel.TabIndex = 8;
             Main_Panel.Click += CloseAllPanels;
+            // 
+            // Pie_GunaChart
+            // 
+            Pie_GunaChart.Anchor = AnchorStyles.Top;
+            Pie_GunaChart.BackColor = Color.White;
+            chartFont1.FontName = "Arial";
+            Pie_GunaChart.Legend.LabelFont = chartFont1;
+            Pie_GunaChart.Location = new Point(557, 80);
+            Pie_GunaChart.Name = "Pie_GunaChart";
+            Pie_GunaChart.Size = new Size(484, 330);
+            Pie_GunaChart.TabIndex = 17;
+            chartFont2.FontName = "Arial";
+            chartFont2.Size = 12;
+            chartFont2.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Pie_GunaChart.Title.Font = chartFont2;
+            chartFont3.FontName = "Arial";
+            Pie_GunaChart.Tooltips.BodyFont = chartFont3;
+            chartFont4.FontName = "Arial";
+            chartFont4.Size = 9;
+            chartFont4.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
+            Pie_GunaChart.Tooltips.TitleFont = chartFont4;
+            Pie_GunaChart.XAxes.GridLines = grid1;
+            chartFont5.FontName = "Arial";
+            tick1.Font = chartFont5;
+            Pie_GunaChart.XAxes.Ticks = tick1;
+            Pie_GunaChart.YAxes.GridLines = grid2;
+            chartFont6.FontName = "Arial";
+            tick2.Font = chartFont6;
+            Pie_GunaChart.YAxes.Ticks = tick2;
+            Pie_GunaChart.ZAxes.GridLines = grid3;
+            chartFont7.FontName = "Arial";
+            pointLabel1.Font = chartFont7;
+            Pie_GunaChart.ZAxes.PointLabels = pointLabel1;
+            chartFont8.FontName = "Arial";
+            tick3.Font = chartFont8;
+            Pie_GunaChart.ZAxes.Ticks = tick3;
             // 
             // Bar2_Label
             // 
@@ -530,7 +570,7 @@
             Sales_Button.BorderColor = Color.LightGray;
             Sales_Button.BorderRadius = 2;
             Sales_Button.BorderThickness = 1;
-            Sales_Button.CustomizableEdges = customizableEdges19;
+            Sales_Button.CustomizableEdges = customizableEdges21;
             Sales_Button.DisabledState.BorderColor = Color.DarkGray;
             Sales_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Sales_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -540,7 +580,7 @@
             Sales_Button.ForeColor = Color.Black;
             Sales_Button.Location = new Point(176, 10);
             Sales_Button.Name = "Sales_Button";
-            Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Sales_Button.Size = new Size(150, 35);
             Sales_Button.TabIndex = 7;
             Sales_Button.Text = "Sales";
@@ -552,7 +592,7 @@
             Purchases_Button.BorderColor = Color.LightGray;
             Purchases_Button.BorderRadius = 2;
             Purchases_Button.BorderThickness = 1;
-            Purchases_Button.CustomizableEdges = customizableEdges21;
+            Purchases_Button.CustomizableEdges = customizableEdges23;
             Purchases_Button.DisabledState.BorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -562,7 +602,7 @@
             Purchases_Button.ForeColor = Color.Black;
             Purchases_Button.Location = new Point(20, 10);
             Purchases_Button.Name = "Purchases_Button";
-            Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Purchases_Button.Size = new Size(150, 35);
             Purchases_Button.TabIndex = 6;
             Purchases_Button.Text = "Purchases";
@@ -588,10 +628,10 @@
             Total_Panel.Controls.Add(Shipping_Label);
             Total_Panel.Controls.Add(Price_Label);
             Total_Panel.Controls.Add(Quantity_Label);
-            Total_Panel.CustomizableEdges = customizableEdges23;
+            Total_Panel.CustomizableEdges = customizableEdges25;
             Total_Panel.Location = new Point(152, 832);
             Total_Panel.Name = "Total_Panel";
-            Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges26;
             Total_Panel.Size = new Size(1300, 50);
             Total_Panel.TabIndex = 2;
             Total_Panel.Click += CloseAllPanels;
@@ -648,7 +688,7 @@
             // 
             TimeRange_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             TimeRange_ComboBox.BackColor = Color.Transparent;
-            TimeRange_ComboBox.CustomizableEdges = customizableEdges25;
+            TimeRange_ComboBox.CustomizableEdges = customizableEdges27;
             TimeRange_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             TimeRange_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             TimeRange_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
@@ -659,47 +699,31 @@
             TimeRange_ComboBox.Items.AddRange(new object[] { "24 hours", "48 hours", "5 days", "10 days", "30 days", "100 days", "1 year", "2 years", "3 years", "5 years", "10 years", "All time" });
             TimeRange_ComboBox.Location = new Point(1444, 10);
             TimeRange_ComboBox.Name = "TimeRange_ComboBox";
-            TimeRange_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            TimeRange_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
             TimeRange_ComboBox.Size = new Size(140, 36);
             TimeRange_ComboBox.TabIndex = 1;
             TimeRange_ComboBox.SelectedIndexChanged += TimeRange_ComboBox_SelectedIndexChanged;
             TimeRange_ComboBox.Click += CloseAllPanels;
             // 
-            // Pie_GunaChart
+            // ManageCategories_Button
             // 
-            Pie_GunaChart.Anchor = AnchorStyles.Top;
-            Pie_GunaChart.BackColor = Color.White;
-            chartFont1.FontName = "Arial";
-            Pie_GunaChart.Legend.LabelFont = chartFont1;
-            Pie_GunaChart.Location = new Point(557, 80);
-            Pie_GunaChart.Name = "Pie_GunaChart";
-            Pie_GunaChart.Size = new Size(484, 330);
-            Pie_GunaChart.TabIndex = 17;
-            chartFont2.FontName = "Arial";
-            chartFont2.Size = 12;
-            chartFont2.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Pie_GunaChart.Title.Font = chartFont2;
-            chartFont3.FontName = "Arial";
-            Pie_GunaChart.Tooltips.BodyFont = chartFont3;
-            chartFont4.FontName = "Arial";
-            chartFont4.Size = 9;
-            chartFont4.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Pie_GunaChart.Tooltips.TitleFont = chartFont4;
-            Pie_GunaChart.XAxes.GridLines = grid1;
-            chartFont5.FontName = "Arial";
-            tick1.Font = chartFont5;
-            Pie_GunaChart.XAxes.Ticks = tick1;
-            Pie_GunaChart.YAxes.GridLines = grid2;
-            chartFont6.FontName = "Arial";
-            tick2.Font = chartFont6;
-            Pie_GunaChart.YAxes.Ticks = tick2;
-            Pie_GunaChart.ZAxes.GridLines = grid3;
-            chartFont7.FontName = "Arial";
-            pointLabel1.Font = chartFont7;
-            Pie_GunaChart.ZAxes.PointLabels = pointLabel1;
-            chartFont8.FontName = "Arial";
-            tick3.Font = chartFont8;
-            Pie_GunaChart.ZAxes.Ticks = tick3;
+            ManageCategories_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ManageCategories_Button.BackColor = Color.Transparent;
+            ManageCategories_Button.BorderColor = Color.LightGray;
+            ManageCategories_Button.BorderRadius = 2;
+            ManageCategories_Button.BorderThickness = 1;
+            ManageCategories_Button.CustomizableEdges = customizableEdges1;
+            ManageCategories_Button.FillColor = Color.White;
+            ManageCategories_Button.Font = new Font("Segoe UI", 9.5F);
+            ManageCategories_Button.ForeColor = Color.Black;
+            ManageCategories_Button.Location = new Point(1434, 24);
+            ManageCategories_Button.Margin = new Padding(4, 3, 4, 3);
+            ManageCategories_Button.Name = "ManageCategories_Button";
+            ManageCategories_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            ManageCategories_Button.Size = new Size(150, 32);
+            ManageCategories_Button.TabIndex = 14;
+            ManageCategories_Button.Text = "Manage categories";
+            ManageCategories_Button.Click += ManageCategories_Button_Click;
             // 
             // MainMenu_Form
             // 
@@ -765,5 +789,6 @@
         private Label Bar_Label;
         public Guna.UI2.WinForms.Guna2Button Sales_Button;
         private Guna.Charts.WinForms.GunaChart Pie_GunaChart;
+        private Guna.UI2.WinForms.Guna2Button ManageCategories_Button;
     }
 }

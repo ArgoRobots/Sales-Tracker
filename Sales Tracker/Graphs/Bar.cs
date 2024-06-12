@@ -139,7 +139,7 @@ namespace Sales_Tracker.Graphs
                 }
             }
 
-            // get grandTotal
+            // Get grandTotal
             foreach (KeyValuePair<string, double> item in profitByDate)
             {
                 grandTotal += item.Value;
