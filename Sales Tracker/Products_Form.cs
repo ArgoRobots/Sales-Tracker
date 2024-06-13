@@ -19,8 +19,8 @@ namespace Sales_Tracker
             AddSearchBoxEvents();
             ConstructDataGridViews();
             LoadProducts();
-            Theme.SetThemeForForm(this);
             Purchase_RadioButton.Checked = true;
+            Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -34,11 +34,11 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             int maxHeight = 150;
-            ItemCategory_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemCategory_TextBox, GetListForSearchBox(), this, maxHeight); };
-            ItemCategory_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemCategory_TextBox, GetListForSearchBox(), this, AddProduct_Button, maxHeight); };
-            ItemCategory_TextBox.TextChanged += ValidateInputs;
-            ItemCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-            ItemCategory_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemCategory_TextBox, this, AddProduct_Label, e); };
+            ProductCategory_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ProductCategory_TextBox, GetListForSearchBox(), this, maxHeight); };
+            ProductCategory_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ProductCategory_TextBox, GetListForSearchBox(), this, AddProduct_Button, maxHeight); };
+            ProductCategory_TextBox.TextChanged += ValidateInputs;
+            ProductCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            ProductCategory_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ProductCategory_TextBox, this, AddProduct_Label, e); };
         }
         private List<string> GetListForSearchBox()
         {
@@ -84,12 +84,14 @@ namespace Sales_Tracker
         public enum Columns
         {
             ProductName,
+            ProductCategory,
             SellerName,
             CountryOfOrigin
         }
         public readonly Dictionary<Columns, string> ColumnHeaders = new()
         {
             { Columns.ProductName, "Product name" },
+            { Columns.ProductCategory, "Product category" },
             { Columns.SellerName, "Seller name" },
             { Columns.CountryOfOrigin, "Country of origin" },
         };
@@ -117,13 +119,13 @@ namespace Sales_Tracker
             Product product = new(ProductName_TextBox.Text, SellerName_TextBox.Text, CountryOfOrigin_TextBox.Text);
             if (Purchase_RadioButton.Checked)
             {
-                Purchases_DataGridView.Rows.Add(product.Name, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, ItemCategory_TextBox.Text, product);
+                Purchases_DataGridView.Rows.Add(product.Name, ProductCategory_TextBox.Text, product.SellerName, product.CountryOfOrigin);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, ProductCategory_TextBox.Text, product);
             }
             else
             {
-                Sales_DataGridView.Rows.Add(product.Name, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, ItemCategory_TextBox.Text, product);
+                Sales_DataGridView.Rows.Add(product.Name, ProductCategory_TextBox.Text, product.SellerName, product.CountryOfOrigin);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, ProductCategory_TextBox.Text, product);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");

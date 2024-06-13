@@ -96,19 +96,19 @@ namespace Sales_Tracker
             if (Selected == Options.Sales)
             {
                 total = Bar.LoadTotalsIntoChart(Sales_DataGridView, Bar_GunaChart);
-                Bar_Label.Text = $"Total revenue: ${total}";
+                Bar_Label.Text = $"Total revenue: {total:C}";
                 Pie.LoadDistributionIntoChart(Sales_DataGridView, Pie_GunaChart);
                 Pie_Label.Text = "Distribution of revenue";
             }
             else
             {
                 total = Bar.LoadTotalsIntoChart(Purchases_DataGridView, Bar_GunaChart);
-                Bar_Label.Text = $"Total expenses ${total}";
+                Bar_Label.Text = $"Total expenses: {total:C}";
                 Pie.LoadDistributionIntoChart(Purchases_DataGridView, Pie_GunaChart);
                 Pie_Label.Text = "Distribution of expenses";
             }
             total = Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart);
-            Bar2_Label.Text = $"Total profits: ${total}";
+            Bar2_Label.Text = $"Total profits: {total:C}";
         }
         private bool DoNotUpdateTheme;
         private void LoadDataFromSetting()
@@ -443,11 +443,15 @@ namespace Sales_Tracker
         {
             foreach (Category category in categoryList)
             {
-                if (category.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                foreach (Product product in category.ProductList)
                 {
-                    return category.Name;
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return category.Name;
+                    }
                 }
             }
+
             return null;
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
@@ -456,13 +460,13 @@ namespace Sales_Tracker
 
             CloseAllPanels(null, null);
 
-            if (CurrentTheme == ThemeType.Dark)
+            if (DarkMode_ToggleSwitch.Checked)
             {
-                CurrentTheme = ThemeType.Light;
+                CurrentTheme = ThemeType.Dark;
             }
             else
             {
-                CurrentTheme = ThemeType.Dark;
+                CurrentTheme = ThemeType.Light;
             }
             UpdateTheme();
         }

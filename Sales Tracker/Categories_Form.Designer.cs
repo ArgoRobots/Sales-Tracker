@@ -62,6 +62,7 @@
             Category_TextBox.Size = new Size(200, 36);
             Category_TextBox.TabIndex = 29;
             Category_TextBox.TextChanged += ValidateInputs;
+            Category_TextBox.KeyDown += Category_TextBox_KeyDown;
             // 
             // AddCategory_Button
             // 
@@ -117,7 +118,7 @@
             Sale_RadioButton.CheckedState.InnerColor = Color.White;
             Sale_RadioButton.CheckedState.InnerOffset = -4;
             Sale_RadioButton.Font = new Font("Segoe UI", 11F);
-            Sale_RadioButton.Location = new Point(334, 145);
+            Sale_RadioButton.Location = new Point(169, 26);
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.Size = new Size(78, 24);
             Sale_RadioButton.TabIndex = 32;
@@ -138,7 +139,7 @@
             Purchase_RadioButton.CheckedState.InnerColor = Color.White;
             Purchase_RadioButton.CheckedState.InnerOffset = -4;
             Purchase_RadioButton.Font = new Font("Segoe UI", 11F);
-            Purchase_RadioButton.Location = new Point(217, 145);
+            Purchase_RadioButton.Location = new Point(52, 26);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.Size = new Size(111, 24);
             Purchase_RadioButton.TabIndex = 31;
@@ -153,7 +154,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(784, 476);
+            ClientSize = new Size(784, 461);
             Controls.Add(Sale_RadioButton);
             Controls.Add(Purchase_RadioButton);
             Controls.Add(CategoryName_Label);
@@ -161,7 +162,7 @@
             Controls.Add(AddCategory_Button);
             Controls.Add(AddCategory_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimumSize = new Size(800, 515);
+            MinimumSize = new Size(800, 500);
             Name = "Categories_Form";
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Categories_Form_FormClosed;

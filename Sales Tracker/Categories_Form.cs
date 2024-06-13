@@ -17,12 +17,12 @@ namespace Sales_Tracker
             oldselectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             ConstructDataGridViews();
             LoadProducts();
-            Theme.SetThemeForForm(this);
             Purchase_RadioButton.Checked = true;
+            Theme.SetThemeForForm(this);
         }
 
         private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte heightForDataGridView = 180;
+        private const byte heightForDataGridView = 160;
         private void ConstructDataGridViews()
         {
             Size size = new(740, 280);
@@ -93,6 +93,14 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.CategorySales;
             CenterSelectedDataGridView();
+        }
+        private void Category_TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
+                AddCategory_Button.PerformClick();
+            }
         }
 
         // Functions

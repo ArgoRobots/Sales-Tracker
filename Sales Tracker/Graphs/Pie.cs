@@ -23,7 +23,9 @@ namespace Sales_Tracker.Graphs
 
             double totalTax = 0;
             double totalShipping = 0;
-            double totalCost = 0;
+
+            // Dictionary to hold category-wise total costs
+            Dictionary<string, double> categoryCosts = [];
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
@@ -31,16 +33,31 @@ namespace Sales_Tracker.Graphs
                 double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
                 double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
+                string category = row.Cells[PurchaseColumns.CategoryName.ToString()].Value.ToString();
                 double cost = quantity * pricePerUnit;
 
                 totalTax += tax;
                 totalShipping += shipping;
-                totalCost += cost;
+
+                if (categoryCosts.ContainsKey(category))
+                {
+                    categoryCosts[category] += cost;
+                }
+                else
+                {
+                    categoryCosts[category] = cost;
+                }
             }
 
+            // Add tax and shipping as separate datapoints
             dataset.DataPoints.Add("Tax", totalTax);
             dataset.DataPoints.Add("Shipping", totalShipping);
-            dataset.DataPoints.Add("Cost", totalCost);
+
+            // Add combined category costs
+            foreach (KeyValuePair<string, double> category in categoryCosts)
+            {
+                dataset.DataPoints.Add(category.Key, category.Value);
+            }
 
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
