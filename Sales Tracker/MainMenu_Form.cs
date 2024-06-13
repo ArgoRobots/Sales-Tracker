@@ -1,9 +1,7 @@
-﻿using Guna.Charts.WinForms;
-using Guna.UI2.WinForms;
+﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
-using System.Windows.Forms;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -144,22 +142,26 @@ namespace Sales_Tracker
         }
 
         // Form
-        private void MainMenu_form_Shown(object sender, EventArgs e)
-        {
-            Bar_GunaChart.Invalidate();
-            Bar_GunaChart.Refresh();
-
-            Pie_GunaChart.Invalidate();
-            Pie_GunaChart.Refresh();
-
-            Bar2_GunaChart.Invalidate();
-            Bar2_GunaChart.Refresh();
-            Log.Write(2, "Argo Studio has finished starting");
-        }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
             ResizeControls();
+        }
+        private async void MainMenu_form_Shown(object sender, EventArgs e)
+        {
+            // This insures the charts are rendered
+            // BeginInvoke ensures that the chart update logic runs on the main UI thread after all pending UI events have been processed.
+            // This allows the form to be fully initialized and rendered before you attempt to refresh and invalidate the charts.
+            BeginInvoke(() =>
+            {
+                Bar_GunaChart.Invalidate();
+                Bar_GunaChart.Refresh();
+                Pie_GunaChart.Invalidate();
+                Pie_GunaChart.Refresh();
+                Bar2_GunaChart.Invalidate();
+                Bar2_GunaChart.Refresh();
+            });
+            Log.Write(2, "Argo Sales Tracker has finished starting");
         }
         private void ResizeControls()
         {
