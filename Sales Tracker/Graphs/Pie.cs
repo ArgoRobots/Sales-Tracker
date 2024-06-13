@@ -23,8 +23,6 @@ namespace Sales_Tracker.Graphs
 
             double totalTax = 0;
             double totalShipping = 0;
-
-            // Dictionary to hold category-wise total costs
             Dictionary<string, double> categoryCosts = [];
 
             foreach (DataGridViewRow row in dataGridView.Rows)

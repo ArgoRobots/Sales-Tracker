@@ -87,7 +87,7 @@ namespace Sales_Tracker
             while (start < end)
             {
                 RichTextBox.Find(text, start, RichTextBox.TextLength, RichTextBoxFinds.None);
-                RichTextBox.SelectionColor = Color.Blue;
+                RichTextBox.SelectionColor = Color.Aqua;
                 start = RichTextBox.Text.IndexOf(text, start) + 1;
             }
 
@@ -97,7 +97,17 @@ namespace Sales_Tracker
             while (start < end)
             {
                 RichTextBox.Find(text, start, RichTextBox.TextLength, RichTextBoxFinds.None);
-                RichTextBox.SelectionColor = Color.Blue;
+                RichTextBox.SelectionColor = Color.Aqua;
+                start = RichTextBox.Text.IndexOf(text, start) + 1;
+            }
+
+            text = "[Product manager]";
+            start = 0;
+            end = RichTextBox.Text.LastIndexOf(text);
+            while (start < end)
+            {
+                RichTextBox.Find(text, start, RichTextBox.TextLength, RichTextBoxFinds.None);
+                RichTextBox.SelectionColor = Color.Aqua;
                 start = RichTextBox.Text.IndexOf(text, start) + 1;
             }
 

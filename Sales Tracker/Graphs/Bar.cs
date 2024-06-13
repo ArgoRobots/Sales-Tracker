@@ -34,10 +34,7 @@ namespace Sales_Tracker.Graphs
             double grandTotal = 0;
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(dataGridView.Rows);
-
             string dateFormat = GetDateFormat(maxDate - minDate);
-
-            // Group and sum the total revenue based on the determined date format
             Dictionary<string, double> revenueByDate = [];
 
             foreach (DataGridViewRow row in dataGridView.Rows)

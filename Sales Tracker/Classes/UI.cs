@@ -13,6 +13,7 @@ namespace Sales_Tracker.Classes
             ConstructFileMenu();
             ConstructHelpMenu();
             ConstructRightClickRename();
+            MainMenu_Form.Instance.ConstructRightClickDataGridViewRowMenu();
             MainMenu_Form.Instance.ConstructMessage_Panel();
         }
 

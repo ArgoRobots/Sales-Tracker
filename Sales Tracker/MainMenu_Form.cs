@@ -1,7 +1,9 @@
-﻿using Guna.UI2.WinForms;
+﻿using Guna.Charts.WinForms;
+using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
+using System.Windows.Forms;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -144,6 +146,14 @@ namespace Sales_Tracker
         // Form
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
+            Bar_GunaChart.Invalidate();
+            Bar_GunaChart.Refresh();
+
+            Pie_GunaChart.Invalidate();
+            Pie_GunaChart.Refresh();
+
+            Bar2_GunaChart.Invalidate();
+            Bar2_GunaChart.Refresh();
             Log.Write(2, "Argo Studio has finished starting");
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
@@ -622,7 +632,7 @@ namespace Sales_Tracker
             dataGridView.RowsAdded += DataGridView_RowsAdded;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
-            dataGridView.KeyDown += DataGridView_KeyDown;
+            dataGridView.MouseDown += DataGridView_KeyDown;
 
             foreach (DataGridViewColumn column in dataGridView.Columns)
             {
@@ -721,9 +731,55 @@ namespace Sales_Tracker
                 LoadGraphs();
             }
         }
-        private void DataGridView_KeyDown(object? sender, KeyEventArgs e)
+        private void DataGridView_KeyDown(object? sender, MouseEventArgs e)
         {
+            UI.CloseAllPanels(null, null);
 
+            if (e.Button == MouseButtons.Right)
+            {
+                Guna2DataGridView grid = (Guna2DataGridView)sender;
+
+                // The right click button does not select rows by default, so implement it here
+                // If it is not currently selected, unselect others
+                DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
+                if (info.RowIndex == -1)
+                {
+                    return;
+                }
+                if (!grid.Rows[info.RowIndex].Selected)
+                {
+                    UnselectAllRowsInCurrentDataGridView();
+                }
+                // Select current row
+                grid.Rows[info.RowIndex].Selected = true;
+                grid.Focus();
+
+                // If it's too far right
+                bool tooFarRight = false;
+                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - 25 > Width)
+                {
+                    rightClickDataGridView_Panel.Left = Width - rightClickDataGridView_Panel.Width;
+                    tooFarRight = true;
+                }
+                else { rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - 25; }
+
+                // If it's too far down
+                if (selectedDataGridView.Top + rightClickDataGridView_Panel.Height + (info.RowIndex + 1) * 25 > Height)
+                {
+                    rightClickDataGridView_Panel.Top = Height - rightClickDataGridView_Panel.Height - 2;
+                    if (!tooFarRight)
+                    {
+                        rightClickDataGridView_Panel.Left += 30;
+                    }
+                }
+                else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + (info.RowIndex + 1) * 25; }
+
+                Controls.Add(rightClickDataGridView_Panel);
+                rightClickDataGridView_Panel.BringToFront();
+            }
+
+            // Set color
+            selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
         }
         private void SaveDataGridViewToFile()
         {
@@ -862,6 +918,204 @@ namespace Sales_Tracker
                 _ => ""
             };
         }
+        private void UnselectAllRowsInCurrentDataGridView()
+        {
+            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            {
+                row.Selected = false;
+            }
+        }
+
+
+        // Right click DataGridView row
+        private Guna2Panel rightClickDataGridView_Panel;
+        public void ConstructRightClickDataGridViewRowMenu()
+        {
+            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 5 * 22 + 10));
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
+
+            rightClickDataGridView_Panel.BringToFront();
+
+            Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", 240, false, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                if (selectedDataGridView.Rows.Count > 0)
+                {
+                    if (selectedDataGridView.SelectedRows.Count == 1)
+                    {
+                        for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+                        {
+                            if (selectedDataGridView.Rows[i].Cells[0].Selected)
+                            {
+                                //  ModifyCommand_Form ModifyLine_form = new();
+                                UI.CloseAllPanels(null, null);
+                                // ModifyLine_form.ShowDialog();
+                                return;
+                            }
+                        }
+                    }
+                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                }
+                else { CustomMessageBox.Show("Argo Studio", "Select a command to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+
+                UI.CloseAllPanels(null, null);
+            };
+
+            menuBtn = UI.ConstructBtnForMenu("Duplicate", 240, false, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                if (selectedDataGridView.Rows.Count > 0)
+                {
+                    if (selectedDataGridView.SelectedRows.Count == 1)
+                    {
+                        int index = selectedDataGridView.SelectedRows[0].Index;
+
+                        // Duplicate row
+                        selectedDataGridView.Rows.Add(selectedDataGridView.SelectedRows[0].Cells[0].Value);
+
+                        // The new row is at the bottom by default, so move it up until it's below the row that was duplicated
+                        for (int i = selectedDataGridView.Rows.Count - 1; i > index; i--)
+                        {
+                            // Use tuple to swap values
+                            (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i - 1].Cells[0].Value) = (selectedDataGridView.Rows[i - 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value);
+                        }
+
+                        UI.CloseAllPanels(null, null);  // Do this before selecting a new row
+
+                        // Select the new row
+                        selectedDataGridView.Rows[index].Cells[0].Selected = false;
+                        selectedDataGridView.Rows[index + 1].Cells[0].Selected = true;
+
+                        // Save
+                        SaveDataGridViewToFile();
+
+                        return;
+                    }
+                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                }
+                else { CustomMessageBox.Show("Argo Studio", "Select a command to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+
+                UI.CloseAllPanels(null, null);
+            };
+
+            menuBtn = UI.ConstructBtnForMenu("Move up", 240, false, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                if (selectedDataGridView.Rows.Count > 0)
+                {
+                    if (selectedDataGridView.SelectedRows.Count == 1)
+                    {
+                        for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+                        {
+                            if (selectedDataGridView.Rows[i].Cells[0].Selected)
+                            {
+                                if (i == 0)
+                                {
+                                    CustomMessageBox.Show("Argo Studio", "Cannot move the first command up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                                    return;
+                                }
+                                UI.CloseAllPanels(null, null);  // Do this before selecting a new row
+
+                                // Use tuple to swap values
+                                (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i - 1].Cells[0].Value) = (selectedDataGridView.Rows[i - 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value);
+
+                                // Reselect
+                                selectedDataGridView.Rows[i].Cells[0].Selected = false;
+                                selectedDataGridView.Rows[i - 1].Cells[0].Selected = true;
+
+                                // Save
+                                SaveDataGridViewToFile();
+
+                                return;
+                            }
+                        }
+                    }
+                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to move up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                }
+                else { CustomMessageBox.Show("Argo Studio", "Select a command to move up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+
+                UI.CloseAllPanels(null, null);
+            };
+
+            menuBtn = UI.ConstructBtnForMenu("Move down", 240, false, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                if (selectedDataGridView.Rows.Count > 0)
+                {
+                    if (selectedDataGridView.SelectedRows.Count == 1)
+                    {
+                        for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+                        {
+                            if (selectedDataGridView.Rows[i].Cells[0].Selected)
+                            {
+                                if (i == selectedDataGridView.Rows.Count - 1)
+                                {
+                                    CustomMessageBox.Show("Argo Studio", "Cannot move the last command down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                                    return;
+                                }
+                                UI.CloseAllPanels(null, null);  // Do this before selecting a new row
+
+                                // Use tuple to swap values
+                                (selectedDataGridView.Rows[i + 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value) = (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i + 1].Cells[0].Value);
+
+                                // Reselect
+                                selectedDataGridView.Rows[i].Cells[0].Selected = false;
+                                selectedDataGridView.Rows[i + 1].Cells[0].Selected = true;
+
+                                // Save
+                                SaveDataGridViewToFile();
+
+                                return;
+                            }
+                        }
+                    }
+                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to move down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                }
+                else { CustomMessageBox.Show("Argo Studio", "Select a command to move down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+
+                UI.CloseAllPanels(null, null);
+            };
+
+            menuBtn = UI.ConstructBtnForMenu("Delete", 240, false, flowPanel);
+            menuBtn.ForeColor = CustomColors.accent_red;
+            menuBtn.Click += (sender, e) =>
+            {
+                if (selectedDataGridView.Rows.Count > 0)
+                {
+                    int index = selectedDataGridView.SelectedRows[selectedDataGridView.SelectedRows.Count - 1].Index;
+
+                    // Delete all selected rows
+                    foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
+                    {
+                        selectedDataGridView.Rows.Remove(item);
+                    }
+
+                    UI.CloseAllPanels(null, null);  // Do this before selecting a new row
+
+                    // If no rows are automatically selected again, select the row under the row that was just deleted
+                    if (selectedDataGridView.Rows.Count != 0)
+                    {
+                        // If the deleted row was not at the bottom
+                        if (index > selectedDataGridView.SelectedRows.Count)
+                        {
+                            selectedDataGridView.Rows[index - 1].Selected = true;
+                        }
+                        else
+                        // Select the bottom row
+                        {
+                            selectedDataGridView.Rows[^1].Selected = true;
+                        }
+                    }
+                }
+                else
+                {
+                    UI.CloseAllPanels(null, null);
+                    CustomMessageBox.Show("Argo Studio", "Select a command to delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                }
+            };
+            UI.ConstructKeyShortcut("Del", menuBtn);
+        }
+
 
 
         // Message panel
