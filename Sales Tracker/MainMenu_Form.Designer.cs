@@ -31,6 +31,8 @@
             components = new System.ComponentModel.Container();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -102,10 +104,9 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            ManageCategories_Button = new Guna.UI2.WinForms.Guna2Button();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
             AddPurchase_Button = new Guna.UI2.WinForms.Guna2Button();
             Edit_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -136,7 +137,6 @@
             Quantity_Label = new Label();
             TimeRange_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             HideMenu_timer = new System.Windows.Forms.Timer(components);
-            ManageCategories_Button = new Guna.UI2.WinForms.Guna2Button();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Main_Panel.SuspendLayout();
@@ -162,6 +162,26 @@
             MainTop_Panel.Size = new Size(1604, 80);
             MainTop_Panel.TabIndex = 6;
             MainTop_Panel.Click += CloseAllPanels;
+            // 
+            // ManageCategories_Button
+            // 
+            ManageCategories_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ManageCategories_Button.BackColor = Color.Transparent;
+            ManageCategories_Button.BorderColor = Color.LightGray;
+            ManageCategories_Button.BorderRadius = 2;
+            ManageCategories_Button.BorderThickness = 1;
+            ManageCategories_Button.CustomizableEdges = customizableEdges1;
+            ManageCategories_Button.FillColor = Color.White;
+            ManageCategories_Button.Font = new Font("Segoe UI", 9.5F);
+            ManageCategories_Button.ForeColor = Color.Black;
+            ManageCategories_Button.Location = new Point(1434, 24);
+            ManageCategories_Button.Margin = new Padding(4, 3, 4, 3);
+            ManageCategories_Button.Name = "ManageCategories_Button";
+            ManageCategories_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            ManageCategories_Button.Size = new Size(150, 32);
+            ManageCategories_Button.TabIndex = 14;
+            ManageCategories_Button.Text = "Manage categories";
+            ManageCategories_Button.Click += ManageCategories_Button_Click;
             // 
             // AddSale_Button
             // 
@@ -422,7 +442,7 @@
             // 
             // Pie_GunaChart
             // 
-            Pie_GunaChart.Anchor = AnchorStyles.Top;
+            Pie_GunaChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             Pie_GunaChart.BackColor = Color.White;
             chartFont1.FontName = "Arial";
             Pie_GunaChart.Legend.LabelFont = chartFont1;
@@ -494,7 +514,7 @@
             // 
             // Bar2_GunaChart
             // 
-            Bar2_GunaChart.Anchor = AnchorStyles.Top;
+            Bar2_GunaChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             Bar2_GunaChart.BackColor = Color.White;
             chartFont9.FontName = "Arial";
             Bar2_GunaChart.Legend.LabelFont = chartFont9;
@@ -530,7 +550,7 @@
             // 
             // Bar_GunaChart
             // 
-            Bar_GunaChart.Anchor = AnchorStyles.Top;
+            Bar_GunaChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             Bar_GunaChart.BackColor = Color.White;
             chartFont17.FontName = "Arial";
             Bar_GunaChart.Legend.LabelFont = chartFont17;
@@ -704,26 +724,6 @@
             TimeRange_ComboBox.TabIndex = 1;
             TimeRange_ComboBox.SelectedIndexChanged += TimeRange_ComboBox_SelectedIndexChanged;
             TimeRange_ComboBox.Click += CloseAllPanels;
-            // 
-            // ManageCategories_Button
-            // 
-            ManageCategories_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            ManageCategories_Button.BackColor = Color.Transparent;
-            ManageCategories_Button.BorderColor = Color.LightGray;
-            ManageCategories_Button.BorderRadius = 2;
-            ManageCategories_Button.BorderThickness = 1;
-            ManageCategories_Button.CustomizableEdges = customizableEdges1;
-            ManageCategories_Button.FillColor = Color.White;
-            ManageCategories_Button.Font = new Font("Segoe UI", 9.5F);
-            ManageCategories_Button.ForeColor = Color.Black;
-            ManageCategories_Button.Location = new Point(1434, 24);
-            ManageCategories_Button.Margin = new Padding(4, 3, 4, 3);
-            ManageCategories_Button.Name = "ManageCategories_Button";
-            ManageCategories_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            ManageCategories_Button.Size = new Size(150, 32);
-            ManageCategories_Button.TabIndex = 14;
-            ManageCategories_Button.Text = "Manage categories";
-            ManageCategories_Button.Click += ManageCategories_Button_Click;
             // 
             // MainMenu_Form
             // 

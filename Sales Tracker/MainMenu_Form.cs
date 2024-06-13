@@ -615,7 +615,7 @@ namespace Sales_Tracker
             dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
             dataGridView.Theme = CustomColors.dataGridViewTheme;
             dataGridView.BackgroundColor = CustomColors.controlBack;
-            dataGridView.Anchor = AnchorStyles.Bottom;
+            dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;
             dataGridView.Size = size;
             dataGridView.Click += CloseAllPanels;
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
