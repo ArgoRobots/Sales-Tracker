@@ -7,13 +7,11 @@ namespace Sales_Tracker
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         // Init
-        public static Products_Form Instance { get; private set; }
         private readonly MainMenu_Form.Options oldOption;
-        Guna2DataGridView oldselectedDataGridView;
+        private readonly Guna2DataGridView oldselectedDataGridView;
         public Products_Form()
         {
             InitializeComponent();
-            Instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldselectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
@@ -61,14 +59,14 @@ namespace Sales_Tracker
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                    Purchases_DataGridView.Rows.Add(product.Name, product.SellerName, product.CountryOfOrigin);
                 }
             }
             foreach (Category category in MainMenu_Form.Instance.productCategorySaleList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Sales_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                    Sales_DataGridView.Rows.Add(product.Name, product.SellerName, product.CountryOfOrigin);
                 }
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
@@ -119,31 +117,16 @@ namespace Sales_Tracker
             Product product = new(ProductName_TextBox.Text, SellerName_TextBox.Text, CountryOfOrigin_TextBox.Text);
             if (Purchase_RadioButton.Checked)
             {
-                Purchases_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                Purchases_DataGridView.Rows.Add(product.Name, product.SellerName, product.CountryOfOrigin);
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, ItemCategory_TextBox.Text, product);
             }
             else
             {
-                Sales_DataGridView.Rows.Add(product.ProductName, product.SellerName, product.CountryOfOrigin);
+                Sales_DataGridView.Rows.Add(product.Name, product.SellerName, product.CountryOfOrigin);
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, ItemCategory_TextBox.Text, product);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
-        }
-
-        // Functions
-        private void ValidateInputs(object sender, EventArgs e)
-        {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(SellerName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text);
-
-            AddProduct_Button.Enabled = allFieldsFilled;
-        }
-        private void CenterSelectedDataGridView()
-        {
-            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2, heightForDataGridView);
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -160,6 +143,21 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductSales;
             CenterSelectedDataGridView();
+        }
+
+        // Functions
+        private void ValidateInputs(object sender, EventArgs e)
+        {
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(SellerName_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text);
+
+            AddProduct_Button.Enabled = allFieldsFilled;
+        }
+        private void CenterSelectedDataGridView()
+        {
+            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, heightForDataGridView);
         }
     }
 }

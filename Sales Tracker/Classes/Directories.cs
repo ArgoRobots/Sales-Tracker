@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
     {
         // Directories
         public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
-          sales_file, productPurchases_file, productSales_file, logs_dir, desktop_dir;
+          sales_file, productPurchases_file, productSales_file, categoryPurchases, categorySales, logs_dir, desktop_dir;
 
         public static void SetDirectoriesFor(string projectDir, string project_name)
         {
@@ -21,7 +21,9 @@ namespace Sales_Tracker.Classes
             purchases_file = tempCompany_dir + @"\purchases.txt";
             sales_file = tempCompany_dir + @"\sales.txt";
             productPurchases_file = tempCompany_dir + @"\productPurchases.txt";
-            productSales_file = tempCompany_dir + @"\salePurchases.txt";
+            productSales_file = tempCompany_dir + @"\productSales.txt";
+            categoryPurchases = tempCompany_dir + @"\categoryPurchases.txt";
+            categorySales = tempCompany_dir + @"\categorySales.txt";
 
             // Logs
             logs_dir = tempCompany_dir + @"\logs\";

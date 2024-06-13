@@ -40,8 +40,8 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             int maxHeight = 150;
-            ItemName_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductCategoryPurchaseNames(), this, maxHeight); };
-            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductCategoryPurchaseNames(), this, AddPurchase_Button, maxHeight); };
+            ItemName_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductPurchaseNames(), this, maxHeight); };
+            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductPurchaseNames(), this, AddPurchase_Button, maxHeight); };
             ItemName_TextBox.TextChanged += ValidateInputs;
             ItemName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemName_TextBox, this, AddPurchase_Label, e); };
@@ -56,8 +56,8 @@ namespace Sales_Tracker
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.Options.Sales)
             {
                 MainMenu_Form.Instance.Purchases_Button.PerformClick();
-                MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
             }
+            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
 
             // Retrieve the input values
             string purchaseID = PurchaseID_TextBox.Text;
@@ -69,9 +69,9 @@ namespace Sales_Tracker
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            Product? product = MainMenu_Form.GetProductByName(MainMenu_Form.Instance.productCategorySaleList, itemName);
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.productCategorySaleList, itemName);
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, product?.ProductName ?? "error not found", date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
             Log.Write(3, $"Added purchase '{ItemName_TextBox.Text}'");
         }

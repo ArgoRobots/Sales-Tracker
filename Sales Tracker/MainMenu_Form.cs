@@ -385,7 +385,7 @@ namespace Sales_Tracker
         }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
-
+            new Categories_Form().ShowDialog();
         }
         public List<Category> productCategorySaleList = [];
         public List<Category> productCategoryPurchaseList = [];
@@ -396,6 +396,32 @@ namespace Sales_Tracker
         public List<string> GetProductCategoryPurchaseNames()
         {
             return productCategoryPurchaseList.Select(p => p.Name).ToList();
+        }
+        public List<string> GetProductSaleNames()
+        {
+            List<string> productNames = [];
+
+            foreach (Category category in productCategorySaleList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    productNames.Add(product.Name);
+                }
+            }
+            return productNames;
+        }
+        public List<string> GetProductPurchaseNames()
+        {
+            List<string> productNames = [];
+
+            foreach (Category category in productCategoryPurchaseList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    productNames.Add(product.Name);
+                }
+            }
+            return productNames;
         }
         public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
         {
@@ -413,16 +439,13 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static Product? GetProductByName(List<Category> categoryList, string productName)
+        public static string GetCategoryNameByProductName(List<Category> categoryList, string productName)
         {
             foreach (Category category in categoryList)
             {
-                foreach (Product product in category.ProductList)
+                if (category.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (product.ProductName.Equals(productName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return product;
-                    }
+                    return category.Name;
                 }
             }
             return null;
@@ -498,7 +521,9 @@ namespace Sales_Tracker
             Purchases,
             Sales,
             ProductPurchases,
-            ProductSales
+            ProductSales,
+            CategoryPurchases,
+            CategorySales
         }
         public enum PurchaseColumns
         {
@@ -552,6 +577,7 @@ namespace Sales_Tracker
             { SalesColumns.Tax, "Tax" },
             { SalesColumns.TotalPrice, "Total price" }
         };
+        public readonly string CategoryColumn = "Category";
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         public Guna2DataGridView selectedDataGridView;
         private void ConstructDataGridViews()
@@ -612,6 +638,16 @@ namespace Sales_Tracker
                 case Options.ProductSales:
                     type = "product for sale";
                     columnName = Products_Form.Columns.ProductName.ToString();
+                    logIndex = 3;
+                    break;
+                case Options.CategoryPurchases:
+                    type = "Category for purchase";
+                    columnName = CategoryColumn;
+                    logIndex = 3;
+                    break;
+                case Options.CategorySales:
+                    type = "Category for sale";
+                    columnName = CategoryColumn;
                     logIndex = 3;
                     break;
             }

@@ -280,7 +280,7 @@
             Controls.Add(ProductName_Label);
             Controls.Add(ProductName_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimumSize = new Size(750, 560);
+            MinimumSize = new Size(900, 560);
             Name = "Products_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
