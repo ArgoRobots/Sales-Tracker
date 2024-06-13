@@ -56,8 +56,6 @@ namespace Sales_Tracker
         // Event handlers
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.Options.Sales)
             {
                 MainMenu_Form.Instance.Purchases_Button.PerformClick();
@@ -74,7 +72,7 @@ namespace Sales_Tracker
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.productCategorySaleList, itemName);
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.productCategoryPurchaseList, itemName);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
