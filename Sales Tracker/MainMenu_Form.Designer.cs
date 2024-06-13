@@ -442,7 +442,7 @@
             // 
             // Pie_GunaChart
             // 
-            Pie_GunaChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            Pie_GunaChart.Anchor = AnchorStyles.Top;
             Pie_GunaChart.BackColor = Color.White;
             chartFont1.FontName = "Arial";
             Pie_GunaChart.Legend.LabelFont = chartFont1;
@@ -514,7 +514,7 @@
             // 
             // Bar2_GunaChart
             // 
-            Bar2_GunaChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            Bar2_GunaChart.Anchor = AnchorStyles.Top;
             Bar2_GunaChart.BackColor = Color.White;
             chartFont9.FontName = "Arial";
             Bar2_GunaChart.Legend.LabelFont = chartFont9;
@@ -550,7 +550,7 @@
             // 
             // Bar_GunaChart
             // 
-            Bar_GunaChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            Bar_GunaChart.Anchor = AnchorStyles.Top;
             Bar_GunaChart.BackColor = Color.White;
             chartFont17.FontName = "Arial";
             Bar_GunaChart.Legend.LabelFont = chartFont17;

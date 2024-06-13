@@ -120,12 +120,12 @@ namespace Sales_Tracker
             if (Purchase_RadioButton.Checked)
             {
                 Purchases_DataGridView.Rows.Add(product.Name, ProductCategory_TextBox.Text, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, ProductCategory_TextBox.Text, product);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, ProductCategory_TextBox.Text, product);
             }
             else
             {
                 Sales_DataGridView.Rows.Add(product.Name, ProductCategory_TextBox.Text, product.SellerName, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, ProductCategory_TextBox.Text, product);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, ProductCategory_TextBox.Text, product);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
