@@ -632,6 +632,13 @@ namespace Sales_Tracker
         }
         private void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
         {
+            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Are you sure you want to delete this row?", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
+            if (result == CustomMessageBoxResult.Cancel)
+            {
+                e.Cancel = true;
+            }
+
             string type = "", columnName = "";
             byte logIndex = 0;
 
