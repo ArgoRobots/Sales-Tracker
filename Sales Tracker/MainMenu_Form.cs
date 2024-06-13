@@ -184,17 +184,20 @@ namespace Sales_Tracker
             // Save logs in file
             if (Directory.Exists(Directories.logs_dir))
             {
-                DateTime time = DateTime.Now;  // Get time
+                DateTime time = DateTime.Now;
                 int count = 0;
                 string directory;
 
                 while (true)
                 {
                     if (count == 0)
-                        directory = Directories.logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + ".txt";
+                    {
+                        directory = Directories.logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + ArgoFiles.TxtFileExtension;
+                    }
                     else
-                        directory = Directories.logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + "-" + count + ".txt";
-
+                    {
+                        directory = Directories.logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + "-" + count + ArgoFiles.TxtFileExtension;
+                    }
                     if (!Directory.Exists(directory))
                     {
                         Directories.WriteTextToFile(directory, Log.logText);
@@ -206,7 +209,11 @@ namespace Sales_Tracker
 
             if (ArgoCompany.AreAnyChangesMade())
             {
-                if (AskUserToSaveBeforeClosing()) { e.Cancel = true; return; }
+                if (AskUserToSaveBeforeClosing())
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
 
             // Delete hidden directory
@@ -425,8 +432,8 @@ namespace Sales_Tracker
         }
         public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
         {
-            Category? category = GetCategoryByName(categoryList, categoryName);
-            category?.AddProduct(product);
+            Category category = GetCategoryByName(categoryList, categoryName);
+            category.AddProduct(product);
         }
         public static Category? GetCategoryByName(List<Category> categoryList, string categoryName)
         {
@@ -503,7 +510,7 @@ namespace Sales_Tracker
             }
             CompanyName_Label.Text = UI.rename_textBox.Text;
 
-            string newDir = Directories.argoCompany_dir + "\\" + UI.rename_textBox.Text + ".ArgoCompany";
+            string newDir = Directories.argoCompany_dir + "\\" + UI.rename_textBox.Text + ArgoFiles.ArgoCompanyFileExtension;
             Directories.MoveFile(Directories.argoCompany_file, newDir);
             Directories.argoCompany_file = newDir;
 
@@ -616,6 +623,12 @@ namespace Sales_Tracker
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.KeyDown += DataGridView_KeyDown;
+
+            foreach (DataGridViewColumn column in dataGridView.Columns)
+            {
+                column.HeaderCell.Style.BackColor = CustomColors.background2;
+                column.HeaderCell.Style.SelectionBackColor = CustomColors.background2;
+            }
         }
         private void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
         {
@@ -837,6 +850,8 @@ namespace Sales_Tracker
                 Options.Sales => Directories.sales_file,
                 Options.ProductPurchases => Directories.productPurchases_file,
                 Options.ProductSales => Directories.productSales_file,
+                Options.CategoryPurchases => Directories.categoryPurchases_file,
+                Options.CategorySales => Directories.categorySales_file,
                 _ => ""
             };
         }

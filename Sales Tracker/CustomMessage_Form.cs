@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
-using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
 {

@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
     {
         public static void SaveAll()
         {
-            Directories.CreateArgoTarFileFromDirectory(Directories.tempCompany_dir, Directories.argoCompany_dir, ".ArgoCompany", true);
+            Directories.CreateArgoTarFileFromDirectory(Directories.tempCompany_dir, Directories.argoCompany_dir, ArgoFiles.ArgoCompanyFileExtension, true);
             ResetChanges();
         }
         public static void SaveAs()
@@ -23,7 +23,7 @@ namespace Sales_Tracker.Classes
                 string newDir = dialog.SelectedPath;
 
                 // Copy the project to a new location
-                Directories.CopyFile(Directories.argoCompany_file, newDir + Directories.companyName + ".ArgoCompany");
+                Directories.CopyFile(Directories.argoCompany_file, newDir + Directories.companyName + ArgoFiles.ArgoCompanyFileExtension);
             }
         }
         public static bool AreAnyChangesMade()
@@ -47,7 +47,7 @@ namespace Sales_Tracker.Classes
             // Select file
             OpenFileDialog dialog = new()
             {
-                Filter = "Argo company (*.ArgoCompany)|*.ArgoCompany"
+                Filter = $"Argo company (*{ArgoFiles.ArgoCompanyFileExtension})|*{ArgoFiles.ArgoCompanyFileExtension}"
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -69,7 +69,7 @@ namespace Sales_Tracker.Classes
                 DataFileManager.Save(Directories.appDataCongig_file);
 
                 List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
+                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo company", listOfDirectories, false);
 
                 GetStarted_Form.Instance.ShowMainMenu();
             }
@@ -80,7 +80,7 @@ namespace Sales_Tracker.Classes
             // Select file
             OpenFileDialog dialog = new()
             {
-                Filter = "Argo company (*.ArgoCompany)|*.ArgoCompany"
+                Filter = $"Argo company (*{ArgoFiles.ArgoCompanyFileExtension})|*{ArgoFiles.ArgoCompanyFileExtension}"
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -126,7 +126,7 @@ namespace Sales_Tracker.Classes
                 DataFileManager.Save(Directories.appDataCongig_file);
 
                 List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
+                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo company", listOfDirectories, false);
             }
         }
 
@@ -202,7 +202,7 @@ namespace Sales_Tracker.Classes
                         // Delete the temp folder
                         Directories.DeleteDirectory(project, true);
 
-                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", projects, false);
+                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo company", projects, false);
 
                         wasProjectSaved = true;
                     }

@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
     {
         // Directories
         public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
-          sales_file, productPurchases_file, productSales_file, categoryPurchases, categorySales, logs_dir, desktop_dir;
+          sales_file, productPurchases_file, productSales_file, categoryPurchases_file, categorySales_file, logs_dir, desktop_dir;
 
         public static void SetDirectoriesFor(string projectDir, string project_name)
         {
@@ -16,14 +16,14 @@ namespace Sales_Tracker.Classes
             tempCompany_dir = appData_dir + project_name;
 
             argoCompany_dir = projectDir;
-            argoCompany_file = projectDir + "\\" + project_name + ".ArgoCompany";
+            argoCompany_file = projectDir + "\\" + project_name + ArgoFiles.ArgoCompanyFileExtension;
 
-            purchases_file = tempCompany_dir + @"\purchases.txt";
-            sales_file = tempCompany_dir + @"\sales.txt";
-            productPurchases_file = tempCompany_dir + @"\productPurchases.txt";
-            productSales_file = tempCompany_dir + @"\productSales.txt";
-            categoryPurchases = tempCompany_dir + @"\categoryPurchases.txt";
-            categorySales = tempCompany_dir + @"\categorySales.txt";
+            purchases_file = tempCompany_dir + @"\purchases" + ArgoFiles.TxtFileExtension;
+            sales_file = tempCompany_dir + @"\sales" + ArgoFiles.TxtFileExtension;
+            productPurchases_file = tempCompany_dir + @"\productPurchases" + ArgoFiles.TxtFileExtension;
+            productSales_file = tempCompany_dir + @"\productSales" + ArgoFiles.TxtFileExtension;
+            categoryPurchases_file = tempCompany_dir + @"\categoryPurchases" + ArgoFiles.TxtFileExtension;
+            categorySales_file = tempCompany_dir + @"\categorySales" + ArgoFiles.TxtFileExtension;
 
             // Logs
             logs_dir = tempCompany_dir + @"\logs\";
@@ -494,7 +494,7 @@ namespace Sales_Tracker.Classes
                 else { return ""; }
             }
 
-            CopyFile(sourceFile, destinationDirectory + thingName + ".txt");
+            CopyFile(sourceFile, destinationDirectory + thingName + ArgoFiles.TxtFileExtension);
 
             return thingName;
         }

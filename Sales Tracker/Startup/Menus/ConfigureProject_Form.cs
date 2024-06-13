@@ -19,7 +19,7 @@ namespace Sales_Tracker.Startup.Menus
         {
             // Set default name. Choose a name that doesn't already exist in the directory
             if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName") &&
-                !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName.ArgoCompany"))
+                !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName" + ArgoFiles.ArgoCompanyFileExtension))
             {
                 ProjectName_textBox.Text = "CompanyName";
             }
@@ -29,7 +29,7 @@ namespace Sales_Tracker.Startup.Menus
                 while (true)
                 {
                     if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName (" + count + ")") &&
-                        !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName (" + count + ").ArgoCompany"))
+                        !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName (" + count + ")" + ArgoFiles.ArgoCompanyFileExtension))
                     {
                         ProjectName_textBox.Text = "CompanyName (" + count + ")";
                         break;
@@ -81,7 +81,7 @@ namespace Sales_Tracker.Startup.Menus
                 return;
             }
 
-            if (File.Exists(selectedDirectory + @"\" + ProjectName_textBox.Text + ".ArgoCompany"))
+            if (File.Exists(selectedDirectory + @"\" + ProjectName_textBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
                 CustomMessageBox.Show("Argo Sales Tracker", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
@@ -100,8 +100,9 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.purchases_file);
             Directories.CreateFile(Directories.sales_file);
             Directories.CreateFile(Directories.productPurchases_file);
-            Directories.CreateFile(Directories.categoryPurchases);
-            Directories.CreateFile(Directories.categorySales);
+            Directories.CreateFile(Directories.productSales_file);
+            Directories.CreateFile(Directories.categoryPurchases_file);
+            Directories.CreateFile(Directories.categorySales_file);
             ArgoCompany.SaveAll();
 
             // Save recently opened projects

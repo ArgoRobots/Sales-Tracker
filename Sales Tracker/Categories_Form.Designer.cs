@@ -164,6 +164,7 @@
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             MinimumSize = new Size(800, 500);
             Name = "Categories_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Categories_Form_FormClosed;
             ResumeLayout(false);

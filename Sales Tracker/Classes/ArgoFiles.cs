@@ -6,6 +6,9 @@ namespace Sales_Tracker.Classes
 {
     internal class ArgoFiles
     {
+        public static readonly string ArgoCompanyFileExtension = ".ArgoCompany",
+                                      TxtFileExtension = ".txt";
+
         public static void RegisterFileIcon(string extension, string resourceName, int iconIndex)
         {
             // Dynamically get the path of the currently running executable

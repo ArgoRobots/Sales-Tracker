@@ -69,7 +69,7 @@ namespace Sales_Tracker.Startup
                         Directories.InitDataFile();
 
                         List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo project", listOfDirectories, false);
+                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo copmany", listOfDirectories, false);
 
                         ShowMainMenu();
                     };
