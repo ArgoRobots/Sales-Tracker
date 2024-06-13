@@ -931,7 +931,7 @@ namespace Sales_Tracker
         private Guna2Panel rightClickDataGridView_Panel;
         public void ConstructRightClickDataGridViewRowMenu()
         {
-            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 5 * 22 + 10));
+            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 3 * 22 + 10));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
 
             rightClickDataGridView_Panel.BringToFront();
@@ -997,85 +997,6 @@ namespace Sales_Tracker
 
                 UI.CloseAllPanels(null, null);
             };
-
-            menuBtn = UI.ConstructBtnForMenu("Move up", 240, false, flowPanel);
-            menuBtn.Click += (sender, e) =>
-            {
-                if (selectedDataGridView.Rows.Count > 0)
-                {
-                    if (selectedDataGridView.SelectedRows.Count == 1)
-                    {
-                        for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
-                        {
-                            if (selectedDataGridView.Rows[i].Cells[0].Selected)
-                            {
-                                if (i == 0)
-                                {
-                                    CustomMessageBox.Show("Argo Studio", "Cannot move the first command up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                                    return;
-                                }
-                                UI.CloseAllPanels(null, null);  // Do this before selecting a new row
-
-                                // Use tuple to swap values
-                                (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i - 1].Cells[0].Value) = (selectedDataGridView.Rows[i - 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value);
-
-                                // Reselect
-                                selectedDataGridView.Rows[i].Cells[0].Selected = false;
-                                selectedDataGridView.Rows[i - 1].Cells[0].Selected = true;
-
-                                // Save
-                                SaveDataGridViewToFile();
-
-                                return;
-                            }
-                        }
-                    }
-                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to move up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
-                }
-                else { CustomMessageBox.Show("Argo Studio", "Select a command to move up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
-
-                UI.CloseAllPanels(null, null);
-            };
-
-            menuBtn = UI.ConstructBtnForMenu("Move down", 240, false, flowPanel);
-            menuBtn.Click += (sender, e) =>
-            {
-                if (selectedDataGridView.Rows.Count > 0)
-                {
-                    if (selectedDataGridView.SelectedRows.Count == 1)
-                    {
-                        for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
-                        {
-                            if (selectedDataGridView.Rows[i].Cells[0].Selected)
-                            {
-                                if (i == selectedDataGridView.Rows.Count - 1)
-                                {
-                                    CustomMessageBox.Show("Argo Studio", "Cannot move the last command down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                                    return;
-                                }
-                                UI.CloseAllPanels(null, null);  // Do this before selecting a new row
-
-                                // Use tuple to swap values
-                                (selectedDataGridView.Rows[i + 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value) = (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i + 1].Cells[0].Value);
-
-                                // Reselect
-                                selectedDataGridView.Rows[i].Cells[0].Selected = false;
-                                selectedDataGridView.Rows[i + 1].Cells[0].Selected = true;
-
-                                // Save
-                                SaveDataGridViewToFile();
-
-                                return;
-                            }
-                        }
-                    }
-                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to move down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
-                }
-                else { CustomMessageBox.Show("Argo Studio", "Select a command to move down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
-
-                UI.CloseAllPanels(null, null);
-            };
-
             menuBtn = UI.ConstructBtnForMenu("Delete", 240, false, flowPanel);
             menuBtn.ForeColor = CustomColors.accent_red;
             menuBtn.Click += (sender, e) =>
@@ -1215,7 +1136,10 @@ namespace Sales_Tracker
             }
         }
 
-        // Misc.
+        public void CloseRightClickPanels()
+        {
+            Controls.Remove(rightClickDataGridView_Panel);
+        }
         private void CloseAllPanels(object? sender, EventArgs? e)
         {
             UI.CloseAllPanels(null, null);

@@ -6,12 +6,14 @@ namespace Sales_Tracker
     public partial class Products_Form : BaseForm
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static Products_Form Instance { get; private set; }
         // Init
         private readonly MainMenu_Form.Options oldOption;
         private readonly Guna2DataGridView oldselectedDataGridView;
         public Products_Form()
         {
             InitializeComponent();
+            Instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldselectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
@@ -116,6 +118,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Product product = new(ProductName_TextBox.Text, SellerName_TextBox.Text, CountryOfOrigin_TextBox.Text);
             if (Purchase_RadioButton.Checked)
             {
@@ -160,6 +163,10 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
             MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, heightForDataGridView);
+        }
+        public void CloseAllPanels(object sender, EventArgs e)
+        {
+            SearchBox.CloseVariableBox(this);
         }
     }
 }

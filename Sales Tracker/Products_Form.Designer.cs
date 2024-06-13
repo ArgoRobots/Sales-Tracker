@@ -62,6 +62,7 @@
             CountryOfOrigin_Label.Size = new Size(121, 20);
             CountryOfOrigin_Label.TabIndex = 13;
             CountryOfOrigin_Label.Text = "Country of origin";
+            CountryOfOrigin_Label.Click += CloseAllPanels;
             // 
             // CountryOfOrigin_TextBox
             // 
@@ -85,6 +86,7 @@
             CountryOfOrigin_TextBox.Size = new Size(200, 36);
             CountryOfOrigin_TextBox.TabIndex = 6;
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
+            CountryOfOrigin_TextBox.Click += CloseAllPanels;
             // 
             // SellerName_Label
             // 
@@ -96,6 +98,7 @@
             SellerName_Label.Size = new Size(87, 20);
             SellerName_Label.TabIndex = 11;
             SellerName_Label.Text = "Seller name";
+            SellerName_Label.Click += CloseAllPanels;
             // 
             // SellerName_TextBox
             // 
@@ -119,6 +122,7 @@
             SellerName_TextBox.Size = new Size(200, 36);
             SellerName_TextBox.TabIndex = 5;
             SellerName_TextBox.TextChanged += ValidateInputs;
+            SellerName_TextBox.Click += CloseAllPanels;
             // 
             // AddProduct_Label
             // 
@@ -130,6 +134,7 @@
             AddProduct_Label.Size = new Size(129, 30);
             AddProduct_Label.TabIndex = 0;
             AddProduct_Label.Text = "Add product";
+            AddProduct_Label.Click += CloseAllPanels;
             // 
             // ProductName_Label
             // 
@@ -141,6 +146,7 @@
             ProductName_Label.Size = new Size(101, 20);
             ProductName_Label.TabIndex = 8;
             ProductName_Label.Text = "Product name";
+            ProductName_Label.Click += CloseAllPanels;
             // 
             // ProductName_TextBox
             // 
@@ -164,6 +170,7 @@
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 3;
             ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.Click += CloseAllPanels;
             // 
             // AddProduct_Button
             // 
@@ -207,6 +214,7 @@
             Purchase_RadioButton.UncheckedState.FillColor = Color.Transparent;
             Purchase_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             Purchase_RadioButton.CheckedChanged += Purchase_RadioButton_CheckedChanged;
+            Purchase_RadioButton.Click += CloseAllPanels;
             // 
             // Sale_RadioButton
             // 
@@ -228,6 +236,7 @@
             Sale_RadioButton.UncheckedState.FillColor = Color.Transparent;
             Sale_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             Sale_RadioButton.CheckedChanged += Sale_RadioButton_CheckedChanged;
+            Sale_RadioButton.Click += CloseAllPanels;
             // 
             // ProductCategory_Label
             // 
@@ -239,6 +248,7 @@
             ProductCategory_Label.Size = new Size(122, 20);
             ProductCategory_Label.TabIndex = 26;
             ProductCategory_Label.Text = "Product category";
+            ProductCategory_Label.Click += CloseAllPanels;
             // 
             // ProductCategory_TextBox
             // 
@@ -261,6 +271,7 @@
             ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ProductCategory_TextBox.Size = new Size(200, 36);
             ProductCategory_TextBox.TabIndex = 4;
+            ProductCategory_TextBox.Click += CloseAllPanels;
             // 
             // Products_Form
             // 
@@ -285,6 +296,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Products_Form_FormClosed;
+            Click += CloseAllPanels;
             ResumeLayout(false);
             PerformLayout();
         }
