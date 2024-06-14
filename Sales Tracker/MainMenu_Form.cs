@@ -147,7 +147,7 @@ namespace Sales_Tracker
             UI.CloseAllPanels(null, null);
             ResizeControls();
         }
-        private async void MainMenu_form_Shown(object sender, EventArgs e)
+        private void MainMenu_form_Shown(object sender, EventArgs e)
         {
             // This insures the charts are rendered
             // BeginInvoke ensures that the chart update logic runs on the main UI thread after all pending UI events have been processed.
@@ -603,6 +603,7 @@ namespace Sales_Tracker
         public readonly string CategoryColumn = "Category";
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         public Guna2DataGridView selectedDataGridView;
+        private bool doNotDeleteRows = false;
         private void ConstructDataGridViews()
         {
             Purchases_DataGridView = new Guna2DataGridView();
@@ -629,12 +630,13 @@ namespace Sales_Tracker
             dataGridView.BackgroundColor = CustomColors.controlBack;
             dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;
             dataGridView.Size = size;
-            dataGridView.Click += CloseAllPanels;
+
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsAdded += DataGridView_RowsAdded;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
-            dataGridView.MouseDown += DataGridView_KeyDown;
+            dataGridView.MouseDown += DataGridView_MouseDown;
+            dataGridView.KeyDown += DataGridView_KeyDown;
 
             foreach (DataGridViewColumn column in dataGridView.Columns)
             {
@@ -644,13 +646,10 @@ namespace Sales_Tracker
         }
         private void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
         {
-            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Are you sure you want to delete this row?", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
-
-            if (result == CustomMessageBoxResult.Cancel)
+            if (doNotDeleteRows)
             {
                 e.Cancel = true;
             }
-
             string type = "", columnName = "";
             byte logIndex = 0;
 
@@ -733,7 +732,7 @@ namespace Sales_Tracker
                 LoadGraphs();
             }
         }
-        private void DataGridView_KeyDown(object? sender, MouseEventArgs e)
+        private void DataGridView_MouseDown(object? sender, MouseEventArgs e)
         {
             UI.CloseAllPanels(null, null);
 
@@ -774,7 +773,7 @@ namespace Sales_Tracker
                         rightClickDataGridView_Panel.Left += 30;
                     }
                 }
-                else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + (info.RowIndex + 1) * 25; }
+                else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + Main_Panel.Top + (info.RowIndex + 1) * 25; }
 
                 Controls.Add(rightClickDataGridView_Panel);
                 rightClickDataGridView_Panel.BringToFront();
@@ -782,6 +781,30 @@ namespace Sales_Tracker
 
             // Set color
             selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
+        }
+        private void DataGridView_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                CloseRightClickPanels();
+
+                string message;
+                if (selectedDataGridView.SelectedRows.Count == 1)
+                {
+                    message = "Are you sure you want to delete this row?";
+                }
+                else
+                {
+                    message = "Are you sure you want to delete the selected rows?";
+                }
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
+                if (result != CustomMessageBoxResult.Ok)
+                {
+                    doNotDeleteRows = true;
+                    UnselectAllRowsInCurrentDataGridView();
+                }
+            }
         }
         private void SaveDataGridViewToFile()
         {
@@ -956,9 +979,9 @@ namespace Sales_Tracker
                             }
                         }
                     }
-                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                    else { CustomMessageBox.Show("Argo Studio", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
                 }
-                else { CustomMessageBox.Show("Argo Studio", "Select a command to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                else { CustomMessageBox.Show("Argo Studio", "Select a row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
 
                 UI.CloseAllPanels(null, null);
             };
@@ -993,9 +1016,9 @@ namespace Sales_Tracker
 
                         return;
                     }
-                    else { CustomMessageBox.Show("Argo Studio", "You can only select one command to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                    else { CustomMessageBox.Show("Argo Studio", "You can only select one row to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
                 }
-                else { CustomMessageBox.Show("Argo Studio", "Select a command to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                else { CustomMessageBox.Show("Argo Studio", "Select a row to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
 
                 UI.CloseAllPanels(null, null);
             };
@@ -1033,7 +1056,7 @@ namespace Sales_Tracker
                 else
                 {
                     UI.CloseAllPanels(null, null);
-                    CustomMessageBox.Show("Argo Studio", "Select a command to delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Studio", "Select a row to delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             };
             UI.ConstructKeyShortcut("Del", menuBtn);
@@ -1141,6 +1164,8 @@ namespace Sales_Tracker
         public void CloseRightClickPanels()
         {
             Controls.Remove(rightClickDataGridView_Panel);
+            doNotDeleteRows = false;
+            UnselectAllRowsInCurrentDataGridView();
         }
         private void CloseAllPanels(object? sender, EventArgs? e)
         {
