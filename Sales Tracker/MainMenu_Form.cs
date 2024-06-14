@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
+using System.Windows.Forms;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -176,6 +177,15 @@ namespace Sales_Tracker
             else
             {
                 Bar_GunaChart.Height = 200;
+            }
+
+            if (Width > 1300)
+            {
+                selectedDataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            }
+            else
+            {
+                selectedDataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             }
 
             Bar_GunaChart.Width = Width / 3 - 30;

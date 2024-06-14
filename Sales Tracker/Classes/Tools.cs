@@ -65,12 +65,25 @@ namespace Sales_Tracker.Classes
             return null;
         }
         /// <summary>
-        /// Allow numbers, one period, and one minus sign at the front.
+        /// Allow numbers and one period.
         /// </summary>
         public static void OnlyAllowNumbersAndOneDecimalInGunaTextBox(object? sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
                 (e.KeyChar != '.' || (sender as Guna2TextBox).Text.Contains('.')))
+            {
+                e.Handled = true;
+            }
+        }
+        /// <summary>
+        /// Allow numbers, one period, and one minus sign at the front.
+        /// </summary>
+        public static void OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox(object sender, KeyPressEventArgs e)
+        {
+            // Allow numbers, one period, and one minus sign at the front
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.' || (sender as Guna2TextBox).Text.Contains('.')) &&
+                (e.KeyChar != '-' || (sender as Guna2TextBox).SelectionStart != 0))
             {
                 e.Handled = true;
             }
