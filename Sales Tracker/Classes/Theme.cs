@@ -143,11 +143,7 @@ namespace Sales_Tracker.Classes
                             guna2DataGridView.Theme = CustomColors.dataGridViewTheme;
                             guna2DataGridView.BackgroundColor = CustomColors.controlBack;
 
-                            foreach (DataGridViewColumn column in guna2DataGridView.Columns)
-                            {
-                                column.HeaderCell.Style.BackColor = CustomColors.background2;
-                                column.HeaderCell.Style.SelectionBackColor = CustomColors.background2;
-                            }
+                            UpdateDataGridViewHeaderTheme(guna2DataGridView);
                             break;
 
                         case Guna2CircleButton guna2CircleButton:
@@ -180,6 +176,14 @@ namespace Sales_Tracker.Classes
                             break;
                     }
                 }
+            }
+        }
+        public static void UpdateDataGridViewHeaderTheme(Guna2DataGridView dataGridView)
+        {
+            foreach (DataGridViewColumn column in dataGridView.Columns)
+            {
+                column.HeaderCell.Style.BackColor = CustomColors.background2;
+                column.HeaderCell.Style.SelectionBackColor = CustomColors.background2;
             }
         }
         private static void Guna2Button_GotFocus(object sender, EventArgs e)

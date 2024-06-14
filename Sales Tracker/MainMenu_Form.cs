@@ -636,6 +636,7 @@ namespace Sales_Tracker
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.MouseDown += DataGridView_MouseDown;
+            dataGridView.MouseUp += DataGridView_MouseUp;
             dataGridView.KeyDown += DataGridView_KeyDown;
 
             foreach (DataGridViewColumn column in dataGridView.Columns)
@@ -754,6 +755,17 @@ namespace Sales_Tracker
                 // Select current row
                 grid.Rows[info.RowIndex].Selected = true;
                 grid.Focus();
+            }
+
+            // Set color
+            selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
+        }
+        private void DataGridView_MouseUp(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                Guna2DataGridView grid = (Guna2DataGridView)sender;
+                DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
 
                 // If it's too far right
                 bool tooFarRight = false;
@@ -765,7 +777,7 @@ namespace Sales_Tracker
                 else { rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - 25; }
 
                 // If it's too far down
-                if (selectedDataGridView.Top + rightClickDataGridView_Panel.Height + (info.RowIndex + 1) * 25 > Height)
+                if (selectedDataGridView.Top + rightClickDataGridView_Panel.Height + (info.RowIndex + 1) * 25 + 30 > Height)
                 {
                     rightClickDataGridView_Panel.Top = Height - rightClickDataGridView_Panel.Height - 2;
                     if (!tooFarRight)
@@ -773,14 +785,11 @@ namespace Sales_Tracker
                         rightClickDataGridView_Panel.Left += 30;
                     }
                 }
-                else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + Main_Panel.Top + (info.RowIndex + 1) * 25; }
+                else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + Main_Panel.Top + (info.RowIndex + 1) * 25 + 30; }
 
                 Controls.Add(rightClickDataGridView_Panel);
                 rightClickDataGridView_Panel.BringToFront();
             }
-
-            // Set color
-            selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
         }
         private void DataGridView_KeyDown(object? sender, KeyEventArgs e)
         {
@@ -848,11 +857,7 @@ namespace Sales_Tracker
                 dataGridView.Columns.Add(column.ToString(), columnHeaders[(TEnum)column]);
             }
 
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                column.HeaderCell.Style.BackColor = CustomColors.background2;
-                column.HeaderCell.Style.SelectionBackColor = CustomColors.background2;
-            }
+            Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
         private void CenterSelectedDataGridView()
         {
@@ -952,7 +957,7 @@ namespace Sales_Tracker
         }
 
 
-        // Right click DataGridView row
+        // Right click DataGridView row menu
         private Guna2Panel rightClickDataGridView_Panel;
         public void ConstructRightClickDataGridViewRowMenu()
         {
@@ -1061,7 +1066,6 @@ namespace Sales_Tracker
             };
             UI.ConstructKeyShortcut("Del", menuBtn);
         }
-
 
 
         // Message panel

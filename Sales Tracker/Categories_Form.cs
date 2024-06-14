@@ -32,12 +32,14 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             Purchases_DataGridView.Columns.Add(header, header);
+            Theme.UpdateDataGridViewHeaderTheme(Purchases_DataGridView);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, heightForDataGridView);
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             Sales_DataGridView.Columns.Add(header, header);
+            Theme.UpdateDataGridViewHeaderTheme(Sales_DataGridView);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, heightForDataGridView);
         }
         private void LoadProducts()
