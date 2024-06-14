@@ -165,22 +165,25 @@ namespace Sales_Tracker
         }
         private void ResizeControls()
         {
+            Bar_GunaChart.Height = 300;
+
             Bar_GunaChart.Width = Width / 3 - 30;
             Bar_GunaChart.Left = 20;
             Bar_Label.Left = Bar_GunaChart.Left;
 
-            Pie_GunaChart.Width = Bar_GunaChart.Width;
+            Pie_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
             Pie_GunaChart.Left = (Width / 2) - (Pie_GunaChart.Width / 2) - 8;
             Pie_Label.Left = Pie_GunaChart.Left;
 
-            Bar2_GunaChart.Width = Bar_GunaChart.Width;
+            Bar2_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
             Bar2_GunaChart.Left = Width - Bar_GunaChart.Width - 35;
             Bar2_Label.Left = Bar2_GunaChart.Left;
 
-            selectedDataGridView.Width = Width - 50;
-            selectedDataGridView.Left = 18;
+            selectedDataGridView.Size = new Size(Width - 55, Height - MainTop_Panel.Height - Top_Panel.Height - Bar_GunaChart.Height - Bar_GunaChart.Top - 15);
+            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - 7, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
+
+            Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
             Total_Panel.Width = selectedDataGridView.Width;
-            Total_Panel.Left = selectedDataGridView.Left;
 
             if (Controls.Contains(messagePanel))
             {
@@ -297,20 +300,6 @@ namespace Sales_Tracker
 
         // TOP BAR
         // Don't initiate these yet because it resets every time a program is loaded
-        public void SwitchMainForm(Form form, object btnSender)
-        {
-            Guna2Button btn = (Guna2Button)btnSender;
-            // If the form is not already selected
-            if (btn.FillColor != Color.FromArgb(15, 13, 74) & btn.FillColor != Color.Gray)
-            {
-                Main_Panel.Controls.Clear();
-                form.TopLevel = false;
-                form.Dock = DockStyle.Fill;
-                Main_Panel.Controls.Add(form);
-                form.Show();
-            }
-        }
-
         // File
         private void File_Button_Click(object sender, EventArgs e)
         {
@@ -368,10 +357,9 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             selectedDataGridView = Purchases_DataGridView;
-            Main_Panel.Controls.Add(Purchases_DataGridView);
-            CenterSelectedDataGridView();
+            Controls.Add(Purchases_DataGridView);
             ResizeControls();
-            Main_Panel.Controls.Remove(Sales_DataGridView);
+            Controls.Remove(Sales_DataGridView);
             Selected = Options.Purchases;
             LoadGraphs();
             UpdateTotals();
@@ -380,10 +368,9 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             selectedDataGridView = Sales_DataGridView;
-            Main_Panel.Controls.Add(Sales_DataGridView);
-            CenterSelectedDataGridView();
+            Controls.Add(Sales_DataGridView);
             ResizeControls();
-            Main_Panel.Controls.Remove(Purchases_DataGridView);
+            Controls.Remove(Purchases_DataGridView);
             Selected = Options.Sales;
             LoadGraphs();
             UpdateTotals();
@@ -613,15 +600,16 @@ namespace Sales_Tracker
             Sales_DataGridView = new Guna2DataGridView();
             InitializeDataGridView(Sales_DataGridView, size);
         }
+        private readonly byte rowHeight = 25, columnHeaderHeight = 30;
         public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
         {
             dataGridView.ReadOnly = true;
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToResizeRows = false;
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridView.ColumnHeadersHeight = 30;
+            dataGridView.ColumnHeadersHeight = columnHeaderHeight;
             dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView.RowTemplate.Height = 25;
+            dataGridView.RowTemplate.Height = rowHeight;
             dataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
@@ -769,23 +757,23 @@ namespace Sales_Tracker
 
                 // If it's too far right
                 bool tooFarRight = false;
-                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - 25 > Width)
+                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - rowHeight > Width)
                 {
                     rightClickDataGridView_Panel.Left = Width - rightClickDataGridView_Panel.Width;
                     tooFarRight = true;
                 }
-                else { rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - 25; }
+                else { rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - rowHeight; }
 
                 // If it's too far down
-                if (selectedDataGridView.Top + rightClickDataGridView_Panel.Height + (info.RowIndex + 1) * 25 + 30 > Height)
+                if (selectedDataGridView.Top + rightClickDataGridView_Panel.Height + (info.RowIndex + 1) * rowHeight + columnHeaderHeight > Height)
                 {
                     rightClickDataGridView_Panel.Top = Height - rightClickDataGridView_Panel.Height - 2;
                     if (!tooFarRight)
                     {
-                        rightClickDataGridView_Panel.Left += 30;
+                        rightClickDataGridView_Panel.Left += columnHeaderHeight;
                     }
                 }
-                else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + Main_Panel.Top + (info.RowIndex + 1) * 25 + 30; }
+                else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + (info.RowIndex + 1) * rowHeight + columnHeaderHeight; }
 
                 Controls.Add(rightClickDataGridView_Panel);
                 rightClickDataGridView_Panel.BringToFront();
@@ -858,11 +846,6 @@ namespace Sales_Tracker
             }
 
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
-        }
-        private void CenterSelectedDataGridView()
-        {
-            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2, Main_Panel.Height - selectedDataGridView.Height - 100);
-            Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height + 10);
         }
         private void UpdateTotals()
         {
