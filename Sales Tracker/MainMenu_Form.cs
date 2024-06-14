@@ -165,7 +165,18 @@ namespace Sales_Tracker
         }
         private void ResizeControls()
         {
-            Bar_GunaChart.Height = 300;
+            if (Height > 1000)
+            {
+                Bar_GunaChart.Height = 350;
+            }
+            else if (Height > 800)
+            {
+                Bar_GunaChart.Height = 300;
+            }
+            else
+            {
+                Bar_GunaChart.Height = 200;
+            }
 
             Bar_GunaChart.Width = Width / 3 - 30;
             Bar_GunaChart.Left = 20;
