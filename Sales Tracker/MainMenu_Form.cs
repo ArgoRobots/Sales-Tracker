@@ -977,9 +977,9 @@ namespace Sales_Tracker
                         {
                             if (selectedDataGridView.Rows[i].Cells[0].Selected)
                             {
-                                //  ModifyCommand_Form ModifyLine_form = new();
-                                UI.CloseAllPanels(null, null);
-                                // ModifyLine_form.ShowDialog();
+                                // ModifyRow_Form ModifyRow_form = new();
+                                CloseRightClickPanels();
+                                // ModifyRow_form.ShowDialog();
                                 return;
                             }
                         }
@@ -988,7 +988,7 @@ namespace Sales_Tracker
                 }
                 else { CustomMessageBox.Show("Argo Studio", "Select a row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
 
-                UI.CloseAllPanels(null, null);
+                CloseRightClickPanels();
             };
 
             menuBtn = UI.ConstructBtnForMenu("Duplicate", 240, false, flowPanel);
@@ -1001,7 +1001,8 @@ namespace Sales_Tracker
                         int index = selectedDataGridView.SelectedRows[0].Index;
 
                         // Duplicate row
-                        selectedDataGridView.Rows.Add(selectedDataGridView.SelectedRows[0].Cells[0].Value);
+                        DataGridViewRow selectedRow = CloneWithValues(selectedDataGridView.SelectedRows[0]);
+                        selectedDataGridView.Rows.Add(selectedRow);
 
                         // The new row is at the bottom by default, so move it up until it's below the row that was duplicated
                         for (int i = selectedDataGridView.Rows.Count - 1; i > index; i--)
@@ -1010,7 +1011,7 @@ namespace Sales_Tracker
                             (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i - 1].Cells[0].Value) = (selectedDataGridView.Rows[i - 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value);
                         }
 
-                        UI.CloseAllPanels(null, null);  // Do this before selecting a new row
+                        CloseRightClickPanels();  // Do this before selecting a new row
 
                         // Select the new row
                         selectedDataGridView.Rows[index].Cells[0].Selected = false;
@@ -1041,7 +1042,7 @@ namespace Sales_Tracker
                         selectedDataGridView.Rows.Remove(item);
                     }
 
-                    UI.CloseAllPanels(null, null);  // Do this before selecting a new row
+                    CloseRightClickPanels();  // Do this before selecting a new row
 
                     // If no rows are automatically selected again, select the row under the row that was just deleted
                     if (selectedDataGridView.Rows.Count != 0)
@@ -1060,13 +1061,21 @@ namespace Sales_Tracker
                 }
                 else
                 {
-                    UI.CloseAllPanels(null, null);
+                    CloseRightClickPanels();
                     CustomMessageBox.Show("Argo Studio", "Select a row to delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             };
             UI.ConstructKeyShortcut("Del", menuBtn);
         }
-
+        private static DataGridViewRow CloneWithValues(DataGridViewRow row)
+        {
+            DataGridViewRow clonedRow = (DataGridViewRow)row.Clone();
+            for (Int32 index = 0; index < row.Cells.Count; index++)
+            {
+                clonedRow.Cells[index].Value = row.Cells[index].Value;
+            }
+            return clonedRow;
+        }
 
         // Message panel
         public Guna2Panel messagePanel;
