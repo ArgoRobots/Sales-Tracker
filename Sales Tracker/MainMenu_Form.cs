@@ -23,11 +23,14 @@ namespace Sales_Tracker
 
             ConstructDataGridViews();
             SetCompanyLabel();
+            isDataGridViewLoading = true;
             LoadProducts();
             LoadSales();
             LoadPurchases();
+            isDataGridViewLoading = false;
             Sales_Button.PerformClick();
             LoadDataFromSetting();
+            AlignTotalLabels();
             UpdateTheme();
         }
         private void SetCompanyLabel()
@@ -68,27 +71,19 @@ namespace Sales_Tracker
         public void LoadSales()
         {
             selectedDataGridView = Sales_DataGridView;
-            isDataGridViewLoading = true;
-
             LoadColumnsInDataGridView(selectedDataGridView, SalesColumnHeaders);
             Selected = Options.Sales;
-
             AddRowsFromFile();
             UpdateTotals();
-            isDataGridViewLoading = false;
             AlignTotalLabels();
         }
         public void LoadPurchases()
         {
             selectedDataGridView = Purchases_DataGridView;
-            isDataGridViewLoading = true;
-
             LoadColumnsInDataGridView(selectedDataGridView, PurchaseColumnHeaders);
             Selected = Options.Purchases;
-
             AddRowsFromFile();
             UpdateTotals();
-            isDataGridViewLoading = false;
             AlignTotalLabels();
         }
         private void LoadGraphs()
@@ -377,22 +372,22 @@ namespace Sales_Tracker
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            Selected = Options.Purchases;
             selectedDataGridView = Purchases_DataGridView;
             Controls.Add(Purchases_DataGridView);
             ResizeControls();
             Controls.Remove(Sales_DataGridView);
-            Selected = Options.Purchases;
             LoadGraphs();
             UpdateTotals();
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            Selected = Options.Sales;
             selectedDataGridView = Sales_DataGridView;
             Controls.Add(Sales_DataGridView);
             ResizeControls();
             Controls.Remove(Purchases_DataGridView);
-            Selected = Options.Sales;
             LoadGraphs();
             UpdateTotals();
         }
@@ -567,7 +562,7 @@ namespace Sales_Tracker
             PricePerUnit,
             Shipping,
             Tax,
-            TotalPrice
+            TotalExpenses
         }
         public enum SalesColumns
         {
@@ -580,7 +575,7 @@ namespace Sales_Tracker
             PricePerUnit,
             Shipping,
             Tax,
-            TotalPrice
+            TotalRevenue
         }
         public readonly Dictionary<PurchaseColumns, string> PurchaseColumnHeaders = new()
         {
@@ -593,7 +588,7 @@ namespace Sales_Tracker
             { PurchaseColumns.PricePerUnit, "Price per unit" },
             { PurchaseColumns.Shipping, "Shipping" },
             { PurchaseColumns.Tax, "Tax" },
-            { PurchaseColumns.TotalPrice, "Total price" }
+            { PurchaseColumns.TotalExpenses, "Total expenses" }
         };
         public readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
         {
@@ -606,7 +601,7 @@ namespace Sales_Tracker
             { SalesColumns.PricePerUnit, "Price per unit" },
             { SalesColumns.Shipping, "Shipping" },
             { SalesColumns.Tax, "Tax" },
-            { SalesColumns.TotalPrice, "Total price" }
+            { SalesColumns.TotalRevenue, "Total revenue" }
         };
         public readonly string CategoryColumn = "Category";
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
@@ -614,8 +609,8 @@ namespace Sales_Tracker
         private bool doNotDeleteRows = false;
         private void ConstructDataGridViews()
         {
-            Purchases_DataGridView = new Guna2DataGridView();
             Size size = new(1300, 350);
+            Purchases_DataGridView = new Guna2DataGridView();
             InitializeDataGridView(Purchases_DataGridView, size);
 
             Sales_DataGridView = new Guna2DataGridView();
@@ -885,14 +880,14 @@ namespace Sales_Tracker
                 if (Selected == Options.Purchases)
                 {
                     totalQuantity += Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
-                    totalPrice += Convert.ToDecimal(row.Cells[PurchaseColumns.TotalPrice.ToString()].Value);
+                    totalPrice += Convert.ToDecimal(row.Cells[PurchaseColumns.TotalExpenses.ToString()].Value);
                     totalTax += Convert.ToDecimal(row.Cells[PurchaseColumns.Tax.ToString()].Value);
                     totalShipping += Convert.ToDecimal(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
                 }
                 else
                 {
                     totalQuantity += Convert.ToInt32(row.Cells[SalesColumns.Quantity.ToString()].Value);
-                    totalPrice += Convert.ToDecimal(row.Cells[SalesColumns.TotalPrice.ToString()].Value);
+                    totalPrice += Convert.ToDecimal(row.Cells[SalesColumns.TotalRevenue.ToString()].Value);
                     totalTax += Convert.ToDecimal(row.Cells[SalesColumns.Tax.ToString()].Value);
                     totalShipping += Convert.ToDecimal(row.Cells[SalesColumns.Shipping.ToString()].Value);
                 }
@@ -917,14 +912,14 @@ namespace Sales_Tracker
                 quantityColumn = PurchaseColumns.Quantity.ToString();
                 taxColumn = PurchaseColumns.Tax.ToString();
                 shippingColumn = PurchaseColumns.Shipping.ToString();
-                totalPriceColumn = PurchaseColumns.TotalPrice.ToString();
+                totalPriceColumn = PurchaseColumns.TotalExpenses.ToString();
             }
             else
             {
                 quantityColumn = SalesColumns.Quantity.ToString();
                 taxColumn = SalesColumns.Tax.ToString();
                 shippingColumn = SalesColumns.Shipping.ToString();
-                totalPriceColumn = SalesColumns.TotalPrice.ToString();
+                totalPriceColumn = SalesColumns.TotalRevenue.ToString();
             }
 
             Quantity_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;

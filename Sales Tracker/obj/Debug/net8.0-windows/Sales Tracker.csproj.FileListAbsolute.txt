@@ -35,3 +35,4 @@ C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sale
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.genruntimeconfig.cache
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\ref\Sales Tracker.dll
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Categories_Form.resources
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.ModifyRow_Form.resources

@@ -42,7 +42,7 @@
             // 
             ModifyRow_Label.AutoSize = true;
             ModifyRow_Label.Font = new Font("Segoe UI", 16F);
-            ModifyRow_Label.Location = new Point(232, 14);
+            ModifyRow_Label.Location = new Point(230, 14);
             ModifyRow_Label.Name = "ModifyRow_Label";
             ModifyRow_Label.Size = new Size(125, 30);
             ModifyRow_Label.TabIndex = 0;

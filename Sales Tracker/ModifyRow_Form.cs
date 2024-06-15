@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker
 {
@@ -14,7 +15,71 @@ namespace Sales_Tracker
         }
         private void ConstructControls(DataGridViewCell selectedRow)
         {
+            Control control = this;
+            int left = 0;
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = selectedRow.OwningRow.Cells[column.Index].Value?.ToString() ?? "";
 
+                switch (columnName)
+                {
+                    case nameof(PurchaseColumns.PurchaseID):
+                    case nameof(SalesColumns.SalesID):
+                        ConstructLabel("ID", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
+                        break;
+
+                    case nameof(PurchaseColumns.BuyerName):
+                    case nameof(SalesColumns.CustomerName):
+                        ConstructLabel("Name", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, control);
+                        break;
+
+                    case nameof(PurchaseColumns.ItemName):
+                        ConstructLabel("Item Name", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, control);
+                        break;
+
+                    case nameof(PurchaseColumns.CategoryName):
+                        ConstructLabel("Category", left, control);
+                        ConstructGunaComboBox(left, columnName, ["Category1", "Category2"], cellValue, false, control);
+                        break;
+
+                    case nameof(PurchaseColumns.Date):
+                        ConstructLabel("Date", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.None, control);
+                        break;
+
+                    case nameof(PurchaseColumns.Quantity):
+                        ConstructLabel("Quantity", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbers, control);
+                        break;
+
+                    case nameof(PurchaseColumns.PricePerUnit):
+                        ConstructLabel("Price Per Unit", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
+                        break;
+
+                    case nameof(PurchaseColumns.Shipping):
+                        ConstructLabel("Shipping", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
+                        break;
+
+                    case nameof(PurchaseColumns.Tax):
+                        ConstructLabel("Tax", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
+                        break;
+
+                    case nameof(PurchaseColumns.TotalExpenses):
+                    case nameof(SalesColumns.TotalRevenue):
+                        ConstructLabel("Total", left, control);
+                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
+                        break;
+                }
+
+                left += 100;  // Adjust the spacing as per your requirement
+            }
         }
 
         // Event handlers
