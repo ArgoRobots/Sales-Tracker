@@ -7,32 +7,44 @@ namespace Sales_Tracker
     public partial class ModifyRow_Form : BaseForm
     {
         // Init
-        public ModifyRow_Form(DataGridViewCell selectedRow)
+        public ModifyRow_Form(DataGridViewRow selectedRow)
         {
             InitializeComponent();
             ConstructControls(selectedRow);
             Theme.SetThemeForForm(this);
         }
-        private void ConstructControls(DataGridViewCell selectedRow)
+        private void ConstructControls(DataGridViewRow selectedRow)
         {
-            Control control = this;
+            Control control = Panel;
             int left = 0;
             foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
             {
                 string columnName = column.Name;
-                string cellValue = selectedRow.OwningRow.Cells[column.Index].Value?.ToString() ?? "";
-
+                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                string text;
                 switch (columnName)
                 {
-                    case nameof(PurchaseColumns.PurchaseID):
                     case nameof(SalesColumns.SalesID):
-                        ConstructLabel("ID", left, control);
+                    case nameof(PurchaseColumns.PurchaseID):
+                        if (MainMenu_Form.Instance.Selected == Options.Sales)
+                        {
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.SalesID];
+                        }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.PurchaseID]; }
+
+                        ConstructLabel(text, left, control);
                         ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
                         break;
 
-                    case nameof(PurchaseColumns.BuyerName):
                     case nameof(SalesColumns.CustomerName):
-                        ConstructLabel("Name", left, control);
+                    case nameof(PurchaseColumns.BuyerName):
+                        if (MainMenu_Form.Instance.Selected == Options.Sales)
+                        {
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.CustomerName];
+                        }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.BuyerName]; }
+
+                        ConstructLabel(text, left, control);
                         ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, control);
                         break;
 
@@ -43,12 +55,15 @@ namespace Sales_Tracker
 
                     case nameof(PurchaseColumns.CategoryName):
                         ConstructLabel("Category", left, control);
-                        ConstructGunaComboBox(left, columnName, ["Category1", "Category2"], cellValue, false, control);
+                        string[] array = MainMenu_Form.Instance.GetProductSaleNames().ToArray();
+                        array = MainMenu_Form.Instance.GetProductPurchaseNames().ToArray();
+                        ConstructGunaComboBox(left, columnName, array, cellValue, false, control);
+                        left += 100;
                         break;
 
                     case nameof(PurchaseColumns.Date):
                         ConstructLabel("Date", left, control);
-                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.None, control);
+                        ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), control);
                         break;
 
                     case nameof(PurchaseColumns.Quantity):
@@ -71,37 +86,43 @@ namespace Sales_Tracker
                         ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
                         break;
 
-                    case nameof(PurchaseColumns.TotalExpenses):
                     case nameof(SalesColumns.TotalRevenue):
+                    case nameof(PurchaseColumns.TotalExpenses):
+                        if (MainMenu_Form.Instance.Selected == Options.Sales)
+                        {
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.TotalRevenue];
+                        }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.TotalExpenses]; }
+
                         ConstructLabel("Total", left, control);
                         ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, control);
                         break;
                 }
-
-                left += 100;  // Adjust the spacing as per your requirement
+                left += 100;
             }
+
+            // Center controls
+            Width = left + 50;
+            Panel.Width = Width - 50;
+            Panel.Left = (Width - Panel.Width) / 2;
         }
 
         // Event handlers
         private void Save_Button_Click(object sender, EventArgs e)
         {
-
+            SaveInRow();
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-
+            Close();
         }
 
 
         // Functions
         private void InputChanged(object sender, EventArgs e)
         {
-            AllInputsFilled((Control)sender);
-            SaveInRow();
-        }
-        public void AllInputsFilled(Control parentControl)
-        {
-            foreach (Control control in parentControl.Controls)
+            Control senderControl = sender as Control;
+            foreach (Control control in senderControl.Parent.Controls)
             {
                 if (control is Guna2TextBox gunaTextBox)
                 {
@@ -113,7 +134,7 @@ namespace Sales_Tracker
                 }
                 else if (control is Guna2ComboBox gunaComboBox)
                 {
-                    if (gunaComboBox.SelectedItem == null || string.IsNullOrEmpty(gunaComboBox.Text))
+                    if (string.IsNullOrEmpty(gunaComboBox.Text))
                     {
                         Save_Button.Enabled = false;
                         return;
@@ -124,12 +145,31 @@ namespace Sales_Tracker
         }
         private void SaveInRow()
         {
-
+            DataGridViewRow selectedRow = MainMenu_Form.Instance.selectedDataGridView.SelectedRows[0];
+            foreach (Control control in Panel.Controls)
+            {
+                if (control is Guna2TextBox gTextBox)
+                {
+                    string columnName = gTextBox.Name;
+                    selectedRow.Cells[columnName].Value = gTextBox.Text;
+                }
+                else if (control is Guna2ComboBox gComboBox)
+                {
+                    string columnName = gComboBox.Name;
+                    selectedRow.Cells[columnName].Value = gComboBox.SelectedItem.ToString();
+                }
+                else if (control is Guna2DateTimePicker gDatePicker)
+                {
+                    string columnName = gDatePicker.Name;
+                    selectedRow.Cells[columnName].Value = Tools.FormatDate(gDatePicker.Value);
+                }
+            }
+            Close();
         }
 
 
         // Construct controls
-        private readonly byte textBoxWidth = 70, comboBoxWidth = 180;
+        private readonly byte textBoxWidth = 80, comboBoxWidth = 180;
         private static Label ConstructLabel(string text, int left, Control control)
         {
             Label label = new()
@@ -199,13 +239,7 @@ namespace Sales_Tracker
                     SendKeys.Send("{TAB}");
                 }
             };
-            // Make sure the text is not selected
-            gTextBox.Enter += (sender, e) =>
-            {
-                Guna2TextBox senderTextBox = (Guna2TextBox)sender;
-                senderTextBox.SelectionStart = senderTextBox.Text.Length;
-                senderTextBox.SelectionLength = 0;
-            };
+            gTextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             gTextBox.TextChanged += InputChanged;
             control.Controls.Add(gTextBox);
 
@@ -236,6 +270,24 @@ namespace Sales_Tracker
             control.Controls.Add(gComboBox);
 
             return gComboBox;
+        }
+        private Guna2DateTimePicker ConstructDatePicker(int left, string name, DateTime value, Control control)
+        {
+            Guna2DateTimePicker gDatePicker = new()
+            {
+                Location = new Point(left, 45),
+                Size = new Size(comboBoxWidth, 30),
+                FillColor = CustomColors.controlBack,
+                ForeColor = CustomColors.text,
+                BorderColor = CustomColors.controlBorder,
+                BorderRadius = 3,
+                Name = name,
+                Value = value
+            };
+            gDatePicker.HoverState.BorderColor = CustomColors.accent_blue;
+            control.Controls.Add(gDatePicker);
+
+            return gDatePicker;
         }
     }
 }

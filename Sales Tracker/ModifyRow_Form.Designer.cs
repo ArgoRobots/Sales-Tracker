@@ -40,6 +40,7 @@
             // 
             // ModifyRow_Label
             // 
+            ModifyRow_Label.Anchor = AnchorStyles.Top;
             ModifyRow_Label.AutoSize = true;
             ModifyRow_Label.Font = new Font("Segoe UI", 16F);
             ModifyRow_Label.Location = new Point(230, 14);
@@ -50,7 +51,7 @@
             // 
             // Cancel_Button
             // 
-            Cancel_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Cancel_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Cancel_Button.BackColor = Color.Transparent;
             Cancel_Button.BorderColor = Color.LightGray;
             Cancel_Button.BorderRadius = 2;
@@ -73,7 +74,7 @@
             // 
             // Save_Button
             // 
-            Save_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Save_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Save_Button.BackColor = Color.Transparent;
             Save_Button.BorderColor = Color.LightGray;
             Save_Button.BorderRadius = 2;
@@ -110,8 +111,9 @@
             Controls.Add(Save_Button);
             Controls.Add(Cancel_Button);
             Controls.Add(ModifyRow_Label);
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "ModifyRow_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             ResumeLayout(false);
             PerformLayout();

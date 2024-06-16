@@ -2,7 +2,6 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
-using System.Windows.Forms;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -976,9 +975,9 @@ namespace Sales_Tracker
                         {
                             if (selectedDataGridView.Rows[i].Cells[0].Selected)
                             {
-                                // ModifyRow_Form ModifyRow_form = new();
+                                ModifyRow_Form ModifyRow_form = new(selectedDataGridView.Rows[i]);
                                 CloseRightClickPanels();
-                                // ModifyRow_form.ShowDialog();
+                                ModifyRow_form.ShowDialog();
                                 return;
                             }
                         }
@@ -988,6 +987,7 @@ namespace Sales_Tracker
                 else { CustomMessageBox.Show("Argo Studio", "Select a row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
 
                 CloseRightClickPanels();
+                UnselectAllRowsInCurrentDataGridView();
             };
 
             menuBtn = UI.ConstructBtnForMenu("Duplicate", 240, false, flowPanel);
@@ -1177,7 +1177,6 @@ namespace Sales_Tracker
         {
             Controls.Remove(rightClickDataGridView_Panel);
             doNotDeleteRows = false;
-            UnselectAllRowsInCurrentDataGridView();
         }
         private void CloseAllPanels(object? sender, EventArgs? e)
         {

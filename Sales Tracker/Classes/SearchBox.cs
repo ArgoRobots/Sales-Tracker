@@ -66,7 +66,7 @@ namespace Sales_Tracker.Classes
             }
             metaList = metaList.OrderByDescending(x => x.score).ToList();
 
-            // Add variables to variableBox
+            // Add results to SearchResultBox
             for (int i = 0; i < metaList.Count; i++)
             {
                 Guna2Button gBtn = UI.ConstructGBtn(null, metaList[i].name, 0, new Size(197, 24), new Point(1, i * 24 + 1), SearchResultBox);
@@ -77,10 +77,9 @@ namespace Sales_Tracker.Classes
                 gBtn.Click -= UI.CloseAllPanels;
                 gBtn.Click += (sender2, e2) =>
                 {
-                    // Put the variable name into the selected TextBox
+                    // Put the name into the selected TextBox
                     textBox.Text = gBtn.Text;
-
-                    CloseVariableBox(controlToAddSearchBox);
+                    CloseSearchBox(controlToAddSearchBox);
                     DeselectControl(deselectControl);
                 };
             }
@@ -100,7 +99,7 @@ namespace Sales_Tracker.Classes
             }
             else if (metaList.Count == 0)
             {
-                CloseVariableBox(controlToAddSearchBox);
+                CloseSearchBox(controlToAddSearchBox);
                 return;
             }
             else
@@ -136,10 +135,7 @@ namespace Sales_Tracker.Classes
             {
                 SetTextBoxToValid(textBox, button);
             }
-            else
-            {
-                SetTextBoxToInvalid(textBox, button);
-            }
+            else { SetTextBoxToInvalid(textBox, button); }
         }
         public static void VariableTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
         {
@@ -221,7 +217,7 @@ namespace Sales_Tracker.Classes
                     {
                         textBox.Text = btn.Text;
 
-                        CloseVariableBox(controlToRemoveSearchBox);
+                        CloseSearchBox(controlToRemoveSearchBox);
                         DeselectControl(deselectControl);
 
                         isVariableSelected = true;
@@ -287,11 +283,31 @@ namespace Sales_Tracker.Classes
             // Check if all characters are letters, digits, or allowed special characters
             return variableName.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '(' || c == ')' || c == ' ');
         }
-
-        public static void CloseVariableBox(Control controlToRemoveSearchBox)
+        public static void CloseSearchBox(Control controlToRemoveSearchBox)
         {
+            bool productsForm = false, purchaseChecked = false;
+            // Check if the radio in Products_Form button is checked
+            if (Tools.IsFormOpen(typeof(Products_Form)))
+            {
+                productsForm = true;
+                if (Products_Form.Instance.Purchase_RadioButton.Checked)
+                {
+                    purchaseChecked = true;
+                }
+            }
+            // This line checks the Purchase_RadioButton. It must be a bug with GunaUI.
             controlToRemoveSearchBox.Controls.Remove(SearchResultBoxContainer);
             SearchResultBox.Controls.Clear();
+
+            // Re-check the appropriate radio button based on previous state
+            if (productsForm)
+            {
+                if (purchaseChecked)
+                {
+                    Products_Form.Instance.Purchase_RadioButton.Checked = true;
+                }
+                else { Products_Form.Instance.Sale_RadioButton.Checked = true; }
+            }
         }
         public static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object? sender, PreviewKeyDownEventArgs e)
         {

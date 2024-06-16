@@ -133,13 +133,14 @@ namespace Sales_Tracker
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
         }
-        private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
+        public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
             Controls.Add(Purchases_DataGridView);
             Controls.Remove(Sales_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductPurchases;
             CenterSelectedDataGridView();
+            ProductCategory_TextBox.Text = "";
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -148,6 +149,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductSales;
             CenterSelectedDataGridView();
+            ProductCategory_TextBox.Text = "";
         }
 
         // Functions
@@ -166,7 +168,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object sender, EventArgs e)
         {
-            SearchBox.CloseVariableBox(this);
+            SearchBox.CloseSearchBox(this);
         }
     }
 }

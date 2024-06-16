@@ -108,7 +108,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {
-            SearchBox.CloseVariableBox(this);
+            SearchBox.CloseSearchBox(this);
         }
     }
 }

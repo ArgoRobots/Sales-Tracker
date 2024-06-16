@@ -311,9 +311,9 @@
         private Label ProductName_Label;
         private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
         private Guna.UI2.WinForms.Guna2Button AddProduct_Button;
-        private Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
-        private Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
         private Label ProductCategory_Label;
         private Guna.UI2.WinForms.Guna2TextBox ProductCategory_TextBox;
+        public Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
+        public Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
     }
 }
