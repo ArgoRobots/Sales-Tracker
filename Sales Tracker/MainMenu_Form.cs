@@ -144,9 +144,8 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
-            // This insures the charts are rendered
+            // Ensure the charts are rendered
             // BeginInvoke ensures that the chart update logic runs on the main UI thread after all pending UI events have been processed.
-            // This allows the form to be fully initialized and rendered before you attempt to refresh and invalidate the charts.
             BeginInvoke(() =>
             {
                 Bar_GunaChart.Invalidate();
@@ -967,27 +966,16 @@ namespace Sales_Tracker
             Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", 240, false, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
-                if (selectedDataGridView.Rows.Count > 0)
+                CloseRightClickPanels();
+                if (selectedDataGridView.SelectedRows.Count == 1)
                 {
-                    if (selectedDataGridView.SelectedRows.Count == 1)
-                    {
-                        for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
-                        {
-                            if (selectedDataGridView.Rows[i].Cells[0].Selected)
-                            {
-                                ModifyRow_Form ModifyRow_form = new(selectedDataGridView.Rows[i]);
-                                CloseRightClickPanels();
-                                ModifyRow_form.ShowDialog();
-                                return;
-                            }
-                        }
-                    }
-                    else { CustomMessageBox.Show("Argo Studio", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                    ModifyRow_Form ModifyRow_form = new(selectedDataGridView.Rows[0]);
+                    ModifyRow_form.ShowDialog();
+                    return;
                 }
-                else { CustomMessageBox.Show("Argo Studio", "Select a row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
+                else { CustomMessageBox.Show("Argo Studio", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok); }
 
                 CloseRightClickPanels();
-                UnselectAllRowsInCurrentDataGridView();
             };
 
             menuBtn = UI.ConstructBtnForMenu("Duplicate", 240, false, flowPanel);
