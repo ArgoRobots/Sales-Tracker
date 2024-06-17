@@ -6,11 +6,15 @@ namespace Sales_Tracker.Graphs
 {
     class Pie
     {
-        public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
+        public static void ConfigureChart(GunaChart chart)
         {
             chart.Legend.Position = LegendPosition.Right;
             chart.XAxes.Display = false;
             chart.YAxes.Display = false;
+        }
+        public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
+        {
+
 
             if (dataGridView.Rows.Count == 0)
             {

@@ -45,13 +45,13 @@ namespace Sales_Tracker
         }
         private List<string> GetListForSearchBox()
         {
-            if (Purchase_RadioButton.Checked)
+            if (Sale_RadioButton.Checked)
             {
-                return MainMenu_Form.Instance.GetProductCategoryPurchaseNames();
+                return MainMenu_Form.Instance.GetProductCategorySaleNames();
             }
             else
             {
-                return MainMenu_Form.Instance.GetProductCategorySaleNames();
+                return MainMenu_Form.Instance.GetProductCategoryPurchaseNames();
             }
         }
         private void LoadProducts()

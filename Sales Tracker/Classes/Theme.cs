@@ -2,7 +2,6 @@
 using Guna.UI2.WinForms;
 using Sales_Tracker.Graphs;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace Sales_Tracker.Classes
 {
@@ -172,6 +171,15 @@ namespace Sales_Tracker.Classes
                             else
                             {
                                 gunaChart.ApplyConfig(Light.Config(), Color.White);
+                            }
+
+                            if (gunaChart.Name == "Bar_GunaChart" || gunaChart.Name == "Bar2_GunaChart")
+                            {
+                                Bar.ConfigureChart(gunaChart);
+                            }
+                            else if (gunaChart.Name == "Pie_GunaChart")
+                            {
+                                Pie.ConfigureChart(gunaChart);
                             }
                             break;
                     }

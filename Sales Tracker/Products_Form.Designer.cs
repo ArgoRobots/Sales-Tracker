@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             CountryOfOrigin_Label = new Label();
             CountryOfOrigin_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddProduct_Label = new Label();
@@ -63,7 +63,7 @@
             // CountryOfOrigin_TextBox
             // 
             CountryOfOrigin_TextBox.Anchor = AnchorStyles.Top;
-            CountryOfOrigin_TextBox.CustomizableEdges = customizableEdges9;
+            CountryOfOrigin_TextBox.CustomizableEdges = customizableEdges1;
             CountryOfOrigin_TextBox.DefaultText = "";
             CountryOfOrigin_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             CountryOfOrigin_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -78,7 +78,7 @@
             CountryOfOrigin_TextBox.PasswordChar = '\0';
             CountryOfOrigin_TextBox.PlaceholderText = "";
             CountryOfOrigin_TextBox.SelectedText = "";
-            CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CountryOfOrigin_TextBox.Size = new Size(200, 36);
             CountryOfOrigin_TextBox.TabIndex = 6;
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
@@ -111,7 +111,7 @@
             // ProductName_TextBox
             // 
             ProductName_TextBox.Anchor = AnchorStyles.Top;
-            ProductName_TextBox.CustomizableEdges = customizableEdges11;
+            ProductName_TextBox.CustomizableEdges = customizableEdges3;
             ProductName_TextBox.DefaultText = "";
             ProductName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             ProductName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -126,7 +126,7 @@
             ProductName_TextBox.PasswordChar = '\0';
             ProductName_TextBox.PlaceholderText = "";
             ProductName_TextBox.SelectedText = "";
-            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 3;
             ProductName_TextBox.TextChanged += ValidateInputs;
@@ -139,7 +139,7 @@
             AddProduct_Button.BorderColor = Color.LightGray;
             AddProduct_Button.BorderRadius = 2;
             AddProduct_Button.BorderThickness = 1;
-            AddProduct_Button.CustomizableEdges = customizableEdges13;
+            AddProduct_Button.CustomizableEdges = customizableEdges5;
             AddProduct_Button.Enabled = false;
             AddProduct_Button.FillColor = Color.White;
             AddProduct_Button.Font = new Font("Segoe UI", 9.5F);
@@ -147,7 +147,7 @@
             AddProduct_Button.Location = new Point(271, 160);
             AddProduct_Button.Margin = new Padding(4, 3, 4, 3);
             AddProduct_Button.Name = "AddProduct_Button";
-            AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             AddProduct_Button.Size = new Size(143, 32);
             AddProduct_Button.TabIndex = 7;
             AddProduct_Button.Tag = "0";
@@ -169,7 +169,7 @@
             // ProductCategory_TextBox
             // 
             ProductCategory_TextBox.Anchor = AnchorStyles.Top;
-            ProductCategory_TextBox.CustomizableEdges = customizableEdges15;
+            ProductCategory_TextBox.CustomizableEdges = customizableEdges7;
             ProductCategory_TextBox.DefaultText = "";
             ProductCategory_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             ProductCategory_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -184,7 +184,7 @@
             ProductCategory_TextBox.PasswordChar = '\0';
             ProductCategory_TextBox.PlaceholderText = "";
             ProductCategory_TextBox.SelectedText = "";
-            ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ProductCategory_TextBox.Size = new Size(200, 36);
             ProductCategory_TextBox.TabIndex = 4;
             ProductCategory_TextBox.Click += CloseAllPanels;

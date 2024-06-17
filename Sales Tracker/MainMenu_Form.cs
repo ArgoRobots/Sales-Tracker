@@ -493,6 +493,35 @@ namespace Sales_Tracker
         private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            FilterDataGridViewByDate();
+        }
+        private List<DataGridViewRow> allRows;
+        private void FilterDataGridViewByDate()
+        {
+            string filter = TimeRange_ComboBox.SelectedItem.ToString();
+            DateTime now = DateTime.Now;
+
+            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            {
+                DateTime rowDate = DateTime.Parse(row.Cells["Date"].Value.ToString());
+                bool isVisible = filter switch
+                {
+                    "24 hours" => rowDate >= now.AddHours(-24),
+                    "48 hours" => rowDate >= now.AddHours(-48),
+                    "5 days" => rowDate >= now.AddDays(-5),
+                    "10 days" => rowDate >= now.AddDays(-10),
+                    "30 days" => rowDate >= now.AddDays(-30),
+                    "100 days" => rowDate >= now.AddDays(-100),
+                    "1 year" => rowDate >= now.AddYears(-1),
+                    "2 years" => rowDate >= now.AddYears(-2),
+                    "3 years" => rowDate >= now.AddYears(-3),
+                    "5 years" => rowDate >= now.AddYears(-5),
+                    "10 years" => rowDate >= now.AddYears(-10),
+                    "All time" => true,
+                    _ => true,
+                };
+                row.Visible = isVisible;
+            }
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
