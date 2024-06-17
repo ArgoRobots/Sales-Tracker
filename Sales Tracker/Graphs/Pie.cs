@@ -31,7 +31,7 @@ namespace Sales_Tracker.Graphs
                 double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
                 double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
-                string category = row.Cells[PurchaseColumns.CategoryName.ToString()].Value.ToString();
+                string category = row.Cells[PurchaseColumns.Category.ToString()].Value.ToString();
                 double cost = quantity * pricePerUnit;
 
                 totalTax += tax;

@@ -50,12 +50,12 @@ namespace Sales_Tracker.Classes
                 if (IsVariableNameValid(result))
                 {
                     // If the variable contains text that is in the textBox
-                    if (result.ToLower().Contains(textBox.Text.ToLower()) && result != "")
+                    if (result.Contains(textBox.Text, StringComparison.CurrentCultureIgnoreCase) && result != "")
                     {
                         int scoreValue = 1;
 
                         // Increase the score if the first character is the same
-                        if (result[0].ToString().ToLower() == textBox.Text[0].ToString().ToLower())
+                        if (result[0].ToString().Equals(textBox.Text[0].ToString(), StringComparison.CurrentCultureIgnoreCase))
                         {
                             scoreValue = 2;
                         }
@@ -285,29 +285,8 @@ namespace Sales_Tracker.Classes
         }
         public static void CloseSearchBox(Control controlToRemoveSearchBox)
         {
-            bool productsForm = false, purchaseChecked = false;
-            // Check if the radio in Products_Form button is checked
-            if (Tools.IsFormOpen(typeof(Products_Form)))
-            {
-                productsForm = true;
-                if (Products_Form.Instance.Purchase_RadioButton.Checked)
-                {
-                    purchaseChecked = true;
-                }
-            }
-            // This line checks the Purchase_RadioButton. It must be a bug with GunaUI.
             controlToRemoveSearchBox.Controls.Remove(SearchResultBoxContainer);
             SearchResultBox.Controls.Clear();
-
-            // Re-check the appropriate radio button based on previous state
-            if (productsForm)
-            {
-                if (purchaseChecked)
-                {
-                    Products_Form.Instance.Purchase_RadioButton.Checked = true;
-                }
-                else { Products_Form.Instance.Sale_RadioButton.Checked = true; }
-            }
         }
         public static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object? sender, PreviewKeyDownEventArgs e)
         {

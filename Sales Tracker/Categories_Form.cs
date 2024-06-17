@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker
 {
@@ -34,6 +35,7 @@ namespace Sales_Tracker
             Purchases_DataGridView.Columns.Add(header, header);
             Theme.UpdateDataGridViewHeaderTheme(Purchases_DataGridView);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, heightForDataGridView);
+            Purchases_DataGridView.Tag = DataGridViewTags.AddCategory;
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
@@ -41,6 +43,7 @@ namespace Sales_Tracker
             Sales_DataGridView.Columns.Add(header, header);
             Theme.UpdateDataGridViewHeaderTheme(Sales_DataGridView);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, heightForDataGridView);
+            Sales_DataGridView.Tag = DataGridViewTags.AddCategory;
         }
         private void LoadProducts()
         {

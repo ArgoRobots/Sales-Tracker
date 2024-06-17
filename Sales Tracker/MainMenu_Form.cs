@@ -553,8 +553,8 @@ namespace Sales_Tracker
         {
             PurchaseID,
             BuyerName,
-            ItemName,
-            CategoryName,
+            Product,
+            Category,
             Date,
             Quantity,
             PricePerUnit,
@@ -567,7 +567,7 @@ namespace Sales_Tracker
             SalesID,
             CustomerName,
             ItemName,
-            CategoryName,
+            Category,
             Date,
             Quantity,
             PricePerUnit,
@@ -579,8 +579,8 @@ namespace Sales_Tracker
         {
             { PurchaseColumns.PurchaseID, "Purchase ID" },
             { PurchaseColumns.BuyerName, "Buyer name" },
-            { PurchaseColumns.ItemName, "Item name" },
-            { PurchaseColumns.CategoryName, "Category name" },
+            { PurchaseColumns.Product, "Product" },
+            { PurchaseColumns.Category, "Category" },
             { PurchaseColumns.Date, "Date" },
             { PurchaseColumns.Quantity, "Quantity" },
             { PurchaseColumns.PricePerUnit, "Price per unit" },
@@ -592,8 +592,8 @@ namespace Sales_Tracker
         {
             { SalesColumns.SalesID, "Sales ID" },
             { SalesColumns.CustomerName, "Customer name" },
-            { SalesColumns.ItemName, "Item name" },
-            { SalesColumns.CategoryName, "Category name" },
+            { SalesColumns.ItemName, "Product" },
+            { SalesColumns.Category, "Category" },
             { SalesColumns.Date, "Date" },
             { SalesColumns.Quantity, "Quantity" },
             { SalesColumns.PricePerUnit, "Price per unit" },
@@ -601,6 +601,12 @@ namespace Sales_Tracker
             { SalesColumns.Tax, "Tax" },
             { SalesColumns.TotalRevenue, "Total revenue" }
         };
+        public enum DataGridViewTags
+        {
+            SaleOrPurchase,
+            AddCategory,
+            AddProduct,
+        }
         public readonly string CategoryColumn = "Category";
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         public Guna2DataGridView selectedDataGridView;
@@ -610,9 +616,11 @@ namespace Sales_Tracker
             Size size = new(1300, 350);
             Purchases_DataGridView = new Guna2DataGridView();
             InitializeDataGridView(Purchases_DataGridView, size);
+            Purchases_DataGridView.Tag = DataGridViewTags.SaleOrPurchase;
 
             Sales_DataGridView = new Guna2DataGridView();
             InitializeDataGridView(Sales_DataGridView, size);
+            Sales_DataGridView.Tag = DataGridViewTags.SaleOrPurchase;
         }
         private readonly byte rowHeight = 25, columnHeaderHeight = 30;
         public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
@@ -660,7 +668,7 @@ namespace Sales_Tracker
             {
                 case Options.Purchases:
                     type = "purchase";
-                    columnName = PurchaseColumns.ItemName.ToString();
+                    columnName = PurchaseColumns.Product.ToString();
                     logIndex = 2;
                     break;
                 case Options.Sales:
@@ -762,6 +770,7 @@ namespace Sales_Tracker
             // Set color
             selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
         }
+        Control controlRightClickPanelWasAddedTo;
         private void DataGridView_MouseUp(object? sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -789,7 +798,9 @@ namespace Sales_Tracker
                 }
                 else { rightClickDataGridView_Panel.Top = selectedDataGridView.Top + (info.RowIndex + 1) * rowHeight + columnHeaderHeight; }
 
-                Controls.Add(rightClickDataGridView_Panel);
+                Control controlSender = (Control)sender;
+                controlRightClickPanelWasAddedTo = controlSender.Parent;
+                controlRightClickPanelWasAddedTo.Controls.Add(rightClickDataGridView_Panel);
                 rightClickDataGridView_Panel.BringToFront();
             }
         }
@@ -858,7 +869,6 @@ namespace Sales_Tracker
             {
                 dataGridView.Columns.Add(column.ToString(), columnHeaders[(TEnum)column]);
             }
-
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
         private void UpdateTotals()
@@ -1163,7 +1173,7 @@ namespace Sales_Tracker
 
         public void CloseRightClickPanels()
         {
-            Controls.Remove(rightClickDataGridView_Panel);
+            controlRightClickPanelWasAddedTo?.Controls.Remove(rightClickDataGridView_Panel);
             doNotDeleteRows = false;
         }
         private void CloseAllPanels(object? sender, EventArgs? e)

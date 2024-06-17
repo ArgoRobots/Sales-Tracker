@@ -115,6 +115,7 @@
             Name = "ModifyRow_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            Shown += ModifyRow_Form_Shown;
             ResumeLayout(false);
             PerformLayout();
         }
