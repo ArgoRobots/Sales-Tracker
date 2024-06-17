@@ -14,7 +14,7 @@ namespace Sales_Tracker.Graphs
         }
         public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
         {
-
+            ConfigureChart(chart);
 
             if (dataGridView.Rows.Count == 0)
             {
@@ -31,6 +31,8 @@ namespace Sales_Tracker.Graphs
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
+                if (!row.Visible) { continue; }
+
                 double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
                 double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);

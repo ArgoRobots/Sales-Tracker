@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
+using System.ComponentModel;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -30,6 +31,7 @@ namespace Sales_Tracker
             Sales_Button.PerformClick();
             LoadDataFromSetting();
             AlignTotalLabels();
+            AddTimeRangesIntoComboBox();
             UpdateTheme();
         }
         private void SetCompanyLabel()
@@ -490,39 +492,6 @@ namespace Sales_Tracker
             }
             UpdateTheme();
         }
-        private void TimeRange_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-            FilterDataGridViewByDate();
-        }
-        private List<DataGridViewRow> allRows;
-        private void FilterDataGridViewByDate()
-        {
-            string filter = TimeRange_ComboBox.SelectedItem.ToString();
-            DateTime now = DateTime.Now;
-
-            foreach (DataGridViewRow row in selectedDataGridView.Rows)
-            {
-                DateTime rowDate = DateTime.Parse(row.Cells["Date"].Value.ToString());
-                bool isVisible = filter switch
-                {
-                    "24 hours" => rowDate >= now.AddHours(-24),
-                    "48 hours" => rowDate >= now.AddHours(-48),
-                    "5 days" => rowDate >= now.AddDays(-5),
-                    "10 days" => rowDate >= now.AddDays(-10),
-                    "30 days" => rowDate >= now.AddDays(-30),
-                    "100 days" => rowDate >= now.AddDays(-100),
-                    "1 year" => rowDate >= now.AddYears(-1),
-                    "2 years" => rowDate >= now.AddYears(-2),
-                    "3 years" => rowDate >= now.AddYears(-3),
-                    "5 years" => rowDate >= now.AddYears(-5),
-                    "10 years" => rowDate >= now.AddYears(-10),
-                    "All time" => true,
-                    _ => true,
-                };
-                row.Visible = isVisible;
-            }
-        }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
             UI.rename_textBox.Text = CompanyName_Label.Text;
@@ -563,6 +532,65 @@ namespace Sales_Tracker
             UI.rename_textBox.Text = "";
 
             MoveEditButton();
+        }
+
+
+        // Filter_ComboBox
+        public enum TimeInterval
+        {
+            AllTime,
+            Hours24,
+            Hours48,
+            Days5,
+            Days10,
+            Days30,
+            Days100,
+            Year1,
+            Years2,
+            Years3,
+            Years5,
+            Years10
+        }
+        private readonly List<(TimeInterval interval, string displayString, TimeSpan timeSpan)> timeIntervals =
+        [
+            (TimeInterval.AllTime, "All time", TimeSpan.MaxValue),
+            (TimeInterval.Hours24, "24 hours", TimeSpan.FromHours(24)),
+            (TimeInterval.Hours48, "48 hours", TimeSpan.FromHours(48)),
+            (TimeInterval.Days5, "5 days", TimeSpan.FromDays(5)),
+            (TimeInterval.Days10, "10 days", TimeSpan.FromDays(10)),
+            (TimeInterval.Days30, "30 days", TimeSpan.FromDays(30)),
+            (TimeInterval.Days100, "100 days", TimeSpan.FromDays(100)),
+            (TimeInterval.Year1, "1 year", TimeSpan.FromDays(365)),
+            (TimeInterval.Years2, "2 years", TimeSpan.FromDays(365 * 2)),
+            (TimeInterval.Years3, "3 years", TimeSpan.FromDays(365 * 3)),
+            (TimeInterval.Years5, "5 years", TimeSpan.FromDays(365 * 5)),
+            (TimeInterval.Years10, "10 years", TimeSpan.FromDays(365 * 10))
+        ];
+        private void AddTimeRangesIntoComboBox()
+        {
+            Filter_ComboBox.Items.AddRange(timeIntervals.Select(ti => ti.displayString).ToArray());
+            Filter_ComboBox.SelectedIndex = 0;
+        }
+        private void Filter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            FilterDataGridViewByDate();
+            LoadGraphs();
+        }
+        private void FilterDataGridViewByDate()
+        {
+            if (Filter_ComboBox.SelectedItem == null)
+                return;
+
+            string filter = Filter_ComboBox.SelectedItem.ToString();
+            var selectedInterval = timeIntervals.FirstOrDefault(ti => ti.displayString == filter);
+
+            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            {
+                DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[SalesColumns.Date]].Value.ToString());
+                bool isVisible = selectedInterval.interval == TimeInterval.AllTime || rowDate >= DateTime.Now - selectedInterval.timeSpan;
+                row.Visible = isVisible;
+            }
         }
 
 

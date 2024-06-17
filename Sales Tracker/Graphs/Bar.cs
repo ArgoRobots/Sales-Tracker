@@ -39,6 +39,8 @@ namespace Sales_Tracker.Graphs
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
+                if (!row.Visible) { continue; }
+
                 DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
                 double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
@@ -97,6 +99,8 @@ namespace Sales_Tracker.Graphs
             // Calculate total revenue from sales
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
+                if (!row.Visible) { continue; }
+
                 DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
                 double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
