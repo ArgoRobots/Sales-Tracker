@@ -15,30 +15,48 @@ namespace Sales_Tracker
         }
         private void ConstructControls(DataGridViewRow selectedRow)
         {
-            int left = 0;
+            int left = 0, secondLeft = 0;
 
             if (selectedRow.DataGridView.Tag.ToString() == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString())
             {
-                left = ConstructControlsForSaleOrPurchase(selectedRow, Panel);
+                (left, secondLeft) = ConstructControlsForSaleOrPurchase(selectedRow);
             }
             else if (selectedRow.DataGridView.Tag.ToString() == MainMenu_Form.DataGridViewTags.AddCategory.ToString())
             {
-                ConstructControlsForAddCategory(selectedRow, Panel);
+                ConstructControlsForAddCategory(selectedRow);
                 left = 300;
             }
             else if (selectedRow.DataGridView.Tag.ToString() == MainMenu_Form.DataGridViewTags.AddProduct.ToString())
             {
-                left = ConstructControlsForAddProduct(selectedRow, Panel);
+                left = ConstructControlsForAddProduct(selectedRow);
             }
 
             // Center controls
             Width = left + 80;
-            Panel.Width = Width - 50;
+            Panel.Width = left;
             Panel.Left = (Width - Panel.Width) / 2 - 5;
+
+            if (secondRow)
+            {
+                if (left > secondLeft)
+                {
+                    Width = left + 80;
+                }
+                else
+                {
+                    Width = secondLeft + 80;
+                }
+
+                Height += 100;
+                SecondPanel.Width = secondLeft;
+                SecondPanel.Left = (Width - SecondPanel.Width) / 2 - 5;
+            }
         }
-        private int ConstructControlsForSaleOrPurchase(DataGridViewRow selectedRow, Control control)
+        private bool secondRow = false;
+        private (int, int) ConstructControlsForSaleOrPurchase(DataGridViewRow selectedRow)
         {
-            int left = 0;
+            ConstructPanel();
+            int left = 0, secondLeft = 0;
 
             foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
             {
@@ -56,8 +74,9 @@ namespace Sales_Tracker
                         }
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.PurchaseID]; }
 
-                        ConstructLabel(text, left, control);
-                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, control);
+                        ConstructLabel(text, left, Panel);
+                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, Panel);
+                        left += 110;
                         break;
 
                     case nameof(SalesColumns.CustomerName):
@@ -68,51 +87,60 @@ namespace Sales_Tracker
                         }
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.BuyerName]; }
 
-                        ConstructLabel(text, left, control);
-                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, control);
+                        ConstructLabel(text, left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, Panel);
+                        left += 110;
                         break;
 
                     case nameof(PurchaseColumns.Product):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Product], left, control);
-                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, control);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Product], left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, Panel);
+                        left += 110;
                         break;
 
                     case nameof(PurchaseColumns.Category):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Category], left, control);
                         string[] array;
                         if (MainMenu_Form.Instance.Selected == Options.Sales)
                         {
                             array = MainMenu_Form.Instance.GetProductSaleNames().ToArray();
                         }
                         else { array = MainMenu_Form.Instance.GetProductPurchaseNames().ToArray(); }
-                        ConstructGunaComboBox(left, columnName, array, cellValue, control);
-                        left += 80;
+
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Category], left, Panel);
+                        ConstructGunaComboBox(left, columnName, array, cellValue, Panel);
+                        left += 190;
                         break;
 
                     case nameof(PurchaseColumns.Date):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Date], left, control);
-                        ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), control);
-                        left += 80;
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Date], left, Panel);
+                        ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), Panel);
+                        left += 190;
                         break;
 
                     case nameof(PurchaseColumns.Quantity):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Quantity], left, control);
-                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbers, false, control);
+                        secondRow = true;
+
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Quantity], secondLeft, SecondPanel);
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbers, false, SecondPanel);
+                        secondLeft += 110;
                         break;
 
                     case nameof(PurchaseColumns.PricePerUnit):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.PricePerUnit], left, control);
-                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, control);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.PricePerUnit], secondLeft, SecondPanel);
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, SecondPanel);
+                        secondLeft += 110;
                         break;
 
                     case nameof(PurchaseColumns.Shipping):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Shipping], left, control);
-                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, control);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Shipping], secondLeft, SecondPanel);
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, SecondPanel);
+                        secondLeft += 110;
                         break;
 
                     case nameof(PurchaseColumns.Tax):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Tax], left, control);
-                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, control);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Tax], secondLeft, SecondPanel);
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, SecondPanel);
+                        secondLeft += 110;
                         break;
 
                     case nameof(SalesColumns.TotalRevenue):
@@ -123,22 +151,22 @@ namespace Sales_Tracker
                         }
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.TotalExpenses]; }
 
-                        ConstructLabel(text, left, control);
-                        ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, control);
+                        ConstructLabel(text, secondLeft, SecondPanel);
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, SecondPanel);
+                        secondLeft += 110;
                         break;
                 }
-                left += 110;
             }
-            return left;
+            return (left, secondLeft);
         }
-        private void ConstructControlsForAddCategory(DataGridViewRow selectedRow, Control control)
+        private void ConstructControlsForAddCategory(DataGridViewRow selectedRow)
         {
             string cellValue = selectedRow.Cells[0].Value?.ToString() ?? "";
 
-            ConstructLabel(MainMenu_Form.Instance.CategoryColumn, 0, control);
-            controlToFocus = ConstructTextBox(0, MainMenu_Form.Instance.CategoryColumn, cellValue, 50, KeyPressValidation.None, true, control);
+            ConstructLabel(MainMenu_Form.Instance.CategoryColumn, 0, Panel);
+            controlToFocus = ConstructTextBox(0, MainMenu_Form.Instance.CategoryColumn, cellValue, 50, KeyPressValidation.None, true, Panel);
         }
-        private int ConstructControlsForAddProduct(DataGridViewRow selectedRow, Control control)
+        private int ConstructControlsForAddProduct(DataGridViewRow selectedRow)
         {
             int left = 0;
 
@@ -150,24 +178,25 @@ namespace Sales_Tracker
                 switch (columnName)
                 {
                     case nameof(Products_Form.Columns.ProductName):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductName], left, control);
-                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, control);
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductName], left, Panel);
+                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, Panel);
                         break;
 
                     case nameof(Products_Form.Columns.ProductCategory):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductCategory], left, control);
                         string[] array;
                         if (MainMenu_Form.Instance.Selected == Options.ProductSales)
                         {
                             array = MainMenu_Form.Instance.GetProductSaleNames().ToArray();
                         }
                         else { array = MainMenu_Form.Instance.GetProductPurchaseNames().ToArray(); }
-                        ConstructGunaComboBox(left, columnName, array, cellValue, control);
+
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductCategory], left, Panel);
+                        ConstructGunaComboBox(left, columnName, array, cellValue, Panel);
                         left += 80;
                         break;
                     case nameof(Products_Form.Columns.CountryOfOrigin):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CountryOfOrigin], left, control);
-                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, control);
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CountryOfOrigin], left, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, Panel);
                         break;
                 }
                 left += 110;
@@ -223,7 +252,16 @@ namespace Sales_Tracker
         private void SaveInRow()
         {
             DataGridViewRow selectedRow = MainMenu_Form.Instance.selectedDataGridView.SelectedRows[0];
-            foreach (Control control in Panel.Controls)
+
+            IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
+
+            // If SecondPanel is not null, concatenate its controls
+            if (SecondPanel != null)
+            {
+                allControls = allControls.Concat(SecondPanel.Controls.Cast<Control>());
+            }
+
+            foreach (Control control in allControls)
             {
                 if (control is Guna2TextBox gTextBox)
                 {
@@ -247,7 +285,17 @@ namespace Sales_Tracker
 
         // Construct controls
         private readonly byte textBoxWidth = 100, comboBoxWidth = 180;
-        private static Label ConstructLabel(string text, int left, Control control)
+        Panel SecondPanel;
+        private void ConstructPanel()
+        {
+            SecondPanel = new()
+            {
+                Size = new Size(558, 95),
+                Location = new Point(Panel.Left, Panel.Bottom),
+            };
+            Controls.Add(SecondPanel);
+        }
+        private static Label ConstructLabel(string text, int left, Panel control)
         {
             Label label = new()
             {
@@ -269,7 +317,7 @@ namespace Sales_Tracker
             OnlyNumbers,
             None
         }
-        private Guna2TextBox ConstructTextBox(int left, string name, string text, int maxLength, KeyPressValidation keyPressValidation, bool pressSaveButton, Control control)
+        private Guna2TextBox ConstructTextBox(int left, string name, string text, int maxLength, KeyPressValidation keyPressValidation, bool pressSaveButton, Panel control)
         {
             Guna2TextBox gTextBox = new()
             {
@@ -328,7 +376,7 @@ namespace Sales_Tracker
 
             return gTextBox;
         }
-        private Guna2ComboBox ConstructGunaComboBox(int left, string name, string[] items, string text, Control control)
+        private Guna2ComboBox ConstructGunaComboBox(int left, string name, string[] items, string text, Panel control)
         {
             Guna2ComboBox gComboBox = new()
             {
@@ -350,7 +398,7 @@ namespace Sales_Tracker
 
             return gComboBox;
         }
-        private Guna2DateTimePicker ConstructDatePicker(int left, string name, DateTime value, Control control)
+        private Guna2DateTimePicker ConstructDatePicker(int left, string name, DateTime value, Panel control)
         {
             Guna2DateTimePicker gDatePicker = new()
             {

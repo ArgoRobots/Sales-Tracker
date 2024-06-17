@@ -536,7 +536,7 @@ namespace Sales_Tracker
 
 
         // Filter_ComboBox
-        public enum TimeInterval
+        private enum TimeInterval
         {
             AllTime,
             Hours24,
@@ -579,9 +579,6 @@ namespace Sales_Tracker
         }
         private void FilterDataGridViewByDate()
         {
-            if (Filter_ComboBox.SelectedItem == null)
-                return;
-
             string filter = Filter_ComboBox.SelectedItem.ToString();
             var selectedInterval = timeIntervals.FirstOrDefault(ti => ti.displayString == filter);
 
