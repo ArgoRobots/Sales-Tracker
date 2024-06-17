@@ -2,7 +2,6 @@
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using System.Data;
-using System.Windows.Forms;
 using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker.Graphs
@@ -121,6 +120,8 @@ namespace Sales_Tracker.Graphs
             // Subtract total cost from purchases
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
+                if (!row.Visible) { continue; }
+
                 DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
                 double costPerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);

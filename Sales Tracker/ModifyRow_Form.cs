@@ -38,11 +38,7 @@ namespace Sales_Tracker
 
             if (secondRow)
             {
-                if (left > secondLeft)
-                {
-                    Width = left + 80;
-                }
-                else
+                if (secondLeft > Left)
                 {
                     Width = secondLeft + 80;
                 }
