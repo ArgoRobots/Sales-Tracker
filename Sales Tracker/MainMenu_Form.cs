@@ -805,25 +805,34 @@ namespace Sales_Tracker
                 Guna2DataGridView grid = (Guna2DataGridView)sender;
                 DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
 
-                // If it's too far right
+                // Calculate the horizontal position
                 bool tooFarRight = false;
                 if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - rowHeight > Width)
                 {
                     rightClickDataGridView_Panel.Left = Width - rightClickDataGridView_Panel.Width - 17;
                     tooFarRight = true;
                 }
-                else { rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - rowHeight; }
-
-                // If it's too far down
-                if (e.Y + selectedDataGridView.Top > Height)
+                else
                 {
-                    rightClickDataGridView_Panel.Top = e.Y + Height - rightClickDataGridView_Panel.Height - 2;
+                    rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - rowHeight;
+                }
+
+                // Calculate the vertical position
+                int verticalOffset = grid.FirstDisplayedScrollingRowIndex * grid.Rows[0].Height;
+                int rowTop = (info.RowIndex + 1) * grid.Rows[0].Height - verticalOffset + selectedDataGridView.Top + columnHeaderHeight;
+
+                if (rowTop + rightClickDataGridView_Panel.Height > Height)
+                {
+                    rightClickDataGridView_Panel.Top = Height - rightClickDataGridView_Panel.Height - 2;
                     if (!tooFarRight)
                     {
-                        rightClickDataGridView_Panel.Left += columnHeaderHeight;
+                        rightClickDataGridView_Panel.Left += 30;
                     }
                 }
-                else { rightClickDataGridView_Panel.Top = e.Y + selectedDataGridView.Top; }
+                else
+                {
+                    rightClickDataGridView_Panel.Top = rowTop;
+                }
 
                 Control controlSender = (Control)sender;
                 controlRightClickPanelWasAddedTo = controlSender.Parent;
