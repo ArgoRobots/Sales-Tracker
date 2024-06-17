@@ -50,6 +50,7 @@ namespace Sales_Tracker.Classes
                 BorderThickness = 1,
                 BorderRadius = 4,
                 FillColor = CustomColors.panelBtn,
+                BackColor = Color.Transparent,
                 Size = size
             };
             FlowLayoutPanel flowLayoutPanel = new()
