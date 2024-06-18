@@ -76,6 +76,18 @@ namespace Sales_Tracker
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
             Log.Write(3, $"Added sale '{ItemName_TextBox.Text}'");
         }
+        private void ImportAmazon_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void ImportEbay_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void ImportExcel_Button_Click(object sender, EventArgs e)
+        {
+
+        }
 
         // Functions
         private void ValidateInputs(object? sender, EventArgs e)

@@ -86,7 +86,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
         }
-        private void ImportBLANK_Button_Click(object sender, EventArgs e)
+        private void ImportExcel_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
         }

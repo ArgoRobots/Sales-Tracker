@@ -46,6 +46,12 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Date_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             Date_Label = new Label();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -64,6 +70,9 @@
             AddSale_Label = new Label();
             SaleID_Label = new Label();
             SaleID_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            ImportExcel_Button = new Guna.UI2.WinForms.Guna2Button();
+            ImportEbay_Button = new Guna.UI2.WinForms.Guna2Button();
+            ImportAmazon_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
             // Date_DateTimePicker
@@ -382,11 +391,74 @@
             SaleID_TextBox.TextChanged += ValidateInputs;
             SaleID_TextBox.Click += CloseAllPanels;
             // 
+            // ImportExcel_Button
+            // 
+            ImportExcel_Button.Anchor = AnchorStyles.Top;
+            ImportExcel_Button.BackColor = Color.Transparent;
+            ImportExcel_Button.BorderColor = Color.LightGray;
+            ImportExcel_Button.BorderRadius = 2;
+            ImportExcel_Button.BorderThickness = 1;
+            ImportExcel_Button.CustomizableEdges = customizableEdges19;
+            ImportExcel_Button.FillColor = Color.White;
+            ImportExcel_Button.Font = new Font("Segoe UI", 9.5F);
+            ImportExcel_Button.ForeColor = Color.Black;
+            ImportExcel_Button.Location = new Point(460, 329);
+            ImportExcel_Button.Margin = new Padding(4, 3, 4, 3);
+            ImportExcel_Button.Name = "ImportExcel_Button";
+            ImportExcel_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            ImportExcel_Button.Size = new Size(170, 32);
+            ImportExcel_Button.TabIndex = 46;
+            ImportExcel_Button.Text = "Import from Excel";
+            ImportExcel_Button.Click += ImportExcel_Button_Click;
+            // 
+            // ImportEbay_Button
+            // 
+            ImportEbay_Button.Anchor = AnchorStyles.Top;
+            ImportEbay_Button.BackColor = Color.Transparent;
+            ImportEbay_Button.BorderColor = Color.LightGray;
+            ImportEbay_Button.BorderRadius = 2;
+            ImportEbay_Button.BorderThickness = 1;
+            ImportEbay_Button.CustomizableEdges = customizableEdges21;
+            ImportEbay_Button.FillColor = Color.White;
+            ImportEbay_Button.Font = new Font("Segoe UI", 9.5F);
+            ImportEbay_Button.ForeColor = Color.Black;
+            ImportEbay_Button.Location = new Point(282, 329);
+            ImportEbay_Button.Margin = new Padding(4, 3, 4, 3);
+            ImportEbay_Button.Name = "ImportEbay_Button";
+            ImportEbay_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            ImportEbay_Button.Size = new Size(170, 32);
+            ImportEbay_Button.TabIndex = 45;
+            ImportEbay_Button.Text = "Import from Ebay";
+            ImportEbay_Button.Click += ImportEbay_Button_Click;
+            // 
+            // ImportAmazon_Button
+            // 
+            ImportAmazon_Button.Anchor = AnchorStyles.Top;
+            ImportAmazon_Button.BackColor = Color.Transparent;
+            ImportAmazon_Button.BorderColor = Color.LightGray;
+            ImportAmazon_Button.BorderRadius = 2;
+            ImportAmazon_Button.BorderThickness = 1;
+            ImportAmazon_Button.CustomizableEdges = customizableEdges23;
+            ImportAmazon_Button.FillColor = Color.White;
+            ImportAmazon_Button.Font = new Font("Segoe UI", 9.5F);
+            ImportAmazon_Button.ForeColor = Color.Black;
+            ImportAmazon_Button.Location = new Point(104, 329);
+            ImportAmazon_Button.Margin = new Padding(4, 3, 4, 3);
+            ImportAmazon_Button.Name = "ImportAmazon_Button";
+            ImportAmazon_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            ImportAmazon_Button.Size = new Size(170, 32);
+            ImportAmazon_Button.TabIndex = 44;
+            ImportAmazon_Button.Text = "Import from Amazon";
+            ImportAmazon_Button.Click += ImportAmazon_Button_Click;
+            // 
             // AddSale_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(734, 321);
+            ClientSize = new Size(734, 391);
+            Controls.Add(ImportExcel_Button);
+            Controls.Add(ImportEbay_Button);
+            Controls.Add(ImportAmazon_Button);
             Controls.Add(Date_DateTimePicker);
             Controls.Add(Date_Label);
             Controls.Add(AddSale_Button);
@@ -436,5 +508,8 @@
         private Label AddSale_Label;
         private Label SaleID_Label;
         private Guna.UI2.WinForms.Guna2TextBox SaleID_TextBox;
+        private Guna.UI2.WinForms.Guna2Button ImportExcel_Button;
+        private Guna.UI2.WinForms.Guna2Button ImportEbay_Button;
+        private Guna.UI2.WinForms.Guna2Button ImportAmazon_Button;
     }
 }
