@@ -1,4 +1,5 @@
-﻿using Guna.Charts.WinForms;
+﻿using Guna.Charts.Interfaces;
+using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using System.Data;
@@ -8,14 +9,22 @@ namespace Sales_Tracker.Graphs
 {
     class Bar
     {
-        public static void ConfigureChart(GunaChart chart)
+        public static void ConfigureChart(GunaChart chart, bool isLineChart)
         {
-            chart.XAxes.GridLines.Display = false;
+            if (isLineChart)
+            {
+                chart.XAxes.GridLines.Display = true;
+            }
+            else
+            {
+                chart.XAxes.GridLines.Display = false;
+            }
+            chart.YAxes.GridLines.Display = true;
             chart.Legend.Display = false;
         }
-        public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
+        public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart)
         {
-            ConfigureChart(chart);
+            ConfigureChart(chart, isLineChart);
 
             if (dataGridView.Rows.Count == 0)
             {
@@ -24,11 +33,24 @@ namespace Sales_Tracker.Graphs
                 return 0;
             }
 
-            GunaBarDataset dataset = new()
+            IGunaDataset dataset;
+            if (isLineChart) { dataset = new GunaLineDataset(); }
+            else { dataset = new GunaBarDataset(); }
+
+            if (isLineChart)
             {
-                BarPercentage = 0.6f,  // Set a maximum width for the bars
-                FillColors = [CustomColors.accent_blue]
-            };
+                ((GunaLineDataset)dataset).FillColor = CustomColors.accent_blue;
+                ((GunaLineDataset)dataset).BorderColor = CustomColors.accent_blue;
+                ((GunaLineDataset)dataset).PointRadius = 5;
+                ((GunaLineDataset)dataset).PointStyle = PointStyle.Circle;
+                ((GunaLineDataset)dataset).PointFillColors = [CustomColors.accent_blue];
+                ((GunaLineDataset)dataset).PointBorderColors = [CustomColors.accent_blue];
+            }
+            else
+            {
+                ((GunaBarDataset)dataset).BarPercentage = 0.6f;
+                ((GunaBarDataset)dataset).FillColors = [CustomColors.accent_blue];
+            }
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
@@ -60,7 +82,7 @@ namespace Sales_Tracker.Graphs
                 }
             }
 
-            SortAndAddDataSetAndSetBarPercentage(revenueByDate, dateFormat, dataset);
+            SortAndAddDataSetAndSetBarPercentage(revenueByDate, dateFormat, dataset, isLineChart);
 
             // Update the chart
             chart.Datasets.Clear();
@@ -69,9 +91,9 @@ namespace Sales_Tracker.Graphs
 
             return grandTotal;
         }
-        public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart)
+        public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
         {
-            ConfigureChart(chart);
+            ConfigureChart(chart, isLineChart);
 
             if (salesDataGridView.Rows.Count == 0 && purchasesDataGridView.Rows.Count == 0)
             {
@@ -80,11 +102,24 @@ namespace Sales_Tracker.Graphs
                 return 0;
             }
 
-            GunaBarDataset dataset = new()
+            IGunaDataset dataset;
+            if (isLineChart) { dataset = new GunaLineDataset(); }
+            else { dataset = new GunaBarDataset(); }
+
+            if (isLineChart)
             {
-                BarPercentage = 0.6f,  // Set a maximum width for the bars
-                FillColors = [CustomColors.accent_blue]
-            };
+                ((GunaLineDataset)dataset).FillColor = CustomColors.accent_blue;
+                ((GunaLineDataset)dataset).BorderColor = CustomColors.accent_blue;
+                ((GunaLineDataset)dataset).PointRadius = 5;
+                ((GunaLineDataset)dataset).PointStyle = PointStyle.Circle;
+                ((GunaLineDataset)dataset).PointFillColors = [CustomColors.accent_blue];
+                ((GunaLineDataset)dataset).PointBorderColors = [CustomColors.accent_blue];
+            }
+            else
+            {
+                ((GunaBarDataset)dataset).BarPercentage = 0.6f;
+                ((GunaBarDataset)dataset).FillColors = [CustomColors.accent_blue];
+            }
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
@@ -147,7 +182,7 @@ namespace Sales_Tracker.Graphs
                 grandTotal += item.Value;
             }
 
-            SortAndAddDataSetAndSetBarPercentage(profitByDate, dateFormat, dataset);
+            SortAndAddDataSetAndSetBarPercentage(profitByDate, dateFormat, dataset, isLineChart);
 
             // Update the chart
             chart.Datasets.Clear();
@@ -158,25 +193,38 @@ namespace Sales_Tracker.Graphs
         }
 
         // Functions
-        private static void SortAndAddDataSetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, GunaBarDataset dataset)
+        private static void SortAndAddDataSetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
         {
             // Sort the dictionary by date keys
             IOrderedEnumerable<KeyValuePair<string, double>> sortedProfitByDate = list.OrderBy(kvp => DateTime.ParseExact(kvp.Key, dateFormat, null));
 
             // Add dataset
-            foreach (KeyValuePair<string, double> kvp in sortedProfitByDate)
+            if (isLineChart)
             {
-                dataset.DataPoints.Add(kvp.Key, kvp.Value);
+                foreach (KeyValuePair<string, double> kvp in sortedProfitByDate)
+                {
+                    ((GunaLineDataset)dataset).DataPoints.Add(kvp.Key, kvp.Value);
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<string, double> kvp in sortedProfitByDate)
+                {
+                    ((GunaBarDataset)dataset).DataPoints.Add(kvp.Key, kvp.Value);
+                }
             }
 
-            // Set BarPercentage
-            if (dataset.DataPoints.Count == 1)
+            // Set BarPercentage for bar charts
+            if (!isLineChart)
             {
-                dataset.BarPercentage = 0.2f;
-            }
-            else if (dataset.DataPoints.Count < 3)
-            {
-                dataset.BarPercentage = 0.4f;
+                if (((GunaBarDataset)dataset).DataPoints.Count == 1)
+                {
+                    ((GunaBarDataset)dataset).BarPercentage = 0.2f;
+                }
+                else if (((GunaBarDataset)dataset).DataPoints.Count < 3)
+                {
+                    ((GunaBarDataset)dataset).BarPercentage = 0.4f;
+                }
             }
         }
         private static string GetDateFormat(TimeSpan dateRange)

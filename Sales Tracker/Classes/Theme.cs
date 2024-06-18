@@ -175,7 +175,7 @@ namespace Sales_Tracker.Classes
 
                             if (gunaChart.Name == "Bar_GunaChart" || gunaChart.Name == "Bar2_GunaChart")
                             {
-                                Bar.ConfigureChart(gunaChart);
+                                Bar.ConfigureChart(gunaChart, MainMenu_Form.Instance.LineGraph_ToggleSwitch.Checked);
                             }
                             else if (gunaChart.Name == "Pie_GunaChart")
                             {

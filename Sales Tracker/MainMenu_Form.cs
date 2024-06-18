@@ -87,24 +87,24 @@ namespace Sales_Tracker
             UpdateTotals();
             AlignTotalLabels();
         }
-        private void LoadGraphs()
+        public void LoadGraphs()
         {
             double total;
             if (Selected == Options.Sales)
             {
-                total = Bar.LoadTotalsIntoChart(Sales_DataGridView, Bar_GunaChart);
+                total = Bar.LoadTotalsIntoChart(Sales_DataGridView, Bar_GunaChart, LineGraph_ToggleSwitch.Checked);
                 Bar_Label.Text = $"Total revenue: {total:C}";
                 Pie.LoadDistributionIntoChart(Sales_DataGridView, Pie_GunaChart);
                 Pie_Label.Text = "Distribution of revenue";
             }
             else
             {
-                total = Bar.LoadTotalsIntoChart(Purchases_DataGridView, Bar_GunaChart);
+                total = Bar.LoadTotalsIntoChart(Purchases_DataGridView, Bar_GunaChart, LineGraph_ToggleSwitch.Checked);
                 Bar_Label.Text = $"Total expenses: {total:C}";
                 Pie.LoadDistributionIntoChart(Purchases_DataGridView, Pie_GunaChart);
                 Pie_Label.Text = "Distribution of expenses";
             }
-            total = Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart);
+            total = Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart, LineGraph_ToggleSwitch.Checked);
             Bar2_Label.Text = $"Total profits: {total:C}";
         }
         private bool DoNotUpdateTheme;
@@ -491,6 +491,10 @@ namespace Sales_Tracker
                 CurrentTheme = ThemeType.Light;
             }
             UpdateTheme();
+        }
+        private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+            LoadGraphs();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {

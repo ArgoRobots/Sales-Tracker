@@ -60,7 +60,7 @@
             Category_TextBox.SelectedText = "";
             Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Category_TextBox.Size = new Size(200, 36);
-            Category_TextBox.TabIndex = 29;
+            Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += ValidateInputs;
             Category_TextBox.KeyDown += Category_TextBox_KeyDown;
             // 
@@ -81,7 +81,7 @@
             AddCategory_Button.Name = "AddCategory_Button";
             AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddCategory_Button.Size = new Size(143, 36);
-            AddCategory_Button.TabIndex = 28;
+            AddCategory_Button.TabIndex = 2;
             AddCategory_Button.Tag = "0";
             AddCategory_Button.Text = "Add category";
             AddCategory_Button.Click += AddCategory_Button_Click;
@@ -94,7 +94,7 @@
             AddCategory_Label.Location = new Point(324, 20);
             AddCategory_Label.Name = "AddCategory_Label";
             AddCategory_Label.Size = new Size(137, 30);
-            AddCategory_Label.TabIndex = 27;
+            AddCategory_Label.TabIndex = 0;
             AddCategory_Label.Text = "Add category";
             // 
             // CategoryName_Label
@@ -105,7 +105,7 @@
             CategoryName_Label.Location = new Point(217, 80);
             CategoryName_Label.Name = "CategoryName_Label";
             CategoryName_Label.Size = new Size(110, 20);
-            CategoryName_Label.TabIndex = 30;
+            CategoryName_Label.TabIndex = 0;
             CategoryName_Label.Text = "Category name";
             // 
             // Sale_RadioButton
@@ -121,7 +121,7 @@
             Sale_RadioButton.Location = new Point(54, 26);
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.Size = new Size(78, 24);
-            Sale_RadioButton.TabIndex = 32;
+            Sale_RadioButton.TabIndex = 3;
             Sale_RadioButton.Text = "For sale";
             Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             Sale_RadioButton.UncheckedState.BorderThickness = 2;
@@ -142,7 +142,7 @@
             Purchase_RadioButton.Location = new Point(138, 26);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.Size = new Size(111, 24);
-            Purchase_RadioButton.TabIndex = 31;
+            Purchase_RadioButton.TabIndex = 4;
             Purchase_RadioButton.Text = "For purchase";
             Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             Purchase_RadioButton.UncheckedState.BorderThickness = 2;

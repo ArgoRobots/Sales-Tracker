@@ -31,14 +31,17 @@ namespace Sales_Tracker
                 left = ConstructControlsForAddProduct(selectedRow);
             }
 
-            // Center controls
+            CenterControls(left, secondLeft);
+        }
+        private void CenterControls(int left, int secondLeft)
+        {
             Width = left + 80;
             Panel.Width = left;
             Panel.Left = (Width - Panel.Width) / 2 - 5;
 
             if (secondRow)
             {
-                if (secondLeft > Left)
+                if (secondLeft > left)
                 {
                     Width = secondLeft + 80;
                 }
@@ -275,6 +278,7 @@ namespace Sales_Tracker
                     selectedRow.Cells[columnName].Value = Tools.FormatDate(gDatePicker.Value);
                 }
             }
+            MainMenu_Form.Instance.LoadGraphs();
             Close();
         }
 
