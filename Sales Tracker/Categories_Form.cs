@@ -8,14 +8,14 @@ namespace Sales_Tracker
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         // Init
-        private readonly MainMenu_Form.Options oldOption;
-        private readonly Guna2DataGridView oldselectedDataGridView;
+        private readonly Options oldOption;
+        private readonly Guna2DataGridView oldSelectedDataGridView;
         public Categories_Form()
         {
             InitializeComponent();
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldselectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             ConstructDataGridViews();
             LoadProducts();
             Purchase_RadioButton.Checked = true;
@@ -64,7 +64,7 @@ namespace Sales_Tracker
         private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldselectedDataGridView;
+            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
 
         // Event handlers

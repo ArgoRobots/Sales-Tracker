@@ -2,7 +2,6 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
-using System.ComponentModel;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -65,7 +64,7 @@ namespace Sales_Tracker
                         categoryList.Add(category);
                     }
 
-                    category.AddProduct(new Product(fields[0], fields[1], fields[3]));
+                    category.AddProduct(new Product(fields[0], fields[2]));
                 }
             }
         }
@@ -473,7 +472,6 @@ namespace Sales_Tracker
                     }
                 }
             }
-
             return null;
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
@@ -624,7 +622,7 @@ namespace Sales_Tracker
         {
             SalesID,
             CustomerName,
-            ItemName,
+            Product,
             Category,
             Date,
             Quantity,
@@ -637,7 +635,7 @@ namespace Sales_Tracker
         {
             { PurchaseColumns.PurchaseID, "Purchase ID" },
             { PurchaseColumns.BuyerName, "Buyer name" },
-            { PurchaseColumns.Product, "Product" },
+            { PurchaseColumns.Product, "Product name" },
             { PurchaseColumns.Category, "Category" },
             { PurchaseColumns.Date, "Date" },
             { PurchaseColumns.Quantity, "Quantity" },
@@ -650,7 +648,7 @@ namespace Sales_Tracker
         {
             { SalesColumns.SalesID, "Sales ID" },
             { SalesColumns.CustomerName, "Customer name" },
-            { SalesColumns.ItemName, "Product" },
+            { SalesColumns.Product, "Product name" },
             { SalesColumns.Category, "Category" },
             { SalesColumns.Date, "Date" },
             { SalesColumns.Quantity, "Quantity" },
@@ -731,7 +729,7 @@ namespace Sales_Tracker
                     break;
                 case Options.Sales:
                     type = "sale";
-                    columnName = SalesColumns.ItemName.ToString();
+                    columnName = SalesColumns.Product.ToString();
                     logIndex = 2;
                     break;
                 case Options.ProductPurchases:
@@ -765,7 +763,7 @@ namespace Sales_Tracker
         }
         private void AddRowsFromFile()
         {
-            string filePath = GetFilePathForDataGridView();
+            string filePath = GetFilePathForDataGridView(Selected);
 
             if (!File.Exists(filePath))
             {
@@ -783,18 +781,18 @@ namespace Sales_Tracker
                 selectedDataGridView.Rows.Add(cellValues);
             }
         }
-        private void DataGridView_RowsAdded(object? sender, DataGridViewRowsAddedEventArgs e)
+        private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            SaveDataGridViewToFile();
             DataGridViewRowChanged();
         }
-        private void DataGridView_RowsRemoved(object? sender, DataGridViewRowsRemovedEventArgs e)
+        private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            SaveDataGridViewToFile();
             DataGridViewRowChanged();
         }
         private void DataGridViewRowChanged()
         {
+            SaveDataGridViewToFile(selectedDataGridView, Selected);
+
             if (Selected == Options.Sales || Selected == Options.Purchases)
             {
                 UpdateTotals();
@@ -893,14 +891,14 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void SaveDataGridViewToFile()
+        public void SaveDataGridViewToFile(Guna2DataGridView dataGridView, Options option)
         {
             if (isDataGridViewLoading)
             {
                 return;
             }
 
-            string filePath = GetFilePathForDataGridView();
+            string filePath = GetFilePathForDataGridView(option);
 
             if (!File.Exists(filePath))
             {
@@ -911,9 +909,9 @@ namespace Sales_Tracker
             List<string> linesInDataGridView = [];
 
             // Write all the rows in the DataGridView to file
-            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            for (int i = 0; i < dataGridView.Rows.Count; i++)
             {
-                DataGridViewRow row = selectedDataGridView.Rows[i];
+                DataGridViewRow row = dataGridView.Rows[i];
                 List<string> cellValues = [];
 
                 foreach (DataGridViewCell cell in row.Cells)
@@ -1007,9 +1005,9 @@ namespace Sales_Tracker
             Price_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
             Price_Label.Width = selectedDataGridView.Columns[totalPriceColumn].Width;
         }
-        private string GetFilePathForDataGridView()
+        private string GetFilePathForDataGridView(Options option)
         {
-            return Selected switch
+            return option switch
             {
                 Options.Purchases => Directories.purchases_file,
                 Options.Sales => Directories.sales_file,
@@ -1079,8 +1077,6 @@ namespace Sales_Tracker
                 // Select the new row
                 selectedDataGridView.Rows[index].Cells[0].Selected = false;
                 selectedDataGridView.Rows[index + 1].Cells[0].Selected = true;
-
-                SaveDataGridViewToFile();
             };
             menuBtn = UI.ConstructBtnForMenu("Delete", 240, false, flowPanel);
             menuBtn.ForeColor = CustomColors.accent_red;

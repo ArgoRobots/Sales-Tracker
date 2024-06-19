@@ -10,14 +10,14 @@ namespace Sales_Tracker
         public static Products_Form Instance { get; private set; }
         // Init
         private readonly MainMenu_Form.Options oldOption;
-        private readonly Guna2DataGridView oldselectedDataGridView;
+        private readonly Guna2DataGridView oldSelectedDataGridView;
         public Products_Form()
         {
             InitializeComponent();
             Instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldselectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             ConstructDataGridViews();
@@ -62,14 +62,14 @@ namespace Sales_Tracker
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Sales_DataGridView.Rows.Add(product.Name, product.Category, product.CountryOfOrigin);
+                    Sales_DataGridView.Rows.Add(product.Name, category.Name, product.CountryOfOrigin);
                 }
             }
             foreach (Category category in MainMenu_Form.Instance.productCategoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Purchases_DataGridView.Rows.Add(product.Name, product.Category, product.CountryOfOrigin);
+                    Purchases_DataGridView.Rows.Add(product.Name, category.Name, product.CountryOfOrigin);
                 }
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
@@ -80,7 +80,7 @@ namespace Sales_Tracker
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldselectedDataGridView;
+            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
 
         // DataGridView
@@ -120,16 +120,17 @@ namespace Sales_Tracker
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Product product = new(ProductName_TextBox.Text, ProductCategory_TextBox.Text, CountryOfOrigin_TextBox.Text);
+            Product product = new(ProductName_TextBox.Text, CountryOfOrigin_TextBox.Text);
+            string category = ProductCategory_TextBox.Text;
             if (Sale_RadioButton.Checked)
             {
-                Sales_DataGridView.Rows.Add(product.Name, product.Category, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, ProductCategory_TextBox.Text, product);
+                Sales_DataGridView.Rows.Add(product.Name, category, product.CountryOfOrigin);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, category, product);
             }
             else
             {
-                Purchases_DataGridView.Rows.Add(product.Name, product.Category, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, ProductCategory_TextBox.Text, product);
+                Purchases_DataGridView.Rows.Add(product.Name, category, product.CountryOfOrigin);
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, category, product);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
