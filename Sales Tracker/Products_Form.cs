@@ -77,6 +77,10 @@ namespace Sales_Tracker
 
 
         // Form
+        private void Products_Form_Resize(object sender, EventArgs e)
+        {
+            CenterSelectedDataGridView();
+        }
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
@@ -88,17 +92,18 @@ namespace Sales_Tracker
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Product product = new(ProductName_TextBox.Text, CountryOfOrigin_TextBox.Text);
+            Product product = new(ProductID_TextBox.Text, ProductName_TextBox.Text, CountryOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
+
             if (Sale_RadioButton.Checked)
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categorySaleList, category, product);
-                Sales_DataGridView.Rows.Add(product.Name, category, product.CountryOfOrigin);
+                Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
             }
             else
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categoryPurchaseList, category, product);
-                Purchases_DataGridView.Rows.Add(product.Name, category, product.CountryOfOrigin);
+                Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
@@ -126,12 +131,14 @@ namespace Sales_Tracker
         // DataGridView
         public enum Columns
         {
+            ProductID,
             ProductName,
             ProductCategory,
             CountryOfOrigin
         }
         public readonly Dictionary<Columns, string> ColumnHeaders = new()
         {
+            { Columns.ProductID, "Product ID" },
             { Columns.ProductName, "Product name" },
             { Columns.ProductCategory, "Product category" },
             { Columns.CountryOfOrigin, "Country of origin" },
@@ -140,7 +147,7 @@ namespace Sales_Tracker
         private const byte topForDataGridView = 230;
         private void ConstructDataGridViews()
         {
-            Size size = new(640, 270);
+            Size size = new(840, 270);
 
             Purchases_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
@@ -170,6 +177,7 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
             MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
         }
         public void CloseAllPanels(object sender, EventArgs e)

@@ -39,6 +39,10 @@ namespace Sales_Tracker
         }
 
         // Form
+        private void Categories_Form_Resize(object sender, EventArgs e)
+        {
+            CenterSelectedDataGridView();
+        }
         private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
@@ -102,6 +106,7 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
             MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
         }
         private void ConstructDataGridViews()

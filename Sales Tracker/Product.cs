@@ -1,8 +1,9 @@
 ﻿namespace Sales_Tracker
 {
-    public class Product(string productName, string countryOfOrigin)
+    public class Product(string productID, string productName, string countryOfOrigin)
     {
-        public string Name = productName;
-        public string CountryOfOrigin = countryOfOrigin;
+        public string ProductID = productID,
+                      Name = productName,
+                      CountryOfOrigin = countryOfOrigin;
     }
 }

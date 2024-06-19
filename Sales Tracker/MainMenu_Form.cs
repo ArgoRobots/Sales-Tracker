@@ -54,11 +54,13 @@ namespace Sales_Tracker
                 {
                     // Create a new product
                     string[] productDetails = line.Split(',');
-                    if (productDetails.Length == 2)
+                    if (productDetails.Length == 3)
                     {
-                        string productName = productDetails[0];
-                        string countryOfOrigin = productDetails[1];
-                        Product product = new Product(productName, countryOfOrigin);
+                        string productID = productDetails[0],
+                               productName = productDetails[1],
+                               countryOfOrigin = productDetails[2];
+
+                        Product product = new(productID, productName, countryOfOrigin);
                         currentCategory.AddProduct(product);
                     }
                 }
@@ -634,7 +636,7 @@ namespace Sales_Tracker
                 lines.Add($"Category: {category.Name}");
                 foreach (Product product in category.ProductList)
                 {
-                    lines.Add($"{product.Name},{product.CountryOfOrigin}");
+                    lines.Add($"{product.ProductID},{product.Name},{product.CountryOfOrigin}");
                 }
             }
 
@@ -744,7 +746,7 @@ namespace Sales_Tracker
             dataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
-            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             dataGridView.Theme = CustomColors.dataGridViewTheme;
             dataGridView.BackgroundColor = CustomColors.controlBack;
             dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;

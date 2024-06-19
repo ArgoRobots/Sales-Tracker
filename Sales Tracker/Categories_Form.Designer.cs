@@ -110,7 +110,6 @@
             // 
             // Sale_RadioButton
             // 
-            Sale_RadioButton.Anchor = AnchorStyles.Top;
             Sale_RadioButton.AutoSize = true;
             Sale_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Sale_RadioButton.CheckedState.BorderThickness = 0;
@@ -118,7 +117,7 @@
             Sale_RadioButton.CheckedState.InnerColor = Color.White;
             Sale_RadioButton.CheckedState.InnerOffset = -4;
             Sale_RadioButton.Font = new Font("Segoe UI", 11F);
-            Sale_RadioButton.Location = new Point(54, 26);
+            Sale_RadioButton.Location = new Point(33, 20);
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.Size = new Size(78, 24);
             Sale_RadioButton.TabIndex = 3;
@@ -131,7 +130,6 @@
             // 
             // Purchase_RadioButton
             // 
-            Purchase_RadioButton.Anchor = AnchorStyles.Top;
             Purchase_RadioButton.AutoSize = true;
             Purchase_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Purchase_RadioButton.CheckedState.BorderThickness = 0;
@@ -139,7 +137,7 @@
             Purchase_RadioButton.CheckedState.InnerColor = Color.White;
             Purchase_RadioButton.CheckedState.InnerOffset = -4;
             Purchase_RadioButton.Font = new Font("Segoe UI", 11F);
-            Purchase_RadioButton.Location = new Point(138, 26);
+            Purchase_RadioButton.Location = new Point(117, 20);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.Size = new Size(111, 24);
             Purchase_RadioButton.TabIndex = 4;
@@ -167,6 +165,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Categories_Form_FormClosed;
+            Resize += Categories_Form_Resize;
             ResumeLayout(false);
             PerformLayout();
         }
