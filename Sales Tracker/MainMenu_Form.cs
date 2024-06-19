@@ -611,6 +611,23 @@ namespace Sales_Tracker
             }
             return "null";
         }
+        public static bool IsProductInCategory(string productName, string productCategory, List<Category> categories)
+        {
+            foreach (Category category in categories)
+            {
+                if (category.Name == productCategory)
+                {
+                    foreach (Product product in category.ProductList)
+                    {
+                        if (product.Name == productName)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
         public void SaveCategoriesToFile(Options option)
         {
             if (isDataGridViewLoading)

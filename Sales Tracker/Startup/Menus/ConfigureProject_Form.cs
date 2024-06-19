@@ -136,16 +136,14 @@ namespace Sales_Tracker.Startup.Menus
             if (@"/\#%&*|;".Any(ProjectName_textBox.Text.Contains) || ProjectName_textBox.Text == "")
             {
                 Create_Button.Enabled = false;
-                ProjectName_textBox.BorderColor = Color.Red;
-                ProjectName_textBox.FocusedState.BorderColor = Color.Red;
+                UI.SetGTextBoxToInvalid(ProjectName_textBox);
                 WarningName_pictureBox.Visible = true;
                 WarningName_Label.Visible = true;
             }
             else
             {
                 Create_Button.Enabled = true;
-                ProjectName_textBox.BorderColor = CustomColors.controlBorder;
-                ProjectName_textBox.FocusedState.BorderColor = CustomColors.accent_blue;
+                UI.SetGTextBoxToValid(ProjectName_textBox);
                 WarningName_pictureBox.Visible = false;
                 WarningName_Label.Visible = false;
             }
@@ -157,16 +155,14 @@ namespace Sales_Tracker.Startup.Menus
             if ("/#%&*|;".Any(Directory_textBox.Text.Contains) || Directory_textBox.Text == "" || !Directory_textBox.Text.Contains('\\'))
             {
                 Create_Button.Enabled = false;
-                Directory_textBox.BorderColor = Color.Red;
-                Directory_textBox.FocusedState.BorderColor = Color.Red;
+                UI.SetGTextBoxToInvalid(Directory_textBox);
                 WarningDir_pictureBox.Visible = true;
                 WarningDir_Label.Visible = true;
             }
             else
             {
                 Create_Button.Enabled = true;
-                Directory_textBox.BorderColor = CustomColors.controlBorder;
-                Directory_textBox.FocusedState.BorderColor = CustomColors.controlBorder;
+                UI.SetGTextBoxToValid(Directory_textBox);
                 WarningDir_pictureBox.Visible = false;
                 WarningDir_Label.Visible = false;
             }

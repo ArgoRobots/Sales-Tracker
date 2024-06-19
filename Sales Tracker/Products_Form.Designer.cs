@@ -50,6 +50,9 @@
             Purchase_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
             ProductID_Label = new Label();
             ProductID_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            Warning_pictureBox = new PictureBox();
+            Warning_Label = new Label();
+            ((System.ComponentModel.ISupportInitialize)Warning_pictureBox).BeginInit();
             SuspendLayout();
             // 
             // CountryOfOrigin_Label
@@ -133,7 +136,7 @@
             ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 2;
-            ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.TextChanged += ProductName_TextBox_TextChanged;
             ProductName_TextBox.Click += CloseAllPanels;
             // 
             // AddProduct_Button
@@ -148,7 +151,7 @@
             AddProduct_Button.FillColor = Color.White;
             AddProduct_Button.Font = new Font("Segoe UI", 9.5F);
             AddProduct_Button.ForeColor = Color.Black;
-            AddProduct_Button.Location = new Point(371, 160);
+            AddProduct_Button.Location = new Point(371, 170);
             AddProduct_Button.Margin = new Padding(4, 3, 4, 3);
             AddProduct_Button.Name = "AddProduct_Button";
             AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -268,11 +271,38 @@
             ProductID_TextBox.Size = new Size(200, 36);
             ProductID_TextBox.TabIndex = 1;
             // 
+            // Warning_pictureBox
+            // 
+            Warning_pictureBox.Image = Properties.Resources.Warning;
+            Warning_pictureBox.Location = new Point(239, 145);
+            Warning_pictureBox.Margin = new Padding(4, 3, 4, 3);
+            Warning_pictureBox.Name = "Warning_pictureBox";
+            Warning_pictureBox.Size = new Size(19, 18);
+            Warning_pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            Warning_pictureBox.TabIndex = 37;
+            Warning_pictureBox.TabStop = false;
+            Warning_pictureBox.Visible = false;
+            // 
+            // Warning_Label
+            // 
+            Warning_Label.AutoSize = true;
+            Warning_Label.Font = new Font("Segoe UI", 10F);
+            Warning_Label.ForeColor = Color.Red;
+            Warning_Label.Location = new Point(265, 144);
+            Warning_Label.Margin = new Padding(4, 0, 4, 0);
+            Warning_Label.Name = "Warning_Label";
+            Warning_Label.Size = new Size(180, 19);
+            Warning_Label.TabIndex = 36;
+            Warning_Label.Text = "Product name already exists";
+            Warning_Label.Visible = false;
+            // 
             // Products_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(884, 521);
+            Controls.Add(Warning_pictureBox);
+            Controls.Add(Warning_Label);
             Controls.Add(ProductID_Label);
             Controls.Add(ProductID_TextBox);
             Controls.Add(Purchase_RadioButton);
@@ -293,6 +323,7 @@
             FormClosed += Products_Form_FormClosed;
             Click += CloseAllPanels;
             Resize += Products_Form_Resize;
+            ((System.ComponentModel.ISupportInitialize)Warning_pictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -312,5 +343,7 @@
         private Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
         private Label ProductID_Label;
         private Guna.UI2.WinForms.Guna2TextBox ProductID_TextBox;
+        private PictureBox Warning_pictureBox;
+        private Label Warning_Label;
     }
 }

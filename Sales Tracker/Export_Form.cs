@@ -36,16 +36,14 @@ namespace Sales_Tracker
             if ("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "")
             {
                 Export_Button.Enabled = false;
-                Name_TextBox.BorderColor = Color.Red;
-                Name_TextBox.FocusedState.BorderColor = Color.Red;
+                UI.SetGTextBoxToInvalid(Name_TextBox);
                 WarningName_Label.Visible = true;
                 WarningName_PictureBox.Visible = true;
             }
             else
             {
                 Export_Button.Enabled = true;
-                Name_TextBox.BorderColor = CustomColors.controlBorder;
-                Name_TextBox.FocusedState.BorderColor = CustomColors.controlBorder;
+                UI.SetGTextBoxToValid(Name_TextBox);
                 WarningName_Label.Visible = false;
                 WarningName_PictureBox.Visible = false;
             }

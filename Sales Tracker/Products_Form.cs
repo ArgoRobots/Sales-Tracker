@@ -105,8 +105,10 @@ namespace Sales_Tracker
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categoryPurchaseList, category, product);
                 Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
             }
+
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
+            ValidateProductNameTextBox();
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -126,6 +128,39 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
         }
+        private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateProductNameTextBox();
+        }
+        private void ValidateProductNameTextBox()
+        {
+            // Get list
+            List<Category> categories;
+            if (Sale_RadioButton.Checked)
+            {
+                categories = MainMenu_Form.Instance.categorySaleList;
+            }
+            else
+            {
+                categories = MainMenu_Form.Instance.categoryPurchaseList;
+            }
+
+            if (MainMenu_Form.IsProductInCategory(ProductName_TextBox.Text, ProductCategory_TextBox.Text, categories))
+            {
+                AddProduct_Button.Enabled = false;
+                UI.SetGTextBoxToInvalid(ProductName_TextBox);
+                Warning_pictureBox.Visible = true;
+                Warning_Label.Visible = true;
+            }
+            else
+            {
+                AddProduct_Button.Enabled = true;
+                UI.SetGTextBoxToValid(ProductName_TextBox);
+                Warning_pictureBox.Visible = false;
+                Warning_Label.Visible = false;
+            }
+        }
+
 
 
         // DataGridView
@@ -144,7 +179,7 @@ namespace Sales_Tracker
             { Columns.CountryOfOrigin, "Country of origin" },
         };
         private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte topForDataGridView = 230;
+        private const byte topForDataGridView = 240;
         private void ConstructDataGridViews()
         {
             Size size = new(840, 270);

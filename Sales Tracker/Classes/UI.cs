@@ -318,6 +318,19 @@ namespace Sales_Tracker.Classes
         }
 
 
+        // Validity
+        public static void SetGTextBoxToValid(Guna2TextBox textBox)
+        {
+            textBox.BorderColor = CustomColors.controlBorder;
+            textBox.FocusedState.BorderColor = CustomColors.accent_blue;
+        }
+        public static void SetGTextBoxToInvalid(Guna2TextBox textBox)
+        {
+            textBox.BorderColor = Color.Red;
+            textBox.FocusedState.BorderColor = Color.Red;
+        }
+
+
         // Close all panels
         public static void CloseAllPanels(object? sender, EventArgs? e)
         {
