@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using static Sales_Tracker.MainMenu_Form;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Sales_Tracker
 {
@@ -264,7 +263,8 @@ namespace Sales_Tracker
                     selectedRow.Cells[columnName].Value = Tools.FormatDate(gDatePicker.Value);
                 }
             }
-            // Update total column
+
+            // Update total value
             if (selectedTag == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString())
             {
                 if (MainMenu_Form.Instance.Selected == Options.Sales)
@@ -305,11 +305,11 @@ namespace Sales_Tracker
                 Category category;
                 if (MainMenu_Form.Instance.Selected == Options.CategorySales || MainMenu_Form.Instance.Selected == Options.ProductSales)
                 {
-                    category = MainMenu_Form.Instance.productCategorySaleList.FirstOrDefault(c => c.Name == listOfOldValues[0]);
+                    category = MainMenu_Form.Instance.categorySaleList.FirstOrDefault(c => c.Name == listOfOldValues[0]);
                 }
                 else
                 {
-                    category = MainMenu_Form.Instance.productCategoryPurchaseList.FirstOrDefault(c => c.Name == listOfOldValues[0]);
+                    category = MainMenu_Form.Instance.categoryPurchaseList.FirstOrDefault(c => c.Name == listOfOldValues[0]);
                 }
 
                 // Update list
@@ -332,11 +332,11 @@ namespace Sales_Tracker
                 Category category;
                 if (MainMenu_Form.Instance.Selected == Options.CategorySales || MainMenu_Form.Instance.Selected == Options.ProductSales)
                 {
-                    category = MainMenu_Form.Instance.productCategorySaleList.FirstOrDefault(c => c.Name == listOfOldValues[1]);
+                    category = MainMenu_Form.Instance.categorySaleList.FirstOrDefault(c => c.Name == listOfOldValues[1]);
                 }
                 else
                 {
-                    category = MainMenu_Form.Instance.productCategoryPurchaseList.FirstOrDefault(c => c.Name == listOfOldValues[1]);
+                    category = MainMenu_Form.Instance.categoryPurchaseList.FirstOrDefault(c => c.Name == listOfOldValues[1]);
                 }
 
                 // Get product
@@ -371,11 +371,11 @@ namespace Sales_Tracker
                     Category newCategory;
                     if (MainMenu_Form.Instance.Selected == Options.CategorySales || MainMenu_Form.Instance.Selected == Options.ProductSales)
                     {
-                        newCategory = MainMenu_Form.Instance.productCategorySaleList.FirstOrDefault(c => c.Name == selectedRow.Cells[1].Value.ToString());
+                        newCategory = MainMenu_Form.Instance.categorySaleList.FirstOrDefault(c => c.Name == selectedRow.Cells[1].Value.ToString());
                     }
                     else
                     {
-                        newCategory = MainMenu_Form.Instance.productCategoryPurchaseList.FirstOrDefault(c => c.Name == selectedRow.Cells[1].Value.ToString());
+                        newCategory = MainMenu_Form.Instance.categoryPurchaseList.FirstOrDefault(c => c.Name == selectedRow.Cells[1].Value.ToString());
                     }
 
                     // Add product to new category
@@ -394,8 +394,8 @@ namespace Sales_Tracker
                     }
                 }
             }
-            MainMenu_Form.Instance.SaveDataGridViewToFile(MainMenu_Form.Instance.Sales_DataGridView, Options.Sales);
-            MainMenu_Form.Instance.SaveDataGridViewToFile(MainMenu_Form.Instance.Purchases_DataGridView, Options.Purchases);
+            MainMenu_Form.Instance.SaveCategoriesToFile(Options.Sales);
+            MainMenu_Form.Instance.SaveCategoriesToFile(Options.Purchases);
         }
 
 

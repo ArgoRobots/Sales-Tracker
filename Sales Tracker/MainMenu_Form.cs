@@ -23,68 +23,74 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             SetCompanyLabel();
             isDataGridViewLoading = true;
-            LoadProducts();
-            LoadSales();
-            LoadPurchases();
+            LoadCategories();
+            LoadSalesAndPurchases();
             isDataGridViewLoading = false;
             Sales_Button.PerformClick();
             LoadDataFromSetting();
-            AlignTotalLabels();
             AddTimeRangesIntoComboBox();
             UpdateTheme();
         }
-        private void SetCompanyLabel()
+        private void LoadCategories()
         {
-            CompanyName_Label.Text = Directories.companyName;
-            MoveEditButton();
+            LoadCategoriesFromFile(Directories.categoryPurchases_file, categoryPurchaseList);
+            LoadCategoriesFromFile(Directories.categorySales_file, categorySaleList);
         }
-        private void MoveEditButton()
-        {
-            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
-        }
-        private void LoadProducts()
-        {
-            LoadProductsFromFile(Directories.productPurchases_file, productCategoryPurchaseList);
-            LoadProductsFromFile(Directories.productSales_file, productCategorySaleList);
-        }
-        private static void LoadProductsFromFile(string filePath, List<Category> categoryList)
+        private static void LoadCategoriesFromFile(string filePath, List<Category> categoryList)
         {
             string[] lines = Directories.ReadAllLinesInFile(filePath);
+            Category? currentCategory = null;
+
             foreach (string line in lines)
             {
-                string[] fields = line.Split(',');
-                if (fields.Length == 4)
+                if (line.StartsWith("Category: "))
                 {
-                    string categoryName = fields[2];
-                    Category category = categoryList.FirstOrDefault(c => c.Name == categoryName);
-
-                    if (category == null)
+                    // Create a new category
+                    string categoryName = line.Substring("Category: ".Length);
+                    currentCategory = new Category(categoryName);
+                    categoryList.Add(currentCategory);
+                }
+                else if (currentCategory != null)
+                {
+                    // Create a new product
+                    string[] productDetails = line.Split(',');
+                    if (productDetails.Length == 2)
                     {
-                        category = new Category(categoryName);
-                        categoryList.Add(category);
+                        string productName = productDetails[0];
+                        string countryOfOrigin = productDetails[1];
+                        Product product = new Product(productName, countryOfOrigin);
+                        currentCategory.AddProduct(product);
                     }
-
-                    category.AddProduct(new Product(fields[0], fields[2]));
                 }
             }
         }
-        public void LoadSales()
+        public void LoadSalesAndPurchases()
         {
-            selectedDataGridView = Sales_DataGridView;
-            LoadColumnsInDataGridView(selectedDataGridView, SalesColumnHeaders);
-            Selected = Options.Sales;
-            AddRowsFromFile();
-            UpdateTotals();
-            AlignTotalLabels();
+            LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
+            AddRowsFromFile(Sales_DataGridView, Options.Sales);
+
+            LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
+            AddRowsFromFile(Purchases_DataGridView, Options.Purchases);
         }
-        public void LoadPurchases()
+        private static void AddRowsFromFile(Guna2DataGridView dataGridView, Options selected)
         {
-            selectedDataGridView = Purchases_DataGridView;
-            LoadColumnsInDataGridView(selectedDataGridView, PurchaseColumnHeaders);
-            Selected = Options.Purchases;
-            AddRowsFromFile();
-            UpdateTotals();
-            AlignTotalLabels();
+            string filePath = GetFilePathForDataGridView(selected);
+
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FailedToWriteToFile(Directories.companyName);
+                return;
+            }
+
+            // Add all rows to dataGridView_list
+            dataGridView.Rows.Clear();
+
+            string[] lines = Directories.ReadAllLinesInFile(filePath);
+            foreach (string line in lines)
+            {
+                string[] cellValues = line.Split(',');
+                dataGridView.Rows.Add(cellValues);
+            }
         }
         public void LoadGraphs()
         {
@@ -314,7 +320,6 @@ namespace Sales_Tracker
 
 
         // TOP BAR
-        // Don't initiate these yet because it resets every time a program is loaded
         // File
         private void File_Button_Click(object sender, EventArgs e)
         {
@@ -408,72 +413,6 @@ namespace Sales_Tracker
         {
             new Categories_Form().ShowDialog();
         }
-        public List<Category> productCategorySaleList = [];
-        public List<Category> productCategoryPurchaseList = [];
-        public List<string> GetProductCategorySaleNames()
-        {
-            return productCategorySaleList.Select(s => s.Name).ToList();
-        }
-        public List<string> GetProductCategoryPurchaseNames()
-        {
-            return productCategoryPurchaseList.Select(p => p.Name).ToList();
-        }
-        public List<string> GetProductSaleNames()
-        {
-            List<string> productNames = [];
-
-            foreach (Category category in productCategorySaleList)
-            {
-                foreach (Product product in category.ProductList)
-                {
-                    productNames.Add(product.Name);
-                }
-            }
-            return productNames;
-        }
-        public List<string> GetProductPurchaseNames()
-        {
-            List<string> productNames = [];
-
-            foreach (Category category in productCategoryPurchaseList)
-            {
-                foreach (Product product in category.ProductList)
-                {
-                    productNames.Add(product.Name);
-                }
-            }
-            return productNames;
-        }
-        public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
-        {
-            Category category = GetCategoryByName(categoryList, categoryName);
-            category.AddProduct(product);
-        }
-        public static Category? GetCategoryByName(List<Category> categoryList, string categoryName)
-        {
-            foreach (Category category in categoryList)
-            {
-                if (category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return category;
-                }
-            }
-            return null;
-        }
-        public static string GetCategoryNameByProductName(List<Category> categoryList, string productName)
-        {
-            foreach (Category category in categoryList)
-            {
-                foreach (Product product in category.ProductList)
-                {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return category.Name;
-                    }
-                }
-            }
-            return null;
-        }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
             if (DoNotUpdateTheme) { return; }
@@ -507,6 +446,8 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Remove(Edit_Button);
             MainTop_Panel.Controls.Remove(CompanyName_Label);
         }
+
+        // Company label
         public void RenameCompany()
         {
             if (!Controls.Contains(UI.rename_textBox))
@@ -535,7 +476,15 @@ namespace Sales_Tracker
 
             MoveEditButton();
         }
-
+        private void SetCompanyLabel()
+        {
+            CompanyName_Label.Text = Directories.companyName;
+            MoveEditButton();
+        }
+        private void MoveEditButton()
+        {
+            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
+        }
 
         // Filter_ComboBox
         private enum TimeInterval
@@ -590,6 +539,102 @@ namespace Sales_Tracker
                 bool isVisible = selectedInterval.interval == TimeInterval.AllTime || rowDate >= DateTime.Now - selectedInterval.timeSpan;
                 row.Visible = isVisible;
             }
+        }
+
+
+        // Lists
+        public List<Category> categorySaleList = [];
+        public List<Category> categoryPurchaseList = [];
+        public List<string> GetProductCategorySaleNames()
+        {
+            return categorySaleList.Select(s => s.Name).ToList();
+        }
+        public List<string> GetProductCategoryPurchaseNames()
+        {
+            return categoryPurchaseList.Select(p => p.Name).ToList();
+        }
+        public List<string> GetProductSaleNames()
+        {
+            List<string> productNames = [];
+
+            foreach (Category category in categorySaleList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    productNames.Add(product.Name);
+                }
+            }
+            return productNames;
+        }
+        public List<string> GetProductPurchaseNames()
+        {
+            List<string> productNames = [];
+
+            foreach (Category category in categoryPurchaseList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    productNames.Add(product.Name);
+                }
+            }
+            return productNames;
+        }
+        public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
+        {
+            foreach (Category category in categoryList)
+            {
+                if (category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
+                {
+                    category.AddProduct(product);
+                    return;
+                }
+            }
+        }
+        public static string GetCategoryNameByProductName(List<Category> categoryList, string productName)
+        {
+            foreach (Category category in categoryList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return category.Name;
+                    }
+                }
+            }
+            return "null";
+        }
+        public void SaveCategoriesToFile(Options option)
+        {
+            if (isDataGridViewLoading)
+            {
+                return;
+            }
+
+            string filePath = GetFilePathForDataGridView(option);
+
+            List<string> lines = [];
+            List<Category> categoryList;
+            if (option == Options.CategoryPurchases || option == Options.ProductPurchases)
+            {
+                categoryList = categoryPurchaseList;
+            }
+            else
+            {
+                categoryList = categorySaleList;
+            }
+
+            foreach (Category category in categoryList)
+            {
+                lines.Add($"Category: {category.Name}");
+                foreach (Product product in category.ProductList)
+                {
+                    lines.Add($"{product.Name},{product.CountryOfOrigin}");
+                }
+            }
+
+            Directories.WriteLinesToFile(filePath, lines);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
 
 
@@ -761,26 +806,6 @@ namespace Sales_Tracker
         {
             AlignTotalLabels();
         }
-        private void AddRowsFromFile()
-        {
-            string filePath = GetFilePathForDataGridView(Selected);
-
-            if (!File.Exists(filePath))
-            {
-                Log.Error_FailedToWriteToFile(Directories.companyName);
-                return;
-            }
-
-            // Add all rows to dataGridView_list
-            selectedDataGridView.Rows.Clear();
-
-            string[] lines = Directories.ReadAllLinesInFile(filePath);
-            foreach (string line in lines)
-            {
-                string[] cellValues = line.Split(',');
-                selectedDataGridView.Rows.Add(cellValues);
-            }
-        }
         private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             DataGridViewRowChanged();
@@ -791,13 +816,44 @@ namespace Sales_Tracker
         }
         private void DataGridViewRowChanged()
         {
-            SaveDataGridViewToFile(selectedDataGridView, Selected);
-
             if (Selected == Options.Sales || Selected == Options.Purchases)
             {
                 UpdateTotals();
                 LoadGraphs();
+                SaveDataGridViewToFile();
             }
+            else
+            {
+                SaveCategoriesToFile(Selected);
+            }
+        }
+        public void SaveDataGridViewToFile()
+        {
+            if (isDataGridViewLoading)
+            {
+                return;
+            }
+
+            string filePath = GetFilePathForDataGridView(Selected);
+            List<string> linesInDataGridView = [];
+
+            // Write all the rows in the DataGridView to file
+            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            {
+                DataGridViewRow row = selectedDataGridView.Rows[i];
+                List<string> cellValues = [];
+
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    cellValues.Add(cell.Value?.ToString() ?? string.Empty);
+                }
+
+                string line = string.Join(",", cellValues);  // Join cell values with a comma
+                linesInDataGridView.Add(line);
+            }
+
+            Directories.WriteLinesToFile(filePath, linesInDataGridView);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
         private void DataGridView_MouseDown(object? sender, MouseEventArgs e)
         {
@@ -891,41 +947,6 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void SaveDataGridViewToFile(Guna2DataGridView dataGridView, Options option)
-        {
-            if (isDataGridViewLoading)
-            {
-                return;
-            }
-
-            string filePath = GetFilePathForDataGridView(option);
-
-            if (!File.Exists(filePath))
-            {
-                Log.Error_FailedToWriteToFile(Directories.companyName);
-                return;
-            }
-
-            List<string> linesInDataGridView = [];
-
-            // Write all the rows in the DataGridView to file
-            for (int i = 0; i < dataGridView.Rows.Count; i++)
-            {
-                DataGridViewRow row = dataGridView.Rows[i];
-                List<string> cellValues = [];
-
-                foreach (DataGridViewCell cell in row.Cells)
-                {
-                    cellValues.Add(cell.Value?.ToString() ?? string.Empty);
-                }
-
-                string line = string.Join(",", cellValues);  // Join cell values with a comma
-                linesInDataGridView.Add(line);
-            }
-
-            Directories.WriteLinesToFile(filePath, linesInDataGridView);
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
-        }
         public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
         {
             foreach (var column in Enum.GetValues(typeof(TEnum)))
@@ -934,9 +955,10 @@ namespace Sales_Tracker
             }
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
+
         private void UpdateTotals()
         {
-            if (isDataGridViewLoading || Selected == Options.ProductPurchases || Selected == Options.ProductSales)
+            if (isDataGridViewLoading || Selected != Options.Purchases || Selected != Options.Sales)
             {
                 return;
             }
@@ -1005,16 +1027,16 @@ namespace Sales_Tracker
             Price_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
             Price_Label.Width = selectedDataGridView.Columns[totalPriceColumn].Width;
         }
-        private string GetFilePathForDataGridView(Options option)
+        private static string GetFilePathForDataGridView(Options selected)
         {
-            return option switch
+            return selected switch
             {
                 Options.Purchases => Directories.purchases_file,
                 Options.Sales => Directories.sales_file,
-                Options.ProductPurchases => Directories.productPurchases_file,
-                Options.ProductSales => Directories.productSales_file,
                 Options.CategoryPurchases => Directories.categoryPurchases_file,
                 Options.CategorySales => Directories.categorySales_file,
+                Options.ProductPurchases => Directories.categoryPurchases_file,
+                Options.ProductSales => Directories.categorySales_file,
                 _ => ""
             };
         }

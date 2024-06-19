@@ -58,14 +58,14 @@ namespace Sales_Tracker
         {
             MainMenu_Form.Instance.isDataGridViewLoading = true;
 
-            foreach (Category category in MainMenu_Form.Instance.productCategorySaleList)
+            foreach (Category category in MainMenu_Form.Instance.categorySaleList)
             {
                 foreach (Product product in category.ProductList)
                 {
                     Sales_DataGridView.Rows.Add(product.Name, category.Name, product.CountryOfOrigin);
                 }
             }
-            foreach (Category category in MainMenu_Form.Instance.productCategoryPurchaseList)
+            foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
                 {
@@ -124,13 +124,13 @@ namespace Sales_Tracker
             string category = ProductCategory_TextBox.Text;
             if (Sale_RadioButton.Checked)
             {
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categorySaleList, category, product);
                 Sales_DataGridView.Rows.Add(product.Name, category, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategorySaleList, category, product);
             }
             else
             {
+                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categoryPurchaseList, category, product);
                 Purchases_DataGridView.Rows.Add(product.Name, category, product.CountryOfOrigin);
-                MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.productCategoryPurchaseList, category, product);
             }
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");

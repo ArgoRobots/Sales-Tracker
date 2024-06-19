@@ -17,7 +17,7 @@ namespace Sales_Tracker
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             ConstructDataGridViews();
-            LoadProducts();
+            LoadCategories();
             Purchase_RadioButton.Checked = true;
             Theme.SetThemeForForm(this);
         }
@@ -45,15 +45,15 @@ namespace Sales_Tracker
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, heightForDataGridView);
             Sales_DataGridView.Tag = DataGridViewTags.AddCategory;
         }
-        private void LoadProducts()
+        private void LoadCategories()
         {
             MainMenu_Form.Instance.isDataGridViewLoading = true;
 
-            foreach (Category category in MainMenu_Form.Instance.productCategoryPurchaseList)
+            foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
             {
                 Purchases_DataGridView.Rows.Add(category.Name);
             }
-            foreach (Category category in MainMenu_Form.Instance.productCategorySaleList)
+            foreach (Category category in MainMenu_Form.Instance.categorySaleList)
             {
                 Sales_DataGridView.Rows.Add(category.Name);
             }
@@ -72,13 +72,13 @@ namespace Sales_Tracker
         {
             if (Purchase_RadioButton.Checked)
             {
+                MainMenu_Form.Instance.categoryPurchaseList.Add(new Category(Category_TextBox.Text));
                 Purchases_DataGridView.Rows.Add(Category_TextBox.Text);
-                MainMenu_Form.Instance.productCategoryPurchaseList.Add(new Category(Category_TextBox.Text));
             }
             else
             {
+                MainMenu_Form.Instance.categorySaleList.Add(new Category(Category_TextBox.Text));
                 Sales_DataGridView.Rows.Add(Category_TextBox.Text);
-                MainMenu_Form.Instance.productCategorySaleList.Add(new Category(Category_TextBox.Text));
             }
             thingsThatHaveChangedInFile.Add(Category_TextBox.Text);
             Log.Write(3, $"Added category '{Category_TextBox.Text}'");

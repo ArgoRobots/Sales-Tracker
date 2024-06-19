@@ -70,7 +70,7 @@ namespace Sales_Tracker
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.productCategorySaleList, itemName);
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(saleID, buyerName, itemName, categoryName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
