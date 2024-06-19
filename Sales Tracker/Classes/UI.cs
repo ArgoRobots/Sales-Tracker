@@ -228,7 +228,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel helpMenu;
         private static void ConstructHelpMenu()
         {
-            helpMenu = ConstructPanelForMenu(new Size(250, 7 * 22 + 10 + 10));
+            helpMenu = ConstructPanelForMenu(new Size(250, 7 * 22 + 10 + 20));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)helpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Support", 240, true, flowPanel);
@@ -246,6 +246,9 @@ namespace Sales_Tracker.Classes
             {
                 Tools.OpenLink("");
             };
+
+            CosntructSeperator(240, flowPanel);
+
             menuBtn = ConstructBtnForMenu("Show logs", 240, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {

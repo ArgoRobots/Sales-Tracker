@@ -7,12 +7,14 @@ namespace Sales_Tracker
     public partial class Categories_Form : BaseForm
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static Categories_Form Instance { get; private set; }
         // Init
         private readonly Options oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
         public Categories_Form()
         {
             InitializeComponent();
+            Instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
@@ -20,30 +22,6 @@ namespace Sales_Tracker
             LoadCategories();
             Purchase_RadioButton.Checked = true;
             Theme.SetThemeForForm(this);
-        }
-
-        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte heightForDataGridView = 160;
-        private void ConstructDataGridViews()
-        {
-            Size size = new(740, 280);
-            string header = MainMenu_Form.Instance.CategoryColumn;
-
-            Purchases_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
-            Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            Purchases_DataGridView.Columns.Add(header, header);
-            Theme.UpdateDataGridViewHeaderTheme(Purchases_DataGridView);
-            Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, heightForDataGridView);
-            Purchases_DataGridView.Tag = DataGridViewTags.AddCategory;
-
-            Sales_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
-            Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            Sales_DataGridView.Columns.Add(header, header);
-            Theme.UpdateDataGridViewHeaderTheme(Sales_DataGridView);
-            Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, heightForDataGridView);
-            Sales_DataGridView.Tag = DataGridViewTags.AddCategory;
         }
         private void LoadCategories()
         {
@@ -66,6 +44,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
+
 
         // Event handlers
         private void AddCategory_Button_Click(object sender, EventArgs e)
@@ -108,12 +87,44 @@ namespace Sales_Tracker
             }
         }
 
-        // Functions
+
+        // DataGridView
+        public enum Columns
+        {
+            CategoryName,
+        }
+        public readonly Dictionary<Columns, string> ColumnHeaders = new()
+        {
+            { Columns.CategoryName, "Category" },
+        };
+        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
+        private const byte topForDataGridView = 160;
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, heightForDataGridView);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
         }
+        private void ConstructDataGridViews()
+        {
+            Size size = new(740, 280);
+
+            Purchases_DataGridView = new Guna2DataGridView();
+            MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
+            Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
+            Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
+            Purchases_DataGridView.Tag = DataGridViewTags.AddCategory;
+
+            Sales_DataGridView = new Guna2DataGridView();
+            MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
+            Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
+            Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
+            Sales_DataGridView.Tag = DataGridViewTags.AddCategory;
+        }
+
+
+        // Functions
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);

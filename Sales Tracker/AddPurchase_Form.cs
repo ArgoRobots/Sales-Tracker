@@ -66,29 +66,18 @@ namespace Sales_Tracker
             string purchaseID = PurchaseID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string itemName = ItemName_TextBox.Text;
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
             Log.Write(3, $"Added purchase '{ItemName_TextBox.Text}'");
-        }
-        private void ImportAmazon_Button_Click(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-        }
-        private void ImportEbay_Button_Click(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-        }
-        private void ImportExcel_Button_Click(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
         }
 
 

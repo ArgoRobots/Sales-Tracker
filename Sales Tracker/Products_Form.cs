@@ -83,38 +83,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
 
-        // DataGridView
-        public enum Columns
-        {
-            ProductName,
-            ProductCategory,
-            CountryOfOrigin
-        }
-        public readonly Dictionary<Columns, string> ColumnHeaders = new()
-        {
-            { Columns.ProductName, "Product name" },
-            { Columns.ProductCategory, "Product category" },
-            { Columns.CountryOfOrigin, "Country of origin" },
-        };
-        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte topForDataGridView = 230;
-        private void ConstructDataGridViews()
-        {
-            Size size = new(640, 270);
-            Purchases_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
-            Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
-            Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
-            Purchases_DataGridView.Tag = DataGridViewTags.AddProduct;
-
-            Sales_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
-            Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
-            Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
-            Sales_DataGridView.Tag = DataGridViewTags.AddProduct;
-        }
 
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
@@ -153,6 +121,42 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
         }
+
+
+        // DataGridView
+        public enum Columns
+        {
+            ProductName,
+            ProductCategory,
+            CountryOfOrigin
+        }
+        public readonly Dictionary<Columns, string> ColumnHeaders = new()
+        {
+            { Columns.ProductName, "Product name" },
+            { Columns.ProductCategory, "Product category" },
+            { Columns.CountryOfOrigin, "Country of origin" },
+        };
+        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
+        private const byte topForDataGridView = 230;
+        private void ConstructDataGridViews()
+        {
+            Size size = new(640, 270);
+
+            Purchases_DataGridView = new Guna2DataGridView();
+            MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size);
+            Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
+            Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
+            Purchases_DataGridView.Tag = DataGridViewTags.AddProduct;
+
+            Sales_DataGridView = new Guna2DataGridView();
+            MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
+            Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
+            Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
+            Sales_DataGridView.Tag = DataGridViewTags.AddProduct;
+        }
+
 
         // Functions
         private void ValidateInputs(object sender, EventArgs e)

@@ -144,11 +144,20 @@ namespace Sales_Tracker
         }
         private void ConstructControlsForAddCategory()
         {
-            string cellValue = selectedRow.Cells[0].Value?.ToString() ?? "";
-            listOfOldValues.Add(cellValue);
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                listOfOldValues.Add(cellValue);
 
-            ConstructLabel(MainMenu_Form.Instance.CategoryColumn, 0, Panel);
-            controlToFocus = ConstructTextBox(0, MainMenu_Form.Instance.CategoryColumn, cellValue, 50, KeyPressValidation.None, true, Panel);
+                switch (columnName)
+                {
+                    case nameof(Products_Form.Columns.ProductName):
+                        ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Columns.CategoryName], 0, Panel);
+                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, KeyPressValidation.None, true, Panel);
+                        break;
+                }
+            }
         }
         private int ConstructControlsForAddProduct()
         {

@@ -144,11 +144,6 @@ namespace Sales_Tracker
         }
 
         // Form
-        private void MainMenu_form_Resize(object sender, EventArgs e)
-        {
-            UI.CloseAllPanels(null, null);
-            ResizeControls();
-        }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
             // Ensure the charts are rendered
@@ -164,6 +159,11 @@ namespace Sales_Tracker
             });
             Log.Write(2, "Argo Sales Tracker has finished starting");
         }
+        private void MainMenu_form_Resize(object sender, EventArgs e)
+        {
+            UI.CloseAllPanels(null, null);
+            ResizeControls();
+        }
         private void ResizeControls()
         {
             if (Height > 1000)
@@ -177,15 +177,6 @@ namespace Sales_Tracker
             else
             {
                 Bar_GunaChart.Height = 200;
-            }
-
-            if (Width > 1300)
-            {
-                selectedDataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            }
-            else
-            {
-                selectedDataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             }
 
             Bar_GunaChart.Width = Width / 3 - 30;
@@ -604,6 +595,20 @@ namespace Sales_Tracker
             }
             return "null";
         }
+        public static string GetCountryProductNameIsFrom(List<Category> categoryList, string productName)
+        {
+            foreach (Category category in categoryList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return product.CountryOfOrigin;
+                    }
+                }
+            }
+            return "null";
+        }
         public void SaveCategoriesToFile(Options option)
         {
             if (isDataGridViewLoading)
@@ -656,6 +661,7 @@ namespace Sales_Tracker
             BuyerName,
             Product,
             Category,
+            Country,
             Date,
             Quantity,
             PricePerUnit,
@@ -669,6 +675,7 @@ namespace Sales_Tracker
             CustomerName,
             Product,
             Category,
+            Country,
             Date,
             Quantity,
             PricePerUnit,
@@ -682,6 +689,7 @@ namespace Sales_Tracker
             { PurchaseColumns.BuyerName, "Buyer name" },
             { PurchaseColumns.Product, "Product name" },
             { PurchaseColumns.Category, "Category" },
+            { PurchaseColumns.Country, "Country of origin" },
             { PurchaseColumns.Date, "Date" },
             { PurchaseColumns.Quantity, "Quantity" },
             { PurchaseColumns.PricePerUnit, "Price per unit" },
@@ -695,6 +703,7 @@ namespace Sales_Tracker
             { SalesColumns.CustomerName, "Customer name" },
             { SalesColumns.Product, "Product name" },
             { SalesColumns.Category, "Category" },
+            { SalesColumns.Country, "Country of destination" },
             { SalesColumns.Date, "Date" },
             { SalesColumns.Quantity, "Quantity" },
             { SalesColumns.PricePerUnit, "Price per unit" },
@@ -708,7 +717,6 @@ namespace Sales_Tracker
             AddCategory,
             AddProduct,
         }
-        public readonly string CategoryColumn = "Category";
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         public Guna2DataGridView selectedDataGridView;
         private bool doNotDeleteRows = false;
@@ -736,7 +744,7 @@ namespace Sales_Tracker
             dataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
-            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             dataGridView.Theme = CustomColors.dataGridViewTheme;
             dataGridView.BackgroundColor = CustomColors.controlBack;
             dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;
@@ -789,12 +797,12 @@ namespace Sales_Tracker
                     break;
                 case Options.CategoryPurchases:
                     type = "Category for purchase";
-                    columnName = CategoryColumn;
+                    columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
                     break;
                 case Options.CategorySales:
                     type = "Category for sale";
-                    columnName = CategoryColumn;
+                    columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
                     break;
             }

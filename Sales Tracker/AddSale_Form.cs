@@ -64,15 +64,16 @@ namespace Sales_Tracker
             string saleID = SaleID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string itemName = ItemName_TextBox.Text;
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
+            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(saleID, buyerName, itemName, categoryName, date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(saleID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, totalPrice);
             thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
             Log.Write(3, $"Added sale '{ItemName_TextBox.Text}'");
         }
