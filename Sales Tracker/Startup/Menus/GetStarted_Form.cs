@@ -46,7 +46,7 @@ namespace Sales_Tracker.Startup
                     {
                         BackColor = CustomColors.controlBack,
                         FillColor = CustomColors.controlBack,
-                        Size = new Size(250, 40),
+                        Size = new Size(252, 40),
                         Text = Path.GetFileNameWithoutExtension(projectDir),
                         Font = new Font("Segoe UI", 11),
                         Tag = projectDir

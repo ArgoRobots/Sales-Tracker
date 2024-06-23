@@ -750,7 +750,7 @@ namespace Sales_Tracker
             InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.Tag = DataGridViewTags.SaleOrPurchase;
         }
-        private readonly byte rowHeight = 25, columnHeaderHeight = 30;
+        private readonly byte rowHeight = 25, columnHeaderHeight = 35;
         public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
         {
             dataGridView.ReadOnly = true;

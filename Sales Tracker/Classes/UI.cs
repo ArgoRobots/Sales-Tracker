@@ -62,7 +62,7 @@ namespace Sales_Tracker.Classes
             panel.Controls.Add(flowLayoutPanel);
             return panel;
         }
-        private static Guna2Separator CosntructSeperator(int width, Control control)
+        public static Guna2Separator CosntructSeperator(int width, Control control)
         {
             Guna2Separator seperator = new()
             {

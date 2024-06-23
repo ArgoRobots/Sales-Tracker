@@ -3,7 +3,7 @@ using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.Classes
 {
-    internal class SearchBox
+    public class SearchBox
     {
         private static Guna2Panel SearchResultBox { get; set; }
         private static Guna2Panel SearchResultBoxContainer { get; set; }
@@ -29,62 +29,80 @@ namespace Sales_Tracker.Classes
             SearchResultBox.HorizontalScroll.Maximum = 0;
             SearchResultBoxContainer.Controls.Add(SearchResultBox);
         }
+
+
+
+        public class SearchResult(string name, Image flag)
+        {
+            public string Name { get; set; } = name;
+            public Image Flag { get; set; } = flag;
+        }
         private class ResultsMeta
         {
-            public string name;
-            public int score;
+            public string Name { get; set; }
+            public int Score { get; set; }
         }
-        public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<string> resultNames_list, Control deselectControl, int maxHeight)
+        public const string addLine = "ADD LINE CONTROL";
+        public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
         {
             SearchResultBox.Controls.Clear();
+            SearchResultBox.SuspendLayout();
 
             // Simple search function
             List<ResultsMeta> metaList = [];
-            foreach (string result in resultNames_list)
+            foreach (SearchResult result in result_list)
             {
                 if (textBox.Text == "")
                 {
-                    metaList.Add(new ResultsMeta() { name = result, score = 0 });
+                    metaList.Add(new ResultsMeta() { Name = result.Name, Score = 0 });
                     continue;
                 }
-                if (IsVariableNameValid(result))
+                if (IsResultNameValid(result.Name))
                 {
-                    // If the variable contains text that is in the textBox
-                    if (result.Contains(textBox.Text, StringComparison.CurrentCultureIgnoreCase) && result != "")
+                    // If the result contains text that is in the textBox
+                    if (result.Name.Contains(textBox.Text, StringComparison.CurrentCultureIgnoreCase) && result.Name != "")
                     {
                         int scoreValue = 1;
 
                         // Increase the score if the first character is the same
-                        if (result[0].ToString().Equals(textBox.Text[0].ToString(), StringComparison.CurrentCultureIgnoreCase))
+                        if (result.Name[0].ToString().Equals(textBox.Text[0].ToString(), StringComparison.CurrentCultureIgnoreCase))
                         {
                             scoreValue = 2;
                         }
 
-                        metaList.Add(new ResultsMeta() { name = result, score = scoreValue });
+                        metaList.Add(new ResultsMeta() { Name = result.Name, Score = scoreValue });
                     }
                 }
             }
-            metaList = metaList.OrderByDescending(x => x.score).ToList();
+            metaList = metaList.OrderByDescending(x => x.Score).ToList();
 
             // Add results to SearchResultBox
             for (int i = 0; i < metaList.Count; i++)
             {
-                Guna2Button gBtn = UI.ConstructGBtn(null, metaList[i].name, 0, new Size(197, 24), new Point(1, i * 24 + 1), SearchResultBox);
-                gBtn.Font = new Font("Segoe UI", 10);
-                gBtn.FillColor = CustomColors.controlBack;
-                gBtn.ForeColor = CustomColors.text;
-                gBtn.BorderColor = CustomColors.accent_blue;
-                gBtn.Click -= UI.CloseAllPanels;
-                gBtn.Click += (sender2, e2) =>
+                if (metaList[i].Name == addLine)
                 {
-                    // Put the name into the selected TextBox
-                    textBox.Text = gBtn.Text;
-                    CloseSearchBox(controlToAddSearchBox);
-                    DeselectControl(deselectControl);
-                };
+                    Guna2Separator seperator = UI.CosntructSeperator(177, SearchResultBox);
+                    seperator.Location = new Point(10, i * 24 + 13);
+                }
+                else
+                {
+                    Guna2Button gBtn = UI.ConstructGBtn(null, metaList[i].Name, 0, new Size(197, 24), new Point(1, i * 24 + 1), SearchResultBox);
+                    gBtn.Font = new Font("Segoe UI", 10);
+                    gBtn.FillColor = CustomColors.controlBack;
+                    gBtn.ForeColor = CustomColors.text;
+                    gBtn.BorderColor = CustomColors.accent_blue;
+                    gBtn.Click -= UI.CloseAllPanels;
+                    gBtn.Click += (sender2, e2) =>
+                    {
+                        // Put the name into the selected TextBox
+                        textBox.Text = gBtn.Text;
+                        CloseSearchBox(controlToAddSearchBox);
+                        DeselectControl(deselectControl);
+                    };
+                }
             }
 
-            // Set the height of variableBox
+            // Set the height of SearchResultBox
             if (metaList.Count * 24 > maxHeight)
             {
                 SearchResultBoxContainer.Height = maxHeight + 3;
@@ -109,7 +127,7 @@ namespace Sales_Tracker.Classes
                 SearchResultBox.AutoScroll = false;
             }
 
-            // Show variable box
+            // Show search box
             if (textBox.Parent is Form)
             {
                 SearchResultBoxContainer.Location = new Point(textBox.Left, textBox.Top + textBox.Height);
@@ -119,15 +137,21 @@ namespace Sales_Tracker.Classes
                 SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left, textBox.Top + textBox.Parent.Top + textBox.Height);
             }
             controlToAddSearchBox.Controls.Add(SearchResultBoxContainer);
+            SearchResultBox.ResumeLayout();
             SearchResultBoxContainer.BringToFront();
         }
-        /// <summary>
-        /// Updates the variableBox and checks if the textBox is valid.
-        /// </summary>
-        public static void VariableTextBoxChanged(Control controlToAddSearchBox, Guna2TextBox textBox, List<string> resultNames_list, Control deselectControl, Guna2Button button, int maxHeight)
+        public static List<SearchResult> ConvertToSearchResults(List<string> names)
         {
-            ShowSearchBox(controlToAddSearchBox, textBox, resultNames_list, deselectControl, maxHeight);
-            CheckValidity(textBox, resultNames_list, button);
+            return names.Select(name => new SearchResult(name, null)).ToList();
+        }
+        /// <summary>
+        /// Updates the search box and checks if the textBox is valid.
+        /// </summary>
+        public static void SearchTextBoxChanged(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, Guna2Button button, int maxHeight)
+        {
+            ShowSearchBox(controlToAddSearchBox, textBox, result_list, deselectControl, maxHeight);
+            List<string> names = result_list.Select(result => result.Name).ToList();
+            CheckValidity(textBox, names, button);
         }
         public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list, Guna2Button button)
         {
@@ -137,7 +161,7 @@ namespace Sales_Tracker.Classes
             }
             else { SetTextBoxToInvalid(textBox, button); }
         }
-        public static void VariableTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
+        public static void SearchBoxTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
         {
             System.Collections.IList results = SearchResultBox.Controls;
 
@@ -146,15 +170,15 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            // Select the next variable
-            bool isVariableSelected = false;
+            // Select the next result
+            bool isResultSelected = false;
             if (e.KeyCode is Keys.Down or Keys.Tab)
             {
                 for (int i = 0; i < results.Count; i++)
                 {
                     Guna2Button btn = (Guna2Button)results[i];
 
-                    // Find the variable that is selected
+                    // Find the result that is selected
                     if (btn.BorderThickness == 1)
                     {
                         // Unselect current one
@@ -163,7 +187,7 @@ namespace Sales_Tracker.Classes
                         // If it's not the last one
                         if (i < results.Count - 1)
                         {
-                            // Select the next variable
+                            // Select the next result
                             Guna2Button nextBtn = (Guna2Button)results[i + 1];
                             nextBtn.BorderThickness = 1;
                         }
@@ -173,7 +197,7 @@ namespace Sales_Tracker.Classes
                             Guna2Button firstBtn = (Guna2Button)results[0];
                             firstBtn.BorderThickness = 1;
                         }
-                        isVariableSelected = true;
+                        isResultSelected = true;
                         break;
                     }
                 }
@@ -183,7 +207,7 @@ namespace Sales_Tracker.Classes
                 for (int i = 0; i < results.Count; i++)
                 {
                     Guna2Button btn = (Guna2Button)results[i];
-                    // Find the variable that is selected
+                    // Find the result that is selected
                     if (btn.BorderThickness == 1)
                     {
                         // Unselect current one
@@ -192,7 +216,7 @@ namespace Sales_Tracker.Classes
                         // If it's not the first one
                         if (i > 0)
                         {
-                            // Select the previous variable
+                            // Select the previous result
                             Guna2Button nextBtn = (Guna2Button)results[i - 1];
                             nextBtn.BorderThickness = 1;
                         }
@@ -202,7 +226,7 @@ namespace Sales_Tracker.Classes
                             Guna2Button firstBtn = (Guna2Button)results[results.Count - 1];
                             firstBtn.BorderThickness = 1;
                         }
-                        isVariableSelected = true;
+                        isResultSelected = true;
                         break;
                     }
                 }
@@ -212,7 +236,7 @@ namespace Sales_Tracker.Classes
                 for (int i = 0; i < results.Count; i++)
                 {
                     Guna2Button btn = (Guna2Button)results[i];
-                    // Find the variable that is selected
+                    // Find the result that is selected
                     if (btn.BorderThickness == 1)
                     {
                         textBox.Text = btn.Text;
@@ -220,7 +244,7 @@ namespace Sales_Tracker.Classes
                         CloseSearchBox(controlToRemoveSearchBox);
                         DeselectControl(deselectControl);
 
-                        isVariableSelected = true;
+                        isResultSelected = true;
                         break;
                     }
                 }
@@ -231,7 +255,7 @@ namespace Sales_Tracker.Classes
                 // Remove Windows "ding" noise when user presses enter
                 e.SuppressKeyPress = true;
             }
-            if (!isVariableSelected)
+            if (!isResultSelected)
             {
                 // Select the first one
                 Guna2Button firstBtn = (Guna2Button)results[0];
@@ -245,7 +269,6 @@ namespace Sales_Tracker.Classes
         private static void SetTextBoxToInvalid(Guna2TextBox gTextBox, Guna2Button button)
         {
             gTextBox.BorderColor = CustomColors.accent_red;
-            gTextBox.BorderThickness = 2;
             gTextBox.HoverState.BorderColor = CustomColors.accent_red;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_red;
 
@@ -257,7 +280,6 @@ namespace Sales_Tracker.Classes
         private static void SetTextBoxToValid(Guna2TextBox gTextBox, Guna2Button button)
         {
             gTextBox.BorderColor = CustomColors.controlBorder;
-            gTextBox.BorderThickness = 1;
             gTextBox.HoverState.BorderColor = CustomColors.accent_blue;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_blue;
 
@@ -267,21 +289,21 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        private static bool IsVariableNameValid(string variableName)
+        private static bool IsResultNameValid(string resultName)
         {
-            if (string.IsNullOrEmpty(variableName))
+            if (string.IsNullOrEmpty(resultName))
             {
                 return false;
             }
 
             // Check if the first character is a letter
-            if (!char.IsLetter(variableName[0]))
+            if (!char.IsLetter(resultName[0]))
             {
                 return false;
             }
 
             // Check if all characters are letters, digits, or allowed special characters
-            return variableName.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '(' || c == ')' || c == ' ');
+            return resultName.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '(' || c == ')' || c == ' ');
         }
         public static void CloseSearchBox(Control controlToRemoveSearchBox)
         {

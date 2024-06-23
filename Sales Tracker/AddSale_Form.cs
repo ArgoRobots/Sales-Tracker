@@ -40,16 +40,19 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             int maxHeight = 150;
+            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames());
+
             ItemName_TextBox.Click += (sender, e) => { ShowSearchBox(maxHeight); };
             ItemName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(maxHeight); };
-            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductSaleNames(), this, AddSale_Button, maxHeight); };
+            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ItemName_TextBox, searchResults, this, AddSale_Button, maxHeight); };
             ItemName_TextBox.TextChanged += ValidateInputs;
             ItemName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-            ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ItemName_TextBox, this, AddSale_Label, e); };
+            ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ItemName_TextBox, this, AddSale_Label, e); };
         }
         private void ShowSearchBox(int maxHeight)
         {
-            SearchBox.ShowSearchBox(this, ItemName_TextBox, MainMenu_Form.Instance.GetProductSaleNames(), this, maxHeight);
+            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames());
+            SearchBox.ShowSearchBox(this, ItemName_TextBox, searchResults, this, maxHeight);
         }
 
         // Event handlers

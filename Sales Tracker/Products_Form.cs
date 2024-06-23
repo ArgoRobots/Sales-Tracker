@@ -36,12 +36,20 @@ namespace Sales_Tracker
         }
         private void AddSearchBoxEvents()
         {
-            int maxHeight = 150;
-            ProductCategory_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ProductCategory_TextBox, GetListForSearchBox(), this, maxHeight); };
-            ProductCategory_TextBox.TextChanged += (sender, e) => { SearchBox.VariableTextBoxChanged(this, ProductCategory_TextBox, GetListForSearchBox(), this, AddProduct_Button, maxHeight); };
+            int maxHeight = 200;
+            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
+
+            ProductCategory_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ProductCategory_TextBox, searchResults, this, maxHeight); };
+            ProductCategory_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, AddProduct_Button, maxHeight); };
             ProductCategory_TextBox.TextChanged += ValidateInputs;
             ProductCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-            ProductCategory_TextBox.KeyDown += (sender, e) => { SearchBox.VariableTextBox_KeyDown(ProductCategory_TextBox, this, AddProduct_Label, e); };
+            ProductCategory_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductCategory_TextBox, this, AddProduct_Label, e); };
+
+            CountryOfOrigin_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, CountryOfOrigin_TextBox, Country.countries, this, maxHeight); };
+            CountryOfOrigin_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CountryOfOrigin_TextBox, Country.countries, this, AddProduct_Button, maxHeight); };
+            CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
+            CountryOfOrigin_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            CountryOfOrigin_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CountryOfOrigin_TextBox, this, AddProduct_Label, e); };
         }
         private List<string> GetListForSearchBox()
         {
