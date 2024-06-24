@@ -180,7 +180,6 @@ namespace Sales_Tracker.Startup.Menus
             // 
             WarningName_Label.AutoSize = true;
             WarningName_Label.Font = new Font("Segoe UI", 10F);
-            WarningName_Label.ForeColor = Color.Red;
             WarningName_Label.Location = new Point(64, 177);
             WarningName_Label.Margin = new Padding(4, 0, 4, 0);
             WarningName_Label.Name = "WarningName_Label";
@@ -193,7 +192,6 @@ namespace Sales_Tracker.Startup.Menus
             // 
             WarningDir_Label.AutoSize = true;
             WarningDir_Label.Font = new Font("Segoe UI", 10F);
-            WarningDir_Label.ForeColor = Color.Red;
             WarningDir_Label.Location = new Point(64, 290);
             WarningDir_Label.Margin = new Padding(4, 0, 4, 0);
             WarningDir_Label.Name = "WarningDir_Label";

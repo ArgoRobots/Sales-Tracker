@@ -400,11 +400,11 @@ namespace Sales_Tracker
         }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
-            new Products_Form().ShowDialog();
+            new Products_Form(false).ShowDialog();
         }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
-            new Categories_Form().ShowDialog();
+            new Categories_Form(false).ShowDialog();
         }
         private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {

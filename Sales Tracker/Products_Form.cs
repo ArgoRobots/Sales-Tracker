@@ -11,7 +11,7 @@ namespace Sales_Tracker
         // Init
         private readonly MainMenu_Form.Options oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
-        public Products_Form()
+        public Products_Form(bool checkPurchaseRadioButton)
         {
             InitializeComponent();
             Instance = this;
@@ -22,7 +22,8 @@ namespace Sales_Tracker
             AddSearchBoxEvents();
             ConstructDataGridViews();
             LoadProducts();
-            Purchase_RadioButton.Checked = true;
+            CheckRadioButton(checkPurchaseRadioButton);
+            CheckIfCategoriesExist();
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -37,10 +38,17 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             int maxHeight = 200;
-            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
 
-            ProductCategory_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, ProductCategory_TextBox, searchResults, this, maxHeight); };
-            ProductCategory_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, AddProduct_Button, maxHeight); };
+            ProductCategory_TextBox.Click += (sender, e) =>
+            {
+                List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
+                SearchBox.ShowSearchBox(this, ProductCategory_TextBox, searchResults, this, maxHeight);
+            };
+            ProductCategory_TextBox.TextChanged += (sender, e) =>
+            {
+                List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
+                SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, AddProduct_Button, maxHeight);
+            };
             ProductCategory_TextBox.TextChanged += ValidateInputs;
             ProductCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductCategory_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductCategory_TextBox, this, AddProduct_Label, e); };
@@ -82,6 +90,48 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
         }
+        private void CheckRadioButton(bool selectPurchaseRadioButton)
+        {
+            if (selectPurchaseRadioButton)
+            {
+                Purchase_RadioButton.Checked = true;
+            }
+            else
+            {
+                Sale_RadioButton.Checked = true;
+            }
+        }
+        private void CheckIfCategoriesExist()
+        {
+            List<Category> categoryList;
+            if (Sale_RadioButton.Checked)
+            {
+                categoryList = MainMenu_Form.Instance.categorySaleList;
+            }
+            else
+            {
+                categoryList = MainMenu_Form.Instance.categoryPurchaseList;
+            }
+
+            if (categoryList.Count == 0)
+            {
+                ShowCategoryWarning();
+            }
+            else
+            {
+                HideCategoryWarning();
+            }
+        }
+        private void ShowCategoryWarning()
+        {
+            WarningCategory_PictureBox.Visible = true;
+            WarningCategory_LinkLabel.Visible = true;
+        }
+        private void HideCategoryWarning()
+        {
+            WarningCategory_PictureBox.Visible = false;
+            WarningCategory_LinkLabel.Visible = false;
+        }
 
 
         // Form
@@ -114,6 +164,7 @@ namespace Sales_Tracker
                 Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
             }
 
+            ProductName_TextBox.Text = "";
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
             ValidateProductNameTextBox();
@@ -126,6 +177,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductPurchases;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
+            CheckIfCategoriesExist();
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -135,6 +187,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductSales;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
+            CheckIfCategoriesExist();
         }
         private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -157,16 +210,30 @@ namespace Sales_Tracker
             {
                 AddProduct_Button.Enabled = false;
                 UI.SetGTextBoxToInvalid(ProductName_TextBox);
-                Warning_pictureBox.Visible = true;
-                Warning_Label.Visible = true;
+                ShowProductNameWarning();
             }
             else
             {
                 AddProduct_Button.Enabled = true;
                 UI.SetGTextBoxToValid(ProductName_TextBox);
-                Warning_pictureBox.Visible = false;
-                Warning_Label.Visible = false;
+                HideProductNameWarning();
             }
+        }
+        private void ShowProductNameWarning()
+        {
+            WarningProductName_PictureBox.Visible = true;
+            WarningProductName_Label.Visible = true;
+        }
+        private void HideProductNameWarning()
+        {
+            WarningProductName_PictureBox.Visible = false;
+            WarningProductName_Label.Visible = false;
+        }
+
+        private void CategoryWarning_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new Categories_Form(Purchase_RadioButton.Checked).ShowDialog();
+            CheckIfCategoriesExist();
         }
 
 

@@ -11,7 +11,7 @@ namespace Sales_Tracker
         // Init
         private readonly Options oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
-        public Categories_Form()
+        public Categories_Form(bool checkPurchaseRadioButton)
         {
             InitializeComponent();
             Instance = this;
@@ -20,7 +20,7 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             ConstructDataGridViews();
             LoadCategories();
-            Purchase_RadioButton.Checked = true;
+            CheckRadioButton(checkPurchaseRadioButton);
             Theme.SetThemeForForm(this);
         }
         private void LoadCategories()
@@ -37,6 +37,18 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
         }
+        private void CheckRadioButton(bool selectPurchaseRadioButton)
+        {
+            if (selectPurchaseRadioButton)
+            {
+                Purchase_RadioButton.Checked = true;
+            }
+            else
+            {
+                Sale_RadioButton.Checked = true;
+            }
+        }
+
 
         // Form
         private void Categories_Form_Resize(object sender, EventArgs e)

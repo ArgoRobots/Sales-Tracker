@@ -14,6 +14,7 @@ namespace Sales_Tracker
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
+            CheckIfProductsExist();
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -23,7 +24,7 @@ namespace Sales_Tracker
             BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             BuyerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
 
-            ItemName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
 
             Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
             Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
@@ -42,17 +43,38 @@ namespace Sales_Tracker
             int maxHeight = 150;
             List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
 
-            ItemName_TextBox.Click += (sender, e) => { ShowSearchBox(maxHeight); };
-            ItemName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(maxHeight); };
-            ItemName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ItemName_TextBox, searchResults, this, AddPurchase_Button, maxHeight); };
-            ItemName_TextBox.TextChanged += ValidateInputs;
-            ItemName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-            ItemName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ItemName_TextBox, this, AddPurchase_Label, e); };
+            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(maxHeight); };
+            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(maxHeight); };
+            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, searchResults, this, AddPurchase_Button, maxHeight); };
+            ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddPurchase_Label, e); };
         }
         private void ShowSearchBox(int maxHeight)
         {
             List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
-            SearchBox.ShowSearchBox(this, ItemName_TextBox, searchResults, this, maxHeight);
+            SearchBox.ShowSearchBox(this, ProductName_TextBox, searchResults, this, maxHeight);
+        }
+        private void CheckIfProductsExist()
+        {
+            if (MainMenu_Form.Instance.GetProductPurchaseNames().Count == 0)
+            {
+                ShowProductWarning();
+            }
+            else
+            {
+                HideProductWarning();
+            }
+        }
+        private void ShowProductWarning()
+        {
+            WarningProduct_LinkLabel.Visible = true;
+            WarningProduct_PictureBox.Visible = true;
+        }
+        private void HideProductWarning()
+        {
+            WarningProduct_LinkLabel.Visible = false;
+            WarningProduct_PictureBox.Visible = false;
         }
 
 
@@ -68,7 +90,7 @@ namespace Sales_Tracker
             // Retrieve the input values
             string purchaseID = PurchaseID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
-            string itemName = ItemName_TextBox.Text;
+            string itemName = ProductName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
@@ -79,17 +101,21 @@ namespace Sales_Tracker
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, totalPrice);
-            thingsThatHaveChangedInFile.Add(ItemName_TextBox.Text);
-            Log.Write(3, $"Added purchase '{ItemName_TextBox.Text}'");
+            thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
+            Log.Write(3, $"Added purchase '{ProductName_TextBox.Text}'");
         }
-
+        private void WarningProduct_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new Products_Form(true).ShowDialog();
+            CheckIfProductsExist();
+        }
 
         // Functions
         private void ValidateInputs(object? sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(PurchaseID_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(ItemName_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&

@@ -52,6 +52,14 @@ namespace Sales_Tracker.Classes
                 {
                     switch (control)
                     {
+                        case LinkLabel linkLabel:
+                            linkLabel.LinkColor = CustomColors.accent_blue;
+                            linkLabel.VisitedLinkColor = CustomColors.accent_blue;
+                            linkLabel.ActiveLinkColor = CustomColors.accent_blue;
+                            linkLabel.ForeColor = CustomColors.text;
+                            linkLabel.LinkBehavior = LinkBehavior.HoverUnderline;
+                            break;
+
                         case Label label:
                             label.ForeColor = CustomColors.text;
                             break;

@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges49 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges50 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges51 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges52 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges53 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges54 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges55 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges56 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges57 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges58 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges59 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges60 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges61 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges62 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges63 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges64 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges65 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges66 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges67 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges68 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges69 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges70 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges71 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges72 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Date_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             Date_Label = new Label();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -63,8 +63,8 @@
             PricePerUnit_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Quantity_Label = new Label();
             Quantity_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            ItemName_Label = new Label();
-            ItemName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            ProductName_Label = new Label();
+            ProductName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             BuyerName_Label = new Label();
             BuyerName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddSale_Label = new Label();
@@ -73,13 +73,16 @@
             ImportExcel_Button = new Guna.UI2.WinForms.Guna2Button();
             ImportEbay_Button = new Guna.UI2.WinForms.Guna2Button();
             ImportAmazon_Button = new Guna.UI2.WinForms.Guna2Button();
+            WarningProduct_LinkLabel = new LinkLabel();
+            WarningProduct_PictureBox = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // Date_DateTimePicker
             // 
             Date_DateTimePicker.Anchor = AnchorStyles.Top;
             Date_DateTimePicker.Checked = true;
-            Date_DateTimePicker.CustomizableEdges = customizableEdges1;
+            Date_DateTimePicker.CustomizableEdges = customizableEdges49;
             Date_DateTimePicker.FillColor = Color.White;
             Date_DateTimePicker.Font = new Font("Segoe UI", 9F);
             Date_DateTimePicker.Format = DateTimePickerFormat.Long;
@@ -87,7 +90,7 @@
             Date_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             Date_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             Date_DateTimePicker.Name = "Date_DateTimePicker";
-            Date_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Date_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges50;
             Date_DateTimePicker.Size = new Size(200, 36);
             Date_DateTimePicker.TabIndex = 43;
             Date_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
@@ -113,7 +116,7 @@
             AddSale_Button.BorderColor = Color.LightGray;
             AddSale_Button.BorderRadius = 2;
             AddSale_Button.BorderThickness = 1;
-            AddSale_Button.CustomizableEdges = customizableEdges3;
+            AddSale_Button.CustomizableEdges = customizableEdges51;
             AddSale_Button.Enabled = false;
             AddSale_Button.FillColor = Color.White;
             AddSale_Button.Font = new Font("Segoe UI", 9.5F);
@@ -121,7 +124,7 @@
             AddSale_Button.Location = new Point(296, 260);
             AddSale_Button.Margin = new Padding(4, 3, 4, 3);
             AddSale_Button.Name = "AddSale_Button";
-            AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges52;
             AddSale_Button.Size = new Size(143, 32);
             AddSale_Button.TabIndex = 38;
             AddSale_Button.Text = "Add sale";
@@ -142,7 +145,7 @@
             // Tax_TextBox
             // 
             Tax_TextBox.Anchor = AnchorStyles.Top;
-            Tax_TextBox.CustomizableEdges = customizableEdges5;
+            Tax_TextBox.CustomizableEdges = customizableEdges53;
             Tax_TextBox.DefaultText = "";
             Tax_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Tax_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -157,7 +160,7 @@
             Tax_TextBox.PasswordChar = '\0';
             Tax_TextBox.PlaceholderText = "";
             Tax_TextBox.SelectedText = "";
-            Tax_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Tax_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges54;
             Tax_TextBox.Size = new Size(100, 36);
             Tax_TextBox.TabIndex = 36;
             Tax_TextBox.TextChanged += ValidateInputs;
@@ -178,7 +181,7 @@
             // Shipping_TextBox
             // 
             Shipping_TextBox.Anchor = AnchorStyles.Top;
-            Shipping_TextBox.CustomizableEdges = customizableEdges7;
+            Shipping_TextBox.CustomizableEdges = customizableEdges55;
             Shipping_TextBox.DefaultText = "";
             Shipping_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Shipping_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -193,7 +196,7 @@
             Shipping_TextBox.PasswordChar = '\0';
             Shipping_TextBox.PlaceholderText = "";
             Shipping_TextBox.SelectedText = "";
-            Shipping_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Shipping_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges56;
             Shipping_TextBox.Size = new Size(100, 36);
             Shipping_TextBox.TabIndex = 34;
             Shipping_TextBox.TextChanged += ValidateInputs;
@@ -214,7 +217,7 @@
             // PricePerUnit_TextBox
             // 
             PricePerUnit_TextBox.Anchor = AnchorStyles.Top;
-            PricePerUnit_TextBox.CustomizableEdges = customizableEdges9;
+            PricePerUnit_TextBox.CustomizableEdges = customizableEdges57;
             PricePerUnit_TextBox.DefaultText = "";
             PricePerUnit_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             PricePerUnit_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -229,7 +232,7 @@
             PricePerUnit_TextBox.PasswordChar = '\0';
             PricePerUnit_TextBox.PlaceholderText = "";
             PricePerUnit_TextBox.SelectedText = "";
-            PricePerUnit_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            PricePerUnit_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges58;
             PricePerUnit_TextBox.Size = new Size(100, 36);
             PricePerUnit_TextBox.TabIndex = 32;
             PricePerUnit_TextBox.TextChanged += ValidateInputs;
@@ -250,7 +253,7 @@
             // Quantity_TextBox
             // 
             Quantity_TextBox.Anchor = AnchorStyles.Top;
-            Quantity_TextBox.CustomizableEdges = customizableEdges11;
+            Quantity_TextBox.CustomizableEdges = customizableEdges59;
             Quantity_TextBox.DefaultText = "";
             Quantity_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Quantity_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -265,47 +268,47 @@
             Quantity_TextBox.PasswordChar = '\0';
             Quantity_TextBox.PlaceholderText = "";
             Quantity_TextBox.SelectedText = "";
-            Quantity_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Quantity_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges60;
             Quantity_TextBox.Size = new Size(100, 36);
             Quantity_TextBox.TabIndex = 30;
             Quantity_TextBox.TextChanged += ValidateInputs;
             Quantity_TextBox.Click += CloseAllPanels;
             // 
-            // ItemName_Label
+            // ProductName_Label
             // 
-            ItemName_Label.Anchor = AnchorStyles.Top;
-            ItemName_Label.AutoSize = true;
-            ItemName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ItemName_Label.Location = new Point(473, 80);
-            ItemName_Label.Name = "ItemName_Label";
-            ItemName_Label.Size = new Size(80, 20);
-            ItemName_Label.TabIndex = 29;
-            ItemName_Label.Text = "Item name";
-            ItemName_Label.Click += CloseAllPanels;
+            ProductName_Label.Anchor = AnchorStyles.Top;
+            ProductName_Label.AutoSize = true;
+            ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ProductName_Label.Location = new Point(473, 80);
+            ProductName_Label.Name = "ProductName_Label";
+            ProductName_Label.Size = new Size(101, 20);
+            ProductName_Label.TabIndex = 29;
+            ProductName_Label.Text = "Product name";
+            ProductName_Label.Click += CloseAllPanels;
             // 
-            // ItemName_TextBox
+            // ProductName_TextBox
             // 
-            ItemName_TextBox.Anchor = AnchorStyles.Top;
-            ItemName_TextBox.CustomizableEdges = customizableEdges13;
-            ItemName_TextBox.DefaultText = "";
-            ItemName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            ItemName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            ItemName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            ItemName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            ItemName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            ItemName_TextBox.Font = new Font("Segoe UI", 9F);
-            ItemName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ItemName_TextBox.Location = new Point(473, 103);
-            ItemName_TextBox.MaxLength = 32;
-            ItemName_TextBox.Name = "ItemName_TextBox";
-            ItemName_TextBox.PasswordChar = '\0';
-            ItemName_TextBox.PlaceholderText = "";
-            ItemName_TextBox.SelectedText = "";
-            ItemName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ItemName_TextBox.Size = new Size(200, 36);
-            ItemName_TextBox.TabIndex = 28;
-            ItemName_TextBox.TextChanged += ValidateInputs;
-            ItemName_TextBox.Click += CloseAllPanels;
+            ProductName_TextBox.Anchor = AnchorStyles.Top;
+            ProductName_TextBox.CustomizableEdges = customizableEdges61;
+            ProductName_TextBox.DefaultText = "";
+            ProductName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            ProductName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            ProductName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            ProductName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            ProductName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            ProductName_TextBox.Font = new Font("Segoe UI", 9F);
+            ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            ProductName_TextBox.Location = new Point(473, 103);
+            ProductName_TextBox.MaxLength = 32;
+            ProductName_TextBox.Name = "ProductName_TextBox";
+            ProductName_TextBox.PasswordChar = '\0';
+            ProductName_TextBox.PlaceholderText = "";
+            ProductName_TextBox.SelectedText = "";
+            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges62;
+            ProductName_TextBox.Size = new Size(200, 36);
+            ProductName_TextBox.TabIndex = 28;
+            ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.Click += CloseAllPanels;
             // 
             // BuyerName_Label
             // 
@@ -322,7 +325,7 @@
             // BuyerName_TextBox
             // 
             BuyerName_TextBox.Anchor = AnchorStyles.Top;
-            BuyerName_TextBox.CustomizableEdges = customizableEdges15;
+            BuyerName_TextBox.CustomizableEdges = customizableEdges63;
             BuyerName_TextBox.DefaultText = "";
             BuyerName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             BuyerName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -337,7 +340,7 @@
             BuyerName_TextBox.PasswordChar = '\0';
             BuyerName_TextBox.PlaceholderText = "";
             BuyerName_TextBox.SelectedText = "";
-            BuyerName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            BuyerName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges64;
             BuyerName_TextBox.Size = new Size(200, 36);
             BuyerName_TextBox.TabIndex = 26;
             BuyerName_TextBox.TextChanged += ValidateInputs;
@@ -370,7 +373,7 @@
             // SaleID_TextBox
             // 
             SaleID_TextBox.Anchor = AnchorStyles.Top;
-            SaleID_TextBox.CustomizableEdges = customizableEdges17;
+            SaleID_TextBox.CustomizableEdges = customizableEdges65;
             SaleID_TextBox.DefaultText = "";
             SaleID_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             SaleID_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -385,7 +388,7 @@
             SaleID_TextBox.PasswordChar = '\0';
             SaleID_TextBox.PlaceholderText = "";
             SaleID_TextBox.SelectedText = "";
-            SaleID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            SaleID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges66;
             SaleID_TextBox.Size = new Size(200, 36);
             SaleID_TextBox.TabIndex = 23;
             SaleID_TextBox.TextChanged += ValidateInputs;
@@ -398,14 +401,14 @@
             ImportExcel_Button.BorderColor = Color.LightGray;
             ImportExcel_Button.BorderRadius = 2;
             ImportExcel_Button.BorderThickness = 1;
-            ImportExcel_Button.CustomizableEdges = customizableEdges19;
+            ImportExcel_Button.CustomizableEdges = customizableEdges67;
             ImportExcel_Button.FillColor = Color.White;
             ImportExcel_Button.Font = new Font("Segoe UI", 9.5F);
             ImportExcel_Button.ForeColor = Color.Black;
             ImportExcel_Button.Location = new Point(460, 329);
             ImportExcel_Button.Margin = new Padding(4, 3, 4, 3);
             ImportExcel_Button.Name = "ImportExcel_Button";
-            ImportExcel_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            ImportExcel_Button.ShadowDecoration.CustomizableEdges = customizableEdges68;
             ImportExcel_Button.Size = new Size(170, 32);
             ImportExcel_Button.TabIndex = 46;
             ImportExcel_Button.Text = "Import from Excel";
@@ -418,14 +421,14 @@
             ImportEbay_Button.BorderColor = Color.LightGray;
             ImportEbay_Button.BorderRadius = 2;
             ImportEbay_Button.BorderThickness = 1;
-            ImportEbay_Button.CustomizableEdges = customizableEdges21;
+            ImportEbay_Button.CustomizableEdges = customizableEdges69;
             ImportEbay_Button.FillColor = Color.White;
             ImportEbay_Button.Font = new Font("Segoe UI", 9.5F);
             ImportEbay_Button.ForeColor = Color.Black;
             ImportEbay_Button.Location = new Point(282, 329);
             ImportEbay_Button.Margin = new Padding(4, 3, 4, 3);
             ImportEbay_Button.Name = "ImportEbay_Button";
-            ImportEbay_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            ImportEbay_Button.ShadowDecoration.CustomizableEdges = customizableEdges70;
             ImportEbay_Button.Size = new Size(170, 32);
             ImportEbay_Button.TabIndex = 45;
             ImportEbay_Button.Text = "Import from Ebay";
@@ -438,24 +441,53 @@
             ImportAmazon_Button.BorderColor = Color.LightGray;
             ImportAmazon_Button.BorderRadius = 2;
             ImportAmazon_Button.BorderThickness = 1;
-            ImportAmazon_Button.CustomizableEdges = customizableEdges23;
+            ImportAmazon_Button.CustomizableEdges = customizableEdges71;
             ImportAmazon_Button.FillColor = Color.White;
             ImportAmazon_Button.Font = new Font("Segoe UI", 9.5F);
             ImportAmazon_Button.ForeColor = Color.Black;
             ImportAmazon_Button.Location = new Point(104, 329);
             ImportAmazon_Button.Margin = new Padding(4, 3, 4, 3);
             ImportAmazon_Button.Name = "ImportAmazon_Button";
-            ImportAmazon_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            ImportAmazon_Button.ShadowDecoration.CustomizableEdges = customizableEdges72;
             ImportAmazon_Button.Size = new Size(170, 32);
             ImportAmazon_Button.TabIndex = 44;
             ImportAmazon_Button.Text = "Import from Amazon";
             ImportAmazon_Button.Click += ImportAmazon_Button_Click;
+            // 
+            // WarningProduct_LinkLabel
+            // 
+            WarningProduct_LinkLabel.AutoSize = true;
+            WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
+            WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
+            WarningProduct_LinkLabel.Location = new Point(499, 144);
+            WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
+            WarningProduct_LinkLabel.Size = new Size(218, 23);
+            WarningProduct_LinkLabel.TabIndex = 48;
+            WarningProduct_LinkLabel.TabStop = true;
+            WarningProduct_LinkLabel.Text = "No products exist. Create one here.";
+            WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
+            WarningProduct_LinkLabel.Visible = false;
+            WarningProduct_LinkLabel.LinkClicked += WarningProduct_LinkLabel_LinkClicked;
+            // 
+            // WarningProduct_PictureBox
+            // 
+            WarningProduct_PictureBox.Image = Properties.Resources.Warning;
+            WarningProduct_PictureBox.Location = new Point(473, 145);
+            WarningProduct_PictureBox.Margin = new Padding(4, 3, 4, 3);
+            WarningProduct_PictureBox.Name = "WarningProduct_PictureBox";
+            WarningProduct_PictureBox.Size = new Size(19, 18);
+            WarningProduct_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            WarningProduct_PictureBox.TabIndex = 47;
+            WarningProduct_PictureBox.TabStop = false;
+            WarningProduct_PictureBox.Visible = false;
             // 
             // AddSale_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(734, 391);
+            Controls.Add(WarningProduct_LinkLabel);
+            Controls.Add(WarningProduct_PictureBox);
             Controls.Add(ImportExcel_Button);
             Controls.Add(ImportEbay_Button);
             Controls.Add(ImportAmazon_Button);
@@ -470,8 +502,8 @@
             Controls.Add(PricePerUnit_TextBox);
             Controls.Add(Quantity_Label);
             Controls.Add(Quantity_TextBox);
-            Controls.Add(ItemName_Label);
-            Controls.Add(ItemName_TextBox);
+            Controls.Add(ProductName_Label);
+            Controls.Add(ProductName_TextBox);
             Controls.Add(BuyerName_Label);
             Controls.Add(BuyerName_TextBox);
             Controls.Add(AddSale_Label);
@@ -484,6 +516,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             TextChanged += ValidateInputs;
             Click += CloseAllPanels;
+            ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -501,8 +534,8 @@
         private Guna.UI2.WinForms.Guna2TextBox PricePerUnit_TextBox;
         private Label Quantity_Label;
         private Guna.UI2.WinForms.Guna2TextBox Quantity_TextBox;
-        private Label ItemName_Label;
-        private Guna.UI2.WinForms.Guna2TextBox ItemName_TextBox;
+        private Label ProductName_Label;
+        private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
         private Label BuyerName_Label;
         private Guna.UI2.WinForms.Guna2TextBox BuyerName_TextBox;
         private Label AddSale_Label;
@@ -511,5 +544,7 @@
         private Guna.UI2.WinForms.Guna2Button ImportExcel_Button;
         private Guna.UI2.WinForms.Guna2Button ImportEbay_Button;
         private Guna.UI2.WinForms.Guna2Button ImportAmazon_Button;
+        private LinkLabel WarningProduct_LinkLabel;
+        private PictureBox WarningProduct_PictureBox;
     }
 }

@@ -51,8 +51,8 @@
             AddPurchase_Label = new Label();
             BuyerName_Label = new Label();
             BuyerName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            ItemName_Label = new Label();
-            ItemName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            ProductName_Label = new Label();
+            ProductName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Quantity_Label = new Label();
             Quantity_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             PricePerUnit_Label = new Label();
@@ -64,6 +64,9 @@
             AddPurchase_Button = new Guna.UI2.WinForms.Guna2Button();
             Date_Label = new Label();
             Date_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
+            WarningProduct_LinkLabel = new LinkLabel();
+            WarningProduct_PictureBox = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // PurchaseID_TextBox
@@ -120,7 +123,7 @@
             BuyerName_Label.Anchor = AnchorStyles.Top;
             BuyerName_Label.AutoSize = true;
             BuyerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            BuyerName_Label.Location = new Point(473, 80);
+            BuyerName_Label.Location = new Point(267, 80);
             BuyerName_Label.Name = "BuyerName_Label";
             BuyerName_Label.Size = new Size(87, 20);
             BuyerName_Label.TabIndex = 0;
@@ -139,7 +142,7 @@
             BuyerName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             BuyerName_TextBox.Font = new Font("Segoe UI", 9F);
             BuyerName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            BuyerName_TextBox.Location = new Point(473, 103);
+            BuyerName_TextBox.Location = new Point(267, 103);
             BuyerName_TextBox.MaxLength = 32;
             BuyerName_TextBox.Name = "BuyerName_TextBox";
             BuyerName_TextBox.PasswordChar = '\0';
@@ -152,41 +155,41 @@
             BuyerName_TextBox.TextChanged += ValidateInputs;
             BuyerName_TextBox.Click += CloseAllPanels;
             // 
-            // ItemName_Label
+            // ProductName_Label
             // 
-            ItemName_Label.Anchor = AnchorStyles.Top;
-            ItemName_Label.AutoSize = true;
-            ItemName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ItemName_Label.Location = new Point(267, 80);
-            ItemName_Label.Name = "ItemName_Label";
-            ItemName_Label.Size = new Size(80, 20);
-            ItemName_Label.TabIndex = 0;
-            ItemName_Label.Text = "Item name";
-            ItemName_Label.Click += CloseAllPanels;
+            ProductName_Label.Anchor = AnchorStyles.Top;
+            ProductName_Label.AutoSize = true;
+            ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ProductName_Label.Location = new Point(473, 80);
+            ProductName_Label.Name = "ProductName_Label";
+            ProductName_Label.Size = new Size(101, 20);
+            ProductName_Label.TabIndex = 0;
+            ProductName_Label.Text = "Product name";
+            ProductName_Label.Click += CloseAllPanels;
             // 
-            // ItemName_TextBox
+            // ProductName_TextBox
             // 
-            ItemName_TextBox.Anchor = AnchorStyles.Top;
-            ItemName_TextBox.CustomizableEdges = customizableEdges5;
-            ItemName_TextBox.DefaultText = "";
-            ItemName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            ItemName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            ItemName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            ItemName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            ItemName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            ItemName_TextBox.Font = new Font("Segoe UI", 9F);
-            ItemName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ItemName_TextBox.Location = new Point(267, 103);
-            ItemName_TextBox.MaxLength = 32;
-            ItemName_TextBox.Name = "ItemName_TextBox";
-            ItemName_TextBox.PasswordChar = '\0';
-            ItemName_TextBox.PlaceholderText = "";
-            ItemName_TextBox.SelectedText = "";
-            ItemName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            ItemName_TextBox.Size = new Size(200, 36);
-            ItemName_TextBox.TabIndex = 3;
-            ItemName_TextBox.TextChanged += ValidateInputs;
-            ItemName_TextBox.Click += CloseAllPanels;
+            ProductName_TextBox.Anchor = AnchorStyles.Top;
+            ProductName_TextBox.CustomizableEdges = customizableEdges5;
+            ProductName_TextBox.DefaultText = "";
+            ProductName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            ProductName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            ProductName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            ProductName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            ProductName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            ProductName_TextBox.Font = new Font("Segoe UI", 9F);
+            ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            ProductName_TextBox.Location = new Point(473, 103);
+            ProductName_TextBox.MaxLength = 32;
+            ProductName_TextBox.Name = "ProductName_TextBox";
+            ProductName_TextBox.PasswordChar = '\0';
+            ProductName_TextBox.PlaceholderText = "";
+            ProductName_TextBox.SelectedText = "";
+            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            ProductName_TextBox.Size = new Size(200, 36);
+            ProductName_TextBox.TabIndex = 3;
+            ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.Click += CloseAllPanels;
             // 
             // Quantity_Label
             // 
@@ -385,11 +388,40 @@
             Date_DateTimePicker.ValueChanged += ValidateInputs;
             Date_DateTimePicker.Click += CloseAllPanels;
             // 
+            // WarningProduct_LinkLabel
+            // 
+            WarningProduct_LinkLabel.AutoSize = true;
+            WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
+            WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
+            WarningProduct_LinkLabel.Location = new Point(499, 144);
+            WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
+            WarningProduct_LinkLabel.Size = new Size(218, 23);
+            WarningProduct_LinkLabel.TabIndex = 42;
+            WarningProduct_LinkLabel.TabStop = true;
+            WarningProduct_LinkLabel.Text = "No products exist. Create one here.";
+            WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
+            WarningProduct_LinkLabel.Visible = false;
+            WarningProduct_LinkLabel.LinkClicked += WarningProduct_LinkLabel_LinkClicked;
+            // 
+            // WarningProduct_PictureBox
+            // 
+            WarningProduct_PictureBox.Image = Properties.Resources.Warning;
+            WarningProduct_PictureBox.Location = new Point(473, 145);
+            WarningProduct_PictureBox.Margin = new Padding(4, 3, 4, 3);
+            WarningProduct_PictureBox.Name = "WarningProduct_PictureBox";
+            WarningProduct_PictureBox.Size = new Size(19, 18);
+            WarningProduct_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            WarningProduct_PictureBox.TabIndex = 41;
+            WarningProduct_PictureBox.TabStop = false;
+            WarningProduct_PictureBox.Visible = false;
+            // 
             // AddPurchase_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(734, 321);
+            Controls.Add(WarningProduct_LinkLabel);
+            Controls.Add(WarningProduct_PictureBox);
             Controls.Add(Date_DateTimePicker);
             Controls.Add(Date_Label);
             Controls.Add(AddPurchase_Button);
@@ -401,8 +433,8 @@
             Controls.Add(PricePerUnit_TextBox);
             Controls.Add(Quantity_Label);
             Controls.Add(Quantity_TextBox);
-            Controls.Add(ItemName_Label);
-            Controls.Add(ItemName_TextBox);
+            Controls.Add(ProductName_Label);
+            Controls.Add(ProductName_TextBox);
             Controls.Add(BuyerName_Label);
             Controls.Add(BuyerName_TextBox);
             Controls.Add(AddPurchase_Label);
@@ -415,6 +447,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             TextChanged += ValidateInputs;
             Click += CloseAllPanels;
+            ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -426,8 +459,8 @@
         private Label AddPurchase_Label;
         private Label BuyerName_Label;
         private Guna.UI2.WinForms.Guna2TextBox BuyerName_TextBox;
-        private Label ItemName_Label;
-        private Guna.UI2.WinForms.Guna2TextBox ItemName_TextBox;
+        private Label ProductName_Label;
+        private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
         private Label Quantity_Label;
         private Guna.UI2.WinForms.Guna2TextBox Quantity_TextBox;
         private Label PricePerUnit_Label;
@@ -439,5 +472,7 @@
         private Guna.UI2.WinForms.Guna2Button AddPurchase_Button;
         private Label Date_Label;
         private Guna.UI2.WinForms.Guna2DateTimePicker Date_DateTimePicker;
+        private LinkLabel WarningProduct_LinkLabel;
+        private PictureBox WarningProduct_PictureBox;
     }
 }

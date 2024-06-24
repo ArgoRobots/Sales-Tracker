@@ -27,6 +27,7 @@ namespace Sales_Tracker.Classes
             };
             SearchResultBox.HorizontalScroll.Enabled = false;
             SearchResultBox.HorizontalScroll.Maximum = 0;
+            SearchResultBox.VerticalScroll.Enabled = true;
             SearchResultBoxContainer.Controls.Add(SearchResultBox);
         }
 
