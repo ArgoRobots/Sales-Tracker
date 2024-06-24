@@ -46,7 +46,7 @@ namespace Sales_Tracker.Classes
         public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
         {
             SearchResultBox.Controls.Clear();
-            SearchResultBox.SuspendLayout();
+            SearchResultBox.SuspendLayout();  // Prevent the horizontal scrollbar from appearing
 
             // Simple search function
             List<ResultsMeta> metaList = [];
