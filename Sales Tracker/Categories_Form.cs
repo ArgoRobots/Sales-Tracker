@@ -48,6 +48,43 @@ namespace Sales_Tracker
                 Sale_RadioButton.Checked = true;
             }
         }
+        private void VaidateCategoryTextBox()
+        {
+            // Get list
+            List<Category> categories;
+            if (Sale_RadioButton.Checked)
+            {
+                categories = MainMenu_Form.Instance.categorySaleList;
+            }
+            else
+            {
+                categories = MainMenu_Form.Instance.categoryPurchaseList;
+            }
+
+            bool exists = categories.Any(category => category.Name == Category_TextBox.Text);
+            if (exists)
+            {
+                AddCategory_Button.Enabled = false;
+                UI.SetGTextBoxToInvalid(Category_TextBox);
+                ShowCategoryWarning();
+            }
+            else
+            {
+                AddCategory_Button.Enabled = true;
+                UI.SetGTextBoxToValid(Category_TextBox);
+                HideCategoryWarning();
+            }
+        }
+        private void ShowCategoryWarning()
+        {
+            WarningCategoryName_PictureBox.Visible = true;
+            WarningCategoryName_Label.Visible = true;
+        }
+        private void HideCategoryWarning()
+        {
+            WarningCategoryName_PictureBox.Visible = false;
+            WarningCategoryName_Label.Visible = false;
+        }
 
 
         // Form
@@ -75,8 +112,11 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.categorySaleList.Add(new Category(Category_TextBox.Text));
                 Sales_DataGridView.Rows.Add(Category_TextBox.Text);
             }
+
+            Category_TextBox.Text = "";
             thingsThatHaveChangedInFile.Add(Category_TextBox.Text);
             Log.Write(3, $"Added category '{Category_TextBox.Text}'");
+            ValidateInputs();
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -85,6 +125,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.CategoryPurchases;
             CenterSelectedDataGridView();
+            VaidateCategoryTextBox();
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -93,6 +134,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.CategorySales;
             CenterSelectedDataGridView();
+            VaidateCategoryTextBox();
         }
         private void Category_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -101,6 +143,11 @@ namespace Sales_Tracker
                 e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
                 AddCategory_Button.PerformClick();
             }
+        }
+        private void Category_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            VaidateCategoryTextBox();
+            ValidateInputs();
         }
 
 
@@ -114,7 +161,7 @@ namespace Sales_Tracker
             { Columns.CategoryName, "Category" },
         };
         private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte topForDataGridView = 160;
+        private const byte topForDataGridView = 170;
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
@@ -142,7 +189,7 @@ namespace Sales_Tracker
 
 
         // Functions
-        private void ValidateInputs(object sender, EventArgs e)
+        private void ValidateInputs()
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
             AddCategory_Button.Enabled = allFieldsFilled;

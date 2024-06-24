@@ -38,6 +38,9 @@
             CategoryName_Label = new Label();
             Sale_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
             Purchase_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
+            WarningCategoryName_PictureBox = new PictureBox();
+            WarningCategoryName_Label = new Label();
+            ((System.ComponentModel.ISupportInitialize)WarningCategoryName_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // Category_TextBox
@@ -61,7 +64,7 @@
             Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Category_TextBox.Size = new Size(200, 36);
             Category_TextBox.TabIndex = 1;
-            Category_TextBox.TextChanged += ValidateInputs;
+            Category_TextBox.TextChanged += Category_TextBox_TextChanged;
             Category_TextBox.KeyDown += Category_TextBox_KeyDown;
             // 
             // AddCategory_Button
@@ -148,11 +151,37 @@
             Purchase_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             Purchase_RadioButton.CheckedChanged += Purchase_RadioButton_CheckedChanged;
             // 
+            // WarningCategoryName_PictureBox
+            // 
+            WarningCategoryName_PictureBox.Image = Properties.Resources.Warning;
+            WarningCategoryName_PictureBox.Location = new Point(217, 145);
+            WarningCategoryName_PictureBox.Margin = new Padding(4, 3, 4, 3);
+            WarningCategoryName_PictureBox.Name = "WarningCategoryName_PictureBox";
+            WarningCategoryName_PictureBox.Size = new Size(19, 18);
+            WarningCategoryName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            WarningCategoryName_PictureBox.TabIndex = 39;
+            WarningCategoryName_PictureBox.TabStop = false;
+            WarningCategoryName_PictureBox.Visible = false;
+            // 
+            // WarningCategoryName_Label
+            // 
+            WarningCategoryName_Label.AutoSize = true;
+            WarningCategoryName_Label.Font = new Font("Segoe UI", 10F);
+            WarningCategoryName_Label.Location = new Point(243, 144);
+            WarningCategoryName_Label.Margin = new Padding(4, 0, 4, 0);
+            WarningCategoryName_Label.Name = "WarningCategoryName_Label";
+            WarningCategoryName_Label.Size = new Size(150, 19);
+            WarningCategoryName_Label.TabIndex = 38;
+            WarningCategoryName_Label.Text = "Category already exists";
+            WarningCategoryName_Label.Visible = false;
+            // 
             // Categories_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(784, 461);
+            ClientSize = new Size(784, 471);
+            Controls.Add(WarningCategoryName_PictureBox);
+            Controls.Add(WarningCategoryName_Label);
             Controls.Add(Sale_RadioButton);
             Controls.Add(Purchase_RadioButton);
             Controls.Add(CategoryName_Label);
@@ -166,6 +195,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Categories_Form_FormClosed;
             Resize += Categories_Form_Resize;
+            ((System.ComponentModel.ISupportInitialize)WarningCategoryName_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -177,5 +207,7 @@
         private Label CategoryName_Label;
         private Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
         private Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
+        private PictureBox WarningCategoryName_PictureBox;
+        private Label WarningCategoryName_Label;
     }
 }

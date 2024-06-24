@@ -23,7 +23,6 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             LoadProducts();
             CheckRadioButton(checkPurchaseRadioButton);
-            CheckIfCategoriesExist();
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -101,7 +100,7 @@ namespace Sales_Tracker
                 Sale_RadioButton.Checked = true;
             }
         }
-        private void CheckIfCategoriesExist()
+        private void VaidateCategoryTextBox()
         {
             List<Category> categoryList;
             if (Sale_RadioButton.Checked)
@@ -177,7 +176,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductPurchases;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
-            CheckIfCategoriesExist();
+            VaidateCategoryTextBox();
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -187,7 +186,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductSales;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
-            CheckIfCategoriesExist();
+            VaidateCategoryTextBox();
         }
         private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -233,7 +232,7 @@ namespace Sales_Tracker
         private void CategoryWarning_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Categories_Form(Purchase_RadioButton.Checked).ShowDialog();
-            CheckIfCategoriesExist();
+            VaidateCategoryTextBox();
         }
 
 
