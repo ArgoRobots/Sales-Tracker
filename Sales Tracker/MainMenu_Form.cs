@@ -818,6 +818,8 @@ namespace Sales_Tracker
 
                     // Remove product from list
                     categoryPurchaseList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
+
+                    Products_Form.Instance.ValidateProductNameTextBox();
                     break;
 
                 case Options.ProductSales:
@@ -827,6 +829,8 @@ namespace Sales_Tracker
 
                     // Remove product from list
                     categorySaleList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
+
+                    Products_Form.Instance.ValidateProductNameTextBox();
                     break;
 
                 case Options.CategoryPurchases:

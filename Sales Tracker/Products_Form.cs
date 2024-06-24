@@ -100,37 +100,6 @@ namespace Sales_Tracker
                 Sale_RadioButton.Checked = true;
             }
         }
-        private void VaidateCategoryTextBox()
-        {
-            List<Category> categoryList;
-            if (Sale_RadioButton.Checked)
-            {
-                categoryList = MainMenu_Form.Instance.categorySaleList;
-            }
-            else
-            {
-                categoryList = MainMenu_Form.Instance.categoryPurchaseList;
-            }
-
-            if (categoryList.Count == 0)
-            {
-                ShowCategoryWarning();
-            }
-            else
-            {
-                HideCategoryWarning();
-            }
-        }
-        private void ShowCategoryWarning()
-        {
-            WarningCategory_PictureBox.Visible = true;
-            WarningCategory_LinkLabel.Visible = true;
-        }
-        private void HideCategoryWarning()
-        {
-            WarningCategory_PictureBox.Visible = false;
-            WarningCategory_LinkLabel.Visible = false;
-        }
 
 
         // Form
@@ -236,8 +205,8 @@ namespace Sales_Tracker
         }
 
 
-        // Validate names
-        private void ValidateProductNameTextBox()
+        // Validate product name
+        public void ValidateProductNameTextBox()
         {
             // Get list
             List<Category> categories;
@@ -272,6 +241,39 @@ namespace Sales_Tracker
         {
             WarningProductName_PictureBox.Visible = false;
             WarningProductName_Label.Visible = false;
+        }
+
+        // Validate category name
+        private void VaidateCategoryTextBox()
+        {
+            List<Category> categoryList;
+            if (Sale_RadioButton.Checked)
+            {
+                categoryList = MainMenu_Form.Instance.categorySaleList;
+            }
+            else
+            {
+                categoryList = MainMenu_Form.Instance.categoryPurchaseList;
+            }
+
+            if (categoryList.Count == 0)
+            {
+                ShowCategoryWarning();
+            }
+            else
+            {
+                HideCategoryWarning();
+            }
+        }
+        private void ShowCategoryWarning()
+        {
+            WarningCategory_PictureBox.Visible = true;
+            WarningCategory_LinkLabel.Visible = true;
+        }
+        private void HideCategoryWarning()
+        {
+            WarningCategory_PictureBox.Visible = false;
+            WarningCategory_LinkLabel.Visible = false;
         }
 
 
