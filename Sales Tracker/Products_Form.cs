@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using System.Data;
 using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker
@@ -24,6 +25,7 @@ namespace Sales_Tracker
             LoadProducts();
             CheckRadioButton(checkPurchaseRadioButton);
             Theme.SetThemeForForm(this);
+            HideSearchingForLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -135,7 +137,7 @@ namespace Sales_Tracker
             ProductName_TextBox.Text = "";
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
-            ValidateProductNameTextBox();
+            ValidateInputs(null, null);
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -165,6 +167,23 @@ namespace Sales_Tracker
         {
             new Categories_Form(Purchase_RadioButton.Checked).ShowDialog();
             VaidateCategoryTextBox();
+        }
+        private void Search_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
+            {
+                bool isVisible = row.Cells.Cast<DataGridViewCell>()
+                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+                row.Visible = isVisible;
+            }
+            if (Search_TextBox.Text != "")
+            {
+                ShowSearchingForLabel(Search_TextBox.Text);
+            }
+            else
+            {
+                HideSearchingForLabel();
+            }
         }
 
 
@@ -274,6 +293,18 @@ namespace Sales_Tracker
         {
             WarningCategory_PictureBox.Visible = false;
             WarningCategory_LinkLabel.Visible = false;
+        }
+
+        // SearchingFor_Label
+        private void ShowSearchingForLabel(string text)
+        {
+            SearchingFor_Label.Text = $"Showing results for: {text}";
+            SearchingFor_Label.Left = (Width - SearchingFor_Label.Width) / 2 - 8;
+            Controls.Add(SearchingFor_Label);
+        }
+        private void HideSearchingForLabel()
+        {
+            Controls.Remove(SearchingFor_Label);
         }
 
 

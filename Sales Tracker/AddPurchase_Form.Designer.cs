@@ -395,10 +395,10 @@
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
             WarningProduct_LinkLabel.Location = new Point(499, 144);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
-            WarningProduct_LinkLabel.Size = new Size(218, 23);
+            WarningProduct_LinkLabel.Size = new Size(215, 23);
             WarningProduct_LinkLabel.TabIndex = 42;
             WarningProduct_LinkLabel.TabStop = true;
-            WarningProduct_LinkLabel.Text = "No products exist. Create one here.";
+            WarningProduct_LinkLabel.Text = "No products exist. Create one here";
             WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
             WarningProduct_LinkLabel.Visible = false;
             WarningProduct_LinkLabel.LinkClicked += WarningProduct_LinkLabel_LinkClicked;

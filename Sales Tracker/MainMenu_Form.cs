@@ -819,6 +819,7 @@ namespace Sales_Tracker
                     // Remove product from list
                     categoryPurchaseList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
 
+                    // In case the product name that is being deleted is in the TextBox
                     Products_Form.Instance.ValidateProductNameTextBox();
                     break;
 
@@ -830,6 +831,7 @@ namespace Sales_Tracker
                     // Remove product from list
                     categorySaleList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
 
+                    // In case the product name that is being deleted is in the TextBox
                     Products_Form.Instance.ValidateProductNameTextBox();
                     break;
 
@@ -840,6 +842,9 @@ namespace Sales_Tracker
 
                     // Remove category from list
                     categoryPurchaseList.Remove(categoryPurchaseList.FirstOrDefault(c => c.Name == e.Row.Cells[columnName].Value?.ToString()));
+
+                    // In case the category name that is being deleted is in the TextBox
+                    Categories_Form.Instance.VaidateCategoryTextBox();
                     break;
 
                 case Options.CategorySales:
@@ -849,6 +854,9 @@ namespace Sales_Tracker
 
                     // Remove category from list
                     categorySaleList.Remove(categorySaleList.FirstOrDefault(c => c.Name == e.Row.Cells[columnName].Value?.ToString()));
+
+                    // In case the category name that is being deleted is in the TextBox
+                    Categories_Form.Instance.VaidateCategoryTextBox();
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();

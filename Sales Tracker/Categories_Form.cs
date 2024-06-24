@@ -48,43 +48,6 @@ namespace Sales_Tracker
                 Sale_RadioButton.Checked = true;
             }
         }
-        private void VaidateCategoryTextBox()
-        {
-            // Get list
-            List<Category> categories;
-            if (Sale_RadioButton.Checked)
-            {
-                categories = MainMenu_Form.Instance.categorySaleList;
-            }
-            else
-            {
-                categories = MainMenu_Form.Instance.categoryPurchaseList;
-            }
-
-            bool exists = categories.Any(category => category.Name == Category_TextBox.Text);
-            if (exists)
-            {
-                AddCategory_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(Category_TextBox);
-                ShowCategoryWarning();
-            }
-            else
-            {
-                AddCategory_Button.Enabled = true;
-                UI.SetGTextBoxToValid(Category_TextBox);
-                HideCategoryWarning();
-            }
-        }
-        private void ShowCategoryWarning()
-        {
-            WarningCategoryName_PictureBox.Visible = true;
-            WarningCategoryName_Label.Visible = true;
-        }
-        private void HideCategoryWarning()
-        {
-            WarningCategoryName_PictureBox.Visible = false;
-            WarningCategoryName_Label.Visible = false;
-        }
 
 
         // Form
@@ -185,6 +148,46 @@ namespace Sales_Tracker
             MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
             Sales_DataGridView.Tag = DataGridViewTags.AddCategory;
+        }
+
+
+        // Validate category name
+        public void VaidateCategoryTextBox()
+        {
+            // Get list
+            List<Category> categories;
+            if (Sale_RadioButton.Checked)
+            {
+                categories = MainMenu_Form.Instance.categorySaleList;
+            }
+            else
+            {
+                categories = MainMenu_Form.Instance.categoryPurchaseList;
+            }
+
+            bool exists = categories.Any(category => category.Name == Category_TextBox.Text);
+            if (exists)
+            {
+                AddCategory_Button.Enabled = false;
+                UI.SetGTextBoxToInvalid(Category_TextBox);
+                ShowCategoryWarning();
+            }
+            else
+            {
+                AddCategory_Button.Enabled = true;
+                UI.SetGTextBoxToValid(Category_TextBox);
+                HideCategoryWarning();
+            }
+        }
+        private void ShowCategoryWarning()
+        {
+            WarningCategoryName_PictureBox.Visible = true;
+            WarningCategoryName_Label.Visible = true;
+        }
+        private void HideCategoryWarning()
+        {
+            WarningCategoryName_PictureBox.Visible = false;
+            WarningCategoryName_Label.Visible = false;
         }
 
 
