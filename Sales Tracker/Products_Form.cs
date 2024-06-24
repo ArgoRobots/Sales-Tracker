@@ -192,49 +192,11 @@ namespace Sales_Tracker
         {
             ValidateProductNameTextBox();
         }
-        private void ValidateProductNameTextBox()
-        {
-            // Get list
-            List<Category> categories;
-            if (Sale_RadioButton.Checked)
-            {
-                categories = MainMenu_Form.Instance.categorySaleList;
-            }
-            else
-            {
-                categories = MainMenu_Form.Instance.categoryPurchaseList;
-            }
-
-            if (MainMenu_Form.IsProductInCategory(ProductName_TextBox.Text, ProductCategory_TextBox.Text, categories))
-            {
-                AddProduct_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(ProductName_TextBox);
-                ShowProductNameWarning();
-            }
-            else
-            {
-                AddProduct_Button.Enabled = true;
-                UI.SetGTextBoxToValid(ProductName_TextBox);
-                HideProductNameWarning();
-            }
-        }
-        private void ShowProductNameWarning()
-        {
-            WarningProductName_PictureBox.Visible = true;
-            WarningProductName_Label.Visible = true;
-        }
-        private void HideProductNameWarning()
-        {
-            WarningProductName_PictureBox.Visible = false;
-            WarningProductName_Label.Visible = false;
-        }
-
         private void CategoryWarning_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Categories_Form(Purchase_RadioButton.Checked).ShowDialog();
             VaidateCategoryTextBox();
         }
-
 
 
         // DataGridView
@@ -271,6 +233,45 @@ namespace Sales_Tracker
             MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
             Sales_DataGridView.Tag = DataGridViewTags.AddProduct;
+        }
+
+
+        // Validate names
+        private void ValidateProductNameTextBox()
+        {
+            // Get list
+            List<Category> categories;
+            if (Sale_RadioButton.Checked)
+            {
+                categories = MainMenu_Form.Instance.categorySaleList;
+            }
+            else
+            {
+                categories = MainMenu_Form.Instance.categoryPurchaseList;
+            }
+
+            if (MainMenu_Form.IsProductInCategory(ProductName_TextBox.Text, ProductCategory_TextBox.Text, categories))
+            {
+                AddProduct_Button.Enabled = false;
+                UI.SetGTextBoxToInvalid(ProductName_TextBox);
+                ShowProductNameWarning();
+            }
+            else
+            {
+                AddProduct_Button.Enabled = true;
+                UI.SetGTextBoxToValid(ProductName_TextBox);
+                HideProductNameWarning();
+            }
+        }
+        private void ShowProductNameWarning()
+        {
+            WarningProductName_PictureBox.Visible = true;
+            WarningProductName_Label.Visible = true;
+        }
+        private void HideProductNameWarning()
+        {
+            WarningProductName_PictureBox.Visible = false;
+            WarningProductName_Label.Visible = false;
         }
 
 

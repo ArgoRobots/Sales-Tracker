@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
+using System.Windows.Forms;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -70,6 +71,8 @@ namespace Sales_Tracker
         {
             LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
             AddRowsFromFile(Sales_DataGridView, Options.Sales);
+            // Make sure there is enough space
+            Sales_DataGridView.Columns[SalesColumns.Country.ToString()].Width = 150;
 
             LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
             AddRowsFromFile(Purchases_DataGridView, Options.Purchases);
@@ -750,7 +753,7 @@ namespace Sales_Tracker
             InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.Tag = DataGridViewTags.SaleOrPurchase;
         }
-        private readonly byte rowHeight = 25, columnHeaderHeight = 35;
+        private readonly byte rowHeight = 25, columnHeaderHeight = 30;
         public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
         {
             dataGridView.ReadOnly = true;
@@ -768,6 +771,7 @@ namespace Sales_Tracker
             dataGridView.BackgroundColor = CustomColors.controlBack;
             dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;
             dataGridView.Size = size;
+            dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
 
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsAdded += DataGridView_RowsAdded;
