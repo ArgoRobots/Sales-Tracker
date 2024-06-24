@@ -789,6 +789,7 @@ namespace Sales_Tracker
             {
                 e.Cancel = true;
             }
+
             string type = "", columnName = "";
             byte logIndex = 0;
 
@@ -799,30 +800,47 @@ namespace Sales_Tracker
                     columnName = PurchaseColumns.Product.ToString();
                     logIndex = 2;
                     break;
+
                 case Options.Sales:
                     type = "sale";
                     columnName = SalesColumns.Product.ToString();
                     logIndex = 2;
                     break;
+
                 case Options.ProductPurchases:
                     type = "product for purchase";
                     columnName = Products_Form.Columns.ProductName.ToString();
                     logIndex = 3;
+
+                    // Remove product from list
+                    categoryPurchaseList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
                     break;
+
                 case Options.ProductSales:
                     type = "product for sale";
                     columnName = Products_Form.Columns.ProductName.ToString();
                     logIndex = 3;
+
+                    // Remove product from list
+                    categorySaleList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
                     break;
+
                 case Options.CategoryPurchases:
                     type = "Category for purchase";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
+
+                    // Remove category from list
+                    categoryPurchaseList.Remove(categoryPurchaseList.FirstOrDefault(c => c.Name == e.Row.Cells[columnName].Value?.ToString()));
                     break;
+
                 case Options.CategorySales:
                     type = "Category for sale";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
+
+                    // Remove category from list
+                    categorySaleList.Remove(categorySaleList.FirstOrDefault(c => c.Name == e.Row.Cells[columnName].Value?.ToString()));
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();
@@ -1086,83 +1104,90 @@ namespace Sales_Tracker
             rightClickDataGridView_Panel.BringToFront();
 
             Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", 240, false, flowPanel);
-            menuBtn.Click += (sender, e) =>
-            {
-                CloseRightClickPanels();
-                if (selectedDataGridView.SelectedRows.Count > 1)
-                {
-                    CustomMessageBox.Show("Argo Studio", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                    return;
-                }
-
-                ModifyRow_Form ModifyRow_form = new(selectedDataGridView.Rows[0]);
-                ModifyRow_form.ShowDialog();
-            };
+            menuBtn.Click += ModifyRow;
 
             menuBtn = UI.ConstructBtnForMenu("Duplicate", 240, false, flowPanel);
-            menuBtn.Click += (sender, e) =>
-            {
-                CloseRightClickPanels();
+            menuBtn.Click += DuplicateRow;
 
-                if (selectedDataGridView.Rows.Count == 0)
-                {
-                    CustomMessageBox.Show("Argo Studio", "Select a row to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                    return;
-                }
-
-                int index = selectedDataGridView.SelectedRows[0].Index;
-
-                // Duplicate row
-                DataGridViewRow selectedRow = CloneWithValues(selectedDataGridView.SelectedRows[0]);
-                selectedDataGridView.Rows.Add(selectedRow);
-
-                // The new row is at the bottom by default, so move it up until it's below the row that was duplicated
-                for (int i = selectedDataGridView.Rows.Count - 1; i > index; i--)
-                {
-                    // Use tuple to swap values
-                    (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i - 1].Cells[0].Value) = (selectedDataGridView.Rows[i - 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value);
-                }
-
-                // Select the new row
-                selectedDataGridView.Rows[index].Cells[0].Selected = false;
-                selectedDataGridView.Rows[index + 1].Cells[0].Selected = true;
-            };
             menuBtn = UI.ConstructBtnForMenu("Delete", 240, false, flowPanel);
             menuBtn.ForeColor = CustomColors.accent_red;
-            menuBtn.Click += (sender, e) =>
-            {
-                CloseRightClickPanels();
-
-                if (selectedDataGridView.Rows.Count == 0)
-                {
-                    CustomMessageBox.Show("Argo Studio", "Select a row to delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                    return;
-                }
-
-                int index = selectedDataGridView.SelectedRows[selectedDataGridView.SelectedRows.Count - 1].Index;
-
-                // Delete all selected rows
-                foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
-                {
-                    selectedDataGridView.Rows.Remove(item);
-                }
-
-                // If no rows are automatically selected again, select the row under the row that was just deleted
-                if (selectedDataGridView.Rows.Count != 0)
-                {
-                    // If the deleted row was not at the bottom
-                    if (index > selectedDataGridView.SelectedRows.Count)
-                    {
-                        selectedDataGridView.Rows[index - 1].Selected = true;
-                    }
-                    else
-                    // Select the bottom row
-                    {
-                        selectedDataGridView.Rows[^1].Selected = true;
-                    }
-                }
-            };
+            menuBtn.Click += DeleteRow;
             UI.ConstructKeyShortcut("Del", menuBtn);
+        }
+        private void ModifyRow(object? sender, EventArgs e)
+        {
+            CloseRightClickPanels();
+            if (selectedDataGridView.SelectedRows.Count > 1)
+            {
+                CustomMessageBox.Show("Argo Studio", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            ModifyRow_Form ModifyRow_form = new(selectedDataGridView.Rows[0]);
+            ModifyRow_form.ShowDialog();
+        }
+        private void DuplicateRow(object? sender, EventArgs e)
+        {
+            CloseRightClickPanels();
+
+            if (selectedDataGridView.Rows.Count == 0)
+            {
+                CustomMessageBox.Show("Argo Studio", "Select a row to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            int index = selectedDataGridView.SelectedRows[0].Index;
+
+            // Duplicate row
+            DataGridViewRow selectedRow = CloneWithValues(selectedDataGridView.SelectedRows[0]);
+            selectedDataGridView.Rows.Add(selectedRow);
+
+            // The new row is at the bottom by default, so move it up until it's below the row that was duplicated
+            for (int i = selectedDataGridView.Rows.Count - 1; i > index; i--)
+            {
+                // Use tuple to swap values
+                (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i - 1].Cells[0].Value) = (selectedDataGridView.Rows[i - 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value);
+            }
+
+            // Select the new row
+            selectedDataGridView.Rows[index].Cells[0].Selected = false;
+            selectedDataGridView.Rows[index + 1].Cells[0].Selected = true;
+        }
+        private void DeleteRow(object? sender, EventArgs e)
+        {
+            CloseRightClickPanels();
+
+            if (selectedDataGridView.Rows.Count == 0)
+            {
+                CustomMessageBox.Show("Argo Studio", "Select a row to delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            int index = selectedDataGridView.SelectedRows[selectedDataGridView.SelectedRows.Count - 1].Index;
+
+            // Delete all selected rows
+            foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
+            {
+                // Trigger the UserDeletingRow event manually
+                var args = new DataGridViewRowCancelEventArgs(item);
+                DataGridView_UserDeletingRow(selectedDataGridView, args);
+
+                selectedDataGridView.Rows.Remove(item);
+            }
+
+            // If no rows are automatically selected again, select the row under the row that was just deleted
+            if (selectedDataGridView.Rows.Count != 0)
+            {
+                // If the deleted row was not at the bottom
+                if (index > selectedDataGridView.SelectedRows.Count)
+                {
+                    selectedDataGridView.Rows[index - 1].Selected = true;
+                }
+                else  // Select the bottom row
+                {
+                    selectedDataGridView.Rows[^1].Selected = true;
+                }
+            }
         }
         private static DataGridViewRow CloneWithValues(DataGridViewRow row)
         {

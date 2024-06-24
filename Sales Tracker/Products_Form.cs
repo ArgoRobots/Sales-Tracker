@@ -78,14 +78,14 @@ namespace Sales_Tracker
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Sales_DataGridView.Rows.Add(product.Name, category.Name, product.CountryOfOrigin);
+                    Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin);
                 }
             }
             foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Purchases_DataGridView.Rows.Add(product.Name, category.Name, product.CountryOfOrigin);
+                    Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin);
                 }
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
