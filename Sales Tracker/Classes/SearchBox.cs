@@ -37,10 +37,6 @@ namespace Sales_Tracker.Classes
         {
             public string Name { get; set; } = name;
             public Image Flag { get; set; } = flag;
-        }
-        private class ResultsMeta
-        {
-            public string Name { get; set; }
             public int Score { get; set; }
         }
         public const string addLine = "ADD LINE CONTROL";
@@ -50,12 +46,12 @@ namespace Sales_Tracker.Classes
             SearchResultBox.SuspendLayout();  // Prevent the horizontal scrollbar from appearing
 
             // Simple search function
-            List<ResultsMeta> metaList = [];
+            List<SearchResult> metaList = [];
             foreach (SearchResult result in result_list)
             {
                 if (textBox.Text == "")
                 {
-                    metaList.Add(new ResultsMeta() { Name = result.Name, Score = 0 });
+                    metaList.Add(new SearchResult(result.Name, result.Flag));
                     continue;
                 }
                 if (IsResultNameValid(result.Name))
@@ -71,7 +67,7 @@ namespace Sales_Tracker.Classes
                             scoreValue = 2;
                         }
 
-                        metaList.Add(new ResultsMeta() { Name = result.Name, Score = scoreValue });
+                        metaList.Add(new SearchResult(result.Name, result.Flag));
                     }
                 }
             }
@@ -93,6 +89,10 @@ namespace Sales_Tracker.Classes
                     gBtn.ForeColor = CustomColors.text;
                     gBtn.BorderColor = CustomColors.accent_blue;
                     gBtn.Click -= UI.CloseAllPanels;
+                    gBtn.Image = metaList[i].Flag;
+                    gBtn.ImageAlign = HorizontalAlignment.Left;
+                    gBtn.ImageSize = new Size(25, 13);
+                    gBtn.TextAlign = HorizontalAlignment.Left;
                     gBtn.Click += (sender2, e2) =>
                     {
                         // Put the name into the selected TextBox

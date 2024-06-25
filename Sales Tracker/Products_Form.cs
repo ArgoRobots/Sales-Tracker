@@ -25,7 +25,7 @@ namespace Sales_Tracker
             LoadProducts();
             CheckRadioButton(checkPurchaseRadioButton);
             Theme.SetThemeForForm(this);
-            HideSearchingForLabel();
+            HideShowingResultsForLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -178,11 +178,11 @@ namespace Sales_Tracker
             }
             if (Search_TextBox.Text != "")
             {
-                ShowSearchingForLabel(Search_TextBox.Text);
+                ShowShowingResultsForLabel(Search_TextBox.Text);
             }
             else
             {
-                HideSearchingForLabel();
+                HideShowingResultsForLabel();
             }
         }
 
@@ -296,15 +296,15 @@ namespace Sales_Tracker
         }
 
         // SearchingFor_Label
-        private void ShowSearchingForLabel(string text)
+        private void ShowShowingResultsForLabel(string text)
         {
-            SearchingFor_Label.Text = $"Showing results for: {text}";
-            SearchingFor_Label.Left = (Width - SearchingFor_Label.Width) / 2 - 8;
-            Controls.Add(SearchingFor_Label);
+            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
+            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            Controls.Add(ShowingResultsFor_Label);
         }
-        private void HideSearchingForLabel()
+        private void HideShowingResultsForLabel()
         {
-            Controls.Remove(SearchingFor_Label);
+            Controls.Remove(ShowingResultsFor_Label);
         }
 
 
