@@ -1139,7 +1139,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            ModifyRow_Form ModifyRow_form = new(selectedDataGridView.Rows[0]);
+            ModifyRow_Form ModifyRow_form = new(selectedDataGridView.SelectedRows[0]);
             ModifyRow_form.ShowDialog();
         }
         private void DuplicateRow(object? sender, EventArgs e)

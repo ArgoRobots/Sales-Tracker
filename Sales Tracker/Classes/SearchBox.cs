@@ -156,6 +156,10 @@ namespace Sales_Tracker.Classes
         }
         public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list, Guna2Button button)
         {
+            if (button == null)
+            {
+                return;
+            }
             if (resultNames_list.Contains(textBox.Text) || textBox.Text.All(char.IsDigit))
             {
                 SetTextBoxToValid(textBox, button);

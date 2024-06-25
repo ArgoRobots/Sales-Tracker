@@ -48,6 +48,7 @@
             ModifyRow_Label.Size = new Size(125, 30);
             ModifyRow_Label.TabIndex = 0;
             ModifyRow_Label.Text = "Modify row";
+            ModifyRow_Label.Click += CloseAllPanels;
             // 
             // Cancel_Button
             // 
@@ -101,6 +102,7 @@
             Panel.Name = "Panel";
             Panel.Size = new Size(558, 95);
             Panel.TabIndex = 15;
+            Panel.Click += CloseAllPanels;
             // 
             // ModifyRow_Form
             // 
@@ -116,6 +118,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Shown += ModifyRow_Form_Shown;
+            Click += CloseAllPanels;
             ResumeLayout(false);
             PerformLayout();
         }
