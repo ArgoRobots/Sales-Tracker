@@ -4,6 +4,9 @@ namespace Sales_Tracker.Startup.Menus
 {
     public partial class ConfigureProject_Form : BaseForm
     {
+        // Properties
+        public string selectedDirectory, projectName;
+
         // Init.
         public static ConfigureProject_Form Instance { get; private set; }
         public ConfigureProject_Form()
@@ -14,7 +17,7 @@ namespace Sales_Tracker.Startup.Menus
             Theme.SetThemeForForm(this);
         }
 
-        // Form
+        // Form event handlers
         private void ConfigureProject_form_Load(object sender, EventArgs e)
         {
             // Set default name. Choose a name that doesn't already exist in the directory
@@ -62,13 +65,11 @@ namespace Sales_Tracker.Startup.Menus
         }
 
 
-        // Back btn
+        // Event handlers
         private void Back_Button_Click(object sender, EventArgs e)
         {
             Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.formGetStarted);
         }
-        // Create btn
-        public string selectedDirectory, projectName;
         private void Create_Button_Click(object sender, EventArgs e)
         {
             // Set main directory

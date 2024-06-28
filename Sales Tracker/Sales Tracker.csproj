@@ -9,6 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <StartupObject>Sales_Tracker.Program</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

@@ -106,7 +106,7 @@ namespace Sales_Tracker
         }
 
 
-        // Form
+        // Form event handlers
         private void Products_Form_Resize(object sender, EventArgs e)
         {
             CenterSelectedDataGridView();
@@ -310,7 +310,7 @@ namespace Sales_Tracker
         }
 
 
-        // Functions
+        // Methods
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&

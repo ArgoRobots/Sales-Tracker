@@ -52,7 +52,7 @@ namespace Sales_Tracker
         }
 
 
-        // Form
+        // Form event handlers
         private void Categories_Form_Resize(object sender, EventArgs e)
         {
             CenterSelectedDataGridView();
@@ -193,7 +193,7 @@ namespace Sales_Tracker
         }
 
 
-        // Functions
+        // Methods
         private void ValidateInputs()
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);

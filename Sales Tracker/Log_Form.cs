@@ -25,7 +25,7 @@ namespace Sales_Tracker
             AutoScroll_ComboBox.SelectedIndex = 0;
         }
 
-        // Form
+        // Form event handlers
         private void Log_form_Load(object sender, EventArgs e)
         {
             RichTextBox.Text = Log.logText;
@@ -34,14 +34,17 @@ namespace Sales_Tracker
         {
             BtnClear.Focus();  // Remove the caret (blinking text cursor)
         }
+
+        // Event handlers
         private void RichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             Tools.OpenLink(e.LinkText);
         }
-        // Caret
 
-        [DllImport("user32.dll")]
-        private static extern bool HideCaret(IntPtr hWnd);
+        // Caret
+        [LibraryImport("user32.dll", EntryPoint = "HideCaretA")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool HideCaret(IntPtr hWnd);
 
 
         // Controls

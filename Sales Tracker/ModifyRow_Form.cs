@@ -210,7 +210,7 @@ namespace Sales_Tracker
         }
 
 
-        // Form
+        // Form event handlers
         private Control controlToFocus;
         private void ModifyRow_Form_Shown(object sender, EventArgs e)
         {
@@ -232,7 +232,7 @@ namespace Sales_Tracker
         }
 
 
-        // Functions
+        // Methods
         private void InputChanged(object sender, EventArgs e)
         {
             Control senderControl = sender as Control;

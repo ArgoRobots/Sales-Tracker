@@ -192,7 +192,7 @@ namespace Sales_Tracker.Graphs
             return grandTotal;
         }
 
-        // Functions
+        // Methods
         private static void SortAndAddDataSetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
         {
             // Sort the dictionary by date keys

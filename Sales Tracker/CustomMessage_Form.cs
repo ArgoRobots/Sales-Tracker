@@ -6,6 +6,10 @@ namespace Sales_Tracker
 {
     public partial class CustomMessage_Form : BaseForm
     {
+        // Properties
+        public CustomMessageBoxResult result;
+
+        // Init.
         public static CustomMessage_Form Instance { get; private set; }
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
@@ -17,12 +21,14 @@ namespace Sales_Tracker
 
             SetMessageBox(title, message, icon, buttons);
         }
+
+        // Form evwnt handlers
         private void CustomMessageForm_SizeChanged(object sender, EventArgs e)
         {
 
         }
 
-
+        // Methods
         private void SetMessageBox(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             // Set text
@@ -166,7 +172,6 @@ namespace Sales_Tracker
 
             AdjustFormHeight(top);
         }
-
         private void AdjustFormHeight(int contentHeight)
         {
             int requiredHeight = Math.Min(contentHeight, MaximumSize.Height);
@@ -188,7 +193,6 @@ namespace Sales_Tracker
                 Changed_Panel.AutoScroll = false;
             }
         }
-
         private int AddListForThingsChanged(string title, List<string> list, int top)
         {
             if (list.Count == 0) { return top; }
@@ -232,8 +236,7 @@ namespace Sales_Tracker
             }
         }
 
-
-        public CustomMessageBoxResult result;
+        // Event handlers
         private void No_Button_Click(object sender, EventArgs e)
         {
             result = CustomMessageBoxResult.No;
@@ -273,7 +276,6 @@ namespace Sales_Tracker
 
 
 
-
     public enum CustomMessageBoxIcon
     {
         Question,
@@ -298,7 +300,6 @@ namespace Sales_Tracker
         Save,
         DontSave
     }
-
 
 
 

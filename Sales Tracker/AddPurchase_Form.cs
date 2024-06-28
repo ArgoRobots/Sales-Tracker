@@ -113,7 +113,7 @@ namespace Sales_Tracker
             CheckIfProductsExist();
         }
 
-        // Functions
+        // Methods
         private void ValidateInputs(object? sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(PurchaseID_TextBox.Text) &&
