@@ -11,12 +11,17 @@ namespace Sales_Tracker.Classes
 
         public static void SetDirectoriesFor(string projectDir, string project_name)
         {
+            if (!projectDir.EndsWith('\\'))
+            {
+                argoCompany_dir += "\\";
+            }
+
             companyName = project_name;
 
             tempCompany_dir = appData_dir + project_name;
 
             argoCompany_dir = projectDir;
-            argoCompany_file = projectDir + "\\" + project_name + ArgoFiles.ArgoCompanyFileExtension;
+            argoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
 
             purchases_file = tempCompany_dir + @"\purchases" + ArgoFiles.TxtFileExtension;
             sales_file = tempCompany_dir + @"\sales" + ArgoFiles.TxtFileExtension;

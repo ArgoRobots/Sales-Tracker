@@ -6,7 +6,7 @@ namespace Sales_Tracker
 {
     public partial class ModifyRow_Form : BaseForm
     {
-        // Variables
+        // Properties
         private readonly string selectedTag = "";
         private readonly DataGridViewRow selectedRow;
 

@@ -16,7 +16,7 @@
         }
 
         // Dictionary to hold settings loaded from files, with file path as key.
-        private static readonly Dictionary<string, Dictionary<string, string>> fileSettings = new();
+        private static readonly Dictionary<string, Dictionary<string, string>> fileSettings = [];
 
         public static byte MaxValueForRecentProjects { get; set; } = 10;
 
@@ -26,9 +26,9 @@
         /// <returns>A dictionary containing the settings for the specified file.</returns>
         private static Dictionary<string, string> EnsureSettingsLoaded(string filePath)
         {
-            if (!fileSettings.TryGetValue(filePath, out var settings))
+            if (!fileSettings.TryGetValue(filePath, out Dictionary<string, string>? settings))
             {
-                settings = ReadDataFile(filePath) ?? new Dictionary<string, string>();
+                settings = ReadDataFile(filePath) ?? [];
                 fileSettings[filePath] = settings;
             }
             return settings;
@@ -43,7 +43,7 @@
             if (!File.Exists(filePath)) return null;
 
             return Directories.ReadAllLinesInFile(filePath)
-                        .Select(line => line.Split(new char[] { ':' }, 2))
+                        .Select(line => line.Split([':'], 2))
                         .Where(parts => parts.Length == 2)
                         .ToDictionary(parts => parts[0], parts => parts[1], StringComparer.OrdinalIgnoreCase);
         }
@@ -71,7 +71,7 @@
             var value = settings.GetValueOrDefault(keyString, "");
 
             // Split into list
-            var valuesList = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var valuesList = value.Split([','], StringSplitOptions.RemoveEmptyEntries).ToList();
 
             // Append new value
             valuesList.Add(appendValue);

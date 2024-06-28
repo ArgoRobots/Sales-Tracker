@@ -6,9 +6,11 @@ namespace Sales_Tracker
 {
     public partial class Categories_Form : BaseForm
     {
+        // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
-        public static Categories_Form Instance { get; private set; }
+
         // Init
+        public static Categories_Form Instance { get; private set; }
         private readonly Options oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
         public Categories_Form(bool checkPurchaseRadioButton)

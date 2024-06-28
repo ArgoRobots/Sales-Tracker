@@ -4,7 +4,10 @@ namespace Sales_Tracker
 {
     public partial class AddPurchase_Form : BaseForm
     {
+        // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
+
+        // Init.
         public static AddPurchase_Form Instance { get; private set; }
         public AddPurchase_Form()
         {

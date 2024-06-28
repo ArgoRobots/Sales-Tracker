@@ -7,8 +7,10 @@ namespace Sales_Tracker
 {
     public partial class Products_Form : BaseForm
     {
+        // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         public static Products_Form Instance { get; private set; }
+
         // Init
         private readonly MainMenu_Form.Options oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;

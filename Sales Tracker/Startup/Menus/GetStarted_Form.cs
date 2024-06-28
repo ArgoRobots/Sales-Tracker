@@ -5,12 +5,16 @@ namespace Sales_Tracker.Startup
 {
     public partial class GetStarted_Form : BaseForm
     {
+        // Properties
+        private Dictionary<string, FileSystemWatcher> fileWatchers;
+
         // Init.
         public static GetStarted_Form Instance { get; private set; }
         public GetStarted_Form()
         {
             InitializeComponent();
             Instance = this;
+            fileWatchers = [];
 
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
@@ -23,6 +27,57 @@ namespace Sales_Tracker.Startup
             OpenRecent_FlowLayoutPanel.AutoScroll = true;
 
             Theme.SetThemeForForm(this);
+        }
+        private void InitializeFileWatcher(string directory)
+        {
+            if (Directory.Exists(directory) && !fileWatchers.ContainsKey(directory))
+            {
+                FileSystemWatcher fileWatcher = new()
+                {
+                    Path = directory,
+                    NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName
+                };
+                fileWatcher.Deleted += FileDeleted;
+                fileWatcher.EnableRaisingEvents = true;
+
+                fileWatchers[directory] = fileWatcher;
+            }
+        }
+        private void FileDeleted(object sender, FileSystemEventArgs e)
+        {
+            Invoke((MethodInvoker)delegate
+            {
+                List<Guna2Button> itemsToRemove = [];
+                foreach (var control in OpenRecent_FlowLayoutPanel.Controls)
+                {
+                    if (control is Guna2Button btn)
+                    {
+                        if (btn.Tag.ToString() == e.FullPath)
+                        {
+                            itemsToRemove.Add(btn);
+                        }
+                    }
+                }
+
+                foreach (var item in itemsToRemove)
+                {
+                    OpenRecent_FlowLayoutPanel.Controls.Remove(item);
+                }
+
+                // Remove the watcher if no more files are being watched in this directory
+                string? directory = Path.GetDirectoryName(e.FullPath);
+                if (directory != null)
+                {
+                    bool directoryStillInUse = OpenRecent_FlowLayoutPanel.Controls.OfType<Guna2Button>()
+                        .Any(btn => Path.GetDirectoryName(btn.Tag.ToString()) == directory);
+
+                    if (!directoryStillInUse && fileWatchers.TryGetValue(directory, out FileSystemWatcher? value))
+                    {
+                        value.Dispose();
+                        fileWatchers.Remove(directory);
+                    }
+                }
+            });
         }
         private void LoadListOfRecentProjects()
         {
@@ -74,6 +129,10 @@ namespace Sales_Tracker.Startup
                         ShowMainMenu();
                     };
                     OpenRecent_FlowLayoutPanel.Controls.Add(gBtn);
+
+                    // Initialize file watcher for the directory
+                    var directory = Path.GetDirectoryName(projectDir);
+                    InitializeFileWatcher(directory);
                 }
             }
         }
