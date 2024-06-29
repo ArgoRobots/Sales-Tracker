@@ -29,14 +29,19 @@ namespace Sales_Tracker
             {
                 (left, secondLeft) = ConstructControlsForSaleOrPurchase();
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.AddCategory.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTags.Category.ToString())
             {
-                ConstructControlsForAddCategory();
+                ConstructControlsForCategory();
                 left = 300;
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.AddProduct.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTags.Product.ToString())
             {
-                left = ConstructControlsForAddProduct();
+                left = ConstructControlsForProduct();
+            }
+            else if (selectedTag == MainMenu_Form.DataGridViewTags.Accountant.ToString())
+            {
+                ConstructControlsForAccountant();
+                left = 300;
             }
 
             CenterControls(left, secondLeft);
@@ -142,7 +147,7 @@ namespace Sales_Tracker
             }
             return (left, secondLeft);
         }
-        private void ConstructControlsForAddCategory()
+        private void ConstructControlsForCategory()
         {
             foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
             {
@@ -159,7 +164,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private int ConstructControlsForAddProduct()
+        private int ConstructControlsForProduct()
         {
             int left = 0;
 
@@ -207,6 +212,23 @@ namespace Sales_Tracker
                 left += controlWidth + 10;
             }
             return left;
+        }
+        private void ConstructControlsForAccountant()
+        {
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                listOfOldValues.Add(cellValue);
+
+                switch (columnName)
+                {
+                    case nameof(Accountants_Form.Columns.AccountantName):
+                        ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Columns.AccountantName], 0, Panel);
+                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, KeyPressValidation.None, true, false, Panel);
+                        break;
+                }
+            }
         }
 
 
@@ -321,7 +343,7 @@ namespace Sales_Tracker
             string oldName = "";
 
 
-            if (selectedTag == MainMenu_Form.DataGridViewTags.AddCategory.ToString())
+            if (selectedTag == MainMenu_Form.DataGridViewTags.Category.ToString())
             {
                 // Get category
                 Category category;
@@ -348,7 +370,7 @@ namespace Sales_Tracker
                     }
                 }
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.AddProduct.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTags.Product.ToString())
             {
                 // Get category
                 Category category;

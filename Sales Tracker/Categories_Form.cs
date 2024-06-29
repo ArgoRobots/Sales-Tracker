@@ -1,6 +1,5 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
-using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker
 {
@@ -9,9 +8,9 @@ namespace Sales_Tracker
         // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
 
-        // Init
+        // Init.
         public static Categories_Form Instance { get; private set; }
-        private readonly Options oldOption;
+        private readonly MainMenu_Form.Options oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
         public Categories_Form(bool checkPurchaseRadioButton)
         {
@@ -25,6 +24,8 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             Theme.SetThemeForForm(this);
         }
+
+        // Methods
         private void LoadCategories()
         {
             MainMenu_Form.Instance.isDataGridViewLoading = true;
@@ -78,9 +79,10 @@ namespace Sales_Tracker
                 Sales_DataGridView.Rows.Add(Category_TextBox.Text);
             }
 
-            Category_TextBox.Text = "";
             thingsThatHaveChangedInFile.Add(Category_TextBox.Text);
             Log.Write(3, $"Added category '{Category_TextBox.Text}'");
+
+            Category_TextBox.Text = "";
             ValidateInputs();
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
@@ -142,14 +144,14 @@ namespace Sales_Tracker
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
-            Purchases_DataGridView.Tag = DataGridViewTags.AddCategory;
+            Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTags.Category;
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
-            Sales_DataGridView.Tag = DataGridViewTags.AddCategory;
+            Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTags.Category;
         }
 
 
@@ -196,8 +198,7 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs()
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
-            AddCategory_Button.Enabled = allFieldsFilled;
+            AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
         }
     }
 }

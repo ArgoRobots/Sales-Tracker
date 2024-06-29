@@ -82,7 +82,7 @@ namespace Sales_Tracker.Startup
                     OpenRecent_FlowLayoutPanel.Controls.Add(gBtn);
 
                     // Initialize file watcher for the directory
-                    var directory = Path.GetDirectoryName(projectDir);
+                    string directory = Path.GetDirectoryName(projectDir);
                     InitializeFileWatcher(directory);
                 }
             }
@@ -94,7 +94,7 @@ namespace Sales_Tracker.Startup
                 FileSystemWatcher fileWatcher = new()
                 {
                     Path = directory,
-                    NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName
+                    NotifyFilter = NotifyFilters.FileName
                 };
                 fileWatcher.Deleted += FileDeleted;
                 fileWatcher.EnableRaisingEvents = true;

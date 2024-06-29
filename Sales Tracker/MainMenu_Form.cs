@@ -11,7 +11,7 @@ namespace Sales_Tracker
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
 
-        // Init
+        // Init.
         public static MainMenu_Form? Instance { get; private set; }
         public MainMenu_Form()
         {
@@ -148,7 +148,7 @@ namespace Sales_Tracker
             Help_Button.FillColor = CustomColors.background3;
         }
 
-        // Form
+        // Form event handlers
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
             // Ensure the charts are rendered
@@ -251,34 +251,6 @@ namespace Sales_Tracker
             // Delete hidden directory
             Directories.DeleteDirectory(Directories.tempCompany_dir, true);
         }
-
-        /// <summary>
-        /// Asks the user to save any changes.
-        /// </summary>
-        /// <returns>Returns true if the user cancels. Returns false if the user saves.</returns>
-        private static bool AskUserToSaveBeforeClosing()
-        {
-            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Save changes to the following items?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
-
-            switch (result)
-            {
-                case CustomMessageBoxResult.Save:
-                    ArgoCompany.SaveAll();
-                    break;
-                case CustomMessageBoxResult.DontSave:
-                    // Do nothing so the temp directory is deleted
-                    break;
-                case CustomMessageBoxResult.Cancel:
-                    // Cancel close
-                    return true;
-                default:  // If the CustomMessageBox was closed
-                    return true;
-            }
-
-            return false;
-        }
-
-        // Keyboard shortcuts
         private void MainMenu_form_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control)
@@ -315,8 +287,34 @@ namespace Sales_Tracker
         }
 
 
-        // TOP BAR
-        // File
+        /// <summary>
+        /// Asks the user to save any changes.
+        /// </summary>
+        /// <returns>Returns true if the user cancels. Returns false if the user saves.</returns>
+        private static bool AskUserToSaveBeforeClosing()
+        {
+            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Save changes to the following items?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+
+            switch (result)
+            {
+                case CustomMessageBoxResult.Save:
+                    ArgoCompany.SaveAll();
+                    break;
+                case CustomMessageBoxResult.DontSave:
+                    // Do nothing so the temp directory is deleted
+                    break;
+                case CustomMessageBoxResult.Cancel:
+                    // Cancel close
+                    return true;
+                default:  // If the CustomMessageBox was closed
+                    return true;
+            }
+
+            return false;
+        }
+
+
+        // Event handlers - top bar
         private void File_Button_Click(object sender, EventArgs e)
         {
             if (Controls.Contains(UI.fileMenu))
@@ -333,8 +331,6 @@ namespace Sales_Tracker
                 UI.fileMenu.BringToFront();
             }
         }
-
-        // Save btn
         private void Save_Button_Click(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
@@ -348,8 +344,6 @@ namespace Sales_Tracker
         {
             Save_Button.Image = Resources.SaveGray;
         }
-
-        // Help
         private void Help_Button_Click(object sender, EventArgs e)
         {
             if (Controls.Contains(UI.helpMenu))
@@ -367,8 +361,7 @@ namespace Sales_Tracker
             }
         }
 
-
-        // Controls
+        // Event handlers
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
@@ -400,6 +393,10 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             new AddSale_Form().ShowDialog();
+        }
+        private void ManageAccountants_Button_Click(object sender, EventArgs e)
+        {
+            new Accountants_Form().ShowDialog();
         }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
@@ -541,6 +538,7 @@ namespace Sales_Tracker
         // Lists
         public List<Category> categorySaleList = [];
         public List<Category> categoryPurchaseList = [];
+        public List<string> accountantList = [];
         public List<string> GetProductCategorySaleNames()
         {
             return categorySaleList.Select(s => s.Name).ToList();
@@ -675,7 +673,8 @@ namespace Sales_Tracker
             ProductPurchases,
             ProductSales,
             CategoryPurchases,
-            CategorySales
+            CategorySales,
+            Accountants
         }
         public enum PurchaseColumns
         {
@@ -736,8 +735,9 @@ namespace Sales_Tracker
         public enum DataGridViewTags
         {
             SaleOrPurchase,
-            AddCategory,
-            AddProduct,
+            Category,
+            Product,
+            Accountant
         }
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         public Guna2DataGridView selectedDataGridView;
@@ -857,6 +857,18 @@ namespace Sales_Tracker
 
                     // In case the category name that is being deleted is in the TextBox
                     Categories_Form.Instance.VaidateCategoryTextBox();
+                    break;
+
+                case Options.Accountants:
+                    type = "Accountant";
+                    columnName = Accountants_Form.Columns.AccountantName.ToString();
+                    logIndex = 3;
+
+                    // Remove accountant from list
+                    accountantList.Remove(accountantList.FirstOrDefault(a => a == e.Row.Cells[columnName].Value?.ToString()));
+
+                    // In case the accountant name that is being deleted is in the TextBox
+                    Accountants_Form.Instance.VaidateAccountantTextBox();
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();
@@ -1098,6 +1110,7 @@ namespace Sales_Tracker
                 Options.CategorySales => Directories.categorySales_file,
                 Options.ProductPurchases => Directories.categoryPurchases_file,
                 Options.ProductSales => Directories.categorySales_file,
+                Options.Accountants => Directories.accountants_file,
                 _ => ""
             };
         }

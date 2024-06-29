@@ -136,9 +136,10 @@ namespace Sales_Tracker
                 Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
             }
 
-            ProductName_TextBox.Text = "";
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
+
+            ProductName_TextBox.Text = "";
             ValidateInputs(null, null);
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
@@ -215,14 +216,14 @@ namespace Sales_Tracker
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
-            Purchases_DataGridView.Tag = DataGridViewTags.AddProduct;
+            Purchases_DataGridView.Tag = DataGridViewTags.Product;
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
-            Sales_DataGridView.Tag = DataGridViewTags.AddProduct;
+            Sales_DataGridView.Tag = DataGridViewTags.Product;
         }
 
 
