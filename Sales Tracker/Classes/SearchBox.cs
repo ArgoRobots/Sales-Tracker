@@ -33,11 +33,11 @@ namespace Sales_Tracker.Classes
 
 
 
-        public class SearchResult(string name, Image flag)
+        public class SearchResult(string name, Image? flag, int score)
         {
             public string Name { get; set; } = name;
             public Image Flag { get; set; } = flag;
-            public int Score { get; set; }
+            public int Score { get; set; } = score;
         }
         public const string addLine = "ADD LINE CONTROL";
         public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
@@ -51,7 +51,11 @@ namespace Sales_Tracker.Classes
             {
                 if (textBox.Text == "")
                 {
-                    metaList.Add(new SearchResult(result.Name, result.Flag));
+                    metaList.Add(new SearchResult(result.Name, result.Flag, 0));
+                    continue;
+                }
+                if (result.Name == addLine)
+                {
                     continue;
                 }
                 if (IsResultNameValid(result.Name))
@@ -59,15 +63,15 @@ namespace Sales_Tracker.Classes
                     // If the result contains text that is in the textBox
                     if (result.Name.Contains(textBox.Text, StringComparison.CurrentCultureIgnoreCase) && result.Name != "")
                     {
-                        int scoreValue = 1;
+                        int score = 1;
 
                         // Increase the score if the first character is the same
                         if (result.Name[0].ToString().Equals(textBox.Text[0].ToString(), StringComparison.CurrentCultureIgnoreCase))
                         {
-                            scoreValue = 2;
+                            score = 2;
                         }
 
-                        metaList.Add(new SearchResult(result.Name, result.Flag));
+                        metaList.Add(new SearchResult(result.Name, result.Flag, score));
                     }
                 }
             }
@@ -143,7 +147,7 @@ namespace Sales_Tracker.Classes
         }
         public static List<SearchResult> ConvertToSearchResults(List<string> names)
         {
-            return names.Select(name => new SearchResult(name, null)).ToList();
+            return names.Select(name => new SearchResult(name, null, 0)).ToList();
         }
         /// <summary>
         /// Updates the search box and checks if the textBox is valid.

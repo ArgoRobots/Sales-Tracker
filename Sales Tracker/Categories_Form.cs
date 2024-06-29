@@ -68,19 +68,21 @@ namespace Sales_Tracker
         // Event handlers
         private void AddCategory_Button_Click(object sender, EventArgs e)
         {
+            string name = Category_TextBox.Text.Trim();
+
             if (Purchase_RadioButton.Checked)
             {
-                MainMenu_Form.Instance.categoryPurchaseList.Add(new Category(Category_TextBox.Text));
-                Purchases_DataGridView.Rows.Add(Category_TextBox.Text);
+                MainMenu_Form.Instance.categoryPurchaseList.Add(new Category(name));
+                Purchases_DataGridView.Rows.Add(name);
             }
             else
             {
-                MainMenu_Form.Instance.categorySaleList.Add(new Category(Category_TextBox.Text));
-                Sales_DataGridView.Rows.Add(Category_TextBox.Text);
+                MainMenu_Form.Instance.categorySaleList.Add(new Category(name));
+                Sales_DataGridView.Rows.Add(name);
             }
 
-            thingsThatHaveChangedInFile.Add(Category_TextBox.Text);
-            Log.Write(3, $"Added category '{Category_TextBox.Text}'");
+            thingsThatHaveChangedInFile.Add(name);
+            Log.Write(3, $"Added category '{name}'");
 
             Category_TextBox.Text = "";
             ValidateInputs();

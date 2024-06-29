@@ -13,7 +13,7 @@ namespace Sales_Tracker.Classes
         {
             if (!projectDir.EndsWith('\\'))
             {
-                argoCompany_dir += "\\";
+                projectDir += "\\";
             }
 
             companyName = project_name;
@@ -427,7 +427,7 @@ namespace Sales_Tracker.Classes
                     thingName = suggestedThingName;
                     extractedDir = suggestedThingName;
                 }
-                else { return null; }
+                else { return ""; }
             }
             else
             {
@@ -458,7 +458,7 @@ namespace Sales_Tracker.Classes
             {
                 if (entry.EntryType == TarEntryType.Directory)
                 {
-                    string[] pathSegments = entry.Name.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] pathSegments = entry.Name.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
                     if (pathSegments.Length > 0)
                     {
                         return pathSegments[0];
@@ -466,7 +466,7 @@ namespace Sales_Tracker.Classes
                 }
             }
 
-            return null;
+            return "";
         }
 
         /// <summary>

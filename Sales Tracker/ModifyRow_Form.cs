@@ -330,7 +330,6 @@ namespace Sales_Tracker
                     selectedRow.Cells[PurchaseColumns.TotalExpenses.ToString()].Value = totalPrice;
                 }
             }
-            MainMenu_Form.Instance.LoadGraphs();
             Close();
         }
         private void SaveInListsAndUpdateDataGridViews()
@@ -438,10 +437,37 @@ namespace Sales_Tracker
                     }
                 }
             }
+            else if (selectedTag == MainMenu_Form.DataGridViewTags.Accountant.ToString())
+            {
+                // Get accountant
+                string accountant = MainMenu_Form.Instance.accountantList.FirstOrDefault(a => a == listOfOldValues[0]);
+
+                // Update list
+                if (accountant != null)
+                {
+                    int index = MainMenu_Form.Instance.accountantList.IndexOf(accountant);
+                    MainMenu_Form.Instance.accountantList[index] = selectedRow.Cells[0].Value.ToString();
+                }
+
+                // Update all instances in DataGridViews
+                string newValue = selectedRow.Cells[0].Value.ToString();
+
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, PurchaseColumns.BuyerName.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, SalesColumns.CustomerName.ToString(), accountant, newValue);
+            }
             MainMenu_Form.Instance.SaveCategoriesToFile(Options.Sales);
             MainMenu_Form.Instance.SaveCategoriesToFile(Options.Purchases);
         }
-
+        private static void UpdateDataGridViewRows(DataGridView dataGridView, string columnName, string oldValue, string newValue)
+        {
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                if (row.Cells[columnName].Value.ToString() == oldValue)
+                {
+                    row.Cells[columnName].Value = newValue;
+                }
+            }
+        }
 
         // Construct controls
         private readonly byte controlWidth = 180, smallControlWidth = 120;

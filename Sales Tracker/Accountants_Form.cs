@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using System.Xml.Linq;
 
 namespace Sales_Tracker
 {
@@ -48,11 +49,12 @@ namespace Sales_Tracker
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.accountantList.Add(Accountant_TextBox.Text);
-            Accountants_DataGridView.Rows.Add(Accountant_TextBox.Text);
+            string name = Accountant_TextBox.Text.Trim();
+            MainMenu_Form.Instance.accountantList.Add(name);
+            Accountants_DataGridView.Rows.Add(name);
 
-            thingsThatHaveChangedInFile.Add(Accountant_TextBox.Text);
-            Log.Write(3, $"Added category '{Accountant_TextBox.Text}'");
+            thingsThatHaveChangedInFile.Add(name);
+            Log.Write(3, $"Added category '{name}'");
 
             Accountant_TextBox.Text = "";
             ValidateInputs();

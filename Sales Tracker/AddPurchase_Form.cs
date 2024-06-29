@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 
 namespace Sales_Tracker
 {
@@ -44,19 +45,27 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             int maxHeight = 150;
-            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
+            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList);
 
-            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(maxHeight); };
-            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(maxHeight); };
+            BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, searchResults, maxHeight); };
+            BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, searchResults, maxHeight); };
+            BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, searchResults, this, AddPurchase_Button, maxHeight); };
+            BuyerName_TextBox.TextChanged += ValidateInputs;
+            BuyerName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            BuyerName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(BuyerName_TextBox, this, AddPurchase_Label, e); };
+
+            searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
+
+            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, searchResults, maxHeight); };
+            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, searchResults, maxHeight); };
             ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, searchResults, this, AddPurchase_Button, maxHeight); };
             ProductName_TextBox.TextChanged += ValidateInputs;
             ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddPurchase_Label, e); };
         }
-        private void ShowSearchBox(int maxHeight)
+        private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
         {
-            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
-            SearchBox.ShowSearchBox(this, ProductName_TextBox, searchResults, this, maxHeight);
+            SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
         }
         private void CheckIfProductsExist()
         {

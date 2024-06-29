@@ -122,7 +122,8 @@ namespace Sales_Tracker
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Product product = new(ProductID_TextBox.Text, ProductName_TextBox.Text, CountryOfOrigin_TextBox.Text);
+            string name = ProductName_TextBox.Text.Trim();
+            Product product = new(ProductID_TextBox.Text, name, CountryOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
 
             if (Sale_RadioButton.Checked)
@@ -136,8 +137,8 @@ namespace Sales_Tracker
                 Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
             }
 
-            thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
-            Log.Write(3, $"Added product '{ProductName_TextBox.Text}'");
+            thingsThatHaveChangedInFile.Add(name);
+            Log.Write(3, $"Added product '{name}'");
 
             ProductName_TextBox.Text = "";
             ValidateInputs(null, null);
