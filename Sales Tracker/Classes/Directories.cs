@@ -25,8 +25,8 @@ namespace Sales_Tracker.Classes
 
             purchases_file = tempCompany_dir + @"\purchases" + ArgoFiles.TxtFileExtension;
             sales_file = tempCompany_dir + @"\sales" + ArgoFiles.TxtFileExtension;
-            categoryPurchases_file = tempCompany_dir + @"\categoryPurchases" + ArgoFiles.TxtFileExtension;
-            categorySales_file = tempCompany_dir + @"\categorySales" + ArgoFiles.TxtFileExtension;
+            categoryPurchases_file = tempCompany_dir + @"\categoryPurchases" + ArgoFiles.JsonFileExtension;
+            categorySales_file = tempCompany_dir + @"\categorySales" + ArgoFiles.JsonFileExtension;
             accountants_file = tempCompany_dir + @"\accountants" + ArgoFiles.TxtFileExtension;
 
             // Logs
@@ -250,12 +250,11 @@ namespace Sales_Tracker.Classes
         }
 
         // Write to file
-        public static bool WriteLinesToFile(string filePath, IEnumerable<string> lines)
+        public static void WriteLinesToFile(string filePath, IEnumerable<string> lines)
         {
             if (!File.Exists(filePath))
             {
                 Log.Error_FileDoesNotExist(filePath);
-                return false;
             }
             try
             {
@@ -270,10 +269,13 @@ namespace Sales_Tracker.Classes
             {
                 Log.Error_FailedToWriteToFile(filePath);
             }
-            return true;
         }
         public static void WriteTextToFile(string filePath, string content)
         {
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FileDoesNotExist(filePath);
+            }
             try
             {
                 using FileStream fs = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -303,10 +305,10 @@ namespace Sales_Tracker.Classes
             if (!File.Exists(filePath))
             {
                 Log.Error_FileDoesNotExist(filePath);
-                return Array.Empty<string>();
+                return [];
             }
 
-            List<string> lines = new();
+            List<string> lines = [];
             try
             {
                 using StreamReader reader = new(filePath);
@@ -322,6 +324,28 @@ namespace Sales_Tracker.Classes
             }
 
             return lines.ToArray();
+        }
+        /// <summary>
+        /// Reads all text from the specified file.
+        /// </summary>
+        /// <returns>The text content of the file as a single string.</returns>
+        public static string ReadAllTextInFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FileDoesNotExist(filePath);
+                return "";
+            }
+
+            try
+            {
+                return File.ReadAllText(filePath);
+            }
+            catch
+            {
+                Log.Error_FailedToReadFile(filePath);
+                return "";
+            }
         }
 
 

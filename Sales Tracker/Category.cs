@@ -1,9 +1,17 @@
 ﻿namespace Sales_Tracker
 {
-    public class Category(string name)
+    public class Category
     {
-        public string Name { get; set; } = name;
-        public List<Product> ProductList { get; private set; } = [];
+        public string Name { get; set; }
+        public List<Product> ProductList { get; set; } = [];
+
+        // Default constructor required for deserialization
+        public Category() { }
+
+        public Category(string name)
+        {
+            Name = name;
+        }
 
         public void AddProduct(Product product)
         {

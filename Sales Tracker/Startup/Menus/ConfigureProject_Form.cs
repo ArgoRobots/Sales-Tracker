@@ -102,6 +102,7 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.sales_file);
             Directories.CreateFile(Directories.categorySales_file);
             Directories.CreateFile(Directories.categoryPurchases_file);
+            Directories.CreateFile(Directories.accountants_file);
             ArgoCompany.SaveAll();
 
             // Save recently opened projects

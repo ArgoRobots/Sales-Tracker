@@ -2,7 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
-using System.Windows.Forms;
+using System.Text.Json;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -39,32 +39,14 @@ namespace Sales_Tracker
         }
         private static void LoadCategoriesFromFile(string filePath, List<Category> categoryList)
         {
-            string[] lines = Directories.ReadAllLinesInFile(filePath);
-            Category? currentCategory = null;
+            string json = Directories.ReadAllTextInFile(filePath);
+            if (string.IsNullOrWhiteSpace(json)) { return; }
 
-            foreach (string line in lines)
+            List<Category>? loadedCategories = JsonSerializer.Deserialize<List<Category>>(json);
+
+            if (loadedCategories != null)
             {
-                if (line.StartsWith("Category: "))
-                {
-                    // Create a new category
-                    string categoryName = line.Substring("Category: ".Length);
-                    currentCategory = new Category(categoryName);
-                    categoryList.Add(currentCategory);
-                }
-                else if (currentCategory != null)
-                {
-                    // Create a new product
-                    string[] productDetails = line.Split(',');
-                    if (productDetails.Length == 3)
-                    {
-                        string productID = productDetails[0],
-                               productName = productDetails[1],
-                               countryOfOrigin = productDetails[2];
-
-                        Product product = new(productID, productName, countryOfOrigin);
-                        currentCategory.AddProduct(product);
-                    }
-                }
+                categoryList.AddRange(loadedCategories);
             }
         }
         public void LoadSalesAndPurchases()
@@ -638,7 +620,6 @@ namespace Sales_Tracker
 
             string filePath = GetFilePathForDataGridView(option);
 
-            List<string> lines = [];
             List<Category> categoryList;
             if (option == Options.CategoryPurchases || option == Options.ProductPurchases)
             {
@@ -649,16 +630,9 @@ namespace Sales_Tracker
                 categoryList = categorySaleList;
             }
 
-            foreach (Category category in categoryList)
-            {
-                lines.Add($"Category: {category.Name}");
-                foreach (Product product in category.ProductList)
-                {
-                    lines.Add($"{product.ProductID},{product.Name},{product.CountryOfOrigin}");
-                }
-            }
+            string json = JsonSerializer.Serialize(categoryList);
+            Directories.WriteTextToFile(filePath, json);
 
-            Directories.WriteLinesToFile(filePath, lines);
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
 

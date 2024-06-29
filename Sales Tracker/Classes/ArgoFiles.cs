@@ -7,7 +7,8 @@ namespace Sales_Tracker.Classes
     internal class ArgoFiles
     {
         public static readonly string ArgoCompanyFileExtension = ".ArgoCompany",
-                                      TxtFileExtension = ".txt";
+                                      TxtFileExtension = ".txt",
+                                      JsonFileExtension = ".json";
 
         public static void RegisterFileIcon(string extension, string resourceName, int iconIndex)
         {
