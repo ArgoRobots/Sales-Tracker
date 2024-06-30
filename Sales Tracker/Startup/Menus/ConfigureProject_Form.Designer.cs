@@ -180,7 +180,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             WarningName_Label.AutoSize = true;
             WarningName_Label.Font = new Font("Segoe UI", 10F);
-            WarningName_Label.Location = new Point(64, 177);
+            WarningName_Label.Location = new Point(64, 178);
             WarningName_Label.Margin = new Padding(4, 0, 4, 0);
             WarningName_Label.Name = "WarningName_Label";
             WarningName_Label.Size = new Size(206, 19);
@@ -192,7 +192,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             WarningDir_Label.AutoSize = true;
             WarningDir_Label.Font = new Font("Segoe UI", 10F);
-            WarningDir_Label.Location = new Point(64, 290);
+            WarningDir_Label.Location = new Point(64, 291);
             WarningDir_Label.Margin = new Padding(4, 0, 4, 0);
             WarningDir_Label.Name = "WarningDir_Label";
             WarningDir_Label.Size = new Size(166, 19);
@@ -206,7 +206,7 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_pictureBox.Location = new Point(38, 291);
             WarningDir_pictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningDir_pictureBox.Name = "WarningDir_pictureBox";
-            WarningDir_pictureBox.Size = new Size(19, 18);
+            WarningDir_pictureBox.Size = new Size(19, 19);
             WarningDir_pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningDir_pictureBox.TabIndex = 35;
             WarningDir_pictureBox.TabStop = false;
@@ -218,7 +218,7 @@ namespace Sales_Tracker.Startup.Menus
             WarningName_pictureBox.Location = new Point(38, 178);
             WarningName_pictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningName_pictureBox.Name = "WarningName_pictureBox";
-            WarningName_pictureBox.Size = new Size(19, 18);
+            WarningName_pictureBox.Size = new Size(19, 19);
             WarningName_pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningName_pictureBox.TabIndex = 33;
             WarningName_pictureBox.TabStop = false;

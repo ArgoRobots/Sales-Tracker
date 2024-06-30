@@ -47,7 +47,7 @@
             WarningAccountantName_PictureBox.Location = new Point(217, 145);
             WarningAccountantName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningAccountantName_PictureBox.Name = "WarningAccountantName_PictureBox";
-            WarningAccountantName_PictureBox.Size = new Size(19, 18);
+            WarningAccountantName_PictureBox.Size = new Size(19, 19);
             WarningAccountantName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningAccountantName_PictureBox.TabIndex = 47;
             WarningAccountantName_PictureBox.TabStop = false;
@@ -58,7 +58,7 @@
             // 
             WarningAccountantName_Label.AutoSize = true;
             WarningAccountantName_Label.Font = new Font("Segoe UI", 10F);
-            WarningAccountantName_Label.Location = new Point(243, 144);
+            WarningAccountantName_Label.Location = new Point(244, 145);
             WarningAccountantName_Label.Margin = new Padding(4, 0, 4, 0);
             WarningAccountantName_Label.Name = "WarningAccountantName_Label";
             WarningAccountantName_Label.Size = new Size(164, 19);

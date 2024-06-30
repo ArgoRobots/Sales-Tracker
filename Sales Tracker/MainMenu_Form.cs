@@ -908,7 +908,7 @@ namespace Sales_Tracker
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    cellValues.Add(cell.Value?.ToString() ?? string.Empty);
+                    cellValues.Add(cell.Value?.ToString() ?? "");
                 }
 
                 string line = string.Join(",", cellValues);  // Join cell values with a comma

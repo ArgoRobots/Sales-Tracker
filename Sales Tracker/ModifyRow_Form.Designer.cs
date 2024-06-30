@@ -100,7 +100,7 @@
             // 
             Panel.Location = new Point(13, 54);
             Panel.Name = "Panel";
-            Panel.Size = new Size(558, 95);
+            Panel.Size = new Size(558, 100);
             Panel.TabIndex = 15;
             Panel.Click += CloseAllPanels;
             // 

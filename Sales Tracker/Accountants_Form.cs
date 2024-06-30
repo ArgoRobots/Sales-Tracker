@@ -7,11 +7,11 @@ namespace Sales_Tracker
     {
         // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
+        private readonly MainMenu_Form.Options oldOption;
+        private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Init.
         public static Accountants_Form Instance { get; private set; }
-        private readonly MainMenu_Form.Options oldOption;
-        private readonly Guna2DataGridView oldSelectedDataGridView;
         public Accountants_Form()
         {
             InitializeComponent();
@@ -70,7 +70,10 @@ namespace Sales_Tracker
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
-                AddAccountant_Button.PerformClick();
+                if (AddAccountant_Button.Enabled)
+                {
+                    AddAccountant_Button.PerformClick();
+                }
             }
         }
         private void Accountant_TextBox_TextChanged(object sender, EventArgs e)
@@ -88,7 +91,7 @@ namespace Sales_Tracker
         {
             { Columns.AccountantName, "Accountant" },
         };
-        private Guna2DataGridView Accountants_DataGridView;
+        public Guna2DataGridView Accountants_DataGridView;
         private const byte topForDataGridView = 170;
         private void CenterSelectedDataGridView()
         {
@@ -132,16 +135,24 @@ namespace Sales_Tracker
         {
             WarningAccountantName_PictureBox.Visible = true;
             WarningAccountantName_Label.Visible = true;
+            AddAccountant_Button.Enabled = false;
+            AddAccountant_Button.Tag = false;
         }
         private void HideAccountantWarning()
         {
             WarningAccountantName_PictureBox.Visible = false;
             WarningAccountantName_Label.Visible = false;
+            AddAccountant_Button.Enabled = true;
+            AddAccountant_Button.Tag = true;
         }
 
         // Methods
         private void ValidateInputs()
         {
+            if (AddAccountant_Button.Tag is bool tag && tag == false)
+            {
+                return;
+            }
             AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text);
         }
         public void CloseAllPanels(object? sender, EventArgs? e)

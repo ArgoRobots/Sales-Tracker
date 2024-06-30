@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Category_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddCategory_Button = new Guna.UI2.WinForms.Guna2Button();
             AddCategory_Label = new Label();
@@ -46,7 +46,7 @@
             // Category_TextBox
             // 
             Category_TextBox.Anchor = AnchorStyles.Top;
-            Category_TextBox.CustomizableEdges = customizableEdges5;
+            Category_TextBox.CustomizableEdges = customizableEdges1;
             Category_TextBox.DefaultText = "";
             Category_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Category_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -61,7 +61,7 @@
             Category_TextBox.PasswordChar = '\0';
             Category_TextBox.PlaceholderText = "";
             Category_TextBox.SelectedText = "";
-            Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Category_TextBox.Size = new Size(200, 36);
             Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += Category_TextBox_TextChanged;
@@ -75,7 +75,7 @@
             AddCategory_Button.BorderColor = Color.LightGray;
             AddCategory_Button.BorderRadius = 2;
             AddCategory_Button.BorderThickness = 1;
-            AddCategory_Button.CustomizableEdges = customizableEdges7;
+            AddCategory_Button.CustomizableEdges = customizableEdges3;
             AddCategory_Button.Enabled = false;
             AddCategory_Button.FillColor = Color.White;
             AddCategory_Button.Font = new Font("Segoe UI", 9.5F);
@@ -83,7 +83,7 @@
             AddCategory_Button.Location = new Point(424, 103);
             AddCategory_Button.Margin = new Padding(4, 3, 4, 3);
             AddCategory_Button.Name = "AddCategory_Button";
-            AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddCategory_Button.Size = new Size(143, 36);
             AddCategory_Button.TabIndex = 2;
             AddCategory_Button.Tag = "0";
@@ -160,7 +160,7 @@
             WarningCategoryName_PictureBox.Location = new Point(217, 145);
             WarningCategoryName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningCategoryName_PictureBox.Name = "WarningCategoryName_PictureBox";
-            WarningCategoryName_PictureBox.Size = new Size(19, 18);
+            WarningCategoryName_PictureBox.Size = new Size(19, 19);
             WarningCategoryName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningCategoryName_PictureBox.TabIndex = 39;
             WarningCategoryName_PictureBox.TabStop = false;
@@ -171,7 +171,7 @@
             // 
             WarningCategoryName_Label.AutoSize = true;
             WarningCategoryName_Label.Font = new Font("Segoe UI", 10F);
-            WarningCategoryName_Label.Location = new Point(243, 144);
+            WarningCategoryName_Label.Location = new Point(244, 145);
             WarningCategoryName_Label.Margin = new Padding(4, 0, 4, 0);
             WarningCategoryName_Label.Name = "WarningCategoryName_Label";
             WarningCategoryName_Label.Size = new Size(150, 19);
@@ -211,9 +211,9 @@
         private Guna.UI2.WinForms.Guna2Button AddCategory_Button;
         private Label AddCategory_Label;
         private Label CategoryName_Label;
-        private Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
         private Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
         private PictureBox WarningCategoryName_PictureBox;
         private Label WarningCategoryName_Label;
+        public Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
     }
 }

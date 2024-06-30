@@ -114,7 +114,10 @@ namespace Sales_Tracker
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
-                AddCategory_Button.PerformClick();
+                if (AddCategory_Button.Enabled)
+                {
+                    AddCategory_Button.PerformClick();
+                }
             }
         }
         private void Category_TextBox_TextChanged(object sender, EventArgs e)
@@ -133,7 +136,7 @@ namespace Sales_Tracker
         {
             { Columns.CategoryName, "Category" },
         };
-        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
+        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         private const byte topForDataGridView = 170;
         private void CenterSelectedDataGridView()
         {
@@ -193,17 +196,25 @@ namespace Sales_Tracker
         {
             WarningCategoryName_PictureBox.Visible = true;
             WarningCategoryName_Label.Visible = true;
+            AddCategory_Button.Enabled = false;
+            AddCategory_Button.Tag = false;
         }
         private void HideCategoryWarning()
         {
             WarningCategoryName_PictureBox.Visible = false;
             WarningCategoryName_Label.Visible = false;
+            AddCategory_Button.Enabled = true;
+            AddCategory_Button.Tag = false;
         }
 
 
         // Methods
         private void ValidateInputs()
         {
+            if (AddCategory_Button.Tag is bool tag && tag == false)
+            {
+                return;
+            }
             AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
         }
         public void CloseAllPanels(object? sender, EventArgs? e)

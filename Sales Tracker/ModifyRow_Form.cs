@@ -25,9 +25,10 @@ namespace Sales_Tracker
         {
             int left = 0, secondLeft = 0;
 
-            if (selectedTag == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString())
+            if (selectedTag == MainMenu_Form.DataGridViewTags.Accountant.ToString())
             {
-                (left, secondLeft) = ConstructControlsForSaleOrPurchase();
+                ConstructControlsForAccountant();
+                left = 300;
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTags.Category.ToString())
             {
@@ -38,10 +39,9 @@ namespace Sales_Tracker
             {
                 left = ConstructControlsForProduct();
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.Accountant.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString())
             {
-                ConstructControlsForAccountant();
-                left = 300;
+                (left, secondLeft) = ConstructControlsForSaleOrPurchase();
             }
 
             CenterControls(left, secondLeft);
@@ -66,6 +66,158 @@ namespace Sales_Tracker
         }
         private bool secondRow = false;
         private readonly List<string> listOfOldValues = [];
+        private void ConstructControlsForAccountant()
+        {
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                listOfOldValues.Add(cellValue);
+
+                switch (columnName)
+                {
+                    case nameof(Accountants_Form.Columns.AccountantName):
+                        ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Columns.AccountantName], 0, Panel);
+                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, KeyPressValidation.OnlyLetters, true, false, Panel);
+                        controlToFocus.TextChanged += Accountant_TextBox_TextChanged;
+                        ConstructWarningLabel();
+                        break;
+                }
+            }
+        }
+        private void Accountant_TextBox_TextChanged(object? sender, EventArgs e)
+        {
+            Guna2TextBox textBox = sender as Guna2TextBox;
+            bool exists = false;
+
+            foreach (DataGridViewRow row in Accountants_Form.Instance.Accountants_DataGridView.Rows)
+            {
+                if (textBox.Text == row.Cells[Accountants_Form.Columns.AccountantName.ToString()].Value.ToString() && textBox.Text != listOfOldValues[0])
+                {
+                    exists = true;
+                }
+            }
+            if (exists)
+            {
+                Save_Button.Enabled = false;
+                Save_Button.Tag = false;
+                UI.SetGTextBoxToInvalid(textBox);
+                ShowWarning(textBox, "Accountant already exists");
+            }
+            else
+            {
+                Save_Button.Enabled = true;
+                Save_Button.Tag = true;
+                UI.SetGTextBoxToValid(textBox);
+                HideAccountantWarning();
+            }
+        }
+        private void ConstructControlsForCategory()
+        {
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                listOfOldValues.Add(cellValue);
+
+                switch (columnName)
+                {
+                    case nameof(Categories_Form.Columns.CategoryName):
+                        ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Columns.CategoryName], 0, Panel);
+                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, KeyPressValidation.None, true, false, Panel);
+                        controlToFocus.TextChanged += Category_TextBox_TextChanged;
+                        ConstructWarningLabel();
+                        break;
+                }
+            }
+        }
+        private void Category_TextBox_TextChanged(object? sender, EventArgs e)
+        {
+            Guna2TextBox textBox = sender as Guna2TextBox;
+            bool exists = false;
+
+            // Get list
+            Guna2DataGridView dataGridView;
+            if (Categories_Form.Instance.Sale_RadioButton.Checked)
+            {
+                dataGridView = Categories_Form.Instance.Sales_DataGridView;
+            }
+            else
+            {
+                dataGridView = Categories_Form.Instance.Purchases_DataGridView;
+            }
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                if (textBox.Text == row.Cells[Categories_Form.Columns.CategoryName.ToString()].Value.ToString() && textBox.Text != listOfOldValues[0])
+                {
+                    exists = true;
+                }
+            }
+            if (exists)
+            {
+                Save_Button.Enabled = false;
+                Save_Button.Tag = false;
+                UI.SetGTextBoxToInvalid(textBox);
+                ShowWarning(textBox, "Category already exists");
+            }
+            else
+            {
+                Save_Button.Enabled = true;
+                Save_Button.Tag = true;
+                UI.SetGTextBoxToValid(textBox);
+                HideAccountantWarning();
+            }
+        }
+        private int ConstructControlsForProduct()
+        {
+            int left = 0;
+
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                listOfOldValues.Add(cellValue);
+
+                switch (columnName)
+                {
+                    case nameof(Products_Form.Columns.ProductID):
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductID], left, Panel);
+                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
+                        break;
+
+                    case nameof(Products_Form.Columns.ProductName):
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductName], left, Panel);
+                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
+                        break;
+
+                    case nameof(Products_Form.Columns.ProductCategory):
+                        string[] array;
+                        if (MainMenu_Form.Instance.Selected == Options.ProductSales)
+                        {
+                            array = MainMenu_Form.Instance.GetProductCategorySaleNames().ToArray();
+                        }
+                        else { array = MainMenu_Form.Instance.GetProductCategoryPurchaseNames().ToArray(); }
+
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductCategory], left, Panel);
+                        ConstructGunaComboBox(left, columnName, array, cellValue, Panel);
+                        break;
+                    case nameof(Products_Form.Columns.CountryOfOrigin):
+                        int maxHeight = 200;
+
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CountryOfOrigin], left, Panel);
+                        Guna2TextBox gTextBox = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
+                        gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, Country.countries, this, maxHeight); };
+                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, Country.countries, this, null, maxHeight); };
+                        gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+                        gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
+
+                        break;
+                }
+                left += controlWidth + 10;
+            }
+            return left;
+        }
         private (int, int) ConstructControlsForSaleOrPurchase()
         {
             ConstructPanel();
@@ -147,90 +299,42 @@ namespace Sales_Tracker
             }
             return (left, secondLeft);
         }
-        private void ConstructControlsForCategory()
+
+
+        // Warning label
+        private PictureBox WarningAccountantName_PictureBox;
+        private Label WarningAccountantName_Label;
+        private void ConstructWarningLabel()
         {
-            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            WarningAccountantName_PictureBox = new()
             {
-                string columnName = column.Name;
-                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
-                listOfOldValues.Add(cellValue);
+                Size = new Size(19, 19),
+                Image = Properties.Resources.Warning,
+                SizeMode = PictureBoxSizeMode.StretchImage,
+            };
 
-                switch (columnName)
-                {
-                    case nameof(Categories_Form.Columns.CategoryName):
-                        ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Columns.CategoryName], 0, Panel);
-                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, KeyPressValidation.None, true, false, Panel);
-                        break;
-                }
-            }
+            WarningAccountantName_Label = new()
+            {
+                ForeColor = CustomColors.text,
+                Font = new Font("Segoe UI", 10),
+                AutoSize = true
+            };
         }
-        private int ConstructControlsForProduct()
+        private void ShowWarning(Guna2TextBox textBox, string text)
         {
-            int left = 0;
-
-            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
-            {
-                string columnName = column.Name;
-                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
-                listOfOldValues.Add(cellValue);
-
-                switch (columnName)
-                {
-                    case nameof(Products_Form.Columns.ProductID):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductID], left, Panel);
-                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
-                        break;
-
-                    case nameof(Products_Form.Columns.ProductName):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductName], left, Panel);
-                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
-                        break;
-
-                    case nameof(Products_Form.Columns.ProductCategory):
-                        string[] array;
-                        if (MainMenu_Form.Instance.Selected == Options.ProductSales)
-                        {
-                            array = MainMenu_Form.Instance.GetProductCategorySaleNames().ToArray();
-                        }
-                        else { array = MainMenu_Form.Instance.GetProductCategoryPurchaseNames().ToArray(); }
-
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductCategory], left, Panel);
-                        ConstructGunaComboBox(left, columnName, array, cellValue, Panel);
-                        break;
-                    case nameof(Products_Form.Columns.CountryOfOrigin):
-                        int maxHeight = 200;
-
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CountryOfOrigin], left, Panel);
-                        Guna2TextBox gTextBox = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
-                        gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, Country.countries, this, maxHeight); };
-                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, Country.countries, this, null, maxHeight); };
-                        gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-                        gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
-
-                        break;
-                }
-                left += controlWidth + 10;
-            }
-            return left;
+            WarningAccountantName_PictureBox.Top = textBox.Top + textBox.Height + 6;
+            WarningAccountantName_PictureBox.Left = textBox.Left;
+            WarningAccountantName_Label.Top = WarningAccountantName_PictureBox.Top;
+            WarningAccountantName_Label.Left = WarningAccountantName_PictureBox.Right + 8;
+            WarningAccountantName_Label.Text = text;
+            Panel.Controls.Add(WarningAccountantName_PictureBox);
+            Panel.Controls.Add(WarningAccountantName_Label);
         }
-        private void ConstructControlsForAccountant()
+        private void HideAccountantWarning()
         {
-            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
-            {
-                string columnName = column.Name;
-                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
-                listOfOldValues.Add(cellValue);
-
-                switch (columnName)
-                {
-                    case nameof(Accountants_Form.Columns.AccountantName):
-                        ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Columns.AccountantName], 0, Panel);
-                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, KeyPressValidation.None, true, false, Panel);
-                        break;
-                }
-            }
+            Panel.Controls.Remove(WarningAccountantName_PictureBox);
+            Panel.Controls.Remove(WarningAccountantName_Label);
         }
-
 
         // Form event handlers
         private Control controlToFocus;
@@ -340,7 +444,6 @@ namespace Sales_Tracker
             IEnumerable<DataGridViewRow> allRows = MainMenu_Form.Instance.Sales_DataGridView.Rows.Cast<DataGridViewRow>()
                             .Concat(MainMenu_Form.Instance.Purchases_DataGridView.Rows.Cast<DataGridViewRow>());
             string oldName = "";
-
 
             if (selectedTag == MainMenu_Form.DataGridViewTags.Category.ToString())
             {
@@ -455,6 +558,7 @@ namespace Sales_Tracker
                 UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, PurchaseColumns.BuyerName.ToString(), accountant, newValue);
                 UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, SalesColumns.CustomerName.ToString(), accountant, newValue);
             }
+
             MainMenu_Form.Instance.SaveCategoriesToFile(Options.Sales);
             MainMenu_Form.Instance.SaveCategoriesToFile(Options.Purchases);
         }
@@ -498,11 +602,11 @@ namespace Sales_Tracker
 
             return label;
         }
-        // Define an enumeration for key press validation types
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
             OnlyNumbers,
+            OnlyLetters,
             None
         }
         private Guna2TextBox ConstructTextBox(int left, string name, string text, int maxLength, KeyPressValidation keyPressValidation, bool pressSaveButton, bool smallWidth, Panel control)
@@ -543,6 +647,9 @@ namespace Sales_Tracker
                 case KeyPressValidation.OnlyNumbers:
                     gTextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
                     break;
+                case KeyPressValidation.OnlyLetters:
+                    gTextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+                    break;
                 case KeyPressValidation.None:
                     break;
             }
@@ -555,7 +662,10 @@ namespace Sales_Tracker
                     e.SuppressKeyPress = true;
                     if (pressSaveButton)
                     {
-                        Save_Button.PerformClick();
+                        if (Save_Button.Tag is bool tag && tag == true)
+                        {
+                            Save_Button.PerformClick();
+                        }
                     }
                     else
                     {
