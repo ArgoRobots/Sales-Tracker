@@ -26,6 +26,7 @@ namespace Sales_Tracker
             isDataGridViewLoading = true;
             LoadCategories();
             LoadSalesAndPurchases();
+            LoadAccountants();
             isDataGridViewLoading = false;
             Sales_Button.PerformClick();
             LoadDataFromSetting();
@@ -48,6 +49,10 @@ namespace Sales_Tracker
             {
                 categoryList.AddRange(loadedCategories);
             }
+        }
+        private void LoadAccountants()
+        {
+            accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
         }
         public void LoadSalesAndPurchases()
         {
@@ -620,6 +625,12 @@ namespace Sales_Tracker
 
             string filePath = GetFilePathForDataGridView(option);
 
+            if (option == Options.Accountants)
+            {
+                Directories.WriteLinesToFile(filePath, accountantList);
+                return;
+            }
+
             List<Category> categoryList;
             if (option == Options.CategoryPurchases || option == Options.ProductPurchases)
             {
@@ -863,6 +874,11 @@ namespace Sales_Tracker
         }
         private void DataGridViewRowChanged()
         {
+            if (isDataGridViewLoading)
+            {
+                return;
+            }
+
             if (Selected == Options.Sales || Selected == Options.Purchases)
             {
                 UpdateTotals();

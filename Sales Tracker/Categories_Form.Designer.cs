@@ -65,6 +65,7 @@
             Category_TextBox.Size = new Size(200, 36);
             Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += Category_TextBox_TextChanged;
+            Category_TextBox.Click += CloseAllPanels;
             Category_TextBox.KeyDown += Category_TextBox_KeyDown;
             // 
             // AddCategory_Button
@@ -99,6 +100,7 @@
             AddCategory_Label.Size = new Size(137, 30);
             AddCategory_Label.TabIndex = 0;
             AddCategory_Label.Text = "Add category";
+            AddCategory_Label.Click += CloseAllPanels;
             // 
             // CategoryName_Label
             // 
@@ -110,6 +112,7 @@
             CategoryName_Label.Size = new Size(110, 20);
             CategoryName_Label.TabIndex = 0;
             CategoryName_Label.Text = "Category name";
+            CategoryName_Label.Click += CloseAllPanels;
             // 
             // Sale_RadioButton
             // 
@@ -162,6 +165,7 @@
             WarningCategoryName_PictureBox.TabIndex = 39;
             WarningCategoryName_PictureBox.TabStop = false;
             WarningCategoryName_PictureBox.Visible = false;
+            WarningCategoryName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningCategoryName_Label
             // 
@@ -174,6 +178,7 @@
             WarningCategoryName_Label.TabIndex = 38;
             WarningCategoryName_Label.Text = "Category already exists";
             WarningCategoryName_Label.Visible = false;
+            WarningCategoryName_Label.Click += CloseAllPanels;
             // 
             // Categories_Form
             // 
@@ -194,6 +199,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Categories_Form_FormClosed;
+            Click += CloseAllPanels;
             Resize += Categories_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningCategoryName_PictureBox).EndInit();
             ResumeLayout(false);

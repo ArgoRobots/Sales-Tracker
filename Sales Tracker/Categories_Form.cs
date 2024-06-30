@@ -68,6 +68,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddCategory_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             string name = Category_TextBox.Text.Trim();
 
             if (Purchase_RadioButton.Checked)
@@ -86,9 +87,11 @@ namespace Sales_Tracker
 
             Category_TextBox.Text = "";
             ValidateInputs();
+            Category_TextBox.Focus();
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Controls.Add(Purchases_DataGridView);
             Controls.Remove(Sales_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
@@ -98,6 +101,7 @@ namespace Sales_Tracker
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Controls.Add(Sales_DataGridView);
             Controls.Remove(Purchases_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
@@ -201,6 +205,10 @@ namespace Sales_Tracker
         private void ValidateInputs()
         {
             AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
+        }
+        public void CloseAllPanels(object? sender, EventArgs? e)
+        {
+            SearchBox.CloseSearchBox(this);
         }
     }
 }

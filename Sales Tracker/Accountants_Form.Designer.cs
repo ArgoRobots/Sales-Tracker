@@ -52,6 +52,7 @@
             WarningAccountantName_PictureBox.TabIndex = 47;
             WarningAccountantName_PictureBox.TabStop = false;
             WarningAccountantName_PictureBox.Visible = false;
+            WarningAccountantName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningAccountantName_Label
             // 
@@ -64,6 +65,7 @@
             WarningAccountantName_Label.TabIndex = 46;
             WarningAccountantName_Label.Text = "Accountant already exists";
             WarningAccountantName_Label.Visible = false;
+            WarningAccountantName_Label.Click += CloseAllPanels;
             // 
             // AccountantName_Label
             // 
@@ -75,6 +77,7 @@
             AccountantName_Label.Size = new Size(125, 20);
             AccountantName_Label.TabIndex = 40;
             AccountantName_Label.Text = "Accountant name";
+            AccountantName_Label.Click += CloseAllPanels;
             // 
             // Accountant_TextBox
             // 
@@ -98,6 +101,7 @@
             Accountant_TextBox.Size = new Size(200, 36);
             Accountant_TextBox.TabIndex = 42;
             Accountant_TextBox.TextChanged += Accountant_TextBox_TextChanged;
+            Accountant_TextBox.Click += CloseAllPanels;
             Accountant_TextBox.KeyDown += Accountant_TextBox_KeyDown;
             // 
             // AddAccountant_Button
@@ -132,6 +136,7 @@
             AddCategory_Label.Size = new Size(161, 30);
             AddCategory_Label.TabIndex = 41;
             AddCategory_Label.Text = "Add accountant";
+            AddCategory_Label.Click += CloseAllPanels;
             // 
             // Accountants_Form
             // 
@@ -150,6 +155,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Accountants_Form_FormClosed;
+            Click += CloseAllPanels;
             Resize += Accountants_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)WarningAccountantName_PictureBox).EndInit();
             ResumeLayout(false);

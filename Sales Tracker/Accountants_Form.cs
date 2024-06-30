@@ -1,6 +1,5 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
-using System.Xml.Linq;
 
 namespace Sales_Tracker
 {
@@ -18,11 +17,16 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
+            AddEventHandlersToTextBoxes();
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             ConstructDataGridViews();
             LoadAccountants();
             Theme.SetThemeForForm(this);
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
         }
         private void LoadAccountants()
         {
@@ -49,6 +53,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             string name = Accountant_TextBox.Text.Trim();
             MainMenu_Form.Instance.accountantList.Add(name);
             Accountants_DataGridView.Rows.Add(name);
@@ -58,6 +63,7 @@ namespace Sales_Tracker
 
             Accountant_TextBox.Text = "";
             ValidateInputs();
+            Accountant_TextBox.Focus();
         }
         private void Accountant_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -137,6 +143,10 @@ namespace Sales_Tracker
         private void ValidateInputs()
         {
             AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text);
+        }
+        public void CloseAllPanels(object? sender, EventArgs? e)
+        {
+            SearchBox.CloseSearchBox(this);
         }
     }
 }
