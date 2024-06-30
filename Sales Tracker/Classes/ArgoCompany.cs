@@ -78,6 +78,21 @@ namespace Sales_Tracker.Classes
                 GetStarted_Form.Instance.ShowMainMenu();
             }
         }
+        public static void RenameCompany(string name)
+        {
+            // Rename in file
+            string newDir = Directories.argoCompany_dir + "\\" + name + ArgoFiles.ArgoCompanyFileExtension;
+            Directories.MoveFile(Directories.argoCompany_file, newDir);
+            Directories.argoCompany_file = newDir;
+
+            newDir = Directories.appData_dir + name;
+            Directories.RenameFolder(Directories.tempCompany_dir, newDir);
+            Directories.tempCompany_dir = newDir;
+
+            // Update recently opened projects
+            DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoCompany_file, DataFileManager.MaxValueForRecentProjects);
+            DataFileManager.Save(Directories.appDataCongig_file);
+        }
 
         public static void OpenProjectWhenAProgramIsAlreadyOpen()
         {

@@ -444,16 +444,9 @@ namespace Sales_Tracker
             }
             CompanyName_Label.Text = UI.rename_textBox.Text;
 
-            string newDir = Directories.argoCompany_dir + "\\" + UI.rename_textBox.Text + ArgoFiles.ArgoCompanyFileExtension;
-            Directories.MoveFile(Directories.argoCompany_file, newDir);
-            Directories.argoCompany_file = newDir;
-
-            newDir = Directories.appData_dir + UI.rename_textBox.Text;
-            Directories.RenameFolder(Directories.tempCompany_dir, newDir);
-            Directories.tempCompany_dir = newDir;
+            ArgoCompany.RenameCompany(UI.rename_textBox.Text);
 
             UI.rename_textBox.Text = "";
-
             MoveEditButton();
         }
         private void SetCompanyLabel()
