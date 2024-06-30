@@ -46,7 +46,7 @@ namespace Sales_Tracker.Classes
             AddSale_Form.thingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.thingsThatHaveChangedInFile.Clear();
         }
-        public static void OpenProject()
+        public static void Open()
         {
             // Select file
             OpenFileDialog dialog = new()
@@ -78,7 +78,7 @@ namespace Sales_Tracker.Classes
                 GetStarted_Form.Instance.ShowMainMenu();
             }
         }
-        public static void RenameCompany(string name)
+        public static void Rename(string name)
         {
             // Rename in file
             string newDir = Directories.argoCompany_dir + "\\" + name + ArgoFiles.ArgoCompanyFileExtension;

@@ -156,44 +156,6 @@ namespace Sales_Tracker
             UI.CloseAllPanels(null, null);
             ResizeControls();
         }
-        private void ResizeControls()
-        {
-            if (Height > 1000)
-            {
-                Bar_GunaChart.Height = 350;
-            }
-            else if (Height > 800)
-            {
-                Bar_GunaChart.Height = 300;
-            }
-            else
-            {
-                Bar_GunaChart.Height = 200;
-            }
-
-            Bar_GunaChart.Width = Width / 3 - 30;
-            Bar_GunaChart.Left = 20;
-            Bar_Label.Left = Bar_GunaChart.Left;
-
-            Pie_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
-            Pie_GunaChart.Left = (Width / 2) - (Pie_GunaChart.Width / 2) - 8;
-            Pie_Label.Left = Pie_GunaChart.Left;
-
-            Bar2_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
-            Bar2_GunaChart.Left = Width - Bar_GunaChart.Width - 35;
-            Bar2_Label.Left = Bar2_GunaChart.Left;
-
-            selectedDataGridView.Size = new Size(Width - 55, Height - MainTop_Panel.Height - Top_Panel.Height - Bar_GunaChart.Height - Bar_GunaChart.Top - 15);
-            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - 7, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
-
-            Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
-            Total_Panel.Width = selectedDataGridView.Width;
-
-            if (Controls.Contains(messagePanel))
-            {
-                messagePanel.Location = new Point((Width - messagePanel.Width) / 2, Height - messagePanel.Height - 80);
-            }
-        }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
             Log.Write(2, "Closing Argo Studio");
@@ -271,6 +233,92 @@ namespace Sales_Tracker
                     e.Handled = true;
                 }
             }
+        }
+
+        // Resize controls
+        private bool wasControlsDropDownAdded = false;
+        private void ResizeControls()
+        {
+            if (Height > 1000)
+            {
+                Bar_GunaChart.Height = 350;
+            }
+            else if (Height > 800)
+            {
+                Bar_GunaChart.Height = 300;
+            }
+            else
+            {
+                Bar_GunaChart.Height = 200;
+            }
+
+            Bar_GunaChart.Width = Width / 3 - 30;
+            Bar_GunaChart.Left = 20;
+            Bar_Label.Left = Bar_GunaChart.Left;
+
+            Pie_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
+            Pie_GunaChart.Left = (Width / 2) - (Pie_GunaChart.Width / 2) - 8;
+            Pie_Label.Left = Pie_GunaChart.Left;
+
+            Bar2_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
+            Bar2_GunaChart.Left = Width - Bar_GunaChart.Width - 35;
+            Bar2_Label.Left = Bar2_GunaChart.Left;
+
+            selectedDataGridView.Size = new Size(Width - 55, Height - MainTop_Panel.Height - Top_Panel.Height - Bar_GunaChart.Height - Bar_GunaChart.Top - 15);
+            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - 7, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
+
+            Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
+            Total_Panel.Width = selectedDataGridView.Width;
+
+            if (Width < 1200)
+            {
+                AddControlsDropDown();
+                wasControlsDropDownAdded = true;
+            }
+            else if (wasControlsDropDownAdded)
+            {
+                RemoveControlsDropDown();
+                wasControlsDropDownAdded = false;
+            }
+
+            if (Controls.Contains(messagePanel))
+            {
+                messagePanel.Location = new Point((Width - messagePanel.Width) / 2, Height - messagePanel.Height - 80);
+            }
+        }
+        private void AddControlsDropDown()
+        {
+            UI.controlsDropDown_Button.Location = new Point(MainTop_Panel.Width - UI.controlsDropDown_Button.Width - 11, (MainTop_Panel.Height - UI.controlsDropDown_Button.Height) / 2);
+            MainTop_Panel.Controls.Add(UI.controlsDropDown_Button);
+            MainTop_Panel.Controls.Remove(ManageAccountants_Button);
+            MainTop_Panel.Controls.Remove(ManageCategories_Button);
+            MainTop_Panel.Controls.Remove(ManageProducts_Button);
+            MainTop_Panel.Controls.Remove(AddSale_Button);
+            MainTop_Panel.Controls.Remove(AddPurchase_Button);
+            MainTop_Panel.Controls.Remove(DarkMode_ToggleSwitch);
+            MainTop_Panel.Controls.Remove(DarkMode_label);
+        }
+        private void RemoveControlsDropDown()
+        {
+            MainTop_Panel.Controls.Remove(UI.controlsDropDown_Button);
+
+            int buttonTop = (MainTop_Panel.Height - ManageAccountants_Button.Height) / 2;
+            int buttonWidthPlusSpace = ManageAccountants_Button.Width + 8;
+            ManageAccountants_Button.Location = new Point(MainTop_Panel.Width - buttonWidthPlusSpace - 5, buttonTop);
+            ManageCategories_Button.Location = new Point(ManageAccountants_Button.Left - buttonWidthPlusSpace, buttonTop);
+            ManageProducts_Button.Location = new Point(ManageCategories_Button.Left - buttonWidthPlusSpace, buttonTop);
+            AddSale_Button.Location = new Point(ManageProducts_Button.Left - buttonWidthPlusSpace, buttonTop);
+            AddPurchase_Button.Location = new Point(AddSale_Button.Left - buttonWidthPlusSpace, buttonTop);
+            DarkMode_ToggleSwitch.Location = new Point(AddPurchase_Button.Left - DarkMode_ToggleSwitch.Width - 8, (MainTop_Panel.Height - DarkMode_ToggleSwitch.Height) / 2);
+            DarkMode_label.Location = new Point(DarkMode_ToggleSwitch.Left - DarkMode_label.Width - 2, (MainTop_Panel.Height - DarkMode_label.Height) / 2);
+
+            MainTop_Panel.Controls.Add(ManageAccountants_Button);
+            MainTop_Panel.Controls.Add(ManageCategories_Button);
+            MainTop_Panel.Controls.Add(ManageProducts_Button);
+            MainTop_Panel.Controls.Add(AddSale_Button);
+            MainTop_Panel.Controls.Add(AddPurchase_Button);
+            MainTop_Panel.Controls.Add(DarkMode_ToggleSwitch);
+            MainTop_Panel.Controls.Add(DarkMode_label);
         }
 
 
@@ -444,7 +492,7 @@ namespace Sales_Tracker
             }
             CompanyName_Label.Text = UI.rename_textBox.Text;
 
-            ArgoCompany.RenameCompany(UI.rename_textBox.Text);
+            ArgoCompany.Rename(UI.rename_textBox.Text);
 
             UI.rename_textBox.Text = "";
             MoveEditButton();

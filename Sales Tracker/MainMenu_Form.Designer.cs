@@ -816,16 +816,12 @@
         public System.Windows.Forms.Timer HideMenu_timer;
         public System.Windows.Forms.Label Saved_Label;
         private Label CompanyName_Label;
-        private Guna.UI2.WinForms.Guna2Button ManageProducts_Button;
         private Guna.UI2.WinForms.Guna2ToggleSwitch DarkMode_ToggleSwitch;
         private Label DarkMode_label;
         public Label PriceText_Label;
         public Label QuantityText_Label;
         public Label ShippingText_Label;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
-        private Guna.UI2.WinForms.Guna2Button AddSale_Button;
-        private Guna.UI2.WinForms.Guna2Button AddPurchase_Button;
-        private Guna.UI2.WinForms.Guna2Button ManageCategories_Button;
         public Label Totals_Label;
         public Label Quantity_Label;
         public Label Price_Label;
@@ -843,6 +839,10 @@
         private Guna.UI2.WinForms.Guna2ComboBox Filter_ComboBox;
         private Label LineGraph_Label;
         public Guna.UI2.WinForms.Guna2ToggleSwitch LineGraph_ToggleSwitch;
-        private Guna.UI2.WinForms.Guna2Button ManageAccountants_Button;
+        public Guna.UI2.WinForms.Guna2Button ManageProducts_Button;
+        public Guna.UI2.WinForms.Guna2Button AddSale_Button;
+        public Guna.UI2.WinForms.Guna2Button AddPurchase_Button;
+        public Guna.UI2.WinForms.Guna2Button ManageCategories_Button;
+        public Guna.UI2.WinForms.Guna2Button ManageAccountants_Button;
     }
 }

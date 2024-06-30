@@ -152,7 +152,7 @@ namespace Sales_Tracker.Startup
         }
         private void OpenCompany_Button_Click(object sender, EventArgs e)
         {
-            ArgoCompany.OpenProject();
+            ArgoCompany.Open();
         }
 
         // Methods   

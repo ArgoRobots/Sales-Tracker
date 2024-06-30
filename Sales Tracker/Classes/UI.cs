@@ -13,6 +13,8 @@ namespace Sales_Tracker.Classes
             ConstructFileMenu();
             ConstructHelpMenu();
             ConstructRightClickRename();
+            ContructControlsDropDownButton();
+            ConstructControlsDropDownMenu();
             MainMenu_Form.Instance.ConstructRightClickDataGridViewRowMenu();
             MainMenu_Form.Instance.ConstructMessage_Panel();
         }
@@ -276,6 +278,89 @@ namespace Sales_Tracker.Classes
             };
         }
 
+        // Robot Programmer workspace
+        public static Guna2Button controlsDropDown_Button;
+        private static void ContructControlsDropDownButton()
+        {
+            controlsDropDown_Button = new Guna2Button
+            {
+                BackColor = Color.Transparent,
+                BorderColor = CustomColors.controlBorder,
+                FillColor = CustomColors.panelBtn,
+                BorderRadius = 3,
+                BorderThickness = 2,
+                Cursor = Cursors.Hand,
+                Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold),
+                Image = Resources.DownArrowFull,
+                ImageAlign = HorizontalAlignment.Right,
+                ImageSize = new Size(8, 8),
+                Size = new Size(150, 40),
+                TabIndex = 13,
+                Text = "Controls",
+                TextOffset = new Point(-10, 0)
+            };
+            controlsDropDown_Button.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                ControlDropDown_Panel.Location = new Point(controlsDropDown_Button.Right - ControlDropDown_Panel.Width, MainMenu_Form.Instance.MainTop_Panel.Top + MainMenu_Form.Instance.MainTop_Panel.Height);
+                MainMenu_Form.Instance.Controls.Add(ControlDropDown_Panel);
+                ControlDropDown_Panel.BringToFront();
+            };
+        }
+        public static Guna2Panel ControlDropDown_Panel;
+        private static void ConstructControlsDropDownMenu()
+        {
+            ControlDropDown_Panel = ConstructPanelForMenu(new Size(200, 5 * 30 + 15 + 40));
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
+
+            Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
+            menuBtn.Size = new Size(190, 30);
+            menuBtn.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
+            };
+
+            CosntructSeperator(190, flowPanel);
+
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
+            menuBtn.Size = new Size(190, 30);
+            menuBtn.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
+            };
+
+            CosntructSeperator(190, flowPanel);
+
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageProducts_Button.Text, 0, true, flowPanel);
+            menuBtn.Size = new Size(190, 30);
+            menuBtn.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                MainMenu_Form.Instance.ManageProducts_Button.PerformClick();
+            };
+
+            CosntructSeperator(190, flowPanel);
+
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Sales_Button.Text, 0, true, flowPanel);
+            menuBtn.Size = new Size(190, 30);
+            menuBtn.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                MainMenu_Form.Instance.Sales_Button.PerformClick();
+            };
+
+            CosntructSeperator(190, flowPanel);
+
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Purchases_Button.Text, 0, true, flowPanel);
+            menuBtn.Size = new Size(190, 30);
+            menuBtn.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                MainMenu_Form.Instance.Purchases_Button.PerformClick();
+            };
+        }
 
         // Rename
         public static Guna2TextBox rename_textBox;
@@ -338,6 +423,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Controls.Remove(helpMenu);
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
+            MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
             MainMenu_Form.Instance.RenameCompany();
             MainMenu_Form.Instance.CloseRightClickPanels();
         }
