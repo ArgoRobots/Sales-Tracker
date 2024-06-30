@@ -146,7 +146,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {
-            SearchBox.CloseSearchBox(this);
+            UI.CloseAllPanels(null, null);
         }
     }
 }

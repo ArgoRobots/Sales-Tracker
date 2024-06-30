@@ -950,12 +950,14 @@ namespace Sales_Tracker
             {
                 Guna2DataGridView grid = (Guna2DataGridView)sender;
                 DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
+                Control controlSender = (Control)sender;
+                controlRightClickPanelWasAddedTo = controlSender.Parent;
 
                 // Calculate the horizontal position
                 bool tooFarRight = false;
-                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - rowHeight > Width)
+                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - rowHeight > controlRightClickPanelWasAddedTo.Width)
                 {
-                    rightClickDataGridView_Panel.Left = Width - rightClickDataGridView_Panel.Width - 17;
+                    rightClickDataGridView_Panel.Left = controlRightClickPanelWasAddedTo.Width - rightClickDataGridView_Panel.Width - 17;
                     tooFarRight = true;
                 }
                 else
@@ -980,8 +982,6 @@ namespace Sales_Tracker
                     rightClickDataGridView_Panel.Top = rowTop;
                 }
 
-                Control controlSender = (Control)sender;
-                controlRightClickPanelWasAddedTo = controlSender.Parent;
                 controlRightClickPanelWasAddedTo.Controls.Add(rightClickDataGridView_Panel);
                 rightClickDataGridView_Panel.BringToFront();
             }
