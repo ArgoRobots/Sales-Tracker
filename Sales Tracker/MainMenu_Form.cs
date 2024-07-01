@@ -270,7 +270,7 @@ namespace Sales_Tracker
             Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
             Total_Panel.Width = selectedDataGridView.Width;
 
-            if (Width < 1200)
+            if (Width < 980 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
                 wasControlsDropDownAdded = true;
@@ -486,16 +486,17 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Add(Edit_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
 
+            // If the name did not change
             if (UI.rename_textBox.Text == CompanyName_Label.Text)
             {
                 return;
             }
+
             CompanyName_Label.Text = UI.rename_textBox.Text;
-
             ArgoCompany.Rename(UI.rename_textBox.Text);
-
             UI.rename_textBox.Text = "";
             MoveEditButton();
+            ResizeControls();
         }
         private void SetCompanyLabel()
         {
@@ -714,6 +715,7 @@ namespace Sales_Tracker
             PricePerUnit,
             Shipping,
             Tax,
+            Fee,
             TotalExpenses
         }
         public enum SalesColumns
@@ -728,6 +730,7 @@ namespace Sales_Tracker
             PricePerUnit,
             Shipping,
             Tax,
+            Fee,
             TotalRevenue
         }
         public readonly Dictionary<PurchaseColumns, string> PurchaseColumnHeaders = new()
@@ -742,6 +745,7 @@ namespace Sales_Tracker
             { PurchaseColumns.PricePerUnit, "Price per unit" },
             { PurchaseColumns.Shipping, "Shipping" },
             { PurchaseColumns.Tax, "Tax" },
+            { PurchaseColumns.Fee, "Payment fee" },
             { PurchaseColumns.TotalExpenses, "Total expenses" }
         };
         public readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
@@ -756,6 +760,7 @@ namespace Sales_Tracker
             { SalesColumns.PricePerUnit, "Price per unit" },
             { SalesColumns.Shipping, "Shipping" },
             { SalesColumns.Tax, "Tax" },
+            { SalesColumns.Fee, "Payment fee" },
             { SalesColumns.TotalRevenue, "Total revenue" }
         };
         public enum DataGridViewTags

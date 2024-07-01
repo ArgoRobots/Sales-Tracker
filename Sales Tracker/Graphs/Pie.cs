@@ -27,14 +27,17 @@ namespace Sales_Tracker.Graphs
 
             double totalTax = 0;
             double totalShipping = 0;
+            double totalFee = 0;
             Dictionary<string, double> categoryCosts = [];
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
 
-                double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
                 double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
+                double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
+                double fee = Convert.ToDouble(row.Cells[PurchaseColumns.Fee.ToString()].Value);
+
                 int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
                 double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
                 string category = row.Cells[PurchaseColumns.Category.ToString()].Value.ToString();
@@ -42,6 +45,7 @@ namespace Sales_Tracker.Graphs
 
                 totalTax += tax;
                 totalShipping += shipping;
+                totalFee += fee;
 
                 if (categoryCosts.ContainsKey(category))
                 {
@@ -53,15 +57,16 @@ namespace Sales_Tracker.Graphs
                 }
             }
 
-            // Add tax and shipping as separate datapoints
-            dataset.DataPoints.Add("Tax", totalTax);
-            dataset.DataPoints.Add("Shipping", totalShipping);
-
             // Add combined category costs
             foreach (KeyValuePair<string, double> category in categoryCosts)
             {
                 dataset.DataPoints.Add(category.Key, category.Value);
             }
+
+            // Add separate datapoints
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.Shipping], totalShipping);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.Tax], totalTax);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.Fee], totalFee);
 
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);

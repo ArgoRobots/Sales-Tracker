@@ -45,20 +45,17 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             int maxHeight = 150;
-            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList);
 
-            BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, searchResults, maxHeight); };
-            BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, searchResults, maxHeight); };
-            BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, searchResults, this, AddPurchase_Button, maxHeight); };
+            BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), maxHeight); };
+            BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), maxHeight); };
+            BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, AddPurchase_Button, maxHeight); };
             BuyerName_TextBox.TextChanged += ValidateInputs;
             BuyerName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             BuyerName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(BuyerName_TextBox, this, AddPurchase_Label, e); };
 
-            searchResults = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
-
-            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, searchResults, maxHeight); };
-            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, searchResults, maxHeight); };
-            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, searchResults, this, AddPurchase_Button, maxHeight); };
+            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), maxHeight); };
+            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), maxHeight); };
+            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), this, AddPurchase_Button, maxHeight); };
             ProductName_TextBox.TextChanged += ValidateInputs;
             ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddPurchase_Label, e); };
@@ -110,9 +107,10 @@ namespace Sales_Tracker
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
+            decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
             thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
             Log.Write(3, $"Added purchase '{ProductName_TextBox.Text}'");
         }

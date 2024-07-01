@@ -348,7 +348,7 @@ namespace Sales_Tracker.Classes
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
-                MainMenu_Form.Instance.Sales_Button.PerformClick();
+                MainMenu_Form.Instance.AddSale_Button.PerformClick();
             };
 
             CosntructSeperator(190, flowPanel);
@@ -358,7 +358,7 @@ namespace Sales_Tracker.Classes
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
-                MainMenu_Form.Instance.Purchases_Button.PerformClick();
+                MainMenu_Form.Instance.AddPurchase_Button.PerformClick();
             };
         }
 
