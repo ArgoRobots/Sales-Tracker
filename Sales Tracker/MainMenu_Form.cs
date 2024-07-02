@@ -1182,7 +1182,7 @@ namespace Sales_Tracker
         private Guna2Panel rightClickDataGridView_Panel;
         public void ConstructRightClickDataGridViewRowMenu()
         {
-            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 3 * 22 + 10));
+            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 5 * 22 + 10));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
 
             rightClickDataGridView_Panel.BringToFront();
@@ -1193,9 +1193,16 @@ namespace Sales_Tracker
             menuBtn = UI.ConstructBtnForMenu("Duplicate", 240, false, flowPanel);
             menuBtn.Click += DuplicateRow;
 
+            menuBtn = UI.ConstructBtnForMenu("Move up", 240, false, flowPanel);
+            menuBtn.Click += MoveRowUp;
+
+            menuBtn = UI.ConstructBtnForMenu("Move down", 240, false, flowPanel);
+            menuBtn.Click += MoveRowDown;
+
             menuBtn = UI.ConstructBtnForMenu("Delete", 240, false, flowPanel);
             menuBtn.ForeColor = CustomColors.accent_red;
             menuBtn.Click += DeleteRow;
+
             UI.ConstructKeyShortcut("Del", menuBtn);
         }
         private void ModifyRow(object? sender, EventArgs e)
@@ -1203,7 +1210,7 @@ namespace Sales_Tracker
             CloseRightClickPanels();
             if (selectedDataGridView.SelectedRows.Count > 1)
             {
-                CustomMessageBox.Show("Argo Studio", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Argo Sales Tracker", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
             }
 
@@ -1236,6 +1243,84 @@ namespace Sales_Tracker
             // Select the new row
             selectedDataGridView.Rows[index].Cells[0].Selected = false;
             selectedDataGridView.Rows[index + 1].Cells[0].Selected = true;
+        }
+        private void MoveRowUp(object sender, EventArgs e)
+        {
+            CloseRightClickPanels();
+
+            if (selectedDataGridView.Rows.Count == 0)
+            {
+                CustomMessageBox.Show("Argo Sales Tracker", "Select a row to move up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            {
+                if (selectedDataGridView.Rows[i].Selected)
+                {
+                    if (i == 0)
+                    {
+                        CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the first row up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                        return;
+                    }
+
+                    // Swap the entire row
+                    DataGridViewRow temp = (DataGridViewRow)selectedDataGridView.Rows[i].Clone();
+                    for (int j = 0; j < selectedDataGridView.Rows[i].Cells.Count; j++)
+                    {
+                        temp.Cells[j].Value = selectedDataGridView.Rows[i].Cells[j].Value;
+                        selectedDataGridView.Rows[i].Cells[j].Value = selectedDataGridView.Rows[i - 1].Cells[j].Value;
+                        selectedDataGridView.Rows[i - 1].Cells[j].Value = temp.Cells[j].Value;
+                    }
+
+                    // Reselect
+                    selectedDataGridView.ClearSelection();
+                    selectedDataGridView.Rows[i - 1].Selected = true;
+
+                    // Save
+                    SaveDataGridViewToFile();
+                    return;
+                }
+            }
+        }
+        private void MoveRowDown(object sender, EventArgs e)
+        {
+            CloseRightClickPanels();
+
+            if (selectedDataGridView.Rows.Count == 0)
+            {
+                CustomMessageBox.Show("Argo Sales Tracker", "Select a row to move down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            {
+                if (selectedDataGridView.Rows[i].Selected)
+                {
+                    if (i == selectedDataGridView.Rows.Count - 1)
+                    {
+                        CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the last row down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                        return;
+                    }
+
+                    // Swap the entire row
+                    DataGridViewRow temp = (DataGridViewRow)selectedDataGridView.Rows[i].Clone();
+                    for (int j = 0; j < selectedDataGridView.Rows[i].Cells.Count; j++)
+                    {
+                        temp.Cells[j].Value = selectedDataGridView.Rows[i].Cells[j].Value;
+                        selectedDataGridView.Rows[i].Cells[j].Value = selectedDataGridView.Rows[i + 1].Cells[j].Value;
+                        selectedDataGridView.Rows[i + 1].Cells[j].Value = temp.Cells[j].Value;
+                    }
+
+                    // Reselect
+                    selectedDataGridView.ClearSelection();
+                    selectedDataGridView.Rows[i + 1].Selected = true;
+
+                    // Save
+                    SaveDataGridViewToFile();
+                    return;
+                }
+            }
         }
         private void DeleteRow(object? sender, EventArgs e)
         {
