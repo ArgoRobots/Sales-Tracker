@@ -162,7 +162,6 @@
             BuyerName_TextBox.TabIndex = 2;
             BuyerName_TextBox.Tag = "";
             BuyerName_TextBox.TextChanged += ValidateInputs;
-            BuyerName_TextBox.Click += CloseAllPanels;
             // 
             // ProductName_Label
             // 
@@ -198,7 +197,6 @@
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 3;
             ProductName_TextBox.TextChanged += ValidateInputs;
-            ProductName_TextBox.Click += CloseAllPanels;
             // 
             // Quantity_Label
             // 

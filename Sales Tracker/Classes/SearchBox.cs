@@ -40,8 +40,15 @@ namespace Sales_Tracker.Classes
             public int Score { get; set; } = score;
         }
         public const string addLine = "ADD LINE CONTROL";
-        public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
+        public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight, bool addExtraParent = false)
         {
+            // Check if SearchResultBoxContainer is already added for this textBox
+            if (controlToAddSearchBox.Controls.Contains(SearchResultBoxContainer) && SearchResultBoxContainer.Tag == textBox)
+            {
+                return;
+            }
+            SearchResultBoxContainer.Tag = textBox;
+
             SearchResultBox.Controls.Clear();
             SearchResultBox.SuspendLayout();  // Prevent the horizontal scrollbar from appearing
 
@@ -139,7 +146,16 @@ namespace Sales_Tracker.Classes
             }
             else
             {
-                SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left, textBox.Top + textBox.Parent.Top + textBox.Height);
+                if (addExtraParent)
+                {
+                    SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left + textBox.Parent.Parent.Left,
+                                                                  textBox.Top + textBox.Parent.Top + textBox.Parent.Parent.Top + textBox.Height);
+                }
+                else
+                {
+                    SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left,
+                                                                  textBox.Top + textBox.Parent.Top + textBox.Height);
+                }
             }
             controlToAddSearchBox.Controls.Add(SearchResultBoxContainer);
             SearchResultBox.ResumeLayout();

@@ -313,7 +313,6 @@
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 28;
             ProductName_TextBox.TextChanged += ValidateInputs;
-            ProductName_TextBox.Click += CloseAllPanels;
             // 
             // BuyerName_Label
             // 
@@ -349,7 +348,6 @@
             BuyerName_TextBox.Size = new Size(200, 36);
             BuyerName_TextBox.TabIndex = 26;
             BuyerName_TextBox.TextChanged += ValidateInputs;
-            BuyerName_TextBox.Click += CloseAllPanels;
             // 
             // AddSale_Label
             // 

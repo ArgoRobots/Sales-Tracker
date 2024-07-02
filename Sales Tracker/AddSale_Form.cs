@@ -62,7 +62,7 @@ namespace Sales_Tracker
         }
         private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
         {
-            SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
+            SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight, true);
         }
         private void CheckIfProductsExist()
         {
@@ -96,7 +96,7 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Sales_DataGridView;
 
-            if (PanelsForMultipleProducts_List.Count == 0)
+            if (panelsForMultipleProducts_List.Count == 0)
             {
                 AddSingleSale();
             }
@@ -112,6 +112,7 @@ namespace Sales_Tracker
             {
                 if (AddButton == null)
                 {
+                    ConstructFlowPanel();
                     CosntructAddButton();
                     ConstructControlsForMultipleProducts();
                 }
@@ -141,35 +142,42 @@ namespace Sales_Tracker
         }
 
 
-        // Methods to add sales
-        private void AddSale(string itemName, int quantity, decimal pricePerUnit)
+        // Methods to add Sales
+        private void AddSale(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax)
         {
             string SaleID = SaleID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
-            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
-            decimal tax = decimal.Parse(Tax_TextBox.Text);
+
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
 
+            // Round to 2 decimal places
+            pricePerUnit = Math.Round(pricePerUnit, 2);
+            shipping = Math.Round(shipping, 2);
+            tax = Math.Round(tax, 2);
+            fee = Math.Round(fee, 2);
+            totalPrice = Math.Round(totalPrice, 2);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(SaleID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
             thingsThatHaveChangedInFile.Add(itemName);
-            Log.Write(3, $"Added sale '{itemName}'");
+            Log.Write(3, $"Added Sale '{itemName}'");
         }
         private void AddSingleSale()
         {
             string itemName = ProductName_TextBox.Text;
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
+            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
+            decimal tax = decimal.Parse(Tax_TextBox.Text);
 
-            AddSale(itemName, quantity, pricePerUnit);
+            AddSale(itemName, quantity, pricePerUnit, shipping, tax);
         }
         private void AddMultipleSales()
         {
-            foreach (Guna2Panel panel in PanelsForMultipleProducts_List)
+            foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
                 string itemName = nameTextBox.Text;
@@ -180,7 +188,10 @@ namespace Sales_Tracker
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
                 decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
 
-                AddSale(itemName, quantity, pricePerUnit);
+                decimal shipping = decimal.Parse(Shipping_TextBox.Text) / quantity;
+                decimal tax = decimal.Parse(Tax_TextBox.Text) / quantity;
+
+                AddSale(itemName, quantity, pricePerUnit, shipping, tax);
             }
         }
 
@@ -194,19 +205,22 @@ namespace Sales_Tracker
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
         private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3,
-            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 200, spaceBetweenPanels = 10;
+            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 200, spaceBetweenPanels = 10,
+               initialHeightForPanel = 59, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
+        private readonly short initialWidthForPanel = 449, maxFlowPanelHeight = 300;
         private void SetControlsForSingleProduct()
         {
             // Center controls
-            ProductName_TextBox.Left = (Width - ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
+            SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
                 SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
-                BuyerName_TextBox.Width) / 2;
+                BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
+                ProductName_TextBox.Width) / 2;
 
-            ProductName_Label.Left = ProductName_TextBox.Left;
-            SaleID_TextBox.Left = ProductName_TextBox.Right + spaceBetweenControlsHorizontally;
             SaleID_Label.Left = SaleID_TextBox.Left;
             BuyerName_TextBox.Left = SaleID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
+            ProductName_TextBox.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
+            ProductName_Label.Left = ProductName_TextBox.Left;
 
             Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Quantity_TextBox.Width - spaceBetweenControlsHorizontally -
@@ -234,13 +248,14 @@ namespace Sales_Tracker
                 Controls.Add(control);
             }
 
-            RemoveAllPanelsForMultipleProducts();
+            Controls.Remove(FlowPanel);
+            Controls.Remove(AddButton);
             Height = 360;
         }
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
+            SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
             SaleID_Label.Left = SaleID_TextBox.Left;
             BuyerName_TextBox.Left = SaleID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
@@ -261,26 +276,11 @@ namespace Sales_Tracker
                 Controls.Remove(control);
             }
 
-            AddAllPanelsForMultipleProducts();
+            Controls.Add(FlowPanel);
+            Controls.Add(AddButton);
             SetHeight();
         }
-        private readonly List<Guna2Panel> PanelsForMultipleProducts_List = [];
-        private void AddAllPanelsForMultipleProducts()
-        {
-            foreach (Guna2Panel panel in PanelsForMultipleProducts_List)
-            {
-                Controls.Add(panel);
-            }
-            Controls.Add(AddButton);
-        }
-        private void RemoveAllPanelsForMultipleProducts()
-        {
-            foreach (Guna2Panel panel in PanelsForMultipleProducts_List)
-            {
-                Controls.Remove(panel);
-            }
-            Controls.Remove(AddButton);
-        }
+        private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
         enum TextBoxnames
         {
             name,
@@ -289,25 +289,19 @@ namespace Sales_Tracker
         }
         private void ConstructControlsForMultipleProducts()
         {
-            int top = 250;
-            if (PanelsForMultipleProducts_List.Count > 0)
-            {
-                top = PanelsForMultipleProducts_List[^1].Bottom + spaceBetweenPanels;
-            }
-
             Guna2Panel panel = new()
             {
-                Height = 56 + spaceBetweenControlsVertically,
-                Location = new Point((Width - 412) / 2, top),
+                Size = new Size(initialWidthForPanel, initialHeightForPanel),
                 FillColor = CustomColors.mainBackground
             };
-            PanelsForMultipleProducts_List.Add(panel);
+            panelsForMultipleProducts_List.Add(panel);
 
             Guna2TextBox textBox;
             int left;
 
             // Product name
             textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), panel);
+            textBox.Click -= CloseAllPanels;
             textBox.Click += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
@@ -341,19 +335,16 @@ namespace Sales_Tracker
 
             // Add minus button unless this is the first panel
             left = textBox.Right + spaceBetweenControlsHorizontally;
-            if (PanelsForMultipleProducts_List.Count > 1)
+            if (panelsForMultipleProducts_List.Count > 1)
             {
-                int right = CosntructMinusButton(new Point(left + spaceBetweenControlsHorizontally, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
-                panel.Width = right;
-            }
-            else
-            {
-                panel.Width = PricePerUnit_TextBox.Right;
+                CosntructMinusButton(new Point(left + spaceBetweenControlsHorizontally, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
             }
 
-            Height = panel.Bottom + extraSpaceForBottom;
-            AddButton.Location = new Point(panel.Left, panel.Bottom + spaceBetweenPanels);
-            Controls.Add(panel);
+            FlowPanel.SuspendLayout();
+            FlowPanel.Controls.Add(panel);
+            SetHeight();
+            FlowPanel.ResumeLayout();
+            FlowPanel.ScrollControlIntoView(panel);
         }
         private static void CosntructLabel(string text, int left, Control parent)
         {
@@ -382,12 +373,11 @@ namespace Sales_Tracker
             textBox.FocusedState.BorderColor = CustomColors.accent_blue;
             textBox.FocusedState.FillColor = CustomColors.controlBack;
             textBox.Click += CloseAllPanels;
-            textBox.TextChanged += ValidateInputs;
 
             parent.Controls.Add(textBox);
             return textBox;
         }
-        private int CosntructMinusButton(Point location, Control parent)
+        private void CosntructMinusButton(Point location, Control parent)
         {
             Guna2CircleButton circleBtn = new()
             {
@@ -406,26 +396,33 @@ namespace Sales_Tracker
                 ValidateInputs(null, null);
             };
             parent.Controls.Add(circleBtn);
-            return circleBtn.Right;
         }
         private void RemovePanelForMultipleProducts(object sender, EventArgs e)
         {
             Guna2CircleButton button = (Guna2CircleButton)sender;
             Guna2Panel panel = (Guna2Panel)button.Parent;
 
-            Controls.Remove(panel);
-
-            // Move below panels up
-            for (int i = PanelsForMultipleProducts_List.IndexOf(panel); i < PanelsForMultipleProducts_List.Count; i++)
-            {
-                PanelsForMultipleProducts_List[i].Top -= panel.Height + spaceBetweenPanels;
-            }
-            AddButton.Location = new Point(panel.Left, PanelsForMultipleProducts_List[^1].Bottom + spaceBetweenPanels);
-
-            PanelsForMultipleProducts_List.Remove(panel);
+            FlowPanel.Controls.Remove(panel);
+            panelsForMultipleProducts_List.Remove(panel);
+            FlowPanel.Height -= initialHeightForPanel + flowPanelMargin;
             SetHeight();
         }
         Guna2CircleButton AddButton;
+        FlowLayoutPanel FlowPanel;
+        private void ConstructFlowPanel()
+        {
+            int width = initialWidthForPanel + spaceOnSidesOfPanel;
+            FlowPanel = new()
+            {
+                AutoScroll = false,
+                Location = new Point((Width - width + 10) / 2 - 5, 250),
+                Size = new Size(width, flowPanelMargin),
+                Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
+                Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
+                MaximumSize = new Size(initialWidthForPanel + spaceOnSidesOfPanel, maxFlowPanelHeight)
+            };
+            FlowPanel.Click += CloseAllPanels;
+        }
         private void CosntructAddButton()
         {
             AddButton = new()
@@ -435,7 +432,8 @@ namespace Sales_Tracker
                 Location = new Point(0, 60),
                 Size = new Size(circleButtonHeight, circleButtonHeight),
                 Image = Resources.Plus,
-                ImageSize = new Size(22, 22)
+                ImageSize = new Size(22, 22),
+                Left = FlowPanel.Left + spaceOnSidesOfPanel / 2
             };
             AddButton.HoverState.FillColor = CustomColors.controlBack;
             AddButton.PressedColor = CustomColors.controlBack;
@@ -444,11 +442,15 @@ namespace Sales_Tracker
                 ConstructControlsForMultipleProducts();
                 ValidateInputs(null, null);
             };
-            Controls.Add(AddButton);
         }
         private void SetHeight()
         {
-            Height = PanelsForMultipleProducts_List[^1].Bottom + extraSpaceForBottom;
+            int totalHeight = panelsForMultipleProducts_List.Sum(panel => panel.Height + flowPanelMargin);
+            FlowPanel.Height = Math.Min(totalHeight + flowPanelMargin, maxFlowPanelHeight);
+            FlowPanel.AutoScroll = totalHeight + flowPanelMargin > maxFlowPanelHeight;
+
+            Height = FlowPanel.Bottom + extraSpaceForBottom;
+            AddButton.Top = FlowPanel.Bottom + spaceBetweenPanels;
         }
 
 
@@ -466,7 +468,7 @@ namespace Sales_Tracker
 
             if (MultipleItems_CheckBox.Checked)
             {
-                allMultipleFieldsFilled = PanelsForMultipleProducts_List
+                allMultipleFieldsFilled = panelsForMultipleProducts_List
                     .SelectMany(panel => panel.Controls.OfType<Guna2TextBox>())
                     .All(textBox => !string.IsNullOrWhiteSpace(textBox.Text));
             }
