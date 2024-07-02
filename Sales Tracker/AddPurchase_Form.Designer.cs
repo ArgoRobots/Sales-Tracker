@@ -70,6 +70,7 @@
             WarningProduct_PictureBox = new PictureBox();
             PaymentFee_Label = new Label();
             PaymentFee_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            MultipleItems_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -341,7 +342,7 @@
             // 
             // AddPurchase_Button
             // 
-            AddPurchase_Button.Anchor = AnchorStyles.Top;
+            AddPurchase_Button.Anchor = AnchorStyles.Bottom;
             AddPurchase_Button.BackColor = Color.Transparent;
             AddPurchase_Button.BorderColor = Color.LightGray;
             AddPurchase_Button.BorderRadius = 2;
@@ -455,11 +456,32 @@
             PaymentFee_TextBox.TextChanged += ValidateInputs;
             PaymentFee_TextBox.Click += CloseAllPanels;
             // 
+            // MultipleItems_CheckBox
+            // 
+            MultipleItems_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            MultipleItems_CheckBox.AutoSize = true;
+            MultipleItems_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            MultipleItems_CheckBox.CheckedState.BorderRadius = 0;
+            MultipleItems_CheckBox.CheckedState.BorderThickness = 0;
+            MultipleItems_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            MultipleItems_CheckBox.Font = new Font("Segoe UI", 10F);
+            MultipleItems_CheckBox.Location = new Point(589, 27);
+            MultipleItems_CheckBox.Name = "MultipleItems_CheckBox";
+            MultipleItems_CheckBox.Size = new Size(193, 23);
+            MultipleItems_CheckBox.TabIndex = 53;
+            MultipleItems_CheckBox.Text = "Multiple items in this order";
+            MultipleItems_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            MultipleItems_CheckBox.UncheckedState.BorderRadius = 0;
+            MultipleItems_CheckBox.UncheckedState.BorderThickness = 0;
+            MultipleItems_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            MultipleItems_CheckBox.CheckedChanged += MultipleItems_CheckBox_CheckedChanged;
+            // 
             // AddPurchase_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(834, 321);
+            Controls.Add(MultipleItems_CheckBox);
             Controls.Add(PaymentFee_Label);
             Controls.Add(PaymentFee_TextBox);
             Controls.Add(WarningProduct_LinkLabel);
@@ -483,7 +505,7 @@
             Controls.Add(PurchaseID_Label);
             Controls.Add(PurchaseID_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimumSize = new Size(750, 360);
+            MinimumSize = new Size(850, 360);
             Name = "AddPurchase_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
@@ -518,5 +540,6 @@
         private PictureBox WarningProduct_PictureBox;
         private Label PaymentFee_Label;
         private Guna.UI2.WinForms.Guna2TextBox PaymentFee_TextBox;
+        private Guna.UI2.WinForms.Guna2CheckBox MultipleItems_CheckBox;
     }
 }

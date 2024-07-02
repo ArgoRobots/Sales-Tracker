@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Properties;
 
 namespace Sales_Tracker
 {
@@ -42,20 +43,19 @@ namespace Sales_Tracker
             Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
         }
+        private readonly byte searchBoxMaxHeight = 150;
         private void AddSearchBoxEvents()
         {
-            int maxHeight = 150;
-
-            BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), maxHeight); };
-            BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), maxHeight); };
-            BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, AddPurchase_Button, maxHeight); };
+            BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
+            BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
+            BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, AddPurchase_Button, searchBoxMaxHeight); };
             BuyerName_TextBox.TextChanged += ValidateInputs;
             BuyerName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             BuyerName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(BuyerName_TextBox, this, AddPurchase_Label, e); };
 
-            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), maxHeight); };
-            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), maxHeight); };
-            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), this, AddPurchase_Button, maxHeight); };
+            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), searchBoxMaxHeight); };
+            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), searchBoxMaxHeight); };
+            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), this, AddPurchase_Button, searchBoxMaxHeight); };
             ProductName_TextBox.TextChanged += ValidateInputs;
             ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddPurchase_Label, e); };
@@ -96,23 +96,31 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
 
-            // Retrieve the input values
-            string purchaseID = PurchaseID_TextBox.Text;
-            string buyerName = BuyerName_TextBox.Text;
-            string itemName = ProductName_TextBox.Text;
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-            string date = Tools.FormatDate(Date_DateTimePicker.Value);
-            int quantity = int.Parse(Quantity_TextBox.Text);
-            decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
-            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
-            decimal tax = decimal.Parse(Tax_TextBox.Text);
-            decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
-            thingsThatHaveChangedInFile.Add(ProductName_TextBox.Text);
-            Log.Write(3, $"Added purchase '{ProductName_TextBox.Text}'");
+            if (PanelsForMultipleProducts_List.Count == 0)
+            {
+                AddSinglePurchase();
+            }
+            else
+            {
+                AddMultiplePurchases();
+            }
+        }
+        private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            if (MultipleItems_CheckBox.Checked)
+            {
+                if (AddButton == null)
+                {
+                    CosntructAddButton();
+                    ConstructControlsForMultipleProducts();
+                }
+                SetControlsForMultipleProducts();
+            }
+            else
+            {
+                SetControlsForSingleProduct();
+            }
         }
         private void WarningProduct_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -120,19 +128,342 @@ namespace Sales_Tracker
             CheckIfProductsExist();
         }
 
-        // Methods
+
+        // Methods to add purchases
+        private void AddPurchase(string itemName, int quantity, decimal pricePerUnit)
+        {
+            string purchaseID = PurchaseID_TextBox.Text;
+            string buyerName = BuyerName_TextBox.Text;
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            string date = Tools.FormatDate(Date_DateTimePicker.Value);
+            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
+            decimal tax = decimal.Parse(Tax_TextBox.Text);
+            decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+
+
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
+            thingsThatHaveChangedInFile.Add(itemName);
+            Log.Write(3, $"Added purchase '{itemName}'");
+        }
+        private void AddSinglePurchase()
+        {
+            string itemName = ProductName_TextBox.Text;
+            int quantity = int.Parse(Quantity_TextBox.Text);
+            decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
+
+            AddPurchase(itemName, quantity, pricePerUnit);
+        }
+        private void AddMultiplePurchases()
+        {
+            foreach (Guna2Panel panel in PanelsForMultipleProducts_List)
+            {
+                Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
+                string itemName = nameTextBox.Text;
+
+                Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
+                int quantity = int.Parse(quantityTextBox.Text);
+
+                Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
+                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
+
+                AddPurchase(itemName, quantity, pricePerUnit);
+            }
+        }
+
+
+        // Methods for multiple items
+        private List<Control> GetControlsForMultipleProducts()
+        {
+            return [ProductName_TextBox, ProductName_Label,
+                WarningProduct_PictureBox, WarningProduct_LinkLabel,
+                Quantity_TextBox, Quantity_Label,
+                PricePerUnit_TextBox, PricePerUnit_Label];
+        }
+        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3,
+            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 150, spaceBetweenPanels = 10;
+        private void SetControlsForSingleProduct()
+        {
+            // Center controls
+            ProductName_TextBox.Left = (Width - ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
+                PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally -
+                BuyerName_TextBox.Width) / 2;
+
+            ProductName_Label.Left = ProductName_TextBox.Left;
+            PurchaseID_TextBox.Left = ProductName_TextBox.Right + spaceBetweenControlsHorizontally;
+            PurchaseID_Label.Left = PurchaseID_TextBox.Left;
+            BuyerName_TextBox.Left = PurchaseID_TextBox.Right + spaceBetweenControlsHorizontally;
+            BuyerName_Label.Left = BuyerName_TextBox.Left;
+
+            Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
+                Quantity_TextBox.Width - spaceBetweenControlsHorizontally -
+                PricePerUnit_TextBox.Width - spaceBetweenControlsHorizontally -
+                Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
+                Tax_TextBox.Width - spaceBetweenControlsHorizontally -
+                PaymentFee_TextBox.Width) / 2;
+
+            Date_Label.Left = Date_DateTimePicker.Left;
+            Quantity_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
+            Quantity_Label.Left = Quantity_TextBox.Left;
+            PricePerUnit_TextBox.Left = Quantity_TextBox.Right + spaceBetweenControlsHorizontally;
+            PricePerUnit_Label.Left = PricePerUnit_TextBox.Left;
+            Shipping_TextBox.Left = PricePerUnit_TextBox.Right + spaceBetweenControlsHorizontally;
+            Shipping_Label.Left = Shipping_TextBox.Left;
+            Tax_TextBox.Left = Shipping_TextBox.Right + spaceBetweenControlsHorizontally;
+            Tax_Label.Left = Tax_TextBox.Left;
+            PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
+            PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+
+            // Add controls
+            List<Control> controls = GetControlsForMultipleProducts();
+            foreach (Control control in controls)
+            {
+                Controls.Add(control);
+            }
+
+            RemoveAllPanelsForMultipleProducts();
+            Height = 360;
+        }
+        private void SetControlsForMultipleProducts()
+        {
+            // Center controls
+            PurchaseID_TextBox.Left = (Width - PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
+            PurchaseID_Label.Left = PurchaseID_TextBox.Left;
+            BuyerName_TextBox.Left = PurchaseID_TextBox.Right + spaceBetweenControlsHorizontally;
+            BuyerName_Label.Left = BuyerName_TextBox.Left;
+
+            Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally - Shipping_TextBox.Width - spaceBetweenControlsHorizontally - Tax_TextBox.Width - spaceBetweenControlsHorizontally - PaymentFee_TextBox.Width) / 2;
+            Date_Label.Left = Date_DateTimePicker.Left;
+            Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
+            Shipping_Label.Left = Shipping_TextBox.Left;
+            Tax_TextBox.Left = Shipping_TextBox.Right + spaceBetweenControlsHorizontally;
+            Tax_Label.Left = Tax_TextBox.Left;
+            PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
+            PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+
+            // Remove controls
+            List<Control> controls = GetControlsForMultipleProducts();
+            foreach (Control control in controls)
+            {
+                Controls.Remove(control);
+            }
+
+            AddAllPanelsForMultipleProducts();
+            SetHeight();
+        }
+        private readonly List<Guna2Panel> PanelsForMultipleProducts_List = [];
+        private void AddAllPanelsForMultipleProducts()
+        {
+            foreach (Guna2Panel panel in PanelsForMultipleProducts_List)
+            {
+                Controls.Add(panel);
+            }
+            Controls.Add(AddButton);
+        }
+        private void RemoveAllPanelsForMultipleProducts()
+        {
+            foreach (Guna2Panel panel in PanelsForMultipleProducts_List)
+            {
+                Controls.Remove(panel);
+            }
+            Controls.Remove(AddButton);
+        }
+        enum TextBoxnames
+        {
+            name,
+            quantity,
+            pricePerUnit
+        }
+        private void ConstructControlsForMultipleProducts()
+        {
+            int top = 250;
+            if (PanelsForMultipleProducts_List.Count > 0)
+            {
+                top = PanelsForMultipleProducts_List[^1].Bottom + spaceBetweenPanels;
+            }
+
+            Guna2Panel panel = new()
+            {
+                Height = 56 + spaceBetweenControlsVertically,
+                Location = new Point((Width - 412) / 2, top),
+                FillColor = CustomColors.mainBackground
+            };
+            PanelsForMultipleProducts_List.Add(panel);
+
+            Guna2TextBox textBox;
+            int left;
+
+            // Product name
+            textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), panel);
+            textBox.Click += (sender, e) =>
+            {
+                Guna2TextBox searchTextBox = (Guna2TextBox)sender;
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), searchBoxMaxHeight);
+            };
+            textBox.GotFocus += (sender, e) =>
+            {
+                Guna2TextBox searchTextBox = (Guna2TextBox)sender;
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), searchBoxMaxHeight);
+            };
+            textBox.TextChanged += (sender, e) =>
+            {
+                Guna2TextBox searchTextBox = (Guna2TextBox)sender;
+                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), this, AddPurchase_Button, searchBoxMaxHeight);
+            };
+            textBox.TextChanged += ValidateInputs;
+            textBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            textBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(textBox, this, AddPurchase_Label, e); };
+
+            CosntructLabel(ProductName_Label.Text, 0, panel);
+
+            // Quantity
+            left = textBox.Right + spaceBetweenControlsHorizontally;
+            textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), panel);
+            CosntructLabel(Quantity_Label.Text, left, panel);
+
+            // Price per unit
+            left = textBox.Right + spaceBetweenControlsHorizontally;
+            textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), panel);
+            CosntructLabel(PricePerUnit_Label.Text, left, panel);
+
+            // Add minus button unless this is the first panel
+            left = textBox.Right + spaceBetweenControlsHorizontally;
+            if (PanelsForMultipleProducts_List.Count > 1)
+            {
+                int right = CosntructMinusButton(new Point(left + spaceBetweenControlsHorizontally, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
+                panel.Width = right;
+            }
+            else
+            {
+                panel.Width = PricePerUnit_TextBox.Right;
+            }
+
+            Height = panel.Bottom + extraSpaceForBottom;
+            AddButton.Location = new Point(panel.Left, panel.Bottom + spaceBetweenPanels);
+            Controls.Add(panel);
+        }
+        private static void CosntructLabel(string text, int left, Control parent)
+        {
+            Label label = new()
+            {
+                Text = text,
+                Font = new Font("Segoe UI", 10),
+                ForeColor = CustomColors.text,
+                Left = left,
+                AutoSize = true
+            };
+            parent.Controls.Add(label);
+        }
+        private Guna2TextBox CosntructTextBox(int left, int width, string name, Control parent)
+        {
+            Guna2TextBox textBox = new()
+            {
+                Size = new Size(width, textBoxHeight),
+                Name = name,
+                Location = new Point(left, 20 + spaceBetweenControlsVertically),
+                BorderColor = CustomColors.controlBorder,
+                FillColor = CustomColors.controlBack,
+                ForeColor = CustomColors.text
+            };
+            textBox.HoverState.BorderColor = CustomColors.accent_blue;
+            textBox.FocusedState.BorderColor = CustomColors.accent_blue;
+            textBox.FocusedState.FillColor = CustomColors.controlBack;
+            textBox.Click += CloseAllPanels;
+
+            parent.Controls.Add(textBox);
+            return textBox;
+        }
+        private int CosntructMinusButton(Point location, Control parent)
+        {
+            Guna2CircleButton circleBtn = new()
+            {
+                BackColor = CustomColors.controlBack,
+                FillColor = CustomColors.controlBack,
+                Location = location,
+                Size = new Size(circleButtonHeight, circleButtonHeight),
+                Image = Resources.Minus,
+                ImageSize = new Size(22, 22)
+            };
+            circleBtn.HoverState.FillColor = CustomColors.controlBack;
+            circleBtn.PressedColor = CustomColors.controlBack;
+            circleBtn.Click += (sender, e) =>
+            {
+                RemovePanelForMultipleProducts(sender, e);
+                ValidateInputs(null, null);
+            };
+            parent.Controls.Add(circleBtn);
+            return circleBtn.Right;
+        }
+        private void RemovePanelForMultipleProducts(object sender, EventArgs e)
+        {
+            Guna2CircleButton button = (Guna2CircleButton)sender;
+            Guna2Panel panel = (Guna2Panel)button.Parent;
+
+            Controls.Remove(panel);
+
+            // Move below panels up
+            for (int i = PanelsForMultipleProducts_List.IndexOf(panel); i < PanelsForMultipleProducts_List.Count; i++)
+            {
+                PanelsForMultipleProducts_List[i].Top -= panel.Height + spaceBetweenPanels;
+            }
+            AddButton.Location = new Point(panel.Left, PanelsForMultipleProducts_List[^1].Bottom + spaceBetweenPanels);
+
+            PanelsForMultipleProducts_List.Remove(panel);
+            SetHeight();
+        }
+        Guna2CircleButton AddButton;
+        private void CosntructAddButton()
+        {
+            AddButton = new()
+            {
+                BackColor = CustomColors.controlBack,
+                FillColor = CustomColors.controlBack,
+                Location = new Point(0, 60),
+                Size = new Size(circleButtonHeight, circleButtonHeight),
+                Image = Resources.Plus,
+                ImageSize = new Size(22, 22)
+            };
+            AddButton.HoverState.FillColor = CustomColors.controlBack;
+            AddButton.PressedColor = CustomColors.controlBack;
+            AddButton.Click += (sender, e) =>
+            {
+                ConstructControlsForMultipleProducts();
+                ValidateInputs(null, null);
+            };
+            Controls.Add(AddButton);
+        }
+        private void SetHeight()
+        {
+            Height = PanelsForMultipleProducts_List[^1].Bottom + extraSpaceForBottom;
+        }
+
+
+        // Misc.
         private void ValidateInputs(object? sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(PurchaseID_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
                                    (int)AddPurchase_Button.Tag == 1;
 
-            AddPurchase_Button.Enabled = allFieldsFilled;
+            bool allMultipleFieldsFilled = true;
+
+            if (MultipleItems_CheckBox.Checked)
+            {
+                allMultipleFieldsFilled = PanelsForMultipleProducts_List
+                    .SelectMany(panel => panel.Controls.OfType<Guna2TextBox>())
+                    .All(textBox => !string.IsNullOrWhiteSpace(textBox.Text));
+            }
+            else
+            {
+                allFieldsFilled &= !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
+                                  !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
+                                  !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
+            }
+            AddPurchase_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {

@@ -160,11 +160,7 @@ namespace Sales_Tracker.Classes
         }
         public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list, Guna2Button button)
         {
-            if (button == null)
-            {
-                return;
-            }
-            if (resultNames_list.Contains(textBox.Text) || textBox.Text.All(char.IsDigit))
+            if (resultNames_list.Contains(textBox.Text))
             {
                 SetTextBoxToValid(textBox, button);
             }
@@ -280,22 +276,14 @@ namespace Sales_Tracker.Classes
             gTextBox.BorderColor = CustomColors.accent_red;
             gTextBox.HoverState.BorderColor = CustomColors.accent_red;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_red;
-
-            if (button != null)
-            {
-                button.Tag = 0;
-            }
+            button.Tag = 0;
         }
         private static void SetTextBoxToValid(Guna2TextBox gTextBox, Guna2Button button)
         {
             gTextBox.BorderColor = CustomColors.controlBorder;
             gTextBox.HoverState.BorderColor = CustomColors.accent_blue;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_blue;
-
-            if (button != null)
-            {
-                button.Tag = 1;
-            }
+            button.Tag = 1;
         }
 
         private static bool IsResultNameValid(string resultName)

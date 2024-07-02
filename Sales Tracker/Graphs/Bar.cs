@@ -3,7 +3,6 @@ using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using System.Data;
-using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker.Graphs
 {
@@ -62,11 +61,11 @@ namespace Sales_Tracker.Graphs
             {
                 if (!row.Visible) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
-                double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
+                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
+                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Shipping.ToString()].Value);
+                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Tax.ToString()].Value);
 
                 double totalRevenue = quantity * pricePerUnit + shipping + tax;
                 grandTotal += totalRevenue;
@@ -135,9 +134,9 @@ namespace Sales_Tracker.Graphs
             {
                 if (!row.Visible) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
+                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
 
                 double totalRevenue = quantity * pricePerUnit;
                 string formattedDate = date.ToString(dateFormat);
@@ -157,11 +156,11 @@ namespace Sales_Tracker.Graphs
             {
                 if (!row.Visible) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
-                double costPerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
-                double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
+                double costPerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
+                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Shipping.ToString()].Value);
+                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Tax.ToString()].Value);
 
                 double totalCost = quantity * costPerUnit + shipping + tax;
                 string formattedDate = date.ToString(dateFormat);
@@ -251,9 +250,9 @@ namespace Sales_Tracker.Graphs
             {
                 foreach (DataGridViewRow row in rows)
                 {
-                    if (row.Cells[PurchaseColumns.Date.ToString()].Value != null)
+                    if (row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value != null)
                     {
-                        DateTime date = Convert.ToDateTime(row.Cells[PurchaseColumns.Date.ToString()].Value);
+                        DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
                         if (date < minDate) { minDate = date; }
                         if (date > maxDate) { maxDate = date; }
                     }

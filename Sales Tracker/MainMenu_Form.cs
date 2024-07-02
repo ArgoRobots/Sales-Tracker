@@ -58,8 +58,6 @@ namespace Sales_Tracker
         {
             LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
             AddRowsFromFile(Sales_DataGridView, Options.Sales);
-            // Make sure there is enough space
-            Sales_DataGridView.Columns[SalesColumns.Country.ToString()].Width = 150;
 
             LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
             AddRowsFromFile(Purchases_DataGridView, Options.Purchases);
@@ -149,12 +147,47 @@ namespace Sales_Tracker
                 Bar2_GunaChart.Invalidate();
                 Bar2_GunaChart.Refresh();
             });
+
             Log.Write(2, "Argo Sales Tracker has finished starting");
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
             ResizeControls();
+        }
+        private void MainMenu_form_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.S:
+                        if (e.Shift)  // Save as
+                        {
+                            ArgoCompany.SaveAs();
+                        }
+                        else  // Save
+                        {
+                            UI.SaveAll();
+                        }
+                        break;
+
+                    case Keys.E:  // Export
+                        new Export_Form().ShowDialog();
+                        break;
+
+                    case Keys.L:  // Open logs
+                        OpenLogs();
+                        break;
+                }
+            }
+            else if (e.Alt & e.KeyCode == Keys.F4)  // Close program
+            {
+                if (AskUserToSaveBeforeClosing())
+                {
+                    e.Handled = true;
+                }
+            }
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -199,40 +232,6 @@ namespace Sales_Tracker
 
             // Delete hidden directory
             Directories.DeleteDirectory(Directories.tempCompany_dir, true);
-        }
-        private void MainMenu_form_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Control)
-            {
-                switch (e.KeyCode)
-                {
-                    case Keys.S:
-                        if (e.Shift)  // Save as
-                        {
-                            ArgoCompany.SaveAs();
-                        }
-                        else  // Save
-                        {
-                            UI.SaveAll();
-                        }
-                        break;
-
-                    case Keys.E:  // Export
-                        new Export_Form().ShowDialog();
-                        break;
-
-                    case Keys.L:  // Open logs
-                        OpenLogs();
-                        break;
-                }
-            }
-            else if (e.Alt & e.KeyCode == Keys.F4)  // Close program
-            {
-                if (AskUserToSaveBeforeClosing())
-                {
-                    e.Handled = true;
-                }
-            }
         }
 
         // Resize controls
@@ -407,6 +406,7 @@ namespace Sales_Tracker
             Controls.Remove(Sales_DataGridView);
             LoadGraphs();
             UpdateTotals();
+            Purchases_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
@@ -418,6 +418,7 @@ namespace Sales_Tracker
             Controls.Remove(Purchases_DataGridView);
             LoadGraphs();
             UpdateTotals();
+            Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {

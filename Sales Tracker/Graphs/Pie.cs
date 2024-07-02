@@ -1,6 +1,5 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
-using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker.Graphs
 {
@@ -34,13 +33,13 @@ namespace Sales_Tracker.Graphs
             {
                 if (!row.Visible) { continue; }
 
-                double shipping = Convert.ToDouble(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[PurchaseColumns.Tax.ToString()].Value);
-                double fee = Convert.ToDouble(row.Cells[PurchaseColumns.Fee.ToString()].Value);
+                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Shipping.ToString()].Value);
+                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Tax.ToString()].Value);
+                double fee = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Fee.ToString()].Value);
 
-                int quantity = Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[PurchaseColumns.PricePerUnit.ToString()].Value);
-                string category = row.Cells[PurchaseColumns.Category.ToString()].Value.ToString();
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
+                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
+                string category = row.Cells[MainMenu_Form.PurchaseColumns.Category.ToString()].Value.ToString();
                 double cost = quantity * pricePerUnit;
 
                 totalTax += tax;
@@ -64,9 +63,9 @@ namespace Sales_Tracker.Graphs
             }
 
             // Add separate datapoints
-            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.Shipping], totalShipping);
-            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.Tax], totalTax);
-            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.Fee], totalFee);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.SalesColumns.Shipping], totalShipping);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.SalesColumns.Tax], totalTax);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.SalesColumns.Fee], totalFee);
 
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
