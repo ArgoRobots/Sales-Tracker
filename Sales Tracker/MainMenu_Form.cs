@@ -1221,7 +1221,7 @@ namespace Sales_Tracker
         {
             CloseRightClickPanels();
 
-            if (selectedDataGridView.Rows.Count == 0)
+            if (selectedDataGridView.Rows.Count == 0 || selectedDataGridView.SelectedRows.Count == 0)
             {
                 CustomMessageBox.Show("Argo Studio", "Select a row to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
@@ -1230,19 +1230,23 @@ namespace Sales_Tracker
             int index = selectedDataGridView.SelectedRows[0].Index;
 
             // Duplicate row
-            DataGridViewRow selectedRow = CloneWithValues(selectedDataGridView.SelectedRows[0]);
-            selectedDataGridView.Rows.Add(selectedRow);
-
-            // The new row is at the bottom by default, so move it up until it's below the row that was duplicated
-            for (int i = selectedDataGridView.Rows.Count - 1; i > index; i--)
-            {
-                // Use tuple to swap values
-                (selectedDataGridView.Rows[i].Cells[0].Value, selectedDataGridView.Rows[i - 1].Cells[0].Value) = (selectedDataGridView.Rows[i - 1].Cells[0].Value, selectedDataGridView.Rows[i].Cells[0].Value);
-            }
+            DataGridViewRow selectedRow = CloneRowWithValues(selectedDataGridView.SelectedRows[0]);
+            selectedDataGridView.Rows.Insert(index + 1, selectedRow);
 
             // Select the new row
-            selectedDataGridView.Rows[index].Cells[0].Selected = false;
-            selectedDataGridView.Rows[index + 1].Cells[0].Selected = true;
+            selectedDataGridView.ClearSelection();
+            selectedDataGridView.Rows[index + 1].Selected = true;
+
+            SaveDataGridViewToFile();
+        }
+        private static DataGridViewRow CloneRowWithValues(DataGridViewRow row)
+        {
+            DataGridViewRow clonedRow = (DataGridViewRow)row.Clone();
+            for (int i = 0; i < row.Cells.Count; i++)
+            {
+                clonedRow.Cells[i].Value = row.Cells[i].Value;
+            }
+            return clonedRow;
         }
         private void MoveRowUp(object sender, EventArgs e)
         {
@@ -1342,15 +1346,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private static DataGridViewRow CloneWithValues(DataGridViewRow row)
-        {
-            DataGridViewRow clonedRow = (DataGridViewRow)row.Clone();
-            for (Int32 index = 0; index < row.Cells.Count; index++)
-            {
-                clonedRow.Cells[index].Value = row.Cells[index].Value;
-            }
-            return clonedRow;
-        }
+
 
         // Message panel
         public Guna2Panel messagePanel;
