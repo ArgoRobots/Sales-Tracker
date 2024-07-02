@@ -1254,34 +1254,26 @@ namespace Sales_Tracker
                 return;
             }
 
-            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            int rowIndex = selectedDataGridView.SelectedCells[0].OwningRow.Index;
+
+            if (rowIndex == 0)
             {
-                if (selectedDataGridView.Rows[i].Selected)
-                {
-                    if (i == 0)
-                    {
-                        CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the first row up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        return;
-                    }
-
-                    // Swap the entire row
-                    DataGridViewRow temp = (DataGridViewRow)selectedDataGridView.Rows[i].Clone();
-                    for (int j = 0; j < selectedDataGridView.Rows[i].Cells.Count; j++)
-                    {
-                        temp.Cells[j].Value = selectedDataGridView.Rows[i].Cells[j].Value;
-                        selectedDataGridView.Rows[i].Cells[j].Value = selectedDataGridView.Rows[i - 1].Cells[j].Value;
-                        selectedDataGridView.Rows[i - 1].Cells[j].Value = temp.Cells[j].Value;
-                    }
-
-                    // Reselect
-                    selectedDataGridView.ClearSelection();
-                    selectedDataGridView.Rows[i - 1].Selected = true;
-
-                    // Save
-                    SaveDataGridViewToFile();
-                    return;
-                }
+                CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the first row up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
             }
+            isDataGridViewLoading = true;
+
+            DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
+            selectedDataGridView.Rows.Remove(selectedRow);
+            selectedDataGridView.Rows.Insert(rowIndex - 1, selectedRow);
+
+            // Reselect
+            selectedDataGridView.ClearSelection();
+            selectedDataGridView.Rows[rowIndex - 1].Selected = true;
+
+            // Save
+            SaveDataGridViewToFile();
+            isDataGridViewLoading = false;
         }
         private void MoveRowDown(object sender, EventArgs e)
         {
@@ -1293,34 +1285,26 @@ namespace Sales_Tracker
                 return;
             }
 
-            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            int rowIndex = selectedDataGridView.SelectedCells[0].OwningRow.Index;
+
+            if (rowIndex == selectedDataGridView.Rows.Count - 1)
             {
-                if (selectedDataGridView.Rows[i].Selected)
-                {
-                    if (i == selectedDataGridView.Rows.Count - 1)
-                    {
-                        CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the last row down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                        return;
-                    }
-
-                    // Swap the entire row
-                    DataGridViewRow temp = (DataGridViewRow)selectedDataGridView.Rows[i].Clone();
-                    for (int j = 0; j < selectedDataGridView.Rows[i].Cells.Count; j++)
-                    {
-                        temp.Cells[j].Value = selectedDataGridView.Rows[i].Cells[j].Value;
-                        selectedDataGridView.Rows[i].Cells[j].Value = selectedDataGridView.Rows[i + 1].Cells[j].Value;
-                        selectedDataGridView.Rows[i + 1].Cells[j].Value = temp.Cells[j].Value;
-                    }
-
-                    // Reselect
-                    selectedDataGridView.ClearSelection();
-                    selectedDataGridView.Rows[i + 1].Selected = true;
-
-                    // Save
-                    SaveDataGridViewToFile();
-                    return;
-                }
+                CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the last row down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
             }
+            isDataGridViewLoading = true;
+
+            DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
+            selectedDataGridView.Rows.Remove(selectedRow);
+            selectedDataGridView.Rows.Insert(rowIndex + 1, selectedRow);
+
+            // Reselect
+            selectedDataGridView.ClearSelection();
+            selectedDataGridView.Rows[rowIndex + 1].Selected = true;
+
+            // Save
+            SaveDataGridViewToFile();
+            isDataGridViewLoading = false;
         }
         private void DeleteRow(object? sender, EventArgs e)
         {

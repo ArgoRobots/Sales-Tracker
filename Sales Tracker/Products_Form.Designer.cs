@@ -441,7 +441,6 @@
 
         private Label CountryOfOrigin_Label;
         private Guna.UI2.WinForms.Guna2TextBox CountryOfOrigin_TextBox;
-        private Label SellerName_Label;
         private Label AddProduct_Label;
         private Label ProductName_Label;
         private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
