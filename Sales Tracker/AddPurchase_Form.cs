@@ -138,6 +138,7 @@ namespace Sales_Tracker
             string buyerName = BuyerName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
 
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
@@ -160,7 +161,7 @@ namespace Sales_Tracker
             fee = Math.Round(fee, 2);
             totalPrice = Math.Round(totalPrice, 2);
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
             thingsThatHaveChangedInFile.Add(itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
         }

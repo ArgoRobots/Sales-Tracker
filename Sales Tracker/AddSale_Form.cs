@@ -149,6 +149,7 @@ namespace Sales_Tracker
             string buyerName = BuyerName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
+            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
 
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
@@ -161,7 +162,7 @@ namespace Sales_Tracker
             fee = Math.Round(fee, 2);
             totalPrice = Math.Round(totalPrice, 2);
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(SaleID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(SaleID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
             thingsThatHaveChangedInFile.Add(itemName);
             Log.Write(3, $"Added Sale '{itemName}'");
         }
@@ -212,7 +213,6 @@ namespace Sales_Tracker
         {
             // Center controls
             SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
-                SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
                 ProductName_TextBox.Width) / 2;
 
@@ -255,7 +255,7 @@ namespace Sales_Tracker
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
+            SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
             SaleID_Label.Left = SaleID_TextBox.Left;
             BuyerName_TextBox.Left = SaleID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;

@@ -81,14 +81,14 @@ namespace Sales_Tracker
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin);
+                    Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
                 }
             }
             foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin);
+                    Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
                 }
             }
             MainMenu_Form.Instance.isDataGridViewLoading = false;
@@ -123,18 +123,18 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             string name = ProductName_TextBox.Text.Trim();
-            Product product = new(ProductID_TextBox.Text, name, CountryOfOrigin_TextBox.Text);
+            Product product = new(ProductID_TextBox.Text, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
 
             if (Sale_RadioButton.Checked)
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categorySaleList, category, product);
-                Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
+                Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
             }
             else
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categoryPurchaseList, category, product);
-                Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin);
+                Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
             }
 
             thingsThatHaveChangedInFile.Add(name);
@@ -197,7 +197,8 @@ namespace Sales_Tracker
             ProductID,
             ProductName,
             ProductCategory,
-            CountryOfOrigin
+            CountryOfOrigin,
+            CompanyOfOrigin
         }
         public readonly Dictionary<Columns, string> ColumnHeaders = new()
         {
@@ -205,6 +206,7 @@ namespace Sales_Tracker
             { Columns.ProductName, "Product name" },
             { Columns.ProductCategory, "Product category" },
             { Columns.CountryOfOrigin, "Country of origin" },
+            { Columns.CompanyOfOrigin, "Company of origin" },
         };
         private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         private const byte topForDataGridView = 240;

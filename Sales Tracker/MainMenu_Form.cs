@@ -642,6 +642,20 @@ namespace Sales_Tracker
             }
             return "null";
         }
+        public static string GetCompanyProductNameIsFrom(List<Category> categoryList, string productName)
+        {
+            foreach (Category category in categoryList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return product.CompanyOfOrigin;
+                    }
+                }
+            }
+            return "null";
+        }
         public static bool IsProductInCategory(string productName, string productCategory, List<Category> categories)
         {
             foreach (Category category in categories)
@@ -711,6 +725,7 @@ namespace Sales_Tracker
             Product,
             Category,
             Country,
+            Company,
             Date,
             Quantity,
             PricePerUnit,
@@ -726,6 +741,7 @@ namespace Sales_Tracker
             Product,
             Category,
             Country,
+            Company,
             Date,
             Quantity,
             PricePerUnit,
@@ -741,6 +757,7 @@ namespace Sales_Tracker
             { PurchaseColumns.Product, "Product name" },
             { PurchaseColumns.Category, "Category" },
             { PurchaseColumns.Country, "Country of origin" },
+            { PurchaseColumns.Company, "Company of origin" },
             { PurchaseColumns.Date, "Date" },
             { PurchaseColumns.Quantity, "Quantity" },
             { PurchaseColumns.PricePerUnit, "Price per unit" },
@@ -756,6 +773,7 @@ namespace Sales_Tracker
             { SalesColumns.Product, "Product name" },
             { SalesColumns.Category, "Category" },
             { SalesColumns.Country, "Country of destination" },
+            { SalesColumns.Company, "Company of origin" },
             { SalesColumns.Date, "Date" },
             { SalesColumns.Quantity, "Quantity" },
             { SalesColumns.PricePerUnit, "Price per unit" },
