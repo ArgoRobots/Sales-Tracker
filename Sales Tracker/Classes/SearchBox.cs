@@ -211,12 +211,14 @@ namespace Sales_Tracker.Classes
                             // Select the next result
                             Guna2Button nextBtn = (Guna2Button)results[i + 1];
                             nextBtn.BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(nextBtn);
                         }
                         else
                         {
                             // Select the first one
                             Guna2Button firstBtn = (Guna2Button)results[0];
                             firstBtn.BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(firstBtn);
                         }
                         isResultSelected = true;
                         break;
@@ -240,12 +242,14 @@ namespace Sales_Tracker.Classes
                             // Select the previous result
                             Guna2Button nextBtn = (Guna2Button)results[i - 1];
                             nextBtn.BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(nextBtn);
                         }
                         else
                         {
                             // Select the last one
                             Guna2Button firstBtn = (Guna2Button)results[results.Count - 1];
                             firstBtn.BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(firstBtn);
                         }
                         isResultSelected = true;
                         break;

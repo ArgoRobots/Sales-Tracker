@@ -38,17 +38,25 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "SearchBox.cs",
               "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Classes\\SearchBox.cs",
               "RelativeDocumentMoniker": "Sales Tracker\\Classes\\SearchBox.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Classes\\SearchBox.cs",
-              "RelativeToolTip": "Sales Tracker\\Classes\\SearchBox.cs",
-              "ViewState": "AQIAAB0AAAAAAAAAAAAwwCwAAABKAAAA",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Classes\\SearchBox.cs*",
+              "RelativeToolTip": "Sales Tracker\\Classes\\SearchBox.cs*",
+              "ViewState": "AQIAAO4AAAAAAAAAAADwv/QAAABJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-02T19:43:20.71Z",
               "EditorCaption": ""
