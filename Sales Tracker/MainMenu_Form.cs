@@ -1068,7 +1068,7 @@ namespace Sales_Tracker
 
         private void UpdateTotals()
         {
-            if (isDataGridViewLoading || Selected != Options.Purchases || Selected != Options.Sales)
+            if (isDataGridViewLoading || Selected != Options.Purchases & Selected != Options.Sales)
             {
                 return;
             }

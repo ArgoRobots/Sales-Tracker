@@ -19,6 +19,7 @@ namespace Sales_Tracker
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
+            Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             CheckIfProductsExist();
             Theme.SetThemeForForm(this);
         }
@@ -130,18 +131,33 @@ namespace Sales_Tracker
 
 
         // Methods to add purchases
-        private void AddPurchase(string itemName, int quantity, decimal pricePerUnit)
+        private void AddPurchase(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax)
         {
             string purchaseID = PurchaseID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
-            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
-            decimal tax = decimal.Parse(Tax_TextBox.Text);
+
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
 
+            // Convert currency
+            if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
+            {
+                decimal exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, "CAD", date);
+                pricePerUnit *= exchangeRate;
+                shipping *= exchangeRate;
+                tax *= exchangeRate;
+                totalPrice *= exchangeRate;
+            }
+
+            // Round to 2 decimal places
+            pricePerUnit = Math.Round(pricePerUnit, 2);
+            shipping = Math.Round(shipping, 2);
+            tax = Math.Round(tax, 2);
+            fee = Math.Round(fee, 2);
+            totalPrice = Math.Round(totalPrice, 2);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
             thingsThatHaveChangedInFile.Add(itemName);
@@ -152,8 +168,10 @@ namespace Sales_Tracker
             string itemName = ProductName_TextBox.Text;
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
+            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
+            decimal tax = decimal.Parse(Tax_TextBox.Text);
 
-            AddPurchase(itemName, quantity, pricePerUnit);
+            AddPurchase(itemName, quantity, pricePerUnit, shipping, tax);
         }
         private void AddMultiplePurchases()
         {
@@ -168,7 +186,10 @@ namespace Sales_Tracker
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
                 decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
 
-                AddPurchase(itemName, quantity, pricePerUnit);
+                decimal shipping = decimal.Parse(Shipping_TextBox.Text) / quantity;
+                decimal tax = decimal.Parse(Tax_TextBox.Text) / quantity;
+
+                AddPurchase(itemName, quantity, pricePerUnit, shipping, tax);
             }
         }
 
@@ -186,15 +207,18 @@ namespace Sales_Tracker
         private void SetControlsForSingleProduct()
         {
             // Center controls
-            ProductName_TextBox.Left = (Width - ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
+            Currency_ComboBox.Left = (Width - Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
                 PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally -
-                BuyerName_TextBox.Width) / 2;
+                BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
+                ProductName_TextBox.Width) / 2;
 
-            ProductName_Label.Left = ProductName_TextBox.Left;
-            PurchaseID_TextBox.Left = ProductName_TextBox.Right + spaceBetweenControlsHorizontally;
+            Currency_Label.Left = Currency_ComboBox.Left;
+            PurchaseID_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
             PurchaseID_Label.Left = PurchaseID_TextBox.Left;
             BuyerName_TextBox.Left = PurchaseID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
+            ProductName_TextBox.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
+            ProductName_Label.Left = ProductName_TextBox.Left;
 
             Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Quantity_TextBox.Width - spaceBetweenControlsHorizontally -
@@ -228,7 +252,9 @@ namespace Sales_Tracker
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            PurchaseID_TextBox.Left = (Width - PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
+            Currency_ComboBox.Left = (Width - Currency_ComboBox.Width - PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
+            Currency_Label.Left = Currency_ComboBox.Left;
+            PurchaseID_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
             PurchaseID_Label.Left = PurchaseID_TextBox.Left;
             BuyerName_TextBox.Left = PurchaseID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
