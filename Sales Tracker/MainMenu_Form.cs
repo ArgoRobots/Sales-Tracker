@@ -27,6 +27,7 @@ namespace Sales_Tracker
             LoadCategories();
             LoadSalesAndPurchases();
             LoadAccountants();
+            LoadCompanies();
             isDataGridViewLoading = false;
             Sales_Button.PerformClick();
             LoadDataFromSetting();
@@ -53,6 +54,10 @@ namespace Sales_Tracker
         private void LoadAccountants()
         {
             accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
+        }
+        private void LoadCompanies()
+        {
+            companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
         }
         public void LoadSalesAndPurchases()
         {
@@ -438,6 +443,10 @@ namespace Sales_Tracker
         {
             new Products_Form(false).ShowDialog();
         }
+        private void ManageCompanies_Button_Click(object sender, EventArgs e)
+        {
+            new Companies_Form().ShowDialog();
+        }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
             new Categories_Form(false).ShowDialog();
@@ -569,6 +578,7 @@ namespace Sales_Tracker
         public List<Category> categorySaleList = [];
         public List<Category> categoryPurchaseList = [];
         public List<string> accountantList = [];
+        public List<string> companyList = [];
         public List<string> GetProductCategorySaleNames()
         {
             return categorySaleList.Select(s => s.Name).ToList();
@@ -716,7 +726,8 @@ namespace Sales_Tracker
             ProductSales,
             CategoryPurchases,
             CategorySales,
-            Accountants
+            Accountants,
+            Companies
         }
         public enum PurchaseColumns
         {
@@ -950,6 +961,10 @@ namespace Sales_Tracker
                 LoadGraphs();
                 SaveDataGridViewToFile();
             }
+            else if (Selected == Options.Companies)
+            {
+                SaveDataGridViewToFile();
+            }
             else
             {
                 SaveCategoriesToFile(Selected);
@@ -1166,6 +1181,7 @@ namespace Sales_Tracker
                 Options.ProductPurchases => Directories.categoryPurchases_file,
                 Options.ProductSales => Directories.categorySales_file,
                 Options.Accountants => Directories.accountants_file,
+                Options.Companies => Directories.companies_file,
                 _ => ""
             };
         }
@@ -1430,7 +1446,7 @@ namespace Sales_Tracker
             SetMessage("");
         }
 
-
+        // Logs
         private Log_Form LogForm;
         public void OpenLogs()
         {
@@ -1445,6 +1461,7 @@ namespace Sales_Tracker
             }
         }
 
+        // Misc.
         public void CloseRightClickPanels()
         {
             controlRightClickPanelWasAddedTo?.Controls.Remove(rightClickDataGridView_Panel);

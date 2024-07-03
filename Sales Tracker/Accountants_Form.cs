@@ -59,7 +59,7 @@ namespace Sales_Tracker
             Accountants_DataGridView.Rows.Add(name);
 
             thingsThatHaveChangedInFile.Add(name);
-            Log.Write(3, $"Added category '{name}'");
+            Log.Write(3, $"Added accountant '{name}'");
 
             Accountant_TextBox.Text = "";
             ValidateInputs();

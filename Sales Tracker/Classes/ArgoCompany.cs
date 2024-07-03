@@ -30,6 +30,7 @@ namespace Sales_Tracker.Classes
         {
             if (Accountants_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 Categories_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                Companies_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 Products_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 AddSale_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 AddPurchase_Form.thingsThatHaveChangedInFile.Count > 0)
@@ -42,6 +43,7 @@ namespace Sales_Tracker.Classes
         {
             Accountants_Form.thingsThatHaveChangedInFile.Clear();
             Categories_Form.thingsThatHaveChangedInFile.Clear();
+            Companies_Form.thingsThatHaveChangedInFile.Clear();
             Products_Form.thingsThatHaveChangedInFile.Clear();
             AddSale_Form.thingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.thingsThatHaveChangedInFile.Clear();

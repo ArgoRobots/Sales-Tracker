@@ -159,6 +159,7 @@ namespace Sales_Tracker
 
             top = AddListForThingsChanged("Accountants", Accountants_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Categories", Categories_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Companies", Companies_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Purchases", AddPurchase_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Sales", AddSale_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Products", Products_Form.thingsThatHaveChangedInFile, top);

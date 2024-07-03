@@ -28,6 +28,7 @@ namespace Sales_Tracker.Classes
             SearchResultBox.HorizontalScroll.Enabled = false;
             SearchResultBox.HorizontalScroll.Maximum = 0;
             SearchResultBox.VerticalScroll.Enabled = true;
+            SearchResultBox.VerticalScroll.Visible = true;
             SearchResultBoxContainer.Controls.Add(SearchResultBox);
         }
 
@@ -176,7 +177,7 @@ namespace Sales_Tracker.Classes
         }
         public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list, Guna2Button button)
         {
-            if (resultNames_list.Contains(textBox.Text))
+            if (resultNames_list.Contains(textBox.Text) || textBox.Text == "")
             {
                 SetTextBoxToValid(textBox, button);
             }

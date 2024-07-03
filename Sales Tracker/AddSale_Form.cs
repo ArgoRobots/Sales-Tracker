@@ -20,6 +20,7 @@ namespace Sales_Tracker
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
             CheckIfProductsExist();
+            CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -63,27 +64,6 @@ namespace Sales_Tracker
         private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
         {
             SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight, true);
-        }
-        private void CheckIfProductsExist()
-        {
-            if (MainMenu_Form.Instance.GetProductSaleNames().Count == 0)
-            {
-                ShowProductWarning();
-            }
-            else
-            {
-                HideProductWarning();
-            }
-        }
-        private void ShowProductWarning()
-        {
-            WarningProduct_LinkLabel.Visible = true;
-            WarningProduct_PictureBox.Visible = true;
-        }
-        private void HideProductWarning()
-        {
-            WarningProduct_LinkLabel.Visible = false;
-            WarningProduct_PictureBox.Visible = false;
         }
 
 
@@ -139,6 +119,11 @@ namespace Sales_Tracker
         {
             new Products_Form(false).ShowDialog();
             CheckIfProductsExist();
+        }
+        private void WarningBuyer_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new Accountants_Form().ShowDialog();
+            CheckIfBuyersExist();
         }
 
 
@@ -451,6 +436,51 @@ namespace Sales_Tracker
 
             Height = FlowPanel.Bottom + extraSpaceForBottom;
             AddButton.Top = FlowPanel.Bottom + spaceBetweenPanels;
+        }
+
+
+        // Warning labels
+        private void CheckIfProductsExist()
+        {
+            if (MainMenu_Form.Instance.GetProductSaleNames().Count == 0)
+            {
+                ShowProductWarning();
+            }
+            else
+            {
+                HideProductWarning();
+            }
+        }
+        private void ShowProductWarning()
+        {
+            WarningProduct_LinkLabel.Visible = true;
+            WarningProduct_PictureBox.Visible = true;
+        }
+        private void HideProductWarning()
+        {
+            WarningProduct_LinkLabel.Visible = false;
+            WarningProduct_PictureBox.Visible = false;
+        }
+        private void CheckIfBuyersExist()
+        {
+            if (MainMenu_Form.Instance.accountantList.Count == 0)
+            {
+                ShowBuyerWarning();
+            }
+            else
+            {
+                HideBuyerWarning();
+            }
+        }
+        private void ShowBuyerWarning()
+        {
+            WarningBuyer_LinkLabel.Visible = true;
+            WarningBuyer_PictureBox.Visible = true;
+        }
+        private void HideBuyerWarning()
+        {
+            WarningBuyer_LinkLabel.Visible = false;
+            WarningBuyer_PictureBox.Visible = false;
         }
 
 

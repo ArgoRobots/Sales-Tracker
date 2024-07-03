@@ -61,6 +61,12 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
             CountryOfOrigin_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             CountryOfOrigin_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CountryOfOrigin_TextBox, this, AddProduct_Label, e); };
+
+            CompanyOfOrigin_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, CompanyOfOrigin_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, maxHeight); };
+            CompanyOfOrigin_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CompanyOfOrigin_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, AddProduct_Button, maxHeight); };
+            CompanyOfOrigin_TextBox.TextChanged += ValidateInputs;
+            CompanyOfOrigin_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            CompanyOfOrigin_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CompanyOfOrigin_TextBox, this, AddProduct_Label, e); };
         }
         private List<string> GetListForSearchBox()
         {

@@ -1,0 +1,165 @@
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
+
+namespace Sales_Tracker
+{
+    public partial class Companies_Form : Form
+    {
+        // Properties
+        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        private readonly MainMenu_Form.Options oldOption;
+        private readonly Guna2DataGridView oldSelectedDataGridView;
+
+        // Init.
+        public static Companies_Form Instance { get; private set; }
+        public Companies_Form()
+        {
+            InitializeComponent();
+            Instance = this;
+
+            AddEventHandlersToTextBoxes();
+            oldOption = MainMenu_Form.Instance.Selected;
+            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            ConstructDataGridViews();
+            LoadCompanies();
+            Theme.SetThemeForForm(this);
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            Company_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+        }
+        private void LoadCompanies()
+        {
+            MainMenu_Form.Instance.isDataGridViewLoading = true;
+
+            foreach (string accountant in MainMenu_Form.Instance.companyList)
+            {
+                Company_DataGridView.Rows.Add(accountant);
+            }
+            MainMenu_Form.Instance.isDataGridViewLoading = false;
+        }
+
+        // Form event handlers
+        private void Companies_Form_Resize(object sender, EventArgs e)
+        {
+            CenterSelectedDataGridView();
+        }
+        private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
+        }
+
+
+        // Event handlers
+        private void AddCompany_Button_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            string name = Company_TextBox.Text.Trim();
+            MainMenu_Form.Instance.companyList.Add(name);
+            Company_DataGridView.Rows.Add(name);
+
+            thingsThatHaveChangedInFile.Add(name);
+            Log.Write(3, $"Added company '{name}'");
+
+            Company_TextBox.Text = "";
+            ValidateInputs();
+            Company_TextBox.Focus();
+        }
+        private void Company_TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
+                if (AddCompany_Button.Enabled)
+                {
+                    AddCompany_Button.PerformClick();
+                }
+            }
+        }
+        private void Company_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            VaidateCompanyTextBox();
+            ValidateInputs();
+        }
+
+        // DataGridView
+        public enum Columns
+        {
+            CompanyName,
+        }
+        public readonly Dictionary<Columns, string> ColumnHeaders = new()
+        {
+            { Columns.CompanyName, "Company" },
+        };
+        public Guna2DataGridView Company_DataGridView;
+        private const byte topForDataGridView = 170;
+        private void CenterSelectedDataGridView()
+        {
+            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
+        }
+        private void ConstructDataGridViews()
+        {
+            Size size = new(740, 280);
+
+            Company_DataGridView = new Guna2DataGridView();
+            MainMenu_Form.Instance.InitializeDataGridView(Company_DataGridView, size);
+            Company_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            MainMenu_Form.LoadColumnsInDataGridView(Company_DataGridView, ColumnHeaders);
+            Company_DataGridView.Location = new Point((Width - Company_DataGridView.Width) / 2, topForDataGridView);
+            Company_DataGridView.Tag = MainMenu_Form.DataGridViewTags.Accountant;
+
+            Controls.Add(Company_DataGridView);
+            MainMenu_Form.Instance.selectedDataGridView = Company_DataGridView;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.Companies;
+        }
+
+
+        // Validate company name
+        public void VaidateCompanyTextBox()
+        {
+            if (MainMenu_Form.Instance.accountantList.Any(a => a == Company_TextBox.Text))
+            {
+                AddCompany_Button.Enabled = false;
+                UI.SetGTextBoxToInvalid(Company_TextBox);
+                ShowCompanyWarning();
+            }
+            else
+            {
+                AddCompany_Button.Enabled = true;
+                UI.SetGTextBoxToValid(Company_TextBox);
+                HideCompanyWarning();
+            }
+        }
+        private void ShowCompanyWarning()
+        {
+            WarningCompanyName_PictureBox.Visible = true;
+            WarningCompanyName_Label.Visible = true;
+            AddCompany_Button.Enabled = false;
+            AddCompany_Button.Tag = false;
+        }
+        private void HideCompanyWarning()
+        {
+            WarningCompanyName_PictureBox.Visible = false;
+            WarningCompanyName_Label.Visible = false;
+            AddCompany_Button.Enabled = true;
+            AddCompany_Button.Tag = true;
+        }
+
+        // Methods
+        private void ValidateInputs()
+        {
+            if (AddCompany_Button.Tag is bool tag && tag == false)
+            {
+                return;
+            }
+            AddCompany_Button.Enabled = !string.IsNullOrWhiteSpace(Company_TextBox.Text);
+        }
+        public void CloseAllPanels(object? sender, EventArgs? e)
+        {
+            UI.CloseAllPanels(null, null);
+        }
+    }
+}
