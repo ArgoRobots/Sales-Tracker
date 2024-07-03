@@ -98,6 +98,7 @@
             Company_TextBox.PlaceholderText = "";
             Company_TextBox.SelectedText = "";
             Company_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Company_TextBox.ShortcutsEnabled = false;
             Company_TextBox.Size = new Size(200, 36);
             Company_TextBox.TabIndex = 50;
             Company_TextBox.TextChanged += Company_TextBox_TextChanged;

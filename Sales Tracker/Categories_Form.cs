@@ -56,6 +56,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Categories_Form_Resize(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             CenterSelectedDataGridView();
         }
         private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -187,7 +188,10 @@ namespace Sales_Tracker
             }
             else
             {
-                AddCategory_Button.Enabled = true;
+                if (Category_TextBox.Text != "")
+                {
+                    AddCategory_Button.Enabled = true;
+                }
                 UI.SetGTextBoxToValid(Category_TextBox);
                 HideCategoryWarning();
             }
@@ -203,19 +207,21 @@ namespace Sales_Tracker
         {
             WarningCategoryName_PictureBox.Visible = false;
             WarningCategoryName_Label.Visible = false;
-            AddCategory_Button.Enabled = true;
-            AddCategory_Button.Tag = false;
+            if (Category_TextBox.Text != "")
+            {
+                AddCategory_Button.Enabled = true;
+                AddCategory_Button.Tag = true;
+            }
         }
 
 
         // Methods
         private void ValidateInputs()
         {
-            if (AddCategory_Button.Tag is bool tag && tag == false)
+            if (AddCategory_Button.Tag is bool tag && tag == true)
             {
-                return;
+                AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
             }
-            AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {

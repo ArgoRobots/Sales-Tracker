@@ -356,7 +356,8 @@ namespace Sales_Tracker
                 Location = new Point(left, 20 + spaceBetweenControlsVertically),
                 BorderColor = CustomColors.controlBorder,
                 FillColor = CustomColors.controlBack,
-                ForeColor = CustomColors.text
+                ForeColor = CustomColors.text,
+                ShortcutsEnabled = false
             };
             textBox.HoverState.BorderColor = CustomColors.accent_blue;
             textBox.FocusedState.BorderColor = CustomColors.accent_blue;

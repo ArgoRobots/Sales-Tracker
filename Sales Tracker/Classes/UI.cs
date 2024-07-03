@@ -310,7 +310,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel ControlDropDown_Panel;
         private static void ConstructControlsDropDownMenu()
         {
-            ControlDropDown_Panel = ConstructPanelForMenu(new Size(200, 5 * 30 + 15 + 40));
+            ControlDropDown_Panel = ConstructPanelForMenu(new Size(200, 6 * 30 + 15 + 50));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
@@ -329,6 +329,16 @@ namespace Sales_Tracker.Classes
             {
                 CloseAllPanels(null, null);
                 MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
+            };
+
+            CosntructSeperator(190, flowPanel);
+
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCompanies_Button.Text, 0, true, flowPanel);
+            menuBtn.Size = new Size(190, 30);
+            menuBtn.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                MainMenu_Form.Instance.ManageCompanies_Button.PerformClick();
             };
 
             CosntructSeperator(190, flowPanel);

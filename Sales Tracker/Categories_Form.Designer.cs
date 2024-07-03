@@ -62,6 +62,7 @@
             Category_TextBox.PlaceholderText = "";
             Category_TextBox.SelectedText = "";
             Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Category_TextBox.ShortcutsEnabled = false;
             Category_TextBox.Size = new Size(200, 36);
             Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += Category_TextBox_TextChanged;
@@ -86,7 +87,7 @@
             AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddCategory_Button.Size = new Size(143, 36);
             AddCategory_Button.TabIndex = 2;
-            AddCategory_Button.Tag = "0";
+            AddCategory_Button.Tag = "";
             AddCategory_Button.Text = "Add category";
             AddCategory_Button.Click += AddCategory_Button_Click;
             // 

@@ -32,8 +32,6 @@ namespace Sales_Tracker.Classes
             SearchResultBoxContainer.Controls.Add(SearchResultBox);
         }
 
-
-
         public class SearchResult(string name, Image? flag, int score)
         {
             public string Name { get; set; } = name;
@@ -43,13 +41,6 @@ namespace Sales_Tracker.Classes
         public const string addLine = "ADD LINE CONTROL";
         public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight, bool addExtraParent = false)
         {
-            // Check if SearchResultBoxContainer is already added for this textBox
-            if (controlToAddSearchBox.Controls.Contains(SearchResultBoxContainer) && SearchResultBoxContainer.Tag == textBox)
-            {
-                return;
-            }
-            SearchResultBoxContainer.Tag = textBox;
-
             SearchResultBox.Controls.Clear();
             SearchResultBox.SuspendLayout();  // Prevent the horizontal scrollbar from appearing
 

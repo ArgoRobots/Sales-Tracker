@@ -26,6 +26,7 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             LoadProducts();
             CheckRadioButton(checkPurchaseRadioButton);
+            VaidateCompanyTextBox();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
         }
@@ -115,6 +116,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Products_Form_Resize(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             CenterSelectedDataGridView();
         }
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -178,6 +180,11 @@ namespace Sales_Tracker
             new Categories_Form(Purchase_RadioButton.Checked).ShowDialog();
             VaidateCategoryTextBox();
         }
+        private void WarningCompany_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new Companies_Form().ShowDialog();
+            VaidateCompanyTextBox();
+        }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
@@ -215,7 +222,7 @@ namespace Sales_Tracker
             { Columns.CompanyOfOrigin, "Company of origin" },
         };
         private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte topForDataGridView = 240;
+        private const byte topForDataGridView = 255;
         private void ConstructDataGridViews()
         {
             Size size = new(840, 270);
@@ -305,6 +312,29 @@ namespace Sales_Tracker
         {
             WarningCategory_PictureBox.Visible = false;
             WarningCategory_LinkLabel.Visible = false;
+        }
+
+        // Validate company name
+        private void VaidateCompanyTextBox()
+        {
+            if (MainMenu_Form.Instance.companyList.Count == 0)
+            {
+                ShowCompanyWarning();
+            }
+            else
+            {
+                HideCompanyWarning();
+            }
+        }
+        private void ShowCompanyWarning()
+        {
+            WarningCompany_PictureBox.Visible = true;
+            WarningCompany_LinkLabel.Visible = true;
+        }
+        private void HideCompanyWarning()
+        {
+            WarningCompany_PictureBox.Visible = false;
+            WarningCompany_LinkLabel.Visible = false;
         }
 
         // SearchingFor_Label

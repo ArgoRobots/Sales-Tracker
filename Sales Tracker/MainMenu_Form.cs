@@ -274,7 +274,7 @@ namespace Sales_Tracker
             Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
             Total_Panel.Width = selectedDataGridView.Width;
 
-            if (Width < 980 + Edit_Button.Left + Edit_Button.Width)
+            if (Width < 1100 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
                 wasControlsDropDownAdded = true;
@@ -296,6 +296,7 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Add(UI.controlsDropDown_Button);
             MainTop_Panel.Controls.Remove(ManageAccountants_Button);
             MainTop_Panel.Controls.Remove(ManageCategories_Button);
+            MainTop_Panel.Controls.Remove(ManageCompanies_Button);
             MainTop_Panel.Controls.Remove(ManageProducts_Button);
             MainTop_Panel.Controls.Remove(AddSale_Button);
             MainTop_Panel.Controls.Remove(AddPurchase_Button);
@@ -310,7 +311,8 @@ namespace Sales_Tracker
             int buttonWidthPlusSpace = ManageAccountants_Button.Width + 8;
             ManageAccountants_Button.Location = new Point(MainTop_Panel.Width - buttonWidthPlusSpace - 5, buttonTop);
             ManageCategories_Button.Location = new Point(ManageAccountants_Button.Left - buttonWidthPlusSpace, buttonTop);
-            ManageProducts_Button.Location = new Point(ManageCategories_Button.Left - buttonWidthPlusSpace, buttonTop);
+            ManageCompanies_Button.Location = new Point(ManageCategories_Button.Left - buttonWidthPlusSpace, buttonTop);
+            ManageProducts_Button.Location = new Point(ManageCompanies_Button.Left - buttonWidthPlusSpace, buttonTop);
             AddSale_Button.Location = new Point(ManageProducts_Button.Left - buttonWidthPlusSpace, buttonTop);
             AddPurchase_Button.Location = new Point(AddSale_Button.Left - buttonWidthPlusSpace, buttonTop);
             DarkMode_ToggleSwitch.Location = new Point(AddPurchase_Button.Left - DarkMode_ToggleSwitch.Width - 8, (MainTop_Panel.Height - DarkMode_ToggleSwitch.Height) / 2);
@@ -318,6 +320,7 @@ namespace Sales_Tracker
 
             MainTop_Panel.Controls.Add(ManageAccountants_Button);
             MainTop_Panel.Controls.Add(ManageCategories_Button);
+            MainTop_Panel.Controls.Add(ManageCompanies_Button);
             MainTop_Panel.Controls.Add(ManageProducts_Button);
             MainTop_Panel.Controls.Add(AddSale_Button);
             MainTop_Panel.Controls.Add(AddPurchase_Button);
@@ -1035,23 +1038,23 @@ namespace Sales_Tracker
 
                 // Calculate the horizontal position
                 bool tooFarRight = false;
-                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - rowHeight > controlRightClickPanelWasAddedTo.Width)
+                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X + 17 > controlRightClickPanelWasAddedTo.Width)
                 {
                     rightClickDataGridView_Panel.Left = controlRightClickPanelWasAddedTo.Width - rightClickDataGridView_Panel.Width - 17;
                     tooFarRight = true;
                 }
                 else
                 {
-                    rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - rowHeight;
+                    rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X;
                 }
 
                 // Calculate the vertical position
                 int verticalOffset = grid.FirstDisplayedScrollingRowIndex * grid.Rows[0].Height;
                 int rowTop = (info.RowIndex + 1) * grid.Rows[0].Height - verticalOffset + selectedDataGridView.Top + columnHeaderHeight;
 
-                if (rowTop + rightClickDataGridView_Panel.Height > Height)
+                if (rowTop + rightClickDataGridView_Panel.Height > controlRightClickPanelWasAddedTo.Height - 17)
                 {
-                    rightClickDataGridView_Panel.Top = Height - rightClickDataGridView_Panel.Height - 2;
+                    rightClickDataGridView_Panel.Top = controlRightClickPanelWasAddedTo.Height - rightClickDataGridView_Panel.Height - 41;
                     if (!tooFarRight)
                     {
                         rightClickDataGridView_Panel.Left += 30;

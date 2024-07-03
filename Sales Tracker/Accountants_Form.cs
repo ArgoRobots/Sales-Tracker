@@ -42,6 +42,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Accountants_Form_Resize(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             CenterSelectedDataGridView();
         }
         private void Accountants_Form_FormClosed(object sender, FormClosedEventArgs e)
@@ -149,11 +150,10 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs()
         {
-            if (AddAccountant_Button.Tag is bool tag && tag == false)
+            if (AddAccountant_Button.Tag is bool tag && tag == true)
             {
-                return;
+                AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text);
             }
-            AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text);
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {

@@ -42,6 +42,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Companies_Form_Resize(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             CenterSelectedDataGridView();
         }
         private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)

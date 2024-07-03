@@ -98,6 +98,7 @@
             Accountant_TextBox.PlaceholderText = "";
             Accountant_TextBox.SelectedText = "";
             Accountant_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Accountant_TextBox.ShortcutsEnabled = false;
             Accountant_TextBox.Size = new Size(200, 36);
             Accountant_TextBox.TabIndex = 42;
             Accountant_TextBox.TextChanged += Accountant_TextBox_TextChanged;
@@ -122,7 +123,7 @@
             AddAccountant_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddAccountant_Button.Size = new Size(143, 36);
             AddAccountant_Button.TabIndex = 43;
-            AddAccountant_Button.Tag = "0";
+            AddAccountant_Button.Tag = "";
             AddAccountant_Button.Text = "Add accountant";
             AddAccountant_Button.Click += AddAccountant_Button_Click;
             // 
