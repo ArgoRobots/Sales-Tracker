@@ -12,6 +12,7 @@ namespace Sales_Tracker.Classes
             // Main menu controls
             ConstructFileMenu();
             ConstructHelpMenu();
+            ConstructProfileMenu();
             ConstructRightClickRename();
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
@@ -278,6 +279,40 @@ namespace Sales_Tracker.Classes
             };
         }
 
+        // accountMenu
+        public static Guna2Panel accountMenu;
+        private static void ConstructProfileMenu()
+        {
+            accountMenu = ConstructPanelForMenu(new Size(250, 4 * 22 + 10 + 10));
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)accountMenu.Controls[0];
+
+            Guna2Button menuBtn = ConstructBtnForMenu("Argo account", 240, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                Tools.OpenLink("");
+            };
+
+            menuBtn = ConstructBtnForMenu("Settings", 240, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                MainMenu_Form.Instance.OpenSettingsMenu();
+            };
+
+            menuBtn = ConstructBtnForMenu("Share feedback", 240, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+
+            };
+
+            CosntructSeperator(240, flowPanel);
+
+            menuBtn = ConstructBtnForMenu("Sign out", 240, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+
+            };
+        }
+
         // Robot Programmer workspace
         public static Guna2Button controlsDropDown_Button;
         private static void ContructControlsDropDownButton()
@@ -430,9 +465,11 @@ namespace Sales_Tracker.Classes
         public static void CloseAllPanels(object? sender, EventArgs? e)
         {
             MainMenu_Form.Instance.Controls.Remove(fileMenu);
-            MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Controls.Remove(helpMenu);
+            MainMenu_Form.Instance.Controls.Remove(accountMenu);
+            MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
+            MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
             MainMenu_Form.Instance.RenameCompany();
             MainMenu_Form.Instance.CloseRightClickPanels();

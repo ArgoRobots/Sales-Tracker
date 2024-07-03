@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -43,8 +45,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -106,21 +108,19 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            ManageCompanies_Button = new Guna.UI2.WinForms.Guna2Button();
             ManageAccountants_Button = new Guna.UI2.WinForms.Guna2Button();
             ManageCategories_Button = new Guna.UI2.WinForms.Guna2Button();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
             AddPurchase_Button = new Guna.UI2.WinForms.Guna2Button();
             Edit_Button = new Guna.UI2.WinForms.Guna2Button();
-            DarkMode_label = new Label();
-            DarkMode_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
             ManageProducts_Button = new Guna.UI2.WinForms.Guna2Button();
             CompanyName_Label = new Label();
             MessagePanel_timer = new System.Windows.Forms.Timer(components);
             Top_Panel = new Panel();
+            Account_Button = new Guna.UI2.WinForms.Guna2Button();
             Saved_Label = new Label();
             Help_Button = new Guna.UI2.WinForms.Guna2Button();
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -143,7 +143,6 @@
             Filter_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             LineGraph_Label = new Label();
             LineGraph_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
-            ManageCompanies_Button = new Guna.UI2.WinForms.Guna2Button();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
@@ -159,17 +158,35 @@
             MainTop_Panel.Controls.Add(AddSale_Button);
             MainTop_Panel.Controls.Add(AddPurchase_Button);
             MainTop_Panel.Controls.Add(Edit_Button);
-            MainTop_Panel.Controls.Add(DarkMode_label);
-            MainTop_Panel.Controls.Add(DarkMode_ToggleSwitch);
             MainTop_Panel.Controls.Add(ManageProducts_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
-            MainTop_Panel.CustomizableEdges = customizableEdges17;
+            MainTop_Panel.CustomizableEdges = customizableEdges15;
             MainTop_Panel.Location = new Point(0, 30);
             MainTop_Panel.Name = "MainTop_Panel";
-            MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges16;
             MainTop_Panel.Size = new Size(1604, 60);
             MainTop_Panel.TabIndex = 6;
             MainTop_Panel.Click += CloseAllPanels;
+            // 
+            // ManageCompanies_Button
+            // 
+            ManageCompanies_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ManageCompanies_Button.BackColor = Color.Transparent;
+            ManageCompanies_Button.BorderColor = Color.LightGray;
+            ManageCompanies_Button.BorderRadius = 2;
+            ManageCompanies_Button.BorderThickness = 1;
+            ManageCompanies_Button.CustomizableEdges = customizableEdges1;
+            ManageCompanies_Button.FillColor = Color.White;
+            ManageCompanies_Button.Font = new Font("Segoe UI", 9.5F);
+            ManageCompanies_Button.ForeColor = Color.Black;
+            ManageCompanies_Button.Location = new Point(1125, 13);
+            ManageCompanies_Button.Margin = new Padding(4, 3, 4, 3);
+            ManageCompanies_Button.Name = "ManageCompanies_Button";
+            ManageCompanies_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            ManageCompanies_Button.Size = new Size(150, 32);
+            ManageCompanies_Button.TabIndex = 16;
+            ManageCompanies_Button.Text = "Manage companies";
+            ManageCompanies_Button.Click += ManageCompanies_Button_Click;
             // 
             // ManageAccountants_Button
             // 
@@ -279,41 +296,6 @@
             Edit_Button.TabIndex = 6;
             Edit_Button.Click += Edit_Button_Click;
             // 
-            // DarkMode_label
-            // 
-            DarkMode_label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            DarkMode_label.AutoSize = true;
-            DarkMode_label.BackColor = Color.Transparent;
-            DarkMode_label.Font = new Font("Segoe UI", 11.25F);
-            DarkMode_label.Location = new Point(509, 19);
-            DarkMode_label.Name = "DarkMode_label";
-            DarkMode_label.Size = new Size(83, 20);
-            DarkMode_label.TabIndex = 11;
-            DarkMode_label.Text = "Dark mode";
-            DarkMode_label.Click += CloseAllPanels;
-            // 
-            // DarkMode_ToggleSwitch
-            // 
-            DarkMode_ToggleSwitch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            DarkMode_ToggleSwitch.Animated = true;
-            DarkMode_ToggleSwitch.AutoRoundedCorners = true;
-            DarkMode_ToggleSwitch.BackColor = Color.Transparent;
-            DarkMode_ToggleSwitch.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            DarkMode_ToggleSwitch.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            DarkMode_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
-            DarkMode_ToggleSwitch.CheckedState.InnerColor = Color.White;
-            DarkMode_ToggleSwitch.CustomizableEdges = customizableEdges13;
-            DarkMode_ToggleSwitch.Location = new Point(598, 19);
-            DarkMode_ToggleSwitch.Name = "DarkMode_ToggleSwitch";
-            DarkMode_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            DarkMode_ToggleSwitch.Size = new Size(40, 20);
-            DarkMode_ToggleSwitch.TabIndex = 10;
-            DarkMode_ToggleSwitch.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            DarkMode_ToggleSwitch.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            DarkMode_ToggleSwitch.UncheckedState.InnerBorderColor = Color.White;
-            DarkMode_ToggleSwitch.UncheckedState.InnerColor = Color.White;
-            DarkMode_ToggleSwitch.CheckedChanged += DarkMode_ToggleSwitch_CheckedChanged;
-            // 
             // ManageProducts_Button
             // 
             ManageProducts_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -321,14 +303,14 @@
             ManageProducts_Button.BorderColor = Color.LightGray;
             ManageProducts_Button.BorderRadius = 2;
             ManageProducts_Button.BorderThickness = 1;
-            ManageProducts_Button.CustomizableEdges = customizableEdges15;
+            ManageProducts_Button.CustomizableEdges = customizableEdges13;
             ManageProducts_Button.FillColor = Color.White;
             ManageProducts_Button.Font = new Font("Segoe UI", 9.5F);
             ManageProducts_Button.ForeColor = Color.Black;
             ManageProducts_Button.Location = new Point(967, 13);
             ManageProducts_Button.Margin = new Padding(4, 3, 4, 3);
             ManageProducts_Button.Name = "ManageProducts_Button";
-            ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ManageProducts_Button.Size = new Size(150, 32);
             ManageProducts_Button.TabIndex = 9;
             ManageProducts_Button.Text = "Manage products";
@@ -354,6 +336,7 @@
             // 
             Top_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Top_Panel.BackColor = Color.FromArgb(204, 204, 204);
+            Top_Panel.Controls.Add(Account_Button);
             Top_Panel.Controls.Add(Saved_Label);
             Top_Panel.Controls.Add(Help_Button);
             Top_Panel.Controls.Add(Save_Button);
@@ -363,6 +346,28 @@
             Top_Panel.Size = new Size(1604, 30);
             Top_Panel.TabIndex = 0;
             Top_Panel.Click += CloseAllPanels;
+            // 
+            // Account_Button
+            // 
+            Account_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Account_Button.CustomizableEdges = customizableEdges17;
+            Account_Button.DisabledState.BorderColor = Color.DarkGray;
+            Account_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Account_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Account_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Account_Button.FillColor = Color.FromArgb(204, 204, 204);
+            Account_Button.Font = new Font("Segoe UI", 9F);
+            Account_Button.ForeColor = Color.White;
+            Account_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
+            Account_Button.Image = Properties.Resources.ProfileGray;
+            Account_Button.ImageSize = new Size(25, 25);
+            Account_Button.Location = new Point(1564, 0);
+            Account_Button.Name = "Account_Button";
+            Account_Button.PressedColor = Color.Empty;
+            Account_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Account_Button.Size = new Size(40, 30);
+            Account_Button.TabIndex = 18;
+            Account_Button.Click += Account_Button_Click;
             // 
             // Saved_Label
             // 
@@ -391,11 +396,11 @@
             Help_Button.ForeColor = Color.White;
             Help_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
             Help_Button.Image = Properties.Resources.HelpGray;
-            Help_Button.Location = new Point(1574, 0);
+            Help_Button.Location = new Point(1524, 0);
             Help_Button.Name = "Help_Button";
             Help_Button.PressedColor = Color.Empty;
             Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            Help_Button.Size = new Size(30, 30);
+            Help_Button.Size = new Size(40, 30);
             Help_Button.TabIndex = 5;
             Help_Button.Click += Help_Button_Click;
             // 
@@ -770,26 +775,6 @@
             LineGraph_ToggleSwitch.UncheckedState.InnerColor = Color.White;
             LineGraph_ToggleSwitch.CheckedChanged += LineGraph_ToggleSwitch_CheckedChanged;
             // 
-            // ManageCompanies_Button
-            // 
-            ManageCompanies_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            ManageCompanies_Button.BackColor = Color.Transparent;
-            ManageCompanies_Button.BorderColor = Color.LightGray;
-            ManageCompanies_Button.BorderRadius = 2;
-            ManageCompanies_Button.BorderThickness = 1;
-            ManageCompanies_Button.CustomizableEdges = customizableEdges1;
-            ManageCompanies_Button.FillColor = Color.White;
-            ManageCompanies_Button.Font = new Font("Segoe UI", 9.5F);
-            ManageCompanies_Button.ForeColor = Color.Black;
-            ManageCompanies_Button.Location = new Point(1125, 13);
-            ManageCompanies_Button.Margin = new Padding(4, 3, 4, 3);
-            ManageCompanies_Button.Name = "ManageCompanies_Button";
-            ManageCompanies_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            ManageCompanies_Button.Size = new Size(150, 32);
-            ManageCompanies_Button.TabIndex = 16;
-            ManageCompanies_Button.Text = "Manage companies";
-            ManageCompanies_Button.Click += ManageCompanies_Button_Click;
-            // 
             // MainMenu_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
@@ -840,8 +825,6 @@
         public System.Windows.Forms.Timer HideMenu_timer;
         public System.Windows.Forms.Label Saved_Label;
         private Label CompanyName_Label;
-        private Guna.UI2.WinForms.Guna2ToggleSwitch DarkMode_ToggleSwitch;
-        private Label DarkMode_label;
         public Label PriceText_Label;
         public Label QuantityText_Label;
         public Label ShippingText_Label;
@@ -869,5 +852,6 @@
         public Guna.UI2.WinForms.Guna2Button ManageCategories_Button;
         public Guna.UI2.WinForms.Guna2Button ManageAccountants_Button;
         public Guna.UI2.WinForms.Guna2Button ManageCompanies_Button;
+        public Guna.UI2.WinForms.Guna2Button Account_Button;
     }
 }

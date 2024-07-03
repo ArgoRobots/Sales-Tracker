@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Settings;
 using System.Text.Json;
 using static Sales_Tracker.Classes.Theme;
 
@@ -30,7 +31,6 @@ namespace Sales_Tracker
             LoadCompanies();
             isDataGridViewLoading = false;
             Sales_Button.PerformClick();
-            LoadDataFromSetting();
             AddTimeRangesIntoComboBox();
             UpdateTheme();
         }
@@ -107,17 +107,7 @@ namespace Sales_Tracker
             total = Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart, LineGraph_ToggleSwitch.Checked);
             Bar2_Label.Text = $"Total profits: {total:C}";
         }
-        private bool DoNotUpdateTheme;
-        private void LoadDataFromSetting()
-        {
-            if (CurrentTheme == ThemeType.Dark)
-            {
-                DoNotUpdateTheme = true;
-                DarkMode_ToggleSwitch.Checked = true;
-                DoNotUpdateTheme = false;
-            }
-        }
-        private void UpdateTheme()
+        public void UpdateTheme()
         {
             CustomColors.SetColors();
             Theme.SetThemeForForm(this);
@@ -136,6 +126,7 @@ namespace Sales_Tracker
             File_Button.FillColor = CustomColors.background3;
             Save_Button.FillColor = CustomColors.background3;
             Help_Button.FillColor = CustomColors.background3;
+            Account_Button.FillColor = CustomColors.background3;
         }
 
         // Form event handlers
@@ -274,7 +265,7 @@ namespace Sales_Tracker
             Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
             Total_Panel.Width = selectedDataGridView.Width;
 
-            if (Width < 1100 + Edit_Button.Left + Edit_Button.Width)
+            if (Width < 1000 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
                 wasControlsDropDownAdded = true;
@@ -300,8 +291,6 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Remove(ManageProducts_Button);
             MainTop_Panel.Controls.Remove(AddSale_Button);
             MainTop_Panel.Controls.Remove(AddPurchase_Button);
-            MainTop_Panel.Controls.Remove(DarkMode_ToggleSwitch);
-            MainTop_Panel.Controls.Remove(DarkMode_label);
         }
         private void RemoveControlsDropDown()
         {
@@ -315,8 +304,6 @@ namespace Sales_Tracker
             ManageProducts_Button.Location = new Point(ManageCompanies_Button.Left - buttonWidthPlusSpace, buttonTop);
             AddSale_Button.Location = new Point(ManageProducts_Button.Left - buttonWidthPlusSpace, buttonTop);
             AddPurchase_Button.Location = new Point(AddSale_Button.Left - buttonWidthPlusSpace, buttonTop);
-            DarkMode_ToggleSwitch.Location = new Point(AddPurchase_Button.Left - DarkMode_ToggleSwitch.Width - 8, (MainTop_Panel.Height - DarkMode_ToggleSwitch.Height) / 2);
-            DarkMode_label.Location = new Point(DarkMode_ToggleSwitch.Left - DarkMode_label.Width - 2, (MainTop_Panel.Height - DarkMode_label.Height) / 2);
 
             MainTop_Panel.Controls.Add(ManageAccountants_Button);
             MainTop_Panel.Controls.Add(ManageCategories_Button);
@@ -324,8 +311,6 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Add(ManageProducts_Button);
             MainTop_Panel.Controls.Add(AddSale_Button);
             MainTop_Panel.Controls.Add(AddPurchase_Button);
-            MainTop_Panel.Controls.Add(DarkMode_ToggleSwitch);
-            MainTop_Panel.Controls.Add(DarkMode_label);
         }
 
 
@@ -397,9 +382,25 @@ namespace Sales_Tracker
             {
                 UI.CloseAllPanels(null, null);
                 Help_Button.Image = Resources.HelpWhite;
-                UI.helpMenu.Location = new Point(Help_Button.Left - UI.helpMenu.Width + Help_Button.Width, 30);
+                UI.helpMenu.Location = new Point(Help_Button.Left - UI.helpMenu.Width + Help_Button.Width, Top_Panel.Height);
                 Controls.Add(UI.helpMenu);
                 UI.helpMenu.BringToFront();
+            }
+        }
+        private void Account_Button_Click(object sender, EventArgs e)
+        {
+            if (Controls.Contains(UI.accountMenu))
+            {
+                Controls.Remove(UI.accountMenu);
+                Account_Button.Image = Resources.ProfileGray;
+            }
+            else
+            {
+                UI.CloseAllPanels(null, null);
+                Account_Button.Image = Resources.ProfileWhite;
+                UI.accountMenu.Location = new Point(Account_Button.Left - UI.accountMenu.Width + Account_Button.Width, Top_Panel.Height);
+                Controls.Add(UI.accountMenu);
+                UI.accountMenu.BringToFront();
             }
         }
 
@@ -453,22 +454,6 @@ namespace Sales_Tracker
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
             new Categories_Form(false).ShowDialog();
-        }
-        private void DarkMode_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
-        {
-            if (DoNotUpdateTheme) { return; }
-
-            CloseAllPanels(null, null);
-
-            if (DarkMode_ToggleSwitch.Checked)
-            {
-                CurrentTheme = ThemeType.Dark;
-            }
-            else
-            {
-                CurrentTheme = ThemeType.Light;
-            }
-            UpdateTheme();
         }
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -1447,6 +1432,18 @@ namespace Sales_Tracker
             MessagePanel_timer.Enabled = false;
             // Reset in case the next message is the same
             SetMessage("");
+        }
+
+        // Settings
+        private Settings_Form SettingsForm;
+        public void OpenSettingsMenu()
+        {
+            if (!Tools.IsFormOpen(typeof(Settings_Form)))
+            {
+                SettingsForm = new Settings_Form();
+                SettingsForm.Show();
+            }
+            else { SettingsForm.BringToFront(); }
         }
 
         // Logs
