@@ -1,7 +1,7 @@
 ﻿using Guna.Charts.WinForms;
 using Sales_Tracker.Classes;
 
-namespace Sales_Tracker.Graphs
+namespace Sales_Tracker.Charts
 {
     class Dark
     {

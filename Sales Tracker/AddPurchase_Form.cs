@@ -405,7 +405,7 @@ namespace Sales_Tracker
             FlowPanel = new()
             {
                 AutoScroll = false,
-                Location = new Point((Width - width + 10) / 2 - 5, 250),
+                Location = new Point((Width - width + 10) / 2 - 5, 270),
                 Size = new Size(width, flowPanelMargin),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),

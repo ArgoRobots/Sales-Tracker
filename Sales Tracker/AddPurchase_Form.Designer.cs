@@ -364,7 +364,7 @@
             AddPurchase_Button.FillColor = Color.White;
             AddPurchase_Button.Font = new Font("Segoe UI", 9.5F);
             AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(346, 280);
+            AddPurchase_Button.Location = new Point(346, 281);
             AddPurchase_Button.Margin = new Padding(4, 3, 4, 3);
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
@@ -552,7 +552,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(850, 360);
+            ClientSize = new Size(850, 361);
             Controls.Add(WarningBuyer_LinkLabel);
             Controls.Add(WarningBuyer_PictureBox);
             Controls.Add(Currency_Label);

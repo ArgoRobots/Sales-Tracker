@@ -30,13 +30,13 @@ namespace Sales_Tracker
         }
         private void LoadAccountants()
         {
-            MainMenu_Form.Instance.isDataGridViewLoading = true;
+            MainMenu_Form.Instance.isFormLoading = true;
 
             foreach (string accountant in MainMenu_Form.Instance.accountantList)
             {
                 Accountants_DataGridView.Rows.Add(accountant);
             }
-            MainMenu_Form.Instance.isDataGridViewLoading = false;
+            MainMenu_Form.Instance.isFormLoading = false;
         }
 
         // Form event handlers

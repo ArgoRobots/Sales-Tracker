@@ -1,6 +1,6 @@
 ﻿using Guna.Charts.WinForms;
 
-namespace Sales_Tracker.Graphs
+namespace Sales_Tracker.Charts
 {
     class Light
     {

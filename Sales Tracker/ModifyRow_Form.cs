@@ -178,6 +178,7 @@ namespace Sales_Tracker
                 string columnName = column.Name;
                 string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
                 listOfOldValues.Add(cellValue);
+                int maxHeight = 200;
 
                 switch (columnName)
                 {
@@ -202,8 +203,8 @@ namespace Sales_Tracker
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductCategory], left, Panel);
                         ConstructGunaComboBox(left, columnName, array, cellValue, Panel);
                         break;
+
                     case nameof(Products_Form.Columns.CountryOfOrigin):
-                        int maxHeight = 200;
 
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CountryOfOrigin], left, Panel);
                         Guna2TextBox gTextBox = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
@@ -211,7 +212,16 @@ namespace Sales_Tracker
                         gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, Country.countries, this, null, maxHeight); };
                         gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
                         gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
+                        break;
 
+                    case nameof(Products_Form.Columns.CompanyOfOrigin):
+
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CompanyOfOrigin], left, Panel);
+                        gTextBox = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
+                        gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, maxHeight); };
+                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, null, maxHeight); };
+                        gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+                        gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
                         break;
                 }
                 left += controlWidth + 10;
@@ -495,6 +505,7 @@ namespace Sales_Tracker
                     oldName = product.Name;
                     product.Name = selectedRow.Cells[0].Value.ToString();
                     product.CountryOfOrigin = selectedRow.Cells[2].Value.ToString();
+                    product.CompanyOfOrigin = selectedRow.Cells[3].Value.ToString();
 
                     // Update all instances in DataGridViews
                     string productColumn = SalesColumns.Product.ToString();

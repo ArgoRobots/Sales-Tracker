@@ -1,6 +1,8 @@
-﻿using Guna.UI2.WinForms;
+﻿using Guna.Charts.Interfaces;
+using Guna.Charts.WinForms;
+using Guna.UI2.WinForms;
+using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
-using Sales_Tracker.Graphs;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using System.Text.Json;
@@ -24,15 +26,15 @@ namespace Sales_Tracker
 
             ConstructDataGridViews();
             SetCompanyLabel();
-            isDataGridViewLoading = true;
+
+            isFormLoading = true;
             LoadCategories();
             LoadSalesAndPurchases();
             LoadAccountants();
             LoadCompanies();
-            isDataGridViewLoading = false;
-            Sales_Button.PerformClick();
             AddTimeRangesIntoComboBox();
             UpdateTheme();
+            isFormLoading = false;
         }
         private void LoadCategories()
         {
@@ -92,20 +94,22 @@ namespace Sales_Tracker
             double total;
             if (Selected == Options.Sales)
             {
-                total = Bar.LoadTotalsIntoChart(Sales_DataGridView, Bar_GunaChart, LineGraph_ToggleSwitch.Checked);
-                Bar_Label.Text = $"Total revenue: {total:C}";
-                Pie.LoadDistributionIntoChart(Sales_DataGridView, Pie_GunaChart);
-                Pie_Label.Text = "Distribution of revenue";
+                total = LoadChart.LoadTotalsIntoChart(Sales_DataGridView, Totals_Chart, LineGraph_ToggleSwitch.Checked);
+                Totals_Chart.Title.Text = $"Total revenue: {total:C}";
+
+                LoadChart.LoadDistributionIntoChart(Sales_DataGridView, Distribution_Chart);
+                Distribution_Chart.Title.Text = "Distribution of revenue";
             }
             else
             {
-                total = Bar.LoadTotalsIntoChart(Purchases_DataGridView, Bar_GunaChart, LineGraph_ToggleSwitch.Checked);
-                Bar_Label.Text = $"Total expenses: {total:C}";
-                Pie.LoadDistributionIntoChart(Purchases_DataGridView, Pie_GunaChart);
-                Pie_Label.Text = "Distribution of expenses";
+                total = LoadChart.LoadTotalsIntoChart(Purchases_DataGridView, Totals_Chart, LineGraph_ToggleSwitch.Checked);
+                Totals_Chart.Title.Text = $"Total expenses: {total:C}";
+
+                LoadChart.LoadDistributionIntoChart(Purchases_DataGridView, Distribution_Chart);
+                Distribution_Chart.Title.Text = "Distribution of expenses";
             }
-            total = Bar.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Bar2_GunaChart, LineGraph_ToggleSwitch.Checked);
-            Bar2_Label.Text = $"Total profits: {total:C}";
+            total = LoadChart.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Profits_Chart, LineGraph_ToggleSwitch.Checked);
+            Profits_Chart.Title.Text = $"Total profits: {total:C}";
         }
         public void UpdateTheme()
         {
@@ -130,18 +134,22 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
+        private void MainMenu_Form_Load(object sender, EventArgs e)
+        {
+            Sales_Button.PerformClick();
+        }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
             // Ensure the charts are rendered
             // BeginInvoke ensures that the chart update logic runs on the main UI thread after all pending UI events have been processed.
             BeginInvoke(() =>
             {
-                Bar_GunaChart.Invalidate();
-                Bar_GunaChart.Refresh();
-                Pie_GunaChart.Invalidate();
-                Pie_GunaChart.Refresh();
-                Bar2_GunaChart.Invalidate();
-                Bar2_GunaChart.Refresh();
+                Totals_Chart.Invalidate();
+                Totals_Chart.Refresh();
+                Distribution_Chart.Invalidate();
+                Distribution_Chart.Refresh();
+                Profits_Chart.Invalidate();
+                Profits_Chart.Refresh();
             });
 
             Log.Write(2, "Argo Sales Tracker has finished starting");
@@ -234,32 +242,31 @@ namespace Sales_Tracker
         private bool wasControlsDropDownAdded = false;
         private void ResizeControls()
         {
+            if (isFormLoading) { return; }
+
             if (Height > 1000)
             {
-                Bar_GunaChart.Height = 350;
+                Totals_Chart.Height = 350;
             }
             else if (Height > 800)
             {
-                Bar_GunaChart.Height = 300;
+                Totals_Chart.Height = 300;
             }
             else
             {
-                Bar_GunaChart.Height = 200;
+                Totals_Chart.Height = 200;
             }
 
-            Bar_GunaChart.Width = Width / 3 - 30;
-            Bar_GunaChart.Left = 20;
-            Bar_Label.Left = Bar_GunaChart.Left;
+            Totals_Chart.Width = Width / 3 - 30;
+            Totals_Chart.Left = 20;
 
-            Pie_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
-            Pie_GunaChart.Left = (Width / 2) - (Pie_GunaChart.Width / 2) - 8;
-            Pie_Label.Left = Pie_GunaChart.Left;
+            Distribution_Chart.Size = Totals_Chart.Size;
+            Distribution_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - 8;
 
-            Bar2_GunaChart.Size = new Size(Bar_GunaChart.Width, Bar_GunaChart.Height);
-            Bar2_GunaChart.Left = Width - Bar_GunaChart.Width - 35;
-            Bar2_Label.Left = Bar2_GunaChart.Left;
+            Profits_Chart.Size = Totals_Chart.Size;
+            Profits_Chart.Left = Width - Totals_Chart.Width - 35;
 
-            selectedDataGridView.Size = new Size(Width - 55, Height - MainTop_Panel.Height - Top_Panel.Height - Bar_GunaChart.Height - Bar_GunaChart.Top - 15);
+            selectedDataGridView.Size = new Size(Width - 55, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
             selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - 7, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
 
             Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
@@ -274,6 +281,21 @@ namespace Sales_Tracker
             {
                 RemoveControlsDropDown();
                 wasControlsDropDownAdded = false;
+            }
+
+            if (Selected == Options.Statistics)
+            {
+                product_Chart.Width = Width / 3 - 30;
+                product_Chart.Left = 20;
+
+                countries_Chart.Size = product_Chart.Size;
+                countries_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - 8;
+
+                companies_Chart.Size = product_Chart.Size;
+                companies_Chart.Left = Width - Totals_Chart.Width - 35;
+
+                forcastedGrowth_Chart.Size = product_Chart.Size;
+                forcastedGrowth_Chart.Left = 20;
             }
 
             if (Controls.Contains(messagePanel))
@@ -408,6 +430,7 @@ namespace Sales_Tracker
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            AddMainControls();
             Selected = Options.Purchases;
             selectedDataGridView = Purchases_DataGridView;
             Controls.Add(Purchases_DataGridView);
@@ -420,6 +443,7 @@ namespace Sales_Tracker
         private void Sales_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            AddMainControls();
             Selected = Options.Sales;
             selectedDataGridView = Sales_DataGridView;
             Controls.Add(Sales_DataGridView);
@@ -428,6 +452,12 @@ namespace Sales_Tracker
             LoadGraphs();
             UpdateTotals();
             Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+        }
+        private void Statistics_Button_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            ConstructControlsForStatistics();
+            AddStatisticsControls();
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -544,6 +574,7 @@ namespace Sales_Tracker
         }
         private void Filter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (isFormLoading) { return; }
             CloseAllPanels(null, null);
             FilterDataGridViewByDate();
             LoadGraphs();
@@ -673,7 +704,7 @@ namespace Sales_Tracker
         }
         public void SaveCategoriesToFile(Options option)
         {
-            if (isDataGridViewLoading)
+            if (isFormLoading)
             {
                 return;
             }
@@ -704,7 +735,7 @@ namespace Sales_Tracker
 
 
         // DataGridView
-        public bool isDataGridViewLoading;
+        public bool isFormLoading;
         public Options Selected;
         public enum Options
         {
@@ -715,7 +746,8 @@ namespace Sales_Tracker
             CategoryPurchases,
             CategorySales,
             Accountants,
-            Companies
+            Companies,
+            Statistics
         }
         public enum PurchaseColumns
         {
@@ -938,7 +970,7 @@ namespace Sales_Tracker
         }
         private void DataGridViewRowChanged()
         {
-            if (isDataGridViewLoading)
+            if (isFormLoading)
             {
                 return;
             }
@@ -960,7 +992,7 @@ namespace Sales_Tracker
         }
         public void SaveDataGridViewToFile()
         {
-            if (isDataGridViewLoading)
+            if (isFormLoading)
             {
                 return;
             }
@@ -1086,10 +1118,9 @@ namespace Sales_Tracker
             }
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
-
         private void UpdateTotals()
         {
-            if (isDataGridViewLoading || Selected != Options.Purchases & Selected != Options.Sales)
+            if (isFormLoading || Selected != Options.Purchases & Selected != Options.Sales)
             {
                 return;
             }
@@ -1104,27 +1135,27 @@ namespace Sales_Tracker
                 if (Selected == Options.Purchases)
                 {
                     totalQuantity += Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
-                    totalPrice += Convert.ToDecimal(row.Cells[PurchaseColumns.TotalExpenses.ToString()].Value);
                     totalTax += Convert.ToDecimal(row.Cells[PurchaseColumns.Tax.ToString()].Value);
                     totalShipping += Convert.ToDecimal(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
+                    totalPrice += Convert.ToDecimal(row.Cells[PurchaseColumns.TotalExpenses.ToString()].Value);
                 }
                 else
                 {
                     totalQuantity += Convert.ToInt32(row.Cells[SalesColumns.Quantity.ToString()].Value);
-                    totalPrice += Convert.ToDecimal(row.Cells[SalesColumns.TotalRevenue.ToString()].Value);
                     totalTax += Convert.ToDecimal(row.Cells[SalesColumns.Tax.ToString()].Value);
                     totalShipping += Convert.ToDecimal(row.Cells[SalesColumns.Shipping.ToString()].Value);
+                    totalPrice += Convert.ToDecimal(row.Cells[SalesColumns.TotalRevenue.ToString()].Value);
                 }
             }
 
-            Quantity_Label.Text = $"Quantity: {totalQuantity}";
-            Tax_Label.Text = $"Tax: {totalTax:C}";
-            Shipping_Label.Text = $"Shipping: {totalShipping:C}";
-            Price_Label.Text = $"Price: {totalPrice:C}";
+            Quantity_Label.Text = totalQuantity.ToString();
+            Tax_Label.Text = totalTax.ToString("C");
+            Shipping_Label.Text = totalShipping.ToString("C");
+            Price_Label.Text = totalPrice.ToString("C");
         }
         private void AlignTotalLabels()
         {
-            if (isDataGridViewLoading)
+            if (isFormLoading)
             {
                 return;
             }
@@ -1269,7 +1300,7 @@ namespace Sales_Tracker
                 CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the first row up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
             }
-            isDataGridViewLoading = true;
+            isFormLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
             selectedDataGridView.Rows.Remove(selectedRow);
@@ -1281,7 +1312,7 @@ namespace Sales_Tracker
 
             // Save
             SaveDataGridViewToFile();
-            isDataGridViewLoading = false;
+            isFormLoading = false;
         }
         private void MoveRowDown(object sender, EventArgs e)
         {
@@ -1300,7 +1331,7 @@ namespace Sales_Tracker
                 CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the last row down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
             }
-            isDataGridViewLoading = true;
+            isFormLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
             selectedDataGridView.Rows.Remove(selectedRow);
@@ -1312,7 +1343,7 @@ namespace Sales_Tracker
 
             // Save
             SaveDataGridViewToFile();
-            isDataGridViewLoading = false;
+            isFormLoading = false;
         }
         private void DeleteRow(object? sender, EventArgs e)
         {
@@ -1349,6 +1380,106 @@ namespace Sales_Tracker
                     selectedDataGridView.Rows[^1].Selected = true;
                 }
             }
+        }
+
+
+        // Statistics menu
+        private List<Control> GetMainControlsList()
+        {
+            return [
+                Sales_DataGridView,
+                Purchases_DataGridView,
+                Totals_Chart,
+                Distribution_Chart,
+                Profits_Chart,
+                Total_Panel
+            ];
+        }
+        private void AddMainControls()
+        {
+            if (Selected != Options.Statistics)
+            {
+                return;
+            }
+
+            foreach (Control control in GetMainControlsList())
+            {
+                Controls.Add(control);
+            }
+            foreach (Control control in statisticsControls)
+            {
+                Controls.Remove(control);
+            }
+
+            ResizeControls();
+        }
+        private List<Control> statisticsControls;
+        private GunaChart product_Chart, countries_Chart, companies_Chart, forcastedGrowth_Chart;
+        private void ConstructControlsForStatistics()
+        {
+            if (product_Chart != null)
+            {
+                return;
+            }
+
+            product_Chart = ConstructStatisticsChart(171, "Product");
+            countries_Chart = ConstructStatisticsChart(171, "Countries of origin for purchased products");
+            companies_Chart = ConstructStatisticsChart(171, "Companies of origin for purchased products");
+            forcastedGrowth_Chart = ConstructStatisticsChart(600, "Forcasted growth");
+
+            statisticsControls =
+            [
+                product_Chart,
+                countries_Chart,
+                companies_Chart,
+                forcastedGrowth_Chart
+            ];
+        }
+        private static GunaChart ConstructStatisticsChart(short top, string title)
+        {
+            GunaChart gunaChart = new()
+            {
+                Top = top
+            };
+
+            if (CurrentTheme == ThemeType.Dark)
+            {
+                gunaChart.ApplyConfig(Dark.Config(), CustomColors.background4);
+            }
+            else
+            {
+                gunaChart.ApplyConfig(Light.Config(), Color.White);
+            }
+            LoadChart.ConfigureChartForPie(gunaChart);
+            gunaChart.Title.Text = title;
+            gunaChart.Title.Display = true;
+
+            return gunaChart;
+        }
+        private void AddStatisticsControls()
+        {
+            if (Selected == Options.Statistics)
+            {
+                return;
+            }
+            Selected = Options.Statistics;
+
+            foreach (Control control in statisticsControls)
+            {
+                Controls.Add(control);
+            }
+            foreach (Control control in GetMainControlsList())
+            {
+                Controls.Remove(control);
+            }
+
+            UpdateStatisticsCharts();
+            ResizeControls();
+        }
+        private void UpdateStatisticsCharts()
+        {
+            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(Purchases_DataGridView, Sales_DataGridView, companies_Chart);
+            LoadChart.LoadCountriesOfOriginForProductsIntoChart(Purchases_DataGridView, Sales_DataGridView, countries_Chart);
         }
 
 

@@ -82,7 +82,7 @@ namespace Sales_Tracker
         }
         private void LoadProducts()
         {
-            MainMenu_Form.Instance.isDataGridViewLoading = true;
+            MainMenu_Form.Instance.isFormLoading = true;
 
             foreach (Category category in MainMenu_Form.Instance.categorySaleList)
             {
@@ -98,7 +98,7 @@ namespace Sales_Tracker
                     Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
                 }
             }
-            MainMenu_Form.Instance.isDataGridViewLoading = false;
+            MainMenu_Form.Instance.isFormLoading = false;
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)
         {

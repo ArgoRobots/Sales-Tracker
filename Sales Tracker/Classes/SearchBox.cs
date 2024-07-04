@@ -288,14 +288,20 @@ namespace Sales_Tracker.Classes
             gTextBox.BorderColor = CustomColors.accent_red;
             gTextBox.HoverState.BorderColor = CustomColors.accent_red;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_red;
-            button.Tag = 0;
+            if (button != null)
+            {
+                button.Tag = 0;
+            }
         }
         private static void SetTextBoxToValid(Guna2TextBox gTextBox, Guna2Button button)
         {
             gTextBox.BorderColor = CustomColors.controlBorder;
             gTextBox.HoverState.BorderColor = CustomColors.accent_blue;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_blue;
-            button.Tag = 1;
+            if (button != null)
+            {
+                button.Tag = 1;
+            }
         }
 
         private static bool IsResultNameValid(string resultName)

@@ -108,6 +108,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             ManageCompanies_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -126,7 +128,7 @@
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             File_Button = new Guna.UI2.WinForms.Guna2Button();
             HideMenu_timer = new System.Windows.Forms.Timer(components);
-            Totals_Label = new Label();
+            TotalText_Label = new Label();
             Quantity_Label = new Label();
             Price_Label = new Label();
             Shipping_Label = new Label();
@@ -134,15 +136,13 @@
             Total_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Sales_Button = new Guna.UI2.WinForms.Guna2Button();
             Purchases_Button = new Guna.UI2.WinForms.Guna2Button();
-            Bar_Label = new Label();
-            Bar_GunaChart = new Guna.Charts.WinForms.GunaChart();
-            Bar2_Label = new Label();
-            Pie_Label = new Label();
-            Pie_GunaChart = new Guna.Charts.WinForms.GunaChart();
-            Bar2_GunaChart = new Guna.Charts.WinForms.GunaChart();
+            Totals_Chart = new Guna.Charts.WinForms.GunaChart();
+            Distribution_Chart = new Guna.Charts.WinForms.GunaChart();
+            Profits_Chart = new Guna.Charts.WinForms.GunaChart();
             Filter_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             LineGraph_Label = new Label();
             LineGraph_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
+            Statistics_Button = new Guna.UI2.WinForms.Guna2Button();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
@@ -450,18 +450,18 @@
             File_Button.TabIndex = 3;
             File_Button.Click += File_Button_Click;
             // 
-            // Totals_Label
+            // TotalText_Label
             // 
-            Totals_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            Totals_Label.AutoSize = true;
-            Totals_Label.BackColor = Color.Transparent;
-            Totals_Label.Font = new Font("Segoe UI", 11.25F);
-            Totals_Label.Location = new Point(3, 15);
-            Totals_Label.Name = "Totals_Label";
-            Totals_Label.Size = new Size(51, 20);
-            Totals_Label.TabIndex = 5;
-            Totals_Label.Text = "Totals:";
-            Totals_Label.Click += CloseAllPanels;
+            TotalText_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            TotalText_Label.AutoSize = true;
+            TotalText_Label.BackColor = Color.Transparent;
+            TotalText_Label.Font = new Font("Segoe UI", 11.25F);
+            TotalText_Label.Location = new Point(3, 15);
+            TotalText_Label.Name = "TotalText_Label";
+            TotalText_Label.Size = new Size(51, 20);
+            TotalText_Label.TabIndex = 5;
+            TotalText_Label.Text = "Totals:";
+            TotalText_Label.Click += CloseAllPanels;
             // 
             // Quantity_Label
             // 
@@ -470,9 +470,9 @@
             Quantity_Label.Font = new Font("Segoe UI", 11.25F);
             Quantity_Label.Location = new Point(349, 15);
             Quantity_Label.Name = "Quantity_Label";
-            Quantity_Label.Size = new Size(68, 20);
+            Quantity_Label.Size = new Size(65, 20);
             Quantity_Label.TabIndex = 3;
-            Quantity_Label.Text = "Quantity:";
+            Quantity_Label.Text = "Quantity";
             Quantity_Label.Click += CloseAllPanels;
             // 
             // Price_Label
@@ -482,9 +482,9 @@
             Price_Label.Font = new Font("Segoe UI", 11.25F);
             Price_Label.Location = new Point(865, 15);
             Price_Label.Name = "Price_Label";
-            Price_Label.Size = new Size(44, 20);
+            Price_Label.Size = new Size(41, 20);
             Price_Label.TabIndex = 5;
-            Price_Label.Text = "Price:";
+            Price_Label.Text = "Price";
             Price_Label.Click += CloseAllPanels;
             // 
             // Shipping_Label
@@ -494,9 +494,9 @@
             Shipping_Label.Font = new Font("Segoe UI", 11.25F);
             Shipping_Label.Location = new Point(518, 15);
             Shipping_Label.Name = "Shipping_Label";
-            Shipping_Label.Size = new Size(67, 20);
+            Shipping_Label.Size = new Size(64, 20);
             Shipping_Label.TabIndex = 7;
-            Shipping_Label.Text = "Shpping:";
+            Shipping_Label.Text = "Shpping";
             Shipping_Label.Click += CloseAllPanels;
             // 
             // Tax_Label
@@ -506,9 +506,9 @@
             Tax_Label.Font = new Font("Segoe UI", 11.25F);
             Tax_Label.Location = new Point(710, 15);
             Tax_Label.Name = "Tax_Label";
-            Tax_Label.Size = new Size(33, 20);
+            Tax_Label.Size = new Size(30, 20);
             Tax_Label.TabIndex = 9;
-            Tax_Label.Text = "Tax:";
+            Tax_Label.Text = "Tax";
             Tax_Label.Click += CloseAllPanels;
             // 
             // Total_Panel
@@ -518,7 +518,7 @@
             Total_Panel.Controls.Add(Shipping_Label);
             Total_Panel.Controls.Add(Price_Label);
             Total_Panel.Controls.Add(Quantity_Label);
-            Total_Panel.Controls.Add(Totals_Label);
+            Total_Panel.Controls.Add(TotalText_Label);
             Total_Panel.CustomizableEdges = customizableEdges25;
             Total_Panel.Location = new Point(152, 964);
             Total_Panel.Name = "Total_Panel";
@@ -571,155 +571,116 @@
             Purchases_Button.Text = "Purchases";
             Purchases_Button.Click += Purchases_Button_Click;
             // 
-            // Bar_Label
+            // Totals_Chart
             // 
-            Bar_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Bar_Label.AutoSize = true;
-            Bar_Label.BackColor = Color.Transparent;
-            Bar_Label.Font = new Font("Segoe UI", 12F);
-            Bar_Label.Location = new Point(67, 147);
-            Bar_Label.Name = "Bar_Label";
-            Bar_Label.Size = new Size(39, 21);
-            Bar_Label.TabIndex = 14;
-            Bar_Label.Text = "Title";
-            Bar_Label.Click += CloseAllPanels;
-            // 
-            // Bar_GunaChart
-            // 
-            Bar_GunaChart.Anchor = AnchorStyles.Top;
-            Bar_GunaChart.BackColor = Color.White;
+            Totals_Chart.Anchor = AnchorStyles.Top;
+            Totals_Chart.BackColor = Color.White;
             chartFont1.FontName = "Arial";
-            Bar_GunaChart.Legend.LabelFont = chartFont1;
-            Bar_GunaChart.Location = new Point(67, 171);
-            Bar_GunaChart.Name = "Bar_GunaChart";
-            Bar_GunaChart.Size = new Size(484, 330);
-            Bar_GunaChart.TabIndex = 8;
+            Totals_Chart.Legend.LabelFont = chartFont1;
+            Totals_Chart.Location = new Point(67, 171);
+            Totals_Chart.Name = "Totals_Chart";
+            Totals_Chart.Size = new Size(484, 330);
+            Totals_Chart.TabIndex = 8;
             chartFont2.FontName = "Arial";
             chartFont2.Size = 12;
             chartFont2.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Bar_GunaChart.Title.Font = chartFont2;
+            Totals_Chart.Title.Font = chartFont2;
             chartFont3.FontName = "Arial";
-            Bar_GunaChart.Tooltips.BodyFont = chartFont3;
+            Totals_Chart.Tooltips.BodyFont = chartFont3;
             chartFont4.FontName = "Arial";
             chartFont4.Size = 9;
             chartFont4.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Bar_GunaChart.Tooltips.TitleFont = chartFont4;
-            Bar_GunaChart.XAxes.GridLines = grid1;
+            Totals_Chart.Tooltips.TitleFont = chartFont4;
+            Totals_Chart.XAxes.GridLines = grid1;
             chartFont5.FontName = "Arial";
             tick1.Font = chartFont5;
-            Bar_GunaChart.XAxes.Ticks = tick1;
-            Bar_GunaChart.YAxes.GridLines = grid2;
+            Totals_Chart.XAxes.Ticks = tick1;
+            Totals_Chart.YAxes.GridLines = grid2;
             chartFont6.FontName = "Arial";
             tick2.Font = chartFont6;
-            Bar_GunaChart.YAxes.Ticks = tick2;
-            Bar_GunaChart.ZAxes.GridLines = grid3;
+            Totals_Chart.YAxes.Ticks = tick2;
+            Totals_Chart.ZAxes.GridLines = grid3;
             chartFont7.FontName = "Arial";
             pointLabel1.Font = chartFont7;
-            Bar_GunaChart.ZAxes.PointLabels = pointLabel1;
+            Totals_Chart.ZAxes.PointLabels = pointLabel1;
             chartFont8.FontName = "Arial";
             tick3.Font = chartFont8;
-            Bar_GunaChart.ZAxes.Ticks = tick3;
-            Bar_GunaChart.Click += CloseAllPanels;
+            Totals_Chart.ZAxes.Ticks = tick3;
+            Totals_Chart.Click += CloseAllPanels;
             // 
-            // Bar2_Label
+            // Distribution_Chart
             // 
-            Bar2_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Bar2_Label.AutoSize = true;
-            Bar2_Label.BackColor = Color.Transparent;
-            Bar2_Label.Font = new Font("Segoe UI", 12F);
-            Bar2_Label.Location = new Point(1047, 147);
-            Bar2_Label.Name = "Bar2_Label";
-            Bar2_Label.Size = new Size(39, 21);
-            Bar2_Label.TabIndex = 16;
-            Bar2_Label.Text = "Title";
-            Bar2_Label.Click += CloseAllPanels;
-            // 
-            // Pie_Label
-            // 
-            Pie_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Pie_Label.AutoSize = true;
-            Pie_Label.BackColor = Color.Transparent;
-            Pie_Label.Font = new Font("Segoe UI", 12F);
-            Pie_Label.Location = new Point(557, 147);
-            Pie_Label.Name = "Pie_Label";
-            Pie_Label.Size = new Size(39, 21);
-            Pie_Label.TabIndex = 15;
-            Pie_Label.Text = "Title";
-            Pie_Label.Click += CloseAllPanels;
-            // 
-            // Pie_GunaChart
-            // 
-            Pie_GunaChart.Anchor = AnchorStyles.Top;
-            Pie_GunaChart.BackColor = Color.White;
+            Distribution_Chart.Anchor = AnchorStyles.Top;
+            Distribution_Chart.BackColor = Color.White;
             chartFont9.FontName = "Arial";
-            Pie_GunaChart.Legend.LabelFont = chartFont9;
-            Pie_GunaChart.Location = new Point(557, 171);
-            Pie_GunaChart.Name = "Pie_GunaChart";
-            Pie_GunaChart.Size = new Size(484, 330);
-            Pie_GunaChart.TabIndex = 17;
+            Distribution_Chart.Legend.LabelFont = chartFont9;
+            Distribution_Chart.Location = new Point(557, 171);
+            Distribution_Chart.Name = "Distribution_Chart";
+            Distribution_Chart.Size = new Size(484, 330);
+            Distribution_Chart.TabIndex = 17;
             chartFont10.FontName = "Arial";
             chartFont10.Size = 12;
             chartFont10.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Pie_GunaChart.Title.Font = chartFont10;
+            Distribution_Chart.Title.Font = chartFont10;
             chartFont11.FontName = "Arial";
-            Pie_GunaChart.Tooltips.BodyFont = chartFont11;
+            Distribution_Chart.Tooltips.BodyFont = chartFont11;
             chartFont12.FontName = "Arial";
             chartFont12.Size = 9;
             chartFont12.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Pie_GunaChart.Tooltips.TitleFont = chartFont12;
-            Pie_GunaChart.XAxes.GridLines = grid4;
+            Distribution_Chart.Tooltips.TitleFont = chartFont12;
+            Distribution_Chart.XAxes.GridLines = grid4;
             chartFont13.FontName = "Arial";
             tick4.Font = chartFont13;
-            Pie_GunaChart.XAxes.Ticks = tick4;
-            Pie_GunaChart.YAxes.GridLines = grid5;
+            Distribution_Chart.XAxes.Ticks = tick4;
+            Distribution_Chart.YAxes.GridLines = grid5;
             chartFont14.FontName = "Arial";
             tick5.Font = chartFont14;
-            Pie_GunaChart.YAxes.Ticks = tick5;
-            Pie_GunaChart.ZAxes.GridLines = grid6;
+            Distribution_Chart.YAxes.Ticks = tick5;
+            Distribution_Chart.ZAxes.GridLines = grid6;
             chartFont15.FontName = "Arial";
             pointLabel2.Font = chartFont15;
-            Pie_GunaChart.ZAxes.PointLabels = pointLabel2;
+            Distribution_Chart.ZAxes.PointLabels = pointLabel2;
             chartFont16.FontName = "Arial";
             tick6.Font = chartFont16;
-            Pie_GunaChart.ZAxes.Ticks = tick6;
-            Pie_GunaChart.Click += CloseAllPanels;
+            Distribution_Chart.ZAxes.Ticks = tick6;
+            Distribution_Chart.Click += CloseAllPanels;
             // 
-            // Bar2_GunaChart
+            // Profits_Chart
             // 
-            Bar2_GunaChart.Anchor = AnchorStyles.Top;
-            Bar2_GunaChart.BackColor = Color.White;
+            Profits_Chart.Anchor = AnchorStyles.Top;
+            Profits_Chart.BackColor = Color.White;
             chartFont17.FontName = "Arial";
-            Bar2_GunaChart.Legend.LabelFont = chartFont17;
-            Bar2_GunaChart.Location = new Point(1047, 171);
-            Bar2_GunaChart.Name = "Bar2_GunaChart";
-            Bar2_GunaChart.Size = new Size(491, 330);
-            Bar2_GunaChart.TabIndex = 10;
+            Profits_Chart.Legend.LabelFont = chartFont17;
+            Profits_Chart.Location = new Point(1047, 171);
+            Profits_Chart.Name = "Profits_Chart";
+            Profits_Chart.Size = new Size(491, 330);
+            Profits_Chart.TabIndex = 10;
             chartFont18.FontName = "Arial";
             chartFont18.Size = 12;
             chartFont18.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Bar2_GunaChart.Title.Font = chartFont18;
+            Profits_Chart.Title.Font = chartFont18;
             chartFont19.FontName = "Arial";
-            Bar2_GunaChart.Tooltips.BodyFont = chartFont19;
+            Profits_Chart.Tooltips.BodyFont = chartFont19;
             chartFont20.FontName = "Arial";
             chartFont20.Size = 9;
             chartFont20.Style = Guna.Charts.WinForms.ChartFontStyle.Bold;
-            Bar2_GunaChart.Tooltips.TitleFont = chartFont20;
-            Bar2_GunaChart.XAxes.GridLines = grid7;
+            Profits_Chart.Tooltips.TitleFont = chartFont20;
+            Profits_Chart.XAxes.GridLines = grid7;
             chartFont21.FontName = "Arial";
             tick7.Font = chartFont21;
-            Bar2_GunaChart.XAxes.Ticks = tick7;
-            Bar2_GunaChart.YAxes.GridLines = grid8;
+            Profits_Chart.XAxes.Ticks = tick7;
+            Profits_Chart.YAxes.GridLines = grid8;
             chartFont22.FontName = "Arial";
             tick8.Font = chartFont22;
-            Bar2_GunaChart.YAxes.Ticks = tick8;
-            Bar2_GunaChart.ZAxes.GridLines = grid9;
+            Profits_Chart.YAxes.Ticks = tick8;
+            Profits_Chart.ZAxes.GridLines = grid9;
             chartFont23.FontName = "Arial";
             pointLabel3.Font = chartFont23;
-            Bar2_GunaChart.ZAxes.PointLabels = pointLabel3;
+            Profits_Chart.ZAxes.PointLabels = pointLabel3;
             chartFont24.FontName = "Arial";
             tick9.Font = chartFont24;
-            Bar2_GunaChart.ZAxes.Ticks = tick9;
-            Bar2_GunaChart.Click += CloseAllPanels;
+            Profits_Chart.ZAxes.Ticks = tick9;
+            Profits_Chart.Click += CloseAllPanels;
             // 
             // Filter_ComboBox
             // 
@@ -775,22 +736,42 @@
             LineGraph_ToggleSwitch.UncheckedState.InnerColor = Color.White;
             LineGraph_ToggleSwitch.CheckedChanged += LineGraph_ToggleSwitch_CheckedChanged;
             // 
+            // Statistics_Button
+            // 
+            Statistics_Button.BackColor = Color.Transparent;
+            Statistics_Button.BorderColor = Color.LightGray;
+            Statistics_Button.BorderRadius = 2;
+            Statistics_Button.BorderThickness = 1;
+            Statistics_Button.CustomizableEdges = customizableEdges35;
+            Statistics_Button.DisabledState.BorderColor = Color.DarkGray;
+            Statistics_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Statistics_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Statistics_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Statistics_Button.FillColor = Color.White;
+            Statistics_Button.Font = new Font("Segoe UI", 9F);
+            Statistics_Button.ForeColor = Color.Black;
+            Statistics_Button.Location = new Point(324, 96);
+            Statistics_Button.Name = "Statistics_Button";
+            Statistics_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            Statistics_Button.Size = new Size(150, 35);
+            Statistics_Button.TabIndex = 18;
+            Statistics_Button.Text = "Statistics";
+            Statistics_Button.Click += Statistics_Button_Click;
+            // 
             // MainMenu_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1604, 1041);
+            Controls.Add(Statistics_Button);
             Controls.Add(LineGraph_Label);
-            Controls.Add(Pie_GunaChart);
+            Controls.Add(Distribution_Chart);
             Controls.Add(LineGraph_ToggleSwitch);
             Controls.Add(Top_Panel);
-            Controls.Add(Bar2_Label);
             Controls.Add(MainTop_Panel);
-            Controls.Add(Pie_Label);
-            Controls.Add(Bar_Label);
             Controls.Add(Total_Panel);
-            Controls.Add(Bar2_GunaChart);
+            Controls.Add(Profits_Chart);
             Controls.Add(Filter_ComboBox);
-            Controls.Add(Bar_GunaChart);
+            Controls.Add(Totals_Chart);
             Controls.Add(Purchases_Button);
             Controls.Add(Sales_Button);
             DoubleBuffered = true;
@@ -801,6 +782,7 @@
             Text = "Argo Sales Tracker";
             WindowState = FormWindowState.Maximized;
             FormClosing += MainMenu_form_FormClosing;
+            Load += MainMenu_Form_Load;
             Shown += MainMenu_form_Shown;
             Click += CloseAllPanels;
             KeyDown += MainMenu_form_KeyDown;
@@ -829,7 +811,7 @@
         public Label QuantityText_Label;
         public Label ShippingText_Label;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
-        public Label Totals_Label;
+        public Label TotalText_Label;
         public Label Quantity_Label;
         public Label Price_Label;
         public Label Shipping_Label;
@@ -837,12 +819,9 @@
         private Guna.UI2.WinForms.Guna2Panel Total_Panel;
         public Guna.UI2.WinForms.Guna2Button Sales_Button;
         public Guna.UI2.WinForms.Guna2Button Purchases_Button;
-        private Label Bar_Label;
-        private Guna.Charts.WinForms.GunaChart Bar_GunaChart;
-        private Label Bar2_Label;
-        private Label Pie_Label;
-        private Guna.Charts.WinForms.GunaChart Pie_GunaChart;
-        private Guna.Charts.WinForms.GunaChart Bar2_GunaChart;
+        private Guna.Charts.WinForms.GunaChart Totals_Chart;
+        private Guna.Charts.WinForms.GunaChart Distribution_Chart;
+        private Guna.Charts.WinForms.GunaChart Profits_Chart;
         private Guna.UI2.WinForms.Guna2ComboBox Filter_ComboBox;
         private Label LineGraph_Label;
         public Guna.UI2.WinForms.Guna2ToggleSwitch LineGraph_ToggleSwitch;
@@ -853,5 +832,6 @@
         public Guna.UI2.WinForms.Guna2Button ManageAccountants_Button;
         public Guna.UI2.WinForms.Guna2Button ManageCompanies_Button;
         public Guna.UI2.WinForms.Guna2Button Account_Button;
+        public Guna.UI2.WinForms.Guna2Button Statistics_Button;
     }
 }

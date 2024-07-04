@@ -1,6 +1,6 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
-using Sales_Tracker.Graphs;
+using Sales_Tracker.Charts;
 using System.Runtime.InteropServices;
 
 namespace Sales_Tracker.Classes
@@ -181,13 +181,20 @@ namespace Sales_Tracker.Classes
                                 gunaChart.ApplyConfig(Light.Config(), Color.White);
                             }
 
-                            if (gunaChart.Name == "Bar_GunaChart" || gunaChart.Name == "Bar2_GunaChart")
+                            if (gunaChart.Datasets.Count > 0)
                             {
-                                Bar.ConfigureChart(gunaChart, MainMenu_Form.Instance.LineGraph_ToggleSwitch.Checked);
-                            }
-                            else if (gunaChart.Name == "Pie_GunaChart")
-                            {
-                                Pie.ConfigureChart(gunaChart);
+                                if (gunaChart.Datasets[0] is GunaBarDataset)
+                                {
+                                    LoadChart.ConfigureChartForBar(gunaChart);
+                                }
+                                else if (gunaChart.Datasets[0] is GunaLineDataset)
+                                {
+                                    LoadChart.ConfigureChartForLine(gunaChart);
+                                }
+                                else if (gunaChart.Datasets[0] is GunaPieDataset)
+                                {
+                                    LoadChart.ConfigureChartForPie(gunaChart);
+                                }
                             }
                             break;
                     }
