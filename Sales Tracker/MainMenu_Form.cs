@@ -422,16 +422,16 @@ namespace Sales_Tracker
 
             if (Selected == Options.Statistics)
             {
-                product_Chart.Width = Width / 3 - 30;
-                product_Chart.Left = 20;
+                countriesOfOrigin_Chart.Width = Width / 3 - 30;
+                countriesOfOrigin_Chart.Left = 20;
 
-                countries_Chart.Size = product_Chart.Size;
-                countries_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - 8;
+                companiesOfOrigin_Chart.Width = countriesOfDestination_Chart.Width;
+                companiesOfOrigin_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - 8;
 
-                companies_Chart.Size = product_Chart.Size;
-                companies_Chart.Left = Width - Totals_Chart.Width - 35;
+                countriesOfDestination_Chart.Width = countriesOfOrigin_Chart.Width;
+                countriesOfDestination_Chart.Left = Width - Totals_Chart.Width - 35;
 
-                forcastedGrowth_Chart.Size = product_Chart.Size;
+                forcastedGrowth_Chart.Width = countriesOfDestination_Chart.Width;
                 forcastedGrowth_Chart.Left = 20;
             }
 
@@ -596,6 +596,7 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             ConstructControlsForStatistics();
             AddStatisticsControls();
+            ResizeControls();
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -613,7 +614,7 @@ namespace Sales_Tracker
         }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
-            new Products_Form(false).ShowDialog();
+            new Products_Form(true).ShowDialog();
         }
         private void ManageCompanies_Button_Click(object sender, EventArgs e)
         {
@@ -724,7 +725,7 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
-                DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[SalesColumns.Date]].Value.ToString());
+                DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Columns.Date]].Value.ToString());
                 bool isVisible = interval == TimeInterval.AllTime || rowDate >= DateTime.Now - timeSpan;
                 row.Visible = isVisible;
             }
@@ -887,10 +888,10 @@ namespace Sales_Tracker
             Companies,
             Statistics
         }
-        public enum PurchaseColumns
+        public enum Columns
         {
-            PurchaseID,
-            BuyerName,
+            ID,
+            Name,
             Product,
             Category,
             Country,
@@ -901,55 +902,39 @@ namespace Sales_Tracker
             Shipping,
             Tax,
             Fee,
-            TotalExpenses
+            Total
         }
-        public enum SalesColumns
+        public readonly Dictionary<Columns, string> PurchaseColumnHeaders = new()
         {
-            SalesID,
-            CustomerName,
-            Product,
-            Category,
-            Country,
-            Company,
-            Date,
-            Quantity,
-            PricePerUnit,
-            Shipping,
-            Tax,
-            Fee,
-            TotalRevenue
-        }
-        public readonly Dictionary<PurchaseColumns, string> PurchaseColumnHeaders = new()
-        {
-            { PurchaseColumns.PurchaseID, "Purchase ID" },
-            { PurchaseColumns.BuyerName, "Buyer name" },
-            { PurchaseColumns.Product, "Product name" },
-            { PurchaseColumns.Category, "Category" },
-            { PurchaseColumns.Country, "Country of origin" },
-            { PurchaseColumns.Company, "Company of origin" },
-            { PurchaseColumns.Date, "Date" },
-            { PurchaseColumns.Quantity, "Quantity" },
-            { PurchaseColumns.PricePerUnit, "Price per unit" },
-            { PurchaseColumns.Shipping, "Shipping" },
-            { PurchaseColumns.Tax, "Tax" },
-            { PurchaseColumns.Fee, "Payment fee" },
-            { PurchaseColumns.TotalExpenses, "Total expenses" }
+            { Columns.ID, "Purchase ID" },
+            { Columns.Name, "Buyer name" },
+            { Columns.Product, "Product name" },
+            { Columns.Category, "Category" },
+            { Columns.Country, "Country of origin" },
+            { Columns.Company, "Company of origin" },
+            { Columns.Date, "Date" },
+            { Columns.Quantity, "Quantity" },
+            { Columns.PricePerUnit, "Price per unit" },
+            { Columns.Shipping, "Shipping" },
+            { Columns.Tax, "Tax" },
+            { Columns.Fee, "Payment fee" },
+            { Columns.Total, "Total expenses" }
         };
-        public readonly Dictionary<SalesColumns, string> SalesColumnHeaders = new()
+        public readonly Dictionary<Columns, string> SalesColumnHeaders = new()
         {
-            { SalesColumns.SalesID, "Sales ID" },
-            { SalesColumns.CustomerName, "Customer name" },
-            { SalesColumns.Product, "Product name" },
-            { SalesColumns.Category, "Category" },
-            { SalesColumns.Country, "Country of destination" },
-            { SalesColumns.Company, "Company of origin" },
-            { SalesColumns.Date, "Date" },
-            { SalesColumns.Quantity, "Quantity" },
-            { SalesColumns.PricePerUnit, "Price per unit" },
-            { SalesColumns.Shipping, "Shipping" },
-            { SalesColumns.Tax, "Tax" },
-            { SalesColumns.Fee, "Payment fee" },
-            { SalesColumns.TotalRevenue, "Total revenue" }
+            { Columns.ID, "Sales ID" },
+            { Columns.Name, "Customer name" },
+            { Columns.Product, "Product name" },
+            { Columns.Category, "Category" },
+            { Columns.Country, "Country of destination" },
+            { Columns.Company, "Company of origin" },
+            { Columns.Date, "Date" },
+            { Columns.Quantity, "Quantity" },
+            { Columns.PricePerUnit, "Price per unit" },
+            { Columns.Shipping, "Shipping" },
+            { Columns.Tax, "Tax" },
+            { Columns.Fee, "Payment fee" },
+            { Columns.Total, "Total revenue" }
         };
         public enum DataGridViewTags
         {
@@ -1020,13 +1005,13 @@ namespace Sales_Tracker
             {
                 case Options.Purchases:
                     type = "purchase";
-                    columnName = PurchaseColumns.Product.ToString();
+                    columnName = Columns.Product.ToString();
                     logIndex = 2;
                     break;
 
                 case Options.Sales:
                     type = "sale";
-                    columnName = SalesColumns.Product.ToString();
+                    columnName = Columns.Product.ToString();
                     logIndex = 2;
                     break;
 
@@ -1270,20 +1255,10 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
-                if (Selected == Options.Purchases)
-                {
-                    totalQuantity += Convert.ToInt32(row.Cells[PurchaseColumns.Quantity.ToString()].Value);
-                    totalTax += Convert.ToDecimal(row.Cells[PurchaseColumns.Tax.ToString()].Value);
-                    totalShipping += Convert.ToDecimal(row.Cells[PurchaseColumns.Shipping.ToString()].Value);
-                    totalPrice += Convert.ToDecimal(row.Cells[PurchaseColumns.TotalExpenses.ToString()].Value);
-                }
-                else
-                {
-                    totalQuantity += Convert.ToInt32(row.Cells[SalesColumns.Quantity.ToString()].Value);
-                    totalTax += Convert.ToDecimal(row.Cells[SalesColumns.Tax.ToString()].Value);
-                    totalShipping += Convert.ToDecimal(row.Cells[SalesColumns.Shipping.ToString()].Value);
-                    totalPrice += Convert.ToDecimal(row.Cells[SalesColumns.TotalRevenue.ToString()].Value);
-                }
+                totalQuantity += Convert.ToInt32(row.Cells[Columns.Quantity.ToString()].Value);
+                totalTax += Convert.ToDecimal(row.Cells[Columns.Tax.ToString()].Value);
+                totalShipping += Convert.ToDecimal(row.Cells[Columns.Shipping.ToString()].Value);
+                totalPrice += Convert.ToDecimal(row.Cells[Columns.Total.ToString()].Value);
             }
 
             Quantity_Label.Text = totalQuantity.ToString();
@@ -1299,21 +1274,10 @@ namespace Sales_Tracker
             }
 
             string quantityColumn, taxColumn, shippingColumn, totalPriceColumn;
-
-            if (Selected == Options.Purchases)
-            {
-                quantityColumn = PurchaseColumns.Quantity.ToString();
-                taxColumn = PurchaseColumns.Tax.ToString();
-                shippingColumn = PurchaseColumns.Shipping.ToString();
-                totalPriceColumn = PurchaseColumns.TotalExpenses.ToString();
-            }
-            else
-            {
-                quantityColumn = SalesColumns.Quantity.ToString();
-                taxColumn = SalesColumns.Tax.ToString();
-                shippingColumn = SalesColumns.Shipping.ToString();
-                totalPriceColumn = SalesColumns.TotalRevenue.ToString();
-            }
+            quantityColumn = Columns.Quantity.ToString();
+            taxColumn = Columns.Tax.ToString();
+            shippingColumn = Columns.Shipping.ToString();
+            totalPriceColumn = Columns.Total.ToString();
 
             Quantity_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
             Quantity_Label.Width = selectedDataGridView.Columns[quantityColumn].Width;
@@ -1516,24 +1480,24 @@ namespace Sales_Tracker
             ResizeControls();
         }
         private List<Control> statisticsControls;
-        private GunaChart product_Chart, countries_Chart, companies_Chart, forcastedGrowth_Chart;
+        private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart, forcastedGrowth_Chart;
         private void ConstructControlsForStatistics()
         {
-            if (product_Chart != null)
+            if (countriesOfOrigin_Chart != null)
             {
                 return;
             }
 
-            product_Chart = ConstructStatisticsChart(171, "Product");
-            countries_Chart = ConstructStatisticsChart(171, "Countries of origin for purchased products");
-            companies_Chart = ConstructStatisticsChart(171, "Companies of origin for purchased products");
+            countriesOfOrigin_Chart = ConstructStatisticsChart(171, "Countries of origin for purchased products");
+            companiesOfOrigin_Chart = ConstructStatisticsChart(171, "Companies of origin for purchased products");
+            countriesOfDestination_Chart = ConstructStatisticsChart(171, "Countries of destination for sold products");
             forcastedGrowth_Chart = ConstructStatisticsChart(600, "Forcasted growth");
 
             statisticsControls =
             [
-                product_Chart,
-                countries_Chart,
-                companies_Chart,
+                countriesOfOrigin_Chart,
+                companiesOfOrigin_Chart,
+                countriesOfDestination_Chart,
                 forcastedGrowth_Chart
             ];
         }
@@ -1580,8 +1544,9 @@ namespace Sales_Tracker
         }
         private void UpdateStatisticsCharts()
         {
-            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(Purchases_DataGridView, Sales_DataGridView, companies_Chart);
-            LoadChart.LoadCountriesOfOriginForProductsIntoChart(Purchases_DataGridView, Sales_DataGridView, countries_Chart);
+            LoadChart.LoadCountriesOfOriginForProductsIntoChart(Purchases_DataGridView, countriesOfOrigin_Chart);
+            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(Purchases_DataGridView, companiesOfOrigin_Chart);
+            LoadChart.LoadCountriesOfDestinationForProductsIntoChart(Sales_DataGridView, countriesOfDestination_Chart);
         }
 
 

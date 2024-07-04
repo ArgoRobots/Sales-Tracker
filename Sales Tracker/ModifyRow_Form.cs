@@ -242,66 +242,64 @@ namespace Sales_Tracker
 
                 switch (columnName)
                 {
-                    case nameof(SalesColumns.SalesID):
-                    case nameof(PurchaseColumns.PurchaseID):
+                    case nameof(Columns.ID):
                         if (MainMenu_Form.Instance.Selected == Options.Sales)
                         {
-                            text = MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.SalesID];
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[Columns.ID];
                         }
-                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.PurchaseID]; }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.ID]; }
 
                         ConstructLabel(text, left, Panel);
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, false, Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(SalesColumns.CustomerName):
-                    case nameof(PurchaseColumns.BuyerName):
+                    case nameof(Columns.Name):
                         if (MainMenu_Form.Instance.Selected == Options.Sales)
                         {
-                            text = MainMenu_Form.Instance.SalesColumnHeaders[SalesColumns.CustomerName];
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[Columns.Name];
                         }
-                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.BuyerName]; }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Name]; }
 
                         ConstructLabel(text, left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(PurchaseColumns.Product):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Product], left, Panel);
+                    case nameof(Columns.Product):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Product], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(PurchaseColumns.Date):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Date], left, Panel);
+                    case nameof(Columns.Date):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Date], left, Panel);
                         ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(PurchaseColumns.Quantity):
+                    case nameof(Columns.Quantity):
                         secondRow = true;
 
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Quantity], secondLeft, SecondPanel);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Quantity], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbers, false, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
 
-                    case nameof(PurchaseColumns.PricePerUnit):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.PricePerUnit], secondLeft, SecondPanel);
+                    case nameof(Columns.PricePerUnit):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.PricePerUnit], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
 
-                    case nameof(PurchaseColumns.Shipping):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Shipping], secondLeft, SecondPanel);
+                    case nameof(Columns.Shipping):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Shipping], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, true, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
 
-                    case nameof(PurchaseColumns.Tax):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[PurchaseColumns.Tax], secondLeft, SecondPanel);
+                    case nameof(Columns.Tax):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Tax], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
@@ -425,24 +423,12 @@ namespace Sales_Tracker
             // Update total value
             if (selectedTag == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString())
             {
-                if (MainMenu_Form.Instance.Selected == Options.Sales)
-                {
-                    int quantity = int.Parse(selectedRow.Cells[SalesColumns.Quantity.ToString()].Value.ToString());
-                    decimal pricePerUnit = decimal.Parse(selectedRow.Cells[SalesColumns.PricePerUnit.ToString()].Value.ToString());
-                    decimal shipping = decimal.Parse(selectedRow.Cells[SalesColumns.Shipping.ToString()].Value.ToString());
-                    decimal tax = decimal.Parse(selectedRow.Cells[SalesColumns.Tax.ToString()].Value.ToString());
-                    decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-                    selectedRow.Cells[SalesColumns.TotalRevenue.ToString()].Value = totalPrice;
-                }
-                else
-                {
-                    int quantity = int.Parse(selectedRow.Cells[PurchaseColumns.Quantity.ToString()].Value.ToString());
-                    decimal pricePerUnit = decimal.Parse(selectedRow.Cells[PurchaseColumns.PricePerUnit.ToString()].Value.ToString());
-                    decimal shipping = decimal.Parse(selectedRow.Cells[PurchaseColumns.Shipping.ToString()].Value.ToString());
-                    decimal tax = decimal.Parse(selectedRow.Cells[PurchaseColumns.Tax.ToString()].Value.ToString());
-                    decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-                    selectedRow.Cells[PurchaseColumns.TotalExpenses.ToString()].Value = totalPrice;
-                }
+                int quantity = int.Parse(selectedRow.Cells[Columns.Quantity.ToString()].Value.ToString());
+                decimal pricePerUnit = decimal.Parse(selectedRow.Cells[Columns.PricePerUnit.ToString()].Value.ToString());
+                decimal shipping = decimal.Parse(selectedRow.Cells[Columns.Shipping.ToString()].Value.ToString());
+                decimal tax = decimal.Parse(selectedRow.Cells[Columns.Tax.ToString()].Value.ToString());
+                decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+                selectedRow.Cells[Columns.Total.ToString()].Value = totalPrice;
             }
             Close();
         }
@@ -453,7 +439,7 @@ namespace Sales_Tracker
             // Concatenate the rows from both DataGridViews
             IEnumerable<DataGridViewRow> allRows = MainMenu_Form.Instance.Sales_DataGridView.Rows.Cast<DataGridViewRow>()
                             .Concat(MainMenu_Form.Instance.Purchases_DataGridView.Rows.Cast<DataGridViewRow>());
-            string oldName = "";
+            string oldName = "", oldID = "", oldCountry = "", oldCompany = "";
 
             if (selectedTag == MainMenu_Form.DataGridViewTags.Category.ToString())
             {
@@ -473,7 +459,7 @@ namespace Sales_Tracker
                 category.Name = selectedRow.Cells[0].Value.ToString();
 
                 // Update all instances in DataGridViews
-                string categoryColumn = SalesColumns.Category.ToString();
+                string categoryColumn = Columns.Category.ToString();
                 foreach (DataGridViewRow row in allRows)
                 {
                     if (row.Cells[categoryColumn].Value.ToString() == oldName)
@@ -499,27 +485,52 @@ namespace Sales_Tracker
                 Product product = category.ProductList.FirstOrDefault(p => p.Name == listOfOldValues[1]);
 
                 // If product changed
-                if (product.Name != selectedRow.Cells[0].Value.ToString() || product.CountryOfOrigin != selectedRow.Cells[2].Value.ToString())
+                if (product.ProductID != selectedRow.Cells[0].Value.ToString() ||
+                    product.Name != selectedRow.Cells[1].Value.ToString() ||
+                    product.CountryOfOrigin != selectedRow.Cells[3].Value.ToString() ||
+                    product.CompanyOfOrigin != selectedRow.Cells[4].Value.ToString())
                 {
                     // Update product list
                     oldName = product.Name;
-                    product.Name = selectedRow.Cells[0].Value.ToString();
-                    product.CountryOfOrigin = selectedRow.Cells[2].Value.ToString();
-                    product.CompanyOfOrigin = selectedRow.Cells[3].Value.ToString();
+                    oldID = product.ProductID;
+                    oldCountry = product.CountryOfOrigin;
+                    oldCompany = product.CompanyOfOrigin;
+                    product.ProductID = selectedRow.Cells[0].Value.ToString();
+                    product.Name = selectedRow.Cells[1].Value.ToString();
+                    product.CountryOfOrigin = selectedRow.Cells[3].Value.ToString();
+                    product.CompanyOfOrigin = selectedRow.Cells[4].Value.ToString();
 
                     // Update all instances in DataGridViews
-                    string productColumn = SalesColumns.Product.ToString();
+                    string productColumn = Columns.Product.ToString();
                     foreach (DataGridViewRow row in allRows)
                     {
                         if (row.Cells[productColumn].Value.ToString() == oldName)
                         {
                             row.Cells[productColumn].Value = product.Name;
+
+                            string idColumn = Columns.ID.ToString();
+                            if (row.Cells[idColumn].Value.ToString() == oldID)
+                            {
+                                row.Cells[idColumn].Value = product.ProductID;
+                            }
+
+                            string countryColumn = Columns.Country.ToString();
+                            if (row.Cells[countryColumn].Value.ToString() == oldCountry)
+                            {
+                                row.Cells[countryColumn].Value = product.CountryOfOrigin;
+                            }
+
+                            string companyColumn = Columns.Company.ToString();
+                            if (row.Cells[companyColumn].Value.ToString() == oldCompany)
+                            {
+                                row.Cells[companyColumn].Value = product.CompanyOfOrigin;
+                            }
                         }
                     }
                 }
 
                 // If product was moved to a different category
-                if (category.Name != selectedRow.Cells[1].Value.ToString())
+                if (category.Name != selectedRow.Cells[2].Value.ToString())
                 {
                     // Remove product from old category
                     category.ProductList.Remove(product);
@@ -539,8 +550,8 @@ namespace Sales_Tracker
                     newCategory.ProductList.Add(product);
 
                     // Update all instances in DataGridViews
-                    string categoryColumn = SalesColumns.Category.ToString();
-                    string nameColumn = SalesColumns.Product.ToString();
+                    string categoryColumn = Columns.Category.ToString();
+                    string nameColumn = Columns.Product.ToString();
                     foreach (DataGridViewRow row in allRows)
                     {
                         if (row.Cells[categoryColumn].Value.ToString() == category.Name
@@ -566,8 +577,8 @@ namespace Sales_Tracker
                 // Update all instances in DataGridViews
                 string newValue = selectedRow.Cells[0].Value.ToString();
 
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, PurchaseColumns.BuyerName.ToString(), accountant, newValue);
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, SalesColumns.CustomerName.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, Columns.Name.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, Columns.Name.ToString(), accountant, newValue);
             }
 
             MainMenu_Form.Instance.SaveCategoriesToFile(Options.Sales);

@@ -131,11 +131,11 @@
             AddCompany_Label.Anchor = AnchorStyles.Top;
             AddCompany_Label.AutoSize = true;
             AddCompany_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AddCompany_Label.Location = new Point(324, 20);
+            AddCompany_Label.Location = new Point(314, 20);
             AddCompany_Label.Name = "AddCompany_Label";
-            AddCompany_Label.Size = new Size(142, 30);
+            AddCompany_Label.Size = new Size(157, 30);
             AddCompany_Label.TabIndex = 49;
-            AddCompany_Label.Text = "Add company";
+            AddCompany_Label.Text = "Add companies";
             AddCompany_Label.Click += CloseAllPanels;
             // 
             // Companies_Form

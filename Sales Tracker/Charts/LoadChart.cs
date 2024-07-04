@@ -73,11 +73,11 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
-                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Tax.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Columns.Date.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Columns.Quantity.ToString()].Value);
+                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.PricePerUnit.ToString()].Value);
+                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.Shipping.ToString()].Value);
+                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.Tax.ToString()].Value);
 
                 double totalRevenue = quantity * pricePerUnit + shipping + tax;
                 grandTotal += totalRevenue;
@@ -119,13 +119,13 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
-                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Tax.ToString()].Value);
-                double fee = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Fee.ToString()].Value);
+                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.Shipping.ToString()].Value);
+                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.Tax.ToString()].Value);
+                double fee = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.Fee.ToString()].Value);
 
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
-                string category = row.Cells[MainMenu_Form.PurchaseColumns.Category.ToString()].Value.ToString();
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Columns.Quantity.ToString()].Value);
+                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.PricePerUnit.ToString()].Value);
+                string category = row.Cells[MainMenu_Form.Columns.Category.ToString()].Value.ToString();
                 double cost = quantity * pricePerUnit;
 
                 totalTax += tax;
@@ -158,13 +158,13 @@ namespace Sales_Tracker.Charts
             double taxPercentage = (totalTax / totalCost) * 100;
             double feePercentage = (totalFee / totalCost) * 100;
 
-            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.SalesColumns.Shipping], totalShipping);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Columns.Shipping], totalShipping);
             dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Shipping ({shippingPercentage:F2}%)";
 
-            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.SalesColumns.Tax], totalTax);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Columns.Tax], totalTax);
             dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Tax ({taxPercentage:F2}%)";
 
-            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.SalesColumns.Fee], totalFee);
+            dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Columns.Fee], totalFee);
             dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Fee ({feePercentage:F2}%)";
 
             UpdateChart(chart, dataset);
@@ -217,9 +217,9 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Columns.Date.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Columns.Quantity.ToString()].Value);
+                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.PricePerUnit.ToString()].Value);
 
                 double totalRevenue = quantity * pricePerUnit;
                 string formattedDate = date.ToString(dateFormat);
@@ -239,11 +239,11 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.PurchaseColumns.Quantity.ToString()].Value);
-                double costPerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.PricePerUnit.ToString()].Value);
-                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.PurchaseColumns.Tax.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Columns.Date.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Columns.Quantity.ToString()].Value);
+                double costPerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.PricePerUnit.ToString()].Value);
+                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.Shipping.ToString()].Value);
+                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Columns.Tax.ToString()].Value);
 
                 double totalCost = quantity * costPerUnit + shipping + tax;
                 string formattedDate = date.ToString(dateFormat);
@@ -271,11 +271,11 @@ namespace Sales_Tracker.Charts
 
 
         // Statistics charts
-        public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, Guna2DataGridView salesDataGridView, GunaChart chart)
+        public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
             ConfigureChartForPie(chart);
 
-            if (purchasesDataGridView.Rows.Count == 0 && salesDataGridView.Rows.Count == 0)
+            if (purchasesDataGridView.Rows.Count == 0)
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -285,28 +285,12 @@ namespace Sales_Tracker.Charts
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
 
-            // Process sales data
-            foreach (DataGridViewRow row in salesDataGridView.Rows)
-            {
-                if (!row.Visible) { continue; }
-
-                string country = row.Cells[MainMenu_Form.PurchaseColumns.Country.ToString()].Value.ToString();
-                if (countryCounts.TryGetValue(country, out double value))
-                {
-                    countryCounts[country] = ++value;
-                }
-                else
-                {
-                    countryCounts[country] = 1;
-                }
-            }
-
             // Process purchases data
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
 
-                string country = row.Cells[MainMenu_Form.PurchaseColumns.Country.ToString()].Value.ToString();
+                string country = row.Cells[MainMenu_Form.Columns.Country.ToString()].Value.ToString();
                 if (countryCounts.TryGetValue(country, out double value))
                 {
                     countryCounts[country] = ++value;
@@ -330,11 +314,11 @@ namespace Sales_Tracker.Charts
 
             UpdateChart(chart, dataset);
         }
-        public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, Guna2DataGridView salesDataGridView, GunaChart chart)
+        public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
             ConfigureChartForPie(chart);
 
-            if (purchasesDataGridView.Rows.Count == 0 && salesDataGridView.Rows.Count == 0)
+            if (purchasesDataGridView.Rows.Count == 0)
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -344,28 +328,12 @@ namespace Sales_Tracker.Charts
             GunaPieDataset dataset = new();
             Dictionary<string, double> companyCounts = [];
 
-            // Process sales data
-            foreach (DataGridViewRow row in salesDataGridView.Rows)
-            {
-                if (!row.Visible) { continue; }
-
-                string company = row.Cells[MainMenu_Form.PurchaseColumns.Company.ToString()].Value.ToString();
-                if (companyCounts.TryGetValue(company, out double value))
-                {
-                    companyCounts[company] = ++value;
-                }
-                else
-                {
-                    companyCounts[company] = 1;
-                }
-            }
-
             // Process purchases data
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
 
-                string company = row.Cells[MainMenu_Form.PurchaseColumns.Company.ToString()].Value.ToString();
+                string company = row.Cells[MainMenu_Form.Columns.Company.ToString()].Value.ToString();
                 if (companyCounts.TryGetValue(company, out double value))
                 {
                     companyCounts[company] = ++value;
@@ -389,7 +357,50 @@ namespace Sales_Tracker.Charts
 
             UpdateChart(chart, dataset);
         }
-       
+        public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart)
+        {
+            ConfigureChartForPie(chart);
+
+            if (salesDataGridView.Rows.Count == 0)
+            {
+                chart.Datasets.Clear();
+                chart.Update();
+                return;
+            }
+
+            GunaPieDataset dataset = new();
+            Dictionary<string, double> countryCounts = [];
+
+            // Process sales data
+            foreach (DataGridViewRow row in salesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+
+                string country = row.Cells[MainMenu_Form.Columns.Country.ToString()].Value.ToString();
+                if (countryCounts.TryGetValue(country, out double value))
+                {
+                    countryCounts[country] = ++value;
+                }
+                else
+                {
+                    countryCounts[country] = 1;
+                }
+            }
+
+            // Calculate total count for percentages
+            double totalCount = countryCounts.Values.Sum();
+
+            // Add data points to the dataset with percentage labels
+            foreach (KeyValuePair<string, double> companyCount in countryCounts)
+            {
+                double percentage = companyCount.Value / totalCount * 100;
+                dataset.DataPoints.Add(companyCount.Key, companyCount.Value);
+                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{companyCount.Key} ({percentage:F2}%)";
+            }
+
+            UpdateChart(chart, dataset);
+        }
+
 
         // Methods
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
@@ -450,9 +461,9 @@ namespace Sales_Tracker.Charts
             {
                 foreach (DataGridViewRow row in rows)
                 {
-                    if (row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value != null)
+                    if (row.Cells[MainMenu_Form.Columns.Date.ToString()].Value != null)
                     {
-                        DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.PurchaseColumns.Date.ToString()].Value);
+                        DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Columns.Date.ToString()].Value);
                         if (date < minDate) { minDate = date; }
                         if (date > maxDate) { maxDate = date; }
                     }
