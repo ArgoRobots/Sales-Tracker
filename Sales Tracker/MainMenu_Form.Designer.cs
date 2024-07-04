@@ -577,7 +577,7 @@
             Totals_Chart.BackColor = Color.White;
             chartFont1.FontName = "Arial";
             Totals_Chart.Legend.LabelFont = chartFont1;
-            Totals_Chart.Location = new Point(67, 171);
+            Totals_Chart.Location = new Point(67, 146);
             Totals_Chart.Name = "Totals_Chart";
             Totals_Chart.Size = new Size(484, 330);
             Totals_Chart.TabIndex = 8;
@@ -614,7 +614,7 @@
             Distribution_Chart.BackColor = Color.White;
             chartFont9.FontName = "Arial";
             Distribution_Chart.Legend.LabelFont = chartFont9;
-            Distribution_Chart.Location = new Point(557, 171);
+            Distribution_Chart.Location = new Point(557, 146);
             Distribution_Chart.Name = "Distribution_Chart";
             Distribution_Chart.Size = new Size(484, 330);
             Distribution_Chart.TabIndex = 17;
@@ -651,7 +651,7 @@
             Profits_Chart.BackColor = Color.White;
             chartFont17.FontName = "Arial";
             Profits_Chart.Legend.LabelFont = chartFont17;
-            Profits_Chart.Location = new Point(1047, 171);
+            Profits_Chart.Location = new Point(1047, 146);
             Profits_Chart.Name = "Profits_Chart";
             Profits_Chart.Size = new Size(491, 330);
             Profits_Chart.TabIndex = 10;

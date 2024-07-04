@@ -1,10 +1,10 @@
-﻿using Guna.Charts.Interfaces;
-using Guna.Charts.WinForms;
+﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
+using System.Collections;
 using System.Text.Json;
 using static Sales_Tracker.Classes.Theme;
 
@@ -158,6 +158,143 @@ namespace Sales_Tracker
         {
             UI.CloseAllPanels(null, null);
             ResizeControls();
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Enter)
+            {
+                Guna2Panel[] panels = [
+                    UI.fileMenu,
+                    UI.helpMenu,
+                    UI.accountMenu,
+                    UI.ControlDropDown_Panel,
+                    rightClickDataGridView_Panel
+                ];
+
+                foreach (Guna2Panel panel in panels)
+                {
+                    if (Controls.Contains(panel))
+                    {
+                        HandlePanelkeyDown(panel, keyData);
+                        return true;
+                    }
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        private static void HandlePanelkeyDown(Guna2Panel panel, Keys e)
+        {
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
+            IList results = flowPanel.Controls;
+
+            if (results.Count == 0)
+            {
+                return;
+            }
+
+            // Select the next result
+            bool isResultSelected = false;
+            if (e is Keys.Down or Keys.Tab)
+            {
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (results[i] is not Guna2Button) { continue; }
+
+                    Guna2Button btn = (Guna2Button)results[i];
+
+                    // Find the result that is selected
+                    if (btn.BorderThickness == 1)
+                    {
+                        // Unselect current one
+                        btn.BorderThickness = 0;
+
+                        // If it's not the last one
+                        if (i < results.Count - 1)
+                        {
+                            // Find the next button
+                            for (int j = i + 1; j < results.Count; j++)
+                            {
+                                if (results[j] is Guna2Button nextBtn)
+                                {
+                                    nextBtn.BorderThickness = 1;
+                                    isResultSelected = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Select the first button
+                            Guna2Button firstBtn = (Guna2Button)results[0];
+                            firstBtn.BorderThickness = 1;
+                        }
+                        break;
+                    }
+                }
+            }
+            else if (e is Keys.Up)
+            {
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (results[i] is not Guna2Button) { continue; }
+
+                    Guna2Button btn = (Guna2Button)results[i];
+
+                    // Find the result that is selected
+                    if (btn.BorderThickness == 1)
+                    {
+                        // Unselect current one
+                        btn.BorderThickness = 0;
+
+                        // If it's not the first one
+                        if (i > 0)
+                        {
+                            for (int j = i - 1; j >= 0; j--)
+                            {
+                                if (results[j] is Guna2Button prevBtn)
+                                {
+                                    prevBtn.BorderThickness = 1;
+                                    isResultSelected = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Select the last button
+                            for (int j = results.Count - 1; j >= 0; j--)
+                            {
+                                if (results[j] is Guna2Button lastBtn)
+                                {
+                                    lastBtn.BorderThickness = 1;
+                                    isResultSelected = true;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            else if (e is Keys.Enter)
+            {
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (results[i] is Guna2Button btn && btn.BorderThickness == 1)
+                    {
+                        btn.PerformClick();
+                        isResultSelected = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isResultSelected)
+            {
+                // Select the first button
+                Guna2Button firstBtn = (Guna2Button)results[0];
+                firstBtn.BorderThickness = 1;
+            }
         }
         private void MainMenu_form_KeyDown(object sender, KeyEventArgs e)
         {
@@ -378,6 +515,7 @@ namespace Sales_Tracker
                 UI.fileMenu.Location = new Point(File_Button.Left, 30);
                 Controls.Add(UI.fileMenu);
                 UI.fileMenu.BringToFront();
+                Focus();
             }
         }
         private void Save_Button_Click(object sender, EventArgs e)
@@ -582,12 +720,12 @@ namespace Sales_Tracker
         private void FilterDataGridViewByDate()
         {
             string filter = Filter_ComboBox.SelectedItem.ToString();
-            var selectedInterval = timeIntervals.FirstOrDefault(ti => ti.displayString == filter);
+            (TimeInterval interval, string displayString, TimeSpan timeSpan) = timeIntervals.FirstOrDefault(ti => ti.displayString == filter);
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
                 DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[SalesColumns.Date]].Value.ToString());
-                bool isVisible = selectedInterval.interval == TimeInterval.AllTime || rowDate >= DateTime.Now - selectedInterval.timeSpan;
+                bool isVisible = interval == TimeInterval.AllTime || rowDate >= DateTime.Now - timeSpan;
                 row.Visible = isVisible;
             }
         }
@@ -1217,16 +1355,11 @@ namespace Sales_Tracker
         private Guna2Panel rightClickDataGridView_Panel;
         public void ConstructRightClickDataGridViewRowMenu()
         {
-            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 5 * 22 + 10));
+            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 4 * 22 + 10));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
-
-            rightClickDataGridView_Panel.BringToFront();
 
             Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", 240, false, flowPanel);
             menuBtn.Click += ModifyRow;
-
-            menuBtn = UI.ConstructBtnForMenu("Duplicate", 240, false, flowPanel);
-            menuBtn.Click += DuplicateRow;
 
             menuBtn = UI.ConstructBtnForMenu("Move up", 240, false, flowPanel);
             menuBtn.Click += MoveRowUp;
@@ -1251,37 +1384,6 @@ namespace Sales_Tracker
 
             ModifyRow_Form ModifyRow_form = new(selectedDataGridView.SelectedRows[0]);
             ModifyRow_form.ShowDialog();
-        }
-        private void DuplicateRow(object? sender, EventArgs e)
-        {
-            CloseRightClickPanels();
-
-            if (selectedDataGridView.Rows.Count == 0 || selectedDataGridView.SelectedRows.Count == 0)
-            {
-                CustomMessageBox.Show("Argo Studio", "Select a row to duplicate.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
-
-            int index = selectedDataGridView.SelectedRows[0].Index;
-
-            // Duplicate row
-            DataGridViewRow selectedRow = CloneRowWithValues(selectedDataGridView.SelectedRows[0]);
-            selectedDataGridView.Rows.Insert(index + 1, selectedRow);
-
-            // Select the new row
-            selectedDataGridView.ClearSelection();
-            selectedDataGridView.Rows[index + 1].Selected = true;
-
-            SaveDataGridViewToFile();
-        }
-        private static DataGridViewRow CloneRowWithValues(DataGridViewRow row)
-        {
-            DataGridViewRow clonedRow = (DataGridViewRow)row.Clone();
-            for (int i = 0; i < row.Cells.Count; i++)
-            {
-                clonedRow.Cells[i].Value = row.Cells[i].Value;
-            }
-            return clonedRow;
         }
         private void MoveRowUp(object sender, EventArgs e)
         {

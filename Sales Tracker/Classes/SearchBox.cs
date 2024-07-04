@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using System.Collections;
 using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.Classes
@@ -176,7 +177,7 @@ namespace Sales_Tracker.Classes
         }
         public static void SearchBoxTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
         {
-            System.Collections.IList results = SearchResultBox.Controls;
+            IList results = SearchResultBox.Controls;
 
             if (results.Count == 0)
             {
@@ -189,6 +190,8 @@ namespace Sales_Tracker.Classes
             {
                 for (int i = 0; i < results.Count; i++)
                 {
+                    if (results[i] is not Guna2Button) { continue; }
+
                     Guna2Button btn = (Guna2Button)results[i];
 
                     // Find the result that is selected
@@ -200,19 +203,25 @@ namespace Sales_Tracker.Classes
                         // If it's not the last one
                         if (i < results.Count - 1)
                         {
-                            // Select the next result
-                            Guna2Button nextBtn = (Guna2Button)results[i + 1];
-                            nextBtn.BorderThickness = 1;
-                            SearchResultBox.ScrollControlIntoView(nextBtn);
+                            // Find the next button
+                            for (int j = i + 1; j < results.Count; j++)
+                            {
+                                if (results[j] is Guna2Button nextBtn)
+                                {
+                                    nextBtn.BorderThickness = 1;
+                                    SearchResultBox.ScrollControlIntoView(nextBtn);
+                                    isResultSelected = true;
+                                    break;
+                                }
+                            }
                         }
                         else
                         {
-                            // Select the first one
+                            // Select the first button
                             Guna2Button firstBtn = (Guna2Button)results[0];
                             firstBtn.BorderThickness = 1;
                             SearchResultBox.ScrollControlIntoView(firstBtn);
                         }
-                        isResultSelected = true;
                         break;
                     }
                 }
@@ -221,7 +230,10 @@ namespace Sales_Tracker.Classes
             {
                 for (int i = 0; i < results.Count; i++)
                 {
+                    if (results[i] is not Guna2Button) { continue; }
+
                     Guna2Button btn = (Guna2Button)results[i];
+
                     // Find the result that is selected
                     if (btn.BorderThickness == 1)
                     {
@@ -231,19 +243,31 @@ namespace Sales_Tracker.Classes
                         // If it's not the first one
                         if (i > 0)
                         {
-                            // Select the previous result
-                            Guna2Button nextBtn = (Guna2Button)results[i - 1];
-                            nextBtn.BorderThickness = 1;
-                            SearchResultBox.ScrollControlIntoView(nextBtn);
+                            for (int j = i - 1; j >= 0; j--)
+                            {
+                                if (results[j] is Guna2Button prevBtn)
+                                {
+                                    prevBtn.BorderThickness = 1;
+                                    SearchResultBox.ScrollControlIntoView(prevBtn);
+                                    isResultSelected = true;
+                                    break;
+                                }
+                            }
                         }
                         else
                         {
-                            // Select the last one
-                            Guna2Button firstBtn = (Guna2Button)results[results.Count - 1];
-                            firstBtn.BorderThickness = 1;
-                            SearchResultBox.ScrollControlIntoView(firstBtn);
+                            // Select the last button
+                            for (int j = results.Count - 1; j >= 0; j--)
+                            {
+                                if (results[j] is Guna2Button lastBtn)
+                                {
+                                    lastBtn.BorderThickness = 1;
+                                    SearchResultBox.ScrollControlIntoView(lastBtn);
+                                    isResultSelected = true;
+                                    break;
+                                }
+                            }
                         }
-                        isResultSelected = true;
                         break;
                     }
                 }
@@ -252,15 +276,11 @@ namespace Sales_Tracker.Classes
             {
                 for (int i = 0; i < results.Count; i++)
                 {
-                    Guna2Button btn = (Guna2Button)results[i];
-                    // Find the result that is selected
-                    if (btn.BorderThickness == 1)
+                    if (results[i] is Guna2Button btn)
                     {
                         textBox.Text = btn.Text;
-
                         CloseSearchBox(controlToRemoveSearchBox);
                         DeselectControl(deselectControl);
-
                         isResultSelected = true;
                         break;
                     }
@@ -272,11 +292,13 @@ namespace Sales_Tracker.Classes
                 // Remove Windows "ding" noise when user presses enter
                 e.SuppressKeyPress = true;
             }
+
             if (!isResultSelected)
             {
-                // Select the first one
+                // Select the first button
                 Guna2Button firstBtn = (Guna2Button)results[0];
                 firstBtn.BorderThickness = 1;
+                SearchResultBox.ScrollControlIntoView(firstBtn);
             }
         }
         private static void DeselectControl(Control deselectControl)

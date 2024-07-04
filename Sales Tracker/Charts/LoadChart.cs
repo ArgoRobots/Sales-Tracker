@@ -148,7 +148,7 @@ namespace Sales_Tracker.Charts
             // Add combined category costs with percentage labels
             foreach (KeyValuePair<string, double> category in categoryCosts)
             {
-                double percentage = (category.Value / totalCost) * 100;
+                double percentage = category.Value / totalCost * 100;
                 dataset.DataPoints.Add(category.Key, category.Value);
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{category.Key} ({percentage:F2}%)";
             }
@@ -323,7 +323,7 @@ namespace Sales_Tracker.Charts
             // Add data points to the dataset with percentage labels
             foreach (KeyValuePair<string, double> countryCount in countryCounts)
             {
-                double percentage = (countryCount.Value / totalCount) * 100;
+                double percentage = countryCount.Value / totalCount * 100;
                 dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
             }
@@ -342,7 +342,7 @@ namespace Sales_Tracker.Charts
             }
 
             GunaPieDataset dataset = new();
-            Dictionary<string, double> companyCounts = new Dictionary<string, double>();
+            Dictionary<string, double> companyCounts = [];
 
             // Process sales data
             foreach (DataGridViewRow row in salesDataGridView.Rows)
@@ -382,15 +382,14 @@ namespace Sales_Tracker.Charts
             // Add data points to the dataset with percentage labels
             foreach (KeyValuePair<string, double> companyCount in companyCounts)
             {
-                double percentage = (companyCount.Value / totalCount) * 100;
+                double percentage = companyCount.Value / totalCount * 100;
                 dataset.DataPoints.Add(companyCount.Key, companyCount.Value);
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{companyCount.Key} ({percentage:F2}%)";
             }
 
             UpdateChart(chart, dataset);
         }
-
-
+       
 
         // Methods
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)

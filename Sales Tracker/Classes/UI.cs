@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Properties;
 using System.Drawing.Drawing2D;
+using static Guna.UI2.WinForms.Suite.Descriptions;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker.Classes
@@ -59,7 +60,7 @@ namespace Sales_Tracker.Classes
             FlowLayoutPanel flowLayoutPanel = new()
             {
                 BackColor = CustomColors.panelBtn,
-                Size = new Size(size.Width - 10, size.Height - 10),
+                Size = new Size(size.Width - 10, size.Height - 6),
                 Location = new Point(5, 5)
             };
             panel.Controls.Add(flowLayoutPanel);
@@ -313,7 +314,7 @@ namespace Sales_Tracker.Classes
             };
         }
 
-        // Robot Programmer workspace
+        // Control dropdown
         public static Guna2Button controlsDropDown_Button;
         private static void ContructControlsDropDownButton()
         {
@@ -336,10 +337,18 @@ namespace Sales_Tracker.Classes
             };
             controlsDropDown_Button.Click += (sender, e) =>
             {
-                CloseAllPanels(null, null);
-                ControlDropDown_Panel.Location = new Point(controlsDropDown_Button.Right - ControlDropDown_Panel.Width, MainMenu_Form.Instance.MainTop_Panel.Top + MainMenu_Form.Instance.MainTop_Panel.Height);
-                MainMenu_Form.Instance.Controls.Add(ControlDropDown_Panel);
-                ControlDropDown_Panel.BringToFront();
+                if (MainMenu_Form.Instance.Controls.Contains(UI.fileMenu))
+                {
+                    MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
+                }
+                else
+                {
+                    CloseAllPanels(null, null);
+                    ControlDropDown_Panel.Location = new Point(controlsDropDown_Button.Right - ControlDropDown_Panel.Width, MainMenu_Form.Instance.MainTop_Panel.Top + MainMenu_Form.Instance.MainTop_Panel.Height);
+                    MainMenu_Form.Instance.Controls.Add(ControlDropDown_Panel);
+                    ControlDropDown_Panel.BringToFront();
+                    ControlDropDown_Panel.Focus();
+                }
             };
         }
         public static Guna2Panel ControlDropDown_Panel;
@@ -467,12 +476,26 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.Controls.Remove(fileMenu);
             MainMenu_Form.Instance.Controls.Remove(helpMenu);
             MainMenu_Form.Instance.Controls.Remove(accountMenu);
+            DeselectAllMenuButtons(fileMenu);
+            DeselectAllMenuButtons(helpMenu);
+            DeselectAllMenuButtons(accountMenu);
+
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
             MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
             MainMenu_Form.Instance.RenameCompany();
             MainMenu_Form.Instance.CloseRightClickPanels();
+        }
+        private static void DeselectAllMenuButtons(Guna2Panel panel)
+        {
+            foreach (Control control in panel.Controls[0].Controls)
+            {
+                if (control is Guna2Button button && button.BorderThickness == 1)
+                {
+                    button.BorderThickness = 0;
+                }
+            }
         }
     }
 }
