@@ -124,7 +124,7 @@
             Sale_RadioButton.CheckedState.InnerColor = Color.White;
             Sale_RadioButton.CheckedState.InnerOffset = -4;
             Sale_RadioButton.Font = new Font("Segoe UI", 11F);
-            Sale_RadioButton.Location = new Point(33, 20);
+            Sale_RadioButton.Location = new Point(147, 20);
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.Size = new Size(78, 24);
             Sale_RadioButton.TabIndex = 3;
@@ -144,7 +144,7 @@
             Purchase_RadioButton.CheckedState.InnerColor = Color.White;
             Purchase_RadioButton.CheckedState.InnerOffset = -4;
             Purchase_RadioButton.Font = new Font("Segoe UI", 11F);
-            Purchase_RadioButton.Location = new Point(117, 20);
+            Purchase_RadioButton.Location = new Point(30, 20);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.Size = new Size(111, 24);
             Purchase_RadioButton.TabIndex = 4;
@@ -212,9 +212,9 @@
         private Guna.UI2.WinForms.Guna2Button AddCategory_Button;
         private Label AddCategory_Label;
         private Label CategoryName_Label;
-        private Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
         private PictureBox WarningCategoryName_PictureBox;
         private Label WarningCategoryName_Label;
-        public Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
+        public Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
+        private Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
     }
 }

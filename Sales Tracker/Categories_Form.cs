@@ -10,7 +10,7 @@ namespace Sales_Tracker
 
         // Init.
         public static Categories_Form Instance { get; private set; }
-        private readonly MainMenu_Form.Options oldOption;
+        private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
         public Categories_Form(bool checkPurchaseRadioButton)
         {
@@ -86,8 +86,9 @@ namespace Sales_Tracker
             thingsThatHaveChangedInFile.Add(name);
             Log.Write(3, $"Added category '{name}'");
 
-            Category_TextBox.Text = "";
-            ValidateInputs();
+            Category_TextBox.Text = "";  // For some reason, this checks the other radio button
+            UI.SetGTextBoxToValid(Category_TextBox);
+            HideCategoryWarning();
             Category_TextBox.Focus();
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
@@ -96,7 +97,7 @@ namespace Sales_Tracker
             Controls.Add(Purchases_DataGridView);
             Controls.Remove(Sales_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.CategoryPurchases;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
             CenterSelectedDataGridView();
             VaidateCategoryTextBox();
         }
@@ -106,7 +107,7 @@ namespace Sales_Tracker
             Controls.Add(Sales_DataGridView);
             Controls.Remove(Purchases_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.CategorySales;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
             CenterSelectedDataGridView();
             VaidateCategoryTextBox();
         }
@@ -154,14 +155,14 @@ namespace Sales_Tracker
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
-            Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTags.Category;
+            Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
-            Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTags.Category;
+            Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
         }
 
 

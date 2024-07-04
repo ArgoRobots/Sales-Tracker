@@ -64,12 +64,12 @@ namespace Sales_Tracker
         public void LoadSalesAndPurchases()
         {
             LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
-            AddRowsFromFile(Sales_DataGridView, Options.Sales);
+            AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
 
             LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
-            AddRowsFromFile(Purchases_DataGridView, Options.Purchases);
+            AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
         }
-        private static void AddRowsFromFile(Guna2DataGridView dataGridView, Options selected)
+        private static void AddRowsFromFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = GetFilePathForDataGridView(selected);
 
@@ -92,7 +92,7 @@ namespace Sales_Tracker
         public void LoadGraphs()
         {
             double total;
-            if (Selected == Options.Sales)
+            if (Selected == SelectedOption.Sales)
             {
                 total = LoadChart.LoadTotalsIntoChart(Sales_DataGridView, Totals_Chart, LineGraph_ToggleSwitch.Checked);
                 Totals_Chart.Title.Text = $"Total revenue: {total:C}";
@@ -420,7 +420,7 @@ namespace Sales_Tracker
                 wasControlsDropDownAdded = false;
             }
 
-            if (Selected == Options.Statistics)
+            if (Selected == SelectedOption.Statistics)
             {
                 countriesOfOrigin_Chart.Width = Width / 3 - 30;
                 countriesOfOrigin_Chart.Left = 20;
@@ -569,7 +569,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             AddMainControls();
-            Selected = Options.Purchases;
+            Selected = SelectedOption.Purchases;
             selectedDataGridView = Purchases_DataGridView;
             Controls.Add(Purchases_DataGridView);
             ResizeControls();
@@ -582,7 +582,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             AddMainControls();
-            Selected = Options.Sales;
+            Selected = SelectedOption.Sales;
             selectedDataGridView = Sales_DataGridView;
             Controls.Add(Sales_DataGridView);
             ResizeControls();
@@ -622,7 +622,7 @@ namespace Sales_Tracker
         }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
-            new Categories_Form(false).ShowDialog();
+            new Categories_Form(true).ShowDialog();
         }
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -725,7 +725,7 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
-                DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Columns.Date]].Value.ToString());
+                DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
                 bool isVisible = interval == TimeInterval.AllTime || rowDate >= DateTime.Now - timeSpan;
                 row.Visible = isVisible;
             }
@@ -841,7 +841,7 @@ namespace Sales_Tracker
             }
             return false;
         }
-        public void SaveCategoriesToFile(Options option)
+        public void SaveCategoriesToFile(SelectedOption option)
         {
             if (isFormLoading)
             {
@@ -850,14 +850,14 @@ namespace Sales_Tracker
 
             string filePath = GetFilePathForDataGridView(option);
 
-            if (option == Options.Accountants)
+            if (option == SelectedOption.Accountants)
             {
                 Directories.WriteLinesToFile(filePath, accountantList);
                 return;
             }
 
             List<Category> categoryList;
-            if (option == Options.CategoryPurchases || option == Options.ProductPurchases)
+            if (option == SelectedOption.CategoryPurchases || option == SelectedOption.ProductPurchases)
             {
                 categoryList = categoryPurchaseList;
             }
@@ -875,8 +875,8 @@ namespace Sales_Tracker
 
         // DataGridView
         public bool isFormLoading;
-        public Options Selected;
-        public enum Options
+        public SelectedOption Selected;
+        public enum SelectedOption
         {
             Purchases,
             Sales,
@@ -888,7 +888,7 @@ namespace Sales_Tracker
             Companies,
             Statistics
         }
-        public enum Columns
+        public enum Column
         {
             ID,
             Name,
@@ -904,42 +904,43 @@ namespace Sales_Tracker
             Fee,
             Total
         }
-        public readonly Dictionary<Columns, string> PurchaseColumnHeaders = new()
+        public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
-            { Columns.ID, "Purchase ID" },
-            { Columns.Name, "Buyer name" },
-            { Columns.Product, "Product name" },
-            { Columns.Category, "Category" },
-            { Columns.Country, "Country of origin" },
-            { Columns.Company, "Company of origin" },
-            { Columns.Date, "Date" },
-            { Columns.Quantity, "Quantity" },
-            { Columns.PricePerUnit, "Price per unit" },
-            { Columns.Shipping, "Shipping" },
-            { Columns.Tax, "Tax" },
-            { Columns.Fee, "Payment fee" },
-            { Columns.Total, "Total expenses" }
+            { Column.ID, "Purchase ID" },
+            { Column.Name, "Buyer name" },
+            { Column.Product, "Product name" },
+            { Column.Category, "Category" },
+            { Column.Country, "Country of origin" },
+            { Column.Company, "Company of origin" },
+            { Column.Date, "Date" },
+            { Column.Quantity, "Quantity" },
+            { Column.PricePerUnit, "Price per unit" },
+            { Column.Shipping, "Shipping" },
+            { Column.Tax, "Tax" },
+            { Column.Fee, "Payment fee" },
+            { Column.Total, "Total expenses" }
         };
-        public readonly Dictionary<Columns, string> SalesColumnHeaders = new()
+        public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
-            { Columns.ID, "Sales ID" },
-            { Columns.Name, "Customer name" },
-            { Columns.Product, "Product name" },
-            { Columns.Category, "Category" },
-            { Columns.Country, "Country of destination" },
-            { Columns.Company, "Company of origin" },
-            { Columns.Date, "Date" },
-            { Columns.Quantity, "Quantity" },
-            { Columns.PricePerUnit, "Price per unit" },
-            { Columns.Shipping, "Shipping" },
-            { Columns.Tax, "Tax" },
-            { Columns.Fee, "Payment fee" },
-            { Columns.Total, "Total revenue" }
+            { Column.ID, "Sales ID" },
+            { Column.Name, "Customer name" },
+            { Column.Product, "Product name" },
+            { Column.Category, "Category" },
+            { Column.Country, "Country of destination" },
+            { Column.Company, "Company of origin" },
+            { Column.Date, "Date" },
+            { Column.Quantity, "Quantity" },
+            { Column.PricePerUnit, "Price per unit" },
+            { Column.Shipping, "Shipping" },
+            { Column.Tax, "Tax" },
+            { Column.Fee, "Payment fee" },
+            { Column.Total, "Total revenue" }
         };
-        public enum DataGridViewTags
+        public enum DataGridViewTag
         {
             SaleOrPurchase,
             Category,
+            Company,
             Product,
             Accountant
         }
@@ -951,11 +952,11 @@ namespace Sales_Tracker
             Size size = new(1300, 350);
             Purchases_DataGridView = new Guna2DataGridView();
             InitializeDataGridView(Purchases_DataGridView, size);
-            Purchases_DataGridView.Tag = DataGridViewTags.SaleOrPurchase;
+            Purchases_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
             Sales_DataGridView = new Guna2DataGridView();
             InitializeDataGridView(Sales_DataGridView, size);
-            Sales_DataGridView.Tag = DataGridViewTags.SaleOrPurchase;
+            Sales_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
         }
         private readonly byte rowHeight = 25, columnHeaderHeight = 30;
         public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
@@ -1003,19 +1004,19 @@ namespace Sales_Tracker
 
             switch (Selected)
             {
-                case Options.Purchases:
+                case SelectedOption.Purchases:
                     type = "purchase";
-                    columnName = Columns.Product.ToString();
+                    columnName = Column.Product.ToString();
                     logIndex = 2;
                     break;
 
-                case Options.Sales:
+                case SelectedOption.Sales:
                     type = "sale";
-                    columnName = Columns.Product.ToString();
+                    columnName = Column.Product.ToString();
                     logIndex = 2;
                     break;
 
-                case Options.ProductPurchases:
+                case SelectedOption.ProductPurchases:
                     type = "product for purchase";
                     columnName = Products_Form.Columns.ProductName.ToString();
                     logIndex = 3;
@@ -1027,7 +1028,7 @@ namespace Sales_Tracker
                     Products_Form.Instance.ValidateProductNameTextBox();
                     break;
 
-                case Options.ProductSales:
+                case SelectedOption.ProductSales:
                     type = "product for sale";
                     columnName = Products_Form.Columns.ProductName.ToString();
                     logIndex = 3;
@@ -1039,7 +1040,7 @@ namespace Sales_Tracker
                     Products_Form.Instance.ValidateProductNameTextBox();
                     break;
 
-                case Options.CategoryPurchases:
+                case SelectedOption.CategoryPurchases:
                     type = "Category for purchase";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
@@ -1051,7 +1052,7 @@ namespace Sales_Tracker
                     Categories_Form.Instance.VaidateCategoryTextBox();
                     break;
 
-                case Options.CategorySales:
+                case SelectedOption.CategorySales:
                     type = "Category for sale";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
@@ -1063,7 +1064,7 @@ namespace Sales_Tracker
                     Categories_Form.Instance.VaidateCategoryTextBox();
                     break;
 
-                case Options.Accountants:
+                case SelectedOption.Accountants:
                     type = "Accountant";
                     columnName = Accountants_Form.Columns.AccountantName.ToString();
                     logIndex = 3;
@@ -1098,13 +1099,13 @@ namespace Sales_Tracker
                 return;
             }
 
-            if (Selected == Options.Sales || Selected == Options.Purchases)
+            if (Selected == SelectedOption.Sales || Selected == SelectedOption.Purchases)
             {
                 UpdateTotals();
                 LoadGraphs();
                 SaveDataGridViewToFile();
             }
-            else if (Selected == Options.Companies)
+            else if (Selected == SelectedOption.Companies)
             {
                 SaveDataGridViewToFile();
             }
@@ -1243,7 +1244,7 @@ namespace Sales_Tracker
         }
         private void UpdateTotals()
         {
-            if (isFormLoading || Selected != Options.Purchases & Selected != Options.Sales)
+            if (isFormLoading || Selected != SelectedOption.Purchases & Selected != SelectedOption.Sales)
             {
                 return;
             }
@@ -1255,10 +1256,10 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
-                totalQuantity += Convert.ToInt32(row.Cells[Columns.Quantity.ToString()].Value);
-                totalTax += Convert.ToDecimal(row.Cells[Columns.Tax.ToString()].Value);
-                totalShipping += Convert.ToDecimal(row.Cells[Columns.Shipping.ToString()].Value);
-                totalPrice += Convert.ToDecimal(row.Cells[Columns.Total.ToString()].Value);
+                totalQuantity += Convert.ToInt32(row.Cells[Column.Quantity.ToString()].Value);
+                totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
+                totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
+                totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
             }
 
             Quantity_Label.Text = totalQuantity.ToString();
@@ -1274,10 +1275,10 @@ namespace Sales_Tracker
             }
 
             string quantityColumn, taxColumn, shippingColumn, totalPriceColumn;
-            quantityColumn = Columns.Quantity.ToString();
-            taxColumn = Columns.Tax.ToString();
-            shippingColumn = Columns.Shipping.ToString();
-            totalPriceColumn = Columns.Total.ToString();
+            quantityColumn = Column.Quantity.ToString();
+            taxColumn = Column.Tax.ToString();
+            shippingColumn = Column.Shipping.ToString();
+            totalPriceColumn = Column.Total.ToString();
 
             Quantity_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
             Quantity_Label.Width = selectedDataGridView.Columns[quantityColumn].Width;
@@ -1291,18 +1292,18 @@ namespace Sales_Tracker
             Price_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
             Price_Label.Width = selectedDataGridView.Columns[totalPriceColumn].Width;
         }
-        private static string GetFilePathForDataGridView(Options selected)
+        private static string GetFilePathForDataGridView(SelectedOption selected)
         {
             return selected switch
             {
-                Options.Purchases => Directories.purchases_file,
-                Options.Sales => Directories.sales_file,
-                Options.CategoryPurchases => Directories.categoryPurchases_file,
-                Options.CategorySales => Directories.categorySales_file,
-                Options.ProductPurchases => Directories.categoryPurchases_file,
-                Options.ProductSales => Directories.categorySales_file,
-                Options.Accountants => Directories.accountants_file,
-                Options.Companies => Directories.companies_file,
+                SelectedOption.Purchases => Directories.purchases_file,
+                SelectedOption.Sales => Directories.sales_file,
+                SelectedOption.CategoryPurchases => Directories.categoryPurchases_file,
+                SelectedOption.CategorySales => Directories.categorySales_file,
+                SelectedOption.ProductPurchases => Directories.categoryPurchases_file,
+                SelectedOption.ProductSales => Directories.categorySales_file,
+                SelectedOption.Accountants => Directories.accountants_file,
+                SelectedOption.Companies => Directories.companies_file,
                 _ => ""
             };
         }
@@ -1463,7 +1464,7 @@ namespace Sales_Tracker
         }
         private void AddMainControls()
         {
-            if (Selected != Options.Statistics)
+            if (Selected != SelectedOption.Statistics)
             {
                 return;
             }
@@ -1524,11 +1525,11 @@ namespace Sales_Tracker
         }
         private void AddStatisticsControls()
         {
-            if (Selected == Options.Statistics)
+            if (Selected == SelectedOption.Statistics)
             {
                 return;
             }
-            Selected = Options.Statistics;
+            Selected = SelectedOption.Statistics;
 
             foreach (Control control in statisticsControls)
             {
@@ -1660,6 +1661,14 @@ namespace Sales_Tracker
         }
 
         // Misc.
+        public bool IsPurchasesSelected()
+        {
+            if (selectedDataGridView == Purchases_DataGridView)
+            {
+                return true;
+            }
+            return false;
+        }
         public void CloseRightClickPanels()
         {
             controlRightClickPanelWasAddedTo?.Controls.Remove(rightClickDataGridView_Panel);

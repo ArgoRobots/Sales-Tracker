@@ -71,7 +71,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.Options.Sales)
+            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
             {
                 MainMenu_Form.Instance.Purchases_Button.PerformClick();
             }

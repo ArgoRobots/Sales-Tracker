@@ -12,7 +12,7 @@ namespace Sales_Tracker
         public static Products_Form Instance { get; private set; }
 
         // Init
-        private readonly MainMenu_Form.Options oldOption;
+        private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
         public Products_Form(bool checkPurchaseRadioButton)
         {
@@ -129,7 +129,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
+            //  CloseAllPanels(null, null);
             string name = ProductName_TextBox.Text.Trim();
             Product product = new(ProductID_TextBox.Text, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
@@ -149,14 +149,14 @@ namespace Sales_Tracker
             Log.Write(3, $"Added product '{name}'");
 
             ProductName_TextBox.Text = "";
-            ValidateInputs(null, null);
+            //  ValidateInputs(null, null);
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
             Controls.Add(Purchases_DataGridView);
             Controls.Remove(Sales_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductPurchases;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
             VaidateCategoryTextBox();
@@ -166,7 +166,7 @@ namespace Sales_Tracker
             Controls.Add(Sales_DataGridView);
             Controls.Remove(Purchases_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.ProductSales;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
             VaidateCategoryTextBox();
@@ -232,14 +232,14 @@ namespace Sales_Tracker
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
-            Purchases_DataGridView.Tag = DataGridViewTags.Product;
+            Purchases_DataGridView.Tag = DataGridViewTag.Product;
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
-            Sales_DataGridView.Tag = DataGridViewTags.Product;
+            Sales_DataGridView.Tag = DataGridViewTag.Product;
         }
 
 

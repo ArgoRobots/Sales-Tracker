@@ -60,6 +60,13 @@ namespace Sales_Tracker
             ProductName_TextBox.TextChanged += ValidateInputs;
             ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddSale_Label, e); };
+
+            CountryOfDestinaion_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, CountryOfDestinaion_TextBox, Country.countries, this, searchBoxMaxHeight); };
+            CountryOfDestinaion_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CountryOfDestinaion_TextBox, Country.countries, this, AddSale_Button, searchBoxMaxHeight); };
+            CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
+            CountryOfDestinaion_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            CountryOfDestinaion_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CountryOfDestinaion_TextBox, this, AddSale_Label, e); };
+
         }
         private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
         {
@@ -70,7 +77,7 @@ namespace Sales_Tracker
         // Event handlers
         private void AddSale_Button_Click(object sender, EventArgs e)
         {
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.Options.Sales)
+            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Sales)
             {
                 MainMenu_Form.Instance.Sales_Button.PerformClick();
             }
@@ -133,7 +140,7 @@ namespace Sales_Tracker
             string SaleID = SaleID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
-            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
+            string country = CountryOfDestinaion_TextBox.Text;
             string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
 
@@ -199,13 +206,16 @@ namespace Sales_Tracker
             // Center controls
             SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
-                ProductName_TextBox.Width) / 2;
+                ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
+                CountryOfDestinaion_TextBox.Width) / 2;
 
             SaleID_Label.Left = SaleID_TextBox.Left;
             BuyerName_TextBox.Left = SaleID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
             ProductName_TextBox.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
             ProductName_Label.Left = ProductName_TextBox.Left;
+            CountryOfDestinaion_TextBox.Left = ProductName_TextBox.Right + spaceBetweenControlsHorizontally;
+            CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
 
             Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Quantity_TextBox.Width - spaceBetweenControlsHorizontally -
@@ -240,10 +250,15 @@ namespace Sales_Tracker
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
+            SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
+                BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
+                CountryOfDestinaion_TextBox.Width) / 2;
+
             SaleID_Label.Left = SaleID_TextBox.Left;
             BuyerName_TextBox.Left = SaleID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
+            CountryOfDestinaion_TextBox.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
+            CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
 
             Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally - Shipping_TextBox.Width - spaceBetweenControlsHorizontally - Tax_TextBox.Width - spaceBetweenControlsHorizontally - PaymentFee_TextBox.Width) / 2;
             Date_Label.Left = Date_DateTimePicker.Left;

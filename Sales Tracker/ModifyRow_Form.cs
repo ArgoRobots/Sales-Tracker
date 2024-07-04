@@ -25,21 +25,26 @@ namespace Sales_Tracker
         {
             int left = 0, secondLeft = 0;
 
-            if (selectedTag == MainMenu_Form.DataGridViewTags.Accountant.ToString())
+            if (selectedTag == MainMenu_Form.DataGridViewTag.Accountant.ToString())
             {
                 ConstructControlsForAccountant();
                 left = 300;
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.Category.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTag.Category.ToString())
             {
                 ConstructControlsForCategory();
                 left = 300;
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.Product.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTag.Company.ToString())
+            {
+                ConstructControlsForCompany();
+                left = 300;
+            }
+            else if (selectedTag == MainMenu_Form.DataGridViewTag.Product.ToString())
             {
                 left = ConstructControlsForProduct();
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
                 (left, secondLeft) = ConstructControlsForSaleOrPurchase();
             }
@@ -88,26 +93,21 @@ namespace Sales_Tracker
         private void Accountant_TextBox_TextChanged(object? sender, EventArgs e)
         {
             Guna2TextBox textBox = sender as Guna2TextBox;
-            bool exists = false;
-
-            foreach (DataGridViewRow row in Accountants_Form.Instance.Accountants_DataGridView.Rows)
+            if (textBox.Text == "")
             {
-                if (textBox.Text == row.Cells[Accountants_Form.Columns.AccountantName.ToString()].Value.ToString() && textBox.Text != listOfOldValues[0])
-                {
-                    exists = true;
-                }
+                SetControlForTextBoxEmpty(textBox);
+                return;
             }
-            if (exists)
+
+            if (MainMenu_Form.Instance.accountantList.Contains(textBox.Text) && listOfOldValues[0] != textBox.Text)
             {
-                Save_Button.Enabled = false;
-                Save_Button.Tag = false;
+                DisableSaveButton();
                 UI.SetGTextBoxToInvalid(textBox);
                 ShowWarning(textBox, "Accountant already exists");
             }
             else
             {
-                Save_Button.Enabled = true;
-                Save_Button.Tag = true;
+                EnableSaveButton();
                 UI.SetGTextBoxToValid(textBox);
                 HideAccountantWarning();
             }
@@ -134,37 +134,74 @@ namespace Sales_Tracker
         private void Category_TextBox_TextChanged(object? sender, EventArgs e)
         {
             Guna2TextBox textBox = sender as Guna2TextBox;
-            bool exists = false;
+            if (textBox.Text == "")
+            {
+                SetControlForTextBoxEmpty(textBox);
+                return;
+            }
 
             // Get list
-            Guna2DataGridView dataGridView;
-            if (Categories_Form.Instance.Sale_RadioButton.Checked)
+            List<Category> categoriesList;
+            if (Categories_Form.Instance.Purchase_RadioButton.Checked)
             {
-                dataGridView = Categories_Form.Instance.Sales_DataGridView;
+                categoriesList = MainMenu_Form.Instance.categoryPurchaseList;
             }
             else
             {
-                dataGridView = Categories_Form.Instance.Purchases_DataGridView;
+                categoriesList = MainMenu_Form.Instance.categorySaleList;
             }
+            bool containsCategory = categoriesList.Any(category => category.Name.Contains(textBox.Text));
 
-            foreach (DataGridViewRow row in dataGridView.Rows)
+            if (containsCategory && listOfOldValues[0] != textBox.Text)
             {
-                if (textBox.Text == row.Cells[Categories_Form.Columns.CategoryName.ToString()].Value.ToString() && textBox.Text != listOfOldValues[0])
-                {
-                    exists = true;
-                }
-            }
-            if (exists)
-            {
-                Save_Button.Enabled = false;
-                Save_Button.Tag = false;
+                DisableSaveButton();
                 UI.SetGTextBoxToInvalid(textBox);
                 ShowWarning(textBox, "Category already exists");
             }
             else
             {
-                Save_Button.Enabled = true;
-                Save_Button.Tag = true;
+                EnableSaveButton();
+                UI.SetGTextBoxToValid(textBox);
+                HideAccountantWarning();
+            }
+        }
+        private void ConstructControlsForCompany()
+        {
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                string columnName = column.Name;
+                string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
+                listOfOldValues.Add(cellValue);
+
+                switch (columnName)
+                {
+                    case nameof(Companies_Form.Columns.Company):
+                        ConstructLabel(Companies_Form.Instance.ColumnHeaders[Companies_Form.Columns.Company], 0, Panel);
+                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, KeyPressValidation.None, true, false, Panel);
+                        controlToFocus.TextChanged += Company_TextBox_TextChanged;
+                        ConstructWarningLabel();
+                        break;
+                }
+            }
+        }
+        private void Company_TextBox_TextChanged(object? sender, EventArgs e)
+        {
+            Guna2TextBox textBox = sender as Guna2TextBox;
+            if(textBox.Text== "")
+            {
+                SetControlForTextBoxEmpty(textBox);
+                return;
+            }
+
+            if (MainMenu_Form.Instance.companyList.Contains(textBox.Text) && listOfOldValues[0] != textBox.Text)
+            {
+                DisableSaveButton();
+                UI.SetGTextBoxToInvalid(textBox);
+                ShowWarning(textBox, "Category already exists");
+            }
+            else
+            {
+                EnableSaveButton();
                 UI.SetGTextBoxToValid(textBox);
                 HideAccountantWarning();
             }
@@ -194,7 +231,7 @@ namespace Sales_Tracker
 
                     case nameof(Products_Form.Columns.ProductCategory):
                         string[] array;
-                        if (MainMenu_Form.Instance.Selected == Options.ProductSales)
+                        if (MainMenu_Form.Instance.Selected == SelectedOption.ProductSales)
                         {
                             array = MainMenu_Form.Instance.GetProductCategorySaleNames().ToArray();
                         }
@@ -242,64 +279,64 @@ namespace Sales_Tracker
 
                 switch (columnName)
                 {
-                    case nameof(Columns.ID):
-                        if (MainMenu_Form.Instance.Selected == Options.Sales)
+                    case nameof(Column.ID):
+                        if (MainMenu_Form.Instance.Selected == SelectedOption.Sales)
                         {
-                            text = MainMenu_Form.Instance.SalesColumnHeaders[Columns.ID];
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[Column.ID];
                         }
-                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.ID]; }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Column.ID]; }
 
                         ConstructLabel(text, left, Panel);
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, false, Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(Columns.Name):
-                        if (MainMenu_Form.Instance.Selected == Options.Sales)
+                    case nameof(Column.Name):
+                        if (MainMenu_Form.Instance.Selected == SelectedOption.Sales)
                         {
-                            text = MainMenu_Form.Instance.SalesColumnHeaders[Columns.Name];
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[Column.Name];
                         }
-                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Name]; }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Column.Name]; }
 
                         ConstructLabel(text, left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(Columns.Product):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Product], left, Panel);
+                    case nameof(Column.Product):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Column.Product], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(Columns.Date):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Date], left, Panel);
+                    case nameof(Column.Date):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Column.Date], left, Panel);
                         ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), Panel);
                         left += controlWidth + 10;
                         break;
 
-                    case nameof(Columns.Quantity):
+                    case nameof(Column.Quantity):
                         secondRow = true;
 
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Quantity], secondLeft, SecondPanel);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Column.Quantity], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbers, false, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
 
-                    case nameof(Columns.PricePerUnit):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.PricePerUnit], secondLeft, SecondPanel);
+                    case nameof(Column.PricePerUnit):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Column.PricePerUnit], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
 
-                    case nameof(Columns.Shipping):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Shipping], secondLeft, SecondPanel);
+                    case nameof(Column.Shipping):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Column.Shipping], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, true, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
 
-                    case nameof(Columns.Tax):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Columns.Tax], secondLeft, SecondPanel);
+                    case nameof(Column.Tax):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[Column.Tax], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
                         secondLeft += smallControlWidth + 10;
                         break;
@@ -421,31 +458,28 @@ namespace Sales_Tracker
             }
 
             // Update total value
-            if (selectedTag == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString())
+            if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
-                int quantity = int.Parse(selectedRow.Cells[Columns.Quantity.ToString()].Value.ToString());
-                decimal pricePerUnit = decimal.Parse(selectedRow.Cells[Columns.PricePerUnit.ToString()].Value.ToString());
-                decimal shipping = decimal.Parse(selectedRow.Cells[Columns.Shipping.ToString()].Value.ToString());
-                decimal tax = decimal.Parse(selectedRow.Cells[Columns.Tax.ToString()].Value.ToString());
+                int quantity = int.Parse(selectedRow.Cells[Column.Quantity.ToString()].Value.ToString());
+                decimal pricePerUnit = decimal.Parse(selectedRow.Cells[Column.PricePerUnit.ToString()].Value.ToString());
+                decimal shipping = decimal.Parse(selectedRow.Cells[Column.Shipping.ToString()].Value.ToString());
+                decimal tax = decimal.Parse(selectedRow.Cells[Column.Tax.ToString()].Value.ToString());
                 decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-                selectedRow.Cells[Columns.Total.ToString()].Value = totalPrice;
+                selectedRow.Cells[Column.Total.ToString()].Value = totalPrice;
             }
             Close();
         }
         private void SaveInListsAndUpdateDataGridViews()
         {
-            if (selectedTag == MainMenu_Form.DataGridViewTags.SaleOrPurchase.ToString()) { return; }
+            if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString()) { return; }
 
-            // Concatenate the rows from both DataGridViews
-            IEnumerable<DataGridViewRow> allRows = MainMenu_Form.Instance.Sales_DataGridView.Rows.Cast<DataGridViewRow>()
-                            .Concat(MainMenu_Form.Instance.Purchases_DataGridView.Rows.Cast<DataGridViewRow>());
             string oldName = "", oldID = "", oldCountry = "", oldCompany = "";
 
-            if (selectedTag == MainMenu_Form.DataGridViewTags.Category.ToString())
+            if (selectedTag == MainMenu_Form.DataGridViewTag.Category.ToString())
             {
                 // Get category
                 Category category;
-                if (MainMenu_Form.Instance.Selected == Options.CategorySales || MainMenu_Form.Instance.Selected == Options.ProductSales)
+                if (MainMenu_Form.Instance.Selected == SelectedOption.CategorySales || MainMenu_Form.Instance.Selected == SelectedOption.ProductSales)
                 {
                     category = MainMenu_Form.Instance.categorySaleList.FirstOrDefault(c => c.Name == listOfOldValues[0]);
                 }
@@ -459,8 +493,8 @@ namespace Sales_Tracker
                 category.Name = selectedRow.Cells[0].Value.ToString();
 
                 // Update all instances in DataGridViews
-                string categoryColumn = Columns.Category.ToString();
-                foreach (DataGridViewRow row in allRows)
+                string categoryColumn = Column.Category.ToString();
+                foreach (DataGridViewRow row in GetRows())
                 {
                     if (row.Cells[categoryColumn].Value.ToString() == oldName)
                     {
@@ -468,11 +502,11 @@ namespace Sales_Tracker
                     }
                 }
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.Product.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTag.Product.ToString())
             {
                 // Get category
                 Category category;
-                if (MainMenu_Form.Instance.Selected == Options.CategorySales || MainMenu_Form.Instance.Selected == Options.ProductSales)
+                if (MainMenu_Form.Instance.Selected == SelectedOption.CategorySales || MainMenu_Form.Instance.Selected == SelectedOption.ProductSales)
                 {
                     category = MainMenu_Form.Instance.categorySaleList.FirstOrDefault(c => c.Name == listOfOldValues[2]);
                 }
@@ -501,26 +535,26 @@ namespace Sales_Tracker
                     product.CompanyOfOrigin = selectedRow.Cells[4].Value.ToString();
 
                     // Update all instances in DataGridViews
-                    string productColumn = Columns.Product.ToString();
-                    foreach (DataGridViewRow row in allRows)
+                    string productColumn = Column.Product.ToString();
+                    foreach (DataGridViewRow row in GetRows())
                     {
                         if (row.Cells[productColumn].Value.ToString() == oldName)
                         {
                             row.Cells[productColumn].Value = product.Name;
 
-                            string idColumn = Columns.ID.ToString();
+                            string idColumn = Column.ID.ToString();
                             if (row.Cells[idColumn].Value.ToString() == oldID)
                             {
                                 row.Cells[idColumn].Value = product.ProductID;
                             }
 
-                            string countryColumn = Columns.Country.ToString();
+                            string countryColumn = Column.Country.ToString();
                             if (row.Cells[countryColumn].Value.ToString() == oldCountry)
                             {
                                 row.Cells[countryColumn].Value = product.CountryOfOrigin;
                             }
 
-                            string companyColumn = Columns.Company.ToString();
+                            string companyColumn = Column.Company.ToString();
                             if (row.Cells[companyColumn].Value.ToString() == oldCompany)
                             {
                                 row.Cells[companyColumn].Value = product.CompanyOfOrigin;
@@ -537,7 +571,7 @@ namespace Sales_Tracker
 
                     // Get new category
                     Category newCategory;
-                    if (MainMenu_Form.Instance.Selected == Options.CategorySales || MainMenu_Form.Instance.Selected == Options.ProductSales)
+                    if (MainMenu_Form.Instance.Selected == SelectedOption.CategorySales || MainMenu_Form.Instance.Selected == SelectedOption.ProductSales)
                     {
                         newCategory = MainMenu_Form.Instance.categorySaleList.FirstOrDefault(c => c.Name == selectedRow.Cells[2].Value.ToString());
                     }
@@ -550,9 +584,9 @@ namespace Sales_Tracker
                     newCategory.ProductList.Add(product);
 
                     // Update all instances in DataGridViews
-                    string categoryColumn = Columns.Category.ToString();
-                    string nameColumn = Columns.Product.ToString();
-                    foreach (DataGridViewRow row in allRows)
+                    string categoryColumn = Column.Category.ToString();
+                    string nameColumn = Column.Product.ToString();
+                    foreach (DataGridViewRow row in GetRows())
                     {
                         if (row.Cells[categoryColumn].Value.ToString() == category.Name
                             && row.Cells[nameColumn].Value.ToString() == product.Name)
@@ -562,7 +596,25 @@ namespace Sales_Tracker
                     }
                 }
             }
-            else if (selectedTag == MainMenu_Form.DataGridViewTags.Accountant.ToString())
+            else if (selectedTag == MainMenu_Form.DataGridViewTag.Company.ToString())
+            {
+                // Get accountant
+                string accountant = MainMenu_Form.Instance.companyList.FirstOrDefault(a => a == listOfOldValues[0]);
+
+                // Update list
+                if (accountant != null)
+                {
+                    int index = MainMenu_Form.Instance.companyList.IndexOf(accountant);
+                    MainMenu_Form.Instance.companyList[index] = selectedRow.Cells[0].Value.ToString();
+                }
+
+                // Update all instances in DataGridViews
+                string newValue = selectedRow.Cells[0].Value.ToString();
+
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, Column.Company.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, Column.Company.ToString(), accountant, newValue);
+            }
+            else if (selectedTag == MainMenu_Form.DataGridViewTag.Accountant.ToString())
             {
                 // Get accountant
                 string accountant = MainMenu_Form.Instance.accountantList.FirstOrDefault(a => a == listOfOldValues[0]);
@@ -577,12 +629,29 @@ namespace Sales_Tracker
                 // Update all instances in DataGridViews
                 string newValue = selectedRow.Cells[0].Value.ToString();
 
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, Columns.Name.ToString(), accountant, newValue);
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, Columns.Name.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, Column.Name.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, Column.Name.ToString(), accountant, newValue);
             }
 
-            MainMenu_Form.Instance.SaveCategoriesToFile(Options.Sales);
-            MainMenu_Form.Instance.SaveCategoriesToFile(Options.Purchases);
+            if (MainMenu_Form.Instance.IsPurchasesSelected())
+            {
+                MainMenu_Form.Instance.SaveCategoriesToFile(SelectedOption.Purchases);
+            }
+            else
+            {
+                MainMenu_Form.Instance.SaveCategoriesToFile(SelectedOption.Sales);
+            }
+        }
+        private static DataGridViewRowCollection GetRows()
+        {
+            if (MainMenu_Form.Instance.IsPurchasesSelected())
+            {
+                return MainMenu_Form.Instance.Purchases_DataGridView.Rows;
+            }
+            else
+            {
+                return MainMenu_Form.Instance.Sales_DataGridView.Rows;
+            }
         }
         private static void UpdateDataGridViewRows(DataGridView dataGridView, string columnName, string oldValue, string newValue)
         {
@@ -748,6 +817,22 @@ namespace Sales_Tracker
 
 
         // Misc.
+        private void DisableSaveButton()
+        {
+            Save_Button.Enabled = false;
+            Save_Button.Tag = false;
+        }
+        private void EnableSaveButton()
+        {
+            Save_Button.Enabled = true;
+            Save_Button.Tag = true;
+        }
+        private void SetControlForTextBoxEmpty(Guna2TextBox textBox)
+        {
+            UI.SetGTextBoxToValid(textBox);
+            HideAccountantWarning();
+            DisableSaveButton();
+        }
         public void CloseAllPanels(object sender, EventArgs e)
         {
             SearchBox.CloseSearchBox(this);

@@ -7,7 +7,7 @@ namespace Sales_Tracker
     {
         // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
-        private readonly MainMenu_Form.Options oldOption;
+        private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Init.
@@ -109,11 +109,11 @@ namespace Sales_Tracker
             Accountants_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Accountants_DataGridView, ColumnHeaders);
             Accountants_DataGridView.Location = new Point((Width - Accountants_DataGridView.Width) / 2, topForDataGridView);
-            Accountants_DataGridView.Tag = MainMenu_Form.DataGridViewTags.Accountant;
+            Accountants_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Accountant;
 
             Controls.Add(Accountants_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Accountants_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.Accountants;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
         }
 
         // Validate accountant name

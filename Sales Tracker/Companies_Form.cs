@@ -7,7 +7,7 @@ namespace Sales_Tracker
     {
         // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
-        private readonly MainMenu_Form.Options oldOption;
+        private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Init.
@@ -87,11 +87,11 @@ namespace Sales_Tracker
         // DataGridView
         public enum Columns
         {
-            CompanyName,
+            Company,
         }
         public readonly Dictionary<Columns, string> ColumnHeaders = new()
         {
-            { Columns.CompanyName, "Company" },
+            { Columns.Company, "Company" },
         };
         public Guna2DataGridView Company_DataGridView;
         private const byte topForDataGridView = 170;
@@ -110,18 +110,18 @@ namespace Sales_Tracker
             Company_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Company_DataGridView, ColumnHeaders);
             Company_DataGridView.Location = new Point((Width - Company_DataGridView.Width) / 2, topForDataGridView);
-            Company_DataGridView.Tag = MainMenu_Form.DataGridViewTags.Accountant;
+            Company_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Company;
 
             Controls.Add(Company_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Company_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.Options.Companies;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
         }
 
 
         // Validate company name
         public void VaidateCompanyTextBox()
         {
-            if (MainMenu_Form.Instance.accountantList.Any(a => a == Company_TextBox.Text))
+            if (MainMenu_Form.Instance.companyList.Any(a => a == Company_TextBox.Text))
             {
                 AddCompany_Button.Enabled = false;
                 UI.SetGTextBoxToInvalid(Company_TextBox);
