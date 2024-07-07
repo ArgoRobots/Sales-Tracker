@@ -8,6 +8,7 @@ namespace Sales_Tracker.Classes
         public static void SaveAll()
         {
             Directories.CreateArgoTarFileFromDirectory(Directories.tempCompany_dir, Directories.argoCompany_dir, ArgoFiles.ArgoCompanyFileExtension, true);
+            Log.Write(2, $"Saved '{Directories.companyName}'");
             ResetChanges();
         }
         public static void SaveAs()

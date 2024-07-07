@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Properties;
 using System.Drawing.Drawing2D;
-using static Guna.UI2.WinForms.Suite.Descriptions;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker.Classes
@@ -210,11 +209,20 @@ namespace Sales_Tracker.Classes
         }
         public static void SaveAll()
         {
-            MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.accent_green;
-            MainMenu_Form.Instance.Saved_Label.Text = "Saving...";
             MainMenu_Form.Instance.Saved_Label.Visible = true;
-            ArgoCompany.SaveAll();
-            MainMenu_Form.Instance.Saved_Label.Text = "Saved";
+
+            if (ArgoCompany.AreAnyChangesMade())
+            {
+                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.accent_green;
+                MainMenu_Form.Instance.Saved_Label.Text = "Saving...";
+                ArgoCompany.SaveAll();
+                MainMenu_Form.Instance.Saved_Label.Text = "Saved";
+            }
+            else if (Tools.IsFormOpen(typeof(MainMenu_Form)))
+            {
+                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.text;
+                MainMenu_Form.Instance.Saved_Label.Text = "No changed found";
+            }
 
             System.Windows.Forms.Timer timer = new()
             {

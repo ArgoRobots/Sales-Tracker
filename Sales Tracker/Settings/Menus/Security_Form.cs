@@ -21,8 +21,10 @@ namespace Sales_Tracker.Settings.Menus
         // Form
         private void Security_form_Resize(object sender, EventArgs e)
         {
+
         }
 
+        // Methods
         public void UpdateControls()
         {
 
