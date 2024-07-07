@@ -986,11 +986,7 @@ namespace Sales_Tracker
             dataGridView.MouseUp += DataGridView_MouseUp;
             dataGridView.KeyDown += DataGridView_KeyDown;
 
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                column.HeaderCell.Style.BackColor = CustomColors.background2;
-                column.HeaderCell.Style.SelectionBackColor = CustomColors.background2;
-            }
+            Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
         private void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
         {

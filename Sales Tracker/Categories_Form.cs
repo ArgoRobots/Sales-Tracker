@@ -86,7 +86,12 @@ namespace Sales_Tracker
             thingsThatHaveChangedInFile.Add(name);
             Log.Write(3, $"Added category '{name}'");
 
+            Sale_RadioButton.AutoCheck = false;
+            Purchase_RadioButton.AutoCheck = false;
             Category_TextBox.Text = "";  // For some reason, this checks the other radio button
+            Sale_RadioButton.AutoCheck = true;
+            Purchase_RadioButton.AutoCheck = true;
+
             UI.SetGTextBoxToValid(Category_TextBox);
             HideCategoryWarning();
             Category_TextBox.Focus();

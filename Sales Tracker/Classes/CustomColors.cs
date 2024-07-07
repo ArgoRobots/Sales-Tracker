@@ -27,19 +27,28 @@ namespace Sales_Tracker.Classes
 
         // Accent colors
         public static readonly Color
-        accent_blue = Color.FromArgb(25, 117, 197),
-        accent_red = Color.FromArgb(238, 89, 81),
-        accent_green = Color.FromArgb(168, 233, 203),
-        accent_darkerGreen = Color.FromArgb(129, 199, 132),
-        accent_playBtnGreen = Color.FromArgb(26, 200, 118),
+            accent_blue = Color.FromArgb(25, 117, 197),
+            accent_red = Color.FromArgb(238, 89, 81),
+            accent_green = Color.FromArgb(168, 233, 203);
 
-        // Other colors
-        playBtnGreen = Color.FromArgb(26, 200, 118);
         public static Guna.UI2.WinForms.Enums.DataGridViewPresetThemes dataGridViewTheme;
-
 
         public static void SetColors()
         {
+            if (Theme.CurrentTheme == Theme.ThemeType.Windows)
+            {
+                int value = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
+
+                if (value == 0)
+                {
+                    Theme.CurrentTheme = Theme.ThemeType.Dark;
+                }
+                else if (value == 1)
+                {
+                    Theme.CurrentTheme = Theme.ThemeType.Light;
+                }
+            }
+
             if (CurrentTheme == ThemeType.Dark)
             {
                 controlBack = Color.FromArgb(62, 62, 66);

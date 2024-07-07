@@ -196,7 +196,6 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_ComboBox.Font = new Font("Segoe UI", 10F);
             ColorTheme_ComboBox.ForeColor = Color.Black;
             ColorTheme_ComboBox.ItemHeight = 21;
-            ColorTheme_ComboBox.Items.AddRange(new object[] { "Windows theme", "Light", "Dark" });
             ColorTheme_ComboBox.Location = new Point(355, 74);
             ColorTheme_ComboBox.Margin = new Padding(3, 4, 3, 4);
             ColorTheme_ComboBox.Name = "ColorTheme_ComboBox";

@@ -100,7 +100,14 @@ namespace Sales_Tracker.Settings
                 {
                     Theme.CurrentTheme = Theme.ThemeType.Dark;
                 }
-                else { Theme.CurrentTheme = Theme.ThemeType.Light; }
+                else if (General_Form.Instance.ColorTheme_ComboBox.Text == Theme.ThemeType.Light.ToString())
+                {
+                    Theme.CurrentTheme = Theme.ThemeType.Light;
+                }
+                else
+                {
+                    Theme.CurrentTheme = Theme.ThemeType.Windows;
+                }
 
                 CustomColors.SetColors();
 

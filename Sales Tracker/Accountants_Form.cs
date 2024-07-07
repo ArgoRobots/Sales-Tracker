@@ -63,7 +63,8 @@ namespace Sales_Tracker
             Log.Write(3, $"Added accountant '{name}'");
 
             Accountant_TextBox.Text = "";
-            ValidateInputs();
+            UI.SetGTextBoxToValid(Accountant_TextBox);
+            HideAccountantWarning();
             Accountant_TextBox.Focus();
         }
         private void Accountant_TextBox_KeyDown(object sender, KeyEventArgs e)

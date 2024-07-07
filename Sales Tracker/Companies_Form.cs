@@ -64,7 +64,8 @@ namespace Sales_Tracker
             Log.Write(3, $"Added company '{name}'");
 
             Company_TextBox.Text = "";
-            ValidateInputs();
+            UI.SetGTextBoxToValid(Company_TextBox);
+            HideCompanyWarning();
             Company_TextBox.Focus();
         }
         private void Company_TextBox_KeyDown(object sender, KeyEventArgs e)

@@ -93,7 +93,7 @@
             PurchaseID_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PurchaseID_TextBox.Font = new Font("Segoe UI", 9F);
             PurchaseID_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PurchaseID_TextBox.Location = new Point(144, 103);
+            PurchaseID_TextBox.Location = new Point(172, 103);
             PurchaseID_TextBox.MaxLength = 32;
             PurchaseID_TextBox.Name = "PurchaseID_TextBox";
             PurchaseID_TextBox.PasswordChar = '\0';
@@ -112,7 +112,7 @@
             PurchaseID_Label.Anchor = AnchorStyles.Top;
             PurchaseID_Label.AutoSize = true;
             PurchaseID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PurchaseID_Label.Location = new Point(144, 80);
+            PurchaseID_Label.Location = new Point(172, 80);
             PurchaseID_Label.Name = "PurchaseID_Label";
             PurchaseID_Label.Size = new Size(86, 20);
             PurchaseID_Label.TabIndex = 0;
@@ -136,7 +136,7 @@
             BuyerName_Label.Anchor = AnchorStyles.Top;
             BuyerName_Label.AutoSize = true;
             BuyerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            BuyerName_Label.Location = new Point(350, 80);
+            BuyerName_Label.Location = new Point(378, 80);
             BuyerName_Label.Name = "BuyerName_Label";
             BuyerName_Label.Size = new Size(87, 20);
             BuyerName_Label.TabIndex = 0;
@@ -155,7 +155,7 @@
             BuyerName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             BuyerName_TextBox.Font = new Font("Segoe UI", 9F);
             BuyerName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            BuyerName_TextBox.Location = new Point(350, 103);
+            BuyerName_TextBox.Location = new Point(378, 103);
             BuyerName_TextBox.MaxLength = 32;
             BuyerName_TextBox.Name = "BuyerName_TextBox";
             BuyerName_TextBox.PasswordChar = '\0';
@@ -173,7 +173,7 @@
             ProductName_Label.Anchor = AnchorStyles.Top;
             ProductName_Label.AutoSize = true;
             ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductName_Label.Location = new Point(556, 80);
+            ProductName_Label.Location = new Point(584, 80);
             ProductName_Label.Name = "ProductName_Label";
             ProductName_Label.Size = new Size(101, 20);
             ProductName_Label.TabIndex = 0;
@@ -192,7 +192,7 @@
             ProductName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductName_TextBox.Font = new Font("Segoe UI", 9F);
             ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ProductName_TextBox.Location = new Point(556, 103);
+            ProductName_TextBox.Location = new Point(584, 103);
             ProductName_TextBox.MaxLength = 32;
             ProductName_TextBox.Name = "ProductName_TextBox";
             ProductName_TextBox.PasswordChar = '\0';
@@ -501,7 +501,7 @@
             Currency_ComboBox.Font = new Font("Segoe UI", 10F);
             Currency_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Currency_ComboBox.ItemHeight = 30;
-            Currency_ComboBox.Location = new Point(38, 103);
+            Currency_ComboBox.Location = new Point(66, 103);
             Currency_ComboBox.Name = "Currency_ComboBox";
             Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Currency_ComboBox.Size = new Size(100, 36);
@@ -514,7 +514,7 @@
             Currency_Label.Anchor = AnchorStyles.Top;
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Currency_Label.Location = new Point(48, 80);
+            Currency_Label.Location = new Point(76, 80);
             Currency_Label.Name = "Currency_Label";
             Currency_Label.Size = new Size(66, 20);
             Currency_Label.TabIndex = 55;

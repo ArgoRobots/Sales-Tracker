@@ -37,7 +37,7 @@ namespace Sales_Tracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Windows theme")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Windows")]
         public string ColorTheme {
             get {
                 return ((string)(this["ColorTheme"]));

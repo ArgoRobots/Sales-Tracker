@@ -5,12 +5,13 @@ using System.Runtime.InteropServices;
 
 namespace Sales_Tracker.Classes
 {
-    internal static class Theme
+    internal static partial class Theme
     {
         public enum ThemeType
         {
             Light,
-            Dark
+            Dark,
+            Windows
         }
         public static ThemeType CurrentTheme
         {
@@ -22,8 +23,8 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
-                    // Default to Dark if parsing fails
-                    return ThemeType.Dark;
+                    // Default to Windows if parsing fails
+                    return ThemeType.Windows;
                 }
             }
             set
@@ -234,38 +235,41 @@ namespace Sales_Tracker.Classes
             }
 
             SetThemeForControl(list);
-            UseImmersiveDarkMode(form.Handle, true);
+
+            if (CurrentTheme == ThemeType.Dark)
+            {
+                UseImmersiveDarkMode(form.Handle, true);
+            }
+            else
+            {
+                UseImmersiveDarkMode(form.Handle, false);
+            }
         }
 
 
         // Set the header to dark
         // https://stackoverflow.com/questions/57124243/winforms-dark-title-bar-on-windows-10
-        [DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        [LibraryImport("dwmapi.dll", EntryPoint = "DwmSetWindowAttribute")]
+        private static partial int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
         public static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
         {
-            if (CurrentTheme == ThemeType.Dark)
+            if (Environment.OSVersion.Version.Major >= 10)
             {
-                if (IsWindows10OrGreater(17763))
+                int attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
+                if (Environment.OSVersion.Version.Build >= 18985)
                 {
-                    int attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
-                    if (IsWindows10OrGreater(18985))
-                    {
-                        attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
-                    }
-
-                    int useImmersiveDarkMode = enabled ? 1 : 0;
-                    return DwmSetWindowAttribute(handle, attribute, ref useImmersiveDarkMode, sizeof(int)) == 0;
+                    attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
                 }
-            }
 
+                int useImmersiveDarkMode = enabled ? 1 : 0;
+                return DwmSetWindowAttribute(handle, attribute, ref useImmersiveDarkMode, sizeof(int)) == 0;
+            }
             return false;
-        }
-        private static bool IsWindows10OrGreater(int build = -1)
-        {
-            return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build;
         }
     }
 }
