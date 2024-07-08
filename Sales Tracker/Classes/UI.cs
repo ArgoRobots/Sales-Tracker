@@ -53,7 +53,6 @@ namespace Sales_Tracker.Classes
                 BorderThickness = 1,
                 BorderRadius = 4,
                 FillColor = CustomColors.panelBtn,
-                BackColor = Color.Transparent,
                 Size = size
             };
             FlowLayoutPanel flowLayoutPanel = new()
@@ -70,7 +69,7 @@ namespace Sales_Tracker.Classes
             Guna2Separator seperator = new()
             {
                 FillColor = CustomColors.controlBorder,
-                BackColor = Color.Transparent,
+                BackColor = CustomColors.panelBtn,
                 Size = new Size(width, 1),
                 Margin = new Padding(0, 5, 0, 5)
             };

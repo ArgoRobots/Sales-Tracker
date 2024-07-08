@@ -154,6 +154,7 @@ namespace Sales_Tracker.Classes
 
                             UpdateDataGridViewHeaderTheme(guna2DataGridView);
                             CustomizeScrollBar(guna2DataGridView);
+                            guna2DataGridView.ClearSelection();
                             break;
 
                         case Guna2CircleButton guna2CircleButton:
@@ -226,13 +227,19 @@ namespace Sales_Tracker.Classes
             // Revert the button's appearance when it loses focus
             btn.BorderColor = CustomColors.controlBorder;
         }
-        private static void CustomizeScrollBar(Control control)
+        public static void CustomizeScrollBar(Control control)
         {
             Guna2VScrollBar vScrollBar = new()
             {
                 FillColor = CustomColors.mainBackground,
                 ThumbColor = Color.Gray,
-                BorderColor = CustomColors.controlPanelBorder
+                BorderColor = CustomColors.controlPanelBorder,
+                ThumbSize = 40,
+            };
+            vScrollBar.Scroll += (sender, e) =>
+            {
+                Guna2VScrollBar bar = (Guna2VScrollBar)sender;
+                bar.ThumbSize = 40;
             };
             control.Controls.Add(vScrollBar);
             vScrollBar.BringToFront();

@@ -6,8 +6,8 @@ namespace Sales_Tracker.Classes
 {
     public class SearchBox
     {
-        private static Guna2Panel SearchResultBox { get; set; }
-        private static Guna2Panel SearchResultBoxContainer { get; set; }
+        public static Guna2Panel SearchResultBox { get; set; }
+        public static Guna2Panel SearchResultBoxContainer { get; set; }
         public static void ConstructSearchBox()
         {
             SearchResultBoxContainer = new Guna2Panel
@@ -28,8 +28,6 @@ namespace Sales_Tracker.Classes
             };
             SearchResultBox.HorizontalScroll.Enabled = false;
             SearchResultBox.HorizontalScroll.Maximum = 0;
-            SearchResultBox.VerticalScroll.Enabled = true;
-            SearchResultBox.VerticalScroll.Visible = true;
             SearchResultBoxContainer.Controls.Add(SearchResultBox);
         }
 
@@ -113,6 +111,7 @@ namespace Sales_Tracker.Classes
                 SearchResultBoxContainer.Height = maxHeight + 3;
                 SearchResultBox.Height = maxHeight;
                 SearchResultBox.AutoScroll = true;
+                Theme.CustomizeScrollBar(SearchResultBox);
             }
             else if (metaList.Count == 1)
             {

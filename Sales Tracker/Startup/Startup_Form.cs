@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Startup.Menus;
+using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker.Startup
 {
@@ -20,6 +21,8 @@ namespace Sales_Tracker.Startup
                 ConfigureProject_Form.Instance.Controls.Remove(ConfigureProject_Form.Instance.Back_Button);
             }
             else { SwitchMainForm(formGetStarted); }
+
+            Theme.UseImmersiveDarkMode(Handle, CurrentTheme == ThemeType.Dark);
 
             // TO DO: make this only run once, during progam installation
             ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, "A_logo", 0);

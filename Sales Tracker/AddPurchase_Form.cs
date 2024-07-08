@@ -237,7 +237,7 @@ namespace Sales_Tracker
 
             Controls.Remove(FlowPanel);
             Controls.Remove(AddButton);
-            Height = 360;
+            Height = 400;
         }
         private void SetControlsForMultipleProducts()
         {

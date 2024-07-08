@@ -75,9 +75,9 @@ namespace Sales_Tracker.Classes
             }
             else // Light
             {
-                controlBack = Color.FromArgb(243, 243, 243);
+                controlBack = Color.FromArgb(220, 220, 220);
                 controlDisabledBack = Color.LightGray;
-                controlBorder = Color.FromArgb(214, 214, 214);
+                controlBorder = Color.FromArgb(150, 150, 150);
                 controlUncheckedBorder = Color.FromArgb(125, 137, 149);
                 controlPanelBorder = Color.FromArgb(50, 50, 50);
                 text = Color.Black;
@@ -88,14 +88,14 @@ namespace Sales_Tracker.Classes
                 commandHidden = Color.LightGray;
                 panelBtn = Color.FromArgb(246, 246, 246);
                 panelBtnHover = Color.FromArgb(214, 214, 214);
-                dataGridViewTheme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.LightGrid;
+                dataGridViewTheme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.White;
                 grayText = Color.Gray;
                 linkColor = Color.FromArgb(71, 157, 250);
 
-                mainBackground = Color.White;
+                mainBackground = Color.FromArgb(240, 240, 240);
                 background2 = Color.FromArgb(250, 250, 250);
                 background3 = Color.FromArgb(204, 204, 204);
-                background4 = Color.FromArgb(242, 242, 242);
+                background4 = Color.FromArgb(250, 250, 250);
             }
         }
     }

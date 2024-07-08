@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Settings.Menus;
+using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.Settings
 {
@@ -91,9 +92,11 @@ namespace Sales_Tracker.Settings
         }
         private void ApplyChanges()
         {
-            // Apply changes
-
-            // Color theme
+            UpdateColorTheme();
+            UserSettings.SaveUserSettings();
+        }
+        private void UpdateColorTheme()
+        {
             if (General_Form.Instance.ColorTheme_ComboBox.Text != Theme.CurrentTheme.ToString())
             {
                 if (General_Form.Instance.ColorTheme_ComboBox.Text == Theme.ThemeType.Dark.ToString())
@@ -117,21 +120,26 @@ namespace Sales_Tracker.Settings
                 MainMenu_Form.Instance.UpdateTheme();
                 UpdateTheme();
 
-                List<Guna2Panel> listOfMenus = [UI.fileMenu, UI.accountMenu, UI.helpMenu];
+                List<Guna2Panel> listOfMenus = [
+                    UI.fileMenu,
+                    UI.helpMenu,
+                    UI.accountMenu,
+                    UI.ControlDropDown_Panel,
+                    MainMenu_Form.Instance.rightClickDataGridView_Panel];
+
                 foreach (Guna2Panel guna2Panel in listOfMenus)
                 {
                     guna2Panel.FillColor = CustomColors.panelBtn;
                     guna2Panel.BorderColor = CustomColors.controlPanelBorder;
 
-                    FlowLayoutPanel flowPanel;
                     Control.ControlCollection list;
-                    try
+                    FlowLayoutPanel flowPanel = guna2Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+                    if (flowPanel != null)
                     {
-                        flowPanel = (FlowLayoutPanel)guna2Panel.Controls[0];
                         flowPanel.BackColor = CustomColors.panelBtn;
                         list = flowPanel.Controls;
                     }
-                    catch
+                    else
                     {
                         list = guna2Panel.Controls;
                     }
@@ -142,6 +150,7 @@ namespace Sales_Tracker.Settings
                         {
                             case Guna2Separator guna2Separator:
                                 guna2Separator.FillColor = CustomColors.controlPanelBorder;
+                                guna2Separator.BackColor = CustomColors.panelBtn;
                                 break;
 
                             case Guna2Button guna2Button:
@@ -155,6 +164,7 @@ namespace Sales_Tracker.Settings
                                 foreach (Label label in guna2Button.Controls)
                                 {
                                     label.ForeColor = CustomColors.text;
+                                    label.BackColor = CustomColors.panelBtn;
                                 }
                                 break;
                         }
@@ -173,11 +183,11 @@ namespace Sales_Tracker.Settings
                     UI.rename_textBox.FocusedState.BorderColor = Color.Black;
                     UI.rename_textBox.BorderColor = Color.Black;
                 }
+
+                SearchBox.SearchResultBoxContainer.FillColor = CustomColors.controlBack;
+                SearchBox.SearchResultBox.FillColor = CustomColors.controlBack;
             }
-
-            UserSettings.SaveUserSettings();
         }
-
 
         // Misc.
         private void SwitchForm(Form form, object btnSender)

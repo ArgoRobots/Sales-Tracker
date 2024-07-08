@@ -131,6 +131,8 @@ namespace Sales_Tracker
             Save_Button.FillColor = CustomColors.background3;
             Help_Button.FillColor = CustomColors.background3;
             Account_Button.FillColor = CustomColors.background3;
+
+            Theme.SetThemeForControl([Sales_DataGridView, Purchases_DataGridView]);
         }
 
         // Form event handlers
@@ -1313,7 +1315,7 @@ namespace Sales_Tracker
 
 
         // Right click DataGridView row menu
-        private Guna2Panel rightClickDataGridView_Panel;
+        public Guna2Panel rightClickDataGridView_Panel;
         public void ConstructRightClickDataGridViewRowMenu()
         {
             rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 4 * 22 + 10));
