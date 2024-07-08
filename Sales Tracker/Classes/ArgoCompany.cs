@@ -21,10 +21,8 @@ namespace Sales_Tracker.Classes
                 // Save normally
                 SaveAll();
 
-                string newDir = dialog.SelectedPath;
-
                 // Copy the project to a new location
-                Directories.CopyFile(Directories.argoCompany_file, newDir + Directories.companyName + ArgoFiles.ArgoCompanyFileExtension);
+                Directories.CopyFile(Directories.argoCompany_file, dialog.SelectedPath + Directories.companyName + ArgoFiles.ArgoCompanyFileExtension);
             }
         }
         public static bool AreAnyChangesMade()

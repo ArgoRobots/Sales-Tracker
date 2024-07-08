@@ -76,6 +76,7 @@ namespace Sales_Tracker.Classes
 
                         case FlowLayoutPanel flowLayoutPanel:
                             flowLayoutPanel.BackColor = CustomColors.mainBackground;
+                            CustomizeScrollBar(flowLayoutPanel);
                             break;
 
                         case Guna2Button guna2Button:
@@ -152,6 +153,7 @@ namespace Sales_Tracker.Classes
                             guna2DataGridView.BackgroundColor = CustomColors.controlBack;
 
                             UpdateDataGridViewHeaderTheme(guna2DataGridView);
+                            CustomizeScrollBar(guna2DataGridView);
                             break;
 
                         case Guna2CircleButton guna2CircleButton:
@@ -224,6 +226,18 @@ namespace Sales_Tracker.Classes
             // Revert the button's appearance when it loses focus
             btn.BorderColor = CustomColors.controlBorder;
         }
+        private static void CustomizeScrollBar(Control control)
+        {
+            Guna2VScrollBar vScrollBar = new()
+            {
+                FillColor = CustomColors.mainBackground,
+                ThumbColor = Color.Gray,
+                BorderColor = CustomColors.controlPanelBorder
+            };
+            control.Controls.Add(vScrollBar);
+            vScrollBar.BringToFront();
+            vScrollBar.BindingContainer = control;
+        }
         public static void SetThemeForForm(Form form)
         {
             form.BackColor = CustomColors.mainBackground;
@@ -235,15 +249,7 @@ namespace Sales_Tracker.Classes
             }
 
             SetThemeForControl(list);
-
-            if (CurrentTheme == ThemeType.Dark)
-            {
-                UseImmersiveDarkMode(form.Handle, true);
-            }
-            else
-            {
-                UseImmersiveDarkMode(form.Handle, false);
-            }
+            UseImmersiveDarkMode(form.Handle, CurrentTheme == ThemeType.Dark);
         }
 
 

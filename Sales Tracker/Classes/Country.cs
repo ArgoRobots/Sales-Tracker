@@ -8,8 +8,8 @@
         [
             new SearchBox.SearchResult("United States", Properties.Flags.United_States_of_America, 0),
             new SearchBox.SearchResult("China", Properties.Flags.China, 0),
-            new SearchBox.SearchResult("Germany", Properties.Flags.Germany, 0),
             new SearchBox.SearchResult("Japan", Properties.Flags.Japan, 0),
+            new SearchBox.SearchResult("Germany", Properties.Flags.Germany, 0),
             new SearchBox.SearchResult("United Kingdom", Properties.Flags.United_Kingdom_of_Great_Britain_and_Northern_Ireland, 0),
             new SearchBox.SearchResult("France", Properties.Flags.France, 0),
             new SearchBox.SearchResult("Italy", Properties.Flags.Italy, 0),

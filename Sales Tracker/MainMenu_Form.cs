@@ -1141,11 +1141,10 @@ namespace Sales_Tracker
         private void DataGridView_MouseDown(object? sender, MouseEventArgs e)
         {
             UI.CloseAllPanels(null, null);
+            Guna2DataGridView grid = (Guna2DataGridView)sender;
 
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
             {
-                Guna2DataGridView grid = (Guna2DataGridView)sender;
-
                 // The right click button does not select rows by default, so implement it here
                 // If it is not currently selected, unselect others
                 DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
@@ -1166,9 +1165,10 @@ namespace Sales_Tracker
         Control controlRightClickPanelWasAddedTo;
         private void DataGridView_MouseUp(object? sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            Guna2DataGridView grid = (Guna2DataGridView)sender;
+
+            if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
             {
-                Guna2DataGridView grid = (Guna2DataGridView)sender;
                 DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
                 Control controlSender = (Control)sender;
                 controlRightClickPanelWasAddedTo = controlSender.Parent;

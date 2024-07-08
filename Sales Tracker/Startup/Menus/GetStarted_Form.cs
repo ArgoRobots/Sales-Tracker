@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using System.Diagnostics.Metrics;
 
 namespace Sales_Tracker.Startup
 {
@@ -41,50 +42,59 @@ namespace Sales_Tracker.Startup
             string[] projectDirs = value.Split([',']);
             Array.Reverse(projectDirs);  // Reverse the array so it loads in the correct order
 
-            foreach (string projectDir in projectDirs)
+            // Remove duplicates and filter valid directories
+            List<string> validProjectDirs = projectDirs.Distinct().Where(File.Exists).ToList();
+
+            foreach (string projectDir in validProjectDirs)
             {
-                bool alreadyInPanel = OpenRecent_FlowLayoutPanel.Controls.OfType<Guna2Button>().Any(btn => btn.Tag.ToString() == projectDir);
-
-                if (File.Exists(projectDir) && !alreadyInPanel)
+                // Construct button
+                Guna2Button gBtn = new()
                 {
-                    // Construct button
-                    Guna2Button gBtn = new()
+                    BackColor = CustomColors.controlBack,
+                    FillColor = CustomColors.controlBack,
+                    Size = new Size(CalculateButtonWidth(validProjectDirs.Count), 40),
+                    Text = Path.GetFileNameWithoutExtension(projectDir),
+                    Font = new Font("Segoe UI", 11),
+                    Tag = projectDir
+                };
+                gBtn.Click += (sender, e) =>
+                {
+                    Guna2Button Gbtn = (Guna2Button)sender;
+
+                    string projectName = Path.GetFileNameWithoutExtension(Gbtn.Tag.ToString());
+                    if (!ArgoCompany.OnlyAllowOneInstanceOfAProject(projectName))
                     {
-                        BackColor = CustomColors.controlBack,
-                        FillColor = CustomColors.controlBack,
-                        Size = new Size(252, 40),
-                        Text = Path.GetFileNameWithoutExtension(projectDir),
-                        Font = new Font("Segoe UI", 11),
-                        Tag = projectDir
-                    };
-                    gBtn.Click += (sender, e) =>
-                    {
-                        Guna2Button Gbtn = (Guna2Button)sender;
+                        return;
+                    }
 
-                        string projectName = Path.GetFileNameWithoutExtension(Gbtn.Tag.ToString());
-                        if (!ArgoCompany.OnlyAllowOneInstanceOfAProject(projectName))
-                        {
-                            return;
-                        }
+                    // Save new ProjectDirectory
+                    Properties.Settings.Default.ProjectDirectory = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
+                    Properties.Settings.Default.Save();
 
-                        // Save new ProjectDirectory
-                        Properties.Settings.Default.ProjectDirectory = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
-                        Properties.Settings.Default.Save();
+                    Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, projectName);
+                    Directories.InitDataFile();
 
-                        Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, projectName);
-                        Directories.InitDataFile();
+                    List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
+                    Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo copmany", listOfDirectories, false);
 
-                        List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo copmany", listOfDirectories, false);
+                    ShowMainMenu();
+                };
+                OpenRecent_FlowLayoutPanel.Controls.Add(gBtn);
 
-                        ShowMainMenu();
-                    };
-                    OpenRecent_FlowLayoutPanel.Controls.Add(gBtn);
-
-                    // Initialize file watcher for the directory
-                    string directory = Path.GetDirectoryName(projectDir);
-                    InitializeFileWatcher(directory);
-                }
+                // Initialize file watcher for the directory
+                string directory = Path.GetDirectoryName(projectDir);
+                InitializeFileWatcher(directory);
+            }
+        }
+        private int CalculateButtonWidth(int count)
+        {
+            if (count > 7)
+            {
+                return OpenRecent_FlowLayoutPanel.Width - SystemInformation.VerticalScrollBarWidth - 5;
+            }
+            else
+            {
+                return OpenRecent_FlowLayoutPanel.Width - 8;
             }
         }
         private void InitializeFileWatcher(string directory)

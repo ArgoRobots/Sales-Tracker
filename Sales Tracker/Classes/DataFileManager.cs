@@ -53,7 +53,7 @@
         /// </summary>
         public static void SetValue<TEnum>(string filePath, TEnum key, string value) where TEnum : Enum
         {
-            var settings = EnsureSettingsLoaded(filePath);
+            Dictionary<string, string> settings = EnsureSettingsLoaded(filePath);
             string keyString = Enum.GetName(typeof(TEnum), key);
             settings[keyString] = value;
             Save(filePath);
@@ -64,20 +64,20 @@
         /// </summary>
         public static void AppendValue<TEnum>(string filePath, TEnum key, string appendValue, int maxValue) where TEnum : Enum
         {
-            var settings = EnsureSettingsLoaded(filePath);
+            Dictionary<string, string> settings = EnsureSettingsLoaded(filePath);
             string keyString = Enum.GetName(typeof(TEnum), key);
 
             // Attempt to get the current value
-            var value = settings.GetValueOrDefault(keyString, "");
+            string value = settings.GetValueOrDefault(keyString, "");
 
             // Split into list
-            var valuesList = value.Split([','], StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> valuesList = value.Split([','], StringSplitOptions.RemoveEmptyEntries).ToList();
 
             // Append new value
             valuesList.Add(appendValue);
 
             // Ensure the total count does not exceed maxValue
-            if (maxValue > 0 && valuesList.Count > maxValue)
+            if (valuesList.Count > maxValue)
             {
                 valuesList.RemoveAt(0);
             }
@@ -104,12 +104,12 @@
 
         public static void Save(string filePath)
         {
-            if (!fileSettings.TryGetValue(filePath, out var settings))
+            if (!fileSettings.TryGetValue(filePath, out Dictionary<string, string>? settings))
             {
                 return; // No changes to save for this file
             }
 
-            var lines = settings.Select(kv => $"{kv.Key}:{kv.Value}").ToArray();
+            string[] lines = settings.Select(kv => $"{kv.Key}:{kv.Value}").ToArray();
             Directories.WriteLinesToFile(filePath, lines);
         }
     }

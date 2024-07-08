@@ -114,7 +114,6 @@ namespace Sales_Tracker.Settings
                 General_Form.Instance.UpdateTheme();
                 Security_Form.Instance.UpdateTheme();
                 Updates_Form.Instance.UpdateTheme();
-
                 MainMenu_Form.Instance.UpdateTheme();
                 UpdateTheme();
 

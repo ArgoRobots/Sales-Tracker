@@ -87,7 +87,7 @@ namespace Sales_Tracker.Classes
             // https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
 
             // Get information about the source directory
-            var dir = new DirectoryInfo(sourceDir);
+            DirectoryInfo dir = new DirectoryInfo(sourceDir);
 
             // Check if the source directory exists
             if (!dir.Exists)
@@ -158,14 +158,14 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void RenameFolder(string oldFolderPath, string newFolderName)
         {
-            var directoryInfo = new DirectoryInfo(oldFolderPath);
+            DirectoryInfo directoryInfo = new DirectoryInfo(oldFolderPath);
             string newFolderPath = Path.Combine(directoryInfo.Parent.FullName, newFolderName);
 
             Directory.Move(oldFolderPath, newFolderPath);
         }
         public static void MakeDirectoryHidden(string directory)
         {
-            var folder = new DirectoryInfo(directory);
+            DirectoryInfo folder = new DirectoryInfo(directory);
 
             if (folder.Exists)
             {
@@ -261,7 +261,7 @@ namespace Sales_Tracker.Classes
             {
                 using FileStream fs = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
                 using StreamWriter writer = new(fs);
-                foreach (var line in lines)
+                foreach (string line in lines)
                 {
                     writer.WriteLine(line);
                 }

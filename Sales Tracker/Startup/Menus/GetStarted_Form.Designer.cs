@@ -29,10 +29,10 @@ namespace Sales_Tracker.Startup
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             label1 = new Label();
             OpenRecent_FlowLayoutPanel = new FlowLayoutPanel();
             CreateCompany_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -63,7 +63,7 @@ namespace Sales_Tracker.Startup
             // CreateCompany_Button
             // 
             CreateCompany_Button.BorderThickness = 1;
-            CreateCompany_Button.CustomizableEdges = customizableEdges5;
+            CreateCompany_Button.CustomizableEdges = customizableEdges1;
             CreateCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
             CreateCompany_Button.Font = new Font("Segoe UI", 12F);
             CreateCompany_Button.ForeColor = Color.Black;
@@ -74,7 +74,7 @@ namespace Sales_Tracker.Startup
             CreateCompany_Button.Location = new Point(305, 101);
             CreateCompany_Button.Margin = new Padding(10);
             CreateCompany_Button.Name = "CreateCompany_Button";
-            CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CreateCompany_Button.Size = new Size(279, 69);
             CreateCompany_Button.TabIndex = 2;
             CreateCompany_Button.Text = "Create a new company";
@@ -95,7 +95,7 @@ namespace Sales_Tracker.Startup
             // OpenCompany_Button
             // 
             OpenCompany_Button.BorderThickness = 1;
-            OpenCompany_Button.CustomizableEdges = customizableEdges7;
+            OpenCompany_Button.CustomizableEdges = customizableEdges3;
             OpenCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
             OpenCompany_Button.Font = new Font("Segoe UI", 12F);
             OpenCompany_Button.ForeColor = Color.Black;
@@ -106,7 +106,7 @@ namespace Sales_Tracker.Startup
             OpenCompany_Button.Location = new Point(305, 185);
             OpenCompany_Button.Margin = new Padding(10);
             OpenCompany_Button.Name = "OpenCompany_Button";
-            OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             OpenCompany_Button.Size = new Size(279, 69);
             OpenCompany_Button.TabIndex = 3;
             OpenCompany_Button.Text = "Open a company";

@@ -10,8 +10,8 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             Instance = this;
 
-            UpdateControls();
             AddItemsToComboBox();
+            UpdateControls();
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             UpdateTheme();
         }
@@ -44,7 +44,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             Language_ComboBox.SelectedItem = Properties.Settings.Default.Language;
             Currency_ComboBox.Text = Properties.Settings.Default.Currency;
-            ColorTheme_ComboBox.Text = Properties.Settings.Default.ColorTheme;
+            ColorTheme_ComboBox.Text = Theme.CurrentTheme.ToString();
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;
             SendAnonymousInformation_CheckBox.Checked = Properties.Settings.Default.SendAnonymousInformation;
         }
