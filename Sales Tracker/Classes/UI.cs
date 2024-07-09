@@ -40,7 +40,7 @@ namespace Sales_Tracker.Classes
             if (borderRadius > 0) { gBtn.BorderRadius = borderRadius; }
 
             gBtn.Click += CloseAllPanels;
-            control.Controls.Add(gBtn);
+            control?.Controls.Add(gBtn);
             return gBtn;
         }
         // Construct things for menus
@@ -64,7 +64,7 @@ namespace Sales_Tracker.Classes
             panel.Controls.Add(flowLayoutPanel);
             return panel;
         }
-        public static Guna2Separator CosntructSeperator(int width, Control control)
+        public static Guna2Separator ConstructSeperator(int width, Control control)
         {
             Guna2Separator seperator = new()
             {
@@ -73,7 +73,7 @@ namespace Sales_Tracker.Classes
                 Size = new Size(width, 1),
                 Margin = new Padding(0, 5, 0, 5)
             };
-            control.Controls.Add(seperator);
+            control?.Controls.Add(seperator);
             return seperator;
         }
         public static Guna2Button ConstructBtnForMenu(string text, int width, bool closeAllPanels, Control control)
@@ -182,7 +182,7 @@ namespace Sales_Tracker.Classes
                 ArgoCompany.OpenProjectWhenAProgramIsAlreadyOpen();
             };
 
-            CosntructSeperator(240, flowPanel);
+            ConstructSeperator(240, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Save", 240, true, flowPanel);
             menuBtn.Name = "Save";
@@ -258,7 +258,7 @@ namespace Sales_Tracker.Classes
                 Tools.OpenLink("");
             };
 
-            CosntructSeperator(240, flowPanel);
+            ConstructSeperator(240, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Show logs", 240, true, flowPanel);
             menuBtn.Click += (sender, e) =>
@@ -273,7 +273,7 @@ namespace Sales_Tracker.Classes
                 Directories.DeleteFile(Directories.appDataCongig_file);
             };
 
-            CosntructSeperator(240, flowPanel);
+            ConstructSeperator(240, flowPanel);
 
             menuBtn = ConstructBtnForMenu("What's new", 240, true, flowPanel);
             menuBtn.Click += (sender, e) =>
@@ -312,7 +312,7 @@ namespace Sales_Tracker.Classes
 
             };
 
-            CosntructSeperator(240, flowPanel);
+            ConstructSeperator(240, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Sign out", 240, true, flowPanel);
             menuBtn.Click += (sender, e) =>
@@ -372,7 +372,7 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
             };
 
-            CosntructSeperator(190, flowPanel);
+            ConstructSeperator(190, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
             menuBtn.Size = new Size(190, 30);
@@ -382,7 +382,7 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
             };
 
-            CosntructSeperator(190, flowPanel);
+            ConstructSeperator(190, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCompanies_Button.Text, 0, true, flowPanel);
             menuBtn.Size = new Size(190, 30);
@@ -392,7 +392,7 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.ManageCompanies_Button.PerformClick();
             };
 
-            CosntructSeperator(190, flowPanel);
+            ConstructSeperator(190, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageProducts_Button.Text, 0, true, flowPanel);
             menuBtn.Size = new Size(190, 30);
@@ -402,7 +402,7 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.ManageProducts_Button.PerformClick();
             };
 
-            CosntructSeperator(190, flowPanel);
+            ConstructSeperator(190, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Sales_Button.Text, 0, true, flowPanel);
             menuBtn.Size = new Size(190, 30);
@@ -412,7 +412,7 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.AddSale_Button.PerformClick();
             };
 
-            CosntructSeperator(190, flowPanel);
+            ConstructSeperator(190, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Purchases_Button.Text, 0, true, flowPanel);
             menuBtn.Size = new Size(190, 30);

@@ -234,7 +234,7 @@ namespace Sales_Tracker.Classes
                 FillColor = CustomColors.mainBackground,
                 ThumbColor = Color.Gray,
                 BorderColor = CustomColors.controlPanelBorder,
-                ThumbSize = 40,
+                ThumbSize = 40
             };
             vScrollBar.Scroll += (sender, e) =>
             {
