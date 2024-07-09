@@ -187,7 +187,7 @@ namespace Sales_Tracker
         private void Company_TextBox_TextChanged(object? sender, EventArgs e)
         {
             Guna2TextBox textBox = sender as Guna2TextBox;
-            if(textBox.Text== "")
+            if (textBox.Text == "")
             {
                 SetControlForTextBoxEmpty(textBox);
                 return;
@@ -246,7 +246,7 @@ namespace Sales_Tracker
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CountryOfOrigin], left, Panel);
                         Guna2TextBox gTextBox = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
                         gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, Country.countries, this, maxHeight); };
-                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, Country.countries, this, null, maxHeight); };
+                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, Country.countries, this, maxHeight); };
                         gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
                         gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
                         break;
@@ -256,7 +256,7 @@ namespace Sales_Tracker
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CompanyOfOrigin], left, Panel);
                         gTextBox = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
                         gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, maxHeight); };
-                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, null, maxHeight); };
+                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, maxHeight); };
                         gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
                         gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
                         break;

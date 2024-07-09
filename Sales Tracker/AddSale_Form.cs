@@ -49,20 +49,20 @@ namespace Sales_Tracker
         {
             BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
-            BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, AddSale_Button, searchBoxMaxHeight); };
+            BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, searchBoxMaxHeight); };
             BuyerName_TextBox.TextChanged += ValidateInputs;
             BuyerName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             BuyerName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(BuyerName_TextBox, this, AddSale_Label, e); };
 
             ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), searchBoxMaxHeight); };
             ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), searchBoxMaxHeight); };
-            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, AddSale_Button, searchBoxMaxHeight); };
+            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, searchBoxMaxHeight); };
             ProductName_TextBox.TextChanged += ValidateInputs;
             ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddSale_Label, e); };
 
             CountryOfDestinaion_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, CountryOfDestinaion_TextBox, Country.countries, this, searchBoxMaxHeight); };
-            CountryOfDestinaion_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CountryOfDestinaion_TextBox, Country.countries, this, AddSale_Button, searchBoxMaxHeight); };
+            CountryOfDestinaion_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CountryOfDestinaion_TextBox, Country.countries, this, searchBoxMaxHeight); };
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
             CountryOfDestinaion_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             CountryOfDestinaion_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CountryOfDestinaion_TextBox, this, AddSale_Label, e); };
@@ -315,7 +315,7 @@ namespace Sales_Tracker
             textBox.TextChanged += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, AddSale_Button, searchBoxMaxHeight);
+                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, searchBoxMaxHeight);
             };
             textBox.TextChanged += ValidateInputs;
             textBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
@@ -504,11 +504,11 @@ namespace Sales_Tracker
         private void ValidateInputs(object? sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(SaleID_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) && BuyerName_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
-                                   (int)AddSale_Button.Tag == 1;
+                                   !string.IsNullOrWhiteSpace(CountryOfDestinaion_TextBox.Text) && CountryOfDestinaion_TextBox.Tag.ToString() != "0";
 
             bool allMultipleFieldsFilled = true;
 
@@ -520,7 +520,7 @@ namespace Sales_Tracker
             }
             else
             {
-                allFieldsFilled &= !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
+                allFieldsFilled &= !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) && ProductName_TextBox.Tag.ToString() != "0" &&
                                   !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
                                   !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
             }

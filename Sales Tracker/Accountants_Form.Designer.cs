@@ -101,6 +101,7 @@
             Accountant_TextBox.ShortcutsEnabled = false;
             Accountant_TextBox.Size = new Size(200, 36);
             Accountant_TextBox.TabIndex = 42;
+            Accountant_TextBox.Tag = "1";
             Accountant_TextBox.TextChanged += Accountant_TextBox_TextChanged;
             Accountant_TextBox.Click += CloseAllPanels;
             Accountant_TextBox.KeyDown += Accountant_TextBox_KeyDown;

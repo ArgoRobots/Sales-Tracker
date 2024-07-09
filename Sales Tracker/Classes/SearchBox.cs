@@ -130,6 +130,7 @@ namespace Sales_Tracker.Classes
                         textBox.Text = gBtn.Text;
                         CloseSearchBox(controlToAddSearchBox);
                         deselectControl.Focus();
+                        debounceTimer.Stop();
                     };
                     SearchResultBox.Controls.Add(gBtn);
                 }
@@ -172,7 +173,7 @@ namespace Sales_Tracker.Classes
         {
             return names.Select(name => new SearchResult(name, null, 0)).ToList();
         }
-        public static void SearchTextBoxChanged(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, Guna2Button button, int maxHeight)
+        public static void SearchTextBoxChanged(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
         {
             // Save parameters for debounce mechanism
             SearchBox.controlToAddSearchBox = controlToAddSearchBox;
@@ -181,19 +182,22 @@ namespace Sales_Tracker.Classes
             SearchBox.deselectControl = deselectControl;
             SearchBox.maxHeight = maxHeight;
 
+            List<string> names = resultList.Select(result => result.Name).ToList();
+            CheckValidity(searchTextBox, names);
+
             debounceTimer.Stop();
             debounceTimer.Start();
         }
 
-        public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list, Guna2Button button)
+        public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list)
         {
             if (resultNames_list.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text))
             {
-                SetTextBoxToValid(textBox, button);
+                SetTextBoxToValid(textBox);
             }
             else
             {
-                SetTextBoxToInvalid(textBox, button);
+                SetTextBoxToInvalid(textBox);
             }
         }
         public static void SearchBoxTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
@@ -291,19 +295,19 @@ namespace Sales_Tracker.Classes
             SearchResultBox.ScrollControlIntoView(results[0]);
         }
 
-        private static void SetTextBoxToInvalid(Guna2TextBox gTextBox, Guna2Button button)
+        private static void SetTextBoxToInvalid(Guna2TextBox gTextBox)
         {
             gTextBox.BorderColor = CustomColors.accent_red;
             gTextBox.HoverState.BorderColor = CustomColors.accent_red;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_red;
-            button.Tag = 0;
+            gTextBox.Tag = "0";
         }
-        private static void SetTextBoxToValid(Guna2TextBox gTextBox, Guna2Button button)
+        private static void SetTextBoxToValid(Guna2TextBox gTextBox)
         {
             gTextBox.BorderColor = CustomColors.controlBorder;
             gTextBox.HoverState.BorderColor = CustomColors.accent_blue;
             gTextBox.FocusedState.BorderColor = CustomColors.accent_blue;
-            button.Tag = 1;
+            gTextBox.Tag = "1";
         }
         public static void CloseSearchBox(Control controlToRemoveSearchBox)
         {

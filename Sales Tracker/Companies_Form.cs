@@ -153,11 +153,7 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs()
         {
-            if (AddCompany_Button.Tag is bool tag && tag == false)
-            {
-                return;
-            }
-            AddCompany_Button.Enabled = !string.IsNullOrWhiteSpace(Company_TextBox.Text);
+            AddCompany_Button.Enabled = !string.IsNullOrWhiteSpace(Company_TextBox.Text) && Company_TextBox.Tag.ToString() != "0";
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {

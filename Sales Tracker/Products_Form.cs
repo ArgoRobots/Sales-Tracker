@@ -51,20 +51,20 @@ namespace Sales_Tracker
             ProductCategory_TextBox.TextChanged += (sender, e) =>
             {
                 List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
-                SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, AddProduct_Button, maxHeight);
+                SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, maxHeight);
             };
             ProductCategory_TextBox.TextChanged += ValidateInputs;
             ProductCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductCategory_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductCategory_TextBox, this, AddProduct_Label, e); };
 
             CountryOfOrigin_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, CountryOfOrigin_TextBox, Country.countries, this, maxHeight); };
-            CountryOfOrigin_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CountryOfOrigin_TextBox, Country.countries, this, AddProduct_Button, maxHeight); };
+            CountryOfOrigin_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CountryOfOrigin_TextBox, Country.countries, this, maxHeight); };
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
             CountryOfOrigin_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             CountryOfOrigin_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CountryOfOrigin_TextBox, this, AddProduct_Label, e); };
 
             CompanyOfOrigin_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, CompanyOfOrigin_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, maxHeight); };
-            CompanyOfOrigin_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CompanyOfOrigin_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, AddProduct_Button, maxHeight); };
+            CompanyOfOrigin_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CompanyOfOrigin_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, maxHeight); };
             CompanyOfOrigin_TextBox.TextChanged += ValidateInputs;
             CompanyOfOrigin_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             CompanyOfOrigin_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CompanyOfOrigin_TextBox, this, AddProduct_Label, e); };
@@ -353,9 +353,11 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs(object sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(ProductCategory_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text);
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(ProductID_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(ProductCategory_TextBox.Text) && ProductCategory_TextBox.Tag.ToString() != "0" &&
+                                   !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text) && CountryOfOrigin_TextBox.Tag.ToString() != "0" &&
+                                   !string.IsNullOrWhiteSpace(CompanyOfOrigin_TextBox.Text) && CompanyOfOrigin_TextBox.Tag.ToString() != "0";
 
             AddProduct_Button.Enabled = allFieldsFilled;
         }

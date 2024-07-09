@@ -102,7 +102,7 @@
             CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CountryOfOrigin_TextBox.Size = new Size(200, 36);
             CountryOfOrigin_TextBox.TabIndex = 4;
-            CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
+            CountryOfOrigin_TextBox.Tag = "1";
             // 
             // AddProduct_Label
             // 
@@ -149,7 +149,7 @@
             ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 2;
-            ProductName_TextBox.TextChanged += ProductName_TextBox_TextChanged;
+            ProductName_TextBox.TextChanged += ValidateInputs;
             // 
             // AddProduct_Button
             // 
@@ -206,6 +206,7 @@
             ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ProductCategory_TextBox.Size = new Size(200, 36);
             ProductCategory_TextBox.TabIndex = 3;
+            ProductCategory_TextBox.Tag = "1";
             // 
             // Sale_RadioButton
             // 
@@ -270,6 +271,7 @@
             ProductID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ProductID_TextBox.Size = new Size(200, 36);
             ProductID_TextBox.TabIndex = 1;
+            ProductID_TextBox.TextChanged += ValidateInputs;
             // 
             // WarningProductName_PictureBox
             // 
@@ -399,7 +401,7 @@
             CompanyOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             CompanyOfOrigin_TextBox.Size = new Size(200, 36);
             CompanyOfOrigin_TextBox.TabIndex = 45;
-            CompanyOfOrigin_TextBox.TextChanged += ValidateInputs;
+            CompanyOfOrigin_TextBox.Tag = "1";
             // 
             // WarningCompany_PictureBox
             // 

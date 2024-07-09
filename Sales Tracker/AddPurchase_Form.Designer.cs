@@ -165,8 +165,7 @@
             BuyerName_TextBox.ShortcutsEnabled = false;
             BuyerName_TextBox.Size = new Size(200, 36);
             BuyerName_TextBox.TabIndex = 2;
-            BuyerName_TextBox.Tag = "";
-            BuyerName_TextBox.TextChanged += ValidateInputs;
+            BuyerName_TextBox.Tag = "1";
             // 
             // ProductName_Label
             // 
@@ -202,14 +201,14 @@
             ProductName_TextBox.ShortcutsEnabled = false;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 3;
-            ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.Tag = "1";
             // 
             // Quantity_Label
             // 
             Quantity_Label.Anchor = AnchorStyles.Top;
             Quantity_Label.AutoSize = true;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Quantity_Label.Location = new Point(258, 195);
+            Quantity_Label.Location = new Point(266, 195);
             Quantity_Label.Name = "Quantity_Label";
             Quantity_Label.Size = new Size(65, 20);
             Quantity_Label.TabIndex = 0;
@@ -228,7 +227,7 @@
             Quantity_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Quantity_TextBox.Font = new Font("Segoe UI", 9F);
             Quantity_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Quantity_TextBox.Location = new Point(258, 218);
+            Quantity_TextBox.Location = new Point(266, 218);
             Quantity_TextBox.MaxLength = 10;
             Quantity_TextBox.Name = "Quantity_TextBox";
             Quantity_TextBox.PasswordChar = '\0';
@@ -246,7 +245,7 @@
             PricePerUnit_Label.Anchor = AnchorStyles.Top;
             PricePerUnit_Label.AutoSize = true;
             PricePerUnit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PricePerUnit_Label.Location = new Point(364, 195);
+            PricePerUnit_Label.Location = new Point(372, 195);
             PricePerUnit_Label.Name = "PricePerUnit_Label";
             PricePerUnit_Label.Size = new Size(96, 20);
             PricePerUnit_Label.TabIndex = 0;
@@ -265,7 +264,7 @@
             PricePerUnit_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PricePerUnit_TextBox.Font = new Font("Segoe UI", 9F);
             PricePerUnit_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PricePerUnit_TextBox.Location = new Point(364, 218);
+            PricePerUnit_TextBox.Location = new Point(372, 218);
             PricePerUnit_TextBox.MaxLength = 10;
             PricePerUnit_TextBox.Name = "PricePerUnit_TextBox";
             PricePerUnit_TextBox.PasswordChar = '\0';
@@ -283,7 +282,7 @@
             Shipping_Label.Anchor = AnchorStyles.Top;
             Shipping_Label.AutoSize = true;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Shipping_Label.Location = new Point(470, 195);
+            Shipping_Label.Location = new Point(478, 195);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(68, 20);
             Shipping_Label.TabIndex = 0;
@@ -302,7 +301,7 @@
             Shipping_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Shipping_TextBox.Font = new Font("Segoe UI", 9F);
             Shipping_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Shipping_TextBox.Location = new Point(470, 218);
+            Shipping_TextBox.Location = new Point(478, 218);
             Shipping_TextBox.MaxLength = 10;
             Shipping_TextBox.Name = "Shipping_TextBox";
             Shipping_TextBox.PasswordChar = '\0';
@@ -320,7 +319,7 @@
             Tax_Label.Anchor = AnchorStyles.Top;
             Tax_Label.AutoSize = true;
             Tax_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tax_Label.Location = new Point(576, 195);
+            Tax_Label.Location = new Point(584, 195);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(30, 20);
             Tax_Label.TabIndex = 0;
@@ -339,7 +338,7 @@
             Tax_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Tax_TextBox.Font = new Font("Segoe UI", 9F);
             Tax_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Tax_TextBox.Location = new Point(576, 218);
+            Tax_TextBox.Location = new Point(584, 218);
             Tax_TextBox.MaxLength = 10;
             Tax_TextBox.Name = "Tax_TextBox";
             Tax_TextBox.PasswordChar = '\0';
@@ -364,7 +363,7 @@
             AddPurchase_Button.FillColor = Color.White;
             AddPurchase_Button.Font = new Font("Segoe UI", 9.5F);
             AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(346, 280);
+            AddPurchase_Button.Location = new Point(354, 280);
             AddPurchase_Button.Margin = new Padding(4, 3, 4, 3);
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
@@ -379,7 +378,7 @@
             Date_Label.Anchor = AnchorStyles.Top;
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Date_Label.Location = new Point(52, 195);
+            Date_Label.Location = new Point(60, 195);
             Date_Label.Name = "Date_Label";
             Date_Label.Size = new Size(41, 20);
             Date_Label.TabIndex = 0;
@@ -394,7 +393,7 @@
             Date_DateTimePicker.FillColor = Color.White;
             Date_DateTimePicker.Font = new Font("Segoe UI", 9F);
             Date_DateTimePicker.Format = DateTimePickerFormat.Long;
-            Date_DateTimePicker.Location = new Point(52, 218);
+            Date_DateTimePicker.Location = new Point(60, 218);
             Date_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             Date_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             Date_DateTimePicker.Name = "Date_DateTimePicker";
@@ -410,7 +409,7 @@
             WarningProduct_LinkLabel.AutoSize = true;
             WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
-            WarningProduct_LinkLabel.Location = new Point(582, 142);
+            WarningProduct_LinkLabel.Location = new Point(610, 142);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
             WarningProduct_LinkLabel.Size = new Size(121, 41);
             WarningProduct_LinkLabel.TabIndex = 42;
@@ -423,7 +422,7 @@
             // WarningProduct_PictureBox
             // 
             WarningProduct_PictureBox.Image = Properties.Resources.Warning;
-            WarningProduct_PictureBox.Location = new Point(556, 145);
+            WarningProduct_PictureBox.Location = new Point(584, 145);
             WarningProduct_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningProduct_PictureBox.Name = "WarningProduct_PictureBox";
             WarningProduct_PictureBox.Size = new Size(19, 18);
@@ -437,7 +436,7 @@
             PaymentFee_Label.Anchor = AnchorStyles.Top;
             PaymentFee_Label.AutoSize = true;
             PaymentFee_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PaymentFee_Label.Location = new Point(682, 195);
+            PaymentFee_Label.Location = new Point(690, 195);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(90, 20);
             PaymentFee_Label.TabIndex = 52;
@@ -456,7 +455,7 @@
             PaymentFee_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PaymentFee_TextBox.Font = new Font("Segoe UI", 9F);
             PaymentFee_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PaymentFee_TextBox.Location = new Point(682, 218);
+            PaymentFee_TextBox.Location = new Point(690, 218);
             PaymentFee_TextBox.MaxLength = 10;
             PaymentFee_TextBox.Name = "PaymentFee_TextBox";
             PaymentFee_TextBox.PasswordChar = '\0';
@@ -526,7 +525,7 @@
             WarningBuyer_LinkLabel.AutoSize = true;
             WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningBuyer_LinkLabel.LinkArea = new LinkArea(22, 15);
-            WarningBuyer_LinkLabel.Location = new Point(376, 145);
+            WarningBuyer_LinkLabel.Location = new Point(404, 145);
             WarningBuyer_LinkLabel.Name = "WarningBuyer_LinkLabel";
             WarningBuyer_LinkLabel.Size = new Size(140, 41);
             WarningBuyer_LinkLabel.TabIndex = 57;
@@ -539,7 +538,7 @@
             // WarningBuyer_PictureBox
             // 
             WarningBuyer_PictureBox.Image = Properties.Resources.Warning;
-            WarningBuyer_PictureBox.Location = new Point(350, 145);
+            WarningBuyer_PictureBox.Location = new Point(378, 145);
             WarningBuyer_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningBuyer_PictureBox.Name = "WarningBuyer_PictureBox";
             WarningBuyer_PictureBox.Size = new Size(19, 18);

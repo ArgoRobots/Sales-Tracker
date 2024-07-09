@@ -153,7 +153,7 @@ namespace Sales_Tracker
         {
             if (AddAccountant_Button.Tag is bool tag && tag == true)
             {
-                AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text);
+                AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text) && Accountant_TextBox.Tag.ToString() != "0";
             }
         }
         public void CloseAllPanels(object? sender, EventArgs? e)

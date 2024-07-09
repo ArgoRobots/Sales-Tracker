@@ -101,6 +101,7 @@
             Company_TextBox.ShortcutsEnabled = false;
             Company_TextBox.Size = new Size(200, 36);
             Company_TextBox.TabIndex = 50;
+            Company_TextBox.Tag = "1";
             Company_TextBox.TextChanged += Company_TextBox_TextChanged;
             Company_TextBox.KeyDown += Company_TextBox_KeyDown;
             // 
@@ -122,7 +123,7 @@
             AddCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddCompany_Button.Size = new Size(143, 36);
             AddCompany_Button.TabIndex = 51;
-            AddCompany_Button.Tag = "0";
+            AddCompany_Button.Tag = "";
             AddCompany_Button.Text = "Add company";
             AddCompany_Button.Click += AddCompany_Button_Click;
             // 
