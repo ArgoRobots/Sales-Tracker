@@ -73,7 +73,7 @@ namespace Sales_Tracker.Classes
                 Size = new Size(width, 1),
                 Margin = new Padding(0, 5, 0, 5)
             };
-            control?.Controls.Add(seperator);
+            control.Controls.Add(seperator);
             return seperator;
         }
         public static Guna2Button ConstructBtnForMenu(string text, int width, bool closeAllPanels, Control control)

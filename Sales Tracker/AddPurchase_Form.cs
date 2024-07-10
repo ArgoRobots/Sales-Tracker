@@ -45,9 +45,9 @@ namespace Sales_Tracker
             Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
         }
-        private readonly byte searchBoxMaxHeight = 150;
         private void AddSearchBoxEvents()
         {
+            byte searchBoxMaxHeight = 150;
             BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, searchBoxMaxHeight); };
@@ -278,6 +278,8 @@ namespace Sales_Tracker
         }
         private void ConstructControlsForMultipleProducts()
         {
+            byte smallSearchBoxMaxHeight = 100;
+
             Guna2Panel panel = new()
             {
                 Size = new Size(initialWidthForPanel, initialHeightForPanel),
@@ -294,17 +296,17 @@ namespace Sales_Tracker
             textBox.Click += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), searchBoxMaxHeight);
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), smallSearchBoxMaxHeight);
             };
             textBox.GotFocus += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), searchBoxMaxHeight);
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), smallSearchBoxMaxHeight);
             };
             textBox.TextChanged += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), this, searchBoxMaxHeight);
+                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), this, smallSearchBoxMaxHeight);
             };
             textBox.TextChanged += ValidateInputs;
             textBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;

@@ -4,6 +4,7 @@ namespace Sales_Tracker.Settings.Menus
 {
     public partial class General_Form : BaseForm
     {
+        // Init.
         public static General_Form Instance { get; private set; }
         public General_Form()
         {
@@ -42,7 +43,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         public void UpdateControls()
         {
-            Language_ComboBox.SelectedItem = Properties.Settings.Default.Language;
+            Language_ComboBox.Text = Properties.Settings.Default.Language;
             Currency_ComboBox.Text = Properties.Settings.Default.Currency;
             ColorTheme_ComboBox.Text = Theme.CurrentTheme.ToString();
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;

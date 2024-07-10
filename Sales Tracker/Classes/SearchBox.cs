@@ -177,8 +177,8 @@ namespace Sales_Tracker.Classes
         {
             // Save parameters for debounce mechanism
             SearchBox.controlToAddSearchBox = controlToAddSearchBox;
-            SearchBox.searchTextBox = textBox;
-            SearchBox.resultList = result_list;
+            searchTextBox = textBox;
+            resultList = result_list;
             SearchBox.deselectControl = deselectControl;
             SearchBox.maxHeight = maxHeight;
 

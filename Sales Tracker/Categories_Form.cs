@@ -92,8 +92,6 @@ namespace Sales_Tracker
             Sale_RadioButton.AutoCheck = true;
             Purchase_RadioButton.AutoCheck = true;
 
-            UI.SetGTextBoxToValid(Category_TextBox);
-            HideCategoryWarning();
             Category_TextBox.Focus();
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)

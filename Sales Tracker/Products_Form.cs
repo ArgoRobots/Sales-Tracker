@@ -148,8 +148,11 @@ namespace Sales_Tracker
             thingsThatHaveChangedInFile.Add(name);
             Log.Write(3, $"Added product '{name}'");
 
-            ProductName_TextBox.Text = "";
-            //  ValidateInputs(null, null);
+            Sale_RadioButton.AutoCheck = false;
+            Purchase_RadioButton.AutoCheck = false;
+            ProductName_TextBox.Text = "";  // For some reason, this checks the other radio button
+            Sale_RadioButton.AutoCheck = true;
+            Purchase_RadioButton.AutoCheck = true;
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {

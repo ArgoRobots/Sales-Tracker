@@ -4,6 +4,7 @@ namespace Sales_Tracker.Settings.Menus
 {
     public partial class Security_Form : BaseForm
     {
+        // Init.
         public static Security_Form Instance { get; private set; }
         public Security_Form()
         {
@@ -18,7 +19,7 @@ namespace Sales_Tracker.Settings.Menus
             Theme.SetThemeForForm(this);
         }
 
-        // Form
+        // Form event handlers
         private void Security_form_Resize(object sender, EventArgs e)
         {
 

@@ -36,7 +36,6 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static bool IsFormOpen(Type formType)
         {
-
             return Application.OpenForms.OfType<Form>().Any(f => f.GetType() == formType);
         }
 
