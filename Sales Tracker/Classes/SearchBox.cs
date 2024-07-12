@@ -145,6 +145,12 @@ namespace Sales_Tracker.Classes
                 SearchResultBox.AutoScroll = true;
                 Theme.CustomizeScrollBar(SearchResultBox);
             }
+            else if (SearchResultBox.Controls.Count == 0)
+            {
+                CloseSearchBox(controlToAddSearchBox);
+                debounceTimer.Stop();
+                return;
+            }
             else
             {
                 SearchResultBox.Height = totalHeight;

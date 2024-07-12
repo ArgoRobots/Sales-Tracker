@@ -473,6 +473,7 @@
             // 
             // WarningProduct_LinkLabel
             // 
+            WarningProduct_LinkLabel.Anchor = AnchorStyles.Top;
             WarningProduct_LinkLabel.AutoSize = true;
             WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
@@ -483,20 +484,19 @@
             WarningProduct_LinkLabel.TabStop = true;
             WarningProduct_LinkLabel.Text = "No products exist.\r\nCreate one here.";
             WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
-            WarningProduct_LinkLabel.Visible = false;
             WarningProduct_LinkLabel.LinkClicked += WarningProduct_LinkLabel_LinkClicked;
             // 
             // WarningProduct_PictureBox
             // 
+            WarningProduct_PictureBox.Anchor = AnchorStyles.Top;
             WarningProduct_PictureBox.Image = Properties.Resources.Warning;
             WarningProduct_PictureBox.Location = new Point(445, 145);
             WarningProduct_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningProduct_PictureBox.Name = "WarningProduct_PictureBox";
-            WarningProduct_PictureBox.Size = new Size(19, 18);
+            WarningProduct_PictureBox.Size = new Size(19, 19);
             WarningProduct_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningProduct_PictureBox.TabIndex = 47;
             WarningProduct_PictureBox.TabStop = false;
-            WarningProduct_PictureBox.Visible = false;
             // 
             // PaymentFee_Label
             // 
@@ -542,7 +542,7 @@
             MultipleItems_CheckBox.CheckedState.BorderRadius = 0;
             MultipleItems_CheckBox.CheckedState.BorderThickness = 0;
             MultipleItems_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            MultipleItems_CheckBox.Location = new Point(614, 31);
+            MultipleItems_CheckBox.Location = new Point(683, 31);
             MultipleItems_CheckBox.Name = "MultipleItems_CheckBox";
             MultipleItems_CheckBox.Size = new Size(168, 19);
             MultipleItems_CheckBox.TabIndex = 54;
@@ -555,6 +555,7 @@
             // 
             // WarningBuyer_LinkLabel
             // 
+            WarningBuyer_LinkLabel.Anchor = AnchorStyles.Top;
             WarningBuyer_LinkLabel.AutoSize = true;
             WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningBuyer_LinkLabel.LinkArea = new LinkArea(22, 15);
@@ -565,20 +566,19 @@
             WarningBuyer_LinkLabel.TabStop = true;
             WarningBuyer_LinkLabel.Text = "No accountants exist.\r\nCreate one here";
             WarningBuyer_LinkLabel.UseCompatibleTextRendering = true;
-            WarningBuyer_LinkLabel.Visible = false;
             WarningBuyer_LinkLabel.LinkClicked += WarningBuyer_LinkLabel_LinkClicked;
             // 
             // WarningBuyer_PictureBox
             // 
+            WarningBuyer_PictureBox.Anchor = AnchorStyles.Top;
             WarningBuyer_PictureBox.Image = Properties.Resources.Warning;
             WarningBuyer_PictureBox.Location = new Point(239, 145);
             WarningBuyer_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningBuyer_PictureBox.Name = "WarningBuyer_PictureBox";
-            WarningBuyer_PictureBox.Size = new Size(19, 18);
+            WarningBuyer_PictureBox.Size = new Size(19, 19);
             WarningBuyer_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningBuyer_PictureBox.TabIndex = 58;
             WarningBuyer_PictureBox.TabStop = false;
-            WarningBuyer_PictureBox.Visible = false;
             // 
             // CountryOfDestination_Label
             // 

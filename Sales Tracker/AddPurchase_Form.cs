@@ -145,6 +145,18 @@ namespace Sales_Tracker
             tax = Math.Round(tax, 2);
             fee = Math.Round(fee, 2);
             totalPrice = Math.Round(totalPrice, 2);
+            decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
+
+            if (totalPrice != amountCharged)
+            {
+                string message = $"Amount charged ({amountCharged}) is not equal to the total price of the purchase ({totalPrice}). The difference will be accounted for.";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
+                if (result != CustomMessageBoxResult.Ok)
+                {
+                    return;
+                }
+            }
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
             thingsThatHaveChangedInFile.Add(itemName);
@@ -185,7 +197,6 @@ namespace Sales_Tracker
         private List<Control> GetControlsForMultipleProducts()
         {
             return [ProductName_TextBox, ProductName_Label,
-                WarningProduct_PictureBox, WarningProduct_LinkLabel,
                 Quantity_TextBox, Quantity_Label,
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
@@ -214,7 +225,8 @@ namespace Sales_Tracker
                 PricePerUnit_TextBox.Width - spaceBetweenControlsHorizontally -
                 Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
-                PaymentFee_TextBox.Width) / 2;
+                PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
+                AmountCharged_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Quantity_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -227,10 +239,11 @@ namespace Sales_Tracker
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+            AmountCharged_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
+            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
 
             // Add controls
-            List<Control> controls = GetControlsForMultipleProducts();
-            foreach (Control control in controls)
+            foreach (Control control in GetControlsForMultipleProducts())
             {
                 Controls.Add(control);
             }
@@ -238,18 +251,36 @@ namespace Sales_Tracker
             Controls.Remove(FlowPanel);
             Controls.Remove(AddButton);
             Height = 400;
+
+            RelocateBuyerWarning();
+
+            if (Controls.Contains(WarningProduct_PictureBox))
+            {
+                WarningProduct_PictureBox.Location = new Point(ProductName_TextBox.Left, ProductName_TextBox.Bottom + spaceBetweenControlsVertically);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + spaceBetweenControlsHorizontally, WarningProduct_PictureBox.Top);
+            }
         }
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            Currency_ComboBox.Left = (Width - Currency_ComboBox.Width - PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally - BuyerName_TextBox.Width) / 2;
+            Currency_ComboBox.Left = (Width -
+                Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
+                PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally -
+                BuyerName_TextBox.Width) / 2;
+
             Currency_Label.Left = Currency_ComboBox.Left;
             PurchaseID_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
             PurchaseID_Label.Left = PurchaseID_TextBox.Left;
             BuyerName_TextBox.Left = PurchaseID_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
 
-            Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally - Shipping_TextBox.Width - spaceBetweenControlsHorizontally - Tax_TextBox.Width - spaceBetweenControlsHorizontally - PaymentFee_TextBox.Width) / 2;
+            Date_DateTimePicker.Left = (Width -
+                Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
+                Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
+                Tax_TextBox.Width - spaceBetweenControlsHorizontally -
+                PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
+                AmountCharged_TextBox.Width) / 2;
+
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
             Shipping_Label.Left = Shipping_TextBox.Left;
@@ -257,17 +288,35 @@ namespace Sales_Tracker
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+            AmountCharged_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
+            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
 
             // Remove controls
-            List<Control> controls = GetControlsForMultipleProducts();
-            foreach (Control control in controls)
+            foreach (Control control in GetControlsForMultipleProducts())
             {
                 Controls.Remove(control);
             }
 
             Controls.Add(FlowPanel);
-            Controls.Add(AddButton);
             SetHeight();
+
+            RelocateBuyerWarning();
+
+            if (Controls.Contains(WarningProduct_PictureBox))
+            {
+                WarningProduct_PictureBox.Location = new Point(AddButton.Left + spaceBetweenControlsHorizontally, AddButton.Top - flowPanelMargin * 2);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + spaceBetweenControlsHorizontally, WarningProduct_PictureBox.Top);
+                Controls.Remove(AddButton);
+            }
+            else
+            {
+                Controls.Add(AddButton);
+            }
+        }
+        private void RelocateBuyerWarning()
+        {
+            WarningBuyer_PictureBox.Location = new Point(BuyerName_TextBox.Left, BuyerName_TextBox.Bottom + spaceBetweenControlsHorizontally);
+            WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + spaceBetweenControlsHorizontally, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
         enum TextBoxnames
@@ -408,7 +457,7 @@ namespace Sales_Tracker
             {
                 AutoScroll = false,
                 Location = new Point((Width - width + 10) / 2 - 5, 270),
-                Size = new Size(width, flowPanelMargin),
+                Size = new Size(width, 20 + spaceBetweenControlsVertically + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
                 MaximumSize = new Size(initialWidthForPanel + spaceOnSidesOfPanel, maxFlowPanelHeight)
@@ -460,13 +509,14 @@ namespace Sales_Tracker
         }
         private void ShowProductWarning()
         {
-            WarningProduct_LinkLabel.Visible = true;
-            WarningProduct_PictureBox.Visible = true;
+            Controls.Add(WarningProduct_PictureBox);
+            Controls.Add(WarningProduct_LinkLabel);
         }
         private void HideProductWarning()
         {
-            WarningProduct_LinkLabel.Visible = false;
-            WarningProduct_PictureBox.Visible = false;
+            Controls.Remove(WarningProduct_PictureBox);
+            Controls.Remove(WarningProduct_LinkLabel);
+            Controls.Add(AddButton);
         }
         private void CheckIfBuyersExist()
         {
@@ -498,7 +548,8 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) && BuyerName_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text);
+                                   !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(AmountCharged_TextBox.Text);
 
             bool allMultipleFieldsFilled = true;
 

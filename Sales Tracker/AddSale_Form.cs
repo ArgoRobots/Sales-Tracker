@@ -193,7 +193,6 @@ namespace Sales_Tracker
         private List<Control> GetControlsForMultipleProducts()
         {
             return [ProductName_TextBox, ProductName_Label,
-                WarningProduct_PictureBox, WarningProduct_LinkLabel,
                 Quantity_TextBox, Quantity_Label,
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
@@ -245,7 +244,15 @@ namespace Sales_Tracker
 
             Controls.Remove(FlowPanel);
             Controls.Remove(AddButton);
-            Height = 360;
+            Height = 400;
+
+            RelocateBuyerWarning();
+
+            if (Controls.Contains(WarningProduct_PictureBox))
+            {
+                WarningProduct_PictureBox.Location = new Point(ProductName_TextBox.Left, ProductName_TextBox.Bottom + spaceBetweenControlsVertically);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + spaceBetweenControlsHorizontally, WarningProduct_PictureBox.Top);
+            }
         }
         private void SetControlsForMultipleProducts()
         {
@@ -260,7 +267,12 @@ namespace Sales_Tracker
             CountryOfDestinaion_TextBox.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
 
-            Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally - Shipping_TextBox.Width - spaceBetweenControlsHorizontally - Tax_TextBox.Width - spaceBetweenControlsHorizontally - PaymentFee_TextBox.Width) / 2;
+            Date_DateTimePicker.Left = (Width -
+                Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
+                Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
+                Tax_TextBox.Width - spaceBetweenControlsHorizontally -
+                PaymentFee_TextBox.Width) / 2;
+
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
             Shipping_Label.Left = Shipping_TextBox.Left;
@@ -270,15 +282,31 @@ namespace Sales_Tracker
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
 
             // Remove controls
-            List<Control> controls = GetControlsForMultipleProducts();
-            foreach (Control control in controls)
+            foreach (Control control in GetControlsForMultipleProducts())
             {
                 Controls.Remove(control);
             }
 
             Controls.Add(FlowPanel);
-            Controls.Add(AddButton);
             SetHeight();
+
+            RelocateBuyerWarning();
+
+            if (Controls.Contains(WarningProduct_PictureBox))
+            {
+                WarningProduct_PictureBox.Location = new Point(AddButton.Left + spaceBetweenControlsHorizontally, AddButton.Top - flowPanelMargin * 2);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + spaceBetweenControlsHorizontally, WarningProduct_PictureBox.Top);
+                Controls.Remove(AddButton);
+            }
+            else
+            {
+                Controls.Add(AddButton);
+            }
+        }
+        private void RelocateBuyerWarning()
+        {
+            WarningBuyer_PictureBox.Location = new Point(BuyerName_TextBox.Left, BuyerName_TextBox.Bottom + spaceBetweenControlsHorizontally);
+            WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + spaceBetweenControlsHorizontally, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
         enum TextBoxnames
@@ -417,7 +445,7 @@ namespace Sales_Tracker
             {
                 AutoScroll = false,
                 Location = new Point((Width - width + 10) / 2 - 5, 270),
-                Size = new Size(width, flowPanelMargin),
+                Size = new Size(width, 20 + spaceBetweenControlsVertically + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
                 MaximumSize = new Size(initialWidthForPanel + spaceOnSidesOfPanel, maxFlowPanelHeight)
@@ -469,13 +497,14 @@ namespace Sales_Tracker
         }
         private void ShowProductWarning()
         {
-            WarningProduct_LinkLabel.Visible = true;
-            WarningProduct_PictureBox.Visible = true;
+            Controls.Add(WarningProduct_PictureBox);
+            Controls.Add(WarningProduct_LinkLabel);
         }
         private void HideProductWarning()
         {
-            WarningProduct_LinkLabel.Visible = false;
-            WarningProduct_PictureBox.Visible = false;
+            Controls.Remove(WarningProduct_PictureBox);
+            Controls.Remove(WarningProduct_LinkLabel);
+            Controls.Add(AddButton);
         }
         private void CheckIfBuyersExist()
         {
