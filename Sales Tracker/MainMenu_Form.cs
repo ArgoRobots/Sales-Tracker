@@ -6,6 +6,7 @@ using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using System.Collections;
 using System.Text.Json;
+using System.Windows.Forms;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -904,6 +905,7 @@ namespace Sales_Tracker
             Shipping,
             Tax,
             Fee,
+            ChargedDifference,
             Total
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
@@ -920,6 +922,7 @@ namespace Sales_Tracker
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
             { Column.Fee, "Payment fee" },
+            { Column.ChargedDifference, "Charged difference" },
             { Column.Total, "Total expenses" }
         };
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
@@ -1085,6 +1088,7 @@ namespace Sales_Tracker
         private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             DataGridViewRowChanged();
+            selectedDataGridView.FirstDisplayedScrollingRowIndex =e.RowIndex;
         }
         private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
@@ -1234,9 +1238,12 @@ namespace Sales_Tracker
         }
         public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
         {
-            foreach (var column in Enum.GetValues(typeof(TEnum)))
+            foreach (object column in Enum.GetValues(typeof(TEnum)))
             {
-                dataGridView.Columns.Add(column.ToString(), columnHeaders[(TEnum)column]);
+                if (columnHeaders.ContainsKey((TEnum)column))
+                {
+                    dataGridView.Columns.Add(column.ToString(), columnHeaders[(TEnum)column]);
+                }
             }
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
@@ -1258,6 +1265,7 @@ namespace Sales_Tracker
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
+                totalPrice -= Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
             }
 
             Quantity_Label.Text = totalQuantity.ToString();

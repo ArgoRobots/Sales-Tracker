@@ -125,9 +125,8 @@ namespace Sales_Tracker
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
-
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee;
 
             // Convert currency
             if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
@@ -136,6 +135,7 @@ namespace Sales_Tracker
                 pricePerUnit *= exchangeRate;
                 shipping *= exchangeRate;
                 tax *= exchangeRate;
+                fee *= exchangeRate;
                 totalPrice *= exchangeRate;
             }
 
@@ -144,12 +144,13 @@ namespace Sales_Tracker
             shipping = Math.Round(shipping, 2);
             tax = Math.Round(tax, 2);
             fee = Math.Round(fee, 2);
-            totalPrice = Math.Round(totalPrice, 2);
             decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
+            decimal chargedDifference = amountCharged - totalPrice;
+            totalPrice = Math.Round(totalPrice, 2)+ chargedDifference;
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount charged ({amountCharged}) is not equal to the total price of the purchase ({totalPrice}). The difference will be accounted for.";
+                string message = $"Amount charged (${amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -158,7 +159,7 @@ namespace Sales_Tracker
                 }
             }
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, chargedDifference, totalPrice);
             thingsThatHaveChangedInFile.Add(itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
         }
