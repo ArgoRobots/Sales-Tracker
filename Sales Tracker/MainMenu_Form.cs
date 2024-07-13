@@ -6,7 +6,6 @@ using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using System.Collections;
 using System.Text.Json;
-using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
 {
@@ -115,7 +114,7 @@ namespace Sales_Tracker
         {
             CustomColors.SetColors();
             Theme.SetThemeForForm(this);
-            if (CurrentTheme == ThemeType.Dark)
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
                 Edit_Button.Image = Resources.EditWhite;
             }
@@ -1183,6 +1182,31 @@ namespace Sales_Tracker
                     return;
                 }
 
+                // Add move button
+                if (Selected == SelectedOption.CategoryPurchases)
+                {
+                    ConfigureMoveButton("Move category to sales");
+                }
+                else if (Selected == SelectedOption.CategorySales)
+                {
+                    ConfigureMoveButton("Move category to purchases");
+                }
+                else if (Selected == SelectedOption.ProductPurchases)
+                {
+                    ConfigureMoveButton("Move product to sales");
+                }
+                else if (Selected == SelectedOption.ProductSales)
+                {
+                    ConfigureMoveButton("Move product to purchases");
+                }
+                else
+                {
+                    FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
+                    flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
+                    rightClickDataGridView_Panel.Height = 4 * 22 + 10;
+                    flowPanel.Height = 4 * 22;
+                }
+
                 Control controlSender = (Control)sender;
                 controlRightClickPanelWasAddedTo = controlSender.Parent;
                 Form parentForm = grid.FindForm();
@@ -1257,6 +1281,19 @@ namespace Sales_Tracker
                 }
             }
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
+        }
+        private void ConfigureMoveButton(string buttonText)
+        {
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
+
+            // Ensure the Move button is the second control
+            flowPanel.Controls.Add(rightClickDataGridView_MoveBtn);
+            flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, 1);
+
+            rightClickDataGridView_Panel.Height = 5 * 22 + 10;
+            flowPanel.Height = 5 * 22;
+
+            rightClickDataGridView_MoveBtn.Text = buttonText;
         }
         private void UpdateTotals()
         {
@@ -1335,6 +1372,7 @@ namespace Sales_Tracker
 
         // Right click DataGridView row menu
         public Guna2Panel rightClickDataGridView_Panel;
+        private Guna2Button rightClickDataGridView_MoveBtn;
         public void ConstructRightClickDataGridViewRowMenu()
         {
             rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 4 * 22 + 10));
@@ -1348,6 +1386,9 @@ namespace Sales_Tracker
 
             menuBtn = UI.ConstructBtnForMenu("Move down", 240, false, flowPanel);
             menuBtn.Click += MoveRowDown;
+
+            rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", 240, false, flowPanel);
+            rightClickDataGridView_MoveBtn.Click += MoveRow; ;
 
             menuBtn = UI.ConstructBtnForMenu("Delete", 240, false, flowPanel);
             menuBtn.ForeColor = CustomColors.accent_red;
@@ -1384,6 +1425,10 @@ namespace Sales_Tracker
                 CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the first row up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
             }
+
+            // Preserve the current scroll position
+            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
+
             isFormLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
@@ -1393,6 +1438,9 @@ namespace Sales_Tracker
             // Reselect
             selectedDataGridView.ClearSelection();
             selectedDataGridView.Rows[rowIndex - 1].Selected = true;
+
+            // Restore the scroll position
+            selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
 
             // Save
             SaveDataGridViewToFile();
@@ -1415,6 +1463,10 @@ namespace Sales_Tracker
                 CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the last row down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
             }
+
+            // Preserve the current scroll position
+            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
+
             isFormLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
@@ -1425,9 +1477,56 @@ namespace Sales_Tracker
             selectedDataGridView.ClearSelection();
             selectedDataGridView.Rows[rowIndex + 1].Selected = true;
 
+            // Restore the scroll position
+            selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
+
             // Save
             SaveDataGridViewToFile();
             isFormLoading = false;
+        }
+        private void MoveRow(object? sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+
+            DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
+            int selectedIndex = selectedRow.Index;
+
+            // Preserve the current scroll position
+            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
+
+            if (Selected == SelectedOption.CategoryPurchases)
+            {
+                Categories_Form.Instance.Purchases_DataGridView.Rows.Remove(selectedRow);
+                Categories_Form.Instance.Sales_DataGridView.Rows.Add(selectedRow);
+            }
+            else if (Selected == SelectedOption.CategorySales)
+            {
+                Categories_Form.Instance.Sales_DataGridView.Rows.Remove(selectedRow);
+                Categories_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
+            }
+            else if (Selected == SelectedOption.ProductPurchases)
+            {
+                Products_Form.Instance.Purchases_DataGridView.Rows.Remove(selectedRow);
+                Products_Form.Instance.Sales_DataGridView.Rows.Add(selectedRow);
+            }
+            else if (Selected == SelectedOption.ProductSales)
+            {
+                Products_Form.Instance.Sales_DataGridView.Rows.Remove(selectedRow);
+                Products_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
+            }
+
+            // Select the row below the moved row in the original DataGridView if it exists
+            if (selectedIndex < selectedDataGridView.Rows.Count)
+            {
+                selectedDataGridView.Rows[selectedIndex].Selected = true;
+            }
+            else if (selectedDataGridView.Rows.Count > 0)
+            {
+                selectedDataGridView.Rows[selectedDataGridView.Rows.Count - 1].Selected = true;
+            }
+
+            // Restore the scroll position
+            selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
         }
         private void DeleteRow(object? sender, EventArgs e)
         {
@@ -1524,7 +1623,7 @@ namespace Sales_Tracker
                 Top = top
             };
 
-            if (CurrentTheme == ThemeType.Dark)
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
                 gunaChart.ApplyConfig(Dark.Config(), CustomColors.background4);
             }

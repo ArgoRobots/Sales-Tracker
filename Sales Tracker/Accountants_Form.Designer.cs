@@ -30,12 +30,12 @@ namespace Sales_Tracker
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             WarningAccountantName_PictureBox = new PictureBox();
             WarningAccountantName_Label = new Label();
             AccountantName_Label = new Label();
@@ -90,7 +90,7 @@ namespace Sales_Tracker
             // Accountant_TextBox
             // 
             Accountant_TextBox.Anchor = AnchorStyles.Top;
-            Accountant_TextBox.CustomizableEdges = customizableEdges7;
+            Accountant_TextBox.CustomizableEdges = customizableEdges1;
             Accountant_TextBox.DefaultText = "";
             Accountant_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Accountant_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -105,7 +105,7 @@ namespace Sales_Tracker
             Accountant_TextBox.PasswordChar = '\0';
             Accountant_TextBox.PlaceholderText = "";
             Accountant_TextBox.SelectedText = "";
-            Accountant_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Accountant_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Accountant_TextBox.ShortcutsEnabled = false;
             Accountant_TextBox.Size = new Size(200, 36);
             Accountant_TextBox.TabIndex = 42;
@@ -121,7 +121,7 @@ namespace Sales_Tracker
             AddAccountant_Button.BorderColor = Color.LightGray;
             AddAccountant_Button.BorderRadius = 2;
             AddAccountant_Button.BorderThickness = 1;
-            AddAccountant_Button.CustomizableEdges = customizableEdges9;
+            AddAccountant_Button.CustomizableEdges = customizableEdges3;
             AddAccountant_Button.Enabled = false;
             AddAccountant_Button.FillColor = Color.White;
             AddAccountant_Button.Font = new Font("Segoe UI", 9.5F);
@@ -129,7 +129,7 @@ namespace Sales_Tracker
             AddAccountant_Button.Location = new Point(321, 103);
             AddAccountant_Button.Margin = new Padding(4, 3, 4, 3);
             AddAccountant_Button.Name = "AddAccountant_Button";
-            AddAccountant_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            AddAccountant_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddAccountant_Button.Size = new Size(143, 36);
             AddAccountant_Button.TabIndex = 43;
             AddAccountant_Button.Tag = "";
@@ -151,7 +151,7 @@ namespace Sales_Tracker
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top;
-            Search_TextBox.CustomizableEdges = customizableEdges11;
+            Search_TextBox.CustomizableEdges = customizableEdges5;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -166,7 +166,7 @@ namespace Sales_Tracker
             Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for products";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(200, 36);
             Search_TextBox.TabIndex = 48;
@@ -183,6 +183,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Size = new Size(135, 20);
             ShowingResultsFor_Label.TabIndex = 49;
             ShowingResultsFor_Label.Text = "Showing results for";
+            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // Accountants_Form
             // 

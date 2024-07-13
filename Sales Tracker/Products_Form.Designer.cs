@@ -305,6 +305,7 @@ namespace Sales_Tracker
             WarningProductName_Label.TabIndex = 36;
             WarningProductName_Label.Text = "Product already exists";
             WarningProductName_Label.Visible = false;
+            WarningProductName_Label.Click += CloseAllPanels;
             // 
             // WarningCategory_PictureBox
             // 
@@ -369,6 +370,7 @@ namespace Sales_Tracker
             ProductID_Label.Size = new Size(79, 20);
             ProductID_Label.TabIndex = 0;
             ProductID_Label.Text = "Product ID";
+            ProductID_Label.Click += CloseAllPanels;
             // 
             // ShowingResultsFor_Label
             // 
@@ -392,6 +394,7 @@ namespace Sales_Tracker
             Company_Label.Size = new Size(133, 20);
             Company_Label.TabIndex = 44;
             Company_Label.Text = "Company of origin";
+            Company_Label.Click += CloseAllPanels;
             // 
             // CompanyOfOrigin_TextBox
             // 

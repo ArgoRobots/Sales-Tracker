@@ -181,6 +181,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Size = new Size(135, 20);
             ShowingResultsFor_Label.TabIndex = 55;
             ShowingResultsFor_Label.Text = "Showing results for";
+            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // Companies_Form
             // 

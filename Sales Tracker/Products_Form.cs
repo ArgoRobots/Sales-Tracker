@@ -146,6 +146,7 @@ namespace Sales_Tracker
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Controls.Add(Purchases_DataGridView);
             Controls.Remove(Sales_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
@@ -156,6 +157,7 @@ namespace Sales_Tracker
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Controls.Add(Sales_DataGridView);
             Controls.Remove(Purchases_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
@@ -214,7 +216,7 @@ namespace Sales_Tracker
             { Columns.CountryOfOrigin, "Country of origin" },
             { Columns.CompanyOfOrigin, "Company of origin" },
         };
-        private Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
+        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         private const byte topForDataGridView = 255;
         private void ConstructDataGridViews()
         {
