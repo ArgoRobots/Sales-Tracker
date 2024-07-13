@@ -61,7 +61,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void ConfigureProject_form_Click(object sender, EventArgs e)
         {
-            label1.Focus();  // This deselects any TextBox
+            ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
         }
 
 

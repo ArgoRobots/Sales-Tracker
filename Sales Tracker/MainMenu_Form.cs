@@ -1176,14 +1176,25 @@ namespace Sales_Tracker
             if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
             {
                 DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
+
+                // If a row was not clicked
+                if (info.Type != DataGridViewHitTestType.Cell)
+                {
+                    return;
+                }
+
                 Control controlSender = (Control)sender;
                 controlRightClickPanelWasAddedTo = controlSender.Parent;
+                Form parentForm = grid.FindForm();
+                int formHeight = parentForm.ClientSize.Height;
+                int formWidth = parentForm.ClientSize.Width;
+                byte padding = 5;
 
                 // Calculate the horizontal position
                 bool tooFarRight = false;
-                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X + 17 > controlRightClickPanelWasAddedTo.Width)
+                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X + padding > formWidth)
                 {
-                    rightClickDataGridView_Panel.Left = controlRightClickPanelWasAddedTo.Width - rightClickDataGridView_Panel.Width - 17;
+                    rightClickDataGridView_Panel.Left = formWidth - rightClickDataGridView_Panel.Width - padding;
                     tooFarRight = true;
                 }
                 else
@@ -1195,9 +1206,9 @@ namespace Sales_Tracker
                 int verticalOffset = grid.FirstDisplayedScrollingRowIndex * grid.Rows[0].Height;
                 int rowTop = (info.RowIndex + 1) * grid.Rows[0].Height - verticalOffset + selectedDataGridView.Top + columnHeaderHeight;
 
-                if (rowTop + rightClickDataGridView_Panel.Height > controlRightClickPanelWasAddedTo.Height - 17)
+                if (rowTop + rightClickDataGridView_Panel.Height > formHeight + padding)
                 {
-                    rightClickDataGridView_Panel.Top = controlRightClickPanelWasAddedTo.Height - rightClickDataGridView_Panel.Height - 41;
+                    rightClickDataGridView_Panel.Top = formHeight - rightClickDataGridView_Panel.Height - padding;
                     if (!tooFarRight)
                     {
                         rightClickDataGridView_Panel.Left += 30;

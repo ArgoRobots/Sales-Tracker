@@ -56,7 +56,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.accountantList.Add(name);
             Accountants_DataGridView.Rows.Add(name);
 
-            thingsThatHaveChangedInFile.Add(name);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added accountant '{name}'");
 
             Accountant_TextBox.Text = "";

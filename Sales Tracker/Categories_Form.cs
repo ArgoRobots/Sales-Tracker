@@ -84,7 +84,7 @@ namespace Sales_Tracker
                 Sales_DataGridView.Rows.Add(name);
             }
 
-            thingsThatHaveChangedInFile.Add(name);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added category '{name}'");
 
             Sale_RadioButton.AutoCheck = false;

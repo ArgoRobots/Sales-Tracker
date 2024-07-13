@@ -56,7 +56,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.companyList.Add(name);
             Company_DataGridView.Rows.Add(name);
 
-            thingsThatHaveChangedInFile.Add(name);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added company '{name}'");
 
             Company_TextBox.Text = "";

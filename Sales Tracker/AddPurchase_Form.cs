@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using System.Xml.Linq;
 
 namespace Sales_Tracker
 {
@@ -138,7 +139,7 @@ namespace Sales_Tracker
             }
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, chargedDifference, totalPrice);
-            thingsThatHaveChangedInFile.Add(itemName);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
         }
         private void AddSinglePurchase()

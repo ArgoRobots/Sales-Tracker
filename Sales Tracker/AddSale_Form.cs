@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using System.Xml.Linq;
 
 namespace Sales_Tracker
 {
@@ -133,7 +134,7 @@ namespace Sales_Tracker
             totalPrice = Math.Round(totalPrice, 2);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(SaleID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, totalPrice);
-            thingsThatHaveChangedInFile.Add(itemName);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added Sale '{itemName}'");
         }
         private void AddSingleSale()

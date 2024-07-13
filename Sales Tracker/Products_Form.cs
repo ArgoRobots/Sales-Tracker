@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using System.Data;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace Sales_Tracker
 {
@@ -134,7 +135,7 @@ namespace Sales_Tracker
                 Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
             }
 
-            thingsThatHaveChangedInFile.Add(name);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added product '{name}'");
 
             Sale_RadioButton.AutoCheck = false;

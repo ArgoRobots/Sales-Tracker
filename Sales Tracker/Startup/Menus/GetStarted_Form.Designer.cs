@@ -29,26 +29,26 @@ namespace Sales_Tracker.Startup
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            label1 = new Label();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            ArgoSalesTracker_Label = new Label();
             OpenRecent_FlowLayoutPanel = new FlowLayoutPanel();
             CreateCompany_Button = new Guna.UI2.WinForms.Guna2Button();
-            LblOpenRecent = new Label();
+            OpenRecent_Label = new Label();
             OpenCompany_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
-            // label1
+            // ArgoSalesTracker_Label
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
-            label1.Location = new Point(22, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(268, 41);
-            label1.TabIndex = 0;
-            label1.Text = "Argo Sales Tracker";
+            ArgoSalesTracker_Label.AutoSize = true;
+            ArgoSalesTracker_Label.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
+            ArgoSalesTracker_Label.Location = new Point(22, 9);
+            ArgoSalesTracker_Label.Name = "ArgoSalesTracker_Label";
+            ArgoSalesTracker_Label.Size = new Size(268, 41);
+            ArgoSalesTracker_Label.TabIndex = 0;
+            ArgoSalesTracker_Label.Text = "Argo Sales Tracker";
             // 
             // OpenRecent_FlowLayoutPanel
             // 
@@ -63,7 +63,7 @@ namespace Sales_Tracker.Startup
             // CreateCompany_Button
             // 
             CreateCompany_Button.BorderThickness = 1;
-            CreateCompany_Button.CustomizableEdges = customizableEdges1;
+            CreateCompany_Button.CustomizableEdges = customizableEdges5;
             CreateCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
             CreateCompany_Button.Font = new Font("Segoe UI", 12F);
             CreateCompany_Button.ForeColor = Color.Black;
@@ -74,7 +74,7 @@ namespace Sales_Tracker.Startup
             CreateCompany_Button.Location = new Point(305, 101);
             CreateCompany_Button.Margin = new Padding(10);
             CreateCompany_Button.Name = "CreateCompany_Button";
-            CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             CreateCompany_Button.Size = new Size(279, 69);
             CreateCompany_Button.TabIndex = 2;
             CreateCompany_Button.Text = "Create a new company";
@@ -82,20 +82,20 @@ namespace Sales_Tracker.Startup
             CreateCompany_Button.TextOffset = new Point(10, 0);
             CreateCompany_Button.Click += CreateNewCompany_Click;
             // 
-            // LblOpenRecent
+            // OpenRecent_Label
             // 
-            LblOpenRecent.AutoSize = true;
-            LblOpenRecent.Font = new Font("Segoe UI", 12F);
-            LblOpenRecent.Location = new Point(25, 73);
-            LblOpenRecent.Name = "LblOpenRecent";
-            LblOpenRecent.Size = new Size(95, 21);
-            LblOpenRecent.TabIndex = 0;
-            LblOpenRecent.Text = "Open recent";
+            OpenRecent_Label.AutoSize = true;
+            OpenRecent_Label.Font = new Font("Segoe UI", 12F);
+            OpenRecent_Label.Location = new Point(25, 73);
+            OpenRecent_Label.Name = "OpenRecent_Label";
+            OpenRecent_Label.Size = new Size(95, 21);
+            OpenRecent_Label.TabIndex = 0;
+            OpenRecent_Label.Text = "Open recent";
             // 
             // OpenCompany_Button
             // 
             OpenCompany_Button.BorderThickness = 1;
-            OpenCompany_Button.CustomizableEdges = customizableEdges3;
+            OpenCompany_Button.CustomizableEdges = customizableEdges7;
             OpenCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
             OpenCompany_Button.Font = new Font("Segoe UI", 12F);
             OpenCompany_Button.ForeColor = Color.Black;
@@ -106,7 +106,7 @@ namespace Sales_Tracker.Startup
             OpenCompany_Button.Location = new Point(305, 185);
             OpenCompany_Button.Margin = new Padding(10);
             OpenCompany_Button.Name = "OpenCompany_Button";
-            OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             OpenCompany_Button.Size = new Size(279, 69);
             OpenCompany_Button.TabIndex = 3;
             OpenCompany_Button.Text = "Open a company";
@@ -122,9 +122,9 @@ namespace Sales_Tracker.Startup
             ClientSize = new Size(880, 550);
             Controls.Add(OpenCompany_Button);
             Controls.Add(CreateCompany_Button);
-            Controls.Add(label1);
+            Controls.Add(ArgoSalesTracker_Label);
             Controls.Add(OpenRecent_FlowLayoutPanel);
-            Controls.Add(LblOpenRecent);
+            Controls.Add(OpenRecent_Label);
             FormBorderStyle = FormBorderStyle.None;
             Name = "GetStarted_Form";
             Shown += GetStarted_Form_Shown;
@@ -134,9 +134,9 @@ namespace Sales_Tracker.Startup
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label ArgoSalesTracker_Label;
         private System.Windows.Forms.FlowLayoutPanel OpenRecent_FlowLayoutPanel;
-        private System.Windows.Forms.Label LblOpenRecent;
+        private System.Windows.Forms.Label OpenRecent_Label;
         private Guna.UI2.WinForms.Guna2Button CreateCompany_Button;
         private Guna.UI2.WinForms.Guna2Button OpenCompany_Button;
     }
