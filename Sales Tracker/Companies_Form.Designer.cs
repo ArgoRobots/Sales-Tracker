@@ -34,19 +34,24 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             WarningCompanyName_PictureBox = new PictureBox();
             WarningCompanyName_Label = new Label();
             CompanyName_Label = new Label();
             Company_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddCompany_Button = new Guna.UI2.WinForms.Guna2Button();
             AddCompany_Label = new Label();
+            Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            ShowingResultsFor_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningCompanyName_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // WarningCompanyName_PictureBox
             // 
+            WarningCompanyName_PictureBox.Anchor = AnchorStyles.Top;
             WarningCompanyName_PictureBox.Image = Properties.Resources.Warning;
-            WarningCompanyName_PictureBox.Location = new Point(217, 145);
+            WarningCompanyName_PictureBox.Location = new Point(114, 145);
             WarningCompanyName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningCompanyName_PictureBox.Name = "WarningCompanyName_PictureBox";
             WarningCompanyName_PictureBox.Size = new Size(19, 19);
@@ -58,9 +63,10 @@ namespace Sales_Tracker
             // 
             // WarningCompanyName_Label
             // 
+            WarningCompanyName_Label.Anchor = AnchorStyles.Top;
             WarningCompanyName_Label.AutoSize = true;
             WarningCompanyName_Label.Font = new Font("Segoe UI", 10F);
-            WarningCompanyName_Label.Location = new Point(244, 145);
+            WarningCompanyName_Label.Location = new Point(141, 145);
             WarningCompanyName_Label.Margin = new Padding(4, 0, 4, 0);
             WarningCompanyName_Label.Name = "WarningCompanyName_Label";
             WarningCompanyName_Label.Size = new Size(153, 19);
@@ -74,7 +80,7 @@ namespace Sales_Tracker
             CompanyName_Label.Anchor = AnchorStyles.Top;
             CompanyName_Label.AutoSize = true;
             CompanyName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CompanyName_Label.Location = new Point(217, 80);
+            CompanyName_Label.Location = new Point(114, 80);
             CompanyName_Label.Name = "CompanyName_Label";
             CompanyName_Label.Size = new Size(113, 20);
             CompanyName_Label.TabIndex = 48;
@@ -93,7 +99,7 @@ namespace Sales_Tracker
             Company_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Company_TextBox.Font = new Font("Segoe UI", 9F);
             Company_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Company_TextBox.Location = new Point(217, 103);
+            Company_TextBox.Location = new Point(114, 103);
             Company_TextBox.MaxLength = 32;
             Company_TextBox.Name = "Company_TextBox";
             Company_TextBox.PasswordChar = '\0';
@@ -106,8 +112,6 @@ namespace Sales_Tracker
             Company_TextBox.Tag = "1";
             Company_TextBox.TextChanged += Company_TextBox_TextChanged;
             Company_TextBox.KeyDown += Company_TextBox_KeyDown;
-            Company_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Company_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddCompany_Button
             // 
@@ -121,7 +125,7 @@ namespace Sales_Tracker
             AddCompany_Button.FillColor = Color.White;
             AddCompany_Button.Font = new Font("Segoe UI", 9.5F);
             AddCompany_Button.ForeColor = Color.Black;
-            AddCompany_Button.Location = new Point(424, 103);
+            AddCompany_Button.Location = new Point(321, 103);
             AddCompany_Button.Margin = new Padding(4, 3, 4, 3);
             AddCompany_Button.Name = "AddCompany_Button";
             AddCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -143,11 +147,48 @@ namespace Sales_Tracker
             AddCompany_Label.Text = "Add companies";
             AddCompany_Label.Click += CloseAllPanels;
             // 
+            // Search_TextBox
+            // 
+            Search_TextBox.Anchor = AnchorStyles.Top;
+            Search_TextBox.CustomizableEdges = customizableEdges5;
+            Search_TextBox.DefaultText = "";
+            Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Search_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Search_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Search_TextBox.Font = new Font("Segoe UI", 9F);
+            Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Search_TextBox.Location = new Point(471, 103);
+            Search_TextBox.MaxLength = 32;
+            Search_TextBox.Name = "Search_TextBox";
+            Search_TextBox.PasswordChar = '\0';
+            Search_TextBox.PlaceholderText = "Search for products";
+            Search_TextBox.SelectedText = "";
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Search_TextBox.ShortcutsEnabled = false;
+            Search_TextBox.Size = new Size(200, 36);
+            Search_TextBox.TabIndex = 54;
+            Search_TextBox.TextChanged += Search_TextBox_TextChanged;
+            // 
+            // ShowingResultsFor_Label
+            // 
+            ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
+            ShowingResultsFor_Label.AutoSize = true;
+            ShowingResultsFor_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ShowingResultsFor_Label.Location = new Point(325, 142);
+            ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
+            ShowingResultsFor_Label.Size = new Size(135, 20);
+            ShowingResultsFor_Label.TabIndex = 55;
+            ShowingResultsFor_Label.Text = "Showing results for";
+            // 
             // Companies_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 471);
+            Controls.Add(ShowingResultsFor_Label);
+            Controls.Add(Search_TextBox);
             Controls.Add(WarningCompanyName_PictureBox);
             Controls.Add(WarningCompanyName_Label);
             Controls.Add(CompanyName_Label);
@@ -174,5 +215,7 @@ namespace Sales_Tracker
         private Guna.UI2.WinForms.Guna2TextBox Company_TextBox;
         private Guna.UI2.WinForms.Guna2Button AddCompany_Button;
         private Label AddCompany_Label;
+        private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
+        private Label ShowingResultsFor_Label;
     }
 }

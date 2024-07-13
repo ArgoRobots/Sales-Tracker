@@ -1103,8 +1103,8 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Sales || Selected == SelectedOption.Purchases)
             {
-                //UpdateTotals();
-                //LoadGraphs();
+                UpdateTotals();
+                LoadGraphs();
                 SaveDataGridViewToFile();
             }
             else if (Selected == SelectedOption.Companies)

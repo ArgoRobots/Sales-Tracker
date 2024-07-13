@@ -22,6 +22,7 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             LoadCompanies();
             Theme.SetThemeForForm(this);
+            HideShowingResultsForLabel();
         }
         private void LoadCompanies()
         {
@@ -79,6 +80,24 @@ namespace Sales_Tracker
             VaidateCompanyTextBox();
             ValidateInputs();
         }
+        private void Search_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
+            {
+                bool isVisible = row.Cells.Cast<DataGridViewCell>()
+                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+                row.Visible = isVisible;
+            }
+            if (Search_TextBox.Text != "")
+            {
+                ShowShowingResultsForLabel(Search_TextBox.Text);
+            }
+            else
+            {
+                HideShowingResultsForLabel();
+            }
+        }
+
 
         // DataGridView
         public enum Columns
@@ -144,6 +163,20 @@ namespace Sales_Tracker
             AddCompany_Button.Enabled = true;
             AddCompany_Button.Tag = true;
         }
+
+
+        // SearchingFor_Label
+        private void ShowShowingResultsForLabel(string text)
+        {
+            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
+            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            Controls.Add(ShowingResultsFor_Label);
+        }
+        private void HideShowingResultsForLabel()
+        {
+            Controls.Remove(ShowingResultsFor_Label);
+        }
+
 
         // Methods
         private void ValidateInputs()

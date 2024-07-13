@@ -479,10 +479,10 @@ namespace Sales_Tracker.Classes
         }
 
 
-        // Allow Ctrl+C, Ctrl+V, Ctrl+X in Guna2TextBox
+        // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X in Guna2TextBox
         public static void TextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.Control && (e.KeyCode == Keys.C || e.KeyCode == Keys.X || e.KeyCode == Keys.V))
+            if (e.Control && (e.KeyCode == Keys.A || e.KeyCode == Keys.C || e.KeyCode == Keys.X || e.KeyCode == Keys.V))
             {
                 e.IsInputKey = true;
             }
@@ -491,7 +491,14 @@ namespace Sales_Tracker.Classes
         {
             Guna2TextBox textBox = (Guna2TextBox)sender;
 
-            if (e.Control && e.KeyCode == Keys.C)
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                // Select all
+                textBox.SelectionStart = 0;
+                textBox.SelectionLength = textBox.Text.Length;
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.C)
             {
                 // Copy
                 if (!string.IsNullOrEmpty(textBox.SelectedText))
@@ -506,7 +513,7 @@ namespace Sales_Tracker.Classes
                 if (!string.IsNullOrEmpty(textBox.SelectedText))
                 {
                     Clipboard.SetText(textBox.SelectedText);
-                    textBox.SelectedText = string.Empty;
+                    textBox.SelectedText = "";
                 }
                 e.SuppressKeyPress = true;
             }

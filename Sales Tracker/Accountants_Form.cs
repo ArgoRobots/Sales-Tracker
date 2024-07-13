@@ -22,6 +22,7 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             LoadAccountants();
             Theme.SetThemeForForm(this);
+            HideShowingResultsForLabel();
         }
         private void LoadAccountants()
         {
@@ -45,6 +46,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
+
 
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)
@@ -78,6 +80,24 @@ namespace Sales_Tracker
             VaidateAccountantTextBox();
             ValidateInputs();
         }
+        private void Search_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
+            {
+                bool isVisible = row.Cells.Cast<DataGridViewCell>()
+                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+                row.Visible = isVisible;
+            }
+            if (Search_TextBox.Text != "")
+            {
+                ShowShowingResultsForLabel(Search_TextBox.Text);
+            }
+            else
+            {
+                HideShowingResultsForLabel();
+            }
+        }
+
 
         // DataGridView
         public enum Columns
@@ -142,6 +162,20 @@ namespace Sales_Tracker
             AddAccountant_Button.Enabled = true;
             AddAccountant_Button.Tag = true;
         }
+
+
+        // SearchingFor_Label
+        private void ShowShowingResultsForLabel(string text)
+        {
+            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
+            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            Controls.Add(ShowingResultsFor_Label);
+        }
+        private void HideShowingResultsForLabel()
+        {
+            Controls.Remove(ShowingResultsFor_Label);
+        }
+
 
         // Methods
         private void ValidateInputs()
