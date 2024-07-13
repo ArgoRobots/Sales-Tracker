@@ -22,11 +22,6 @@ namespace Sales_Tracker
             SetMessageBox(title, message, icon, buttons);
         }
 
-        // Form evwnt handlers
-        private void CustomMessageForm_SizeChanged(object sender, EventArgs e)
-        {
-
-        }
 
         // Methods
         private void SetMessageBox(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)

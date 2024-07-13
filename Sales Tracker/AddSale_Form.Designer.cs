@@ -610,6 +610,7 @@
             CountryOfDestinaion_TextBox.PlaceholderText = "";
             CountryOfDestinaion_TextBox.SelectedText = "";
             CountryOfDestinaion_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            CountryOfDestinaion_TextBox.ShortcutsEnabled = false;
             CountryOfDestinaion_TextBox.Size = new Size(200, 36);
             CountryOfDestinaion_TextBox.TabIndex = 61;
             CountryOfDestinaion_TextBox.Tag = "1";
@@ -650,6 +651,7 @@
             Controls.Add(SaleID_Label);
             Controls.Add(SaleID_TextBox);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            KeyPreview = true;
             MinimumSize = new Size(900, 415);
             Name = "AddSale_Form";
             ShowInTaskbar = false;

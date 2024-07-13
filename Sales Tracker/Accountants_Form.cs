@@ -27,6 +27,8 @@ namespace Sales_Tracker
         private void AddEventHandlersToTextBoxes()
         {
             Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            Accountant_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Accountant_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private void LoadAccountants()
         {

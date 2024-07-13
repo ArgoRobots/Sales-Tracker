@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using System.Data;
-using static Sales_Tracker.MainMenu_Form;
 
 namespace Sales_Tracker
 {
@@ -32,12 +31,26 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
+            ProductID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductID_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductID_TextBox.KeyDown += UI.TextBox_KeyDown;
+
             ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
 
             ProductCategory_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductCategory_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductCategory_TextBox.KeyDown += UI.TextBox_KeyDown;
 
             CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             CountryOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            CountryOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            CountryOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            CompanyOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            CompanyOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            CompanyOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private void AddSearchBoxEvents()
         {
@@ -235,14 +248,14 @@ namespace Sales_Tracker
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Purchases_DataGridView, ColumnHeaders);
             Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
-            Purchases_DataGridView.Tag = DataGridViewTag.Product;
+            Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Sales_DataGridView, ColumnHeaders);
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
-            Sales_DataGridView.Tag = DataGridViewTag.Product;
+            Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
         }
 
 

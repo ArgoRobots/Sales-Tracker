@@ -26,7 +26,8 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
-            Company_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            Company_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Company_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private void LoadCompanies()
         {

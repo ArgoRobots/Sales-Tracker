@@ -100,6 +100,7 @@
             CountryOfOrigin_TextBox.PlaceholderText = "";
             CountryOfOrigin_TextBox.SelectedText = "";
             CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            CountryOfOrigin_TextBox.ShortcutsEnabled = false;
             CountryOfOrigin_TextBox.Size = new Size(200, 36);
             CountryOfOrigin_TextBox.TabIndex = 4;
             CountryOfOrigin_TextBox.Tag = "1";
@@ -141,12 +142,13 @@
             ProductName_TextBox.Font = new Font("Segoe UI", 9F);
             ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductName_TextBox.Location = new Point(236, 103);
-            ProductName_TextBox.MaxLength = 32;
+            ProductName_TextBox.MaxLength = 50;
             ProductName_TextBox.Name = "ProductName_TextBox";
             ProductName_TextBox.PasswordChar = '\0';
             ProductName_TextBox.PlaceholderText = "";
             ProductName_TextBox.SelectedText = "";
             ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            ProductName_TextBox.ShortcutsEnabled = false;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 2;
             ProductName_TextBox.TextChanged += ValidateInputs;
@@ -205,6 +207,7 @@
             ProductCategory_TextBox.PlaceholderText = "";
             ProductCategory_TextBox.SelectedText = "";
             ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            ProductCategory_TextBox.ShortcutsEnabled = false;
             ProductCategory_TextBox.Size = new Size(200, 36);
             ProductCategory_TextBox.TabIndex = 3;
             ProductCategory_TextBox.Tag = "1";
@@ -264,12 +267,13 @@
             ProductID_TextBox.Font = new Font("Segoe UI", 9F);
             ProductID_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductID_TextBox.Location = new Point(30, 103);
-            ProductID_TextBox.MaxLength = 32;
+            ProductID_TextBox.MaxLength = 50;
             ProductID_TextBox.Name = "ProductID_TextBox";
             ProductID_TextBox.PasswordChar = '\0';
             ProductID_TextBox.PlaceholderText = "";
             ProductID_TextBox.SelectedText = "";
             ProductID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            ProductID_TextBox.ShortcutsEnabled = false;
             ProductID_TextBox.Size = new Size(200, 36);
             ProductID_TextBox.TabIndex = 1;
             ProductID_TextBox.TextChanged += ValidateInputs;
@@ -347,6 +351,7 @@
             Search_TextBox.PlaceholderText = "Search for products";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(200, 36);
             Search_TextBox.TabIndex = 42;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
@@ -405,6 +410,7 @@
             CompanyOfOrigin_TextBox.PlaceholderText = "";
             CompanyOfOrigin_TextBox.SelectedText = "";
             CompanyOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            CompanyOfOrigin_TextBox.ShortcutsEnabled = false;
             CompanyOfOrigin_TextBox.Size = new Size(200, 36);
             CompanyOfOrigin_TextBox.TabIndex = 45;
             CompanyOfOrigin_TextBox.Tag = "1";
@@ -465,6 +471,7 @@
             Controls.Add(ProductName_Label);
             Controls.Add(ProductName_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            KeyPreview = true;
             MinimumSize = new Size(900, 560);
             Name = "Products_Form";
             ShowInTaskbar = false;

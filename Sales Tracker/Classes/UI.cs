@@ -461,6 +461,8 @@ namespace Sales_Tracker.Classes
                     MainMenu_Form.Instance.RenameCompany();
                 }
             };
+            rename_textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
+            rename_textBox.KeyDown += TextBox_KeyDown;
         }
 
 
@@ -474,6 +476,52 @@ namespace Sales_Tracker.Classes
         {
             textBox.BorderColor = Color.Red;
             textBox.FocusedState.BorderColor = Color.Red;
+        }
+
+
+        // Allow Ctrl+C, Ctrl+V, Ctrl+X in Guna2TextBox
+        public static void TextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.Control && (e.KeyCode == Keys.C || e.KeyCode == Keys.X || e.KeyCode == Keys.V))
+            {
+                e.IsInputKey = true;
+            }
+        }
+        public static void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                // Copy
+                if (!string.IsNullOrEmpty(textBox.SelectedText))
+                {
+                    Clipboard.SetText(textBox.SelectedText);
+                }
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.X)
+            {
+                // Cut
+                if (!string.IsNullOrEmpty(textBox.SelectedText))
+                {
+                    Clipboard.SetText(textBox.SelectedText);
+                    textBox.SelectedText = string.Empty;
+                }
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.V)
+            {
+                // Paste
+                if (Clipboard.ContainsText())
+                {
+                    int selectionStart = textBox.SelectionStart;
+                    textBox.Text = textBox.Text.Remove(selectionStart, textBox.SelectionLength)
+                                    .Insert(selectionStart, Clipboard.GetText());
+                    textBox.SelectionStart = selectionStart + Clipboard.GetText().Length;
+                }
+                e.SuppressKeyPress = true;
+            }
         }
 
 

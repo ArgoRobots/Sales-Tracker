@@ -254,7 +254,6 @@
             ShowInTaskbar = false;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             TopMost = true;
-            SizeChanged += CustomMessageForm_SizeChanged;
             ((System.ComponentModel.ISupportInitialize)Icon_pictureBox).EndInit();
             Back_Panel.ResumeLayout(false);
             Back_Panel.PerformLayout();
