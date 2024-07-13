@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker
+﻿using Sales_Tracker.Classes;
+
+namespace Sales_Tracker
 {
     partial class Companies_Form
     {
@@ -104,6 +106,8 @@
             Company_TextBox.Tag = "1";
             Company_TextBox.TextChanged += Company_TextBox_TextChanged;
             Company_TextBox.KeyDown += Company_TextBox_KeyDown;
+            Company_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Company_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddCompany_Button
             // 
@@ -151,6 +155,7 @@
             Controls.Add(AddCompany_Button);
             Controls.Add(AddCompany_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            KeyPreview = true;
             Name = "Companies_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

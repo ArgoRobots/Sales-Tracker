@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker
+﻿using Sales_Tracker.Classes;
+
+namespace Sales_Tracker
 {
     partial class AddSale_Form
     {
@@ -178,6 +180,10 @@
             Tax_TextBox.TabIndex = 36;
             Tax_TextBox.TextChanged += ValidateInputs;
             Tax_TextBox.Click += CloseAllPanels;
+            Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Tax_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Tax_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // Shipping_Label
             // 
@@ -215,6 +221,10 @@
             Shipping_TextBox.TabIndex = 34;
             Shipping_TextBox.TextChanged += ValidateInputs;
             Shipping_TextBox.Click += CloseAllPanels;
+            Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Shipping_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Shipping_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Shipping_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // PricePerUnit_Label
             // 
@@ -252,6 +262,10 @@
             PricePerUnit_TextBox.TabIndex = 32;
             PricePerUnit_TextBox.TextChanged += ValidateInputs;
             PricePerUnit_TextBox.Click += CloseAllPanels;
+            PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            PricePerUnit_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            PricePerUnit_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            PricePerUnit_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // Quantity_Label
             // 
@@ -289,6 +303,10 @@
             Quantity_TextBox.TabIndex = 30;
             Quantity_TextBox.TextChanged += ValidateInputs;
             Quantity_TextBox.Click += CloseAllPanels;
+            Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+            Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Quantity_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Quantity_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // ProductName_Label
             // 
@@ -325,6 +343,9 @@
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 28;
             ProductName_TextBox.Tag = "1";
+            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // BuyerName_Label
             // 
@@ -361,6 +382,10 @@
             BuyerName_TextBox.Size = new Size(200, 36);
             BuyerName_TextBox.TabIndex = 26;
             BuyerName_TextBox.Tag = "1";
+            BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            BuyerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            BuyerName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            BuyerName_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddSale_Label
             // 
@@ -410,6 +435,9 @@
             SaleID_TextBox.TabIndex = 23;
             SaleID_TextBox.TextChanged += ValidateInputs;
             SaleID_TextBox.Click += CloseAllPanels;
+            SaleID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            SaleID_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            SaleID_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // ImportExcel_Button
             // 
@@ -534,6 +562,10 @@
             PaymentFee_TextBox.TabIndex = 49;
             PaymentFee_TextBox.TextChanged += ValidateInputs;
             PaymentFee_TextBox.Click += CloseAllPanels;
+            PaymentFee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // MultipleItems_CheckBox
             // 
@@ -614,6 +646,9 @@
             CountryOfDestinaion_TextBox.Size = new Size(200, 36);
             CountryOfDestinaion_TextBox.TabIndex = 61;
             CountryOfDestinaion_TextBox.Tag = "1";
+            CountryOfDestinaion_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            CountryOfDestinaion_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            CountryOfDestinaion_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddSale_Form
             // 

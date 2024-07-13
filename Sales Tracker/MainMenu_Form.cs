@@ -586,8 +586,8 @@ namespace Sales_Tracker
             Controls.Add(Sales_DataGridView);
             ResizeControls();
             Controls.Remove(Purchases_DataGridView);
-            LoadGraphs();
-            UpdateTotals();
+            //LoadGraphs();
+            //UpdateTotals();
             Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
         }
         private void Statistics_Button_Click(object sender, EventArgs e)
@@ -1103,8 +1103,8 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Sales || Selected == SelectedOption.Purchases)
             {
-                UpdateTotals();
-                LoadGraphs();
+                //UpdateTotals();
+                //LoadGraphs();
                 SaveDataGridViewToFile();
             }
             else if (Selected == SelectedOption.Companies)

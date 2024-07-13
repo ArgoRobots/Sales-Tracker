@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker
+﻿using Sales_Tracker.Classes;
+
+namespace Sales_Tracker
 {
     partial class Products_Form
     {
@@ -104,6 +106,10 @@
             CountryOfOrigin_TextBox.Size = new Size(200, 36);
             CountryOfOrigin_TextBox.TabIndex = 4;
             CountryOfOrigin_TextBox.Tag = "1";
+            CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            CountryOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            CountryOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            CountryOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddProduct_Label
             // 
@@ -153,6 +159,9 @@
             ProductName_TextBox.TabIndex = 2;
             ProductName_TextBox.TextChanged += ValidateInputs;
             ProductName_TextBox.Click += CloseAllPanels;
+            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddProduct_Button
             // 
@@ -211,6 +220,9 @@
             ProductCategory_TextBox.Size = new Size(200, 36);
             ProductCategory_TextBox.TabIndex = 3;
             ProductCategory_TextBox.Tag = "1";
+            ProductCategory_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductCategory_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductCategory_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // Sale_RadioButton
             // 
@@ -278,6 +290,9 @@
             ProductID_TextBox.TabIndex = 1;
             ProductID_TextBox.TextChanged += ValidateInputs;
             ProductID_TextBox.Click += CloseAllPanels;
+            ProductID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductID_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductID_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // WarningProductName_PictureBox
             // 
@@ -356,6 +371,9 @@
             Search_TextBox.TabIndex = 42;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
+            Search_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Search_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Search_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // ProductID_Label
             // 
@@ -414,6 +432,9 @@
             CompanyOfOrigin_TextBox.Size = new Size(200, 36);
             CompanyOfOrigin_TextBox.TabIndex = 45;
             CompanyOfOrigin_TextBox.Tag = "1";
+            CompanyOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            CompanyOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            CompanyOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // WarningCompany_PictureBox
             // 

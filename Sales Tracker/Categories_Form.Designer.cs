@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker
+﻿using Sales_Tracker.Classes;
+
+namespace Sales_Tracker
 {
     partial class Categories_Form
     {
@@ -68,6 +70,8 @@
             Category_TextBox.TextChanged += Category_TextBox_TextChanged;
             Category_TextBox.Click += CloseAllPanels;
             Category_TextBox.KeyDown += Category_TextBox_KeyDown;
+            Category_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Category_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddCategory_Button
             // 
@@ -195,6 +199,7 @@
             Controls.Add(AddCategory_Button);
             Controls.Add(AddCategory_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            KeyPreview = true;
             MinimumSize = new Size(800, 510);
             Name = "Categories_Form";
             ShowInTaskbar = false;

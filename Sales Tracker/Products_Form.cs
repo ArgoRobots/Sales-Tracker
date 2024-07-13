@@ -20,7 +20,6 @@ namespace Sales_Tracker
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
-            AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             ConstructDataGridViews();
             LoadProducts();
@@ -28,29 +27,6 @@ namespace Sales_Tracker
             VaidateCompanyTextBox();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
-        }
-        private void AddEventHandlersToTextBoxes()
-        {
-            ProductID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductID_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductID_TextBox.KeyDown += UI.TextBox_KeyDown;
-
-            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
-
-            ProductCategory_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductCategory_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductCategory_TextBox.KeyDown += UI.TextBox_KeyDown;
-
-            CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
-            CountryOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            CountryOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            CountryOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
-
-            CompanyOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            CompanyOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            CompanyOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private void AddSearchBoxEvents()
         {

@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker
+﻿using Sales_Tracker.Classes;
+
+namespace Sales_Tracker
 {
     partial class Accountants_Form
     {
@@ -105,6 +107,9 @@
             Accountant_TextBox.TextChanged += Accountant_TextBox_TextChanged;
             Accountant_TextBox.Click += CloseAllPanels;
             Accountant_TextBox.KeyDown += Accountant_TextBox_KeyDown;
+            Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            Accountant_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Accountant_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddAccountant_Button
             // 
@@ -152,6 +157,7 @@
             Controls.Add(AddAccountant_Button);
             Controls.Add(AddCategory_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            KeyPreview = true;
             MinimumSize = new Size(800, 510);
             Name = "Accountants_Form";
             ShowInTaskbar = false;
