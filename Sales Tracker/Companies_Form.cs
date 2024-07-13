@@ -17,12 +17,18 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
+            AddEventHandlersToTextBoxes();
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             ConstructDataGridViews();
             LoadCompanies();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            Company_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Company_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private void LoadCompanies()
         {

@@ -888,7 +888,7 @@ namespace Sales_Tracker
         }
         public enum Column
         {
-            ID,
+            OrderNumber,
             Name,
             Product,
             Category,
@@ -905,7 +905,7 @@ namespace Sales_Tracker
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
-            { Column.ID, "Purchase ID" },
+            { Column.OrderNumber, "Order #" },
             { Column.Name, "Buyer name" },
             { Column.Product, "Product name" },
             { Column.Category, "Category" },
@@ -922,7 +922,7 @@ namespace Sales_Tracker
         };
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
-            { Column.ID, "Sales ID" },
+            { Column.OrderNumber, "Sales ID" },
             { Column.Name, "Customer name" },
             { Column.Product, "Product name" },
             { Column.Category, "Category" },
@@ -1426,7 +1426,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            // Preserve the current scroll position
+            // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
             isFormLoading = true;
@@ -1464,7 +1464,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            // Preserve the current scroll position
+            // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
             isFormLoading = true;
@@ -1491,7 +1491,7 @@ namespace Sales_Tracker
             DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
             int selectedIndex = selectedRow.Index;
 
-            // Preserve the current scroll position
+            // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
             if (Selected == SelectedOption.CategoryPurchases)
@@ -1515,7 +1515,7 @@ namespace Sales_Tracker
                 Products_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
             }
 
-            // Select the row below the moved row in the original DataGridView if it exists
+            // Select a new row
             if (selectedIndex < selectedDataGridView.Rows.Count)
             {
                 selectedDataGridView.Rows[selectedIndex].Selected = true;

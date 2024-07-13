@@ -279,12 +279,12 @@ namespace Sales_Tracker
 
                 switch (columnName)
                 {
-                    case nameof(Column.ID):
+                    case nameof(Column.OrderNumber):
                         if (MainMenu_Form.Instance.Selected == SelectedOption.Sales)
                         {
-                            text = MainMenu_Form.Instance.SalesColumnHeaders[Column.ID];
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[Column.OrderNumber];
                         }
-                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Column.ID]; }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[Column.OrderNumber]; }
 
                         ConstructLabel(text, left, Panel);
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, false, Panel);
@@ -542,7 +542,7 @@ namespace Sales_Tracker
                         {
                             row.Cells[productColumn].Value = product.Name;
 
-                            string idColumn = Column.ID.ToString();
+                            string idColumn = Column.OrderNumber.ToString();
                             if (row.Cells[idColumn].Value.ToString() == oldID)
                             {
                                 row.Cells[idColumn].Value = product.ProductID;

@@ -17,12 +17,58 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
+            AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            OrderNumber_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            OrderNumber_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            OrderNumber_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            BuyerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            BuyerName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            BuyerName_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+            Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Quantity_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Quantity_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            PricePerUnit_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            PricePerUnit_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            PricePerUnit_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Shipping_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Shipping_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Shipping_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Tax_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Tax_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            PaymentFee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            AmountCharged_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            AmountCharged_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            AmountCharged_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            AmountCharged_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private void AddSearchBoxEvents()
         {
@@ -98,7 +144,7 @@ namespace Sales_Tracker
         // Methods to add purchases
         private void AddPurchase(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax)
         {
-            string purchaseID = PurchaseID_TextBox.Text;
+            string purchaseID = OrderNumber_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
@@ -124,8 +170,8 @@ namespace Sales_Tracker
             tax = Math.Round(tax, 2);
             fee = Math.Round(fee, 2);
             decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
+            totalPrice = Math.Round(totalPrice, 2);
             decimal chargedDifference = amountCharged - totalPrice;
-            totalPrice = Math.Round(totalPrice, 2) + chargedDifference;
 
             if (totalPrice != amountCharged)
             {
@@ -137,6 +183,7 @@ namespace Sales_Tracker
                     return;
                 }
             }
+            totalPrice += Math.Round(chargedDifference, 2);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, chargedDifference, totalPrice);
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
@@ -188,14 +235,14 @@ namespace Sales_Tracker
         {
             // Center controls
             Currency_ComboBox.Left = (Width - Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
-                PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally -
+                OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
                 ProductName_TextBox.Width) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
-            PurchaseID_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
-            PurchaseID_Label.Left = PurchaseID_TextBox.Left;
-            BuyerName_TextBox.Left = PurchaseID_TextBox.Right + spaceBetweenControlsHorizontally;
+            OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
+            OrderNumber_Label.Left = OrderNumber_TextBox.Left;
+            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
             ProductName_TextBox.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
             ProductName_Label.Left = ProductName_TextBox.Left;
@@ -245,13 +292,13 @@ namespace Sales_Tracker
             // Center controls
             Currency_ComboBox.Left = (Width -
                 Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
-                PurchaseID_TextBox.Width - spaceBetweenControlsHorizontally -
+                OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
-            PurchaseID_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
-            PurchaseID_Label.Left = PurchaseID_TextBox.Left;
-            BuyerName_TextBox.Left = PurchaseID_TextBox.Right + spaceBetweenControlsHorizontally;
+            OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
+            OrderNumber_Label.Left = OrderNumber_TextBox.Left;
+            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
 
             Date_DateTimePicker.Left = (Width -
@@ -524,7 +571,7 @@ namespace Sales_Tracker
         // Misc.
         private void ValidateInputs(object? sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(PurchaseID_TextBox.Text) &&
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(OrderNumber_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) && BuyerName_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&

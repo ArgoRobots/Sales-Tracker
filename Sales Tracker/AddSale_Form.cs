@@ -17,11 +17,56 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
+            AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            SaleID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            SaleID_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            SaleID_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            BuyerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            BuyerName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            BuyerName_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            CountryOfDestinaion_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            CountryOfDestinaion_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            CountryOfDestinaion_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+            Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Quantity_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Quantity_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            PricePerUnit_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            PricePerUnit_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            PricePerUnit_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Shipping_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Shipping_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Shipping_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Tax_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Tax_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            PaymentFee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private readonly byte searchBoxMaxHeight = 150;
         private void AddSearchBoxEvents()
