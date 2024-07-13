@@ -494,9 +494,9 @@
             Shipping_Label.Font = new Font("Segoe UI", 11.25F);
             Shipping_Label.Location = new Point(518, 15);
             Shipping_Label.Name = "Shipping_Label";
-            Shipping_Label.Size = new Size(64, 20);
+            Shipping_Label.Size = new Size(68, 20);
             Shipping_Label.TabIndex = 7;
-            Shipping_Label.Text = "Shpping";
+            Shipping_Label.Text = "Shipping";
             Shipping_Label.Click += CloseAllPanels;
             // 
             // Tax_Label

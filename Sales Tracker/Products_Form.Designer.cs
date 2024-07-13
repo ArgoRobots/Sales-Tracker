@@ -150,6 +150,7 @@
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 2;
             ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.Click += CloseAllPanels;
             // 
             // AddProduct_Button
             // 
@@ -272,6 +273,7 @@
             ProductID_TextBox.Size = new Size(200, 36);
             ProductID_TextBox.TabIndex = 1;
             ProductID_TextBox.TextChanged += ValidateInputs;
+            ProductID_TextBox.Click += CloseAllPanels;
             // 
             // WarningProductName_PictureBox
             // 
@@ -284,6 +286,7 @@
             WarningProductName_PictureBox.TabIndex = 37;
             WarningProductName_PictureBox.TabStop = false;
             WarningProductName_PictureBox.Visible = false;
+            WarningProductName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningProductName_Label
             // 
@@ -308,6 +311,7 @@
             WarningCategory_PictureBox.TabIndex = 39;
             WarningCategory_PictureBox.TabStop = false;
             WarningCategory_PictureBox.Visible = false;
+            WarningCategory_PictureBox.Click += CloseAllPanels;
             // 
             // WarningCategory_LinkLabel
             // 
@@ -346,6 +350,7 @@
             Search_TextBox.Size = new Size(200, 36);
             Search_TextBox.TabIndex = 42;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
+            Search_TextBox.Click += CloseAllPanels;
             // 
             // ProductID_Label
             // 
@@ -368,6 +373,7 @@
             ShowingResultsFor_Label.Size = new Size(135, 20);
             ShowingResultsFor_Label.TabIndex = 43;
             ShowingResultsFor_Label.Text = "Showing results for";
+            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // Company_Label
             // 
@@ -414,6 +420,7 @@
             WarningCompany_PictureBox.TabIndex = 47;
             WarningCompany_PictureBox.TabStop = false;
             WarningCompany_PictureBox.Visible = false;
+            WarningCompany_PictureBox.Click += CloseAllPanels;
             // 
             // WarningCompany_LinkLabel
             // 

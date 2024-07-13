@@ -157,6 +157,7 @@ namespace Sales_Tracker
             // Add list of things that has changed to panel
             int top = 5;
 
+            top = AddListForThingsChanged("General", MainMenu_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Accountants", Accountants_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Categories", Categories_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Companies", Companies_Form.thingsThatHaveChangedInFile, top);

@@ -6,7 +6,6 @@ using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using System.Collections;
 using System.Text.Json;
-using System.Windows.Forms;
 using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker
@@ -433,9 +432,6 @@ namespace Sales_Tracker
 
                 countriesOfDestination_Chart.Width = countriesOfOrigin_Chart.Width;
                 countriesOfDestination_Chart.Left = Width - Totals_Chart.Width - 35;
-
-                forcastedGrowth_Chart.Width = countriesOfDestination_Chart.Width;
-                forcastedGrowth_Chart.Left = 20;
             }
 
             if (Controls.Contains(messagePanel))
@@ -963,7 +959,7 @@ namespace Sales_Tracker
             InitializeDataGridView(Sales_DataGridView, size);
             Sales_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
         }
-        private readonly byte rowHeight = 25, columnHeaderHeight = 30;
+        private readonly byte rowHeight = 25, columnHeaderHeight = 45;
         public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
         {
             dataGridView.ReadOnly = true;
@@ -977,6 +973,7 @@ namespace Sales_Tracker
             dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
             dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = CustomColors.text;
             dataGridView.Theme = CustomColors.dataGridViewTheme;
             dataGridView.BackgroundColor = CustomColors.controlBack;
             dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;
@@ -1088,7 +1085,10 @@ namespace Sales_Tracker
         private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             DataGridViewRowChanged();
-            selectedDataGridView.FirstDisplayedScrollingRowIndex =e.RowIndex;
+            if (e.RowIndex >= 0 && e.RowIndex < selectedDataGridView?.Rows.Count)
+            {
+                selectedDataGridView.FirstDisplayedScrollingRowIndex = e.RowIndex;
+            }
         }
         private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
@@ -1487,7 +1487,7 @@ namespace Sales_Tracker
             ResizeControls();
         }
         private List<Control> statisticsControls;
-        private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart, forcastedGrowth_Chart;
+        private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart;
         private void ConstructControlsForStatistics()
         {
             if (countriesOfOrigin_Chart != null)
@@ -1498,14 +1498,12 @@ namespace Sales_Tracker
             countriesOfOrigin_Chart = ConstructStatisticsChart(171, "Countries of origin for purchased products");
             companiesOfOrigin_Chart = ConstructStatisticsChart(171, "Companies of origin for purchased products");
             countriesOfDestination_Chart = ConstructStatisticsChart(171, "Countries of destination for sold products");
-            forcastedGrowth_Chart = ConstructStatisticsChart(600, "Forcasted growth");
 
             statisticsControls =
             [
                 countriesOfOrigin_Chart,
                 companiesOfOrigin_Chart,
-                countriesOfDestination_Chart,
-                forcastedGrowth_Chart
+                countriesOfDestination_Chart
             ];
         }
         private static GunaChart ConstructStatisticsChart(short top, string title)

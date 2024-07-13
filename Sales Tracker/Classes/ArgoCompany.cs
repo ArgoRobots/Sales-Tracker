@@ -27,7 +27,8 @@ namespace Sales_Tracker.Classes
         }
         public static bool AreAnyChangesMade()
         {
-            if (Accountants_Form.thingsThatHaveChangedInFile.Count > 0 ||
+            if (MainMenu_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                Accountants_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 Categories_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 Companies_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 Products_Form.thingsThatHaveChangedInFile.Count > 0 ||
@@ -40,6 +41,7 @@ namespace Sales_Tracker.Classes
         }
         public static void ResetChanges()
         {
+            MainMenu_Form.thingsThatHaveChangedInFile.Clear();
             Accountants_Form.thingsThatHaveChangedInFile.Clear();
             Categories_Form.thingsThatHaveChangedInFile.Clear();
             Companies_Form.thingsThatHaveChangedInFile.Clear();
