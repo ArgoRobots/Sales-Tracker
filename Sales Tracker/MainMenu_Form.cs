@@ -1313,7 +1313,10 @@ namespace Sales_Tracker
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
-                totalPrice -= Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
+                if (Selected == SelectedOption.Purchases)
+                {
+                    totalPrice -= Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
+                }
             }
 
             Quantity_Label.Text = totalQuantity.ToString();

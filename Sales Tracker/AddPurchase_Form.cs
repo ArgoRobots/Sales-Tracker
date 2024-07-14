@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
-using System.Xml.Linq;
 
 namespace Sales_Tracker
 {
@@ -165,10 +164,6 @@ namespace Sales_Tracker
             }
 
             // Round to 2 decimal places
-            pricePerUnit = Math.Round(pricePerUnit, 2);
-            shipping = Math.Round(shipping, 2);
-            tax = Math.Round(tax, 2);
-            fee = Math.Round(fee, 2);
             decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
             totalPrice = Math.Round(totalPrice, 2);
             decimal chargedDifference = amountCharged - totalPrice;
@@ -183,9 +178,25 @@ namespace Sales_Tracker
                     return;
                 }
             }
-            totalPrice += Math.Round(chargedDifference, 2);
+            totalPrice += chargedDifference;
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(purchaseID, buyerName, itemName, categoryName, country, company, date, quantity, pricePerUnit, shipping, tax, fee, chargedDifference, totalPrice);
+            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
+                purchaseID,
+                buyerName,
+                itemName,
+                categoryName,
+                country,
+                company,
+                date,
+                quantity.ToString(),
+                pricePerUnit.ToString("N2"),
+                shipping.ToString("N2"),
+                tax.ToString("N2"),
+                fee.ToString("N2"),
+                chargedDifference.ToString("N2"),
+                totalPrice.ToString("N2")
+            );
+
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
         }
