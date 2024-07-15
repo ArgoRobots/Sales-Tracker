@@ -23,6 +23,7 @@ namespace Sales_Tracker
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
+            RemoveReceiptLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -138,6 +139,49 @@ namespace Sales_Tracker
             new Accountants_Form().ShowDialog();
             CheckIfBuyersExist();
         }
+        private void Receipt_Button_Click(object sender, EventArgs e)
+        {
+            // Select file
+            OpenFileDialog dialog = new();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                recieptFilePath = dialog.FileName;
+                ShowReceiptLabel(dialog.SafeFileName);
+            }
+        }
+        private void RemoveReceipt_PictureBox_Click(object sender, EventArgs e)
+        {
+            RemoveReceiptLabel();
+        }
+        private void RemoveReceipt_PictureBox_MouseEnter(object sender, EventArgs e)
+        {
+            RemoveReceipt_PictureBox.BackColor = CustomColors.fileHover;
+        }
+        private void RemoveReceipt_PictureBox_MouseLeave(object sender, EventArgs e)
+        {
+            RemoveReceipt_PictureBox.BackColor = CustomColors.mainBackground;
+        }
+
+
+        private string recieptFilePath;
+        // Methods for receipts
+        private void ShowReceiptLabel(string text)
+        {
+            Controls.Add(SelectedReceipt_Label);
+            Controls.Add(RemoveReceipt_PictureBox);
+
+            SelectedReceipt_Label.Text = text;
+            SelectedReceipt_Label.Left = Width - SelectedReceipt_Label.Width - 60;
+
+            RemoveReceipt_PictureBox.Location = new Point(
+                SelectedReceipt_Label.Right + spaceBetweenControlsHorizontally,
+                SelectedReceipt_Label.Top + (SelectedReceipt_Label.Height - SelectedReceipt_Label.Height) / 2);
+        }
+        private void RemoveReceiptLabel()
+        {
+            Controls.Remove(SelectedReceipt_Label);
+            Controls.Remove(RemoveReceipt_PictureBox);
+        }
 
 
         // Methods to add purchases
@@ -180,6 +224,32 @@ namespace Sales_Tracker
             }
             totalPrice += chargedDifference;
 
+            string newFilePath = "";
+            if (File.Exists(Directories.receipts_dir + Path.GetFileName(recieptFilePath)))
+            {
+                // Get a new name for the file
+                string name = Path.GetFileNameWithoutExtension(recieptFilePath);
+                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(Directories.receipts_dir);
+
+                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
+
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    $"Rename receipt",
+                    $"Do you want to rename '{name}' to '{suggestedThingName}'? There is already a receipt with the same name.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo);
+
+                if (result == CustomMessageBoxResult.Yes)
+                {
+                    newFilePath = Directories.receipts_dir + suggestedThingName + Path.GetExtension(recieptFilePath);
+                }
+                else { return; }
+            }
+            else
+            {
+                newFilePath = Directories.receipts_dir + Path.GetFileName(recieptFilePath);
+            }
+
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseID,
                 buyerName,
@@ -196,6 +266,12 @@ namespace Sales_Tracker
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );
+
+            // Save receipt
+            Directories.CopyFile(recieptFilePath, newFilePath);
+
+            // Add receipt filepath to row tag
+            MainMenu_Form.Instance.selectedDataGridView.Rows[^1].Tag = newFilePath;
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");

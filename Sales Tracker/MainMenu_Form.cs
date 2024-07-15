@@ -85,7 +85,16 @@ namespace Sales_Tracker
             foreach (string line in lines)
             {
                 string[] cellValues = line.Split(',');
-                dataGridView.Rows.Add(cellValues);
+
+                // Get the row tag
+                string rowTag = cellValues.Last();
+                string[] rowValues = cellValues.Take(cellValues.Length - 1).ToArray();
+
+                // Add the row values to the DataGridView
+                int rowIndex = dataGridView.Rows.Add(rowValues);
+
+                // Set the row tag
+                dataGridView.Rows[rowIndex].Tag = rowTag;
             }
         }
         public void LoadGraphs()
@@ -947,6 +956,7 @@ namespace Sales_Tracker
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         public Guna2DataGridView selectedDataGridView;
         private bool doNotDeleteRows = false;
+        private DataGridViewRow removedRow;
         private void ConstructDataGridViews()
         {
             Size size = new(1300, 350);
@@ -995,6 +1005,8 @@ namespace Sales_Tracker
             {
                 e.Cancel = true;
             }
+
+            removedRow = e.Row;
 
             string type = "", columnName = "";
             byte logIndex = 0;
@@ -1092,6 +1104,13 @@ namespace Sales_Tracker
         private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             DataGridViewRowChanged();
+
+            // Remove receipt from file
+            if (Selected == SelectedOption.Purchases || (Selected == SelectedOption.Sales && removedRow?.Tag != null))
+            {
+                Directories.DeleteFile(removedRow.Tag.ToString());
+                removedRow = null;
+            }
         }
         private void DataGridViewRowChanged()
         {
@@ -1100,7 +1119,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            if (Selected == SelectedOption.Sales || Selected == SelectedOption.Purchases)
+            if (Selected == SelectedOption.Purchases || Selected == SelectedOption.Sales)
             {
                 UpdateTotals();
                 LoadGraphs();
@@ -1133,8 +1152,10 @@ namespace Sales_Tracker
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    cellValues.Add(cell.Value?.ToString() ?? "");
+                    cellValues.Add(cell.Value?.ToString());
                 }
+                // Add the row tag as the last column
+                cellValues.Add(row.Tag?.ToString());
 
                 string line = string.Join(",", cellValues);  // Join cell values with a comma
                 linesInDataGridView.Add(line);

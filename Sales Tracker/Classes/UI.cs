@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Properties;
 using System.Drawing.Drawing2D;
-using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker.Classes
 {
@@ -20,29 +19,6 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.ConstructMessage_Panel();
         }
 
-        // Construct controls
-        public static Guna2Button ConstructGBtn(Image image, string Text, int borderRadius, Size size, Point location, Control control)
-        {
-            Guna2Button gBtn = new()
-            {
-                Location = location,
-                BackColor = CustomColors.controlBack,
-                FillColor = CustomColors.controlBack
-            };
-
-            if (image != null) { gBtn.Image = image; }
-
-            if (Text != null) { gBtn.Font = new Font("Segoe UI", 10); gBtn.Text = Text; }
-
-            if (size != new Size(0, 0)) { gBtn.Size = size; }
-            else { gBtn.AutoSize = true; }
-
-            if (borderRadius > 0) { gBtn.BorderRadius = borderRadius; }
-
-            gBtn.Click += CloseAllPanels;
-            control?.Controls.Add(gBtn);
-            return gBtn;
-        }
         // Construct things for menus
         public static Guna2Panel ConstructPanelForMenu(Size size)
         {
@@ -440,7 +416,7 @@ namespace Sales_Tracker.Classes
                 BorderThickness = 1,
                 ShortcutsEnabled = false
             };
-            if (CurrentTheme == ThemeType.Dark)
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
                 rename_textBox.BorderColor = Color.White;
                 rename_textBox.HoverState.BorderColor = Color.White;

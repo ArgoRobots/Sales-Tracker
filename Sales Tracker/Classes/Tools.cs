@@ -42,25 +42,20 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Returns the first focused Guna2TextBox found, or null if none are found.
         /// </summary>
-        public static Guna2TextBox FindSelectedGTextBox(Control control)
+        public static Guna2TextBox? FindSelectedGTextBox(Control control)
         {
-            // Check if any immediate child Guna2TextBox is focused
-            var focusedTextBox = control.Controls.OfType<Guna2TextBox>().FirstOrDefault(gTextBox => gTextBox.Focused);
-            if (focusedTextBox != null)
-            {
-                return focusedTextBox;
-            }
-
-            // Recursively check all child controls
             foreach (Control childControl in control.Controls)
             {
-                var result = FindSelectedGTextBox(childControl);
+                if (childControl is Guna2TextBox gTextBox && gTextBox.Focused)
+                {
+                    return gTextBox;
+                }
+                Guna2TextBox? result = FindSelectedGTextBox(childControl);
                 if (result != null)
                 {
                     return result;
                 }
             }
-
             return null;
         }
         /// <summary>
@@ -118,7 +113,7 @@ namespace Sales_Tracker.Classes
                 bool pass2 = false;
                 foreach (string item in list)
                 {
-                    if (item == name + " (" + count.ToString() + ")")
+                    if (item == name + $" ({count})")
                     {
                         pass2 = true;
                         break;
@@ -126,10 +121,12 @@ namespace Sales_Tracker.Classes
                 }
                 // If this name already exists
                 if (pass2)
+                {
                     count++;
+                }
                 else
                 {
-                    name += " (" + count.ToString() + ")";
+                    name += $" ({count})";
                     break;
                 }
             }
@@ -140,7 +137,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string RemoveNumAfterString(string name)
         {
-            if (name.EndsWith(")"))
+            if (name.EndsWith(')'))
             {
                 int lastOpenParenthesisIndex = name.LastIndexOf('(');
                 if (lastOpenParenthesisIndex != -1 && int.TryParse(name.AsSpan(lastOpenParenthesisIndex + 1, name.Length - lastOpenParenthesisIndex - 2), out _))

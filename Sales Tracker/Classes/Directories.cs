@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
     {
         // Directories
         public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
-          sales_file, categoryPurchases_file, categorySales_file, accountants_file, companies_file, logs_dir, desktop_dir;
+          sales_file, categoryPurchases_file, categorySales_file, accountants_file, companies_file, receipts_dir, logs_dir, desktop_dir;
 
         public static void SetDirectoriesFor(string projectDir, string project_name)
         {
@@ -18,20 +18,21 @@ namespace Sales_Tracker.Classes
 
             companyName = project_name;
 
-            tempCompany_dir = appData_dir + project_name;
+            tempCompany_dir = appData_dir + project_name + @"\";
 
             argoCompany_dir = projectDir;
             argoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
 
-            purchases_file = tempCompany_dir + @"\purchases" + ArgoFiles.TxtFileExtension;
-            sales_file = tempCompany_dir + @"\sales" + ArgoFiles.TxtFileExtension;
-            categoryPurchases_file = tempCompany_dir + @"\categoryPurchases" + ArgoFiles.JsonFileExtension;
-            categorySales_file = tempCompany_dir + @"\categorySales" + ArgoFiles.JsonFileExtension;
-            accountants_file = tempCompany_dir + @"\accountants" + ArgoFiles.TxtFileExtension;
-            companies_file = tempCompany_dir + @"\companies" + ArgoFiles.TxtFileExtension;
+            purchases_file = tempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
+            sales_file = tempCompany_dir + "sales" + ArgoFiles.TxtFileExtension;
+            categoryPurchases_file = tempCompany_dir + "categoryPurchases" + ArgoFiles.JsonFileExtension;
+            categorySales_file = tempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
+            accountants_file = tempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
+            companies_file = tempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
+            receipts_dir = tempCompany_dir + @"receipts\";
 
             // Logs
-            logs_dir = tempCompany_dir + @"\logs\";
+            logs_dir = tempCompany_dir + @"logs\";
         }
         public static void SetUniversalDirectories()
         {
@@ -290,12 +291,6 @@ namespace Sales_Tracker.Classes
         }
 
 
-        // Create a zip file
-        public static void CreateZIPFile(string sourceDirectory, string destinationZipFilePath)
-        {
-            ZipFile.CreateFromDirectory(sourceDirectory, destinationZipFilePath);
-        }
-
         // Read file
         /// <summary>
         /// Reads all lines from the specified file.
@@ -351,34 +346,7 @@ namespace Sales_Tracker.Classes
 
 
 
-        /// <summary>
-        /// Creates an Argo txt file from a file.
-        /// </summary>
-        public static bool CreateArgoTxtFileFromFile(string sourceFileDirectory, string destinationDirectory, string fileExtension)
-        {
-            string sourceName = Path.GetFileName(sourceFileDirectory);
-
-            // Remove " (Main)" from file name
-            sourceName = sourceName.Replace(" (Main)", "");
-
-            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(sourceName);
-            string argoFileDirectory = destinationDirectory + @"\" + fileNameWithoutExtension;
-
-            if (File.Exists(argoFileDirectory + fileExtension))
-            {
-                List<string> files_list = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
-
-                // Get a new name for the file
-                sourceName = Tools.AddNumberForAStringThatAlreadyExists(fileNameWithoutExtension, files_list);
-                argoFileDirectory = destinationDirectory + @"\" + sourceName;
-            }
-            CopyFile(sourceFileDirectory, argoFileDirectory + fileExtension);
-
-            Log.Write(4, $"Exported '{Path.GetFileNameWithoutExtension(sourceName)}'");
-
-            return true;
-        }
-
+        // Tar files
         /// <summary>
         /// Creates an Argo Tar file from a directory.
         /// </summary>
@@ -494,39 +462,6 @@ namespace Sales_Tracker.Classes
             return "";
         }
 
-        /// <summary>
-        /// Imports an Argo txt file into a directory.
-        /// </summary>
-        /// <returns> The file name wihtout the (num) and the extension. </returns>
-        public static string ImportArgoTxtFile(string sourceFile, string destinationDirectory, string thingBeingImported, List<string> listOfThingNames)
-        {
-            string thingName = Path.GetFileNameWithoutExtension(sourceFile);
-
-            // Remove " (Main)" from thing name because we don't want "Tab 1" and "Tab 1 (Main)" for example
-            listOfThingNames = listOfThingNames.Select(name => name.Replace(" (Main)", "")).ToList();
-
-            // Check if the thing already exists
-            if (listOfThingNames.Contains(thingName))
-            {
-                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(thingName, listOfThingNames);
-
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Rename {thingBeingImported}",
-                    $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {thingBeingImported} with the same name.",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNo);
-
-                if (result == CustomMessageBoxResult.Yes)
-                {
-                    thingName = suggestedThingName;
-                }
-                else { return ""; }
-            }
-
-            CopyFile(sourceFile, destinationDirectory + thingName + ArgoFiles.TxtFileExtension);
-
-            return thingName;
-        }
 
         /// <summary>
         /// This also saves all.
@@ -578,8 +513,10 @@ namespace Sales_Tracker.Classes
         public static List<string> GetListOfAllFilesWithoutExtensionInDirectory(string directory)
         {
             return Directory.GetFiles(directory)
-                  .Select(Path.GetFileNameWithoutExtension)
-                  .ToList();
+                       .Select(Path.GetFileNameWithoutExtension)
+                       .Where(name => name != null)
+                       .Cast<string>()
+                       .ToList();
         }
         /// <summary>
         /// Returns a list of all the directories in the specified directory.
@@ -593,10 +530,11 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static List<string> GetListOfAllDirectoryNamesInDirectory(string directory)
         {
-
             return Directory.GetDirectories(directory)
-                .Select(Path.GetFileName)
-                .ToList();
+                          .Select(Path.GetFileName)
+                          .Where(name => name != null)
+                          .Cast<string>()
+                          .ToList();
         }
     }
 }

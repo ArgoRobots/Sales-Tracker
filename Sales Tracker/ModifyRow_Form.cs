@@ -269,7 +269,7 @@ namespace Sales_Tracker
         {
             ConstructPanel();
             int left = 0, secondLeft = 0;
-            decimal quantity = 0, pricePerUnit = 0, tax = 0, shipping = 0, fee = 0, chargedDifference = 0, chargedAmount = 0;
+            decimal quantity = 0, pricePerUnit = 0, tax = 0, shipping = 0, fee = 0, chargedDifference, chargedAmount;
 
             foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
             {
