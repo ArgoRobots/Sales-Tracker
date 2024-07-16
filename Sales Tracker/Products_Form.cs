@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using System.Data;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace Sales_Tracker
 {
@@ -11,7 +10,7 @@ namespace Sales_Tracker
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         public static Products_Form Instance { get; private set; }
 
-        // Init
+        // Init.
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
         public Products_Form(bool checkPurchaseRadioButton)

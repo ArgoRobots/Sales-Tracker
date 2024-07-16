@@ -171,7 +171,17 @@ namespace Sales_Tracker
             Controls.Add(RemoveReceipt_PictureBox);
 
             SelectedReceipt_Label.Text = text;
-            SelectedReceipt_Label.Left = Width - SelectedReceipt_Label.Width - 60;
+            SetReceiptLabelLocation();
+            ValidateInputs(null, null);
+        }
+        private void SetReceiptLabelLocation()
+        {
+            if (!Controls.Contains(SelectedReceipt_Label))
+            {
+                return;
+            }
+
+            SelectedReceipt_Label.Left = Receipt_Button.Right - SelectedReceipt_Label.Width - RemoveReceipt_PictureBox.Width - spaceBetweenControlsHorizontally;
 
             RemoveReceipt_PictureBox.Location = new Point(
                 SelectedReceipt_Label.Right + spaceBetweenControlsHorizontally,
@@ -181,6 +191,7 @@ namespace Sales_Tracker
         {
             Controls.Remove(SelectedReceipt_Label);
             Controls.Remove(RemoveReceipt_PictureBox);
+            ValidateInputs(null, null);
         }
 
 
@@ -224,7 +235,7 @@ namespace Sales_Tracker
             }
             totalPrice += chargedDifference;
 
-            string newFilePath = "";
+            string newFilePath;
             if (File.Exists(Directories.receipts_dir + Path.GetFileName(recieptFilePath)))
             {
                 // Get a new name for the file
@@ -324,7 +335,8 @@ namespace Sales_Tracker
             Currency_ComboBox.Left = (Width - Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
-                ProductName_TextBox.Width) / 2;
+                ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
+                Receipt_Button.Width) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
@@ -333,6 +345,7 @@ namespace Sales_Tracker
             BuyerName_Label.Left = BuyerName_TextBox.Left;
             ProductName_TextBox.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
             ProductName_Label.Left = ProductName_TextBox.Left;
+            Receipt_Button.Left = ProductName_TextBox.Right + spaceBetweenControlsHorizontally;
 
             Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Quantity_TextBox.Width - spaceBetweenControlsHorizontally -
@@ -367,6 +380,7 @@ namespace Sales_Tracker
             Height = 400;
 
             RelocateBuyerWarning();
+            SetReceiptLabelLocation();
 
             if (Controls.Contains(WarningProduct_PictureBox))
             {
@@ -380,13 +394,15 @@ namespace Sales_Tracker
             Currency_ComboBox.Left = (Width -
                 Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
-                BuyerName_TextBox.Width) / 2;
+                BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
+                Receipt_Button.Width) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
             BuyerName_TextBox.Left = OrderNumber_TextBox.Right + spaceBetweenControlsHorizontally;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
+            Receipt_Button.Left = BuyerName_TextBox.Right + spaceBetweenControlsHorizontally;
 
             Date_DateTimePicker.Left = (Width -
                 Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
@@ -415,6 +431,7 @@ namespace Sales_Tracker
             SetHeight();
 
             RelocateBuyerWarning();
+            SetReceiptLabelLocation();
 
             if (Controls.Contains(WarningProduct_PictureBox))
             {
@@ -528,6 +545,7 @@ namespace Sales_Tracker
             textBox.FocusedState.BorderColor = CustomColors.accent_blue;
             textBox.FocusedState.FillColor = CustomColors.controlBack;
             textBox.Click += CloseAllPanels;
+            textBox.TextChanged += ValidateInputs;
 
             parent.Controls.Add(textBox);
             return textBox;
@@ -664,6 +682,11 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(AmountCharged_TextBox.Text);
+
+            if (Properties.Settings.Default.PurchaseReceipts)
+            {
+                allFieldsFilled &= Controls.Contains(SelectedReceipt_Label);
+            }
 
             bool allMultipleFieldsFilled = true;
 

@@ -594,8 +594,8 @@ namespace Sales_Tracker
             Controls.Add(Sales_DataGridView);
             ResizeControls();
             Controls.Remove(Purchases_DataGridView);
-            //LoadGraphs();
-            //UpdateTotals();
+            LoadGraphs();
+            UpdateTotals();
             Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
         }
         private void Statistics_Button_Click(object sender, EventArgs e)
@@ -1224,8 +1224,8 @@ namespace Sales_Tracker
                 {
                     FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
                     flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
-                    rightClickDataGridView_Panel.Height = 4 * 22 + 10;
-                    flowPanel.Height = 4 * 22;
+                    rightClickDataGridView_Panel.Height = 5 * 22 + 10;
+                    flowPanel.Height = 5 * 22;
                 }
 
                 Control controlSender = (Control)sender;
@@ -1399,22 +1399,25 @@ namespace Sales_Tracker
         private Guna2Button rightClickDataGridView_MoveBtn;
         public void ConstructRightClickDataGridViewRowMenu()
         {
-            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(250, 4 * 22 + 10));
+            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 5 * 22 + 10));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
 
-            Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", 240, false, flowPanel);
+            Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", UI.panelBtnWidth, false, flowPanel);
             menuBtn.Click += ModifyRow;
 
-            menuBtn = UI.ConstructBtnForMenu("Move up", 240, false, flowPanel);
+            menuBtn = UI.ConstructBtnForMenu("Move up", UI.panelBtnWidth, false, flowPanel);
             menuBtn.Click += MoveRowUp;
 
-            menuBtn = UI.ConstructBtnForMenu("Move down", 240, false, flowPanel);
+            menuBtn = UI.ConstructBtnForMenu("Move down", UI.panelBtnWidth, false, flowPanel);
             menuBtn.Click += MoveRowDown;
 
-            rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", 240, false, flowPanel);
-            rightClickDataGridView_MoveBtn.Click += MoveRow; ;
+            rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_MoveBtn.Click += MoveRow;
 
-            menuBtn = UI.ConstructBtnForMenu("Delete", 240, false, flowPanel);
+            menuBtn = UI.ConstructBtnForMenu("Download receipt", UI.panelBtnWidth, false, flowPanel);
+            menuBtn.Click += DownloadReceipt;
+
+            menuBtn = UI.ConstructBtnForMenu("Delete", UI.panelBtnWidth, false, flowPanel);
             menuBtn.ForeColor = CustomColors.accent_red;
             menuBtn.Click += DeleteRow;
 
@@ -1435,12 +1438,6 @@ namespace Sales_Tracker
         private void MoveRowUp(object sender, EventArgs e)
         {
             CloseRightClickPanels();
-
-            if (selectedDataGridView.Rows.Count == 0)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", "Select a row to move up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
 
             int rowIndex = selectedDataGridView.SelectedCells[0].OwningRow.Index;
 
@@ -1473,12 +1470,6 @@ namespace Sales_Tracker
         private void MoveRowDown(object sender, EventArgs e)
         {
             CloseRightClickPanels();
-
-            if (selectedDataGridView.Rows.Count == 0)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", "Select a row to move down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
 
             int rowIndex = selectedDataGridView.SelectedCells[0].OwningRow.Index;
 
@@ -1552,17 +1543,25 @@ namespace Sales_Tracker
             // Restore the scroll position
             selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
         }
+        private void DownloadReceipt(object? sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+
+            DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
+
+            // Select directory
+            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                Directories.CopyFile(selectedRow.Tag.ToString(), dialog.SelectedPath + @"\" + Path.GetFileName(selectedRow.Tag.ToString()));
+            }
+        }
         private void DeleteRow(object? sender, EventArgs e)
         {
             CloseRightClickPanels();
 
-            if (selectedDataGridView.Rows.Count == 0)
-            {
-                CustomMessageBox.Show("Argo Studio", "Select a row to delete.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
-
-            int index = selectedDataGridView.SelectedRows[selectedDataGridView.SelectedRows.Count - 1].Index;
+            int index = selectedDataGridView.SelectedRows[^1].Index;
 
             // Delete all selected rows
             foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)

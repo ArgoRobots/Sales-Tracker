@@ -106,5 +106,17 @@ namespace Sales_Tracker.Properties {
                 this["SendAnonymousInformation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PurchaseReceipts {
+            get {
+                return ((bool)(this["PurchaseReceipts"]));
+            }
+            set {
+                this["PurchaseReceipts"] = value;
+            }
+        }
     }
 }

@@ -56,6 +56,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddPurchase_Form));
             OrderNumber_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             OrderNumber_Label = new Label();
             AddPurchase_Label = new Label();
@@ -87,10 +89,9 @@ namespace Sales_Tracker
             AmountCharged_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Receipt_Button = new Guna.UI2.WinForms.Guna2Button();
             SelectedReceipt_Label = new Label();
-            RemoveReceipt_PictureBox = new PictureBox();
+            RemoveReceipt_PictureBox = new Guna.UI2.WinForms.Guna2ImageButton();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)RemoveReceipt_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // OrderNumber_TextBox
@@ -114,7 +115,7 @@ namespace Sales_Tracker
             OrderNumber_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             OrderNumber_TextBox.ShortcutsEnabled = false;
             OrderNumber_TextBox.Size = new Size(200, 36);
-            OrderNumber_TextBox.TabIndex = 1;
+            OrderNumber_TextBox.TabIndex = 2;
             OrderNumber_TextBox.Tag = "";
             OrderNumber_TextBox.TextChanged += ValidateInputs;
             OrderNumber_TextBox.Click += CloseAllPanels;
@@ -177,7 +178,7 @@ namespace Sales_Tracker
             BuyerName_TextBox.ShortcutsEnabled = false;
             BuyerName_TextBox.Size = new Size(200, 36);
             BuyerName_TextBox.TabIndex = 2;
-            BuyerName_TextBox.Tag = "1";
+            BuyerName_TextBox.Tag = "3";
             // 
             // ProductName_Label
             // 
@@ -213,7 +214,7 @@ namespace Sales_Tracker
             ProductName_TextBox.ShortcutsEnabled = false;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 3;
-            ProductName_TextBox.Tag = "1";
+            ProductName_TextBox.Tag = "4";
             // 
             // Quantity_Label
             // 
@@ -248,7 +249,7 @@ namespace Sales_Tracker
             Quantity_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Quantity_TextBox.ShortcutsEnabled = false;
             Quantity_TextBox.Size = new Size(100, 36);
-            Quantity_TextBox.TabIndex = 5;
+            Quantity_TextBox.TabIndex = 7;
             Quantity_TextBox.TextChanged += ValidateInputs;
             Quantity_TextBox.Click += CloseAllPanels;
             // 
@@ -285,7 +286,7 @@ namespace Sales_Tracker
             PricePerUnit_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             PricePerUnit_TextBox.ShortcutsEnabled = false;
             PricePerUnit_TextBox.Size = new Size(100, 36);
-            PricePerUnit_TextBox.TabIndex = 6;
+            PricePerUnit_TextBox.TabIndex = 8;
             PricePerUnit_TextBox.TextChanged += ValidateInputs;
             PricePerUnit_TextBox.Click += CloseAllPanels;
             // 
@@ -322,7 +323,7 @@ namespace Sales_Tracker
             Shipping_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Shipping_TextBox.ShortcutsEnabled = false;
             Shipping_TextBox.Size = new Size(100, 36);
-            Shipping_TextBox.TabIndex = 7;
+            Shipping_TextBox.TabIndex = 9;
             Shipping_TextBox.TextChanged += ValidateInputs;
             Shipping_TextBox.Click += CloseAllPanels;
             // 
@@ -359,7 +360,7 @@ namespace Sales_Tracker
             Tax_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Tax_TextBox.ShortcutsEnabled = false;
             Tax_TextBox.Size = new Size(100, 36);
-            Tax_TextBox.TabIndex = 8;
+            Tax_TextBox.TabIndex = 10;
             Tax_TextBox.TextChanged += ValidateInputs;
             Tax_TextBox.Click += CloseAllPanels;
             // 
@@ -380,7 +381,7 @@ namespace Sales_Tracker
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
             AddPurchase_Button.Size = new Size(143, 32);
-            AddPurchase_Button.TabIndex = 9;
+            AddPurchase_Button.TabIndex = 13;
             AddPurchase_Button.Tag = "";
             AddPurchase_Button.Text = "Add purchase";
             AddPurchase_Button.Click += AddPurchase_Button_Click;
@@ -411,7 +412,7 @@ namespace Sales_Tracker
             Date_DateTimePicker.Name = "Date_DateTimePicker";
             Date_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges18;
             Date_DateTimePicker.Size = new Size(200, 36);
-            Date_DateTimePicker.TabIndex = 4;
+            Date_DateTimePicker.TabIndex = 6;
             Date_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             Date_DateTimePicker.ValueChanged += ValidateInputs;
             Date_DateTimePicker.Click += CloseAllPanels;
@@ -425,7 +426,7 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel.Location = new Point(567, 142);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
             WarningProduct_LinkLabel.Size = new Size(121, 41);
-            WarningProduct_LinkLabel.TabIndex = 42;
+            WarningProduct_LinkLabel.TabIndex = 15;
             WarningProduct_LinkLabel.TabStop = true;
             WarningProduct_LinkLabel.Text = "No products exist.\r\nCreate one here";
             WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
@@ -451,7 +452,7 @@ namespace Sales_Tracker
             PaymentFee_Label.Location = new Point(669, 195);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(90, 20);
-            PaymentFee_Label.TabIndex = 52;
+            PaymentFee_Label.TabIndex = 0;
             PaymentFee_Label.Text = "Payment fee";
             PaymentFee_Label.Click += CloseAllPanels;
             // 
@@ -476,7 +477,7 @@ namespace Sales_Tracker
             PaymentFee_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             PaymentFee_TextBox.ShortcutsEnabled = false;
             PaymentFee_TextBox.Size = new Size(100, 36);
-            PaymentFee_TextBox.TabIndex = 51;
+            PaymentFee_TextBox.TabIndex = 11;
             PaymentFee_TextBox.TextChanged += ValidateInputs;
             PaymentFee_TextBox.Click += CloseAllPanels;
             // 
@@ -516,7 +517,7 @@ namespace Sales_Tracker
             Currency_ComboBox.Name = "Currency_ComboBox";
             Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Currency_ComboBox.Size = new Size(100, 36);
-            Currency_ComboBox.TabIndex = 54;
+            Currency_ComboBox.TabIndex = 1;
             Currency_ComboBox.TextChanged += ValidateInputs;
             Currency_ComboBox.Click += CloseAllPanels;
             // 
@@ -541,7 +542,7 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.Location = new Point(361, 145);
             WarningBuyer_LinkLabel.Name = "WarningBuyer_LinkLabel";
             WarningBuyer_LinkLabel.Size = new Size(140, 41);
-            WarningBuyer_LinkLabel.TabIndex = 57;
+            WarningBuyer_LinkLabel.TabIndex = 14;
             WarningBuyer_LinkLabel.TabStop = true;
             WarningBuyer_LinkLabel.Text = "No accountants exist.\r\nCreate one here";
             WarningBuyer_LinkLabel.UseCompatibleTextRendering = true;
@@ -567,7 +568,7 @@ namespace Sales_Tracker
             AmountCharged_Label.Location = new Point(775, 195);
             AmountCharged_Label.Name = "AmountCharged_Label";
             AmountCharged_Label.Size = new Size(132, 15);
-            AmountCharged_Label.TabIndex = 59;
+            AmountCharged_Label.TabIndex = 0;
             AmountCharged_Label.Text = "Amount charged (CAD)";
             AmountCharged_Label.Click += CloseAllPanels;
             // 
@@ -592,13 +593,13 @@ namespace Sales_Tracker
             AmountCharged_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
             AmountCharged_TextBox.ShortcutsEnabled = false;
             AmountCharged_TextBox.Size = new Size(100, 36);
-            AmountCharged_TextBox.TabIndex = 58;
+            AmountCharged_TextBox.TabIndex = 12;
             AmountCharged_TextBox.TextChanged += ValidateInputs;
             AmountCharged_TextBox.Click += CloseAllPanels;
             // 
             // Receipt_Button
             // 
-            Receipt_Button.Anchor = AnchorStyles.Bottom;
+            Receipt_Button.Anchor = AnchorStyles.Top;
             Receipt_Button.BackColor = Color.Transparent;
             Receipt_Button.BorderColor = Color.LightGray;
             Receipt_Button.BorderRadius = 2;
@@ -612,7 +613,7 @@ namespace Sales_Tracker
             Receipt_Button.Name = "Receipt_Button";
             Receipt_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
             Receipt_Button.Size = new Size(143, 36);
-            Receipt_Button.TabIndex = 60;
+            Receipt_Button.TabIndex = 5;
             Receipt_Button.Tag = "";
             Receipt_Button.Text = "Add receipt";
             Receipt_Button.Click += Receipt_Button_Click;
@@ -622,24 +623,26 @@ namespace Sales_Tracker
             SelectedReceipt_Label.Anchor = AnchorStyles.Top;
             SelectedReceipt_Label.AutoSize = true;
             SelectedReceipt_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceipt_Label.Location = new Point(748, 142);
+            SelectedReceipt_Label.Location = new Point(803, 146);
             SelectedReceipt_Label.Name = "SelectedReceipt_Label";
             SelectedReceipt_Label.Size = new Size(57, 17);
-            SelectedReceipt_Label.TabIndex = 61;
+            SelectedReceipt_Label.TabIndex = 0;
             SelectedReceipt_Label.Text = "Selected";
             // 
             // RemoveReceipt_PictureBox
             // 
-            RemoveReceipt_PictureBox.Anchor = AnchorStyles.Top;
+            RemoveReceipt_PictureBox.CheckedState.ImageSize = new Size(64, 64);
+            RemoveReceipt_PictureBox.HoverState.ImageSize = new Size(64, 64);
             RemoveReceipt_PictureBox.Image = Properties.Resources.CloseGrey;
-            RemoveReceipt_PictureBox.Location = new Point(812, 138);
-            RemoveReceipt_PictureBox.Margin = new Padding(4, 3, 4, 3);
+            RemoveReceipt_PictureBox.ImageOffset = new Point(0, 0);
+            RemoveReceipt_PictureBox.ImageRotate = 0F;
+            RemoveReceipt_PictureBox.ImageSize = new Size(20, 20);
+            RemoveReceipt_PictureBox.Location = new Point(866, 142);
             RemoveReceipt_PictureBox.Name = "RemoveReceipt_PictureBox";
-            RemoveReceipt_PictureBox.Padding = new Padding(3);
+            RemoveReceipt_PictureBox.PressedState.ImageSize = new Size(64, 64);
+            RemoveReceipt_PictureBox.ShadowDecoration.CustomizableEdges = customizableEdges27;
             RemoveReceipt_PictureBox.Size = new Size(25, 25);
-            RemoveReceipt_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            RemoveReceipt_PictureBox.TabIndex = 62;
-            RemoveReceipt_PictureBox.TabStop = false;
+            RemoveReceipt_PictureBox.TabIndex = 16;
             RemoveReceipt_PictureBox.Click += RemoveReceipt_PictureBox_Click;
             RemoveReceipt_PictureBox.MouseEnter += RemoveReceipt_PictureBox_MouseEnter;
             RemoveReceipt_PictureBox.MouseLeave += RemoveReceipt_PictureBox_MouseLeave;
@@ -682,6 +685,7 @@ namespace Sales_Tracker
             Controls.Add(OrderNumber_Label);
             Controls.Add(OrderNumber_TextBox);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             MinimumSize = new Size(850, 360);
             Name = "AddPurchase_Form";
@@ -691,7 +695,6 @@ namespace Sales_Tracker
             Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)RemoveReceipt_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -729,6 +732,6 @@ namespace Sales_Tracker
         private Guna.UI2.WinForms.Guna2TextBox AmountCharged_TextBox;
         private Guna.UI2.WinForms.Guna2Button Receipt_Button;
         private Label SelectedReceipt_Label;
-        private PictureBox RemoveReceipt_PictureBox;
+        private Guna.UI2.WinForms.Guna2ImageButton RemoveReceipt_PictureBox;
     }
 }

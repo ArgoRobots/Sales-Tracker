@@ -49,6 +49,7 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             ShowDebugInfo_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             guna2vSeparator1 = new Guna.UI2.WinForms.Guna2VSeparator();
+            PurchaseReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             Back_Panel.SuspendLayout();
             SuspendLayout();
             // 
@@ -159,6 +160,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Back_Panel
             // 
+            Back_Panel.Controls.Add(PurchaseReceipts_CheckBox);
             Back_Panel.Controls.Add(ColorTheme_Label);
             Back_Panel.Controls.Add(ColorTheme_ComboBox);
             Back_Panel.Controls.Add(ShowDebugInfo_CheckBox);
@@ -232,6 +234,27 @@ namespace Sales_Tracker.Settings.Menus
             guna2vSeparator1.TabIndex = 274;
             guna2vSeparator1.Visible = false;
             // 
+            // PurchaseReceipts_CheckBox
+            // 
+            PurchaseReceipts_CheckBox.Animated = true;
+            PurchaseReceipts_CheckBox.AutoSize = true;
+            PurchaseReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(62, 101, 207);
+            PurchaseReceipts_CheckBox.CheckedState.BorderRadius = 0;
+            PurchaseReceipts_CheckBox.CheckedState.BorderThickness = 0;
+            PurchaseReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(62, 101, 207);
+            PurchaseReceipts_CheckBox.Font = new Font("Segoe UI", 9.75F);
+            PurchaseReceipts_CheckBox.Location = new Point(138, 167);
+            PurchaseReceipts_CheckBox.Margin = new Padding(3, 4, 3, 4);
+            PurchaseReceipts_CheckBox.Name = "PurchaseReceipts_CheckBox";
+            PurchaseReceipts_CheckBox.RightToLeft = RightToLeft.Yes;
+            PurchaseReceipts_CheckBox.Size = new Size(233, 21);
+            PurchaseReceipts_CheckBox.TabIndex = 335;
+            PurchaseReceipts_CheckBox.Text = "Make purchase receipts mandatory";
+            PurchaseReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            PurchaseReceipts_CheckBox.UncheckedState.BorderRadius = 0;
+            PurchaseReceipts_CheckBox.UncheckedState.BorderThickness = 0;
+            PurchaseReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            // 
             // General_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -264,5 +287,6 @@ namespace Sales_Tracker.Settings.Menus
         public Guna.UI2.WinForms.Guna2CheckBox ShowDebugInfo_CheckBox;
         private Label ColorTheme_Label;
         public Guna.UI2.WinForms.Guna2ComboBox ColorTheme_ComboBox;
+        public Guna.UI2.WinForms.Guna2CheckBox PurchaseReceipts_CheckBox;
     }
 }

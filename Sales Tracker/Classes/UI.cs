@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Properties;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.Classes
@@ -20,6 +21,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Construct things for menus
+        public readonly static byte panelWidth = 250, panelBtnWidth = 240;
         public static Guna2Panel ConstructPanelForMenu(Size size)
         {
             Guna2Panel panel = new()
@@ -143,24 +145,24 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(250, 5 * 22 + 10 + 10));
+            fileMenu = ConstructPanelForMenu(new Size(panelWidth, 6 * 22 + 10 + 10));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("New company", 240, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("New company", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
-                System.Diagnostics.Process.Start(Application.ExecutablePath, "autoClickButton");
+                Process.Start(Application.ExecutablePath, "autoClickButton");
             };
 
-            menuBtn = ConstructBtnForMenu("Open company", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Open company", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 ArgoCompany.OpenProjectWhenAProgramIsAlreadyOpen();
             };
 
-            ConstructSeperator(240, flowPanel);
+            ConstructSeperator(panelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Save", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Save", panelBtnWidth, true, flowPanel);
             menuBtn.Name = "Save";
             menuBtn.Click += (sender, e) =>
             {
@@ -168,17 +170,24 @@ namespace Sales_Tracker.Classes
             };
             ConstructKeyShortcut("Ctrl+S", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Save as", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Save as", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 ArgoCompany.SaveAs();
             };
             ConstructKeyShortcut("Ctrl+Shift+S", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Export / make backup", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Export / make backup", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 new Export_Form().ShowDialog();
+            };
+            ConstructKeyShortcut("Ctrl+E", menuBtn);
+
+            menuBtn = ConstructBtnForMenu("Download receipts", panelBtnWidth, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                new Receipts_Form().ShowDialog();
             };
             ConstructKeyShortcut("Ctrl+E", menuBtn);
         }
@@ -215,48 +224,48 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel helpMenu;
         private static void ConstructHelpMenu()
         {
-            helpMenu = ConstructPanelForMenu(new Size(250, 7 * 22 + 10 + 20));
+            helpMenu = ConstructPanelForMenu(new Size(panelWidth, 7 * 22 + 10 + 20));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)helpMenu.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("Support", 240, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("Support", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenLink("");
             };
-            menuBtn = ConstructBtnForMenu("Forums", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Forums", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenLink("");
             };
-            menuBtn = ConstructBtnForMenu("Contact us", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Contact us", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenLink("");
             };
 
-            ConstructSeperator(240, flowPanel);
+            ConstructSeperator(panelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Show logs", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Show logs", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 MainMenu_Form.Instance.OpenLogs();
             };
             ConstructKeyShortcut("Ctrl+L", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Clear cache", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Clear cache", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 Directories.DeleteFile(Directories.appDataCongig_file);
             };
 
-            ConstructSeperator(240, flowPanel);
+            ConstructSeperator(panelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("What's new", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("What's new", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenLink("");
             };
-            menuBtn = ConstructBtnForMenu("About", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("About", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenLink("");
@@ -267,30 +276,30 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel accountMenu;
         private static void ConstructProfileMenu()
         {
-            accountMenu = ConstructPanelForMenu(new Size(250, 4 * 22 + 10 + 10));
+            accountMenu = ConstructPanelForMenu(new Size(panelWidth, 4 * 22 + 10 + 10));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)accountMenu.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("Argo account", 240, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("Argo account", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenLink("");
             };
 
-            menuBtn = ConstructBtnForMenu("Settings", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Settings", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 MainMenu_Form.Instance.OpenSettingsMenu();
             };
 
-            menuBtn = ConstructBtnForMenu("Share feedback", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Share feedback", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
 
             };
 
-            ConstructSeperator(240, flowPanel);
+            ConstructSeperator(panelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Sign out", 240, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Sign out", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
 
