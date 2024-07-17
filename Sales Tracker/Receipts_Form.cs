@@ -1,4 +1,6 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
+using System.ComponentModel;
 
 namespace Sales_Tracker
 {
@@ -7,6 +9,8 @@ namespace Sales_Tracker
         // Properties
         public static Receipts_Form Instance { get; private set; }
         private DateTime oldestDate;
+        private readonly MainMenu_Form.SelectedOption oldOption;
+        private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Init.
         public Receipts_Form()
@@ -14,12 +18,30 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
+            oldOption = MainMenu_Form.Instance.Selected;
+            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+
+            MainMenu_Form.Instance.isDataGridViewLoading = true;
+            MainMenu_Form.Instance.InitializeDataGridView(Receipts_DataGridView, Receipts_DataGridView.Size);
+            MainMenu_Form.LoadColumnsInDataGridView(Receipts_DataGridView, ColumnHeaders);
+            MainMenu_Form.Instance.selectedDataGridView = Receipts_DataGridView;
+            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Receipts;
+            AddAllReceiptsAndGetOldestDate();
+            MainMenu_Form.Instance.isDataGridViewLoading = false;
+
+            From_DateTimePicker.Value = oldestDate;
             To_DateTimePicker.Value = DateTime.Now;
             Sort_ComboBox.SelectedIndex = 0;
 
-            AddAllReceiptsAndGetOldestDate();
-            MainMenu_Form.Instance.InitializeDataGridView(Receipts_DataGridView, Receipts_DataGridView.Size);
             Theme.SetThemeForForm(this);
+        }
+
+
+        // Form event handlers
+        private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
 
 
@@ -71,12 +93,23 @@ namespace Sales_Tracker
             Date,
             Total
         }
+        public readonly Dictionary<Column, string> ColumnHeaders = new()
+        {
+            { Column.Product, "Product name" },
+            { Column.Category, "Category" },
+            { Column.Date, "Date" },
+            { Column.Total, "Total revenue" }
+        };
 
         // Methods
         private void AddAllReceiptsAndGetOldestDate()
         {
             foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchases_DataGridView.Rows)
             {
+                if (row.Tag == null)
+                {
+                    continue;
+                }
                 Receipts_DataGridView.Rows.Add(
                     row.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString(),
@@ -112,10 +145,13 @@ namespace Sales_Tracker
                     visible = false;
                 }
 
-                DateTime date = DateTime.Parse(row.Cells[Column.Date.ToString()].Value.ToString());
-                if (date < From_DateTimePicker.Value || date > To_DateTimePicker.Value)
+                if (FilterByDate_CheckBox.Checked)
                 {
-                    visible = false;
+                    DateTime date = DateTime.Parse(row.Cells[Column.Date.ToString()].Value.ToString());
+                    if (date < From_DateTimePicker.Value || date > To_DateTimePicker.Value)
+                    {
+                        visible = false;
+                    }
                 }
 
                 row.Visible = visible;
@@ -126,16 +162,16 @@ namespace Sales_Tracker
             switch (Sort_ComboBox.Text)
             {
                 case "Most recent":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Date.ToString()], System.ComponentModel.ListSortDirection.Descending);
+                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Date.ToString()], ListSortDirection.Descending);
                     break;
                 case "Least recent":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Date.ToString()], System.ComponentModel.ListSortDirection.Ascending);
+                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Date.ToString()], ListSortDirection.Ascending);
                     break;
                 case "Most expensive":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Total.ToString()], System.ComponentModel.ListSortDirection.Descending);
+                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Total.ToString()], ListSortDirection.Descending);
                     break;
                 case "Least expensive":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Total.ToString()], System.ComponentModel.ListSortDirection.Ascending);
+                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Total.ToString()], ListSortDirection.Ascending);
                     break;
             }
         }

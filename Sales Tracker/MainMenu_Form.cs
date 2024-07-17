@@ -26,14 +26,14 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             SetCompanyLabel();
 
-            isFormLoading = true;
+            isDataGridViewLoading = true;
             LoadCategories();
             LoadSalesAndPurchases();
             LoadAccountants();
             LoadCompanies();
             AddTimeRangesIntoComboBox();
             UpdateTheme();
-            isFormLoading = false;
+            isDataGridViewLoading = false;
         }
         private void LoadCategories()
         {
@@ -389,7 +389,7 @@ namespace Sales_Tracker
         private bool wasControlsDropDownAdded = false;
         private void ResizeControls()
         {
-            if (isFormLoading) { return; }
+            if (isDataGridViewLoading) { return; }
 
             if (Height > 1000)
             {
@@ -720,7 +720,7 @@ namespace Sales_Tracker
         }
         private void Filter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (isFormLoading) { return; }
+            if (isDataGridViewLoading) { return; }
             CloseAllPanels(null, null);
             FilterDataGridViewByDate();
             LoadGraphs();
@@ -850,7 +850,7 @@ namespace Sales_Tracker
         }
         public void SaveCategoriesToFile(SelectedOption option)
         {
-            if (isFormLoading)
+            if (isDataGridViewLoading)
             {
                 return;
             }
@@ -881,7 +881,7 @@ namespace Sales_Tracker
 
 
         // DataGridView
-        public bool isFormLoading;
+        public bool isDataGridViewLoading;
         public SelectedOption Selected;
         public enum SelectedOption
         {
@@ -892,6 +892,7 @@ namespace Sales_Tracker
             CategoryPurchases,
             CategorySales,
             Accountants,
+            Receipts,
             Companies,
             Statistics
         }
@@ -1114,7 +1115,7 @@ namespace Sales_Tracker
         }
         private void DataGridViewRowChanged()
         {
-            if (isFormLoading)
+            if (isDataGridViewLoading || Selected == SelectedOption.Receipts)
             {
                 return;
             }
@@ -1136,7 +1137,7 @@ namespace Sales_Tracker
         }
         public void SaveDataGridViewToFile()
         {
-            if (isFormLoading)
+            if (isDataGridViewLoading)
             {
                 return;
             }
@@ -1203,6 +1204,8 @@ namespace Sales_Tracker
                     return;
                 }
 
+                FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
+
                 // Add move button
                 if (Selected == SelectedOption.CategoryPurchases)
                 {
@@ -1222,11 +1225,23 @@ namespace Sales_Tracker
                 }
                 else
                 {
-                    FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
                     flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
-                    rightClickDataGridView_Panel.Height = 5 * 22 + 10;
-                    flowPanel.Height = 5 * 22;
                 }
+
+                if (grid.Rows[0].Tag == null)
+                {
+                    flowPanel.Controls.Remove(rightClickDataGridView_ExportReceipt);
+                }
+                else
+                {
+                    flowPanel.Controls.Add(rightClickDataGridView_ExportReceipt);
+                }
+
+                // Adjust the panel height based on the number of controls
+                int controlCount = flowPanel.Controls.Count;
+                int controlHeight = 22;
+                rightClickDataGridView_Panel.Height = controlCount * controlHeight + 10;
+                flowPanel.Height = controlCount * controlHeight;
 
                 Control controlSender = (Control)sender;
                 controlRightClickPanelWasAddedTo = controlSender.Parent;
@@ -1311,14 +1326,11 @@ namespace Sales_Tracker
             flowPanel.Controls.Add(rightClickDataGridView_MoveBtn);
             flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, 1);
 
-            rightClickDataGridView_Panel.Height = 5 * 22 + 10;
-            flowPanel.Height = 5 * 22;
-
             rightClickDataGridView_MoveBtn.Text = buttonText;
         }
         private void UpdateTotals()
         {
-            if (isFormLoading || Selected != SelectedOption.Purchases & Selected != SelectedOption.Sales)
+            if (isDataGridViewLoading || Selected != SelectedOption.Purchases & Selected != SelectedOption.Sales)
             {
                 return;
             }
@@ -1347,7 +1359,7 @@ namespace Sales_Tracker
         }
         private void AlignTotalLabels()
         {
-            if (isFormLoading)
+            if (isDataGridViewLoading)
             {
                 return;
             }
@@ -1396,7 +1408,7 @@ namespace Sales_Tracker
 
         // Right click DataGridView row menu
         public Guna2Panel rightClickDataGridView_Panel;
-        private Guna2Button rightClickDataGridView_MoveBtn;
+        private Guna2Button rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceipt;
         public void ConstructRightClickDataGridViewRowMenu()
         {
             rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 5 * 22 + 10));
@@ -1414,8 +1426,8 @@ namespace Sales_Tracker
             rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", UI.panelBtnWidth, false, flowPanel);
             rightClickDataGridView_MoveBtn.Click += MoveRow;
 
-            menuBtn = UI.ConstructBtnForMenu("Download receipt", UI.panelBtnWidth, false, flowPanel);
-            menuBtn.Click += DownloadReceipt;
+            rightClickDataGridView_ExportReceipt = UI.ConstructBtnForMenu("Export receipt", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ExportReceipt.Click += DownloadReceipt;
 
             menuBtn = UI.ConstructBtnForMenu("Delete", UI.panelBtnWidth, false, flowPanel);
             menuBtn.ForeColor = CustomColors.accent_red;
@@ -1450,7 +1462,7 @@ namespace Sales_Tracker
             // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
-            isFormLoading = true;
+            isDataGridViewLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
             selectedDataGridView.Rows.Remove(selectedRow);
@@ -1465,7 +1477,7 @@ namespace Sales_Tracker
 
             // Save
             SaveDataGridViewToFile();
-            isFormLoading = false;
+            isDataGridViewLoading = false;
         }
         private void MoveRowDown(object sender, EventArgs e)
         {
@@ -1482,7 +1494,7 @@ namespace Sales_Tracker
             // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
-            isFormLoading = true;
+            isDataGridViewLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
             selectedDataGridView.Rows.Remove(selectedRow);
@@ -1497,7 +1509,7 @@ namespace Sales_Tracker
 
             // Save
             SaveDataGridViewToFile();
-            isFormLoading = false;
+            isDataGridViewLoading = false;
         }
         private void MoveRow(object? sender, EventArgs e)
         {

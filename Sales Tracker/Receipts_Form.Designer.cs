@@ -46,7 +46,7 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Receipts_Form));
-            DownloadReceipts_Label = new Label();
+            ExportReceipts_Label = new Label();
             Category_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ProductID_Label = new Label();
             From_Label = new Label();
@@ -63,16 +63,16 @@
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).BeginInit();
             SuspendLayout();
             // 
-            // DownloadReceipts_Label
+            // ExportReceipts_Label
             // 
-            DownloadReceipts_Label.Anchor = AnchorStyles.Top;
-            DownloadReceipts_Label.AutoSize = true;
-            DownloadReceipts_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            DownloadReceipts_Label.Location = new Point(383, 23);
-            DownloadReceipts_Label.Name = "DownloadReceipts_Label";
-            DownloadReceipts_Label.Size = new Size(185, 30);
-            DownloadReceipts_Label.TabIndex = 1;
-            DownloadReceipts_Label.Text = "Download receipts";
+            ExportReceipts_Label.Anchor = AnchorStyles.Top;
+            ExportReceipts_Label.AutoSize = true;
+            ExportReceipts_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ExportReceipts_Label.Location = new Point(400, 23);
+            ExportReceipts_Label.Name = "ExportReceipts_Label";
+            ExportReceipts_Label.Size = new Size(150, 30);
+            ExportReceipts_Label.TabIndex = 1;
+            ExportReceipts_Label.Text = "Export receipts";
             // 
             // Category_TextBox
             // 
@@ -168,10 +168,12 @@
             // FilterByDate_CheckBox
             // 
             FilterByDate_CheckBox.AutoSize = true;
+            FilterByDate_CheckBox.Checked = true;
             FilterByDate_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             FilterByDate_CheckBox.CheckedState.BorderRadius = 0;
             FilterByDate_CheckBox.CheckedState.BorderThickness = 0;
             FilterByDate_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            FilterByDate_CheckBox.CheckState = CheckState.Checked;
             FilterByDate_CheckBox.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             FilterByDate_CheckBox.Location = new Point(295, 80);
             FilterByDate_CheckBox.Name = "FilterByDate_CheckBox";
@@ -182,6 +184,7 @@
             FilterByDate_CheckBox.UncheckedState.BorderRadius = 0;
             FilterByDate_CheckBox.UncheckedState.BorderThickness = 0;
             FilterByDate_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            FilterByDate_CheckBox.CheckedChanged += FilterReceipts;
             // 
             // Receipts_DataGridView
             // 
@@ -351,11 +354,12 @@
             Controls.Add(From_Label);
             Controls.Add(ProductID_Label);
             Controls.Add(Category_TextBox);
-            Controls.Add(DownloadReceipts_Label);
+            Controls.Add(ExportReceipts_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Receipts_Form";
             StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += Receipts_Form_FormClosed;
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -363,7 +367,7 @@
 
         #endregion
 
-        private Label DownloadReceipts_Label;
+        private Label ExportReceipts_Label;
         private Guna.UI2.WinForms.Guna2TextBox Category_TextBox;
         private Label ProductID_Label;
         private Label From_Label;
