@@ -184,7 +184,7 @@ namespace Sales_Tracker.Classes
             };
             ConstructKeyShortcut("Ctrl+E", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Download receipts", panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Export receipts", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 new Receipts_Form().ShowDialog();

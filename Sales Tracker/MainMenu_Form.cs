@@ -33,6 +33,7 @@ namespace Sales_Tracker
             LoadCompanies();
             AddTimeRangesIntoComboBox();
             UpdateTheme();
+            ResizeControls();
             isDataGridViewLoading = false;
         }
         private void LoadCategories()

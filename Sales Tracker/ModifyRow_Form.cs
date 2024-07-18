@@ -288,7 +288,7 @@ namespace Sales_Tracker
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.OrderNumber]; }
 
                         ConstructLabel(text, left, Panel);
-                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, false, Panel);
+                        controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, false, Panel);
                         left += controlWidth + 10;
                         break;
 

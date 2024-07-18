@@ -107,7 +107,7 @@ namespace Sales_Tracker
             OrderNumber_TextBox.Font = new Font("Segoe UI", 9F);
             OrderNumber_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             OrderNumber_TextBox.Location = new Point(129, 103);
-            OrderNumber_TextBox.MaxLength = 32;
+            OrderNumber_TextBox.MaxLength = 50;
             OrderNumber_TextBox.Name = "OrderNumber_TextBox";
             OrderNumber_TextBox.PasswordChar = '\0';
             OrderNumber_TextBox.PlaceholderText = "";
@@ -169,7 +169,7 @@ namespace Sales_Tracker
             BuyerName_TextBox.Font = new Font("Segoe UI", 9F);
             BuyerName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             BuyerName_TextBox.Location = new Point(335, 103);
-            BuyerName_TextBox.MaxLength = 32;
+            BuyerName_TextBox.MaxLength = 50;
             BuyerName_TextBox.Name = "BuyerName_TextBox";
             BuyerName_TextBox.PasswordChar = '\0';
             BuyerName_TextBox.PlaceholderText = "";
@@ -205,7 +205,7 @@ namespace Sales_Tracker
             ProductName_TextBox.Font = new Font("Segoe UI", 9F);
             ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductName_TextBox.Location = new Point(541, 103);
-            ProductName_TextBox.MaxLength = 32;
+            ProductName_TextBox.MaxLength = 50;
             ProductName_TextBox.Name = "ProductName_TextBox";
             ProductName_TextBox.PasswordChar = '\0';
             ProductName_TextBox.PlaceholderText = "";

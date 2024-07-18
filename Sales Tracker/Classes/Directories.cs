@@ -17,7 +17,6 @@ namespace Sales_Tracker.Classes
             }
 
             companyName = project_name;
-
             tempCompany_dir = appData_dir + project_name + @"\";
 
             argoCompany_dir = projectDir;
@@ -331,36 +330,36 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Creates an Argo Tar file from a directory.
         /// </summary>
-        public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationDirectory, string fileExtension, bool overWrite)
+        public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationDirectory)
         {
-            string directoryName = Path.GetFileName(sourceDirectory);
-            string tarName = destinationDirectory + @"\" + directoryName;
+            // This method ensures that the Argo file is not deleted,
+            // preventing the file from being moved on the desktop screen.
 
-            if (File.Exists(tarName + fileExtension))
+            // Create a temporary file
+            string tempFile = Path.GetTempPath() + Path.GetFileName(destinationDirectory);
+
+            try
             {
-                if (overWrite)
+                // Create the tar file in the temporary location
+                TarFile.CreateFromDirectory(sourceDirectory, tempFile, true);
+
+                // Overwrite the existing file without deleting it
+                using FileStream tempFileStream = new(tempFile, FileMode.Open, FileAccess.Read);
+                using FileStream destFileStream = new(destinationDirectory, FileMode.Create, FileAccess.Write);
+                tempFileStream.CopyTo(destFileStream);
+            }
+            catch
+            {
+                Log.Error_FailedToSave(destinationDirectory);
+            }
+            finally
+            {
+                // Clean up the temporary file
+                if (File.Exists(tempFile))
                 {
-                    DeleteFile(tarName + fileExtension);
-                }
-                else
-                {
-                    List<string> files_list = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
-
-                    // Get a new name for the file
-                    string newFileName = Tools.AddNumberForAStringThatAlreadyExists(directoryName, files_list);
-                    tarName = destinationDirectory + @"\" + newFileName;
-
-                    // Rename the directory temporarily so the tar file will have the new name
-                    RenameFolder(sourceDirectory, tarName);
-
-                    TarFile.CreateFromDirectory(tarName, tarName + fileExtension, true);
-
-                    // Rename the directory back to the original name
-                    RenameFolder(tarName, sourceDirectory);
+                    File.Delete(tempFile);
                 }
             }
-
-            TarFile.CreateFromDirectory(sourceDirectory, tarName + fileExtension, true);
         }
 
         /// <summary>

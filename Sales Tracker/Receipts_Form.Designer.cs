@@ -59,7 +59,7 @@
             Product_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Sort_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             label1 = new Label();
-            DownloadSelected_Button = new Guna.UI2.WinForms.Guna2Button();
+            ExportSelected_Button = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -313,35 +313,35 @@
             label1.TabIndex = 0;
             label1.Text = "Sort";
             // 
-            // DownloadSelected_Button
+            // ExportSelected_Button
             // 
-            DownloadSelected_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            DownloadSelected_Button.BackColor = Color.Transparent;
-            DownloadSelected_Button.BorderColor = Color.LightGray;
-            DownloadSelected_Button.BorderRadius = 2;
-            DownloadSelected_Button.BorderThickness = 1;
-            DownloadSelected_Button.CustomizableEdges = customizableEdges13;
-            DownloadSelected_Button.DisabledState.BorderColor = Color.DarkGray;
-            DownloadSelected_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            DownloadSelected_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            DownloadSelected_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            DownloadSelected_Button.FillColor = Color.White;
-            DownloadSelected_Button.Font = new Font("Segoe UI", 9F);
-            DownloadSelected_Button.ForeColor = Color.Black;
-            DownloadSelected_Button.Location = new Point(750, 145);
-            DownloadSelected_Button.Name = "DownloadSelected_Button";
-            DownloadSelected_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            DownloadSelected_Button.Size = new Size(150, 36);
-            DownloadSelected_Button.TabIndex = 57;
-            DownloadSelected_Button.Text = "Download selected";
-            DownloadSelected_Button.Click += DownloadSelected_Button_Click;
+            ExportSelected_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ExportSelected_Button.BackColor = Color.Transparent;
+            ExportSelected_Button.BorderColor = Color.LightGray;
+            ExportSelected_Button.BorderRadius = 2;
+            ExportSelected_Button.BorderThickness = 1;
+            ExportSelected_Button.CustomizableEdges = customizableEdges13;
+            ExportSelected_Button.DisabledState.BorderColor = Color.DarkGray;
+            ExportSelected_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            ExportSelected_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            ExportSelected_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            ExportSelected_Button.FillColor = Color.White;
+            ExportSelected_Button.Font = new Font("Segoe UI", 9F);
+            ExportSelected_Button.ForeColor = Color.Black;
+            ExportSelected_Button.Location = new Point(750, 145);
+            ExportSelected_Button.Name = "ExportSelected_Button";
+            ExportSelected_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            ExportSelected_Button.Size = new Size(150, 36);
+            ExportSelected_Button.TabIndex = 57;
+            ExportSelected_Button.Text = "Export selected";
+            ExportSelected_Button.Click += ExportSelected_Button_Click;
             // 
             // Receipts_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(950, 530);
-            Controls.Add(DownloadSelected_Button);
+            Controls.Add(ExportSelected_Button);
             Controls.Add(label1);
             Controls.Add(Sort_ComboBox);
             Controls.Add(Product_TextBox);
@@ -381,5 +381,6 @@
         private Guna.UI2.WinForms.Guna2ComboBox Sort_ComboBox;
         private Label label1;
         public Guna.UI2.WinForms.Guna2Button DownloadSelected_Button;
+        public Guna.UI2.WinForms.Guna2Button ExportSelected_Button;
     }
 }

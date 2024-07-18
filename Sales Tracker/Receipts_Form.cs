@@ -58,7 +58,7 @@ namespace Sales_Tracker
             To_DateTimePicker.Value = DateTime.Now;
             Sort_ComboBox.SelectedIndex = 0;
         }
-        private void DownloadSelected_Button_Click(object sender, EventArgs e)
+        private void ExportSelected_Button_Click(object sender, EventArgs e)
         {
             // Select directory
             Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();

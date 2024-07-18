@@ -181,5 +181,17 @@ namespace Sales_Tracker.Classes
                 lineNumber,
                 caller);
         }
+        public static void Error_FailedToSave(
+            string filePath,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string caller = null)
+        {
+            Error("Error-5knt54: Failed to save:" +
+                $"\nSource:'{filePath}'.",
+                "https://www.google.com",
+                false,
+                lineNumber,
+                caller);
+        }
     }
 }
