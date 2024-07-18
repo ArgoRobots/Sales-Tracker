@@ -89,7 +89,7 @@ namespace Sales_Tracker
             AmountCharged_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Receipt_Button = new Guna.UI2.WinForms.Guna2Button();
             SelectedReceipt_Label = new Label();
-            RemoveReceipt_PictureBox = new Guna.UI2.WinForms.Guna2ImageButton();
+            RemoveReceipt_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).BeginInit();
             SuspendLayout();
@@ -612,7 +612,7 @@ namespace Sales_Tracker
             Receipt_Button.Margin = new Padding(4, 3, 4, 3);
             Receipt_Button.Name = "Receipt_Button";
             Receipt_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
-            Receipt_Button.Size = new Size(143, 36);
+            Receipt_Button.Size = new Size(140, 36);
             Receipt_Button.TabIndex = 5;
             Receipt_Button.Tag = "";
             Receipt_Button.Text = "Add receipt";
@@ -623,36 +623,34 @@ namespace Sales_Tracker
             SelectedReceipt_Label.Anchor = AnchorStyles.Top;
             SelectedReceipt_Label.AutoSize = true;
             SelectedReceipt_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceipt_Label.Location = new Point(803, 146);
+            SelectedReceipt_Label.Location = new Point(800, 146);
             SelectedReceipt_Label.Name = "SelectedReceipt_Label";
             SelectedReceipt_Label.Size = new Size(57, 17);
             SelectedReceipt_Label.TabIndex = 0;
             SelectedReceipt_Label.Text = "Selected";
             // 
-            // RemoveReceipt_PictureBox
+            // RemoveReceipt_ImageButton
             // 
-            RemoveReceipt_PictureBox.CheckedState.ImageSize = new Size(64, 64);
-            RemoveReceipt_PictureBox.HoverState.ImageSize = new Size(64, 64);
-            RemoveReceipt_PictureBox.Image = Properties.Resources.CloseGrey;
-            RemoveReceipt_PictureBox.ImageOffset = new Point(0, 0);
-            RemoveReceipt_PictureBox.ImageRotate = 0F;
-            RemoveReceipt_PictureBox.ImageSize = new Size(20, 20);
-            RemoveReceipt_PictureBox.Location = new Point(866, 142);
-            RemoveReceipt_PictureBox.Name = "RemoveReceipt_PictureBox";
-            RemoveReceipt_PictureBox.PressedState.ImageSize = new Size(64, 64);
-            RemoveReceipt_PictureBox.ShadowDecoration.CustomizableEdges = customizableEdges27;
-            RemoveReceipt_PictureBox.Size = new Size(25, 25);
-            RemoveReceipt_PictureBox.TabIndex = 16;
-            RemoveReceipt_PictureBox.Click += RemoveReceipt_PictureBox_Click;
-            RemoveReceipt_PictureBox.MouseEnter += RemoveReceipt_PictureBox_MouseEnter;
-            RemoveReceipt_PictureBox.MouseLeave += RemoveReceipt_PictureBox_MouseLeave;
+            RemoveReceipt_ImageButton.CheckedState.ImageSize = new Size(64, 64);
+            RemoveReceipt_ImageButton.Image = Properties.Resources.CloseGrey;
+            RemoveReceipt_ImageButton.ImageOffset = new Point(0, 0);
+            RemoveReceipt_ImageButton.ImageRotate = 0F;
+            RemoveReceipt_ImageButton.ImageSize = new Size(20, 20);
+            RemoveReceipt_ImageButton.Location = new Point(863, 142);
+            RemoveReceipt_ImageButton.Name = "RemoveReceipt_ImageButton";
+            RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges27;
+            RemoveReceipt_ImageButton.Size = new Size(25, 25);
+            RemoveReceipt_ImageButton.TabIndex = 16;
+            RemoveReceipt_ImageButton.Click += RemoveReceipt_ImageButton_Click;
+            RemoveReceipt_ImageButton.MouseEnter += RemoveReceipt_ImageButton_MouseEnter;
+            RemoveReceipt_ImageButton.MouseLeave += RemoveReceipt_ImageButton_MouseLeave;
             // 
             // AddPurchase_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(914, 361);
-            Controls.Add(RemoveReceipt_PictureBox);
+            Controls.Add(RemoveReceipt_ImageButton);
             Controls.Add(SelectedReceipt_Label);
             Controls.Add(Receipt_Button);
             Controls.Add(AmountCharged_Label);
@@ -732,6 +730,6 @@ namespace Sales_Tracker
         private Guna.UI2.WinForms.Guna2TextBox AmountCharged_TextBox;
         private Guna.UI2.WinForms.Guna2Button Receipt_Button;
         private Label SelectedReceipt_Label;
-        private Guna.UI2.WinForms.Guna2ImageButton RemoveReceipt_PictureBox;
+        private Guna.UI2.WinForms.Guna2ImageButton RemoveReceipt_ImageButton;
     }
 }

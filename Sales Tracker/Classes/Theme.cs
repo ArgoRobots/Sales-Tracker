@@ -258,6 +258,22 @@ namespace Sales_Tracker.Classes
             SetThemeForControl(list);
             UseImmersiveDarkMode(form.Handle, CurrentTheme == ThemeType.Dark);
         }
+        public static void MakeSureThemeIsNotWindows()
+        {
+            if (CurrentTheme == ThemeType.Windows)
+            {
+                int value = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
+
+                if (value == 0)
+                {
+                    CurrentTheme = ThemeType.Dark;
+                }
+                else if (value == 1)
+                {
+                    CurrentTheme = ThemeType.Light;
+                }
+            }
+        }
 
 
         // Set the header to dark

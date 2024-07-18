@@ -28,6 +28,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = Receipts_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Receipts;
             AddAllReceiptsAndGetOldestDate();
+            Receipts_DataGridView.SelectionChanged += Receipts_DataGridView_SelectionChanged;
 
             if (Receipts_DataGridView.Rows.Count > 0)
             {
@@ -38,6 +39,13 @@ namespace Sales_Tracker
 
             Theme.SetThemeForForm(this);
             MainMenu_Form.Instance.isDataGridViewLoading = false;
+        }
+        private void Receipts_DataGridView_SelectionChanged(object? sender, EventArgs e)
+        {
+            if (Receipts_DataGridView.SelectedRows.Count > 0)
+            {
+                ExportSelected_Button.Enabled = true;
+            }
         }
 
 

@@ -36,6 +36,8 @@ namespace Sales_Tracker
             CustomMessageBoxVariables.Reset();
             Back_Panel.Controls.Add(Icon_pictureBox);
 
+            Height = 120 + Message_Label.Height;
+
             // Set icon
             switch (icon)
             {

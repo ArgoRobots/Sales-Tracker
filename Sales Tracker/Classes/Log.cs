@@ -50,26 +50,29 @@ namespace Sales_Tracker.Classes
             string message,
             string link,
             bool showMessageBox,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             // Add link
             if (link != "")
             {
-                message += "\n\n";
-                CustomMessageBoxVariables.LinkStart = message.Length;
-                string text = "More information";
-                message += text;
+                message += "\nMore information: " + link;
+                CustomMessageBoxVariables.LinkStart = message.Length - link.Length;
                 CustomMessageBoxVariables.Link = link;
-                CustomMessageBoxVariables.LinkLength = text.Length;
+                CustomMessageBoxVariables.LinkLength = link.Length;
             }
 
-            // Add debug info
+            // Prepare debug info
+            string debugInfo = "\nDebug info:";
+            debugInfo += $"\nLine: '{lineNumber}'.";
+            debugInfo += $"\nStack trace\n: '{ Environment.StackTrace}'.";
+
+            // Log error with debug info
+            Write(0, message + debugInfo);
+
+            // Add debug info to message box
             if (Properties.Settings.Default.ShowDebugInfo)
             {
-                message += "\n\nDebug info:";
-                message += $"\nLine: '{lineNumber}'.";
-                message += $"\nCaller: '{caller}'.";
+                message += debugInfo;
             }
 
             // Show error
@@ -77,121 +80,100 @@ namespace Sales_Tracker.Classes
             {
                 CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
-
-            // Log error
-            Write(0, message);
         }
 
         // File errors
         public static void Error_FileDoesNotExist(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-3vknm9: File does not exist:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_DirectoryDoesNotExist(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-tq45ek: Directory does not exist:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_FileAlreadyExists(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-djrr3r: File already exists:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_DirectoryAlreadyExists(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-cmr45a: Directory already exists:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_DestinationFileAlreadyExists(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-8g8we7: The destination file already exists:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_TheSourceAndDestinationAreTheSame(
             string source,
             string destination,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-h88tzd: The source and destination files are the same." +
                 $"\nSource:'{source}'." +
                 $"\nDestination: '{destination}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_FailedToWriteToFile(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-h88tzd: Failed to write to file:" +
                 $"\nSource:'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_FailedToReadFile(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-h88tzd: Failed to read the file:" +
                 $"\nSource:'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
         public static void Error_FailedToSave(
             string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-5knt54: Failed to save:" +
                 $"\nSource:'{filePath}'.",
                 "https://www.google.com",
                 false,
-                lineNumber,
-                caller);
+                lineNumber);
         }
     }
 }

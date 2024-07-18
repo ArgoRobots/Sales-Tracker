@@ -325,6 +325,7 @@
             ExportSelected_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             ExportSelected_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             ExportSelected_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            ExportSelected_Button.Enabled = false;
             ExportSelected_Button.FillColor = Color.White;
             ExportSelected_Button.Font = new Font("Segoe UI", 9F);
             ExportSelected_Button.ForeColor = Color.Black;
@@ -358,6 +359,7 @@
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Receipts_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Receipts_Form_FormClosed;
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).EndInit();

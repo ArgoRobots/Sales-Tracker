@@ -378,6 +378,7 @@ namespace Sales_Tracker
                 if (AskUserToSaveBeforeClosing())
                 {
                     e.Cancel = true;
+                    Log.Write(2, "Close Canceled");
                     return;
                 }
             }
@@ -1109,7 +1110,7 @@ namespace Sales_Tracker
         {
             AlignTotalLabels();
         }
-        private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        public void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             if (isDataGridViewLoading)
             {
@@ -1127,13 +1128,13 @@ namespace Sales_Tracker
             DataGridViewRowChanged();
 
             // Remove receipt from file
-            if (Selected == SelectedOption.Purchases || (Selected == SelectedOption.Sales && removedRow?.Tag != null))
+            if ((Selected == SelectedOption.Purchases || Selected == SelectedOption.Sales) && removedRow?.Tag != null)
             {
                 Directories.DeleteFile(removedRow.Tag.ToString());
                 removedRow = null;
             }
         }
-        private void DataGridViewRowChanged()
+        public void DataGridViewRowChanged()
         {
             if (isDataGridViewLoading || Selected == SelectedOption.Receipts)
             {
@@ -1248,13 +1249,14 @@ namespace Sales_Tracker
                     flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
                 }
 
-                if (grid.Rows[0].Tag == null)
+                if (grid.SelectedRows[0].Tag == null)
                 {
-                    flowPanel.Controls.Remove(rightClickDataGridView_ExportReceipt);
+                    flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
                 }
                 else
                 {
-                    flowPanel.Controls.Add(rightClickDataGridView_ExportReceipt);
+                    flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
+                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, 3);
                 }
 
                 // Adjust the panel height based on the number of controls
@@ -1428,7 +1430,8 @@ namespace Sales_Tracker
 
         // Right click DataGridView row menu
         public Guna2Panel rightClickDataGridView_Panel;
-        private Guna2Button rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceipt;
+        private Guna2Button rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn;
+        public Guna2Button rightClickDataGridView_DeleteBtn;
         public void ConstructRightClickDataGridViewRowMenu()
         {
             rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 5 * 22 + 10));
@@ -1437,23 +1440,23 @@ namespace Sales_Tracker
             Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", UI.panelBtnWidth, false, flowPanel);
             menuBtn.Click += ModifyRow;
 
+            rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_MoveBtn.Click += MoveRow;
+
             menuBtn = UI.ConstructBtnForMenu("Move up", UI.panelBtnWidth, false, flowPanel);
             menuBtn.Click += MoveRowUp;
 
             menuBtn = UI.ConstructBtnForMenu("Move down", UI.panelBtnWidth, false, flowPanel);
             menuBtn.Click += MoveRowDown;
 
-            rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", UI.panelBtnWidth, false, flowPanel);
-            rightClickDataGridView_MoveBtn.Click += MoveRow;
+            rightClickDataGridView_ExportReceiptBtn = UI.ConstructBtnForMenu("Export receipt", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
 
-            rightClickDataGridView_ExportReceipt = UI.ConstructBtnForMenu("Export receipt", UI.panelBtnWidth, false, flowPanel);
-            rightClickDataGridView_ExportReceipt.Click += DownloadReceipt;
+            rightClickDataGridView_DeleteBtn = UI.ConstructBtnForMenu("Delete", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
+            rightClickDataGridView_DeleteBtn.Click += DeleteRow;
 
-            menuBtn = UI.ConstructBtnForMenu("Delete", UI.panelBtnWidth, false, flowPanel);
-            menuBtn.ForeColor = CustomColors.accent_red;
-            menuBtn.Click += DeleteRow;
-
-            UI.ConstructKeyShortcut("Del", menuBtn);
+            UI.ConstructKeyShortcut("Del", rightClickDataGridView_DeleteBtn);
         }
         private void ModifyRow(object? sender, EventArgs e)
         {
@@ -1575,18 +1578,27 @@ namespace Sales_Tracker
             // Restore the scroll position
             selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
         }
-        private void DownloadReceipt(object? sender, EventArgs e)
+        private void ExportReceipt(object? sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
             DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
+            string receiptFilePath = selectedRow.Tag.ToString();
+
+            if (!File.Exists(receiptFilePath))
+            {
+
+                CustomMessageBox.Show("Argo Sales Tracker", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                Log.Error_FileDoesNotExist(receiptFilePath);
+                return;
+            }
 
             // Select directory
             Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Directories.CopyFile(selectedRow.Tag.ToString(), dialog.SelectedPath + @"\" + Path.GetFileName(selectedRow.Tag.ToString()));
+                Directories.CopyFile(receiptFilePath, dialog.SelectedPath + @"\" + Path.GetFileName(selectedRow.Tag.ToString()));
             }
         }
         private void DeleteRow(object? sender, EventArgs e)
@@ -1828,6 +1840,56 @@ namespace Sales_Tracker
                 LogForm.BringToFront();
             }
         }
+
+        // Receipts
+        public void SaveReceiptInFile(string recieptFilePath)
+        {
+            string newFilePath;
+            if (File.Exists(Directories.receipts_dir + Path.GetFileName(recieptFilePath)))
+            {
+                // Get a new name for the file
+                string name = Path.GetFileNameWithoutExtension(recieptFilePath);
+                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(Directories.receipts_dir);
+
+                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
+
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    $"Rename receipt",
+                    $"Do you want to rename '{name}' to '{suggestedThingName}'? There is already a receipt with the same name.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo);
+
+                if (result == CustomMessageBoxResult.Yes)
+                {
+                    newFilePath = Directories.receipts_dir + suggestedThingName + Path.GetExtension(recieptFilePath);
+                }
+                else { return; }
+            }
+            else
+            {
+                newFilePath = Directories.receipts_dir + Path.GetFileName(recieptFilePath);
+            }
+
+
+            // Save receipt
+            Directories.CopyFile(recieptFilePath, newFilePath);
+
+            // Add receipt filepath to row tag
+            selectedDataGridView.Rows[^1].Tag = newFilePath;
+
+           DataGridViewRowChanged();
+        }
+        public static void RemoveReceiptFromFile(DataGridViewRow row)
+        {
+            string filePath = row.Tag.ToString();
+
+            if (File.Exists(filePath))
+            {
+                Directories.DeleteFile(filePath);
+            }
+            row.Tag = null;
+        }
+
 
         // Misc.
         public bool IsPurchasesSelected()

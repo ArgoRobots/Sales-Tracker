@@ -41,13 +41,6 @@ namespace Sales_Tracker.Settings
         private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-
-            // Select button
-            if (btnSelected != null)
-            {
-                btnSelected.FillColor = CustomColors.accent_blue;
-                btnSelected.ForeColor = Color.White;
-            }
         }
 
 
@@ -75,6 +68,8 @@ namespace Sales_Tracker.Settings
             if (result == CustomMessageBoxResult.Ok)
             {
                 UserSettings.ResetAllToDefault();
+                Theme.MakeSureThemeIsNotWindows();
+                ApplyChanges();
             }
         }
         private void Ok_Button_Click(object sender, EventArgs e)
@@ -170,6 +165,8 @@ namespace Sales_Tracker.Settings
                         }
                     }
                 }
+
+                MainMenu_Form.Instance.rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
 
                 if (Theme.CurrentTheme == Theme.ThemeType.Dark)
                 {

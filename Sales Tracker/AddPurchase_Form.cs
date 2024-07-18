@@ -24,6 +24,10 @@ namespace Sales_Tracker
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
+
+            // Despite this being the default, it's still needed for some reason
+            RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
+            RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(20, 20);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -149,29 +153,30 @@ namespace Sales_Tracker
                 ShowReceiptLabel(dialog.SafeFileName);
             }
         }
-        private void RemoveReceipt_PictureBox_Click(object sender, EventArgs e)
+        private void RemoveReceipt_ImageButton_Click(object sender, EventArgs e)
         {
             RemoveReceiptLabel();
         }
-        private void RemoveReceipt_PictureBox_MouseEnter(object sender, EventArgs e)
+        private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
-            RemoveReceipt_PictureBox.BackColor = CustomColors.fileHover;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.fileHover;
         }
-        private void RemoveReceipt_PictureBox_MouseLeave(object sender, EventArgs e)
+        private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
         {
-            RemoveReceipt_PictureBox.BackColor = CustomColors.mainBackground;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
         }
 
 
+        // Receipts
         private string recieptFilePath;
-        // Methods for receipts
         private void ShowReceiptLabel(string text)
         {
-            Controls.Add(SelectedReceipt_Label);
-            Controls.Add(RemoveReceipt_PictureBox);
-
             SelectedReceipt_Label.Text = text;
+
+            Controls.Add(SelectedReceipt_Label);
+            Controls.Add(RemoveReceipt_ImageButton);
             SetReceiptLabelLocation();
+
             ValidateInputs(null, null);
         }
         private void SetReceiptLabelLocation()
@@ -181,16 +186,15 @@ namespace Sales_Tracker
                 return;
             }
 
-            SelectedReceipt_Label.Left = Receipt_Button.Right - SelectedReceipt_Label.Width - RemoveReceipt_PictureBox.Width - spaceBetweenControlsHorizontally;
-
-            RemoveReceipt_PictureBox.Location = new Point(
-                SelectedReceipt_Label.Right + spaceBetweenControlsHorizontally,
-                SelectedReceipt_Label.Top + (SelectedReceipt_Label.Height - SelectedReceipt_Label.Height) / 2);
+            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + spaceBetweenControlsVertically);
+            SelectedReceipt_Label.Location = new Point(
+                RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
+                RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
         }
         private void RemoveReceiptLabel()
         {
             Controls.Remove(SelectedReceipt_Label);
-            Controls.Remove(RemoveReceipt_PictureBox);
+            Controls.Remove(RemoveReceipt_ImageButton);
             ValidateInputs(null, null);
         }
 
@@ -235,32 +239,8 @@ namespace Sales_Tracker
             }
             totalPrice += chargedDifference;
 
-            string newFilePath;
-            if (File.Exists(Directories.receipts_dir + Path.GetFileName(recieptFilePath)))
-            {
-                // Get a new name for the file
-                string name = Path.GetFileNameWithoutExtension(recieptFilePath);
-                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(Directories.receipts_dir);
-
-                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
-
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Rename receipt",
-                    $"Do you want to rename '{name}' to '{suggestedThingName}'? There is already a receipt with the same name.",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNo);
-
-                if (result == CustomMessageBoxResult.Yes)
-                {
-                    newFilePath = Directories.receipts_dir + suggestedThingName + Path.GetExtension(recieptFilePath);
-                }
-                else { return; }
-            }
-            else
-            {
-                newFilePath = Directories.receipts_dir + Path.GetFileName(recieptFilePath);
-            }
-
+            MainMenu_Form.Instance.selectedDataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
+         
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseID,
                 buyerName,
@@ -277,12 +257,14 @@ namespace Sales_Tracker
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );
+            MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
 
-            // Save receipt
-            Directories.CopyFile(recieptFilePath, newFilePath);
+            if (Controls.Contains(SelectedReceipt_Label))
+            {
+                MainMenu_Form.Instance.SaveReceiptInFile(recieptFilePath);
+            }
 
-            // Add receipt filepath to row tag
-            MainMenu_Form.Instance.selectedDataGridView.Rows[^1].Tag = newFilePath;
+            MainMenu_Form.Instance.DataGridViewRowChanged();
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");

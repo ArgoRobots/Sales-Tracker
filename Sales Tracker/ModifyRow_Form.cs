@@ -8,6 +8,8 @@ namespace Sales_Tracker
         // Properties
         private readonly string selectedTag = "";
         private readonly DataGridViewRow selectedRow;
+        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3;
+        private string recieptFilePath;
 
         // Init
         public ModifyRow_Form(DataGridViewRow row)
@@ -20,6 +22,44 @@ namespace Sales_Tracker
             ConstructControls();
             Theme.SetThemeForForm(this);
         }
+
+
+        // Form event handlers
+        private Control controlToFocus;
+        private void ModifyRow_Form_Shown(object sender, EventArgs e)
+        {
+            controlToFocus?.Focus();
+        }
+
+
+        // Event handlers
+        private void Save_Button_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            SaveInRow();
+            SaveInListsAndUpdateDataGridViews();
+
+            // If the user selected a new receipt
+            if (recieptFilePath != null)
+            {
+                if (removedReceipt)
+                {
+                    MainMenu_Form.RemoveReceiptFromFile(selectedRow);
+                }
+                MainMenu_Form.Instance.SaveReceiptInFile(recieptFilePath);
+            }
+            else if (removedReceipt)
+            {
+                MainMenu_Form.RemoveReceiptFromFile(selectedRow);
+            }
+        }
+        private void Cancel_Button_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+
+        // Construct controls
         private void ConstructControls()
         {
             int left = 0, secondLeft = 0;
@@ -49,6 +89,12 @@ namespace Sales_Tracker
             }
 
             CenterControls(left, secondLeft);
+
+            if (selectedRow.Tag != null)
+            {
+                containsReceipt = true;
+                ShowReceiptLabel(Path.GetFileName(selectedRow.Tag.ToString()));
+            }
         }
         private void CenterControls(int left, int secondLeft)
         {
@@ -260,11 +306,15 @@ namespace Sales_Tracker
                         gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
                         break;
                 }
-                left += controlWidth + 10;
+                left += controlWidth + spaceBetweenControlsHorizontally;
             }
             return left;
         }
         private decimal total = 0;
+        Label SelectedReceipt_Label;
+        Guna2ImageButton RemoveReceipt_ImageButton;
+        Guna2Button Receipt_Button;
+        private bool containsReceipt = false, removedReceipt;
         private (int, int) ConstructControlsForSaleOrPurchase()
         {
             ConstructPanel();
@@ -289,7 +339,7 @@ namespace Sales_Tracker
 
                         ConstructLabel(text, left, Panel);
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, false, Panel);
-                        left += controlWidth + 10;
+                        left += controlWidth + spaceBetweenControlsHorizontally;
                         break;
 
                     case nameof(MainMenu_Form.Column.Name):
@@ -301,19 +351,83 @@ namespace Sales_Tracker
 
                         ConstructLabel(text, left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
-                        left += controlWidth + 10;
+                        left += controlWidth + spaceBetweenControlsHorizontally;
                         break;
 
                     case nameof(MainMenu_Form.Column.Product):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, KeyPressValidation.None, false, false, Panel);
-                        left += controlWidth + 10;
+                        left += controlWidth + spaceBetweenControlsHorizontally;
+
+                        // Add receipt here
+                        // Button
+                        byte buttonWidth = 140;
+                        Receipt_Button = new()
+                        {
+                            Location = new Point(left, 45),
+                            Text = "Change receipt",
+                            BackColor = CustomColors.controlBack,
+                            FillColor = CustomColors.controlBack,
+                            Size = new Size(buttonWidth, 36),
+                            BorderRadius = 2,
+                            BorderThickness = 1,
+                            Font = new Font("Segoe UI", 10),
+                        };
+                        Receipt_Button.Click += (sender, e) =>
+                        {
+                            // Select file
+                            OpenFileDialog dialog = new();
+                            if (dialog.ShowDialog() == DialogResult.OK)
+                            {
+                                if (Controls.Contains(SelectedReceipt_Label))
+                                {
+                                    removedReceipt = true;
+                                }
+                                ShowReceiptLabel(dialog.SafeFileName);
+                                recieptFilePath = dialog.FileName;
+                            }
+                        };
+                        Panel.Controls.Add(Receipt_Button);
+
+                        left += buttonWidth + spaceBetweenControlsHorizontally;
+
+                        // ImageButton
+                        RemoveReceipt_ImageButton = new()
+                        {
+                            Size = new Size(25, 25),
+                            ImageSize = new Size(20, 20),
+                            Image = Properties.Resources.CloseGrey
+                        };
+                        RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
+                        RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(20, 20);
+                        RemoveReceipt_ImageButton.Click += (sender, e) =>
+                        {
+                            CloseAllPanels(null, null);
+                            RemoveReceiptLabel();
+                            removedReceipt = true;
+                        };
+                        RemoveReceipt_ImageButton.MouseEnter += (sender, e) =>
+                        {
+                            RemoveReceipt_ImageButton.BackColor = CustomColors.fileHover;
+                        };
+                        RemoveReceipt_ImageButton.MouseLeave += (sender, e) =>
+                        {
+                            RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
+                        };
+                        // Label
+                        SelectedReceipt_Label = new()
+                        {
+                            ForeColor = CustomColors.text,
+                            Font = new Font("Segoe UI", 10),
+                            AutoSize = true
+                        };
+                        SelectedReceipt_Label.Click += CloseAllPanels;
                         break;
 
                     case nameof(MainMenu_Form.Column.Date):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], left, Panel);
                         ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), Panel);
-                        left += controlWidth + 10;
+                        left += controlWidth + spaceBetweenControlsHorizontally;
                         break;
 
                     case nameof(MainMenu_Form.Column.Quantity):
@@ -321,35 +435,35 @@ namespace Sales_Tracker
 
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbers, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + 10;
+                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
                         quantity = decimal.TryParse(cellValue, out decimal q) ? q : 0;
                         break;
 
                     case nameof(MainMenu_Form.Column.PricePerUnit):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.PricePerUnit], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + 10;
+                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
                         pricePerUnit = decimal.TryParse(cellValue, out decimal ppu) ? ppu : 0;
                         break;
 
                     case nameof(MainMenu_Form.Column.Shipping):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Shipping], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, true, true, SecondPanel);
-                        secondLeft += smallControlWidth + 10;
+                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
                         shipping = decimal.TryParse(cellValue, out decimal ship) ? ship : 0;
                         break;
 
                     case nameof(MainMenu_Form.Column.Tax):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Tax], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + 10;
+                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
                         tax = decimal.TryParse(cellValue, out decimal t) ? t : 0;
                         break;
 
                     case nameof(MainMenu_Form.Column.Fee):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Fee], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + 10;
+                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
                         fee = decimal.TryParse(cellValue, out decimal f) ? f : 0;
                         break;
 
@@ -360,11 +474,42 @@ namespace Sales_Tracker
 
                         ConstructLabel("Charged amount", secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, chargedDifference.ToString("N2"), 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + 10;
+                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
                         break;
                 }
             }
             return (left, secondLeft);
+        }
+
+
+        // Methods for receipts
+        private void ShowReceiptLabel(string text)
+        {
+            SelectedReceipt_Label.Text = text;
+
+            Controls.Add(SelectedReceipt_Label);
+            Controls.Add(RemoveReceipt_ImageButton);
+            SetReceiptLabelLocation();
+            SelectedReceipt_Label.BringToFront();
+            RemoveReceipt_ImageButton.BringToFront();
+
+            InputChanged(null, null);
+        }
+        private void SetReceiptLabelLocation()
+        {
+            RemoveReceipt_ImageButton.Location = new Point(
+                Receipt_Button.Parent.Left + Receipt_Button.Right - RemoveReceipt_ImageButton.Width,
+                Receipt_Button.Parent.Top + Receipt_Button.Bottom + spaceBetweenControlsVertically);
+
+            SelectedReceipt_Label.Location = new Point(
+                RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
+                RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
+        }
+        private void RemoveReceiptLabel()
+        {
+            Controls.Remove(SelectedReceipt_Label);
+            Controls.Remove(RemoveReceipt_ImageButton);
+            InputChanged(null, null);
         }
 
 
@@ -403,33 +548,13 @@ namespace Sales_Tracker
             Panel.Controls.Remove(WarningAccountantName_Label);
         }
 
-        // Form event handlers
-        private Control controlToFocus;
-        private void ModifyRow_Form_Shown(object sender, EventArgs e)
-        {
-            controlToFocus?.Focus();
-        }
-
-
-        // Event handlers
-        private void Save_Button_Click(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-            SaveInRow();
-            SaveInListsAndUpdateDataGridViews();
-        }
-        private void Cancel_Button_Click(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-            Close();
-        }
-
 
         // Methods
         private void InputChanged(object sender, EventArgs e)
         {
-            Control senderControl = sender as Control;
-            foreach (Control control in senderControl.Parent.Controls)
+            var allControls = Panel.Controls.Cast<Control>().Concat(SecondPanel.Controls.Cast<Control>());
+
+            foreach (Control control in allControls)
             {
                 if (control is Guna2TextBox gunaTextBox)
                 {
@@ -447,6 +572,11 @@ namespace Sales_Tracker
                         return;
                     }
                 }
+            }
+            if (!Controls.Contains(SelectedReceipt_Label) && containsReceipt && Properties.Settings.Default.PurchaseReceipts)
+            {
+                Save_Button.Enabled = false;
+                return;
             }
             Save_Button.Enabled = true;
         }

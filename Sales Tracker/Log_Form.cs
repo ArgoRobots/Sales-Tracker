@@ -16,7 +16,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
 
             // Hide caret
-            RichTextBox.MouseDown += (sender2, e2) =>
+            RichTextBox.MouseDown += (sender, e) =>
             {
                 HideCaret(RichTextBox.Handle);
             };
@@ -42,10 +42,9 @@ namespace Sales_Tracker
         }
 
         // Caret
-        [LibraryImport("user32.dll", EntryPoint = "HideCaretA")]
+        [LibraryImport("user32.dll", EntryPoint = "HideCaret")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool HideCaret(IntPtr hWnd);
-
 
         // Controls
         private void BtnClear_Click(object sender, EventArgs e)

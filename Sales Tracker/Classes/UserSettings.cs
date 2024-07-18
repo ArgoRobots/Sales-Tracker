@@ -17,6 +17,9 @@ namespace Sales_Tracker.Classes
         {
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();
+
+            General_Form.Instance.UpdateControls();
+            Security_Form.Instance.UpdateControls();
         }
     }
 }

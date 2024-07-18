@@ -269,7 +269,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object? sender, EventArgs? e)
         {
-            UI.CloseAllPanels(null, null);
+            MainMenu_Form.Instance.CloseRightClickPanels();
         }
     }
 }
