@@ -23,17 +23,21 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.isDataGridViewLoading = true;
             MainMenu_Form.Instance.InitializeDataGridView(Receipts_DataGridView, Receipts_DataGridView.Size);
+            Receipts_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Receipts_DataGridView, ColumnHeaders);
             MainMenu_Form.Instance.selectedDataGridView = Receipts_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Receipts;
             AddAllReceiptsAndGetOldestDate();
-            MainMenu_Form.Instance.isDataGridViewLoading = false;
 
-            From_DateTimePicker.Value = oldestDate;
-            To_DateTimePicker.Value = DateTime.Now;
-            Sort_ComboBox.SelectedIndex = 0;
+            if (Receipts_DataGridView.Rows.Count > 0)
+            {
+                From_DateTimePicker.Value = oldestDate;
+                To_DateTimePicker.Value = DateTime.Now;
+                Sort_ComboBox.SelectedIndex = 0;
+            }
 
             Theme.SetThemeForForm(this);
+            MainMenu_Form.Instance.isDataGridViewLoading = false;
         }
 
 
@@ -126,6 +130,7 @@ namespace Sales_Tracker
                     oldestDate = currentDate;
                 }
             }
+            Tools.ScrollToTopOfDataGridView(Receipts_DataGridView);
         }
         private void FilterReceipts(object sender, EventArgs e)
         {

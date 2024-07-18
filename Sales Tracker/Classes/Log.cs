@@ -131,41 +131,6 @@ namespace Sales_Tracker.Classes
                 lineNumber,
                 caller);
         }
-        public static void Error_SourceDirectoryDoesNotExist(
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error("Error-hx9rxy: The source directory does not exist:" +
-                $"\n'{filePath}'.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
-        public static void Error_DestinationDirectoryAlreadyExists(
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error($"Error-9e8gu8: The destination directory already exists '{filePath}'.",
-                  "https://www.google.com",
-                  false,
-                  lineNumber,
-                  caller);
-        }
-        public static void Error_SourceFileDoesNotExist(
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string caller = null)
-        {
-            Error("Error-gpm3u8: The source file does not exist:" +
-                $"\n'{filePath}'.",
-                "https://www.google.com",
-                false,
-                lineNumber,
-                caller);
-        }
         public static void Error_DestinationFileAlreadyExists(
             string filePath,
             [CallerLineNumber] int lineNumber = 0,

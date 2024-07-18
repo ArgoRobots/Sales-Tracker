@@ -42,10 +42,12 @@ namespace Sales_Tracker
             {
                 Purchases_DataGridView.Rows.Add(category.Name);
             }
+            Tools.ScrollToTopOfDataGridView(Purchases_DataGridView);
             foreach (Category category in MainMenu_Form.Instance.categorySaleList)
             {
                 Sales_DataGridView.Rows.Add(category.Name);
             }
+            Tools.ScrollToTopOfDataGridView(Sales_DataGridView);
             MainMenu_Form.Instance.isDataGridViewLoading = false;
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)

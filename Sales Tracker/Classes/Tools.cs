@@ -147,5 +147,13 @@ namespace Sales_Tracker.Classes
             }
             return name;
         }
+
+        public static void ScrollToTopOfDataGridView(DataGridView dataGridView)
+        {
+            if (dataGridView.Rows.Count > 0)
+            {
+                dataGridView.FirstDisplayedScrollingRowIndex = 0;
+            }
+        }
     }
 }

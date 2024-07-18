@@ -134,25 +134,6 @@ namespace Sales_Tracker.Classes
             Directory.Delete(directory, recursive);
             return true;
         }
-        /// <summary>
-        /// Moves a folder. Gives an option to rename the directory.
-        /// </summary>
-        public static bool MoveDirectory(string source, string destination)
-        {
-            if (!Directory.Exists(source))
-            {
-                Log.Error_SourceDirectoryDoesNotExist(source);
-                return false;
-            }
-            if (Directory.Exists(destination))
-            {
-                Log.Error_DestinationDirectoryAlreadyExists(destination);
-                return false;
-            }
-
-            Directory.Move(source, destination);
-            return true;
-        }
 
         /// <summary>
         /// Rename folders without having to provide the full path for the new name.

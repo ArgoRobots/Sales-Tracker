@@ -104,6 +104,7 @@ namespace Sales_Tracker
                     Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
                 }
             }
+            Tools.ScrollToTopOfDataGridView(Sales_DataGridView);
             foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
@@ -111,6 +112,7 @@ namespace Sales_Tracker
                     Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
                 }
             }
+            Tools.ScrollToTopOfDataGridView(Purchases_DataGridView);
             MainMenu_Form.Instance.isDataGridViewLoading = false;
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)

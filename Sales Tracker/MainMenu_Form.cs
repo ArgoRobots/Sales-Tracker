@@ -575,6 +575,8 @@ namespace Sales_Tracker
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            Purchases_DataGridView.ColumnWidthChanged -= DataGridView_ColumnWidthChanged;
+
             AddMainControls();
             Selected = SelectedOption.Purchases;
             selectedDataGridView = Purchases_DataGridView;
@@ -583,11 +585,15 @@ namespace Sales_Tracker
             Controls.Remove(Sales_DataGridView);
             LoadGraphs();
             UpdateTotals();
+
             Purchases_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+            Purchases_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            Sales_DataGridView.ColumnWidthChanged -= DataGridView_ColumnWidthChanged;
+
             AddMainControls();
             Selected = SelectedOption.Sales;
             selectedDataGridView = Sales_DataGridView;
@@ -596,7 +602,9 @@ namespace Sales_Tracker
             Controls.Remove(Purchases_DataGridView);
             LoadGraphs();
             UpdateTotals();
+
             Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+            Sales_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
         }
         private void Statistics_Button_Click(object sender, EventArgs e)
         {
@@ -617,26 +625,32 @@ namespace Sales_Tracker
         }
         private void ManageAccountants_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             new Accountants_Form().ShowDialog();
         }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             new Products_Form(true).ShowDialog();
         }
         private void ManageCompanies_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             new Companies_Form().ShowDialog();
         }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             new Categories_Form(true).ShowDialog();
         }
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             LoadGraphs();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             UI.rename_textBox.Text = CompanyName_Label.Text;
             UI.rename_textBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
             UI.rename_textBox.Size = new Size(200, CompanyName_Label.Height + 2);
@@ -1096,6 +1110,11 @@ namespace Sales_Tracker
         }
         private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
+            if (isDataGridViewLoading)
+            {
+                return;
+            }
+
             DataGridViewRowChanged();
             if (e.RowIndex >= 0 && e.RowIndex < selectedDataGridView?.Rows.Count)
             {

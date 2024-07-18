@@ -39,6 +39,7 @@ namespace Sales_Tracker
             {
                 Accountants_DataGridView.Rows.Add(accountant);
             }
+            Tools.ScrollToTopOfDataGridView(Accountants_DataGridView);
             MainMenu_Form.Instance.isDataGridViewLoading = false;
         }
 
