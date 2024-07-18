@@ -114,6 +114,8 @@ namespace Sales_Tracker
             {
                 AddMultiplePurchases();
             }
+
+            RemoveReceiptLabel();
         }
         private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -200,16 +202,21 @@ namespace Sales_Tracker
 
 
         // Methods to add purchases
-        private void AddPurchase(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax)
+        private void AddPurchase(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax, decimal totalPrice, string displayPricePerUnit)
         {
             string purchaseID = OrderNumber_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            string categoryName = "-";
+            string country = "-";
+            string company = "-";
+            if (displayPricePerUnit != "-")
+            {
+                 categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                 country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                 company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            }
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee;
 
             // Convert currency
             if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
@@ -239,9 +246,18 @@ namespace Sales_Tracker
             }
             totalPrice += chargedDifference;
 
+            string newFilePath = "";
+            if (Controls.Contains(SelectedReceipt_Label))
+            {
+                if (!MainMenu_Form.SaveReceiptInFile(recieptFilePath, out newFilePath))
+                {
+                    return;
+                }
+            }
+
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
-         
-            MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
+
+            int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseID,
                 buyerName,
                 itemName,
@@ -250,19 +266,15 @@ namespace Sales_Tracker
                 company,
                 date,
                 quantity.ToString(),
-                pricePerUnit.ToString("N2"),
+                displayPricePerUnit,
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );
+            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
-
-            if (Controls.Contains(SelectedReceipt_Label))
-            {
-                MainMenu_Form.Instance.SaveReceiptInFile(recieptFilePath);
-            }
 
             MainMenu_Form.Instance.DataGridViewRowChanged();
 
@@ -276,27 +288,35 @@ namespace Sales_Tracker
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
+            decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee;
 
-            AddPurchase(itemName, quantity, pricePerUnit, shipping, tax);
+            AddPurchase(itemName, quantity, pricePerUnit, shipping, tax, totalPrice, pricePerUnit.ToString("N2"));
         }
         private void AddMultiplePurchases()
         {
+            decimal totalShipping = 0, totalTax = 0, totalPrice = 0, shipping = 0, tax = 0, fee = 0;
+            int totalQuantity = 0;
+
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
-                Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
-                string itemName = nameTextBox.Text;
-
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
                 int quantity = int.Parse(quantityTextBox.Text);
 
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
                 decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
 
-                decimal shipping = decimal.Parse(Shipping_TextBox.Text) / quantity;
-                decimal tax = decimal.Parse(Tax_TextBox.Text) / quantity;
-
-                AddPurchase(itemName, quantity, pricePerUnit, shipping, tax);
+                totalQuantity += quantity;
+                totalShipping += decimal.Parse(Shipping_TextBox.Text) / panelsForMultipleProducts_List.Count;
+                totalTax += decimal.Parse(Tax_TextBox.Text) / panelsForMultipleProducts_List.Count;
+                shipping = decimal.Parse(Shipping_TextBox.Text);
+                tax = decimal.Parse(Tax_TextBox.Text);
+                fee = decimal.Parse(PaymentFee_TextBox.Text);
+                totalPrice += quantity * pricePerUnit;
             }
+            totalPrice += shipping + tax + fee;
+
+            AddPurchase("Multiple items", totalQuantity, 0, totalShipping, totalTax, totalPrice, "-");
         }
 
 

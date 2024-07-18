@@ -28,6 +28,18 @@ namespace Sales_Tracker.Charts
             chart.Legend.Display = true;
         }
 
+        private static bool TryGetValue<T>(DataGridViewCell cell, out T value)
+        {
+            value = default;
+            if (cell.Value.ToString() == "-")
+            {
+                return false;
+            }
+
+            value = (T)Convert.ChangeType(cell.Value, typeof(T));
+            return true;
+        }
+
         // Main charts
         public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart)
         {
@@ -73,12 +85,15 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
+                if (!TryGetValue(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()], out double pricePerUnit))
+                {
+                    continue;
+                }
+
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value);
                 double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
-
                 double totalRevenue = quantity * pricePerUnit + shipping + tax;
                 grandTotal += totalRevenue;
                 string formattedDate = date.ToString(dateFormat);
@@ -119,12 +134,15 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
+                if (!TryGetValue(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()], out double pricePerUnit))
+                {
+                    continue;
+                }
+
                 double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
                 double fee = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Fee.ToString()].Value);
-
                 int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value);
                 string category = row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString();
                 double cost = quantity * pricePerUnit;
 
@@ -217,10 +235,13 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
+                if (!TryGetValue(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()], out double pricePerUnit))
+                {
+                    continue;
+                }
+
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.Quantity.ToString()].Value);
-                double pricePerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value);
-
                 double totalRevenue = quantity * pricePerUnit;
                 string formattedDate = date.ToString(dateFormat);
 
@@ -239,13 +260,17 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
+
+                if (!TryGetValue(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()], out double pricePerUnit))
+                {
+                    continue;
+                }
+
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
                 int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.Quantity.ToString()].Value);
-                double costPerUnit = Convert.ToDouble(row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value);
                 double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
-
-                double totalCost = quantity * costPerUnit + shipping + tax;
+                double totalCost = quantity * pricePerUnit + shipping + tax;
                 string formattedDate = date.ToString(dateFormat);
 
                 if (profitByDate.ContainsKey(formattedDate))

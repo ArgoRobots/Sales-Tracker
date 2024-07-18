@@ -46,12 +46,15 @@ namespace Sales_Tracker
                 {
                     MainMenu_Form.RemoveReceiptFromFile(selectedRow);
                 }
-                MainMenu_Form.Instance.SaveReceiptInFile(recieptFilePath);
+                MainMenu_Form.SaveReceiptInFile(recieptFilePath, out _);
             }
             else if (removedReceipt)
             {
                 MainMenu_Form.RemoveReceiptFromFile(selectedRow);
             }
+
+            MainMenu_Form.Instance.DataGridViewRowChanged();
+
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
@@ -319,7 +322,7 @@ namespace Sales_Tracker
         {
             ConstructPanel();
             int left = 0, secondLeft = 0;
-            decimal quantity = 0, pricePerUnit = 0, tax = 0, shipping = 0, fee = 0, chargedDifference, chargedAmount;
+            decimal quantity = 0, pricePerUnit = 0, tax = 0, shipping = 0, fee = 0;
 
             foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
             {
@@ -467,13 +470,9 @@ namespace Sales_Tracker
                         fee = decimal.TryParse(cellValue, out decimal f) ? f : 0;
                         break;
 
-                    case nameof(MainMenu_Form.Column.ChargedDifference):
-                        chargedAmount = decimal.TryParse(cellValue, out decimal ca) ? ca : 0;
-                        total = quantity * pricePerUnit + tax + shipping + fee;
-                        chargedDifference = total + chargedAmount;
-
+                    case nameof(MainMenu_Form.Column.Total):
                         ConstructLabel("Charged amount", secondLeft, SecondPanel);
-                        ConstructTextBox(secondLeft, columnName, chargedDifference.ToString("N2"), 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
+                        ConstructTextBox(secondLeft, columnName, cellValue, 10, KeyPressValidation.OnlyNumbersAndDecimalAndMinus, false, true, SecondPanel);
                         secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
                         break;
                 }
@@ -552,7 +551,12 @@ namespace Sales_Tracker
         // Methods
         private void InputChanged(object sender, EventArgs e)
         {
-            var allControls = Panel.Controls.Cast<Control>().Concat(SecondPanel.Controls.Cast<Control>());
+            IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
+
+            if (SecondPanel != null)
+            {
+                allControls = allControls.Concat(SecondPanel.Controls.Cast<Control>());
+            }
 
             foreach (Control control in allControls)
             {
@@ -636,8 +640,11 @@ namespace Sales_Tracker
                 decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
                 decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
                 decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-                selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value = totalPrice;
+                selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
             }
+
+            MainMenu_Form.Instance.DataGridViewRowChanged();
+
             Close();
         }
         private void SaveInListsAndUpdateDataGridViews()

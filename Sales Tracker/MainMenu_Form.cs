@@ -1842,9 +1842,9 @@ namespace Sales_Tracker
         }
 
         // Receipts
-        public void SaveReceiptInFile(string recieptFilePath)
+        public static bool SaveReceiptInFile(string recieptFilePath, out string newFilePath)
         {
-            string newFilePath;
+            newFilePath = "";
             if (File.Exists(Directories.receipts_dir + Path.GetFileName(recieptFilePath)))
             {
                 // Get a new name for the file
@@ -1857,27 +1857,23 @@ namespace Sales_Tracker
                     $"Rename receipt",
                     $"Do you want to rename '{name}' to '{suggestedThingName}'? There is already a receipt with the same name.",
                     CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNo);
+                    CustomMessageBoxButtons.OkCancel);
 
-                if (result == CustomMessageBoxResult.Yes)
+                if (result == CustomMessageBoxResult.Ok)
                 {
                     newFilePath = Directories.receipts_dir + suggestedThingName + Path.GetExtension(recieptFilePath);
                 }
-                else { return; }
+                else { return false; }
             }
             else
             {
                 newFilePath = Directories.receipts_dir + Path.GetFileName(recieptFilePath);
             }
 
-
             // Save receipt
             Directories.CopyFile(recieptFilePath, newFilePath);
 
-            // Add receipt filepath to row tag
-            selectedDataGridView.Rows[^1].Tag = newFilePath;
-
-           DataGridViewRowChanged();
+            return true;
         }
         public static void RemoveReceiptFromFile(DataGridViewRow row)
         {
