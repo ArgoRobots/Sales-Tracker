@@ -67,6 +67,11 @@ namespace Sales_Tracker
             PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
 
+            Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Discount_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Discount_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Discount_TextBox.KeyDown += UI.TextBox_KeyDown;
+
             AmountCharged_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             AmountCharged_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             AmountCharged_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;

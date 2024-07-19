@@ -65,7 +65,7 @@
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 9F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(336, 174);
+            Cancel_Button.Location = new Point(336, 199);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Cancel_Button.Size = new Size(115, 30);
@@ -88,7 +88,7 @@
             Save_Button.FillColor = Color.White;
             Save_Button.Font = new Font("Segoe UI", 9F);
             Save_Button.ForeColor = Color.Black;
-            Save_Button.Location = new Point(457, 174);
+            Save_Button.Location = new Point(457, 199);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Save_Button.Size = new Size(115, 30);
@@ -108,7 +108,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(584, 216);
+            ClientSize = new Size(584, 241);
             Controls.Add(Panel);
             Controls.Add(Save_Button);
             Controls.Add(Cancel_Button);
