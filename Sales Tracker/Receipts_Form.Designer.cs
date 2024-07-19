@@ -68,7 +68,7 @@
             ExportReceipts_Label.Anchor = AnchorStyles.Top;
             ExportReceipts_Label.AutoSize = true;
             ExportReceipts_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ExportReceipts_Label.Location = new Point(400, 23);
+            ExportReceipts_Label.Location = new Point(397, 20);
             ExportReceipts_Label.Name = "ExportReceipts_Label";
             ExportReceipts_Label.Size = new Size(150, 30);
             ExportReceipts_Label.TabIndex = 1;
@@ -86,7 +86,7 @@
             Category_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Category_TextBox.Font = new Font("Segoe UI", 9F);
             Category_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Category_TextBox.Location = new Point(51, 103);
+            Category_TextBox.Location = new Point(48, 103);
             Category_TextBox.Name = "Category_TextBox";
             Category_TextBox.PasswordChar = '\0';
             Category_TextBox.PlaceholderText = "Category";
@@ -101,7 +101,7 @@
             ProductID_Label.Anchor = AnchorStyles.Top;
             ProductID_Label.AutoSize = true;
             ProductID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductID_Label.Location = new Point(51, 80);
+            ProductID_Label.Location = new Point(48, 80);
             ProductID_Label.Name = "ProductID_Label";
             ProductID_Label.Size = new Size(118, 20);
             ProductID_Label.TabIndex = 0;
@@ -112,7 +112,7 @@
             From_Label.Anchor = AnchorStyles.Top;
             From_Label.AutoSize = true;
             From_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            From_Label.Location = new Point(295, 107);
+            From_Label.Location = new Point(292, 107);
             From_Label.Name = "From_Label";
             From_Label.Size = new Size(43, 20);
             From_Label.TabIndex = 0;
@@ -126,7 +126,7 @@
             From_DateTimePicker.FillColor = Color.White;
             From_DateTimePicker.Font = new Font("Segoe UI", 9F);
             From_DateTimePicker.Format = DateTimePickerFormat.Long;
-            From_DateTimePicker.Location = new Point(295, 130);
+            From_DateTimePicker.Location = new Point(292, 130);
             From_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             From_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             From_DateTimePicker.Name = "From_DateTimePicker";
@@ -144,7 +144,7 @@
             To_DateTimePicker.FillColor = Color.White;
             To_DateTimePicker.Font = new Font("Segoe UI", 9F);
             To_DateTimePicker.Format = DateTimePickerFormat.Long;
-            To_DateTimePicker.Location = new Point(295, 192);
+            To_DateTimePicker.Location = new Point(292, 192);
             To_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             To_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             To_DateTimePicker.Name = "To_DateTimePicker";
@@ -159,7 +159,7 @@
             To_Label.Anchor = AnchorStyles.Top;
             To_Label.AutoSize = true;
             To_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            To_Label.Location = new Point(295, 169);
+            To_Label.Location = new Point(292, 169);
             To_Label.Name = "To_Label";
             To_Label.Size = new Size(25, 20);
             To_Label.TabIndex = 0;
@@ -213,7 +213,7 @@
             Receipts_DataGridView.Location = new Point(12, 241);
             Receipts_DataGridView.Name = "Receipts_DataGridView";
             Receipts_DataGridView.RowHeadersVisible = false;
-            Receipts_DataGridView.Size = new Size(926, 277);
+            Receipts_DataGridView.Size = new Size(920, 278);
             Receipts_DataGridView.TabIndex = 10;
             Receipts_DataGridView.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
             Receipts_DataGridView.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -252,7 +252,7 @@
             ClearFilters_Button.FillColor = Color.White;
             ClearFilters_Button.Font = new Font("Segoe UI", 9F);
             ClearFilters_Button.ForeColor = Color.Black;
-            ClearFilters_Button.Location = new Point(750, 103);
+            ClearFilters_Button.Location = new Point(744, 103);
             ClearFilters_Button.Name = "ClearFilters_Button";
             ClearFilters_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ClearFilters_Button.Size = new Size(150, 36);
@@ -272,7 +272,7 @@
             Product_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Product_TextBox.Font = new Font("Segoe UI", 9F);
             Product_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Product_TextBox.Location = new Point(51, 145);
+            Product_TextBox.Location = new Point(48, 145);
             Product_TextBox.Name = "Product_TextBox";
             Product_TextBox.PasswordChar = '\0';
             Product_TextBox.PlaceholderText = "Product";
@@ -295,7 +295,7 @@
             Sort_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Sort_ComboBox.ItemHeight = 30;
             Sort_ComboBox.Items.AddRange(new object[] { "Most recent", "Least recent", "Most expensive", "Least expensive" });
-            Sort_ComboBox.Location = new Point(539, 103);
+            Sort_ComboBox.Location = new Point(536, 103);
             Sort_ComboBox.Name = "Sort_ComboBox";
             Sort_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Sort_ComboBox.Size = new Size(167, 36);
@@ -307,7 +307,7 @@
             label1.Anchor = AnchorStyles.Top;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(539, 80);
+            label1.Location = new Point(536, 80);
             label1.Name = "label1";
             label1.Size = new Size(36, 20);
             label1.TabIndex = 0;
@@ -329,7 +329,7 @@
             ExportSelected_Button.FillColor = Color.White;
             ExportSelected_Button.Font = new Font("Segoe UI", 9F);
             ExportSelected_Button.ForeColor = Color.Black;
-            ExportSelected_Button.Location = new Point(750, 145);
+            ExportSelected_Button.Location = new Point(744, 145);
             ExportSelected_Button.Name = "ExportSelected_Button";
             ExportSelected_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ExportSelected_Button.Size = new Size(150, 36);
@@ -341,7 +341,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(950, 530);
+            ClientSize = new Size(944, 531);
             Controls.Add(ExportSelected_Button);
             Controls.Add(label1);
             Controls.Add(Sort_ComboBox);
@@ -358,6 +358,7 @@
             Controls.Add(ExportReceipts_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MinimumSize = new Size(850, 400);
             Name = "Receipts_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

@@ -313,7 +313,6 @@ namespace Sales_Tracker
             }
             return left;
         }
-        private decimal total = 0;
         Label SelectedReceipt_Label;
         Guna2ImageButton RemoveReceipt_ImageButton;
         Guna2Button Receipt_Button;
@@ -612,7 +611,7 @@ namespace Sales_Tracker
                     }
                     else if (columnName == MainMenu_Form.Column.ChargedDifference.ToString())
                     {
-                        selectedRow.Cells[columnName].Value = total - decimal.Parse(gTextBox.Text);
+                        selectedRow.Cells[columnName].Value = -decimal.Parse(gTextBox.Text);
                     }
                     else
                     {

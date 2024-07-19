@@ -7,7 +7,6 @@ namespace Sales_Tracker
     public partial class Receipts_Form : BaseForm
     {
         // Properties
-        public static Receipts_Form Instance { get; private set; }
         private DateTime oldestDate;
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
@@ -16,12 +15,11 @@ namespace Sales_Tracker
         public Receipts_Form()
         {
             InitializeComponent();
-            Instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
 
-            MainMenu_Form.Instance.isDataGridViewLoading = true;
+            MainMenu_Form.Instance.isProgramLoading = true;
             MainMenu_Form.Instance.InitializeDataGridView(Receipts_DataGridView, Receipts_DataGridView.Size);
             Receipts_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             MainMenu_Form.LoadColumnsInDataGridView(Receipts_DataGridView, ColumnHeaders);
@@ -38,7 +36,7 @@ namespace Sales_Tracker
             }
 
             Theme.SetThemeForForm(this);
-            MainMenu_Form.Instance.isDataGridViewLoading = false;
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
         private void Receipts_DataGridView_SelectionChanged(object? sender, EventArgs e)
         {

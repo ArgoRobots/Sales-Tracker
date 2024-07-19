@@ -10,11 +10,9 @@ namespace Sales_Tracker
         public readonly static List<string> thingsThatHaveChangedInFile = [];
 
         // Init.
-        public static AddSale_Form Instance { get; private set; }
         public AddSale_Form()
         {
             InitializeComponent();
-            Instance = this;
 
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
@@ -227,7 +225,7 @@ namespace Sales_Tracker
                 Quantity_TextBox, Quantity_Label,
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3,
+        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3, spaceToOffsetFormNotCenter = 15,
             textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 200, spaceBetweenPanels = 10,
                initialHeightForPanel = 59, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
         private readonly short initialWidthForPanel = 449, maxFlowPanelHeight = 300;
@@ -237,7 +235,7 @@ namespace Sales_Tracker
             SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
                 ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
-                CountryOfDestinaion_TextBox.Width) / 2;
+                CountryOfDestinaion_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             SaleID_Label.Left = SaleID_TextBox.Left;
             BuyerName_TextBox.Left = SaleID_TextBox.Right + spaceBetweenControlsHorizontally;
@@ -252,7 +250,7 @@ namespace Sales_Tracker
                 PricePerUnit_TextBox.Width - spaceBetweenControlsHorizontally -
                 Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
-                PaymentFee_TextBox.Width) / 2;
+                PaymentFee_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Quantity_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -290,7 +288,7 @@ namespace Sales_Tracker
             // Center controls
             SaleID_TextBox.Left = (Width - SaleID_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
-                CountryOfDestinaion_TextBox.Width) / 2;
+                CountryOfDestinaion_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             SaleID_Label.Left = SaleID_TextBox.Left;
             BuyerName_TextBox.Left = SaleID_TextBox.Right + spaceBetweenControlsHorizontally;
@@ -302,7 +300,7 @@ namespace Sales_Tracker
                 Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
-                PaymentFee_TextBox.Width) / 2;
+                PaymentFee_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;

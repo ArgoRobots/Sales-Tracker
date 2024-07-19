@@ -36,7 +36,7 @@ namespace Sales_Tracker
         // Methods
         private void LoadCategories()
         {
-            MainMenu_Form.Instance.isDataGridViewLoading = true;
+            MainMenu_Form.Instance.isProgramLoading = true;
 
             foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
             {
@@ -48,7 +48,7 @@ namespace Sales_Tracker
                 Sales_DataGridView.Rows.Add(category.Name);
             }
             Tools.ScrollToTopOfDataGridView(Sales_DataGridView);
-            MainMenu_Form.Instance.isDataGridViewLoading = false;
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)
         {

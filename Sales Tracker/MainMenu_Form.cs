@@ -12,6 +12,8 @@ namespace Sales_Tracker
     public partial class MainMenu_Form : BaseForm
     {
         public readonly static List<string> thingsThatHaveChangedInFile = [];
+        private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
+        private static readonly string JsonTag = "Tag";
 
         // Init.
         public static MainMenu_Form? Instance { get; private set; }
@@ -26,20 +28,27 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             SetCompanyLabel();
 
-            isDataGridViewLoading = true;
-            LoadCategories();
-            LoadSalesAndPurchases();
-            LoadAccountants();
-            LoadCompanies();
-            AddTimeRangesIntoComboBox();
+            isProgramLoading = true;
+            LoadData();
             UpdateTheme();
             ResizeControls();
-            isDataGridViewLoading = false;
+            isProgramLoading = false;
         }
-        private void LoadCategories()
+        private void LoadData()
         {
             LoadCategoriesFromFile(Directories.categoryPurchases_file, categoryPurchaseList);
             LoadCategoriesFromFile(Directories.categorySales_file, categorySaleList);
+
+            accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
+            companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
+
+            LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
+            AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
+
+            LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
+            AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
+
+            AddTimeRangesIntoComboBox();
         }
         private static void LoadCategoriesFromFile(string filePath, List<Category> categoryList)
         {
@@ -53,21 +62,10 @@ namespace Sales_Tracker
                 categoryList.AddRange(loadedCategories);
             }
         }
-        private void LoadAccountants()
+        private void AddTimeRangesIntoComboBox()
         {
-            accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
-        }
-        private void LoadCompanies()
-        {
-            companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
-        }
-        public void LoadSalesAndPurchases()
-        {
-            LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
-            AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
-
-            LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
-            AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
+            Filter_ComboBox.Items.AddRange(timeIntervals.Select(ti => ti.displayString).ToArray());
+            Filter_ComboBox.SelectedIndex = 0;
         }
         private static void AddRowsFromFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
@@ -79,23 +77,32 @@ namespace Sales_Tracker
                 return;
             }
 
-            // Add all rows to dataGridView_list
-            dataGridView.Rows.Clear();
+            // Read the JSON content from the file
+            string json = File.ReadAllText(filePath);
+            if (json == "") { return; }
 
-            string[] lines = Directories.ReadAllLinesInFile(filePath);
-            foreach (string line in lines)
+            List<Dictionary<string, object>>? rowsData = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
+
+            foreach (Dictionary<string, object> rowData in rowsData)
             {
-                string[] cellValues = line.Split(',');
-
-                // Get the row tag
-                string rowTag = cellValues.Last();
-                string[] rowValues = cellValues.Take(cellValues.Length - 1).ToArray();
+                // Extract cell values
+                string?[] cellValues = rowData.Where(kv => kv.Key != JsonTag).Select(kv => kv.Value?.ToString()).ToArray();
 
                 // Add the row values to the DataGridView
-                int rowIndex = dataGridView.Rows.Add(rowValues);
+                int rowIndex = dataGridView.Rows.Add(cellValues);
 
                 // Set the row tag
-                dataGridView.Rows[rowIndex].Tag = rowTag;
+                if (rowData.TryGetValue(JsonTag, out object? value))
+                {
+                    if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
+                    {
+                        dataGridView.Rows[rowIndex].Tag = jsonElement.EnumerateArray().Select(e => e.GetString()).ToList();
+                    }
+                    else
+                    {
+                        dataGridView.Rows[rowIndex].Tag = value?.ToString();
+                    }
+                }
             }
         }
         public void LoadGraphs()
@@ -391,7 +398,7 @@ namespace Sales_Tracker
         private bool wasControlsDropDownAdded = false;
         private void ResizeControls()
         {
-            if (isDataGridViewLoading) { return; }
+            if (isProgramLoading) { return; }
 
             if (Height > 1000)
             {
@@ -729,14 +736,9 @@ namespace Sales_Tracker
             (TimeInterval.Years5, "5 years", TimeSpan.FromDays(365 * 5)),
             (TimeInterval.Years10, "10 years", TimeSpan.FromDays(365 * 10))
         ];
-        private void AddTimeRangesIntoComboBox()
-        {
-            Filter_ComboBox.Items.AddRange(timeIntervals.Select(ti => ti.displayString).ToArray());
-            Filter_ComboBox.SelectedIndex = 0;
-        }
         private void Filter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (isDataGridViewLoading) { return; }
+            if (isProgramLoading) { return; }
             CloseAllPanels(null, null);
             FilterDataGridViewByDate();
             LoadGraphs();
@@ -864,40 +866,10 @@ namespace Sales_Tracker
             }
             return false;
         }
-        public void SaveCategoriesToFile(SelectedOption option)
-        {
-            if (isDataGridViewLoading)
-            {
-                return;
-            }
-
-            string filePath = GetFilePathForDataGridView(option);
-
-            if (option == SelectedOption.Accountants)
-            {
-                Directories.WriteLinesToFile(filePath, accountantList);
-                return;
-            }
-
-            List<Category> categoryList;
-            if (option == SelectedOption.CategoryPurchases || option == SelectedOption.ProductPurchases)
-            {
-                categoryList = categoryPurchaseList;
-            }
-            else
-            {
-                categoryList = categorySaleList;
-            }
-
-            string json = JsonSerializer.Serialize(categoryList);
-            Directories.WriteTextToFile(filePath, json);
-
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
-        }
 
 
         // DataGridView
-        public bool isDataGridViewLoading;
+        public bool isProgramLoading;
         public SelectedOption Selected;
         public enum SelectedOption
         {
@@ -970,10 +942,10 @@ namespace Sales_Tracker
             Product,
             Accountant
         }
-        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        public Guna2DataGridView selectedDataGridView;
-        private bool doNotDeleteRows = false;
+        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView, selectedDataGridView;
         private DataGridViewRow removedRow;
+        private Control controlRightClickPanelWasAddedTo;
+        private bool doNotDeleteRows = false;
         private void ConstructDataGridViews()
         {
             Size size = new(1300, 350);
@@ -1016,7 +988,7 @@ namespace Sales_Tracker
 
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
-        private void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
+        public void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
         {
             if (doNotDeleteRows)
             {
@@ -1093,13 +1065,22 @@ namespace Sales_Tracker
                 case SelectedOption.Accountants:
                     type = "Accountant";
                     columnName = Accountants_Form.Columns.AccountantName.ToString();
-                    logIndex = 3;
+                    logIndex = 2;
 
                     // Remove accountant from list
                     accountantList.Remove(accountantList.FirstOrDefault(a => a == e.Row.Cells[columnName].Value?.ToString()));
 
                     // In case the accountant name that is being deleted is in the TextBox
                     Accountants_Form.Instance.VaidateAccountantTextBox();
+                    break;
+
+                case SelectedOption.Companies:
+                    type = "Accountant";
+                    columnName = Companies_Form.Columns.Company.ToString();
+                    logIndex = 2;
+
+                    // Remove accountant from list
+                    companyList.Remove(companyList.FirstOrDefault(a => a == e.Row.Cells[columnName].Value?.ToString()));
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();
@@ -1112,7 +1093,7 @@ namespace Sales_Tracker
         }
         public void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (isDataGridViewLoading)
+            if (isProgramLoading)
             {
                 return;
             }
@@ -1123,20 +1104,31 @@ namespace Sales_Tracker
                 selectedDataGridView.FirstDisplayedScrollingRowIndex = e.RowIndex;
             }
         }
-        private void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        public void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             DataGridViewRowChanged();
 
             // Remove receipt from file
             if ((Selected == SelectedOption.Purchases || Selected == SelectedOption.Sales) && removedRow?.Tag != null)
             {
-                Directories.DeleteFile(removedRow.Tag.ToString());
+                string tagValue;
+
+                if (removedRow.Tag is List<string> tagList)
+                {
+                    tagValue = tagList.FirstOrDefault();
+                }
+                else
+                {
+                    tagValue = removedRow.Tag.ToString();
+                }
+                Directories.DeleteFile(tagValue);
+
                 removedRow = null;
             }
         }
         public void DataGridViewRowChanged()
         {
-            if (isDataGridViewLoading || Selected == SelectedOption.Receipts)
+            if (isProgramLoading || Selected == SelectedOption.Receipts)
             {
                 return;
             }
@@ -1145,48 +1137,19 @@ namespace Sales_Tracker
             {
                 UpdateTotals();
                 LoadGraphs();
-                SaveDataGridViewToFile();
+                SaveDataGridViewToFileAsJson();
             }
-            else if (Selected == SelectedOption.Companies)
-            {
-                SaveDataGridViewToFile();
-            }
-            else
+            else if (Selected == SelectedOption.CategoryPurchases || Selected == SelectedOption.CategorySales ||
+                Selected == SelectedOption.ProductPurchases || Selected == SelectedOption.ProductSales)
             {
                 SaveCategoriesToFile(Selected);
             }
-        }
-        public void SaveDataGridViewToFile()
-        {
-            if (isDataGridViewLoading)
+            else if (Selected == SelectedOption.Accountants || Selected == SelectedOption.Companies)
             {
-                return;
+                SaveDataGridViewToFile();
             }
-
-            string filePath = GetFilePathForDataGridView(Selected);
-            List<string> linesInDataGridView = [];
-
-            // Write all the rows in the DataGridView to file
-            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
-            {
-                DataGridViewRow row = selectedDataGridView.Rows[i];
-                List<string> cellValues = [];
-
-                foreach (DataGridViewCell cell in row.Cells)
-                {
-                    cellValues.Add(cell.Value?.ToString());
-                }
-                // Add the row tag as the last column
-                cellValues.Add(row.Tag?.ToString());
-
-                string line = string.Join(",", cellValues);  // Join cell values with a comma
-                linesInDataGridView.Add(line);
-            }
-
-            Directories.WriteLinesToFile(filePath, linesInDataGridView);
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
-        private void DataGridView_MouseDown(object? sender, MouseEventArgs e)
+        public void DataGridView_MouseDown(object? sender, MouseEventArgs e)
         {
             UI.CloseAllPanels(null, null);
             Guna2DataGridView grid = (Guna2DataGridView)sender;
@@ -1210,10 +1173,10 @@ namespace Sales_Tracker
             // Set color
             selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
         }
-        Control controlRightClickPanelWasAddedTo;
-        private void DataGridView_MouseUp(object? sender, MouseEventArgs e)
+        public void DataGridView_MouseUp(object? sender, MouseEventArgs e)
         {
             Guna2DataGridView grid = (Guna2DataGridView)sender;
+            if (grid.SelectedRows.Count == 0) { return; }
 
             if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
             {
@@ -1253,10 +1216,17 @@ namespace Sales_Tracker
                 {
                     flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
                 }
-                else
+                else if (grid.SelectedRows[0].Tag is not List<string>)
                 {
+                    flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
                     flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
                     flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, 3);
+                }
+                else
+                {
+                    flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
+                    flowPanel.Controls.Add(rightClickDataGridView_ShowItemsBtn);
+                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, 3);
                 }
 
                 // Adjust the panel height based on the number of controls
@@ -1305,7 +1275,7 @@ namespace Sales_Tracker
                 rightClickDataGridView_Panel.BringToFront();
             }
         }
-        private void DataGridView_KeyDown(object? sender, KeyEventArgs e)
+        public void DataGridView_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -1329,13 +1299,18 @@ namespace Sales_Tracker
                 }
             }
         }
-        public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders) where TEnum : Enum
+
+
+        // Methods for DataGridView
+        public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum> columnsToLoad = null) where TEnum : Enum
         {
-            foreach (object column in Enum.GetValues(typeof(TEnum)))
+            columnsToLoad ??= Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
+
+            foreach (TEnum column in columnsToLoad)
             {
-                if (columnHeaders.ContainsKey((TEnum)column))
+                if (columnHeaders.TryGetValue(column, out string? value))
                 {
-                    dataGridView.Columns.Add(column.ToString(), columnHeaders[(TEnum)column]);
+                    dataGridView.Columns.Add(column.ToString(), value);
                 }
             }
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
@@ -1352,7 +1327,7 @@ namespace Sales_Tracker
         }
         private void UpdateTotals()
         {
-            if (isDataGridViewLoading || Selected != SelectedOption.Purchases & Selected != SelectedOption.Sales)
+            if (isProgramLoading || Selected != SelectedOption.Purchases & Selected != SelectedOption.Sales)
             {
                 return;
             }
@@ -1381,7 +1356,7 @@ namespace Sales_Tracker
         }
         private void AlignTotalLabels()
         {
-            if (isDataGridViewLoading)
+            if (isProgramLoading)
             {
                 return;
             }
@@ -1428,9 +1403,99 @@ namespace Sales_Tracker
         }
 
 
+        // Save to file for DataGridView
+        public void SaveDataGridViewToFileAsJson()
+        {
+            string filePath = GetFilePathForDataGridView(Selected);
+            List<Dictionary<string, object>> rowsData = [];
+
+            // Collect data from the DataGridView
+            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            {
+                Dictionary<string, object> rowData = [];
+
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    rowData[cell.OwningColumn.Name] = cell.Value;
+                }
+
+                // Add the row tag
+                if (row.Tag is List<string> tagList)
+                {
+                    rowData[JsonTag] = tagList;
+                }
+                else if (row.Tag != null)
+                {
+                    rowData[JsonTag] = row.Tag?.ToString();
+                }
+
+                rowsData.Add(rowData);
+            }
+
+            // Serialize to JSON and write to file
+            string json = JsonSerializer.Serialize(rowsData, jsonOptions);
+            Directories.WriteTextToFile(filePath, json);
+
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+        }
+        public void SaveCategoriesToFile(SelectedOption option)
+        {
+            if (isProgramLoading)
+            {
+                return;
+            }
+
+            string filePath = GetFilePathForDataGridView(option);
+
+            List<Category> categoryList;
+            if (option == SelectedOption.CategoryPurchases || option == SelectedOption.ProductPurchases)
+            {
+                categoryList = categoryPurchaseList;
+            }
+            else
+            {
+                categoryList = categorySaleList;
+            }
+
+            string json = JsonSerializer.Serialize(categoryList, jsonOptions);
+            Directories.WriteTextToFile(filePath, json);
+
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+        }
+        private void SaveDataGridViewToFile()
+        {
+            string filePath = GetFilePathForDataGridView(Selected);
+            List<string> linesInDataGridView = [];
+
+            // Write all the rows in the DataGridView to file
+            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            {
+                DataGridViewRow row = selectedDataGridView.Rows[i];
+                List<string> cellValues = [];
+
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    cellValues.Add(cell.Value?.ToString());
+                }
+
+                // Add the row tag
+                if (row.Tag != null)
+                {
+                    cellValues.Add(row.Tag?.ToString());
+                }
+
+                string line = string.Join(",", cellValues);
+                linesInDataGridView.Add(line);
+            }
+
+            Directories.WriteLinesToFile(filePath, linesInDataGridView);
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+        }
+
+
         // Right click DataGridView row menu
         public Guna2Panel rightClickDataGridView_Panel;
-        private Guna2Button rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn;
+        private Guna2Button rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn, rightClickDataGridView_ShowItemsBtn;
         public Guna2Button rightClickDataGridView_DeleteBtn;
         public void ConstructRightClickDataGridViewRowMenu()
         {
@@ -1451,6 +1516,9 @@ namespace Sales_Tracker
 
             rightClickDataGridView_ExportReceiptBtn = UI.ConstructBtnForMenu("Export receipt", UI.panelBtnWidth, false, flowPanel);
             rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
+
+            rightClickDataGridView_ShowItemsBtn = UI.ConstructBtnForMenu("Show items", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
 
             rightClickDataGridView_DeleteBtn = UI.ConstructBtnForMenu("Delete", UI.panelBtnWidth, false, flowPanel);
             rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
@@ -1485,7 +1553,7 @@ namespace Sales_Tracker
             // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
-            isDataGridViewLoading = true;
+            isProgramLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
             selectedDataGridView.Rows.Remove(selectedRow);
@@ -1498,9 +1566,8 @@ namespace Sales_Tracker
             // Restore the scroll position
             selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
 
-            // Save
-            SaveDataGridViewToFile();
-            isDataGridViewLoading = false;
+            isProgramLoading = false;
+            SaveDataGridViewToFileAsJson();
         }
         private void MoveRowDown(object sender, EventArgs e)
         {
@@ -1517,7 +1584,7 @@ namespace Sales_Tracker
             // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
-            isDataGridViewLoading = true;
+            isProgramLoading = true;
 
             DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
             selectedDataGridView.Rows.Remove(selectedRow);
@@ -1530,9 +1597,8 @@ namespace Sales_Tracker
             // Restore the scroll position
             selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
 
-            // Save
-            SaveDataGridViewToFile();
-            isDataGridViewLoading = false;
+            isProgramLoading = false;
+            SaveDataGridViewToFileAsJson();
         }
         private void MoveRow(object? sender, EventArgs e)
         {
@@ -1600,6 +1666,12 @@ namespace Sales_Tracker
             {
                 Directories.CopyFile(receiptFilePath, dialog.SelectedPath + @"\" + Path.GetFileName(selectedRow.Tag.ToString()));
             }
+        }
+        private void ShowItems(object? sender, EventArgs e)
+        {
+            UI.CloseAllPanels(null, null);
+
+            new ItemsInPurchase_Form((List<string>)selectedDataGridView.SelectedRows[0].Tag).ShowDialog();
         }
         private void DeleteRow(object? sender, EventArgs e)
         {

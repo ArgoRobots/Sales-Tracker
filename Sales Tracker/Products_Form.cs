@@ -95,7 +95,7 @@ namespace Sales_Tracker
         }
         private void LoadProducts()
         {
-            MainMenu_Form.Instance.isDataGridViewLoading = true;
+            MainMenu_Form.Instance.isProgramLoading = true;
 
             foreach (Category category in MainMenu_Form.Instance.categorySaleList)
             {
@@ -113,7 +113,7 @@ namespace Sales_Tracker
                 }
             }
             Tools.ScrollToTopOfDataGridView(Purchases_DataGridView);
-            MainMenu_Form.Instance.isDataGridViewLoading = false;
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)
         {
@@ -144,7 +144,6 @@ namespace Sales_Tracker
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
-            //  CloseAllPanels(null, null);
             string name = ProductName_TextBox.Text.Trim();
             Product product = new(ProductID_TextBox.Text, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
@@ -166,6 +165,7 @@ namespace Sales_Tracker
             Sale_RadioButton.AutoCheck = false;
             Purchase_RadioButton.AutoCheck = false;
             ProductName_TextBox.Text = "";  // For some reason, this checks the other radio button
+            ProductID_TextBox.Text = "";
             Sale_RadioButton.AutoCheck = true;
             Purchase_RadioButton.AutoCheck = true;
         }

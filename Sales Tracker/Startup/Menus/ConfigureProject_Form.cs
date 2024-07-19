@@ -98,13 +98,13 @@ namespace Sales_Tracker.Startup.Menus
             // Create directories and files
             Directories.CreateDirectory(Directories.tempCompany_dir, true);
             Directories.CreateDirectory(Directories.logs_dir, false);
+            Directories.CreateDirectory(Directories.receipts_dir, false);
             Directories.CreateFile(Directories.purchases_file);
             Directories.CreateFile(Directories.sales_file);
             Directories.CreateFile(Directories.categorySales_file);
             Directories.CreateFile(Directories.categoryPurchases_file);
             Directories.CreateFile(Directories.accountants_file);
             Directories.CreateFile(Directories.companies_file);
-            Directories.CreateFile(Directories.receipts_dir);
             ArgoCompany.SaveAll();
 
             // Save recently opened projects

@@ -10,11 +10,9 @@ namespace Sales_Tracker
         public readonly static List<string> thingsThatHaveChangedInFile = [];
 
         // Init.
-        public static AddPurchase_Form Instance { get; private set; }
         public AddPurchase_Form()
         {
             InitializeComponent();
-            Instance = this;
 
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
@@ -108,11 +106,14 @@ namespace Sales_Tracker
 
             if (panelsForMultipleProducts_List.Count == 0)
             {
-                AddSinglePurchase();
+                if (!AddSinglePurchase())
+                {
+                    return;
+                }
             }
-            else
+            else if (!AddMultiplePurchases())
             {
-                AddMultiplePurchases();
+                return;
             }
 
             RemoveReceiptLabel();
@@ -151,7 +152,7 @@ namespace Sales_Tracker
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                recieptFilePath = dialog.FileName;
+                receiptFilePath = dialog.FileName;
                 ShowReceiptLabel(dialog.SafeFileName);
             }
         }
@@ -170,7 +171,7 @@ namespace Sales_Tracker
 
 
         // Receipts
-        private string recieptFilePath;
+        private string receiptFilePath;
         private void ShowReceiptLabel(string text)
         {
             SelectedReceipt_Label.Text = text;
@@ -202,21 +203,22 @@ namespace Sales_Tracker
 
 
         // Methods to add purchases
-        private void AddPurchase(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax, decimal totalPrice, string displayPricePerUnit)
+        private bool AddSinglePurchase()
         {
             string purchaseID = OrderNumber_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
-            string categoryName = "-";
-            string country = "-";
-            string company = "-";
-            if (displayPricePerUnit != "-")
-            {
-                 categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-                 country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-                 company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-            }
+            string itemName = ProductName_TextBox.Text;
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
+            int quantity = int.Parse(Quantity_TextBox.Text);
+            decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
+            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
+            decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
+            decimal disount = decimal.Parse(Discount_TextBox.Text);
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee - disount;
 
             // Convert currency
             if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
@@ -241,7 +243,7 @@ namespace Sales_Tracker
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
-                    return;
+                    return false;
                 }
             }
             totalPrice += chargedDifference;
@@ -249,9 +251,9 @@ namespace Sales_Tracker
             string newFilePath = "";
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                if (!MainMenu_Form.SaveReceiptInFile(recieptFilePath, out newFilePath))
+                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
                 {
-                    return;
+                    return false;
                 }
             }
 
@@ -266,13 +268,14 @@ namespace Sales_Tracker
                 company,
                 date,
                 quantity.ToString(),
-                displayPricePerUnit,
+                pricePerUnit.ToString("N2"),
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );
+
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
 
@@ -280,43 +283,128 @@ namespace Sales_Tracker
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
+
+            return true;
         }
-        private void AddSinglePurchase()
+        private bool AddMultiplePurchases()
         {
-            string itemName = ProductName_TextBox.Text;
-            int quantity = int.Parse(Quantity_TextBox.Text);
-            decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
+            decimal totalShipping = 0, totalTax = 0, totalPrice = 0;
+            int totalQuantity = 0;
+            string categoryName = "", country = "", company = "";
+
+            string purchaseID = OrderNumber_TextBox.Text;
+            string buyerName = BuyerName_TextBox.Text;
+            string date = Tools.FormatDate(Date_DateTimePicker.Value);
+            int quantity = 0;
+            decimal pricePerUnit = 0;
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee;
+            decimal disount = decimal.Parse(Discount_TextBox.Text);
 
-            AddPurchase(itemName, quantity, pricePerUnit, shipping, tax, totalPrice, pricePerUnit.ToString("N2"));
-        }
-        private void AddMultiplePurchases()
-        {
-            decimal totalShipping = 0, totalTax = 0, totalPrice = 0, shipping = 0, tax = 0, fee = 0;
-            int totalQuantity = 0;
+            List<string> items = [];
+
+            items.Add(receiptFilePath);
 
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
+                Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
+                string itemName = nameTextBox.Text;
+
+                categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
-                int quantity = int.Parse(quantityTextBox.Text);
+                quantity = int.Parse(quantityTextBox.Text);
 
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
-                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
+                pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
 
                 totalQuantity += quantity;
                 totalShipping += decimal.Parse(Shipping_TextBox.Text) / panelsForMultipleProducts_List.Count;
                 totalTax += decimal.Parse(Tax_TextBox.Text) / panelsForMultipleProducts_List.Count;
-                shipping = decimal.Parse(Shipping_TextBox.Text);
-                tax = decimal.Parse(Tax_TextBox.Text);
-                fee = decimal.Parse(PaymentFee_TextBox.Text);
                 totalPrice += quantity * pricePerUnit;
-            }
-            totalPrice += shipping + tax + fee;
 
-            AddPurchase("Multiple items", totalQuantity, 0, totalShipping, totalTax, totalPrice, "-");
+                string item = string.Join(",",
+                    itemName,
+                    categoryName,
+                    country,
+                    company,
+                    quantity.ToString(),
+                    pricePerUnit.ToString("N2"),
+                    totalPrice.ToString("N2")
+                );
+
+                items.Add(item);
+            }
+            totalPrice += shipping + tax + fee - disount;
+
+            // Convert currency
+            if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
+            {
+                decimal exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, "CAD", date);
+                pricePerUnit *= exchangeRate;
+                shipping *= exchangeRate;
+                tax *= exchangeRate;
+                fee *= exchangeRate;
+                totalPrice *= exchangeRate;
+            }
+
+            // Round to 2 decimal places
+            decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
+            totalPrice = Math.Round(totalPrice, 2);
+            decimal chargedDifference = amountCharged - totalPrice;
+
+            if (totalPrice != amountCharged)
+            {
+                string message = $"Amount charged (${amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
+                if (result != CustomMessageBoxResult.Ok)
+                {
+                    return false;
+                }
+            }
+            totalPrice += chargedDifference;
+
+            string newFilePath = "";
+            if (Controls.Contains(SelectedReceipt_Label))
+            {
+                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
+                {
+                    return false;
+                }
+            }
+
+            MainMenu_Form.Instance.selectedDataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
+
+            int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
+                purchaseID,
+                buyerName,
+                "Multiple items",
+                "-",
+                "-",
+                "-",
+                date,
+                quantity.ToString(),
+                pricePerUnit.ToString("N2"),
+                shipping.ToString("N2"),
+                tax.ToString("N2"),
+                fee.ToString("N2"),
+                chargedDifference.ToString("N2"),
+                totalPrice.ToString("N2")
+            );
+
+            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
+            MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
+
+            MainMenu_Form.Instance.DataGridViewRowChanged();
+
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, purchaseID);
+            Log.Write(3, $"Added purchase '{purchaseID}' with '{quantity}' items");
+
+            return true;
         }
 
 
@@ -327,7 +415,7 @@ namespace Sales_Tracker
                 Quantity_TextBox, Quantity_Label,
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3,
+        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3, spaceToOffsetFormNotCenter = 15,
             textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 150, spaceBetweenPanels = 10,
                initialHeightForPanel = 59, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
         private readonly short initialWidthForPanel = 449, maxFlowPanelHeight = 300;
@@ -338,7 +426,7 @@ namespace Sales_Tracker
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
                 ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
-                Receipt_Button.Width) / 2;
+                Receipt_Button.Width - spaceToOffsetFormNotCenter) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
@@ -349,13 +437,15 @@ namespace Sales_Tracker
             ProductName_Label.Left = ProductName_TextBox.Left;
             Receipt_Button.Left = ProductName_TextBox.Right + spaceBetweenControlsHorizontally;
 
-            Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
+            Date_DateTimePicker.Left = (Width -
+                Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Quantity_TextBox.Width - spaceBetweenControlsHorizontally -
                 PricePerUnit_TextBox.Width - spaceBetweenControlsHorizontally -
                 Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
                 PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
-                AmountCharged_TextBox.Width) / 2;
+                AmountCharged_TextBox.Width - spaceBetweenControlsHorizontally -
+                Discount_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Quantity_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -370,6 +460,8 @@ namespace Sales_Tracker
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
             AmountCharged_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
             AmountCharged_Label.Left = AmountCharged_TextBox.Left;
+            Discount_TextBox.Left = AmountCharged_TextBox.Right + spaceBetweenControlsHorizontally;
+            Discount_Label.Left = Discount_TextBox.Left;
 
             // Add controls
             foreach (Control control in GetControlsForMultipleProducts())
@@ -397,7 +489,7 @@ namespace Sales_Tracker
                 Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
-                Receipt_Button.Width) / 2;
+                Receipt_Button.Width - spaceToOffsetFormNotCenter) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
@@ -411,7 +503,8 @@ namespace Sales_Tracker
                 Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
                 PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
-                AmountCharged_TextBox.Width) / 2;
+                AmountCharged_TextBox.Width - spaceBetweenControlsHorizontally -
+                Discount_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -422,6 +515,8 @@ namespace Sales_Tracker
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
             AmountCharged_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
             AmountCharged_Label.Left = AmountCharged_TextBox.Left;
+            Discount_TextBox.Left = AmountCharged_TextBox.Right + spaceBetweenControlsHorizontally;
+            Discount_Label.Left = Discount_TextBox.Left;
 
             // Remove controls
             foreach (Control control in GetControlsForMultipleProducts())

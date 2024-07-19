@@ -112,7 +112,7 @@ namespace Sales_Tracker
             AddProduct_Label.Anchor = AnchorStyles.Top;
             AddProduct_Label.AutoSize = true;
             AddProduct_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AddProduct_Label.Location = new Point(478, 23);
+            AddProduct_Label.Location = new Point(478, 20);
             AddProduct_Label.Name = "AddProduct_Label";
             AddProduct_Label.Size = new Size(129, 30);
             AddProduct_Label.TabIndex = 0;
@@ -223,7 +223,7 @@ namespace Sales_Tracker
             Sale_RadioButton.CheckedState.InnerColor = Color.White;
             Sale_RadioButton.CheckedState.InnerOffset = -4;
             Sale_RadioButton.Font = new Font("Segoe UI", 11F);
-            Sale_RadioButton.Location = new Point(147, 23);
+            Sale_RadioButton.Location = new Point(147, 20);
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.Size = new Size(78, 24);
             Sale_RadioButton.TabIndex = 6;
@@ -244,7 +244,7 @@ namespace Sales_Tracker
             Purchase_RadioButton.CheckedState.InnerColor = Color.White;
             Purchase_RadioButton.CheckedState.InnerOffset = -4;
             Purchase_RadioButton.Font = new Font("Segoe UI", 11F);
-            Purchase_RadioButton.Location = new Point(30, 23);
+            Purchase_RadioButton.Location = new Point(30, 20);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.Size = new Size(111, 24);
             Purchase_RadioButton.TabIndex = 7;
