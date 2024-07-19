@@ -20,6 +20,15 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.ConstructMessage_Panel();
         }
 
+        public enum KeyPressValidation
+        {
+            OnlyNumbersAndDecimalAndMinus,
+            OnlyNumbersAndDecimal,
+            OnlyNumbers,
+            OnlyLetters,
+            None
+        }
+
         // Construct things for menus
         public readonly static byte panelWidth = 250, panelBtnWidth = 240;
         public static Guna2Panel ConstructPanelForMenu(Size size)

@@ -42,9 +42,9 @@ namespace Sales_Tracker
 
         private void LoadAllItemsInDataGridView(List<string> tag)
         {
-            string receiptFilePath = tag[0];
+            string receiptFilePath = tag.Last();
 
-            foreach (string row in tag.Skip(1))
+            foreach (string row in tag.Take(tag.Count - 1))
             {
                 string[] values = row.Split(',');
 

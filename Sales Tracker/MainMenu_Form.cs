@@ -1212,21 +1212,24 @@ namespace Sales_Tracker
                     flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
                 }
 
-                if (grid.SelectedRows[0].Tag == null)
+                flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
+                flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
+
+                if (grid.SelectedRows[0].Tag is List<string> list)
                 {
-                    flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
-                }
-                else if (grid.SelectedRows[0].Tag is not List<string>)
-                {
-                    flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
-                    flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
-                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, 3);
-                }
-                else
-                {
-                    flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
                     flowPanel.Controls.Add(rightClickDataGridView_ShowItemsBtn);
-                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, 3);
+                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, 1);
+
+                    if (list[^1].Contains('\\') && File.Exists(list[^1]))
+                    {
+                        flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
+                        flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, 2);
+                    }
+                }
+                else if (grid.SelectedRows[0].Tag is string)
+                {
+                    flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
+                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, 1);
                 }
 
                 // Adjust the panel height based on the number of controls
@@ -1508,12 +1511,6 @@ namespace Sales_Tracker
             rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", UI.panelBtnWidth, false, flowPanel);
             rightClickDataGridView_MoveBtn.Click += MoveRow;
 
-            menuBtn = UI.ConstructBtnForMenu("Move up", UI.panelBtnWidth, false, flowPanel);
-            menuBtn.Click += MoveRowUp;
-
-            menuBtn = UI.ConstructBtnForMenu("Move down", UI.panelBtnWidth, false, flowPanel);
-            menuBtn.Click += MoveRowDown;
-
             rightClickDataGridView_ExportReceiptBtn = UI.ConstructBtnForMenu("Export receipt", UI.panelBtnWidth, false, flowPanel);
             rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
 
@@ -1537,68 +1534,6 @@ namespace Sales_Tracker
 
             ModifyRow_Form ModifyRow_form = new(selectedDataGridView.SelectedRows[0]);
             ModifyRow_form.ShowDialog();
-        }
-        private void MoveRowUp(object sender, EventArgs e)
-        {
-            CloseRightClickPanels();
-
-            int rowIndex = selectedDataGridView.SelectedCells[0].OwningRow.Index;
-
-            if (rowIndex == 0)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the first row up.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
-
-            // Save the current scroll position
-            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
-
-            isProgramLoading = true;
-
-            DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
-            selectedDataGridView.Rows.Remove(selectedRow);
-            selectedDataGridView.Rows.Insert(rowIndex - 1, selectedRow);
-
-            // Reselect
-            selectedDataGridView.ClearSelection();
-            selectedDataGridView.Rows[rowIndex - 1].Selected = true;
-
-            // Restore the scroll position
-            selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
-
-            isProgramLoading = false;
-            SaveDataGridViewToFileAsJson();
-        }
-        private void MoveRowDown(object sender, EventArgs e)
-        {
-            CloseRightClickPanels();
-
-            int rowIndex = selectedDataGridView.SelectedCells[0].OwningRow.Index;
-
-            if (rowIndex == selectedDataGridView.Rows.Count - 1)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", "Cannot move the last row down.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
-
-            // Save the current scroll position
-            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
-
-            isProgramLoading = true;
-
-            DataGridViewRow selectedRow = selectedDataGridView.Rows[rowIndex];
-            selectedDataGridView.Rows.Remove(selectedRow);
-            selectedDataGridView.Rows.Insert(rowIndex + 1, selectedRow);
-
-            // Reselect
-            selectedDataGridView.ClearSelection();
-            selectedDataGridView.Rows[rowIndex + 1].Selected = true;
-
-            // Restore the scroll position
-            selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
-
-            isProgramLoading = false;
-            SaveDataGridViewToFileAsJson();
         }
         private void MoveRow(object? sender, EventArgs e)
         {
@@ -1649,11 +1584,10 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
 
             DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
-            string receiptFilePath = selectedRow.Tag.ToString();
+            string receiptFilePath = GetFilePathFromRowTag(selectedRow.Tag);
 
             if (!File.Exists(receiptFilePath))
             {
-
                 CustomMessageBox.Show("Argo Sales Tracker", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 Log.Error_FileDoesNotExist(receiptFilePath);
                 return;
@@ -1664,13 +1598,12 @@ namespace Sales_Tracker
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Directories.CopyFile(receiptFilePath, dialog.SelectedPath + @"\" + Path.GetFileName(selectedRow.Tag.ToString()));
+                Directories.CopyFile(receiptFilePath, dialog.SelectedPath + @"\" + Path.GetFileName(receiptFilePath));
             }
         }
         private void ShowItems(object? sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
-
             new ItemsInPurchase_Form((List<string>)selectedDataGridView.SelectedRows[0].Tag).ShowDialog();
         }
         private void DeleteRow(object? sender, EventArgs e)
@@ -1702,6 +1635,18 @@ namespace Sales_Tracker
                     selectedDataGridView.Rows[^1].Selected = true;
                 }
             }
+        }
+        public static string GetFilePathFromRowTag(object tag)
+        {
+            if (tag is List<string> list && list[^1].Contains('\\') && File.Exists(list[^1]))
+            {
+                return list[^1];
+            }
+            else if (tag is string)
+            {
+                return tag.ToString();
+            }
+            return "";
         }
 
 
@@ -1914,13 +1859,13 @@ namespace Sales_Tracker
         }
 
         // Receipts
-        public static bool SaveReceiptInFile(string recieptFilePath, out string newFilePath)
+        public static bool SaveReceiptInFile(string receiptFilePath, out string newFilePath)
         {
             newFilePath = "";
-            if (File.Exists(Directories.receipts_dir + Path.GetFileName(recieptFilePath)))
+            if (File.Exists(Directories.receipts_dir + Path.GetFileName(receiptFilePath)))
             {
                 // Get a new name for the file
-                string name = Path.GetFileNameWithoutExtension(recieptFilePath);
+                string name = Path.GetFileNameWithoutExtension(receiptFilePath);
                 List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(Directories.receipts_dir);
 
                 string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
@@ -1933,17 +1878,17 @@ namespace Sales_Tracker
 
                 if (result == CustomMessageBoxResult.Ok)
                 {
-                    newFilePath = Directories.receipts_dir + suggestedThingName + Path.GetExtension(recieptFilePath);
+                    newFilePath = Directories.receipts_dir + suggestedThingName + Path.GetExtension(receiptFilePath);
                 }
                 else { return false; }
             }
             else
             {
-                newFilePath = Directories.receipts_dir + Path.GetFileName(recieptFilePath);
+                newFilePath = Directories.receipts_dir + Path.GetFileName(receiptFilePath);
             }
 
             // Save receipt
-            Directories.CopyFile(recieptFilePath, newFilePath);
+            Directories.CopyFile(receiptFilePath, newFilePath);
 
             return true;
         }
@@ -1956,6 +1901,17 @@ namespace Sales_Tracker
                 Directories.DeleteFile(filePath);
             }
             row.Tag = null;
+        }
+        public static void AddReceiptToTag(DataGridViewRow row, string filePath)
+        {
+            if (row.Tag is List<string> tagList)
+            {
+                tagList[^1] = filePath;
+            }
+            else
+            {
+                row.Tag = filePath;
+            }
         }
 
 

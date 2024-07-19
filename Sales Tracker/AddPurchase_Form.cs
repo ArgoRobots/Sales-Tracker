@@ -280,8 +280,10 @@ namespace Sales_Tracker
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );
-
-            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
+            if (newFilePath != "")
+            {
+                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
+            }
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
 
             MainMenu_Form.Instance.DataGridViewRowChanged();
@@ -308,8 +310,6 @@ namespace Sales_Tracker
             decimal disount = decimal.Parse(Discount_TextBox.Text);
 
             List<string> items = [];
-
-            items.Add(receiptFilePath);
 
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
@@ -400,6 +400,8 @@ namespace Sales_Tracker
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );
+
+            items.Add(newFilePath);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
@@ -573,7 +575,7 @@ namespace Sales_Tracker
             int left;
 
             // Product name
-            textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), panel);
+            textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), UI.KeyPressValidation.None, panel);
             textBox.Click -= CloseAllPanels;
             textBox.Click += (sender, e) =>
             {
@@ -598,12 +600,12 @@ namespace Sales_Tracker
 
             // Quantity
             left = textBox.Right + spaceBetweenControlsHorizontally;
-            textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), panel);
+            textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), UI.KeyPressValidation.OnlyNumbers, panel);
             CosntructLabel(Quantity_Label.Text, left, panel);
 
             // Price per unit
             left = textBox.Right + spaceBetweenControlsHorizontally;
-            textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), panel);
+            textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), UI.KeyPressValidation.OnlyNumbersAndDecimal, panel);
             CosntructLabel(PricePerUnit_Label.Text, left, panel);
 
             // Add minus button unless this is the first panel
@@ -619,7 +621,7 @@ namespace Sales_Tracker
             FlowPanel.ResumeLayout();
             FlowPanel.ScrollControlIntoView(panel);
         }
-        private static void CosntructLabel(string text, int left, Control parent)
+        private void CosntructLabel(string text, int left, Control parent)
         {
             Label label = new()
             {
@@ -629,9 +631,10 @@ namespace Sales_Tracker
                 Left = left,
                 AutoSize = true
             };
+            label.Click += CloseAllPanels;
             parent.Controls.Add(label);
         }
-        private Guna2TextBox CosntructTextBox(int left, int width, string name, Control parent)
+        private Guna2TextBox CosntructTextBox(int left, int width, string name, UI.KeyPressValidation keyPressValidation, Control parent)
         {
             Guna2TextBox textBox = new()
             {
@@ -646,8 +649,31 @@ namespace Sales_Tracker
             textBox.HoverState.BorderColor = CustomColors.accent_blue;
             textBox.FocusedState.BorderColor = CustomColors.accent_blue;
             textBox.FocusedState.FillColor = CustomColors.controlBack;
+
+            // Assign the appropriate KeyPress event handler based on the keyPressValidation parameter
+            switch (keyPressValidation)
+            {
+                case UI.KeyPressValidation.OnlyNumbersAndDecimalAndMinus:
+                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox;
+                    break;
+                case UI.KeyPressValidation.OnlyNumbersAndDecimal:
+                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+                    break;
+                case UI.KeyPressValidation.OnlyNumbers:
+                    textBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+                    break;
+                case UI.KeyPressValidation.OnlyLetters:
+                    textBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+                    break;
+                case UI.KeyPressValidation.None:
+                    break;
+            }
+
             textBox.Click += CloseAllPanels;
             textBox.TextChanged += ValidateInputs;
+            textBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            textBox.KeyDown += UI.TextBox_KeyDown;
 
             parent.Controls.Add(textBox);
             return textBox;
@@ -667,6 +693,7 @@ namespace Sales_Tracker
             circleBtn.PressedColor = CustomColors.controlBack;
             circleBtn.Click += (sender, e) =>
             {
+                CloseAllPanels(null, null);
                 RemovePanelForMultipleProducts(sender, e);
                 ValidateInputs(null, null);
             };
@@ -714,6 +741,7 @@ namespace Sales_Tracker
             AddButton.PressedColor = CustomColors.controlBack;
             AddButton.Click += (sender, e) =>
             {
+                CloseAllPanels(null, null);
                 ConstructControlsForMultipleProducts();
                 ValidateInputs(null, null);
             };
