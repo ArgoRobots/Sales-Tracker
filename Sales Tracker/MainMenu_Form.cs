@@ -156,7 +156,6 @@ namespace Sales_Tracker
         private void MainMenu_Form_Load(object sender, EventArgs e)
         {
             Sales_Button.PerformClick();
-            AlignTotalLabels();
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
@@ -171,6 +170,7 @@ namespace Sales_Tracker
                 Profits_Chart.Invalidate();
                 Profits_Chart.Refresh();
             });
+            AlignTotalLabels();
 
             Log.Write(2, "Argo Sales Tracker has finished starting");
         }

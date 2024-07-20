@@ -295,8 +295,7 @@ namespace Sales_Tracker
         }
         private bool AddMultiplePurchases()
         {
-            decimal totalShipping = 0, totalTax = 0, totalPrice = 0;
-            int totalQuantity = 0;
+            decimal totalPrice = 0;
             string categoryName = "", country = "", company = "";
 
             string purchaseID = OrderNumber_TextBox.Text;
@@ -309,6 +308,12 @@ namespace Sales_Tracker
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal disount = decimal.Parse(Discount_TextBox.Text);
 
+            decimal exchangeRate = 1;
+            if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
+            {
+                exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, "CAD", date);
+            }
+
             List<string> items = [];
 
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
@@ -319,16 +324,10 @@ namespace Sales_Tracker
                 categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
                 country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
                 company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
                 quantity = int.Parse(quantityTextBox.Text);
-
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
                 pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
-
-                totalQuantity += quantity;
-                totalShipping += decimal.Parse(Shipping_TextBox.Text) / panelsForMultipleProducts_List.Count;
-                totalTax += decimal.Parse(Tax_TextBox.Text) / panelsForMultipleProducts_List.Count;
                 totalPrice += quantity * pricePerUnit;
 
                 string item = string.Join(",",
@@ -337,28 +336,25 @@ namespace Sales_Tracker
                     country,
                     company,
                     quantity.ToString(),
-                    pricePerUnit.ToString("N2"),
-                    totalPrice.ToString("N2")
+                    (pricePerUnit * exchangeRate).ToString("N2"),
+                    (quantity * pricePerUnit * exchangeRate).ToString("N2")
                 );
 
                 items.Add(item);
             }
-            totalPrice += shipping + tax + fee - disount;
 
             // Convert currency
-            if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
-            {
-                decimal exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, "CAD", date);
-                pricePerUnit *= exchangeRate;
-                shipping *= exchangeRate;
-                tax *= exchangeRate;
-                fee *= exchangeRate;
-                totalPrice *= exchangeRate;
-            }
+            pricePerUnit *= exchangeRate;
+            shipping *= exchangeRate;
+            tax *= exchangeRate;
+            fee *= exchangeRate;
+            disount *= exchangeRate;
+            totalPrice *= exchangeRate;
 
-            // Round to 2 decimal places
-            decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
+            totalPrice += shipping + tax + fee - disount;
             totalPrice = Math.Round(totalPrice, 2);
+
+            decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
             decimal chargedDifference = amountCharged - totalPrice;
 
             if (totalPrice != amountCharged)
@@ -393,7 +389,7 @@ namespace Sales_Tracker
                 MainMenu_Form.emptyCell,
                 date,
                 quantity.ToString(),
-                pricePerUnit.ToString("N2"),
+                MainMenu_Form.emptyCell,
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
