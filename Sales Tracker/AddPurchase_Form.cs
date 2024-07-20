@@ -387,10 +387,10 @@ namespace Sales_Tracker
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseID,
                 buyerName,
-                "Multiple items",
-                "-",
-                "-",
-                "-",
+                MainMenu_Form.multupleItems,
+                MainMenu_Form.emptyCell,
+                MainMenu_Form.emptyCell,
+                MainMenu_Form.emptyCell,
                 date,
                 quantity.ToString(),
                 pricePerUnit.ToString("N2"),
@@ -811,6 +811,7 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(AmountCharged_TextBox.Text);
 
             if (Properties.Settings.Default.PurchaseReceipts)
@@ -829,8 +830,8 @@ namespace Sales_Tracker
             else
             {
                 allFieldsFilled &= !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) && ProductName_TextBox.Tag.ToString() != "0" &&
-                                  !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
-                                  !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
+                                   !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
             }
             AddPurchase_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
         }

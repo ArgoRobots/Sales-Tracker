@@ -393,7 +393,7 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.Product):
-                        if (cellValue != "Multiple items")
+                        if (cellValue != MainMenu_Form.multupleItems)
                         {
                             ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
                             Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
@@ -480,7 +480,7 @@ namespace Sales_Tracker
 
                     case nameof(MainMenu_Form.Column.Quantity):
                         secondRow = true;
-                        if (cellValue == "-") { continue; }
+                        if (cellValue == MainMenu_Form.emptyCell) { continue; }
 
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbers, false, true, SecondPanel);

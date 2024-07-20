@@ -11,9 +11,11 @@ namespace Sales_Tracker
 {
     public partial class MainMenu_Form : BaseForm
     {
+        // Proprties
         public readonly static List<string> thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-        private static readonly string JsonTag = "Tag";
+        private static readonly string jsonTag = "Tag";
+        public static readonly string emptyCell = "-", multupleItems = "Multiple items";
 
         // Init.
         public static MainMenu_Form? Instance { get; private set; }
@@ -31,7 +33,6 @@ namespace Sales_Tracker
             isProgramLoading = true;
             LoadData();
             UpdateTheme();
-            ResizeControls();
             isProgramLoading = false;
         }
         private void LoadData()
@@ -86,13 +87,13 @@ namespace Sales_Tracker
             foreach (Dictionary<string, object> rowData in rowsData)
             {
                 // Extract cell values
-                string?[] cellValues = rowData.Where(kv => kv.Key != JsonTag).Select(kv => kv.Value?.ToString()).ToArray();
+                string?[] cellValues = rowData.Where(kv => kv.Key != jsonTag).Select(kv => kv.Value?.ToString()).ToArray();
 
                 // Add the row values to the DataGridView
                 int rowIndex = dataGridView.Rows.Add(cellValues);
 
                 // Set the row tag
-                if (rowData.TryGetValue(JsonTag, out object? value))
+                if (rowData.TryGetValue(jsonTag, out object? value))
                 {
                     if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
                     {
@@ -105,7 +106,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void LoadGraphs()
+        public void LoadCharts()
         {
             double total;
             if (Selected == SelectedOption.Sales)
@@ -155,6 +156,7 @@ namespace Sales_Tracker
         private void MainMenu_Form_Load(object sender, EventArgs e)
         {
             Sales_Button.PerformClick();
+            AlignTotalLabels();
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
@@ -592,7 +594,7 @@ namespace Sales_Tracker
             Controls.Add(Purchases_DataGridView);
             ResizeControls();
             Controls.Remove(Sales_DataGridView);
-            LoadGraphs();
+            LoadCharts();
             UpdateTotals();
 
             Purchases_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
@@ -609,7 +611,7 @@ namespace Sales_Tracker
             Controls.Add(Sales_DataGridView);
             ResizeControls();
             Controls.Remove(Purchases_DataGridView);
-            LoadGraphs();
+            LoadCharts();
             UpdateTotals();
 
             Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
@@ -655,7 +657,7 @@ namespace Sales_Tracker
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            LoadGraphs();
+            LoadCharts();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -741,7 +743,7 @@ namespace Sales_Tracker
             if (isProgramLoading) { return; }
             CloseAllPanels(null, null);
             FilterDataGridViewByDate();
-            LoadGraphs();
+            LoadCharts();
         }
         private void FilterDataGridViewByDate()
         {
@@ -1136,7 +1138,7 @@ namespace Sales_Tracker
             if (Selected == SelectedOption.Purchases || Selected == SelectedOption.Sales)
             {
                 UpdateTotals();
-                LoadGraphs();
+                LoadCharts();
                 SaveDataGridViewToFileAsJson();
             }
             else if (Selected == SelectedOption.CategoryPurchases || Selected == SelectedOption.CategorySales ||
@@ -1217,19 +1219,16 @@ namespace Sales_Tracker
 
                 if (grid.SelectedRows[0].Tag is List<string> list)
                 {
-                    flowPanel.Controls.Add(rightClickDataGridView_ShowItemsBtn);
-                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, 1);
+                    ShowShowItemsBtn(flowPanel, 1);
 
                     if (list[^1].Contains('\\') && File.Exists(list[^1]))
                     {
-                        flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
-                        flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, 2);
+                        ShowExportReceiptBtn(flowPanel, 2);
                     }
                 }
                 else if (grid.SelectedRows[0].Tag is string)
                 {
-                    flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
-                    flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, 1);
+                    ShowExportReceiptBtn(flowPanel, 1);
                 }
 
                 // Adjust the panel height based on the number of controls
@@ -1346,10 +1345,6 @@ namespace Sales_Tracker
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
-                if (Selected == SelectedOption.Purchases)
-                {
-                    totalPrice -= Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
-                }
             }
 
             Quantity_Label.Text = totalQuantity.ToString();
@@ -1425,11 +1420,11 @@ namespace Sales_Tracker
                 // Add the row tag
                 if (row.Tag is List<string> tagList)
                 {
-                    rowData[JsonTag] = tagList;
+                    rowData[jsonTag] = tagList;
                 }
                 else if (row.Tag != null)
                 {
-                    rowData[JsonTag] = row.Tag?.ToString();
+                    rowData[jsonTag] = row.Tag?.ToString();
                 }
 
                 rowsData.Add(rowData);
@@ -1496,7 +1491,7 @@ namespace Sales_Tracker
         }
 
 
-        // Right click DataGridView row menu
+        // Right click DataGridView row
         public Guna2Panel rightClickDataGridView_Panel;
         private Guna2Button rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn, rightClickDataGridView_ShowItemsBtn;
         public Guna2Button rightClickDataGridView_DeleteBtn;
@@ -1573,7 +1568,7 @@ namespace Sales_Tracker
             }
             else if (selectedDataGridView.Rows.Count > 0)
             {
-                selectedDataGridView.Rows[selectedDataGridView.Rows.Count - 1].Selected = true;
+                selectedDataGridView.Rows[^1].Selected = true;
             }
 
             // Restore the scroll position
@@ -1616,8 +1611,7 @@ namespace Sales_Tracker
             foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
             {
                 // Trigger the UserDeletingRow event manually
-                var args = new DataGridViewRowCancelEventArgs(item);
-                DataGridView_UserDeletingRow(selectedDataGridView, args);
+                DataGridView_UserDeletingRow(selectedDataGridView, new(item));
 
                 selectedDataGridView.Rows.Remove(item);
             }
@@ -1636,17 +1630,30 @@ namespace Sales_Tracker
                 }
             }
         }
+
+
+        // Methods for right click DataGridView row
         public static string GetFilePathFromRowTag(object tag)
         {
             if (tag is List<string> list && list[^1].Contains('\\') && File.Exists(list[^1]))
             {
                 return list[^1];
             }
-            else if (tag is string)
+            else if (tag is string tagString)
             {
-                return tag.ToString();
+                return tagString;
             }
             return "";
+        }
+        private void ShowShowItemsBtn(FlowLayoutPanel flowPanel, int index)
+        {
+            flowPanel.Controls.Add(rightClickDataGridView_ShowItemsBtn);
+            flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, index);
+        }
+        private void ShowExportReceiptBtn(FlowLayoutPanel flowPanel, int index)
+        {
+            flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
+            flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, index);
         }
 
 
@@ -1747,7 +1754,6 @@ namespace Sales_Tracker
             LoadChart.LoadCompaniesOfOriginForProductsIntoChart(Purchases_DataGridView, companiesOfOrigin_Chart);
             LoadChart.LoadCountriesOfDestinationForProductsIntoChart(Sales_DataGridView, countriesOfDestination_Chart);
         }
-
 
         // Message panel
         public Guna2Panel messagePanel;
@@ -1913,7 +1919,6 @@ namespace Sales_Tracker
                 row.Tag = filePath;
             }
         }
-
 
         // Misc.
         public bool IsPurchasesSelected()

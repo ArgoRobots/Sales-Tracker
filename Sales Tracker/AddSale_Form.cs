@@ -579,8 +579,8 @@ namespace Sales_Tracker
             else
             {
                 allFieldsFilled &= !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) && ProductName_TextBox.Tag.ToString() != "0" &&
-                                  !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
-                                  !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
+                                   !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
             }
             AddSale_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
         }

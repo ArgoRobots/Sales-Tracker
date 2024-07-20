@@ -31,7 +31,7 @@ namespace Sales_Tracker.Charts
         private static bool TryGetValue<T>(DataGridViewCell cell, out T value)
         {
             value = default;
-            if (cell.Value.ToString() == "-")
+            if (cell.Value.ToString() == MainMenu_Form.emptyCell)
             {
                 return false;
             }
@@ -150,13 +150,42 @@ namespace Sales_Tracker.Charts
                 totalShipping += shipping;
                 totalFee += fee;
 
-                if (categoryCosts.ContainsKey(category))
+                if (category == MainMenu_Form.emptyCell)
                 {
-                    categoryCosts[category] += cost;
+                    // Extract categories and costs from the Tag
+                    if (row.Tag is List<string> items)
+                    {
+                        foreach (string item in items)
+                        {
+                            // Items are in the format: "itemName,categoryName,country,company,quantity,pricePerUnit,totalPrice"
+                            string[] itemDetails = item.Split(',');
+                            if (itemDetails.Length >= 6)
+                            {
+                                string itemCategory = itemDetails[1];
+                                double itemCost = double.Parse(itemDetails[6]);
+
+                                if (categoryCosts.ContainsKey(itemCategory))
+                                {
+                                    categoryCosts[itemCategory] += itemCost;
+                                }
+                                else
+                                {
+                                    categoryCosts[itemCategory] = itemCost;
+                                }
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    categoryCosts[category] = cost;
+                    if (categoryCosts.ContainsKey(category))
+                    {
+                        categoryCosts[category] += cost;
+                    }
+                    else
+                    {
+                        categoryCosts[category] = cost;
+                    }
                 }
             }
 
@@ -185,7 +214,7 @@ namespace Sales_Tracker.Charts
             dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Fee], totalFee);
             dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Fee ({feePercentage:F2}%)";
 
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset); ;
         }
         public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
         {
