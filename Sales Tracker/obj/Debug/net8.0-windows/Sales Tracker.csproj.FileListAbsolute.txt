@@ -14,7 +14,6 @@ C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sale
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.AddPurchase_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.AddSale_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Categories_Form.resources
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Classes.BaseForm.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Companies_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.CustomMessage_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Export_Form.resources

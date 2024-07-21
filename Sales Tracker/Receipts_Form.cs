@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Sales_Tracker
 {
-    public partial class Receipts_Form : BaseForm
+    public partial class Receipts_Form : Form
     {
         // Properties
         private DateTime oldestDate;

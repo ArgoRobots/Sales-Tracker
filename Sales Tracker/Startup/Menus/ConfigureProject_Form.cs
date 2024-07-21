@@ -2,7 +2,7 @@
 
 namespace Sales_Tracker.Startup.Menus
 {
-    public partial class ConfigureProject_Form : BaseForm
+    public partial class ConfigureProject_Form : Form
     {
         // Properties
         public string selectedDirectory, projectName;

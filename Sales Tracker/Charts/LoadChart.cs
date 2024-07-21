@@ -192,6 +192,8 @@ namespace Sales_Tracker.Charts
             double taxPercentage = (totalTax / totalCost) * 100;
             double feePercentage = (totalFee / totalCost) * 100;
 
+            totalShipping = Math.Round(totalShipping, 2);
+
             if (totalShipping != 0)
             {
                 dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Shipping], totalShipping);

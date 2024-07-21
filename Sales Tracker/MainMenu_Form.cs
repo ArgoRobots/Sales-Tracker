@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace Sales_Tracker
 {
-    public partial class MainMenu_Form : BaseForm
+    public partial class MainMenu_Form : Form
     {
         // Proprties
         public readonly static List<string> thingsThatHaveChangedInFile = [];

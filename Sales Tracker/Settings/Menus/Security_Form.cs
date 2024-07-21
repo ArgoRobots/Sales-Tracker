@@ -2,7 +2,7 @@
 
 namespace Sales_Tracker.Settings.Menus
 {
-    public partial class Security_Form : BaseForm
+    public partial class Security_Form : Form
     {
         // Init.
         public static Security_Form Instance { get; private set; }

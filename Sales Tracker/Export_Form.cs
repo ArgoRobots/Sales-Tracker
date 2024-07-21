@@ -2,7 +2,7 @@
 
 namespace Sales_Tracker
 {
-    public partial class Export_Form : BaseForm
+    public partial class Export_Form : Form
     {
         public Export_Form()
         {

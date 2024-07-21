@@ -13,9 +13,6 @@
     <Compile Update="Categories_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Classes\BaseForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="CustomMessage_Form.cs">
       <SubType>Form</SubType>
     </Compile>

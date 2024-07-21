@@ -3,7 +3,7 @@ using Sales_Tracker.Classes;
 
 namespace Sales_Tracker
 {
-    public partial class ModifyRow_Form : BaseForm
+    public partial class ModifyRow_Form : Form
     {
         // Properties
         private readonly string selectedTag = "";

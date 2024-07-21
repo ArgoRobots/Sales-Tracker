@@ -4,7 +4,7 @@ using System.Diagnostics.Metrics;
 
 namespace Sales_Tracker.Startup
 {
-    public partial class GetStarted_Form : BaseForm
+    public partial class GetStarted_Form : Form
     {
         // Properties
         private readonly Dictionary<string, FileSystemWatcher> fileWatchers;

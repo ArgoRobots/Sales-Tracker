@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.Settings
 {
-    public partial class Settings_Form : BaseForm
+    public partial class Settings_Form : Form
     {
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();

@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Sales_Tracker
 {
-    public partial class Products_Form : BaseForm
+    public partial class Products_Form : Form
     {
         // Properties
         public readonly static List<string> thingsThatHaveChangedInFile = [];

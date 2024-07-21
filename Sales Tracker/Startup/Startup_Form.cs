@@ -4,7 +4,7 @@ using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker.Startup
 {
-    public partial class Startup_Form : BaseForm
+    public partial class Startup_Form : Form
     {
         // Init
         public static Startup_Form Instance { get; private set; }
