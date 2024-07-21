@@ -16,6 +16,7 @@ namespace Sales_Tracker
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string jsonTag = "Tag";
         public static readonly string emptyCell = "-", multupleItems = "Multiple items";
+        private readonly byte spaceForRightClickPanel = 30;
 
         // Init.
         public static MainMenu_Form? Instance { get; private set; }
@@ -697,6 +698,8 @@ namespace Sales_Tracker
             UI.rename_textBox.Text = "";
             MoveEditButton();
             ResizeControls();
+
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
         }
         private void SetCompanyLabel()
         {
@@ -985,6 +988,7 @@ namespace Sales_Tracker
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsAdded += DataGridView_RowsAdded;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
+            dataGridView.CellValueChanged += DataGridView_CellValueChanged;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.MouseDown += DataGridView_MouseDown;
             dataGridView.MouseUp += DataGridView_MouseUp;
@@ -1130,9 +1134,13 @@ namespace Sales_Tracker
                 removedRow = null;
             }
         }
+        private void DataGridView_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
+        {
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+        }
         public void DataGridViewRowChanged()
         {
-            if (isProgramLoading || Selected == SelectedOption.Receipts)
+            if (isProgramLoading)
             {
                 return;
             }
@@ -1248,14 +1256,14 @@ namespace Sales_Tracker
 
                 // Calculate the horizontal position
                 bool tooFarRight = false;
-                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X + padding > formWidth)
+                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - spaceForRightClickPanel + padding > formWidth)
                 {
                     rightClickDataGridView_Panel.Left = formWidth - rightClickDataGridView_Panel.Width - padding;
                     tooFarRight = true;
                 }
                 else
                 {
-                    rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X;
+                    rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - spaceForRightClickPanel;
                 }
 
                 // Calculate the vertical position
@@ -1267,7 +1275,7 @@ namespace Sales_Tracker
                     rightClickDataGridView_Panel.Top = formHeight - rightClickDataGridView_Panel.Height - padding;
                     if (!tooFarRight)
                     {
-                        rightClickDataGridView_Panel.Left += 30;
+                        rightClickDataGridView_Panel.Left += spaceForRightClickPanel;
                     }
                 }
                 else
@@ -1337,35 +1345,37 @@ namespace Sales_Tracker
             }
 
             int totalQuantity = 0;
-            decimal totalPrice = 0;
             decimal totalTax = 0;
             decimal totalShipping = 0;
+            decimal fee = 0;
+            decimal chargedDifference = 0;
+            decimal totalPrice = 0;
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
                 totalQuantity += Convert.ToInt32(row.Cells[Column.Quantity.ToString()].Value);
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
+                fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
+                chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
             }
 
             Quantity_Label.Text = totalQuantity.ToString();
             Tax_Label.Text = totalTax.ToString("C");
             Shipping_Label.Text = totalShipping.ToString("C");
+            PaymentFee_Label.Text = fee.ToString("C");
+            ChargedDifference_Label.Text = chargedDifference.ToString("C");
             Price_Label.Text = totalPrice.ToString("C");
         }
         private void AlignTotalLabels()
         {
-            if (isProgramLoading)
-            {
-                return;
-            }
-
-            string quantityColumn, taxColumn, shippingColumn, totalPriceColumn;
-            quantityColumn = Column.Quantity.ToString();
-            taxColumn = Column.Tax.ToString();
-            shippingColumn = Column.Shipping.ToString();
-            totalPriceColumn = Column.Total.ToString();
+            string quantityColumn = Column.Quantity.ToString();
+            string taxColumn = Column.Tax.ToString();
+            string shippingColumn = Column.Shipping.ToString();
+            string feeColumn = Column.Fee.ToString();
+            string chargedDifference = Column.ChargedDifference.ToString();
+            string totalPriceColumn = Column.Total.ToString();
 
             Quantity_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
             Quantity_Label.Width = selectedDataGridView.Columns[quantityColumn].Width;
@@ -1375,6 +1385,20 @@ namespace Sales_Tracker
 
             Shipping_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[shippingColumn].Index, -1, true).Left;
             Shipping_Label.Width = selectedDataGridView.Columns[shippingColumn].Width;
+
+            PaymentFee_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[feeColumn].Index, -1, true).Left;
+            PaymentFee_Label.Width = selectedDataGridView.Columns[feeColumn].Width;
+
+            if (selectedDataGridView == Purchases_DataGridView)
+            {
+                Total_Panel.Controls.Add(ChargedDifference_Label);
+                ChargedDifference_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
+                ChargedDifference_Label.Width = selectedDataGridView.Columns[chargedDifference].Width;
+            }
+            else
+            {
+                Total_Panel.Controls.Remove(ChargedDifference_Label);
+            }
 
             Price_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
             Price_Label.Width = selectedDataGridView.Columns[totalPriceColumn].Width;
@@ -1489,7 +1513,6 @@ namespace Sales_Tracker
             }
 
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
 
 

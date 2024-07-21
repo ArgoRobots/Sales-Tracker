@@ -64,7 +64,7 @@ namespace Sales_Tracker.Classes
             // Prepare debug info
             string debugInfo = "\nDebug info:";
             debugInfo += $"\nLine: '{lineNumber}'.";
-            debugInfo += $"\nStack trace\n: '{ Environment.StackTrace}'.";
+            debugInfo += $"\nStack trace\n: '{Environment.StackTrace}'.";
 
             // Log error with debug info
             Write(0, message + debugInfo);
@@ -171,6 +171,18 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-5knt54: Failed to save:" +
                 $"\nSource:'{filePath}'.",
+                "https://www.google.com",
+                false,
+                lineNumber);
+        }
+
+        // DataGridView errors
+        public static void Error_RowIsEmpty(
+          string dataGridViewName,
+          [CallerLineNumber] int lineNumber = 0)
+        {
+            Error("Error-5knt54: Row is empty in DataGridView:" +
+                $"\nSource:'{dataGridViewName}'.",
                 "https://www.google.com",
                 false,
                 lineNumber);
