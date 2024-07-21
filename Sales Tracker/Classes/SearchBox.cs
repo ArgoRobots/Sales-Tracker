@@ -61,7 +61,7 @@ namespace Sales_Tracker.Classes
             ShowSearchBox(controlToAddSearchBox, searchTextBox, resultList, deselectControl, maxHeight);
         }
 
-        public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight, bool addExtraParent = false)
+        public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
         {
             UI.CloseAllPanels(null, null);
 
@@ -161,7 +161,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Show search box
-            SetSearchBoxLocation(textBox, addExtraParent);
+            SetSearchBoxLocation(textBox);
             controlToAddSearchBox.Controls.Add(SearchResultBoxContainer);
             SearchResultBox.ResumeLayout();
             SearchResultBoxContainer.BringToFront();
@@ -211,7 +211,7 @@ namespace Sales_Tracker.Classes
         public static void SearchBoxTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
         {
             List<Guna2Button> results = SearchResultBox.Controls.OfType<Guna2Button>().ToList();
-            if (!results.Any()) { return; }
+            if (results.Count == 0) { return; }
 
             bool isResultSelected = false;
 
@@ -329,24 +329,20 @@ namespace Sales_Tracker.Classes
                 e.IsInputKey = true;
             }
         }
-        private static void SetSearchBoxLocation(Guna2TextBox textBox, bool addExtraParent)
+        private static void SetSearchBoxLocation(Guna2TextBox textBox)
         {
-            if (textBox.Parent is Form)
+            Point location = textBox.Location;
+            Control parent = textBox.Parent;
+
+            while (parent != null && parent != controlToAddSearchBox)
             {
-                SearchResultBoxContainer.Location = new Point(textBox.Left, textBox.Top + textBox.Height);
+                location.Offset(parent.Location);
+                parent = parent.Parent;
             }
-            else
+
+            if (parent == controlToAddSearchBox)
             {
-                if (addExtraParent)
-                {
-                    SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left + textBox.Parent.Parent.Left,
-                                                                  textBox.Top + textBox.Parent.Top + textBox.Parent.Parent.Top + textBox.Height);
-                }
-                else
-                {
-                    SearchResultBoxContainer.Location = new Point(textBox.Left + textBox.Parent.Left,
-                                                                  textBox.Top + textBox.Parent.Top + textBox.Height);
-                }
+                SearchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
             }
         }
     }

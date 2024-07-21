@@ -96,7 +96,7 @@ namespace Sales_Tracker
         }
         private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
         {
-            SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight, true);
+            SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
         }
 
 
