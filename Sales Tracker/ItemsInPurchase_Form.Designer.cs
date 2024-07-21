@@ -110,6 +110,7 @@
             Name = "ItemsInPurchase_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += ItemsInPurchase_Form_FormClosed;
             ((System.ComponentModel.ISupportInitialize)Items_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();

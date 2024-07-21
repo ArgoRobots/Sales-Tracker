@@ -160,7 +160,7 @@ namespace Sales_Tracker
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
             // Ensure the charts are rendered
-            // BeginInvoke ensures that the chart update logic runs on the main UI thread after all pending UI events have been processed.
+            // BeginInvoke ensures that it runs on the main UI thread after all pending UI events have been processed
             BeginInvoke(() =>
             {
                 Totals_Chart.Invalidate();
@@ -169,8 +169,9 @@ namespace Sales_Tracker
                 Distribution_Chart.Refresh();
                 Profits_Chart.Invalidate();
                 Profits_Chart.Refresh();
+
+                AlignTotalLabels();
             });
-            AlignTotalLabels();
 
             Log.Write(2, "Argo Sales Tracker has finished starting");
         }
@@ -884,7 +885,8 @@ namespace Sales_Tracker
             Accountants,
             Receipts,
             Companies,
-            Statistics
+            Statistics,
+            ItemsInPurchase
         }
         public enum Column
         {
@@ -916,7 +918,7 @@ namespace Sales_Tracker
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
-            { Column.Fee, "Payment fee" },
+            { Column.Fee, "Fee" },
             { Column.ChargedDifference, "Charged difference" },
             { Column.Total, "Total expenses" }
         };
@@ -933,7 +935,7 @@ namespace Sales_Tracker
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
-            { Column.Fee, "Payment fee" },
+            { Column.Fee, "Fee" },
             { Column.Total, "Total revenue" }
         };
         public enum DataGridViewTag

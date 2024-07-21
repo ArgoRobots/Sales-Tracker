@@ -58,10 +58,6 @@
               "target": "Package",
               "version": "[2.0.4.6, )"
             },
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.3, )"
-            },
             "Ookii.Dialogs.WinForms": {
               "target": "Package",
               "version": "[4.0.0, )"

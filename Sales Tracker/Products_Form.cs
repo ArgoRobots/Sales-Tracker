@@ -18,9 +18,9 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
-            AddEventHandlersToTextBoxes();
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             ConstructDataGridViews();
             LoadProducts();
