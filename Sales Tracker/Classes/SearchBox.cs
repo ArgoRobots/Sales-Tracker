@@ -61,8 +61,9 @@ namespace Sales_Tracker.Classes
             ShowSearchBox(controlToAddSearchBox, searchTextBox, resultList, deselectControl, maxHeight);
         }
 
-        public static void ShowSearchBox(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
+        public static void ShowSearchBox(Control controlToAddBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
         {
+            controlToAddSearchBox = controlToAddBox;
             UI.CloseAllPanels(null, null);
 
             if (result_list.Count == 0)

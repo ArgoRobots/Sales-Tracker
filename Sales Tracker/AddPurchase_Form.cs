@@ -103,13 +103,29 @@ namespace Sales_Tracker
         // Event handlers
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
             {
                 MainMenu_Form.Instance.Purchases_Button.PerformClick();
             }
             MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
 
-            if (panelsForMultipleProducts_List.Count == 0)
+            // When the user selects "multiple items in this order" but only adds one, treat it as one
+            if (panelsForMultipleProducts_List.Count == 1)
+            {
+                // Extract details from the single panel and populate the single purchase fields
+                Guna2Panel singlePanel = panelsForMultipleProducts_List[0];
+                ProductName_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault()).Text;
+                Quantity_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault()).Text;
+                PricePerUnit_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault()).Text;
+
+                if (!AddSinglePurchase())
+                {
+                    return;
+                }
+            }
+            else if (panelsForMultipleProducts_List.Count == 0)
             {
                 if (!AddSinglePurchase())
                 {
