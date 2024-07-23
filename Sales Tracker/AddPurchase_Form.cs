@@ -211,6 +211,18 @@ namespace Sales_Tracker
         private bool AddSinglePurchase()
         {
             string purchaseID = OrderNumber_TextBox.Text;
+
+            // Check if purchase ID already exists
+            if (MainMenu_Form.DoesPurchaseIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase ID already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return false;
+                }
+            }
+
             string buyerName = BuyerName_TextBox.Text;
             string itemName = ProductName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
@@ -299,6 +311,18 @@ namespace Sales_Tracker
             string categoryName = "", country = "", company = "";
 
             string purchaseID = OrderNumber_TextBox.Text;
+
+            // Check if purchase ID already exists
+            if (MainMenu_Form.DoesPurchaseIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase ID already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return false;
+                }
+            }
+
             string buyerName = BuyerName_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = 0;

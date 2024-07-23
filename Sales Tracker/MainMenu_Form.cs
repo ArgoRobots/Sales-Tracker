@@ -1425,6 +1425,17 @@ namespace Sales_Tracker
                 row.Selected = false;
             }
         }
+        public static bool DoesPurchaseIDExists(Guna2DataGridView dataGridView, string purchaseID)
+        {
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                if (purchaseID == row.Cells[Column.OrderNumber.ToString()].Value.ToString())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
 
         // Save to file for DataGridView
