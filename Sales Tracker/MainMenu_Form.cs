@@ -157,6 +157,11 @@ namespace Sales_Tracker
         private void MainMenu_Form_Load(object sender, EventArgs e)
         {
             Sales_Button.PerformClick();
+
+            //selectedDataGridView = Purchases_DataGridView;
+            //Selected = SelectedOption.Purchases;
+            //UpdateExistingRows();
+            //DataGridViewRowChanged();
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
@@ -1137,6 +1142,7 @@ namespace Sales_Tracker
         private void DataGridView_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
         {
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+            DataGridViewRowChanged();
         }
         public void DataGridViewRowChanged()
         {
@@ -1435,6 +1441,52 @@ namespace Sales_Tracker
                 }
             }
             return false;
+        }
+        // This will be used when items in a purchase are added, edited, or removed
+        private void UpdateExistingRows()
+        {
+            isProgramLoading = true;
+
+            foreach (DataGridViewRow row in Purchases_DataGridView.Rows)
+            {
+                if (row.Cells[Column.Product.ToString()].Value.ToString() == multupleItems)
+                {
+                    if (row.Tag is not List<string> items || items.Count == 0) { continue; }
+
+                    string firstCategoryName = null, firstCountry = null, firstCompany = null;
+                    bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
+
+                    foreach (string item in items)
+                    {
+                        string[] itemDetails = item.Split(',');
+
+                        if (itemDetails.Length < 7) { continue; }
+
+                        string currentCategoryName = itemDetails[1];
+                        string currentCountry = itemDetails[2];
+                        string currentCompany = itemDetails[3];
+
+                        if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
+                        else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
+
+                        if (firstCountry == null) { firstCountry = currentCountry; }
+                        else if (isCountryConsistent && firstCountry != currentCountry) { isCountryConsistent = false; }
+
+                        if (firstCompany == null) { firstCompany = currentCompany; }
+                        else if (isCompanyConsistent && firstCompany != currentCompany) { isCompanyConsistent = false; }
+                    }
+
+                    string categoryName = isCategoryNameConsistent ? firstCategoryName : emptyCell;
+                    string country = isCountryConsistent ? firstCountry : emptyCell;
+                    string company = isCompanyConsistent ? firstCompany : emptyCell;
+
+                    row.Cells[Column.Category.ToString()].Value = categoryName;
+                    row.Cells[Column.Country.ToString()].Value = country;
+                    row.Cells[Column.Company.ToString()].Value = company;
+                }
+            }
+
+            isProgramLoading = false;
         }
 
 

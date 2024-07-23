@@ -308,7 +308,7 @@ namespace Sales_Tracker
         private bool AddMultiplePurchases()
         {
             decimal totalPrice = 0;
-            string categoryName = "", country = "", company = "";
+            bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
 
             string purchaseID = OrderNumber_TextBox.Text;
 
@@ -330,7 +330,7 @@ namespace Sales_Tracker
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
-            decimal disount = decimal.Parse(Discount_TextBox.Text);
+            decimal discount = decimal.Parse(Discount_TextBox.Text);
 
             decimal exchangeRate = 1;
             if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
@@ -340,14 +340,44 @@ namespace Sales_Tracker
 
             List<string> items = [];
 
+            string firstCategoryName = null, firstCountry = null, firstCompany = null;
+
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
                 string itemName = nameTextBox.Text;
 
-                categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-                country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-                company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                string currentCategoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                string currentCountry = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                string currentCompany = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+
+                if (firstCategoryName == null)
+                {
+                    firstCategoryName = currentCategoryName;
+                }
+                else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName)
+                {
+                    isCategoryNameConsistent = false;
+                }
+
+                if (firstCountry == null)
+                {
+                    firstCountry = currentCountry;
+                }
+                else if (isCountryConsistent && firstCountry != currentCountry)
+                {
+                    isCountryConsistent = false;
+                }
+
+                if (firstCompany == null)
+                {
+                    firstCompany = currentCompany;
+                }
+                else if (isCompanyConsistent && firstCompany != currentCompany)
+                {
+                    isCompanyConsistent = false;
+                }
+
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
                 quantity = int.Parse(quantityTextBox.Text);
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
@@ -356,9 +386,9 @@ namespace Sales_Tracker
 
                 string item = string.Join(",",
                     itemName,
-                    categoryName,
-                    country,
-                    company,
+                    currentCategoryName,
+                    currentCountry,
+                    currentCompany,
                     quantity.ToString(),
                     (pricePerUnit * exchangeRate).ToString("N2"),
                     (quantity * pricePerUnit * exchangeRate).ToString("N2")
@@ -372,10 +402,10 @@ namespace Sales_Tracker
             shipping *= exchangeRate;
             tax *= exchangeRate;
             fee *= exchangeRate;
-            disount *= exchangeRate;
+            discount *= exchangeRate;
             totalPrice *= exchangeRate;
 
-            totalPrice += shipping + tax + fee - disount;
+            totalPrice += shipping + tax + fee - discount;
             totalPrice = Math.Round(totalPrice, 2);
 
             decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
@@ -404,13 +434,17 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
 
+            string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
+            string finalCountry = isCountryConsistent ? firstCountry : MainMenu_Form.emptyCell;
+            string finalCompany = isCompanyConsistent ? firstCompany : MainMenu_Form.emptyCell;
+
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseID,
                 buyerName,
                 MainMenu_Form.multupleItems,
-                MainMenu_Form.emptyCell,
-                MainMenu_Form.emptyCell,
-                MainMenu_Form.emptyCell,
+                finalCategoryName,
+                finalCountry,
+                finalCompany,
                 date,
                 quantity.ToString(),
                 MainMenu_Form.emptyCell,
@@ -433,6 +467,7 @@ namespace Sales_Tracker
 
             return true;
         }
+
 
 
         // Methods for multiple items
