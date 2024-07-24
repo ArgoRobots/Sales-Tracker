@@ -28,26 +28,28 @@ namespace Sales_Tracker.Classes
         public static byte[] AesKey => aesKey;
         public static byte[] AesIV => aesIV;
 
-        public static void EncryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)
+        public static void EncryptStream(Stream inputStream, Stream outputStream, byte[] key, byte[] iv)
         {
             try
             {
-                using FileStream inputFileStream = new(inputFile, FileMode.Open, FileAccess.Read);
-                using FileStream outputFileStream = new(outputFile, FileMode.Create, FileAccess.Write);
                 using Aes aes = Aes.Create();
                 aes.Key = key;
                 aes.IV = iv;
 
                 // Write the header indicating encryption
-                using (StreamWriter writer = new(outputFileStream, leaveOpen: true))
+                using (StreamWriter writer = new(outputStream, leaveOpen: true))
                 {
                     writer.WriteLine(EncryptionHeader);
                 }
 
-                using CryptoStream cryptoStream = new(outputFileStream, aes.CreateEncryptor(), CryptoStreamMode.Write);
-                inputFileStream.CopyTo(cryptoStream);
+                outputStream.Flush();  // Ensure the header is written before the encryption starts
 
-                Log.Write(2, $"Encryption successful");
+                using (CryptoStream cryptoStream = new(outputStream, aes.CreateEncryptor(), CryptoStreamMode.Write, leaveOpen: true))
+                {
+                    inputStream.CopyTo(cryptoStream);
+                }
+
+                Log.Write(2, "Encryption successful");
             }
             catch (Exception ex)
             {

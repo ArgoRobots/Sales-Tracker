@@ -331,46 +331,51 @@ namespace Sales_Tracker.Classes
 
         // Tar files
         /// <summary>
-        /// Creates an Argo Tar file from a directory.
+        /// Creates an encrypted Argo Tar file from a directory.
         /// </summary>
-        public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationDirectory)
+        public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationFile)
         {
-            // This method ensures that the Argo file is not deleted,
-            // preventing the file from being moved on the desktop screen.
-
-            // Create a temporary file
-            string tempFile = Path.GetTempPath() + Path.GetFileName(destinationDirectory);
-
             try
             {
-                // Create the tar file in the temporary location
-                TarFile.CreateFromDirectory(sourceDirectory, tempFile, true);
+                // Extract the file name and directory from the destinationFile path
+                string destinationDirectory = Path.GetDirectoryName(destinationFile);
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(destinationFile);
+                string fileExtension = Path.GetExtension(destinationFile);
 
-                // Encrypt the tar file
-                string encryptedTempFile = tempFile + ".enc";
-                EncryptionHelper.EncryptFile(tempFile, encryptedTempFile, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
-                File.Delete(tempFile);
-
-                // Overwrite the existing file without deleting it
-                using FileStream encryptedTempFileStream = new(encryptedTempFile, FileMode.Open, FileAccess.Read);
-                using FileStream destFileStream = new(destinationDirectory, FileMode.Create, FileAccess.Write);
-                encryptedTempFileStream.CopyTo(destFileStream);
-
-                File.Delete(encryptedTempFile);
-            }
-            catch
-            {
-                Log.Error_FailedToSave(destinationDirectory);
-            }
-            finally
-            {
-                // Clean up the temporary file
-                if (File.Exists(tempFile))
+                // Check if the file already exists and get a new name if necessary
+                if (File.Exists(destinationFile))
                 {
-                    File.Delete(tempFile);
+                    List<string> filesList = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
+                    fileNameWithoutExtension = Tools.AddNumberForAStringThatAlreadyExists(fileNameWithoutExtension, filesList);
+                    destinationFile = Path.Combine(destinationDirectory, fileNameWithoutExtension + fileExtension);
                 }
+
+                // Use MemoryStream to securely hold the tar data, avoiding the security risk of writing it to a temporary file.
+                using (MemoryStream tarMemoryStream = new())
+                {
+                    // Create the tar file in memory
+                    TarFile.CreateFromDirectory(sourceDirectory, tarMemoryStream, true);
+                    tarMemoryStream.Seek(0, SeekOrigin.Begin);
+
+                    // Encrypt the tar data in memory
+                    using MemoryStream encryptedMemoryStream = new();
+                    EncryptionHelper.EncryptStream(tarMemoryStream, encryptedMemoryStream, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                    encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
+
+                    // Write the encrypted data to the destination file
+                    using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write);
+                    encryptedMemoryStream.CopyTo(destFileStream);
+                }
+
+                Log.Write(2, $"File successfully created and encrypted at {destinationFile}");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(0, $"Error during tar creation or encryption: {ex.Message}");
+                Log.Error_FailedToSave(destinationFile);
             }
         }
+
 
         /// <summary>
         /// Imports an Argo Tar file into a directory.
@@ -452,7 +457,7 @@ namespace Sales_Tracker.Classes
             {
                 if (decryptedTempFile != null && File.Exists(decryptedTempFile))
                 {
-                    File.Delete(decryptedTempFile); // Clean up decrypted temp file
+                    File.Delete(decryptedTempFile);
                 }
             }
 

@@ -1576,6 +1576,8 @@ namespace Sales_Tracker
             }
 
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
+
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
 
 
