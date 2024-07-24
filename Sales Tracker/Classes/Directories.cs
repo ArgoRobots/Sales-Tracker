@@ -1,5 +1,7 @@
 ﻿using System.Formats.Tar;
 using System.IO.Compression;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace Sales_Tracker.Classes
 {
@@ -45,7 +47,6 @@ namespace Sales_Tracker.Classes
             // Other
             desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
-
         public static void InitDataFile()
         {
             if (!Directory.Exists(appData_dir))
@@ -156,7 +157,37 @@ namespace Sales_Tracker.Classes
                 folder.Attributes |= FileAttributes.Hidden;
             }
         }
+        /// <summary>
+        /// Denies access to all users except Argo Sales Tracker.
+        /// </summary>
+        public static void ApplyRestrictedAccessToFolder(string folderPath)
+        {
+            if (!Directory.Exists(folderPath))
+            {
+                Log.Error_DirectoryDoesNotExist(folderPath);
+                return;
+            }
 
+            DirectoryInfo directoryInfo = new(folderPath);
+            DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
+
+            // Deny users access to the directory
+            directorySecurity.SetAccessRuleProtection(isProtected: true, preserveInheritance: false);
+            directorySecurity.SetAccessRule(new FileSystemAccessRule(
+                new SecurityIdentifier(WellKnownSidType.WorldSid, null),
+                FileSystemRights.FullControl,
+                AccessControlType.Deny));
+
+            // Allow full control for the program
+            string processUser = Environment.UserDomainName + @"\" + Environment.UserName;
+            directorySecurity.AddAccessRule(new FileSystemAccessRule(
+                processUser,
+                FileSystemRights.FullControl,
+                AccessControlType.Allow));
+
+            // Apply the permissions to the directory
+            directoryInfo.SetAccessControl(directorySecurity);
+        }
 
 
         // Files
@@ -375,8 +406,6 @@ namespace Sales_Tracker.Classes
                 Log.Error_FailedToSave(destinationFile);
             }
         }
-
-
         /// <summary>
         /// Imports an Argo Tar file into a directory.
         /// </summary>
@@ -384,7 +413,7 @@ namespace Sales_Tracker.Classes
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, string thingBeingImported, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
-            string tempDir = destinationDirectory + "\\" + ArgoCompany.GetUniqueProjectIdentifier(appData_dir);
+            string tempDir = destinationDirectory + ArgoCompany.GetUniqueProjectIdentifier(appData_dir);
             string decryptedTempFile = null;
             string extractedDir;
 
@@ -431,7 +460,7 @@ namespace Sales_Tracker.Classes
                         TarFile.ExtractToDirectory(sourceFile, tempDir, false);
 
                         // Rename thing in file and move it out of the temp directory
-                        Directory.Move(tempDir + "\\" + thingName, destinationDirectory + "\\" + suggestedThingName);
+                        Directory.Move(tempDir + "\\" + thingName, destinationDirectory + suggestedThingName);
                         DeleteDirectory(tempDir, true);
 
                         thingName = suggestedThingName;
@@ -445,13 +474,16 @@ namespace Sales_Tracker.Classes
                     TarFile.ExtractToDirectory(sourceFile, destinationDirectory, false);
                 }
 
+                string newDestinationDirectory = destinationDirectory + thingName;
+
                 // If the .ArgoProject file was renamed
                 if (thingName != extractedDir)
                 {
-                    RenameFolder(destinationDirectory + "\\" + extractedDir, destinationDirectory + "\\" + thingName);
+                    RenameFolder(destinationDirectory + extractedDir, newDestinationDirectory);
                 }
 
-                MakeDirectoryHidden(destinationDirectory + "\\" + thingName);
+                MakeDirectoryHidden(newDestinationDirectory);
+                ApplyRestrictedAccessToFolder(newDestinationDirectory);
             }
             finally
             {
@@ -463,7 +495,6 @@ namespace Sales_Tracker.Classes
 
             return thingName;
         }
-
         /// <summary>
         /// Reads a TAR file and returns the name of the top-most directory or file.
         /// </summary>
