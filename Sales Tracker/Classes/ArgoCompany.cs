@@ -68,8 +68,7 @@ namespace Sales_Tracker.Classes
                 Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
                 Properties.Settings.Default.Save();
 
-                Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
-                Directories.InitDataFile();
+                Directories.SetDirectoriesAndInit(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
 
                 // Save recently opened projects
                 DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoCompany_file, DataFileManager.MaxValueForRecentProjects);
@@ -140,8 +139,7 @@ namespace Sales_Tracker.Classes
                 Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
                 Properties.Settings.Default.Save();
 
-                Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
-                Directories.InitDataFile();
+                Directories.SetDirectoriesAndInit(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
 
                 // Save recently opened projects
                 DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoCompany_file, DataFileManager.MaxValueForRecentProjects);
@@ -216,8 +214,7 @@ namespace Sales_Tracker.Classes
                         Properties.Settings.Default.ProjectDirectory = dialog.SelectedPath;
                         Properties.Settings.Default.Save();
 
-                        Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(project));
-                        Directories.InitDataFile();
+                        Directories.SetDirectoriesAndInit(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(project));
 
                         SaveAll();
 

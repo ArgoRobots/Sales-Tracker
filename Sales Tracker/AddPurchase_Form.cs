@@ -111,8 +111,15 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
 
+            if (panelsForMultipleProducts_List.Count == 0)
+            {
+                if (!AddSinglePurchase())
+                {
+                    return;
+                }
+            }
             // When the user selects "multiple items in this order" but only adds one, treat it as one
-            if (panelsForMultipleProducts_List.Count == 1)
+            else if (panelsForMultipleProducts_List.Count == 1)
             {
                 // Extract details from the single panel and populate the single purchase fields
                 Guna2Panel singlePanel = panelsForMultipleProducts_List[0];
@@ -125,13 +132,7 @@ namespace Sales_Tracker
                     return;
                 }
             }
-            else if (panelsForMultipleProducts_List.Count == 0)
-            {
-                if (!AddSinglePurchase())
-                {
-                    return;
-                }
-            }
+
             else if (!AddMultiplePurchases())
             {
                 return;
@@ -188,38 +189,6 @@ namespace Sales_Tracker
         private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
         {
             RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
-        }
-
-
-        // Receipts
-        private string receiptFilePath;
-        private void ShowReceiptLabel(string text)
-        {
-            SelectedReceipt_Label.Text = text;
-
-            Controls.Add(SelectedReceipt_Label);
-            Controls.Add(RemoveReceipt_ImageButton);
-            SetReceiptLabelLocation();
-
-            ValidateInputs(null, null);
-        }
-        private void SetReceiptLabelLocation()
-        {
-            if (!Controls.Contains(SelectedReceipt_Label))
-            {
-                return;
-            }
-
-            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + spaceBetweenControlsVertically);
-            SelectedReceipt_Label.Location = new Point(
-                RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
-                RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
-        }
-        private void RemoveReceiptLabel()
-        {
-            Controls.Remove(SelectedReceipt_Label);
-            Controls.Remove(RemoveReceipt_ImageButton);
-            ValidateInputs(null, null);
         }
 
 
@@ -484,6 +453,37 @@ namespace Sales_Tracker
             return true;
         }
 
+
+        // Receipts
+        private string receiptFilePath;
+        private void ShowReceiptLabel(string text)
+        {
+            SelectedReceipt_Label.Text = text;
+
+            Controls.Add(SelectedReceipt_Label);
+            Controls.Add(RemoveReceipt_ImageButton);
+            SetReceiptLabelLocation();
+
+            ValidateInputs(null, null);
+        }
+        private void SetReceiptLabelLocation()
+        {
+            if (!Controls.Contains(SelectedReceipt_Label))
+            {
+                return;
+            }
+
+            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + spaceBetweenControlsVertically);
+            SelectedReceipt_Label.Location = new Point(
+                RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
+                RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
+        }
+        private void RemoveReceiptLabel()
+        {
+            Controls.Remove(SelectedReceipt_Label);
+            Controls.Remove(RemoveReceipt_ImageButton);
+            ValidateInputs(null, null);
+        }
 
 
         // Methods for multiple items

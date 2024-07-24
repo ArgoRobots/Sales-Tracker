@@ -9,7 +9,7 @@ namespace Sales_Tracker.Classes
         public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
           sales_file, categoryPurchases_file, categorySales_file, accountants_file, companies_file, receipts_dir, logs_dir, desktop_dir;
 
-        public static void SetDirectoriesFor(string projectDir, string project_name)
+        public static void SetDirectoriesAndInit(string projectDir, string project_name)
         {
             if (!projectDir.EndsWith('\\'))
             {
@@ -32,6 +32,9 @@ namespace Sales_Tracker.Classes
 
             // Logs
             logs_dir = tempCompany_dir + @"logs\";
+
+            EncryptionHelper.Initialize();
+            InitDataFile();
         }
         public static void SetUniversalDirectories()
         {
@@ -87,7 +90,7 @@ namespace Sales_Tracker.Classes
             // https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
 
             // Get information about the source directory
-            DirectoryInfo dir = new DirectoryInfo(sourceDir);
+            DirectoryInfo dir = new(sourceDir);
 
             // Check if the source directory exists
             if (!dir.Exists)
@@ -139,14 +142,14 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void RenameFolder(string oldFolderPath, string newFolderName)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(oldFolderPath);
+            DirectoryInfo directoryInfo = new(oldFolderPath);
             string newFolderPath = Path.Combine(directoryInfo.Parent.FullName, newFolderName);
 
             Directory.Move(oldFolderPath, newFolderPath);
         }
         public static void MakeDirectoryHidden(string directory)
         {
-            DirectoryInfo folder = new DirectoryInfo(directory);
+            DirectoryInfo folder = new(directory);
 
             if (folder.Exists)
             {
@@ -343,10 +346,17 @@ namespace Sales_Tracker.Classes
                 // Create the tar file in the temporary location
                 TarFile.CreateFromDirectory(sourceDirectory, tempFile, true);
 
+                // Encrypt the tar file
+                string encryptedTempFile = tempFile + ".enc";
+                EncryptionHelper.EncryptFile(tempFile, encryptedTempFile, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                File.Delete(tempFile);
+
                 // Overwrite the existing file without deleting it
-                using FileStream tempFileStream = new(tempFile, FileMode.Open, FileAccess.Read);
+                using FileStream encryptedTempFileStream = new(encryptedTempFile, FileMode.Open, FileAccess.Read);
                 using FileStream destFileStream = new(destinationDirectory, FileMode.Create, FileAccess.Write);
-                tempFileStream.CopyTo(destFileStream);
+                encryptedTempFileStream.CopyTo(destFileStream);
+
+                File.Delete(encryptedTempFile);
             }
             catch
             {
@@ -365,59 +375,90 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Imports an Argo Tar file into a directory.
         /// </summary>
-        /// <returns> The file name wihtout the (num) and the extension. </returns>
+        /// <returns> The file name without the (num) and the extension. </returns>
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, string thingBeingImported, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
             string tempDir = destinationDirectory + "\\" + ArgoCompany.GetUniqueProjectIdentifier(appData_dir);
-            string extractedDir = GetTopDirectoryFromTarFile(sourceFile);
+            string decryptedTempFile = null;
+            string extractedDir;
 
-            // Check if the thing already exists
-            if (listOfThingNames.Contains(thingName))
+            try
             {
-                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(thingName, listOfThingNames);
-
-                CustomMessageBoxResult? result = null;
-                if (askUserToRename)
+                // Check if the file is encrypted and decrypt if necessary
+                using (FileStream fs = new(sourceFile, FileMode.Open, FileAccess.Read))
+                using (StreamReader reader = new(fs))
                 {
-                    result = CustomMessageBox.Show(
-                        $"Rename {thingBeingImported}",
-                        $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {thingBeingImported} with the same name.",
-                        CustomMessageBoxIcon.Question,
-                        CustomMessageBoxButtons.YesNo);
+                    string header = reader.ReadLine();
+                    if (header == EncryptionHelper.EncryptionHeader)
+                    {
+                        decryptedTempFile = Path.GetTempFileName();
+                        EncryptionHelper.DecryptFile(sourceFile, decryptedTempFile, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                        sourceFile = decryptedTempFile;
+                    }
+                    else
+                    {
+                        fs.Position = 0;  // Reset stream position if not encrypted
+                    }
                 }
-                if (result == CustomMessageBoxResult.Yes || !askUserToRename)
+
+                extractedDir = GetTopDirectoryFromTarFile(sourceFile);
+
+                // Check if the thing already exists
+                if (listOfThingNames.Contains(thingName))
                 {
-                    // Extract the tab to a temp folder becuase there is already a thing with the same name,
-                    // that way the thing can be renamed.
-                    CreateDirectory(tempDir, true);
-                    TarFile.ExtractToDirectory(sourceFile, tempDir, false);
+                    string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(thingName, listOfThingNames);
 
-                    // Rename thing in file and move it out of the temp directory
-                    Directory.Move(tempDir + "\\" + thingName, destinationDirectory + "\\" + suggestedThingName);
-                    DeleteDirectory(tempDir, true);
+                    CustomMessageBoxResult? result = null;
+                    if (askUserToRename)
+                    {
+                        result = CustomMessageBox.Show(
+                            $"Rename {thingBeingImported}",
+                            $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {thingBeingImported} with the same name.",
+                            CustomMessageBoxIcon.Question,
+                            CustomMessageBoxButtons.YesNo);
+                    }
+                    if (result == CustomMessageBoxResult.Yes || !askUserToRename)
+                    {
+                        // Extract the tab to a temp folder because there is already a thing with the same name,
+                        // that way the thing can be renamed.
+                        CreateDirectory(tempDir, true);
+                        TarFile.ExtractToDirectory(sourceFile, tempDir, false);
 
-                    thingName = suggestedThingName;
-                    extractedDir = suggestedThingName;
+                        // Rename thing in file and move it out of the temp directory
+                        Directory.Move(tempDir + "\\" + thingName, destinationDirectory + "\\" + suggestedThingName);
+                        DeleteDirectory(tempDir, true);
+
+                        thingName = suggestedThingName;
+                        extractedDir = suggestedThingName;
+                    }
+                    else { return ""; }
                 }
-                else { return ""; }
-            }
-            else
-            {
-                // Extract normally
-                TarFile.ExtractToDirectory(sourceFile, destinationDirectory, false);
-            }
+                else
+                {
+                    // Extract normally
+                    TarFile.ExtractToDirectory(sourceFile, destinationDirectory, false);
+                }
 
-            // If the .ArgoPoject file was renamed
-            if (thingName != extractedDir)
-            {
-                RenameFolder(destinationDirectory + "\\" + extractedDir, destinationDirectory + "\\" + thingName);
-            }
+                // If the .ArgoProject file was renamed
+                if (thingName != extractedDir)
+                {
+                    RenameFolder(destinationDirectory + "\\" + extractedDir, destinationDirectory + "\\" + thingName);
+                }
 
-            MakeDirectoryHidden(destinationDirectory + "\\" + thingName);
+                MakeDirectoryHidden(destinationDirectory + "\\" + thingName);
+            }
+            finally
+            {
+                if (decryptedTempFile != null && File.Exists(decryptedTempFile))
+                {
+                    File.Delete(decryptedTempFile); // Clean up decrypted temp file
+                }
+            }
 
             return thingName;
         }
+
         /// <summary>
         /// Reads a TAR file and returns the name of the top-most directory or file.
         /// </summary>
@@ -438,9 +479,9 @@ namespace Sales_Tracker.Classes
                     }
                 }
             }
-
             return "";
         }
+
 
 
         /// <summary>

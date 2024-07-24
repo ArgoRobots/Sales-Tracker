@@ -71,8 +71,7 @@ namespace Sales_Tracker.Startup
                     Properties.Settings.Default.ProjectDirectory = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
                     Properties.Settings.Default.Save();
 
-                    Directories.SetDirectoriesFor(Properties.Settings.Default.ProjectDirectory, projectName);
-                    Directories.InitDataFile();
+                    Directories.SetDirectoriesAndInit(Properties.Settings.Default.ProjectDirectory, projectName);
 
                     List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
                     Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo copmany", listOfDirectories, false);

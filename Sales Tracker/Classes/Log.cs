@@ -11,6 +11,11 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void Write(byte index, string text)
         {
+            if (Properties.Settings.Default.ShowDebugInfo && index == 1)
+            {
+                return;
+            }
+
             string newText = "<" + Tools.FormatTime(DateTime.Now) + "> ";
 
             switch (index)

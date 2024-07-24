@@ -92,8 +92,7 @@ namespace Sales_Tracker.Startup.Menus
             // Hide current form. Don't close it or both forms will close
             Parent.Hide();
 
-            Directories.SetDirectoriesFor(selectedDirectory, projectName);
-            Directories.InitDataFile();
+            Directories.SetDirectoriesAndInit(selectedDirectory, projectName);
 
             // Create directories and files
             Directories.CreateDirectory(Directories.tempCompany_dir, true);
