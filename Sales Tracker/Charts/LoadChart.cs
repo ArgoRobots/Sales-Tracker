@@ -329,19 +329,43 @@ namespace Sales_Tracker.Charts
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
 
-            // Process purchases data
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
 
-                string country = row.Cells[MainMenu_Form.Column.Country.ToString()].Value.ToString();
-                if (countryCounts.TryGetValue(country, out double value))
+                // Check for additional data in Tag property first
+                if (row.Tag is List<string> items)
                 {
-                    countryCounts[country] = ++value;
+                    foreach (string item in items)
+                    {
+                        // Item format: "itemName,categoryName,country,company,quantity,pricePerUnit,totalPrice"
+                        string[] itemDetails = item.Split(',');
+                        if (itemDetails.Length > 2)
+                        {
+                            string itemCountry = itemDetails[2];
+                            if (countryCounts.TryGetValue(itemCountry, out double itemValue))
+                            {
+                                countryCounts[itemCountry] = ++itemValue;
+                            }
+                            else
+                            {
+                                countryCounts[itemCountry] = 1;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    countryCounts[country] = 1;
+                    // Process the row normally if Tag is not set
+                    string country = row.Cells[MainMenu_Form.Column.Country.ToString()].Value.ToString();
+                    if (countryCounts.TryGetValue(country, out double value))
+                    {
+                        countryCounts[country] = ++value;
+                    }
+                    else
+                    {
+                        countryCounts[country] = 1;
+                    }
                 }
             }
 
@@ -372,19 +396,43 @@ namespace Sales_Tracker.Charts
             GunaPieDataset dataset = new();
             Dictionary<string, double> companyCounts = [];
 
-            // Process purchases data
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
 
-                string company = row.Cells[MainMenu_Form.Column.Company.ToString()].Value.ToString();
-                if (companyCounts.TryGetValue(company, out double value))
+                // Check for additional data in Tag property first
+                if (row.Tag is List<string> items)
                 {
-                    companyCounts[company] = ++value;
+                    foreach (string item in items)
+                    {
+                        // Item format: "itemName,categoryName,country,company,quantity,pricePerUnit,totalPrice"
+                        string[] itemDetails = item.Split(',');
+                        if (itemDetails.Length > 3)
+                        {
+                            string itemCompany = itemDetails[3];
+                            if (companyCounts.TryGetValue(itemCompany, out double itemValue))
+                            {
+                                companyCounts[itemCompany] = ++itemValue;
+                            }
+                            else
+                            {
+                                companyCounts[itemCompany] = 1;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    companyCounts[company] = 1;
+                    // Process the row normally if Tag is not set
+                    string company = row.Cells[MainMenu_Form.Column.Company.ToString()].Value.ToString();
+                    if (companyCounts.TryGetValue(company, out double value))
+                    {
+                        companyCounts[company] = ++value;
+                    }
+                    else
+                    {
+                        companyCounts[company] = 1;
+                    }
                 }
             }
 
@@ -415,19 +463,43 @@ namespace Sales_Tracker.Charts
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
 
-            // Process sales data
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
 
-                string country = row.Cells[MainMenu_Form.Column.Country.ToString()].Value.ToString();
-                if (countryCounts.TryGetValue(country, out double value))
+                // Check for additional data in Tag property first
+                if (row.Tag is List<string> items)
                 {
-                    countryCounts[country] = ++value;
+                    foreach (string item in items)
+                    {
+                        // Item format: "itemName,categoryName,country,company,quantity,pricePerUnit,totalPrice"
+                        string[] itemDetails = item.Split(',');
+                        if (itemDetails.Length > 2)
+                        {
+                            string itemCountry = itemDetails[2];
+                            if (countryCounts.TryGetValue(itemCountry, out double itemValue))
+                            {
+                                countryCounts[itemCountry] = ++itemValue;
+                            }
+                            else
+                            {
+                                countryCounts[itemCountry] = 1;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    countryCounts[country] = 1;
+                    // Process the row normally if Tag is not set
+                    string country = row.Cells[MainMenu_Form.Column.Country.ToString()].Value.ToString();
+                    if (countryCounts.TryGetValue(country, out double value))
+                    {
+                        countryCounts[country] = ++value;
+                    }
+                    else
+                    {
+                        countryCounts[country] = 1;
+                    }
                 }
             }
 
@@ -435,15 +507,16 @@ namespace Sales_Tracker.Charts
             double totalCount = countryCounts.Values.Sum();
 
             // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> companyCount in countryCounts)
+            foreach (KeyValuePair<string, double> countryCount in countryCounts)
             {
-                double percentage = companyCount.Value / totalCount * 100;
-                dataset.DataPoints.Add(companyCount.Key, companyCount.Value);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{companyCount.Key} ({percentage:F2}%)";
+                double percentage = countryCount.Value / totalCount * 100;
+                dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
+                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
             }
 
             UpdateChart(chart, dataset);
         }
+
 
         // Methods
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)

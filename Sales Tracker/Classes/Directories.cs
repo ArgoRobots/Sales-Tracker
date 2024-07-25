@@ -82,7 +82,6 @@ namespace Sales_Tracker.Classes
             }
             return true;
         }
-
         /// <summary>
         /// Copies an existing directory to a new directory.
         /// </summary>
@@ -122,7 +121,6 @@ namespace Sales_Tracker.Classes
                 }
             }
         }
-
         /// <summary>
         /// Deletes a directory. If recursive is true, then the subdirectories will also be deleted.
         /// </summary>
@@ -137,7 +135,6 @@ namespace Sales_Tracker.Classes
             Directory.Delete(directory, recursive);
             return true;
         }
-
         /// <summary>
         /// Rename folders without having to provide the full path for the new name.
         /// </summary>
@@ -156,37 +153,6 @@ namespace Sales_Tracker.Classes
             {
                 folder.Attributes |= FileAttributes.Hidden;
             }
-        }
-        /// <summary>
-        /// Denies access to all users except Argo Sales Tracker.
-        /// </summary>
-        public static void ApplyRestrictedAccessToFolder(string folderPath)
-        {
-            if (!Directory.Exists(folderPath))
-            {
-                Log.Error_DirectoryDoesNotExist(folderPath);
-                return;
-            }
-
-            DirectoryInfo directoryInfo = new(folderPath);
-            DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
-
-            // Deny users access to the directory
-            directorySecurity.SetAccessRuleProtection(isProtected: true, preserveInheritance: false);
-            directorySecurity.SetAccessRule(new FileSystemAccessRule(
-                new SecurityIdentifier(WellKnownSidType.WorldSid, null),
-                FileSystemRights.FullControl,
-                AccessControlType.Deny));
-
-            // Allow full control for the program
-            string processUser = Environment.UserDomainName + @"\" + Environment.UserName;
-            directorySecurity.AddAccessRule(new FileSystemAccessRule(
-                processUser,
-                FileSystemRights.FullControl,
-                AccessControlType.Allow));
-
-            // Apply the permissions to the directory
-            directoryInfo.SetAccessControl(directorySecurity);
         }
 
 
@@ -224,7 +190,6 @@ namespace Sales_Tracker.Classes
             File.Copy(source, destination);
             return true;
         }
-
         /// <summary>
         /// Deletes a file.
         /// </summary>
@@ -239,7 +204,6 @@ namespace Sales_Tracker.Classes
             File.Delete(directory);
             return true;
         }
-
         /// <summary>
         /// Moves a file. Gives an option to rename the file.
         /// </summary>
@@ -483,7 +447,6 @@ namespace Sales_Tracker.Classes
                 }
 
                 MakeDirectoryHidden(newDestinationDirectory);
-                ApplyRestrictedAccessToFolder(newDestinationDirectory);
             }
             finally
             {

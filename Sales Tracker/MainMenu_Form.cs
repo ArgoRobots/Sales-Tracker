@@ -1345,7 +1345,7 @@ namespace Sales_Tracker
         }
         private void UpdateTotals()
         {
-            if (isProgramLoading || Selected != SelectedOption.Purchases & Selected != SelectedOption.Sales)
+            if (isProgramLoading || Selected != SelectedOption.Purchases)
             {
                 return;
             }

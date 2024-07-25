@@ -96,7 +96,6 @@ namespace Sales_Tracker.Startup.Menus
 
             // Create directories and files
             Directories.CreateDirectory(Directories.tempCompany_dir, true);
-            Directories.ApplyRestrictedAccessToFolder(Directories.tempCompany_dir);
 
             Directories.CreateDirectory(Directories.logs_dir, false);
             Directories.CreateDirectory(Directories.receipts_dir, false);
