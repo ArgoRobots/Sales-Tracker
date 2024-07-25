@@ -328,7 +328,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Creates an encrypted Argo Tar file from a directory.
         /// </summary>
-        public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationFile)
+        public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationFile, bool overwrite)
         {
             try
             {
@@ -338,7 +338,7 @@ namespace Sales_Tracker.Classes
                 string fileExtension = Path.GetExtension(destinationFile);
 
                 // Check if the file already exists and get a new name if necessary
-                if (File.Exists(destinationFile))
+                if (File.Exists(destinationFile) && !overwrite)
                 {
                     List<string> filesList = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
                     fileNameWithoutExtension = Tools.AddNumberForAStringThatAlreadyExists(fileNameWithoutExtension, filesList);
@@ -352,14 +352,23 @@ namespace Sales_Tracker.Classes
                     TarFile.CreateFromDirectory(sourceDirectory, tarMemoryStream, true);
                     tarMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                    // Encrypt the tar data in memory
-                    using MemoryStream encryptedMemoryStream = new();
-                    EncryptionHelper.EncryptStream(tarMemoryStream, encryptedMemoryStream, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
-                    encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
+                    if (Properties.Settings.Default.EncryptFiles)
+                    {
+                        // Encrypt the tar data in memory
+                        using MemoryStream encryptedMemoryStream = new();
+                        EncryptionHelper.EncryptStream(tarMemoryStream, encryptedMemoryStream, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                        encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                    // Write the encrypted data to the destination file
-                    using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write);
-                    encryptedMemoryStream.CopyTo(destFileStream);
+                        // Write the encrypted data to the destination file
+                        using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write);
+                        encryptedMemoryStream.CopyTo(destFileStream);
+                    }
+                    else
+                    {
+                        // Write the unencrypted data to the destination file
+                        using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write);
+                        tarMemoryStream.CopyTo(destFileStream);
+                    }
                 }
 
                 Log.Write(2, $"File successfully created and encrypted at {destinationFile}");

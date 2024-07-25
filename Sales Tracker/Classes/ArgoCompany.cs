@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
     {
         public static void SaveAll()
         {
-            Directories.CreateArgoTarFileFromDirectory(Directories.tempCompany_dir, Directories.argoCompany_file);
+            Directories.CreateArgoTarFileFromDirectory(Directories.tempCompany_dir, Directories.argoCompany_file, true);
             Log.Write(2, $"Saved '{Directories.companyName}'");
             ResetChanges();
         }
@@ -220,8 +220,6 @@ namespace Sales_Tracker.Classes
 
                         // Delete the temp folder
                         Directories.DeleteDirectory(project, true);
-
-                        Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo company", projects, false);
 
                         wasProjectSaved = true;
                     }

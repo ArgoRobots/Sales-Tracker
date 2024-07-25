@@ -18,23 +18,6 @@ namespace Sales_Tracker.Settings
             Instance = this;
 
             UpdateTheme();
-
-            // Add forms
-            FormGeneral.TopLevel = false;
-            FormGeneral.Dock = DockStyle.Fill;
-            FormGeneral.Visible = true;
-            FormBack_Panel.Controls.Add(FormGeneral);
-
-            FormSecurity.TopLevel = false;
-            FormSecurity.Dock = DockStyle.Fill;
-            FormSecurity.Visible = true;
-            FormBack_Panel.Controls.Add(FormSecurity);
-
-            FormUpdates.TopLevel = false;
-            FormUpdates.Dock = DockStyle.Fill;
-            FormUpdates.Visible = true;
-            FormBack_Panel.Controls.Add(FormUpdates);
-
             General_Button.PerformClick();
         }
         private void UpdateTheme()
@@ -211,6 +194,15 @@ namespace Sales_Tracker.Settings
                 // Select new button
                 btn.FillColor = CustomColors.accent_blue;
                 btn.ForeColor = Color.White;
+                form.BringToFront();
+
+                // Show form
+                form.TopLevel = false;
+                form.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+                form.Dock = DockStyle.Fill;
+                form.Visible = true;
+                FormBack_Panel.Controls.Clear();
+                FormBack_Panel.Controls.Add(form);
                 form.BringToFront();
 
                 // Save

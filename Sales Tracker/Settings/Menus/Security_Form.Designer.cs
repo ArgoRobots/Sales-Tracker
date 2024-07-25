@@ -30,6 +30,10 @@ namespace Sales_Tracker.Settings.Menus
         private void InitializeComponent()
         {
             Security_Label = new Label();
+            Back_Panel = new Panel();
+            EncryptFiles_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
+            guna2vSeparator1 = new Guna.UI2.WinForms.Guna2VSeparator();
+            Back_Panel.SuspendLayout();
             SuspendLayout();
             // 
             // Security_Label
@@ -43,22 +47,66 @@ namespace Sales_Tracker.Settings.Menus
             Security_Label.TabIndex = 326;
             Security_Label.Text = "Security";
             // 
+            // Back_Panel
+            // 
+            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Back_Panel.Controls.Add(EncryptFiles_CheckBox);
+            Back_Panel.Controls.Add(guna2vSeparator1);
+            Back_Panel.Location = new Point(87, 209);
+            Back_Panel.Name = "Back_Panel";
+            Back_Panel.Size = new Size(700, 100);
+            Back_Panel.TabIndex = 327;
+            // 
+            // EncryptFiles_CheckBox
+            // 
+            EncryptFiles_CheckBox.Animated = true;
+            EncryptFiles_CheckBox.AutoSize = true;
+            EncryptFiles_CheckBox.CheckedState.BorderColor = Color.FromArgb(62, 101, 207);
+            EncryptFiles_CheckBox.CheckedState.BorderRadius = 0;
+            EncryptFiles_CheckBox.CheckedState.BorderThickness = 0;
+            EncryptFiles_CheckBox.CheckedState.FillColor = Color.FromArgb(62, 101, 207);
+            EncryptFiles_CheckBox.Font = new Font("Segoe UI", 9.75F);
+            EncryptFiles_CheckBox.Location = new Point(241, 4);
+            EncryptFiles_CheckBox.Margin = new Padding(3, 4, 3, 4);
+            EncryptFiles_CheckBox.Name = "EncryptFiles_CheckBox";
+            EncryptFiles_CheckBox.RightToLeft = RightToLeft.Yes;
+            EncryptFiles_CheckBox.Size = new Size(130, 21);
+            EncryptFiles_CheckBox.TabIndex = 275;
+            EncryptFiles_CheckBox.Text = "Encrypt Argo files";
+            EncryptFiles_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            EncryptFiles_CheckBox.UncheckedState.BorderRadius = 0;
+            EncryptFiles_CheckBox.UncheckedState.BorderThickness = 0;
+            EncryptFiles_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            // 
+            // guna2vSeparator1
+            // 
+            guna2vSeparator1.Location = new Point(345, 0);
+            guna2vSeparator1.Name = "guna2vSeparator1";
+            guna2vSeparator1.Size = new Size(10, 250);
+            guna2vSeparator1.TabIndex = 274;
+            guna2vSeparator1.Visible = false;
+            // 
             // Security_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(875, 519);
+            Controls.Add(Back_Panel);
             Controls.Add(Security_Label);
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 3, 4, 3);
             Name = "Security_Form";
-            Resize += Security_form_Resize;
+            Back_Panel.ResumeLayout(false);
+            Back_Panel.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
         private System.Windows.Forms.Label Security_Label;
+        private Panel Back_Panel;
+        public Guna.UI2.WinForms.Guna2CheckBox EncryptFiles_CheckBox;
+        private Guna.UI2.WinForms.Guna2VSeparator guna2vSeparator1;
     }
 }

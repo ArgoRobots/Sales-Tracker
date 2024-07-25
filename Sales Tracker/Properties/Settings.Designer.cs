@@ -118,5 +118,17 @@ namespace Sales_Tracker.Properties {
                 this["PurchaseReceipts"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EncryptFiles {
+            get {
+                return ((bool)(this["EncryptFiles"]));
+            }
+            set {
+                this["EncryptFiles"] = value;
+            }
+        }
     }
 }

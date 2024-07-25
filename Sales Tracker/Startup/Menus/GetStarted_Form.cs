@@ -1,6 +1,5 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
-using System.Diagnostics.Metrics;
 
 namespace Sales_Tracker.Startup
 {
@@ -21,13 +20,15 @@ namespace Sales_Tracker.Startup
             Directories.SetUniversalDirectories();
             Directories.InitDataFile();
             LoadListOfRecentProjects();
-
+            SetFlowLayoutPanel();
+            Theme.SetThemeForForm(this);
+        }
+        private void SetFlowLayoutPanel()
+        {
             // Enable vertical scroll
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Maximum = 0;
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Visible = false;
             OpenRecent_FlowLayoutPanel.AutoScroll = true;
-
-            Theme.SetThemeForForm(this);
         }
 
         // Recent projects

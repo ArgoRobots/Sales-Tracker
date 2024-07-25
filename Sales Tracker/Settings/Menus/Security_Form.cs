@@ -19,16 +19,11 @@ namespace Sales_Tracker.Settings.Menus
             Theme.SetThemeForForm(this);
         }
 
-        // Form event handlers
-        private void Security_form_Resize(object sender, EventArgs e)
-        {
-
-        }
 
         // Methods
         public void UpdateControls()
         {
-
+            EncryptFiles_CheckBox.Checked = Properties.Settings.Default.EncryptFiles;
         }
     }
 }

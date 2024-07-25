@@ -11,9 +11,9 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             Instance = this;
 
-            AddItemsToComboBox();
-            UpdateControls();
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
+            ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(Theme.ThemeType));
+            UpdateControls();
             UpdateTheme();
         }
         public void UpdateTheme()
@@ -27,20 +27,8 @@ namespace Sales_Tracker.Settings.Menus
             // Deselect controls
             General_Label.Focus();
         }
-        private void General_form_Resize(object sender, EventArgs e)
-        {
-            Back_Panel.Left = (Width - Back_Panel.Width) / 2;
-            Back_Panel.Top = (Height - Back_Panel.Height) / 2;
-        }
 
         // Methods
-        private void AddItemsToComboBox()
-        {
-            foreach (object theme in Enum.GetValues(typeof(Theme.ThemeType)))
-            {
-                ColorTheme_ComboBox.Items.Add(theme);
-            }
-        }
         public void UpdateControls()
         {
             Language_ComboBox.Text = Properties.Settings.Default.Language;

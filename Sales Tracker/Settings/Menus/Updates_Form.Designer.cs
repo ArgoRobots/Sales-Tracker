@@ -29,8 +29,8 @@ namespace Sales_Tracker.Settings.Menus
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             UpToDate_Label = new Label();
             Updates_Label = new Label();
             LastCheck_Label = new Label();
@@ -76,7 +76,7 @@ namespace Sales_Tracker.Settings.Menus
             // CheckForUpdates_Button
             // 
             CheckForUpdates_Button.BorderRadius = 3;
-            CheckForUpdates_Button.CustomizableEdges = customizableEdges3;
+            CheckForUpdates_Button.CustomizableEdges = customizableEdges1;
             CheckForUpdates_Button.DisabledState.BorderColor = Color.DarkGray;
             CheckForUpdates_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             CheckForUpdates_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -87,7 +87,7 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.Location = new Point(274, 125);
             CheckForUpdates_Button.Margin = new Padding(4, 3, 4, 3);
             CheckForUpdates_Button.Name = "CheckForUpdates_Button";
-            CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CheckForUpdates_Button.Size = new Size(152, 35);
             CheckForUpdates_Button.TabIndex = 332;
             CheckForUpdates_Button.Text = "Check for updates";
@@ -95,6 +95,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Back_Panel
             // 
+            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Back_Panel.Controls.Add(UpToDate_Label);
             Back_Panel.Controls.Add(CheckForUpdates_Button);
             Back_Panel.Controls.Add(LastCheck_Label);
@@ -114,7 +115,6 @@ namespace Sales_Tracker.Settings.Menus
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 3, 4, 3);
             Name = "Updates_Form";
-            Resize += Updates_form_Resize;
             Back_Panel.ResumeLayout(false);
             Back_Panel.PerformLayout();
             ResumeLayout(false);

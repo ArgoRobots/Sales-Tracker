@@ -989,6 +989,7 @@ namespace Sales_Tracker
             dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;
             dataGridView.Size = size;
             dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
 
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsAdded += DataGridView_RowsAdded;
@@ -1348,6 +1349,15 @@ namespace Sales_Tracker
             if (isProgramLoading || Selected != SelectedOption.Purchases)
             {
                 return;
+            }
+
+            if (selectedDataGridView.Rows.Count == 0)
+            {
+                Controls.Remove(Total_Panel);
+            }
+            else
+            {
+                Controls.Add(Total_Panel);
             }
 
             int totalQuantity = 0;
