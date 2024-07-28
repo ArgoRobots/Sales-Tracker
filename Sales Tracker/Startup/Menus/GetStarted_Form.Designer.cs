@@ -1,5 +1,5 @@
 ﻿
-namespace Sales_Tracker.Startup
+namespace Sales_Tracker.Startup.Menus
 {
     partial class GetStarted_Form
     {

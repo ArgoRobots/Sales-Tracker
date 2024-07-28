@@ -30,7 +30,6 @@ C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sale
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Settings.Menus.Updates_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Settings.Settings_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Menus.ConfigureProject_Form.resources
-C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.GetStarted_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Startup_Form.resources
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.csproj.GenerateResource.cache
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.GeneratedMSBuildEditorConfig.editorconfig
@@ -44,3 +43,4 @@ C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\refi
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.pdb
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales Tracker.genruntimeconfig.cache
 C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\ref\Sales Tracker.dll
+C:\Users\evand\Desktop\Sales Tracker\Sales Tracker\obj\Debug\net8.0-windows\Sales_Tracker.Startup.Menus.GetStarted_Form.resources

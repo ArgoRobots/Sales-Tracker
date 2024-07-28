@@ -9,7 +9,7 @@ namespace Sales_Tracker.Startup.Menus
 
 
         // Init.
-        public static ConfigureProject_Form? Instance { get; private set; }
+        public static ConfigureProject_Form Instance { get; private set; }
         public ConfigureProject_Form()
         {
             InitializeComponent();

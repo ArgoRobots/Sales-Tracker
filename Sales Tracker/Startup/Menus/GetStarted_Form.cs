@@ -1,7 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 
-namespace Sales_Tracker.Startup
+namespace Sales_Tracker.Startup.Menus
 {
     public partial class GetStarted_Form : Form
     {
@@ -167,7 +167,7 @@ namespace Sales_Tracker.Startup
         }
         private void OpenCompany_Button_Click(object sender, EventArgs e)
         {
-            ArgoCompany.Open();
+            ArgoCompany.OpenCompany();
         }
 
 

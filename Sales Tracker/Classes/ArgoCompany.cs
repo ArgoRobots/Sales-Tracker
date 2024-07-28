@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.Startup;
+﻿using Sales_Tracker.Startup.Menus;
 using System.Text;
 
 namespace Sales_Tracker.Classes
@@ -71,7 +71,7 @@ namespace Sales_Tracker.Classes
             AddSale_Form.thingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.thingsThatHaveChangedInFile.Clear();
         }
-        public static void Open()
+        public static void OpenCompany()
         {
             // Select file
             OpenFileDialog dialog = new()
@@ -218,10 +218,9 @@ namespace Sales_Tracker.Classes
         /// <returns>
         /// True if unsaved work was recovered. False if no work was recovered.
         /// </returns>
-        public static bool RecoverUnsavedWork()
+        public static void RecoverUnsavedWork()
         {
             List<string> projects = Directories.GetListOfAllDirectoriesInDirectory(Directories.appData_dir);
-            bool wasProjectSaved = false;
 
             foreach (string project in projects)
             {
@@ -231,7 +230,7 @@ namespace Sales_Tracker.Classes
                 {
                     // Delete the temp folder
                     Directories.DeleteDirectory(project, true);
-                    return false;
+                    return;
                 }
 
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(project)}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
@@ -254,8 +253,6 @@ namespace Sales_Tracker.Classes
 
                         // Delete the temp folder
                         Directories.DeleteDirectory(project, true);
-
-                        wasProjectSaved = true;
                     }
                 }
                 else if (result == CustomMessageBoxResult.No)
@@ -264,13 +261,6 @@ namespace Sales_Tracker.Classes
                     Directories.DeleteDirectory(project, true);
                 }
             }
-
-            if (wasProjectSaved)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }
