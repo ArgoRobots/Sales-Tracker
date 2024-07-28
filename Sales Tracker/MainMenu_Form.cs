@@ -57,8 +57,8 @@ namespace Sales_Tracker
             // Load image into column header
             DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
-            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, or exchange rate differences. Additionally, political and tax differences across countries can also contribute to the discrepancy.";
-            chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpWhite, existingHeaderText, messageBoxText);
+            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax differences across countries.";
+            chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
             AddTimeRangesIntoComboBox();
         }
