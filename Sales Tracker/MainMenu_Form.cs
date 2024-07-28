@@ -26,7 +26,7 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
-            BackColor = CustomColors.mainBackground;
+            LoadingPanel.InitLoadingPanel();
             LoadingPanel.ShowLoadingPanel(this);
 
             UI.ConstructControls();
@@ -53,6 +53,12 @@ namespace Sales_Tracker
 
             LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
             AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
+
+            // Load image into column header
+            DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
+            string existingHeaderText = chargedDifferenceColumn.HeaderText;
+            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, or exchange rate differences. Additionally, political and tax differences across countries can also contribute to the discrepancy.";
+            chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpWhite, existingHeaderText, messageBoxText);
 
             AddTimeRangesIntoComboBox();
         }

@@ -11,7 +11,6 @@ namespace Sales_Tracker.Startup
         {
             InitializeComponent();
             Instance = this;
-            LoadingPanel.InitLoadingPanel();
 
             BackColor = CustomColors.mainBackground;
 
