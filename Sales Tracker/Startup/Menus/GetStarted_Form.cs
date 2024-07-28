@@ -8,6 +8,7 @@ namespace Sales_Tracker.Startup
         // Properties
         private readonly Dictionary<string, FileSystemWatcher> fileWatchers;
 
+
         // Init.
         public static GetStarted_Form Instance { get; private set; }
         public GetStarted_Form()
@@ -18,7 +19,6 @@ namespace Sales_Tracker.Startup
 
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
-            Directories.InitDataFile();
             LoadListOfRecentProjects();
             SetFlowLayoutPanel();
             Theme.SetThemeForForm(this);
@@ -31,10 +31,11 @@ namespace Sales_Tracker.Startup
             OpenRecent_FlowLayoutPanel.AutoScroll = true;
         }
 
+
         // Recent projects
         private void LoadListOfRecentProjects()
         {
-            string value = DataFileManager.GetValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects);
+            string? value = DataFileManager.GetValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects);
             if (value == null)
             {
                 return;
@@ -72,10 +73,12 @@ namespace Sales_Tracker.Startup
                     Properties.Settings.Default.ProjectDirectory = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
                     Properties.Settings.Default.Save();
 
-                    Directories.SetDirectoriesAndInit(Properties.Settings.Default.ProjectDirectory, projectName);
+                    Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, projectName);
+                    ArgoCompany.InitThings();
 
                     List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                    Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, "Argo copmany", listOfDirectories, false);
+                    Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
+                    DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
 
                     ShowMainMenu();
                 };
@@ -149,11 +152,13 @@ namespace Sales_Tracker.Startup
             });
         }
 
+
         // Form event handlers
         private void GetStarted_Form_Shown(object sender, EventArgs e)
         {
-            ArgoCompany.CheckForUnsavedWork();
+            ArgoCompany.RecoverUnsavedWork();
         }
+
 
         // Event handlers
         private void CreateNewCompany_Click(object sender, EventArgs e)
@@ -164,6 +169,7 @@ namespace Sales_Tracker.Startup
         {
             ArgoCompany.Open();
         }
+
 
         // Methods   
         public void ShowMainMenu()

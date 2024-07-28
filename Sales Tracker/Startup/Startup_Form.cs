@@ -1,6 +1,5 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Startup.Menus;
-using static Sales_Tracker.Classes.Theme;
 
 namespace Sales_Tracker.Startup
 {
@@ -13,8 +12,6 @@ namespace Sales_Tracker.Startup
             InitializeComponent();
             Instance = this;
 
-            Theme.UseImmersiveDarkMode(Handle, true);
-
             if (args.Contains("autoClickButton"))
             {
                 SwitchMainForm(FormConfigureProject);
@@ -22,7 +19,7 @@ namespace Sales_Tracker.Startup
             }
             else { SwitchMainForm(formGetStarted); }
 
-            Theme.UseImmersiveDarkMode(Handle, CurrentTheme == ThemeType.Dark);
+            Theme.UseImmersiveDarkMode(Handle, Theme.CurrentTheme == Theme.ThemeType.Dark);
 
             // TO DO: make this only run once, during progam installation
             ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, "A_logo", 0);

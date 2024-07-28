@@ -9,6 +9,7 @@ namespace Sales_Tracker
         // Properties
         public CustomMessageBoxResult result;
 
+
         // Init.
         public static CustomMessage_Form Instance { get; private set; }
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
@@ -112,6 +113,30 @@ namespace Sales_Tracker
         }
         private Panel Changed_Panel;
         private Guna2Panel ChangedBackground_Panel;
+        private void AdjustFormHeight(int contentHeight)
+        {
+            int requiredHeight = Math.Min(contentHeight, MaximumSize.Height);
+
+            if (contentHeight > MaximumSize.Height - 150)
+            {
+                Height = MaximumSize.Height;
+                ChangedBackground_Panel.Height = Height - 150;
+                Changed_Panel.Height = Height - 152;
+                FormBorderStyle = FormBorderStyle.SizableToolWindow;
+                Changed_Panel.AutoScroll = true;
+            }
+            else
+            {
+                Height = requiredHeight + 150;
+                ChangedBackground_Panel.Height = Height - 150;
+                Changed_Panel.Height = Height - 152;
+                FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                Changed_Panel.AutoScroll = false;
+            }
+        }
+
+
+        // Things that have changed
         private void ShowThingsThatHaveChanged()
         {
             // Construct panels
@@ -173,27 +198,6 @@ namespace Sales_Tracker
 
             AdjustFormHeight(top);
         }
-        private void AdjustFormHeight(int contentHeight)
-        {
-            int requiredHeight = Math.Min(contentHeight, MaximumSize.Height);
-
-            if (contentHeight > MaximumSize.Height - 150)
-            {
-                Height = MaximumSize.Height;
-                ChangedBackground_Panel.Height = Height - 150;
-                Changed_Panel.Height = Height - 152;
-                FormBorderStyle = FormBorderStyle.SizableToolWindow;
-                Changed_Panel.AutoScroll = true;
-            }
-            else
-            {
-                Height = requiredHeight + 150;
-                ChangedBackground_Panel.Height = Height - 150;
-                Changed_Panel.Height = Height - 152;
-                FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                Changed_Panel.AutoScroll = false;
-            }
-        }
         private int AddListForThingsChanged(string title, List<string> list, int top)
         {
             if (list.Count == 0) { return top; }
@@ -231,11 +235,22 @@ namespace Sales_Tracker
         }
         public static void AddThingThatHasChanged(List<string> list, string thing)
         {
+            bool isChanged = false;
+
             if (!list.Contains(thing))
             {
                 list.Add(thing);
+                isChanged = true;
             }
+
+            AddChangesMadeToInfoFile(isChanged);
         }
+        public static void AddChangesMadeToInfoFile(bool changesMade)
+        {
+            DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, changesMade.ToString());
+            DataFileManager.Save(Directories.appDataCongig_file);
+        }
+
 
         // Event handlers
         private void No_Button_Click(object sender, EventArgs e)
@@ -268,13 +283,11 @@ namespace Sales_Tracker
             result = CustomMessageBoxResult.DontSave;
             Close();
         }
-
         private void Message_Label_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Tools.OpenLink(CustomMessageBoxVariables.Link);
         }
     }
-
 
 
     public enum CustomMessageBoxIcon
@@ -301,7 +314,6 @@ namespace Sales_Tracker
         Save,
         DontSave
     }
-
 
 
     public static class CustomMessageBox

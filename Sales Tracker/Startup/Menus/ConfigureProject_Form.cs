@@ -7,15 +7,26 @@ namespace Sales_Tracker.Startup.Menus
         // Properties
         public string selectedDirectory, projectName;
 
+
         // Init.
-        public static ConfigureProject_Form Instance { get; private set; }
+        public static ConfigureProject_Form? Instance { get; private set; }
         public ConfigureProject_Form()
         {
             InitializeComponent();
             Instance = this;
 
+            AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
         }
+        private void AddEventHandlersToTextBoxes()
+        {
+            ProjectName_textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProjectName_textBox.KeyDown += UI.TextBox_KeyDown;
+
+            Directory_textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Directory_textBox.KeyDown += UI.TextBox_KeyDown;
+        }
+
 
         // Form event handlers
         private void ConfigureProject_form_Load(object sender, EventArgs e)
@@ -92,7 +103,8 @@ namespace Sales_Tracker.Startup.Menus
             // Hide current form. Don't close it or both forms will close
             Parent.Hide();
 
-            Directories.SetDirectoriesAndInit(selectedDirectory, projectName);
+            Directories.SetDirectories(selectedDirectory, projectName);
+            ArgoCompany.InitThings();
 
             // Create directories and files
             Directories.CreateDirectory(Directories.tempCompany_dir, true);
@@ -105,10 +117,11 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.categoryPurchases_file);
             Directories.CreateFile(Directories.accountants_file);
             Directories.CreateFile(Directories.companies_file);
+            Directories.CreateFile(Directories.info_file);
             ArgoCompany.SaveAll();
 
             // Save recently opened projects
-            DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.AppDataSettings.RecentProjects, Directories.argoCompany_file, DataFileManager.MaxValueForRecentProjects);
+            DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
             DataFileManager.Save(Directories.appDataCongig_file);
 
             ArgoCompany.CreateMutex(projectName);
@@ -133,8 +146,6 @@ namespace Sales_Tracker.Startup.Menus
             Properties.Settings.Default.ProjectDirectory = selectedDirectory;
             Properties.Settings.Default.Save();
         }
-
-
         private void TextBoxProjectName_TextChanged(object sender, EventArgs e)
         {
             if (@"/\#%&*|;".Any(ProjectName_textBox.Text.Contains) || ProjectName_textBox.Text == "")

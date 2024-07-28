@@ -1,7 +1,5 @@
 ﻿using System.Formats.Tar;
 using System.IO.Compression;
-using System.Security.AccessControl;
-using System.Security.Principal;
 
 namespace Sales_Tracker.Classes
 {
@@ -9,9 +7,9 @@ namespace Sales_Tracker.Classes
     {
         // Directories
         public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
-          sales_file, categoryPurchases_file, categorySales_file, accountants_file, companies_file, receipts_dir, logs_dir, desktop_dir;
+          sales_file, categoryPurchases_file, categorySales_file, accountants_file, companies_file, receipts_dir, logs_dir, info_file, desktop_dir;
 
-        public static void SetDirectoriesAndInit(string projectDir, string project_name)
+        public static void SetDirectories(string projectDir, string project_name)
         {
             if (!projectDir.EndsWith('\\'))
             {
@@ -35,31 +33,16 @@ namespace Sales_Tracker.Classes
             // Logs
             logs_dir = tempCompany_dir + @"logs\";
 
-            EncryptionHelper.Initialize();
-            InitDataFile();
+            info_file = tempCompany_dir + "info" + ArgoFiles.TxtFileExtension;
         }
         public static void SetUniversalDirectories()
         {
             // App data
             appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
-            appDataCongig_file = appData_dir + "ArgoSalesTracker.config";
+            appDataCongig_file = appData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
 
             // Other
             desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        }
-        public static void InitDataFile()
-        {
-            if (!Directory.Exists(appData_dir))
-            {
-                CreateDirectory(appData_dir, false);
-            }
-            if (!File.Exists(appDataCongig_file))
-            {
-                CreateFile(appDataCongig_file);
-
-                DataFileManager.SetValue(appDataCongig_file, DataFileManager.AppDataSettings.RPTutorial, "true");
-                DataFileManager.Save(appDataCongig_file);
-            }
         }
 
 
@@ -383,7 +366,11 @@ namespace Sales_Tracker.Classes
         /// Imports an Argo Tar file into a directory.
         /// </summary>
         /// <returns> The file name without the (num) and the extension. </returns>
-        public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, string thingBeingImported, List<string> listOfThingNames, bool askUserToRename)
+        public enum ImportType
+        {
+            ArgoCompany
+        }
+        public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, ImportType importType, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
             string tempDir = destinationDirectory + ArgoCompany.GetUniqueProjectIdentifier(appData_dir);
@@ -420,8 +407,8 @@ namespace Sales_Tracker.Classes
                     if (askUserToRename)
                     {
                         result = CustomMessageBox.Show(
-                            $"Rename {thingBeingImported}",
-                            $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {thingBeingImported} with the same name.",
+                            $"Rename {importType}",
+                            $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {importType} with the same name.",
                             CustomMessageBoxIcon.Question,
                             CustomMessageBoxButtons.YesNo);
                     }

@@ -19,6 +19,12 @@
     <NoWarn>$(NoWarn);CS8604</NoWarn>
     <NoWarn>$(NoWarn);CS8618</NoWarn>
     <NoWarn>$(NoWarn);CS8622</NoWarn>
+    <!-- Disable "Use collection expression for fluent" -->
+    <NoWarn>$(NoWarn);IDE0305</NoWarn>
+    <!-- Disable "Use range operator" -->
+    <NoWarn>$(NoWarn);IDE0057</NoWarn>
+    <!-- Disable "Use collection initializers or expressions" -->
+    <NoWarn>$(NoWarn);IDE0028</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

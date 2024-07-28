@@ -18,6 +18,7 @@ namespace Sales_Tracker
         public static readonly string emptyCell = "-", multupleItems = "Multiple items";
         private readonly byte spaceForRightClickPanel = 30;
 
+
         // Init.
         public static MainMenu_Form? Instance { get; private set; }
         public MainMenu_Form()
@@ -152,6 +153,7 @@ namespace Sales_Tracker
 
             Theme.SetThemeForControl([Sales_DataGridView, Purchases_DataGridView]);
         }
+
 
         // Form event handlers
         private void MainMenu_Form_Load(object sender, EventArgs e)
@@ -403,6 +405,7 @@ namespace Sales_Tracker
             Directories.DeleteDirectory(Directories.tempCompany_dir, true);
         }
 
+
         // Resize controls
         private bool wasControlsDropDownAdded = false;
         private void ResizeControls()
@@ -589,6 +592,7 @@ namespace Sales_Tracker
             }
         }
 
+
         // Event handlers
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
@@ -681,6 +685,7 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Remove(CompanyName_Label);
         }
 
+
         // Company label
         public void RenameCompany()
         {
@@ -715,6 +720,7 @@ namespace Sales_Tracker
         {
             Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
         }
+
 
         // Filter_ComboBox
         private enum TimeInterval

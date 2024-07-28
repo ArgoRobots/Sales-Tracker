@@ -15,8 +15,6 @@ namespace Sales_Tracker.Classes
             // Dynamically get the path of the currently running executable
             string applicationPath = Assembly.GetExecutingAssembly().Location;
 
-            // Assuming you have a ResourceManager instance ready, 
-            // or you can create/load it dynamically here
             ResourceManager rm = Properties.Resources.ResourceManager;
 
             // Extract icon from resources
