@@ -37,7 +37,7 @@ namespace Sales_Tracker.Charts
             }
             else { ConfigureChartForBar(chart); }
 
-            if (!DoDataGridViewsHaveVisibleRows(dataGridView))
+            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(dataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -103,7 +103,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (!DoDataGridViewsHaveVisibleRows(dataGridView))
+            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(dataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -222,7 +222,7 @@ namespace Sales_Tracker.Charts
             }
             else { ConfigureChartForBar(chart); }
 
-            if (!DoDataGridViewsHaveVisibleRows(salesDataGridView, purchasesDataGridView))
+            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView, purchasesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -319,7 +319,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (!DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
+            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -386,7 +386,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (!DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
+            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -453,7 +453,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (!DoDataGridViewsHaveVisibleRows(salesDataGridView))
+            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -518,24 +518,6 @@ namespace Sales_Tracker.Charts
         }
 
         // Methods
-        private static bool DoDataGridViewsHaveVisibleRows(params DataGridView[] dataGrids)
-        {
-            foreach (DataGridView dataGridView in dataGrids)
-            {
-                if (dataGridView.Rows.Count > 0)
-                {
-                    foreach (DataGridViewRow row in dataGridView.Rows)
-                    {
-                        if (row.Visible)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
         {
             // Sort the dictionary by date keys

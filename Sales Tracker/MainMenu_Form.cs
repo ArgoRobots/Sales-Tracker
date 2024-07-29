@@ -5,7 +5,9 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using System.Collections;
+using System.ComponentModel;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Sales_Tracker
 {
@@ -168,11 +170,7 @@ namespace Sales_Tracker
         private void MainMenu_Form_Load(object sender, EventArgs e)
         {
             Sales_Button.PerformClick();
-
-            //selectedDataGridView = Purchases_DataGridView;
-            //Selected = SelectedOption.Purchases;
-            //UpdateExistingRows();
-            //DataGridViewRowChanged();
+            SortTheDataGridViewByDate();
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
@@ -1037,7 +1035,7 @@ namespace Sales_Tracker
 
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
-        public void DataGridView_UserDeletingRow(object? sender, DataGridViewRowCancelEventArgs e)
+        public void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             if (doNotDeleteRows)
             {
@@ -1136,7 +1134,7 @@ namespace Sales_Tracker
 
             Log.Write(logIndex, $"Deleted {type} '{name}'");
         }
-        public void DataGridView_ColumnWidthChanged(object? sender, DataGridViewColumnEventArgs e)
+        public void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             AlignTotalLabels();
         }
@@ -1176,7 +1174,7 @@ namespace Sales_Tracker
                 removedRow = null;
             }
         }
-        private void DataGridView_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
+        private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
             DataGridViewRowChanged();
@@ -1204,7 +1202,7 @@ namespace Sales_Tracker
                 SaveDataGridViewToFile();
             }
         }
-        public void DataGridView_MouseDown(object? sender, MouseEventArgs e)
+        public void DataGridView_MouseDown(object sender, MouseEventArgs e)
         {
             UI.CloseAllPanels(null, null);
             Guna2DataGridView grid = (Guna2DataGridView)sender;
@@ -1228,7 +1226,7 @@ namespace Sales_Tracker
             // Set color
             selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
         }
-        public void DataGridView_MouseUp(object? sender, MouseEventArgs e)
+        public void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
             Guna2DataGridView grid = (Guna2DataGridView)sender;
             if (grid.SelectedRows.Count == 0) { return; }
@@ -1330,7 +1328,7 @@ namespace Sales_Tracker
                 rightClickDataGridView_Panel.BringToFront();
             }
         }
-        public void DataGridView_KeyDown(object? sender, KeyEventArgs e)
+        public void DataGridView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -1386,7 +1384,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            if (selectedDataGridView.Rows.Count == 0)
+            if (!DoDataGridViewsHaveVisibleRows(selectedDataGridView))
             {
                 Controls.Remove(Total_Panel);
             }
@@ -1489,7 +1487,37 @@ namespace Sales_Tracker
             }
             return false;
         }
+        public static bool DoDataGridViewsHaveVisibleRows(params DataGridView[] dataGridViews)
+        {
+            foreach (DataGridView dataGrid in dataGridViews)
+            {
+                if (dataGrid.Rows.Count > 0)
+                {
+                    foreach (DataGridViewRow row in dataGrid.Rows)
+                    {
+                        if (row.Visible)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        private void SortTheDataGridViewByDate()
+        {
+            string dateColumnHeader = SalesColumnHeaders[Column.Date];
+            Sales_DataGridView.Sort(Sales_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
+
+            dateColumnHeader = PurchaseColumnHeaders[Column.Date];
+            Purchases_DataGridView.Sort(Purchases_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
+        }
         // This will be used when items in a purchase are added, edited, or removed
+
+        //selectedDataGridView = Purchases_DataGridView;
+        //Selected = SelectedOption.Purchases;
+        //UpdateExistingRows();
+        //DataGridViewRowChanged();
         private void UpdateExistingRows()
         {
             isProgramLoading = true;
@@ -1651,7 +1679,7 @@ namespace Sales_Tracker
 
             UI.ConstructKeyShortcut("Del", rightClickDataGridView_DeleteBtn);
         }
-        private void ModifyRow(object? sender, EventArgs e)
+        private void ModifyRow(object sender, EventArgs e)
         {
             CloseRightClickPanels();
             if (selectedDataGridView.SelectedRows.Count > 1)
@@ -1663,7 +1691,7 @@ namespace Sales_Tracker
             ModifyRow_Form ModifyRow_form = new(selectedDataGridView.SelectedRows[0]);
             ModifyRow_form.ShowDialog();
         }
-        private void MoveRow(object? sender, EventArgs e)
+        private void MoveRow(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
@@ -1707,7 +1735,7 @@ namespace Sales_Tracker
             // Restore the scroll position
             selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
         }
-        private void ExportReceipt(object? sender, EventArgs e)
+        private void ExportReceipt(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
@@ -1729,12 +1757,12 @@ namespace Sales_Tracker
                 Directories.CopyFile(receiptFilePath, dialog.SelectedPath + @"\" + Path.GetFileName(receiptFilePath));
             }
         }
-        private void ShowItems(object? sender, EventArgs e)
+        private void ShowItems(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
             new ItemsInPurchase_Form((List<string>)selectedDataGridView.SelectedRows[0].Tag).ShowDialog();
         }
-        private void DeleteRow(object? sender, EventArgs e)
+        private void DeleteRow(object sender, EventArgs e)
         {
             CloseRightClickPanels();
 
@@ -1953,7 +1981,7 @@ namespace Sales_Tracker
             Label label = (Label)messagePanel.Controls.Find("label", false).FirstOrDefault();
             label.Text = text;
         }
-        private void MessagePanelClose(object? sender, EventArgs e)
+        private void MessagePanelClose(object sender, EventArgs e)
         {
             Controls.Remove(messagePanel);
             MessagePanel_timer.Enabled = false;
@@ -2061,7 +2089,7 @@ namespace Sales_Tracker
             controlRightClickPanelWasAddedTo?.Controls.Remove(rightClickDataGridView_Panel);
             doNotDeleteRows = false;
         }
-        private void CloseAllPanels(object? sender, EventArgs? e)
+        private void CloseAllPanels(object sender, EventArgs? e)
         {
             UI.CloseAllPanels(null, null);
         }

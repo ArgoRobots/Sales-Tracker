@@ -522,7 +522,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Close all panels
-        public static void CloseAllPanels(object? sender, EventArgs? e)
+        public static void CloseAllPanels(object sender, EventArgs? e)
         {
             MainMenu_Form.Instance.Controls.Remove(fileMenu);
             MainMenu_Form.Instance.Controls.Remove(helpMenu);

@@ -38,7 +38,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             MainMenu_Form.Instance.isProgramLoading = false;
         }
-        private void Receipts_DataGridView_SelectionChanged(object? sender, EventArgs e)
+        private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {
             if (Receipts_DataGridView.SelectedRows.Count > 0)
             {

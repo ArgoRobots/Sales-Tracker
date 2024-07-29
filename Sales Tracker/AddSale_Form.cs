@@ -550,7 +550,7 @@ namespace Sales_Tracker
         }
 
         // Misc.
-        private void ValidateInputs(object? sender, EventArgs e)
+        private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(SaleID_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) && BuyerName_TextBox.Tag.ToString() != "0" &&
@@ -575,7 +575,7 @@ namespace Sales_Tracker
             }
             AddSale_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
         }
-        public void CloseAllPanels(object? sender, EventArgs? e)
+        public void CloseAllPanels(object sender, EventArgs? e)
         {
             SearchBox.CloseSearchBox(this);
         }

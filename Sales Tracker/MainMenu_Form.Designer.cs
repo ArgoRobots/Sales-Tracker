@@ -817,10 +817,10 @@
             // 
             ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
             ShowingResultsFor_Label.AutoSize = true;
-            ShowingResultsFor_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ShowingResultsFor_Label.Location = new Point(730, 111);
+            ShowingResultsFor_Label.Font = new Font("Segoe UI", 12.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ShowingResultsFor_Label.Location = new Point(719, 101);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
-            ShowingResultsFor_Label.Size = new Size(145, 20);
+            ShowingResultsFor_Label.Size = new Size(166, 23);
             ShowingResultsFor_Label.TabIndex = 56;
             ShowingResultsFor_Label.Text = "Showing results for";
             // 

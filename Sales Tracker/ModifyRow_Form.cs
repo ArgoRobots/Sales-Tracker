@@ -148,7 +148,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void Accountant_TextBox_TextChanged(object? sender, EventArgs e)
+        private void Accountant_TextBox_TextChanged(object sender, EventArgs e)
         {
             Guna2TextBox textBox = sender as Guna2TextBox;
             if (textBox.Text == "")
@@ -189,7 +189,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void Category_TextBox_TextChanged(object? sender, EventArgs e)
+        private void Category_TextBox_TextChanged(object sender, EventArgs e)
         {
             Guna2TextBox textBox = sender as Guna2TextBox;
             if (textBox.Text == "")
@@ -242,7 +242,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void Company_TextBox_TextChanged(object? sender, EventArgs e)
+        private void Company_TextBox_TextChanged(object sender, EventArgs e)
         {
             Guna2TextBox textBox = sender as Guna2TextBox;
             if (textBox.Text == "")

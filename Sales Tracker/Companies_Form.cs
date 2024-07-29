@@ -179,7 +179,7 @@ namespace Sales_Tracker
         {
             AddCompany_Button.Enabled = !string.IsNullOrWhiteSpace(Company_TextBox.Text) && Company_TextBox.Tag.ToString() != "0";
         }
-        public void CloseAllPanels(object? sender, EventArgs? e)
+        public void CloseAllPanels(object sender, EventArgs? e)
         {
             UI.CloseAllPanels(null, null);
         }

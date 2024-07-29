@@ -189,7 +189,7 @@ namespace Sales_Tracker
                 AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text) && Accountant_TextBox.Tag.ToString() != "0";
             }
         }
-        public void CloseAllPanels(object? sender, EventArgs? e)
+        public void CloseAllPanels(object sender, EventArgs? e)
         {
             UI.CloseAllPanels(null, null);
         }
