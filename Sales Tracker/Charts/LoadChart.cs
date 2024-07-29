@@ -37,7 +37,7 @@ namespace Sales_Tracker.Charts
             }
             else { ConfigureChartForBar(chart); }
 
-            if (dataGridView.Rows.Count == 0)
+            if (!DoDataGridViewsHaveVisibleRows(dataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -85,13 +85,13 @@ namespace Sales_Tracker.Charts
                 grandTotal += total;
                 string formattedDate = date.ToString(dateFormat);
 
-                if (revenueByDate.ContainsKey(formattedDate))
+                if (revenueByDate.TryGetValue(formattedDate, out double value))
                 {
-                    revenueByDate[formattedDate] += total;
+                    revenueByDate[formattedDate] = Math.Round(value + total, 2);
                 }
                 else
                 {
-                    revenueByDate[formattedDate] = total;
+                    revenueByDate[formattedDate] = Math.Round(total, 2);
                 }
             }
 
@@ -103,7 +103,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (dataGridView.Rows.Count == 0)
+            if (!DoDataGridViewsHaveVisibleRows(dataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -181,8 +181,9 @@ namespace Sales_Tracker.Charts
             // Add combined category costs with percentage labels
             foreach (KeyValuePair<string, double> category in categoryCosts)
             {
-                double percentage = category.Value / totalCost * 100;
-                dataset.DataPoints.Add(category.Key, category.Value);
+                double roundedValue = Math.Round(category.Value, 2);
+                double percentage = roundedValue / totalCost * 100;
+                dataset.DataPoints.Add(category.Key, roundedValue);
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{category.Key} ({percentage:F2}%)";
             }
 
@@ -221,7 +222,7 @@ namespace Sales_Tracker.Charts
             }
             else { ConfigureChartForBar(chart); }
 
-            if (salesDataGridView.Rows.Count == 0 && purchasesDataGridView.Rows.Count == 0)
+            if (!DoDataGridViewsHaveVisibleRows(salesDataGridView, purchasesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -292,13 +293,13 @@ namespace Sales_Tracker.Charts
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
                 string formattedDate = date.ToString(dateFormat);
 
-                if (profitByDate.ContainsKey(formattedDate))
+                if (profitByDate.TryGetValue(formattedDate, out double value))
                 {
-                    profitByDate[formattedDate] -= total;
+                    profitByDate[formattedDate] = Math.Round(value - total, 2);
                 }
                 else
                 {
-                    profitByDate[formattedDate] = -total;
+                    profitByDate[formattedDate] = Math.Round(-total, 2);
                 }
             }
 
@@ -318,7 +319,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (purchasesDataGridView.Rows.Count == 0)
+            if (!DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -385,7 +386,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (purchasesDataGridView.Rows.Count == 0)
+            if (!DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -452,7 +453,7 @@ namespace Sales_Tracker.Charts
         {
             ConfigureChartForPie(chart);
 
-            if (salesDataGridView.Rows.Count == 0)
+            if (!DoDataGridViewsHaveVisibleRows(salesDataGridView))
             {
                 chart.Datasets.Clear();
                 chart.Update();
@@ -517,6 +518,24 @@ namespace Sales_Tracker.Charts
         }
 
         // Methods
+        private static bool DoDataGridViewsHaveVisibleRows(params DataGridView[] dataGrids)
+        {
+            foreach (DataGridView dataGridView in dataGrids)
+            {
+                if (dataGridView.Rows.Count > 0)
+                {
+                    foreach (DataGridViewRow row in dataGridView.Rows)
+                    {
+                        if (row.Visible)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
         {
             // Sort the dictionary by date keys

@@ -38,6 +38,8 @@ namespace Sales_Tracker
             LoadData();
             UpdateTheme();
             isProgramLoading = false;
+
+            HideShowingResultsForLabel();
         }
         private void LoadData()
         {
@@ -528,7 +530,7 @@ namespace Sales_Tracker
                     // Cancel close
                     return true;
                 default:  // If the CustomMessageBox was closed
-                    return true;
+                    return true;  // Cancel the closing
             }
 
             return false;
@@ -615,6 +617,8 @@ namespace Sales_Tracker
 
             Purchases_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
             Purchases_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            AlignTotalLabels();
+            Search_TextBox.PlaceholderText = "Search for purchases";
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
@@ -632,6 +636,8 @@ namespace Sales_Tracker
 
             Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
             Sales_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            AlignTotalLabels();
+            Search_TextBox.PlaceholderText = "Search for sales";
         }
         private void Statistics_Button_Click(object sender, EventArgs e)
         {
@@ -689,6 +695,19 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Remove(Edit_Button);
             MainTop_Panel.Controls.Remove(CompanyName_Label);
         }
+        private void Search_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (Tools.SearchSelectedDataGridView(Search_TextBox))
+            {
+                ShowShowingResultsForLabel(Search_TextBox.Text);
+            }
+            else
+            {
+                HideShowingResultsForLabel();
+            }
+            LoadCharts();
+            UpdateTotals();
+        }
 
         // Company label
         public void RenameCompany()
@@ -723,6 +742,18 @@ namespace Sales_Tracker
         private void MoveEditButton()
         {
             Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
+        }
+
+        // Search DataGridView
+        private void ShowShowingResultsForLabel(string text)
+        {
+            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
+            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            Controls.Add(ShowingResultsFor_Label);
+        }
+        private void HideShowingResultsForLabel()
+        {
+            Controls.Remove(ShowingResultsFor_Label);
         }
 
         // Filter_ComboBox
@@ -868,7 +899,7 @@ namespace Sales_Tracker
             }
             return "null";
         }
-        public static bool DoesProductExist(string productName, string productCategory, List<Category> categories)
+        public static bool DoesProductExist(string productName, List<Category> categories)
         {
             foreach (Category category in categories)
             {
@@ -1121,6 +1152,7 @@ namespace Sales_Tracker
             {
                 selectedDataGridView.FirstDisplayedScrollingRowIndex = e.RowIndex;
             }
+            selectedDataGridView.Rows[e.RowIndex].Selected = true;
         }
         public void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
@@ -1372,6 +1404,8 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
+                if (!row.Visible) { continue; }
+
                 totalQuantity += Convert.ToInt32(row.Cells[Column.Quantity.ToString()].Value);
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);

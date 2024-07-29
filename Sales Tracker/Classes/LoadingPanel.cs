@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// This prevents the screen from flashing white while the Form is loading.
-    /// This is especially useful when dark theme is enabled and there are a lot of controls to load.
+    /// This is especially useful when dark theme is enabled and there are a lot of things to load.
     /// </summary>
     internal class LoadingPanel
     {

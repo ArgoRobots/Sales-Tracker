@@ -148,6 +148,21 @@ namespace Sales_Tracker.Classes
             return name;
         }
 
+        /// <summary>
+        /// Searches a DataGridView for the text in the search_TextBox.
+        /// </summary>
+        /// <returns>True if the searching label should be shown, or false if it should not be shown.</returns>
+        public static bool SearchSelectedDataGridView(Guna2TextBox search_TextBox)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
+            {
+                bool isVisible = row.Cells.Cast<DataGridViewCell>()
+                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+                row.Visible = isVisible;
+            }
+            return !string.IsNullOrEmpty(search_TextBox.Text);
+        }
+
         public static void ScrollToTopOfDataGridView(DataGridView dataGridView)
         {
             if (dataGridView.Rows.Count > 0)

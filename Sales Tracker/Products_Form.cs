@@ -142,7 +142,7 @@ namespace Sales_Tracker
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
             string name = ProductName_TextBox.Text.Trim();
-            Product product = new(ProductID_TextBox.Text, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
+            Product product = new(ProductID_TextBox.Text.Trim(), name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
 
             if (Sale_RadioButton.Checked)
@@ -205,13 +205,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
-            {
-                bool isVisible = row.Cells.Cast<DataGridViewCell>()
-                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
-                row.Visible = isVisible;
-            }
-            if (Search_TextBox.Text != "")
+            if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
                 ShowShowingResultsForLabel(Search_TextBox.Text);
             }
@@ -273,7 +267,7 @@ namespace Sales_Tracker
                 categories = MainMenu_Form.Instance.categoryPurchaseList;
             }
 
-            if (MainMenu_Form.DoesProductExist(ProductName_TextBox.Text, ProductCategory_TextBox.Text, categories))
+            if (MainMenu_Form.DoesProductExist(ProductName_TextBox.Text, categories))
             {
                 AddProduct_Button.Enabled = false;
                 UI.SetGTextBoxToInvalid(ProductName_TextBox);

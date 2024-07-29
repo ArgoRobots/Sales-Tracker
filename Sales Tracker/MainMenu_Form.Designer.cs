@@ -110,6 +110,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             ManageCompanies_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -134,6 +136,8 @@
             Shipping_Label = new Label();
             Tax_Label = new Label();
             Total_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            ChargedDifference_Label = new Label();
+            PaymentFee_Label = new Label();
             Sales_Button = new Guna.UI2.WinForms.Guna2Button();
             Purchases_Button = new Guna.UI2.WinForms.Guna2Button();
             Totals_Chart = new Guna.Charts.WinForms.GunaChart();
@@ -143,8 +147,8 @@
             LineGraph_Label = new Label();
             LineGraph_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
             Statistics_Button = new Guna.UI2.WinForms.Guna2Button();
-            PaymentFee_Label = new Label();
-            ChargedDifference_Label = new Label();
+            Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            ShowingResultsFor_Label = new Label();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
@@ -531,6 +535,28 @@
             Total_Panel.TabIndex = 2;
             Total_Panel.Click += CloseAllPanels;
             // 
+            // ChargedDifference_Label
+            // 
+            ChargedDifference_Label.AutoSize = true;
+            ChargedDifference_Label.BackColor = Color.Transparent;
+            ChargedDifference_Label.Font = new Font("Segoe UI", 11.25F);
+            ChargedDifference_Label.Location = new Point(882, 15);
+            ChargedDifference_Label.Name = "ChargedDifference_Label";
+            ChargedDifference_Label.Size = new Size(136, 20);
+            ChargedDifference_Label.TabIndex = 11;
+            ChargedDifference_Label.Text = "Charged difference";
+            // 
+            // PaymentFee_Label
+            // 
+            PaymentFee_Label.AutoSize = true;
+            PaymentFee_Label.BackColor = Color.Transparent;
+            PaymentFee_Label.Font = new Font("Segoe UI", 11.25F);
+            PaymentFee_Label.Location = new Point(722, 15);
+            PaymentFee_Label.Name = "PaymentFee_Label";
+            PaymentFee_Label.Size = new Size(90, 20);
+            PaymentFee_Label.TabIndex = 10;
+            PaymentFee_Label.Text = "Payment fee";
+            // 
             // Sales_Button
             // 
             Sales_Button.BackColor = Color.Transparent;
@@ -712,7 +738,7 @@
             LineGraph_Label.AutoSize = true;
             LineGraph_Label.BackColor = Color.Transparent;
             LineGraph_Label.Font = new Font("Segoe UI", 11.25F);
-            LineGraph_Label.Location = new Point(1308, 104);
+            LineGraph_Label.Location = new Point(1114, 104);
             LineGraph_Label.Name = "LineGraph_Label";
             LineGraph_Label.Size = new Size(79, 20);
             LineGraph_Label.TabIndex = 16;
@@ -729,7 +755,7 @@
             LineGraph_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
             LineGraph_ToggleSwitch.CheckedState.InnerColor = Color.White;
             LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges33;
-            LineGraph_ToggleSwitch.Location = new Point(1393, 104);
+            LineGraph_ToggleSwitch.Location = new Point(1199, 104);
             LineGraph_ToggleSwitch.Name = "LineGraph_ToggleSwitch";
             LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges34;
             LineGraph_ToggleSwitch.Size = new Size(40, 20);
@@ -762,32 +788,48 @@
             Statistics_Button.Text = "Statistics";
             Statistics_Button.Click += Statistics_Button_Click;
             // 
-            // PaymentFee_Label
+            // Search_TextBox
             // 
-            PaymentFee_Label.AutoSize = true;
-            PaymentFee_Label.BackColor = Color.Transparent;
-            PaymentFee_Label.Font = new Font("Segoe UI", 11.25F);
-            PaymentFee_Label.Location = new Point(722, 15);
-            PaymentFee_Label.Name = "PaymentFee_Label";
-            PaymentFee_Label.Size = new Size(90, 20);
-            PaymentFee_Label.TabIndex = 10;
-            PaymentFee_Label.Text = "Payment fee";
+            Search_TextBox.Anchor = AnchorStyles.Top;
+            Search_TextBox.CustomizableEdges = customizableEdges37;
+            Search_TextBox.DefaultText = "";
+            Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Search_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Search_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Search_TextBox.Font = new Font("Segoe UI", 9F);
+            Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Search_TextBox.Location = new Point(1245, 96);
+            Search_TextBox.MaxLength = 32;
+            Search_TextBox.Name = "Search_TextBox";
+            Search_TextBox.PasswordChar = '\0';
+            Search_TextBox.PlaceholderText = "Search for sales";
+            Search_TextBox.SelectedText = "";
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            Search_TextBox.ShortcutsEnabled = false;
+            Search_TextBox.Size = new Size(200, 36);
+            Search_TextBox.TabIndex = 55;
+            Search_TextBox.TextChanged += Search_TextBox_TextChanged;
+            Search_TextBox.Click += CloseAllPanels;
             // 
-            // ChargedDifference_Label
+            // ShowingResultsFor_Label
             // 
-            ChargedDifference_Label.AutoSize = true;
-            ChargedDifference_Label.BackColor = Color.Transparent;
-            ChargedDifference_Label.Font = new Font("Segoe UI", 11.25F);
-            ChargedDifference_Label.Location = new Point(882, 15);
-            ChargedDifference_Label.Name = "ChargedDifference_Label";
-            ChargedDifference_Label.Size = new Size(136, 20);
-            ChargedDifference_Label.TabIndex = 11;
-            ChargedDifference_Label.Text = "Charged difference";
+            ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
+            ShowingResultsFor_Label.AutoSize = true;
+            ShowingResultsFor_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ShowingResultsFor_Label.Location = new Point(730, 111);
+            ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
+            ShowingResultsFor_Label.Size = new Size(145, 20);
+            ShowingResultsFor_Label.TabIndex = 56;
+            ShowingResultsFor_Label.Text = "Showing results for";
             // 
             // MainMenu_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1604, 1041);
+            Controls.Add(ShowingResultsFor_Label);
+            Controls.Add(Search_TextBox);
             Controls.Add(Statistics_Button);
             Controls.Add(LineGraph_Label);
             Controls.Add(Distribution_Chart);
@@ -861,5 +903,7 @@
         public Guna.UI2.WinForms.Guna2Button Statistics_Button;
         public Label ChargedDifference_Label;
         public Label PaymentFee_Label;
+        private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
+        private Label ShowingResultsFor_Label;
     }
 }

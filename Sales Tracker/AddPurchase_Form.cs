@@ -136,7 +136,9 @@ namespace Sales_Tracker
                 return;
             }
 
+            // Reset
             RemoveReceiptLabel();
+            OrderNumber_TextBox.Text = "";
         }
         private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -192,7 +194,7 @@ namespace Sales_Tracker
         // Methods to add purchases
         private bool AddSinglePurchase()
         {
-            string purchaseID = OrderNumber_TextBox.Text;
+            string purchaseID = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
             if (MainMenu_Form.DoesPurchaseIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
@@ -206,7 +208,7 @@ namespace Sales_Tracker
             }
 
             string buyerName = BuyerName_TextBox.Text;
-            string itemName = ProductName_TextBox.Text;
+            string itemName = ProductName_TextBox.Text.Trim();
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
             string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
@@ -292,7 +294,7 @@ namespace Sales_Tracker
             decimal totalPrice = 0;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
 
-            string purchaseID = OrderNumber_TextBox.Text;
+            string purchaseID = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
             if (MainMenu_Form.DoesPurchaseIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
@@ -327,7 +329,7 @@ namespace Sales_Tracker
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
-                string itemName = nameTextBox.Text;
+                string itemName = nameTextBox.Text.Trim();
 
                 string currentCategoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
                 string currentCountry = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);

@@ -88,13 +88,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
-            {
-                bool isVisible = row.Cells.Cast<DataGridViewCell>()
-                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
-                row.Visible = isVisible;
-            }
-            if (Search_TextBox.Text != "")
+            if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
                 ShowShowingResultsForLabel(Search_TextBox.Text);
             }

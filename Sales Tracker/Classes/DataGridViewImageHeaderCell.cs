@@ -9,7 +9,7 @@
         public string MessageBoxText { get; set; } = messageBoxText;
         private bool isImageHovered = false;
         private static readonly Color HoverBackgroundColor = Color.FromArgb(187, 187, 187);
-        private const int Padding = 5;
+        private const int Padding = 3;
 
         protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates dataGridViewElementState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
