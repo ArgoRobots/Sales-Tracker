@@ -6,7 +6,7 @@ namespace Sales_Tracker
     public partial class Categories_Form : Form
     {
         // Properties
-        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static readonly List<string> thingsThatHaveChangedInFile = [];
 
         // Init.
         public static Categories_Form Instance { get; private set; }
@@ -31,7 +31,6 @@ namespace Sales_Tracker
             Category_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             Category_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
-
 
         // Methods
         private void LoadCategories()
@@ -62,7 +61,6 @@ namespace Sales_Tracker
             }
         }
 
-
         // Form event handlers
         private void Categories_Form_Resize(object sender, EventArgs e)
         {
@@ -74,7 +72,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
-
 
         // Event handlers
         private void AddCategory_Button_Click(object sender, EventArgs e)
@@ -158,7 +155,6 @@ namespace Sales_Tracker
             }
         }
 
-
         // DataGridView
         public enum Columns
         {
@@ -194,7 +190,6 @@ namespace Sales_Tracker
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
             Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
         }
-
 
         // Validate category name
         public void VaidateCategoryTextBox()
@@ -245,7 +240,6 @@ namespace Sales_Tracker
             }
         }
 
-
         // SearchingFor_Label
         private void ShowShowingResultsForLabel(string text)
         {
@@ -258,11 +252,10 @@ namespace Sales_Tracker
             Controls.Remove(ShowingResultsFor_Label);
         }
 
-
         // Methods
         private void ValidateInputs()
         {
-            if (AddCategory_Button.Tag is bool tag && tag == true)
+            if (AddCategory_Button.Tag is bool and true)
             {
                 AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
             }

@@ -7,7 +7,7 @@ namespace Sales_Tracker
     public partial class AddPurchase_Form : Form
     {
         // Properties
-        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static readonly List<string> thingsThatHaveChangedInFile = [];
 
         // Init.
         public AddPurchase_Form()
@@ -99,7 +99,6 @@ namespace Sales_Tracker
             SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
         }
 
-
         // Event handlers
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -132,7 +131,6 @@ namespace Sales_Tracker
                     return;
                 }
             }
-
             else if (!AddMultiplePurchases())
             {
                 return;
@@ -190,7 +188,6 @@ namespace Sales_Tracker
         {
             RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
         }
-
 
         // Methods to add purchases
         private bool AddSinglePurchase()
@@ -453,7 +450,6 @@ namespace Sales_Tracker
             return true;
         }
 
-
         // Receipts
         private string receiptFilePath;
         private void ShowReceiptLabel(string text)
@@ -484,7 +480,6 @@ namespace Sales_Tracker
             Controls.Remove(RemoveReceipt_ImageButton);
             ValidateInputs(null, null);
         }
-
 
         // Methods for multiple items
         private List<Control> GetControlsForMultipleProducts()
@@ -625,7 +620,7 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + spaceBetweenControlsHorizontally, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
-        enum TextBoxnames
+        private enum TextBoxnames
         {
             name,
             quantity,
@@ -780,8 +775,8 @@ namespace Sales_Tracker
             FlowPanel.Height -= initialHeightForPanel + flowPanelMargin;
             SetHeight();
         }
-        Guna2CircleButton AddButton;
-        FlowLayoutPanel FlowPanel;
+        private Guna2CircleButton AddButton;
+        private FlowLayoutPanel FlowPanel;
         private void ConstructFlowPanel()
         {
             int width = initialWidthForPanel + spaceOnSidesOfPanel;
@@ -827,7 +822,6 @@ namespace Sales_Tracker
             AddButton.Top = FlowPanel.Bottom + spaceBetweenPanels;
         }
 
-
         // Warning labels
         private void CheckIfProductsExist()
         {
@@ -872,7 +866,6 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.Visible = false;
             WarningBuyer_PictureBox.Visible = false;
         }
-
 
         // Misc.
         private void ValidateInputs(object? sender, EventArgs e)

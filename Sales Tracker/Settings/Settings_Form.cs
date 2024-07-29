@@ -25,7 +25,6 @@ namespace Sales_Tracker.Settings
             Theme.SetThemeForForm(this);
         }
 
-
         // Left menu buttons
         private Guna2Button btnSelected;
 
@@ -41,7 +40,6 @@ namespace Sales_Tracker.Settings
         {
             SwitchForm(FormUpdates, sender);
         }
-
 
         // Bottom buttons
         private void ResetToDefault_Button_Click(object sender, EventArgs e)

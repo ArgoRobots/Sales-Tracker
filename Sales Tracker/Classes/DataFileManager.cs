@@ -15,7 +15,6 @@
             ChangesMade  // bool
         }
 
-
         // Dictionary to hold settings loaded from files, with file path as key.
         private static readonly Dictionary<string, Dictionary<string, string>> data = [];
 

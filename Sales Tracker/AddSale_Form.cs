@@ -7,7 +7,7 @@ namespace Sales_Tracker
     public partial class AddSale_Form : Form
     {
         // Properties
-        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static readonly List<string> thingsThatHaveChangedInFile = [];
 
         // Init.
         public AddSale_Form()
@@ -87,13 +87,11 @@ namespace Sales_Tracker
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
             CountryOfDestinaion_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             CountryOfDestinaion_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CountryOfDestinaion_TextBox, this, AddSale_Label, e); };
-
         }
         private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
         {
             SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
         }
-
 
         // Event handlers
         private void AddSale_Button_Click(object sender, EventArgs e)
@@ -133,15 +131,12 @@ namespace Sales_Tracker
         }
         private void ImportAmazon_Button_Click(object sender, EventArgs e)
         {
-
         }
         private void ImportEbay_Button_Click(object sender, EventArgs e)
         {
-
         }
         private void ImportExcel_Button_Click(object sender, EventArgs e)
         {
-
         }
         private void WarningProduct_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -153,7 +148,6 @@ namespace Sales_Tracker
             new Accountants_Form().ShowDialog();
             CheckIfBuyersExist();
         }
-
 
         // Methods to add Sales
         private void AddSale(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax)
@@ -216,7 +210,6 @@ namespace Sales_Tracker
                 AddSale(itemName, quantity, pricePerUnit, shipping, tax);
             }
         }
-
 
         // Methods for multiple items
         private List<Control> GetControlsForMultipleProducts()
@@ -338,7 +331,7 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + spaceBetweenControlsHorizontally, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
-        enum TextBoxnames
+        private enum TextBoxnames
         {
             name,
             quantity,
@@ -465,8 +458,8 @@ namespace Sales_Tracker
             FlowPanel.Height -= initialHeightForPanel + flowPanelMargin;
             SetHeight();
         }
-        Guna2CircleButton AddButton;
-        FlowLayoutPanel FlowPanel;
+        private Guna2CircleButton AddButton;
+        private FlowLayoutPanel FlowPanel;
         private void ConstructFlowPanel()
         {
             int width = initialWidthForPanel + spaceOnSidesOfPanel;
@@ -510,7 +503,6 @@ namespace Sales_Tracker
             Height = FlowPanel.Bottom + extraSpaceForBottom;
             AddButton.Top = FlowPanel.Bottom + spaceBetweenPanels;
         }
-
 
         // Warning labels
         private void CheckIfProductsExist()
@@ -556,7 +548,6 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.Visible = false;
             WarningBuyer_PictureBox.Visible = false;
         }
-
 
         // Misc.
         private void ValidateInputs(object? sender, EventArgs e)

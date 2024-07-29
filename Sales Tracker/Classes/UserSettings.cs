@@ -2,7 +2,7 @@
 
 namespace Sales_Tracker.Classes
 {
-    class UserSettings
+    internal class UserSettings
     {
         public static void SaveUserSettings()
         {

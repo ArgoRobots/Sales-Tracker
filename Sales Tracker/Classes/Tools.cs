@@ -11,7 +11,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string FormatTime(DateTime dateTime)
         {
-            return string.Format(@"{0:hh\:mm\:ss\.ff}", dateTime);
+            return $@"{dateTime:hh\:mm\:ss\.ff}";
         }
         /// <summary>
         /// Formats a DateTime into a date format.
@@ -46,7 +46,7 @@ namespace Sales_Tracker.Classes
         {
             foreach (Control childControl in control.Controls)
             {
-                if (childControl is Guna2TextBox gTextBox && gTextBox.Focused)
+                if (childControl is Guna2TextBox { Focused: true } gTextBox)
                 {
                     return gTextBox;
                 }

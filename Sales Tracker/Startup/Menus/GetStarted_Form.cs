@@ -8,7 +8,6 @@ namespace Sales_Tracker.Startup.Menus
         // Properties
         private readonly Dictionary<string, FileSystemWatcher> fileWatchers;
 
-
         // Init.
         public static GetStarted_Form Instance { get; private set; }
         public GetStarted_Form()
@@ -30,7 +29,6 @@ namespace Sales_Tracker.Startup.Menus
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Visible = false;
             OpenRecent_FlowLayoutPanel.AutoScroll = true;
         }
-
 
         // Recent projects
         private void LoadListOfRecentProjects()
@@ -152,13 +150,11 @@ namespace Sales_Tracker.Startup.Menus
             });
         }
 
-
         // Form event handlers
         private void GetStarted_Form_Shown(object sender, EventArgs e)
         {
             ArgoCompany.RecoverUnsavedWork();
         }
-
 
         // Event handlers
         private void CreateNewCompany_Click(object sender, EventArgs e)
@@ -170,8 +166,7 @@ namespace Sales_Tracker.Startup.Menus
             ArgoCompany.OpenCompany();
         }
 
-
-        // Methods   
+        // Methods
         public void ShowMainMenu()
         {
             // Hide current form. Don't close it or both forms will close

@@ -1,13 +1,12 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
-using System.Data;
 
 namespace Sales_Tracker
 {
     public partial class Products_Form : Form
     {
         // Properties
-        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static readonly List<string> thingsThatHaveChangedInFile = [];
         public static Products_Form Instance { get; private set; }
 
         // Init.
@@ -25,7 +24,7 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             LoadProducts();
             CheckRadioButton(checkPurchaseRadioButton);
-            VaidateCompanyTextBox();
+            ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
         }
@@ -127,7 +126,6 @@ namespace Sales_Tracker
             }
         }
 
-
         // Form event handlers
         private void Products_Form_Resize(object sender, EventArgs e)
         {
@@ -139,7 +137,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
-
 
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
@@ -178,7 +175,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
-            VaidateCategoryTextBox();
+            ValidateCategoryTextBox();
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -189,21 +186,22 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
             CenterSelectedDataGridView();
             ProductCategory_TextBox.Text = "";
-            VaidateCategoryTextBox();
+            ValidateCategoryTextBox();
         }
         private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
         {
             ValidateProductNameTextBox();
+            ValidateInputs(null, null);
         }
         private void CategoryWarning_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Categories_Form(Purchase_RadioButton.Checked).ShowDialog();
-            VaidateCategoryTextBox();
+            ValidateCategoryTextBox();
         }
         private void WarningCompany_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Companies_Form().ShowDialog();
-            VaidateCompanyTextBox();
+            ValidateCompanyTextBox();
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -222,7 +220,6 @@ namespace Sales_Tracker
                 HideShowingResultsForLabel();
             }
         }
-
 
         // DataGridView
         public enum Columns
@@ -262,7 +259,6 @@ namespace Sales_Tracker
             Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
         }
 
-
         // Validate product name
         public void ValidateProductNameTextBox()
         {
@@ -277,7 +273,7 @@ namespace Sales_Tracker
                 categories = MainMenu_Form.Instance.categoryPurchaseList;
             }
 
-            if (MainMenu_Form.IsProductInCategory(ProductName_TextBox.Text, ProductCategory_TextBox.Text, categories))
+            if (MainMenu_Form.DoesProductExist(ProductName_TextBox.Text, ProductCategory_TextBox.Text, categories))
             {
                 AddProduct_Button.Enabled = false;
                 UI.SetGTextBoxToInvalid(ProductName_TextBox);
@@ -302,7 +298,7 @@ namespace Sales_Tracker
         }
 
         // Validate category name
-        private void VaidateCategoryTextBox()
+        private void ValidateCategoryTextBox()
         {
             List<Category> categoryList;
             if (Sale_RadioButton.Checked)
@@ -335,7 +331,7 @@ namespace Sales_Tracker
         }
 
         // Validate company name
-        private void VaidateCompanyTextBox()
+        private void ValidateCompanyTextBox()
         {
             if (MainMenu_Form.Instance.companyList.Count == 0)
             {
@@ -368,7 +364,6 @@ namespace Sales_Tracker
         {
             Controls.Remove(ShowingResultsFor_Label);
         }
-
 
         // Methods
         private void ValidateInputs(object sender, EventArgs e)

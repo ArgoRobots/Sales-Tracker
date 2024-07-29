@@ -19,18 +19,14 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.FillColor = CustomColors.accent_blue;
         }
 
-
         // Event handlers
         private void CheckForUpdates_Button_Click(object sender, EventArgs e)
         {
-
         }
-
 
         // Methods
         public void UpdateControls()
         {
-
         }
     }
 }

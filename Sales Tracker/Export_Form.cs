@@ -11,13 +11,13 @@ namespace Sales_Tracker
         }
         private void Export_Form_Load(object sender, EventArgs e)
         {
-            if (Sales_Tracker.Properties.Settings.Default.ExportDirectory == "")
+            if (Properties.Settings.Default.ExportDirectory == "")
             {
-                Sales_Tracker.Properties.Settings.Default.ExportDirectory = Directories.desktop_dir;
-                Sales_Tracker.Properties.Settings.Default.Save();
+                Properties.Settings.Default.ExportDirectory = Directories.desktop_dir;
+                Properties.Settings.Default.Save();
             }
 
-            Directory_TextBox.Text = Sales_Tracker.Properties.Settings.Default.ExportDirectory;
+            Directory_TextBox.Text = Properties.Settings.Default.ExportDirectory;
 
             FileType_ComboBox.SelectedIndex = 0; ;
 

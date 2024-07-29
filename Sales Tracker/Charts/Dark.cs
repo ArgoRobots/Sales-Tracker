@@ -3,7 +3,7 @@ using Sales_Tracker.Classes;
 
 namespace Sales_Tracker.Charts
 {
-    class Dark
+    internal class Dark
     {
         public static ChartConfig Config()
         {

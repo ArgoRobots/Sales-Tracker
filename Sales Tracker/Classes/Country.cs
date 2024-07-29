@@ -137,7 +137,7 @@
             new SearchBox.SearchResult("Nigeria", Properties.Flags.Nigeria, 0),
 
             // Due to international sanctions imposed on North Korea for its nuclear weapons program
-            // and other illicit activities, we are required to exclude North Korea. 
+            // and other illicit activities, we are required to exclude North Korea.
             //  new SearchBox.SearchResult("North Korea", Properties.Flags.North_Korea, 0),
 
             new SearchBox.SearchResult("North Macedonia", Properties.Flags.North_Macedonia, 0),
@@ -156,7 +156,7 @@
             new SearchBox.SearchResult("Romania", Properties.Flags.Romania, 0),
 
             // Due to international sanctions and legal regulations, we are required to exclude Russia.
-            // These measures have been imposed in response to Russia's invasion of Ukraine. 
+            // These measures have been imposed in response to Russia's invasion of Ukraine.
             //  new SearchBox.SearchResult("Russia", Properties.Flags.Russia, 0),
 
             new SearchBox.SearchResult("Rwanda", Properties.Flags.Rwanda, 0),

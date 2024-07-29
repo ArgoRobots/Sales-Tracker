@@ -36,7 +36,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
 
-
         // Methods
         private void SetDataGridView(List<string> tag)
         {

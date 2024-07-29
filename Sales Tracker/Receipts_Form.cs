@@ -46,14 +46,12 @@ namespace Sales_Tracker
             }
         }
 
-
         // Form event handlers
         private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
-
 
         // Event handlers
         private void ClearFilters_Button_Click(object sender, EventArgs e)
@@ -94,7 +92,6 @@ namespace Sales_Tracker
                 }
             }
         }
-
 
         public enum Column
         {

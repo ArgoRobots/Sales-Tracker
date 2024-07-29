@@ -275,7 +275,6 @@ namespace Sales_Tracker.Classes
             }
         }
 
-
         // Set the header to dark
         // https://stackoverflow.com/questions/57124243/winforms-dark-title-bar-on-windows-10
 

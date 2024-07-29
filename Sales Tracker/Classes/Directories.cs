@@ -3,7 +3,7 @@ using System.IO.Compression;
 
 namespace Sales_Tracker.Classes
 {
-    static class Directories
+    internal static class Directories
     {
         // Directories
         public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
@@ -44,7 +44,6 @@ namespace Sales_Tracker.Classes
             // Other
             desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
-
 
         // Directories
         /// <summary>
@@ -137,7 +136,6 @@ namespace Sales_Tracker.Classes
                 folder.Attributes |= FileAttributes.Hidden;
             }
         }
-
 
         // Files
         /// <summary>
@@ -251,7 +249,6 @@ namespace Sales_Tracker.Classes
             }
         }
 
-
         // Read file
         /// <summary>
         /// Reads all lines from the specified file.
@@ -304,8 +301,6 @@ namespace Sales_Tracker.Classes
                 return "";
             }
         }
-
-
 
         // Tar files
         /// <summary>
@@ -476,8 +471,6 @@ namespace Sales_Tracker.Classes
             }
             return "";
         }
-
-
 
         /// <summary>
         /// This also saves all.

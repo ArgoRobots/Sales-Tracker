@@ -9,7 +9,6 @@ namespace Sales_Tracker
         // Properties
         public CustomMessageBoxResult result;
 
-
         // Init.
         public static CustomMessage_Form Instance { get; private set; }
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
@@ -22,7 +21,6 @@ namespace Sales_Tracker
 
             SetMessageBox(title, message, icon, buttons);
         }
-
 
         // Methods
         private void SetMessageBox(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
@@ -134,7 +132,6 @@ namespace Sales_Tracker
                 Changed_Panel.AutoScroll = false;
             }
         }
-
 
         // Things that have changed
         private void ShowThingsThatHaveChanged()
@@ -251,7 +248,6 @@ namespace Sales_Tracker
             DataFileManager.Save(Directories.appDataCongig_file);
         }
 
-
         // Event handlers
         private void No_Button_Click(object sender, EventArgs e)
         {
@@ -289,7 +285,6 @@ namespace Sales_Tracker
         }
     }
 
-
     public enum CustomMessageBoxIcon
     {
         Question,
@@ -314,7 +309,6 @@ namespace Sales_Tracker
         Save,
         DontSave
     }
-
 
     public static class CustomMessageBox
     {

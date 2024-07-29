@@ -1,6 +1,6 @@
 ﻿namespace Sales_Tracker.Classes
 {
-    static internal class CustomColors
+    internal static class CustomColors
     {
         // Control colors
         public static Color

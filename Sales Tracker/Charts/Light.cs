@@ -2,7 +2,7 @@
 
 namespace Sales_Tracker.Charts
 {
-    class Light
+    internal class Light
     {
         public static ChartConfig Config()
         {

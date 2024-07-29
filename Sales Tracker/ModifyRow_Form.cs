@@ -30,7 +30,6 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
         }
 
-
         // Form event handlers
         private Control controlToFocus;
         private void ModifyRow_Form_Shown(object sender, EventArgs e)
@@ -38,7 +37,6 @@ namespace Sales_Tracker
             controlToFocus?.Focus();
             ResizeControls();
         }
-
 
         // Event handlers
         private void Save_Button_Click(object sender, EventArgs e)
@@ -62,13 +60,11 @@ namespace Sales_Tracker
             }
 
             MainMenu_Form.Instance.DataGridViewRowChanged();
-
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             Close();
         }
-
 
         // Construct controls
         private void ConstructControls()
@@ -302,7 +298,6 @@ namespace Sales_Tracker
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductCategory], left, Panel);
                         Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
 
-
                         ProductCategory_TextBox.Click += (sender, e) =>
                         {
                             List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(array);
@@ -342,9 +337,9 @@ namespace Sales_Tracker
             }
             return left;
         }
-        Label SelectedReceipt_Label;
-        Guna2ImageButton RemoveReceipt_ImageButton;
-        Guna2Button Receipt_Button;
+        private Label SelectedReceipt_Label;
+        private Guna2ImageButton RemoveReceipt_ImageButton;
+        private Guna2Button Receipt_Button;
         private bool containsReceipt, removedReceipt, addedReceipt;
         private (int, int) ConstructControlsForSaleOrPurchase()
         {
@@ -526,7 +521,6 @@ namespace Sales_Tracker
             return (left, secondLeft);
         }
 
-
         // Methods for receipts
         private void ShowReceiptLabel(string text)
         {
@@ -556,7 +550,6 @@ namespace Sales_Tracker
             Controls.Remove(RemoveReceipt_ImageButton);
             ValidateInputs(null, null);
         }
-
 
         // Warning label
         private PictureBox WarningAccountantName_PictureBox;
@@ -592,7 +585,6 @@ namespace Sales_Tracker
             Panel.Controls.Remove(WarningAccountantName_PictureBox);
             Panel.Controls.Remove(WarningAccountantName_Label);
         }
-
 
         // Methods
         private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
@@ -680,7 +672,6 @@ namespace Sales_Tracker
                     selectedRow.Cells[columnName].Value = Tools.FormatDate(gDatePicker.Value);
                 }
             }
-
 
             // Update total value
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
@@ -894,7 +885,7 @@ namespace Sales_Tracker
 
         // Construct controls
         private readonly byte controlWidth = 180, smallControlWidth = 120, controlHeight = 30;
-        Panel SecondPanel;
+        private Panel SecondPanel;
         private void ConstructPanel()
         {
             SecondPanel = new()
@@ -1017,7 +1008,6 @@ namespace Sales_Tracker
 
             return gDatePicker;
         }
-
 
         // Misc.
         private void DisableSaveButton()

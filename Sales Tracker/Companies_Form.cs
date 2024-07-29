@@ -6,7 +6,7 @@ namespace Sales_Tracker
     public partial class Companies_Form : Form
     {
         // Properties
-        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static readonly List<string> thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
@@ -53,7 +53,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
-
 
         // Event handlers
         private void AddCompany_Button_Click(object sender, EventArgs e)
@@ -105,7 +104,6 @@ namespace Sales_Tracker
             }
         }
 
-
         // DataGridView
         public enum Columns
         {
@@ -139,7 +137,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
         }
 
-
         // Validate company name
         public void VaidateCompanyTextBox()
         {
@@ -171,7 +168,6 @@ namespace Sales_Tracker
             AddCompany_Button.Tag = true;
         }
 
-
         // SearchingFor_Label
         private void ShowShowingResultsForLabel(string text)
         {
@@ -183,7 +179,6 @@ namespace Sales_Tracker
         {
             Controls.Remove(ShowingResultsFor_Label);
         }
-
 
         // Methods
         private void ValidateInputs()

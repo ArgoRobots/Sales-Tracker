@@ -19,7 +19,6 @@ namespace Sales_Tracker.Settings.Menus
             Theme.SetThemeForForm(this);
         }
 
-
         // Methods
         public void UpdateControls()
         {

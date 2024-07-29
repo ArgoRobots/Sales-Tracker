@@ -2,11 +2,10 @@
 using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
-using System.Data;
 
 namespace Sales_Tracker.Charts
 {
-    class LoadChart
+    internal class LoadChart
     {
         // Configuration
         public static void ConfigureChartForBar(GunaChart chart)
@@ -516,7 +515,6 @@ namespace Sales_Tracker.Charts
 
             UpdateChart(chart, dataset);
         }
-
 
         // Methods
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)

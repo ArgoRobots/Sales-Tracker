@@ -7,7 +7,6 @@ namespace Sales_Tracker.Startup.Menus
         // Properties
         public string selectedDirectory, projectName;
 
-
         // Init.
         public static ConfigureProject_Form Instance { get; private set; }
         public ConfigureProject_Form()
@@ -26,7 +25,6 @@ namespace Sales_Tracker.Startup.Menus
             Directory_textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             Directory_textBox.KeyDown += UI.TextBox_KeyDown;
         }
-
 
         // Form event handlers
         private void ConfigureProject_form_Load(object sender, EventArgs e)
@@ -74,7 +72,6 @@ namespace Sales_Tracker.Startup.Menus
         {
             ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
         }
-
 
         // Event handlers
         private void Back_Button_Click(object sender, EventArgs e)

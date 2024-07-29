@@ -12,12 +12,11 @@ namespace Sales_Tracker
     public partial class MainMenu_Form : Form
     {
         // Proprties
-        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static readonly List<string> thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string jsonTag = "Tag";
         public static readonly string emptyCell = "-", multupleItems = "Multiple items";
         private readonly byte spaceForRightClickPanel = 30;
-
 
         // Init.
         public static MainMenu_Form? Instance { get; private set; }
@@ -162,7 +161,6 @@ namespace Sales_Tracker
 
             Theme.SetThemeForControl([Sales_DataGridView, Purchases_DataGridView]);
         }
-
 
         // Form event handlers
         private void MainMenu_Form_Load(object sender, EventArgs e)
@@ -416,9 +414,8 @@ namespace Sales_Tracker
             Directories.DeleteDirectory(Directories.tempCompany_dir, true);
         }
 
-
         // Resize controls
-        private bool wasControlsDropDownAdded = false;
+        private bool wasControlsDropDownAdded;
         private void ResizeControls()
         {
             if (isProgramLoading) { return; }
@@ -511,7 +508,6 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Add(AddPurchase_Button);
         }
 
-
         /// <summary>
         /// Asks the user to save any changes.
         /// </summary>
@@ -537,7 +533,6 @@ namespace Sales_Tracker
 
             return false;
         }
-
 
         // Event handlers - top bar
         private void File_Button_Click(object sender, EventArgs e)
@@ -602,7 +597,6 @@ namespace Sales_Tracker
                 UI.accountMenu.BringToFront();
             }
         }
-
 
         // Event handlers
         private void Purchases_Button_Click(object sender, EventArgs e)
@@ -696,7 +690,6 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Remove(CompanyName_Label);
         }
 
-
         // Company label
         public void RenameCompany()
         {
@@ -731,7 +724,6 @@ namespace Sales_Tracker
         {
             Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
         }
-
 
         // Filter_ComboBox
         private enum TimeInterval
@@ -783,7 +775,6 @@ namespace Sales_Tracker
                 row.Visible = isVisible;
             }
         }
-
 
         // Lists
         public List<Category> categorySaleList = [];
@@ -877,24 +868,20 @@ namespace Sales_Tracker
             }
             return "null";
         }
-        public static bool IsProductInCategory(string productName, string productCategory, List<Category> categories)
+        public static bool DoesProductExist(string productName, string productCategory, List<Category> categories)
         {
             foreach (Category category in categories)
             {
-                if (category.Name == productCategory)
+                foreach (Product product in category.ProductList)
                 {
-                    foreach (Product product in category.ProductList)
+                    if (product.Name == productName)
                     {
-                        if (product.Name == productName)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
             return false;
         }
-
 
         // DataGridView
         public bool isProgramLoading;
@@ -974,7 +961,7 @@ namespace Sales_Tracker
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView, selectedDataGridView;
         private DataGridViewRow removedRow;
         private Control controlRightClickPanelWasAddedTo;
-        private bool doNotDeleteRows = false;
+        private bool doNotDeleteRows;
         private void ConstructDataGridViews()
         {
             Size size = new(1300, 350);
@@ -1140,7 +1127,7 @@ namespace Sales_Tracker
             DataGridViewRowChanged();
 
             // Remove receipt from file
-            if ((Selected == SelectedOption.Purchases || Selected == SelectedOption.Sales) && removedRow?.Tag != null)
+            if (Selected is SelectedOption.Purchases or SelectedOption.Sales && removedRow?.Tag != null)
             {
                 string tagValue;
 
@@ -1336,9 +1323,8 @@ namespace Sales_Tracker
             }
         }
 
-
         // Methods for DataGridView
-        public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum> columnsToLoad = null) where TEnum : Enum
+        public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
             columnsToLoad ??= Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
 
@@ -1476,46 +1462,43 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in Purchases_DataGridView.Rows)
             {
-                if (row.Cells[Column.Product.ToString()].Value.ToString() == multupleItems)
+                if (row.Cells[Column.Product.ToString()].Value.ToString() != multupleItems) { continue; }
+                if (row.Tag is not List<string> items || items.Count == 0) { continue; }
+
+                string firstCategoryName = null, firstCountry = null, firstCompany = null;
+                bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
+
+                foreach (string item in items)
                 {
-                    if (row.Tag is not List<string> items || items.Count == 0) { continue; }
+                    string[] itemDetails = item.Split(',');
 
-                    string firstCategoryName = null, firstCountry = null, firstCompany = null;
-                    bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
+                    if (itemDetails.Length < 7) { continue; }
 
-                    foreach (string item in items)
-                    {
-                        string[] itemDetails = item.Split(',');
+                    string currentCategoryName = itemDetails[1];
+                    string currentCountry = itemDetails[2];
+                    string currentCompany = itemDetails[3];
 
-                        if (itemDetails.Length < 7) { continue; }
+                    if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
+                    else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
 
-                        string currentCategoryName = itemDetails[1];
-                        string currentCountry = itemDetails[2];
-                        string currentCompany = itemDetails[3];
+                    if (firstCountry == null) { firstCountry = currentCountry; }
+                    else if (isCountryConsistent && firstCountry != currentCountry) { isCountryConsistent = false; }
 
-                        if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
-                        else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
-
-                        if (firstCountry == null) { firstCountry = currentCountry; }
-                        else if (isCountryConsistent && firstCountry != currentCountry) { isCountryConsistent = false; }
-
-                        if (firstCompany == null) { firstCompany = currentCompany; }
-                        else if (isCompanyConsistent && firstCompany != currentCompany) { isCompanyConsistent = false; }
-                    }
-
-                    string categoryName = isCategoryNameConsistent ? firstCategoryName : emptyCell;
-                    string country = isCountryConsistent ? firstCountry : emptyCell;
-                    string company = isCompanyConsistent ? firstCompany : emptyCell;
-
-                    row.Cells[Column.Category.ToString()].Value = categoryName;
-                    row.Cells[Column.Country.ToString()].Value = country;
-                    row.Cells[Column.Company.ToString()].Value = company;
+                    if (firstCompany == null) { firstCompany = currentCompany; }
+                    else if (isCompanyConsistent && firstCompany != currentCompany) { isCompanyConsistent = false; }
                 }
+
+                string categoryName = isCategoryNameConsistent ? firstCategoryName : emptyCell;
+                string country = isCountryConsistent ? firstCountry : emptyCell;
+                string company = isCompanyConsistent ? firstCompany : emptyCell;
+
+                row.Cells[Column.Category.ToString()].Value = categoryName;
+                row.Cells[Column.Country.ToString()].Value = country;
+                row.Cells[Column.Company.ToString()].Value = company;
             }
 
             isProgramLoading = false;
         }
-
 
         // Save to file for DataGridView
         public void SaveDataGridViewToFileAsJson()
@@ -1606,7 +1589,6 @@ namespace Sales_Tracker
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
         }
-
 
         // Right click DataGridView row
         public Guna2Panel rightClickDataGridView_Panel;
@@ -1748,7 +1730,6 @@ namespace Sales_Tracker
             }
         }
 
-
         // Methods for right click DataGridView row
         public static string GetFilePathFromRowTag(object tag)
         {
@@ -1756,7 +1737,7 @@ namespace Sales_Tracker
             {
                 return list[^1];
             }
-            else if (tag is string tagString)
+            if (tag is string tagString)
             {
                 return tagString;
             }
@@ -1772,7 +1753,6 @@ namespace Sales_Tracker
             flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
             flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, index);
         }
-
 
         // Statistics menu
         private List<Control> GetMainControlsList()
@@ -2040,11 +2020,7 @@ namespace Sales_Tracker
         // Misc.
         public bool IsPurchasesSelected()
         {
-            if (selectedDataGridView == Purchases_DataGridView)
-            {
-                return true;
-            }
-            return false;
+            return selectedDataGridView == Purchases_DataGridView;
         }
         public void CloseRightClickPanels()
         {

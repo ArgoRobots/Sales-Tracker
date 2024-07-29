@@ -6,7 +6,7 @@ namespace Sales_Tracker
     public partial class Accountants_Form : Form
     {
         // Properties
-        public readonly static List<string> thingsThatHaveChangedInFile = [];
+        public static readonly List<string> thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
@@ -54,7 +54,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
-
 
         // Event handlers
         private void AddAccountant_Button_Click(object sender, EventArgs e)
@@ -105,7 +104,6 @@ namespace Sales_Tracker
                 HideShowingResultsForLabel();
             }
         }
-
 
         // DataGridView
         public enum Columns
@@ -171,7 +169,6 @@ namespace Sales_Tracker
             AddAccountant_Button.Tag = true;
         }
 
-
         // SearchingFor_Label
         private void ShowShowingResultsForLabel(string text)
         {
@@ -184,11 +181,10 @@ namespace Sales_Tracker
             Controls.Remove(ShowingResultsFor_Label);
         }
 
-
         // Methods
         private void ValidateInputs()
         {
-            if (AddAccountant_Button.Tag is bool tag && tag == true)
+            if (AddAccountant_Button.Tag is bool and true)
             {
                 AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text) && Accountant_TextBox.Tag.ToString() != "0";
             }

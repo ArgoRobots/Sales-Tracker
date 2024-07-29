@@ -25,7 +25,6 @@ namespace Sales_Tracker.Classes
             }
         }
 
-
         public static void SaveAll()
         {
             Directories.CreateArgoTarFileFromDirectory(Directories.tempCompany_dir, Directories.argoCompany_file, true);
@@ -175,7 +174,6 @@ namespace Sales_Tracker.Classes
             }
         }
 
-
         private static Mutex? applicationMutex = null;
         public static bool OnlyAllowOneInstanceOfAProject(string projectFilePath)
         {
@@ -210,7 +208,6 @@ namespace Sales_Tracker.Classes
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(projectFilePath));
         }
-
 
         /// <summary>
         /// This will prompt the user to recover any unsaved work.

@@ -6,7 +6,8 @@
         public List<Product> ProductList { get; set; } = [];
 
         // Default constructor required for deserialization
-        public Category() { }
+        public Category()
+        { }
 
         public Category(string name)
         {

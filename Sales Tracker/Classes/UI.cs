@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.Classes
 {
-    class UI
+    internal class UI
     {
         public static void ConstructControls()
         {
@@ -30,7 +30,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Construct things for menus
-        public readonly static byte panelWidth = 250, panelBtnWidth = 240;
+        public static readonly byte panelWidth = 250, panelBtnWidth = 240;
         public static Guna2Panel ConstructPanelForMenu(Size size)
         {
             Guna2Panel panel = new()
@@ -303,7 +303,6 @@ namespace Sales_Tracker.Classes
             menuBtn = ConstructBtnForMenu("Share feedback", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
-
             };
 
             ConstructSeperator(panelBtnWidth, flowPanel);
@@ -311,7 +310,6 @@ namespace Sales_Tracker.Classes
             menuBtn = ConstructBtnForMenu("Sign out", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
-
             };
         }
 
@@ -459,7 +457,6 @@ namespace Sales_Tracker.Classes
             rename_textBox.KeyDown += TextBox_KeyDown;
         }
 
-
         // Validity
         public static void SetGTextBoxToValid(Guna2TextBox textBox)
         {
@@ -472,11 +469,10 @@ namespace Sales_Tracker.Classes
             textBox.FocusedState.BorderColor = Color.Red;
         }
 
-
         // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X in Guna2TextBox
         public static void TextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.Control && (e.KeyCode == Keys.A || e.KeyCode == Keys.C || e.KeyCode == Keys.X || e.KeyCode == Keys.V))
+            if (e.Control && e.KeyCode is Keys.A or Keys.C or Keys.X or Keys.V)
             {
                 e.IsInputKey = true;
             }
@@ -524,7 +520,6 @@ namespace Sales_Tracker.Classes
                 e.SuppressKeyPress = true;
             }
         }
-
 
         // Close all panels
         public static void CloseAllPanels(object? sender, EventArgs? e)

@@ -153,7 +153,7 @@ namespace Sales_Tracker
             ProductName_TextBox.ShortcutsEnabled = false;
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 2;
-            ProductName_TextBox.TextChanged += ValidateInputs;
+            ProductName_TextBox.TextChanged += ProductName_TextBox_TextChanged;
             ProductName_TextBox.Click += CloseAllPanels;
             // 
             // AddProduct_Button
