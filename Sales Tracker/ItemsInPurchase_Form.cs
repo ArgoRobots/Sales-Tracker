@@ -32,8 +32,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void ItemsInPurchase_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
+            Reset();
         }
 
         // Methods
@@ -44,6 +43,7 @@ namespace Sales_Tracker
             Items_DataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
             Items_DataGridView.RowsRemoved -= MainMenu_Form.Instance.DataGridView_RowsRemoved;
             Items_DataGridView.UserDeletingRow -= MainMenu_Form.Instance.DataGridView_UserDeletingRow;
+            Items_DataGridView.Tag = MainMenu_Form.DataGridViewTag.ItemsInPurchase;
             MainMenu_Form.LoadColumnsInDataGridView(Items_DataGridView, MainMenu_Form.Instance.PurchaseColumnHeaders, columnsToLoad);
 
             LoadAllItemsInDataGridView(tag);
@@ -62,6 +62,11 @@ namespace Sales_Tracker
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
+        }
+        public void Reset()
+        {
+            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
     }
 }

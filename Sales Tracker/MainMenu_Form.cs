@@ -7,7 +7,6 @@ using Sales_Tracker.Settings;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Sales_Tracker
 {
@@ -51,11 +50,17 @@ namespace Sales_Tracker
             accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
             companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
 
+            Sales_DataGridView.RowsAdded -= DataGridView_RowsAdded;
+            Purchases_DataGridView.RowsAdded -= DataGridView_RowsAdded;
+
             LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
             AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
 
             LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
             AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
+
+            Sales_DataGridView.RowsAdded += DataGridView_RowsAdded;
+            Purchases_DataGridView.RowsAdded += DataGridView_RowsAdded;
 
             // Load image into column header
             DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
@@ -184,8 +189,6 @@ namespace Sales_Tracker
                 Distribution_Chart.Refresh();
                 Profits_Chart.Invalidate();
                 Profits_Chart.Refresh();
-
-                AlignTotalLabels();
             });
 
             Log.Write(2, "Argo Sales Tracker has finished starting");
@@ -695,6 +698,12 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
+            SortDataGridViewBySearchBox();
+        }
+
+        // Methods for Event handlers
+        private void SortDataGridViewBySearchBox()
+        {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
                 ShowShowingResultsForLabel(Search_TextBox.Text);
@@ -985,12 +994,14 @@ namespace Sales_Tracker
             Category,
             Company,
             Product,
-            Accountant
+            Accountant,
+            ItemsInPurchase
         }
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView, selectedDataGridView;
         private DataGridViewRow removedRow;
         private Control controlRightClickPanelWasAddedTo;
         private bool doNotDeleteRows;
+        private DataGridViewRow selectedRowInMainMenu;
         private void ConstructDataGridViews()
         {
             Size size = new(1300, 350);
@@ -1040,6 +1051,7 @@ namespace Sales_Tracker
             if (doNotDeleteRows)
             {
                 e.Cancel = true;
+                return;
             }
 
             removedRow = e.Row;
@@ -1122,12 +1134,43 @@ namespace Sales_Tracker
                     break;
 
                 case SelectedOption.Companies:
-                    type = "Accountant";
+                    type = "Companies";
                     columnName = Companies_Form.Columns.Company.ToString();
                     logIndex = 2;
 
                     // Remove accountant from list
                     companyList.Remove(companyList.FirstOrDefault(a => a == e.Row.Cells[columnName].Value?.ToString()));
+                    break;
+
+                case SelectedOption.ItemsInPurchase:
+                    columnName = Column.Product.ToString();
+                    string name1 = e.Row.Cells[columnName].Value?.ToString();
+                    columnName = Column.Category.ToString();
+                    string purchase = e.Row.Cells[columnName].Value?.ToString();
+                    List<string> tagList = (List<string>)selectedRowInMainMenu.Tag;
+
+                    if (tagList.Count == 2)
+                    {
+                        CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Deleting the last item will also delete the purchase.", CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
+
+                        if (result != CustomMessageBoxResult.Ok)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+
+                        Log.Write(2, $"Deleted item '{name1}' in purchase '{purchase}'");
+                        itemsInPurchase_Form.Reset();
+                        itemsInPurchase_Form.Close();
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    // Remove the row from the tag
+                    tagList.RemoveAt(e.Row.Index);
+
+                    Log.Write(2, $"Deleted item '{name1}' in purchase '{purchase}'");
+                    UpdateRow();
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();
@@ -1140,17 +1183,43 @@ namespace Sales_Tracker
         }
         public void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (isProgramLoading)
+            DataGridViewRowChanged();
+            DataGridViewRow row;
+
+            if (e.RowIndex >= 0 && e.RowIndex < selectedDataGridView.RowCount)
             {
+                row = selectedDataGridView.Rows[e.RowIndex];
+            }
+            else
+            {
+                Log.Error_RowIsOutOfRange();
                 return;
             }
 
-            DataGridViewRowChanged();
-            if (e.RowIndex >= 0 && e.RowIndex < selectedDataGridView?.Rows.Count)
+            // Perform sorting based on the current sorted column and direction
+            if (selectedDataGridView.SortedColumn != null)
             {
-                selectedDataGridView.FirstDisplayedScrollingRowIndex = e.RowIndex;
+                SortOrder sortOrder = selectedDataGridView.SortOrder;
+                DataGridViewColumn sortedColumn = selectedDataGridView.SortedColumn;
+                ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
+                                              ListSortDirection.Ascending : ListSortDirection.Descending;
+                selectedDataGridView.Sort(sortedColumn, direction);
             }
-            selectedDataGridView.Rows[e.RowIndex].Selected = true;
+
+            SortDataGridViewBySearchBox();
+
+            // Calculate the middle index
+            int visibleRowCount = selectedDataGridView.DisplayedRowCount(true);
+            int middleIndex = Math.Max(0, row.Index - (visibleRowCount / 2) + 1);
+
+            // Ensure the row at middleIndex is visible
+            if (middleIndex >= 0 && middleIndex < selectedDataGridView.RowCount && selectedDataGridView.Rows[middleIndex].Visible)
+            {
+                selectedDataGridView.FirstDisplayedScrollingRowIndex = middleIndex;
+            }
+
+            // Select the added row
+            selectedDataGridView.Rows[row.Index].Selected = true;
         }
         public void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
@@ -1176,16 +1245,12 @@ namespace Sales_Tracker
         }
         private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            if (isProgramLoading) { return; }
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
             DataGridViewRowChanged();
         }
         public void DataGridViewRowChanged()
         {
-            if (isProgramLoading)
-            {
-                return;
-            }
-
             if (Selected == SelectedOption.Purchases || Selected == SelectedOption.Sales)
             {
                 UpdateTotals();
@@ -1205,13 +1270,19 @@ namespace Sales_Tracker
         public void DataGridView_MouseDown(object sender, MouseEventArgs e)
         {
             UI.CloseAllPanels(null, null);
+
             Guna2DataGridView grid = (Guna2DataGridView)sender;
+            DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
+
+            if (Selected is SelectedOption.Purchases or SelectedOption.Sales && info.RowIndex != -1)
+            {
+                selectedRowInMainMenu = grid.Rows[info.RowIndex];
+            }
 
             if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
             {
                 // The right click button does not select rows by default, so implement it here
                 // If it is not currently selected, unselect others
-                DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
                 if (info.RowIndex == -1)
                 {
                     return;
@@ -1379,7 +1450,7 @@ namespace Sales_Tracker
         }
         private void UpdateTotals()
         {
-            if (isProgramLoading || Selected != SelectedOption.Purchases)
+            if (isProgramLoading || Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales)
             {
                 return;
             }
@@ -1512,52 +1583,62 @@ namespace Sales_Tracker
             dateColumnHeader = PurchaseColumnHeaders[Column.Date];
             Purchases_DataGridView.Sort(Purchases_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
         }
-        // This will be used when items in a purchase are added, edited, or removed
-
-        //selectedDataGridView = Purchases_DataGridView;
-        //Selected = SelectedOption.Purchases;
-        //UpdateExistingRows();
-        //DataGridViewRowChanged();
-        private void UpdateExistingRows()
+        public static void SortTheDataGridViewByFirstColumn(params DataGridView[] dataGridViews)
+        {
+            foreach (DataGridView dataGrid in dataGridViews)
+            {
+                if (dataGrid.Columns.Count > 0)
+                {
+                    dataGrid.Sort(dataGrid.Columns[0], ListSortDirection.Ascending);
+                }
+            }
+        }
+        private void UpdateRow()
         {
             isProgramLoading = true;
 
-            foreach (DataGridViewRow row in Purchases_DataGridView.Rows)
+            List<string> items = selectedRowInMainMenu.Tag as List<string>;
+
+            string firstCategoryName = null, firstCountry = null, firstCompany = null;
+            bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
+            decimal pricePerUnit = 0;
+
+            foreach (string item in items)
             {
-                if (row.Cells[Column.Product.ToString()].Value.ToString() != multupleItems) { continue; }
-                if (row.Tag is not List<string> items || items.Count == 0) { continue; }
+                string[] itemDetails = item.Split(',');
 
-                string firstCategoryName = null, firstCountry = null, firstCompany = null;
-                bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
+                if (itemDetails.Length < 7) { continue; }
 
-                foreach (string item in items)
-                {
-                    string[] itemDetails = item.Split(',');
+                string currentCategoryName = itemDetails[1];
+                string currentCountry = itemDetails[2];
+                string currentCompany = itemDetails[3];
+                pricePerUnit += decimal.Parse(itemDetails[5]);
 
-                    if (itemDetails.Length < 7) { continue; }
+                if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
+                else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
 
-                    string currentCategoryName = itemDetails[1];
-                    string currentCountry = itemDetails[2];
-                    string currentCompany = itemDetails[3];
+                if (firstCountry == null) { firstCountry = currentCountry; }
+                else if (isCountryConsistent && firstCountry != currentCountry) { isCountryConsistent = false; }
 
-                    if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
-                    else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
-
-                    if (firstCountry == null) { firstCountry = currentCountry; }
-                    else if (isCountryConsistent && firstCountry != currentCountry) { isCountryConsistent = false; }
-
-                    if (firstCompany == null) { firstCompany = currentCompany; }
-                    else if (isCompanyConsistent && firstCompany != currentCompany) { isCompanyConsistent = false; }
-                }
-
-                string categoryName = isCategoryNameConsistent ? firstCategoryName : emptyCell;
-                string country = isCountryConsistent ? firstCountry : emptyCell;
-                string company = isCompanyConsistent ? firstCompany : emptyCell;
-
-                row.Cells[Column.Category.ToString()].Value = categoryName;
-                row.Cells[Column.Country.ToString()].Value = country;
-                row.Cells[Column.Company.ToString()].Value = company;
+                if (firstCompany == null) { firstCompany = currentCompany; }
+                else if (isCompanyConsistent && firstCompany != currentCompany) { isCompanyConsistent = false; }
             }
+
+            string categoryName = isCategoryNameConsistent ? firstCategoryName : emptyCell;
+            string country = isCountryConsistent ? firstCountry : emptyCell;
+            string company = isCompanyConsistent ? firstCompany : emptyCell;
+
+            selectedRowInMainMenu.Cells[Column.Category.ToString()].Value = categoryName;
+            selectedRowInMainMenu.Cells[Column.Country.ToString()].Value = country;
+            selectedRowInMainMenu.Cells[Column.Company.ToString()].Value = company;
+            selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value = items.Count - 1;
+
+            // Update charged difference
+            int quantity = int.Parse(selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value.ToString());
+            decimal shipping = decimal.Parse(selectedRowInMainMenu.Cells[Column.Shipping.ToString()].Value.ToString());
+            decimal tax = decimal.Parse(selectedRowInMainMenu.Cells[Column.Tax.ToString()].Value.ToString());
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+            selectedRowInMainMenu.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRowInMainMenu.Cells[Column.Total.ToString()].Value) - totalPrice;
 
             isProgramLoading = false;
         }
@@ -1688,8 +1769,8 @@ namespace Sales_Tracker
                 return;
             }
 
-            ModifyRow_Form ModifyRow_form = new(selectedDataGridView.SelectedRows[0]);
-            ModifyRow_form.ShowDialog();
+            ModifyRow_Form modifyRow_Form = new(selectedDataGridView.SelectedRows[0]);
+            modifyRow_Form.ShowDialog();
         }
         private void MoveRow(object sender, EventArgs e)
         {
@@ -1757,10 +1838,12 @@ namespace Sales_Tracker
                 Directories.CopyFile(receiptFilePath, dialog.SelectedPath + @"\" + Path.GetFileName(receiptFilePath));
             }
         }
+        private ItemsInPurchase_Form itemsInPurchase_Form;
         private void ShowItems(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
-            new ItemsInPurchase_Form((List<string>)selectedDataGridView.SelectedRows[0].Tag).ShowDialog();
+            itemsInPurchase_Form = new ItemsInPurchase_Form((List<string>)selectedDataGridView.SelectedRows[0].Tag);
+            itemsInPurchase_Form.ShowDialog();
         }
         private void DeleteRow(object sender, EventArgs e)
         {
@@ -1771,13 +1854,16 @@ namespace Sales_Tracker
             // Delete all selected rows
             foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
             {
-                // Trigger the UserDeletingRow event manually
                 DataGridView_UserDeletingRow(selectedDataGridView, new(item));
+            }
 
+            // This needs to be seperate because ItemsInPurchase_Form may change selectedDataGridView
+            foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
+            {
                 selectedDataGridView.Rows.Remove(item);
             }
 
-            // If no rows are automatically selected again, select the row under the row that was just deleted
+            // Select the row under the row that was just deleted
             if (selectedDataGridView.Rows.Count != 0)
             {
                 // If the deleted row was not at the bottom

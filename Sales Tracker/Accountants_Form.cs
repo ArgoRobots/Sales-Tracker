@@ -24,6 +24,7 @@ namespace Sales_Tracker
             LoadAccountants();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
+            MainMenu_Form.SortTheDataGridViewByFirstColumn(Accountants_DataGridView);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -33,14 +34,15 @@ namespace Sales_Tracker
         }
         private void LoadAccountants()
         {
-            MainMenu_Form.Instance.isProgramLoading = true;
+            Accountants_DataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
 
             foreach (string accountant in MainMenu_Form.Instance.accountantList)
             {
                 Accountants_DataGridView.Rows.Add(accountant);
             }
             Tools.ScrollToTopOfDataGridView(Accountants_DataGridView);
-            MainMenu_Form.Instance.isProgramLoading = false;
+
+            Accountants_DataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
         }
 
         // Form event handlers
@@ -84,8 +86,8 @@ namespace Sales_Tracker
         }
         private void Accountant_TextBox_TextChanged(object sender, EventArgs e)
         {
-            VaidateAccountantTextBox();
             ValidateInputs();
+            VaidateAccountantTextBox();
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {

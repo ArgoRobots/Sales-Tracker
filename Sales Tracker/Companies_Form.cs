@@ -24,6 +24,7 @@ namespace Sales_Tracker
             LoadCompanies();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
+            MainMenu_Form.SortTheDataGridViewByFirstColumn(Company_DataGridView);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -83,8 +84,8 @@ namespace Sales_Tracker
         }
         private void Company_TextBox_TextChanged(object sender, EventArgs e)
         {
-            VaidateCompanyTextBox();
             ValidateInputs();
+            VaidateCompanyTextBox();
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {

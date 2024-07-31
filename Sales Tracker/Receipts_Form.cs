@@ -37,6 +37,7 @@ namespace Sales_Tracker
 
             Theme.SetThemeForForm(this);
             MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.SortTheDataGridViewByFirstColumn(Receipts_DataGridView);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {

@@ -90,9 +90,9 @@
                 DataGridView.InvalidateCell(this);
             }
         }
-        protected override void OnMouseClick(DataGridViewCellMouseEventArgs e)
+        protected override void OnMouseDown(DataGridViewCellMouseEventArgs e)
         {
-            base.OnMouseClick(e);
+            base.OnMouseDown(e);
 
             if (HeaderImage != null)
             {
@@ -105,7 +105,6 @@
                     imgSize.Height + Padding * 2
                 );
 
-                // Adjust the mouse location relative to the header cell's coordinate system
                 Point clickLocation = new(e.X + cellBounds.X, e.Y + cellBounds.Y);
 
                 if (imgBounds.Contains(clickLocation))

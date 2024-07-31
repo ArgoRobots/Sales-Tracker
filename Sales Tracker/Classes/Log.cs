@@ -186,8 +186,15 @@ namespace Sales_Tracker.Classes
           string dataGridViewName,
           [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-5knt54: Row is empty in DataGridView:" +
-                $"\nSource:'{dataGridViewName}'.",
+            Error($"Error-5knt54: Row is empty in DataGridView:'{dataGridViewName}'.",
+                "https://www.google.com",
+                false,
+                lineNumber);
+        }
+        public static void Error_RowIsOutOfRange(
+          [CallerLineNumber] int lineNumber = 0)
+        {
+            Error("Error-5knt54: Row is out of range",
                 "https://www.google.com",
                 false,
                 lineNumber);

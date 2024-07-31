@@ -163,7 +163,7 @@ namespace Sales_Tracker
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
-            Search_TextBox.PlaceholderText = "Search for products";
+            Search_TextBox.PlaceholderText = "Search for companies";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Search_TextBox.ShortcutsEnabled = false;

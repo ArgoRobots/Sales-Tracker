@@ -790,7 +790,7 @@
             // 
             // Search_TextBox
             // 
-            Search_TextBox.Anchor = AnchorStyles.Top;
+            Search_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             Search_TextBox.CustomizableEdges = customizableEdges37;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
