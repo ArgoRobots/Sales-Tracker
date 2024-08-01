@@ -29,20 +29,20 @@ namespace Sales_Tracker.Classes
                     icon.Save(fs);
                 }
 
-                var className = $"ArgoSalesTracker{extension.Replace(".", "")}";
-                using (var key = Registry.ClassesRoot.CreateSubKey(extension))
+                string className = $"ArgoSalesTracker{extension.Replace(".", "")}";
+                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(extension))
                 {
                     key.SetValue("", className);
                 }
-                using (var key = Registry.ClassesRoot.CreateSubKey(className))
+                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(className))
                 {
                     key.SetValue("", $"Argo Sales Tracker {extension} File");
                 }
-                using (var key = Registry.ClassesRoot.CreateSubKey($@"{className}\DefaultIcon"))
+                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey($@"{className}\DefaultIcon"))
                 {
                     key.SetValue("", $"{tempIconPath},{iconIndex}");
                 }
-                using (var key = Registry.ClassesRoot.CreateSubKey($@"{className}\shell\open\command"))
+                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey($@"{className}\shell\open\command"))
                 {
                     key.SetValue("", $"\"{applicationPath}\" \"%1\"");
                 }

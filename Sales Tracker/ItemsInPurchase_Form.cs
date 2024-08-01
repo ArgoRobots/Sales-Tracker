@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using System.Text;
 
 namespace Sales_Tracker
 {
@@ -33,9 +34,33 @@ namespace Sales_Tracker
         private void ItemsInPurchase_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             Reset();
+            UpdateRowTag();
         }
 
         // Methods
+        private void UpdateRowTag()
+        {
+            List<string> items = new();
+
+            if (oldSelectedDataGridView.SelectedRows[0].Tag is List<string> existingItems && existingItems.Count > 0)
+            {
+                // The last item which is the receipt file path needs to stay the same
+                string lastItem = existingItems.Last();
+
+                foreach (DataGridViewRow row in Items_DataGridView.Rows)
+                {
+                    StringBuilder itemBuilder = new();
+                    for (int i = 0; i < row.Cells.Count; i++)
+                    {
+                        if (i > 0) itemBuilder.Append(',');
+                        itemBuilder.Append(row.Cells[i].Value);
+                    }
+                    items.Add(itemBuilder.ToString());
+                }
+                items.Add(lastItem);
+            }
+            oldSelectedDataGridView.SelectedRows[0].Tag = items;
+        }
         private void SetDataGridView(List<string> tag)
         {
             MainMenu_Form.Instance.InitializeDataGridView(Items_DataGridView, Items_DataGridView.Size);

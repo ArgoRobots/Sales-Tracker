@@ -31,6 +31,7 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ItemsInPurchase_Form));
             Items_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
             ExportReceipts_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)Items_DataGridView).BeginInit();
@@ -106,6 +107,7 @@
             Controls.Add(ExportReceipts_Label);
             Controls.Add(Items_DataGridView);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(1200, 350);
             Name = "ItemsInPurchase_Form";
             ShowInTaskbar = false;

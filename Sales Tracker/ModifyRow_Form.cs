@@ -687,20 +687,18 @@ namespace Sales_Tracker
                 if (control is Guna2TextBox gTextBox)
                 {
                     string columnName = gTextBox.Name;
+
                     if (columnName == MainMenu_Form.Column.PricePerUnit.ToString() ||
                         columnName == MainMenu_Form.Column.Shipping.ToString() ||
                         columnName == MainMenu_Form.Column.Tax.ToString() ||
-                        columnName == MainMenu_Form.Column.Fee.ToString())
+                        columnName == MainMenu_Form.Column.Fee.ToString() ||
+                        columnName == MainMenu_Form.Column.Total.ToString())
                     {
                         // Format the number with two decimal places
                         if (decimal.TryParse(gTextBox.Text, out decimal number))
                         {
                             selectedRow.Cells[columnName].Value = string.Format("{0:N2}", number);
                         }
-                    }
-                    else if (columnName == MainMenu_Form.Column.ChargedDifference.ToString())
-                    {
-                        selectedRow.Cells[columnName].Value = -decimal.Parse(gTextBox.Text);
                     }
                     else
                     {
@@ -731,7 +729,6 @@ namespace Sales_Tracker
             }
 
             MainMenu_Form.Instance.DataGridViewRowChanged();
-
             Close();
         }
         private void SaveInListsAndUpdateDataGridViews()
