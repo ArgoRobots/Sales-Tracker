@@ -9,6 +9,7 @@ namespace Sales_Tracker
         // Properties
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
+        private readonly DataGridViewRow selectedRow;
         private readonly List<MainMenu_Form.Column> columnsToLoad = [
             MainMenu_Form.Column.Product,
             MainMenu_Form.Column.Category,
@@ -20,13 +21,14 @@ namespace Sales_Tracker
         ];
 
         // Init.
-        public ItemsInPurchase_Form(List<string> tag)
+        public ItemsInPurchase_Form(DataGridViewRow row)
         {
             InitializeComponent();
 
+            selectedRow = row;
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
-            SetDataGridView(tag);
+            SetDataGridView((List<string>)row.Tag);
             Theme.SetThemeForForm(this);
         }
 
@@ -34,7 +36,18 @@ namespace Sales_Tracker
         private void ItemsInPurchase_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             Reset();
-            UpdateRowTag();
+
+            if (Items_DataGridView.Rows.Count==0)
+            {
+                MainMenu_Form.Instance.selectedDataGridView.Rows.Remove(MainMenu_Form.Instance.selectedRowInMainMenu);
+            }
+            else
+            {
+                UpdateRowTag();
+                MainMenu_Form.Instance.UpdateRow();
+            }
+
+            MainMenu_Form.Instance.DataGridViewRowChanged();
         }
 
         // Methods
@@ -52,7 +65,7 @@ namespace Sales_Tracker
                     StringBuilder itemBuilder = new();
                     for (int i = 0; i < row.Cells.Count; i++)
                     {
-                        if (i > 0) itemBuilder.Append(',');
+                        if (i > 0) { itemBuilder.Append(','); }
                         itemBuilder.Append(row.Cells[i].Value);
                     }
                     items.Add(itemBuilder.ToString());

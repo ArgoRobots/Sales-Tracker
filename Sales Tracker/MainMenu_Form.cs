@@ -1001,7 +1001,7 @@ namespace Sales_Tracker
         private DataGridViewRow removedRow;
         private Control controlRightClickPanelWasAddedTo;
         private bool doNotDeleteRows;
-        private DataGridViewRow selectedRowInMainMenu;
+        public DataGridViewRow selectedRowInMainMenu;
         private void ConstructDataGridViews()
         {
             Size size = new(1300, 350);
@@ -1158,11 +1158,9 @@ namespace Sales_Tracker
                             e.Cancel = true;
                             return;
                         }
-
-                        Log.Write(2, $"Deleted item '{name1}' in purchase '{purchase}'");
-                        itemsInPurchase_Form.Reset();
                         itemsInPurchase_Form.Close();
                         e.Cancel = true;
+                        Log.Write(2, $"Deleted item '{name1}' in purchase '{purchase}'");
                         return;
                     }
 
@@ -1170,7 +1168,6 @@ namespace Sales_Tracker
                     tagList.RemoveAt(e.Row.Index);
 
                     Log.Write(2, $"Deleted item '{name1}' in purchase '{purchase}'");
-                    UpdateRow();
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();
@@ -1593,7 +1590,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void UpdateRow()
+        public void UpdateRow()
         {
             isProgramLoading = true;
 
@@ -1842,7 +1839,7 @@ namespace Sales_Tracker
         private void ShowItems(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
-            itemsInPurchase_Form = new ItemsInPurchase_Form((List<string>)selectedDataGridView.SelectedRows[0].Tag);
+            itemsInPurchase_Form = new ItemsInPurchase_Form(selectedDataGridView.SelectedRows[0]);
             itemsInPurchase_Form.ShowDialog();
         }
         private void DeleteRow(object sender, EventArgs e)
@@ -1855,11 +1852,6 @@ namespace Sales_Tracker
             foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
             {
                 DataGridView_UserDeletingRow(selectedDataGridView, new(item));
-            }
-
-            // This needs to be seperate because ItemsInPurchase_Form may change selectedDataGridView
-            foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
-            {
                 selectedDataGridView.Rows.Remove(item);
             }
 

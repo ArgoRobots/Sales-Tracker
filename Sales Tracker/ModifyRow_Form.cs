@@ -547,19 +547,19 @@ namespace Sales_Tracker
 
                     case nameof(MainMenu_Form.Column.Quantity):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, true, false, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.OnlyNumbers, true, false, Panel);
                         left += controlWidth + spaceBetweenControlsHorizontally;
                         break;
 
                     case nameof(MainMenu_Form.Column.PricePerUnit):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.PricePerUnit], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, true, false, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.OnlyNumbersAndDecimal, true, false, Panel);
                         left += controlWidth + spaceBetweenControlsHorizontally;
                         break;
 
                     case nameof(MainMenu_Form.Column.Total):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Total], left, Panel);
-                        ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, true, false, Panel);
+                        ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.OnlyNumbersAndDecimal, true, false, Panel);
                         left += controlWidth + spaceBetweenControlsHorizontally;
                         break;
                 }
