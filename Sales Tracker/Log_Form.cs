@@ -64,7 +64,7 @@ namespace Sales_Tracker
 
             // Set the time to gray
             // https://stackoverflow.com/questions/74134680/how-to-select-text-between-two-characters-in-a-richtextbox
-            var matches = MyRegex().Matches(RichTextBox.Text);
+            MatchCollection matches = MyRegex().Matches(RichTextBox.Text);
             foreach (Match m in matches.Cast<Match>())
             {
                 RichTextBox.SelectionStart = m.Index;

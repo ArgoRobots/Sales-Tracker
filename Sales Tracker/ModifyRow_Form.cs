@@ -391,7 +391,7 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.Product):
-                        if (cellValue != MainMenu_Form.multupleItems)
+                        if (cellValue != MainMenu_Form.multipleItems)
                         {
                             ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
                             Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);

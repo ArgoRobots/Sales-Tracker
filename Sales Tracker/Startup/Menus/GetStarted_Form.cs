@@ -118,7 +118,7 @@ namespace Sales_Tracker.Startup.Menus
             Invoke((MethodInvoker)delegate
             {
                 List<Guna2Button> itemsToRemove = [];
-                foreach (var control in OpenRecent_FlowLayoutPanel.Controls)
+                foreach (Control control in OpenRecent_FlowLayoutPanel.Controls)
                 {
                     if (control is Guna2Button btn)
                     {
@@ -129,7 +129,7 @@ namespace Sales_Tracker.Startup.Menus
                     }
                 }
 
-                foreach (var item in itemsToRemove)
+                foreach (Guna2Button item in itemsToRemove)
                 {
                     OpenRecent_FlowLayoutPanel.Controls.Remove(item);
                 }

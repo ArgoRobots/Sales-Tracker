@@ -16,7 +16,7 @@ namespace Sales_Tracker
         public static readonly List<string> thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string jsonTag = "Tag";
-        public static readonly string emptyCell = "-", multupleItems = "Multiple items";
+        public static readonly string emptyCell = "-", multipleItems = "Multiple items", receipt = "receipt:";
         private readonly byte spaceForRightClickPanel = 30;
 
         // Init.
@@ -1149,9 +1149,25 @@ namespace Sales_Tracker
                     string purchase = e.Row.Cells[columnName].Value?.ToString();
                     List<string> tagList = (List<string>)selectedRowInMainMenu.Tag;
 
-                    if (tagList.Count == 2)
+                    byte index = 1;
+                    if (tagList.Last().StartsWith(receipt))
                     {
-                        CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Deleting the last item will also delete the purchase.", CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
+                        index = 2;
+                    }
+
+                    string selected;
+                    if (Selected == SelectedOption.Purchases)
+                    {
+                        selected = "purchase";
+                    }
+                    else
+                    {
+                        selected = "sale";
+                    }
+
+                    if (tagList.Count == index)
+                    {
+                        CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"Deleting the last item will also delete the {selected}.", CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
 
                         if (result != CustomMessageBoxResult.Ok)
                         {
@@ -1160,14 +1176,14 @@ namespace Sales_Tracker
                         }
                         itemsInPurchase_Form.Close();
                         e.Cancel = true;
-                        Log.Write(2, $"Deleted item '{name1}' in purchase '{purchase}'");
+                        Log.Write(2, $"Deleted item '{name1}' in {selected} '{purchase}'");
                         return;
                     }
 
                     // Remove the row from the tag
                     tagList.RemoveAt(e.Row.Index);
 
-                    Log.Write(2, $"Deleted item '{name1}' in purchase '{purchase}'");
+                    Log.Write(2, $"Deleted item '{name1}' in {selected} '{purchase}'");
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();
@@ -1216,6 +1232,7 @@ namespace Sales_Tracker
             }
 
             // Select the added row
+            UnselectAllRowsInCurrentDataGridView();
             selectedDataGridView.Rows[row.Index].Selected = true;
         }
         public void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
@@ -1476,7 +1493,10 @@ namespace Sales_Tracker
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
-                chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
+                if (Selected == SelectedOption.Purchases)
+                {
+                    chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
+                }
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
             }
 
@@ -1544,7 +1564,7 @@ namespace Sales_Tracker
                 row.Selected = false;
             }
         }
-        public static bool DoesPurchaseIDExists(Guna2DataGridView dataGridView, string purchaseID)
+        public static bool DoesIDExists(Guna2DataGridView dataGridView, string purchaseID)
         {
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
@@ -1631,11 +1651,14 @@ namespace Sales_Tracker
             selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value = items.Count - 1;
 
             // Update charged difference
-            int quantity = int.Parse(selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value.ToString());
-            decimal shipping = decimal.Parse(selectedRowInMainMenu.Cells[Column.Shipping.ToString()].Value.ToString());
-            decimal tax = decimal.Parse(selectedRowInMainMenu.Cells[Column.Tax.ToString()].Value.ToString());
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            selectedRowInMainMenu.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRowInMainMenu.Cells[Column.Total.ToString()].Value) - totalPrice;
+            if (Selected == SelectedOption.Purchases)
+            {
+                int quantity = int.Parse(selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value.ToString());
+                decimal shipping = decimal.Parse(selectedRowInMainMenu.Cells[Column.Shipping.ToString()].Value.ToString());
+                decimal tax = decimal.Parse(selectedRowInMainMenu.Cells[Column.Tax.ToString()].Value.ToString());
+                decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+                selectedRowInMainMenu.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRowInMainMenu.Cells[Column.Total.ToString()].Value) - totalPrice;
+            }
 
             isProgramLoading = false;
         }

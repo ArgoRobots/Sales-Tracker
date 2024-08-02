@@ -9,7 +9,7 @@ namespace Sales_Tracker.Charts
             Color gridColor = Color.FromArgb(214, 219, 224);
             Color foreColor = Color.FromArgb(105, 121, 139);
 
-            var font = new ChartFont()
+            ChartFont font = new()
             {
                 FontName = "Segoe UI",
                 Size = 10,

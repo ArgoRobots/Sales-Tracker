@@ -80,6 +80,7 @@ namespace Sales_Tracker
         private void AddSearchBoxEvents()
         {
             byte searchBoxMaxHeight = 150;
+
             BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, searchBoxMaxHeight); };
@@ -197,7 +198,7 @@ namespace Sales_Tracker
             string purchaseID = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesPurchaseIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
+            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase ID already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -292,7 +293,7 @@ namespace Sales_Tracker
             string purchaseID = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesPurchaseIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
+            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase ID already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -420,7 +421,7 @@ namespace Sales_Tracker
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseID,
                 buyerName,
-                MainMenu_Form.multupleItems,
+                MainMenu_Form.multipleItems,
                 finalCategoryName,
                 finalCountry,
                 finalCompany,
@@ -434,7 +435,7 @@ namespace Sales_Tracker
                 totalPrice.ToString("N2")
             );
 
-            items.Add(newFilePath);
+            items.Add(MainMenu_Form.receipt + newFilePath);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
@@ -655,7 +656,6 @@ namespace Sales_Tracker
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
                 SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames()), this, smallSearchBoxMaxHeight);
             };
-            textBox.TextChanged += ValidateInputs;
             textBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             textBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(textBox, this, AddPurchase_Label, e); };
 
@@ -704,8 +704,8 @@ namespace Sales_Tracker
                 Size = new Size(width, textBoxHeight),
                 Name = name,
                 Location = new Point(left, 20 + spaceBetweenControlsVertically),
-                BorderColor = CustomColors.controlBorder,
                 FillColor = CustomColors.controlBack,
+                BorderColor = CustomColors.controlBorder,
                 ForeColor = CustomColors.text,
                 ShortcutsEnabled = false
             };

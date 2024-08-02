@@ -37,7 +37,7 @@ namespace Sales_Tracker
         {
             Reset();
 
-            if (Items_DataGridView.Rows.Count==0)
+            if (Items_DataGridView.Rows.Count == 0)
             {
                 MainMenu_Form.Instance.selectedDataGridView.Rows.Remove(MainMenu_Form.Instance.selectedRowInMainMenu);
             }
@@ -58,7 +58,11 @@ namespace Sales_Tracker
             if (oldSelectedDataGridView.SelectedRows[0].Tag is List<string> existingItems && existingItems.Count > 0)
             {
                 // The last item which is the receipt file path needs to stay the same
-                string lastItem = existingItems.Last();
+                string lastItem = null;
+                if (existingItems.Last().StartsWith(MainMenu_Form.receipt))
+                {
+                    lastItem = existingItems.Last();
+                }
 
                 foreach (DataGridViewRow row in Items_DataGridView.Rows)
                 {
@@ -70,7 +74,12 @@ namespace Sales_Tracker
                     }
                     items.Add(itemBuilder.ToString());
                 }
-                items.Add(lastItem);
+
+                // Add the receipt file path
+                if (lastItem != null)
+                {
+                    items.Add(lastItem);
+                }
             }
             oldSelectedDataGridView.SelectedRows[0].Tag = items;
         }
@@ -91,12 +100,17 @@ namespace Sales_Tracker
         }
         private void LoadAllItemsInDataGridView(List<string> tag)
         {
-            string receiptFilePath = tag.Last();
+            string receiptFilePath = null;
 
-            foreach (string row in tag.Take(tag.Count - 1))
+            if (tag.Last().StartsWith(MainMenu_Form.receipt))
+            {
+                receiptFilePath = tag.Last();
+                tag.RemoveAt(tag.Count - 1);  // Remove the receipt file path
+            }
+
+            foreach (string row in tag)
             {
                 string[] values = row.Split(',');
-
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }

@@ -65,9 +65,10 @@ namespace Sales_Tracker
             PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
-        private readonly byte searchBoxMaxHeight = 150;
         private void AddSearchBoxEvents()
         {
+            byte searchBoxMaxHeight = 150;
+
             BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, searchBoxMaxHeight); };
@@ -106,10 +107,24 @@ namespace Sales_Tracker
             {
                 AddSingleSale();
             }
-            else
+            // When the user selects "multiple items in this order" but only adds one, treat it as one
+            else if (panelsForMultipleProducts_List.Count == 1)
             {
-                AddMultipleSales();
+                // Extract details from the single panel and populate the single purchase fields
+                Guna2Panel singlePanel = panelsForMultipleProducts_List[0];
+                ProductName_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault()).Text;
+                Quantity_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault()).Text;
+                PricePerUnit_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault()).Text;
+
+                AddSingleSale();
             }
+            else if (!AddMultipleSales())
+            {
+                return;
+            }
+
+            // Reset
+            SaleID_TextBox.Text = "";
         }
         private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -150,8 +165,27 @@ namespace Sales_Tracker
         }
 
         // Methods to add Sales
-        private void AddSale(string itemName, int quantity, decimal pricePerUnit, decimal shipping, decimal tax)
+        private void AddSingleSale()
         {
+            string saleID = SaleID_TextBox.Text.Trim();
+
+            // Check if sale ID already exists
+            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Sales_DataGridView, saleID))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The sale ID already exists. Would you like to add this sale anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            string itemName = ProductName_TextBox.Text;
+            int quantity = int.Parse(Quantity_TextBox.Text);
+            decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
+            decimal shipping = decimal.Parse(Shipping_TextBox.Text);
+            decimal tax = decimal.Parse(Tax_TextBox.Text);
+
             string SaleID = SaleID_TextBox.Text;
             string buyerName = BuyerName_TextBox.Text;
             string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
@@ -181,35 +215,127 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added Sale '{itemName}'");
         }
-        private void AddSingleSale()
+        private bool AddMultipleSales()
         {
-            string itemName = ProductName_TextBox.Text;
-            int quantity = int.Parse(Quantity_TextBox.Text);
-            decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
+            decimal totalPrice = 0;
+            bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
+
+            string saleID = SaleID_TextBox.Text.Trim();
+
+            // Check if sale ID already exists
+            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Sales_DataGridView, saleID))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The sale ID already exists. Would you like to add this sale anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return false;
+                }
+            }
+
+            string sellerName = BuyerName_TextBox.Text;
+            string date = Tools.FormatDate(Date_DateTimePicker.Value);
+            int quantity = 0;
+            decimal pricePerUnit = 0;
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
+            decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
 
-            AddSale(itemName, quantity, pricePerUnit, shipping, tax);
-        }
-        private void AddMultipleSales()
-        {
+            List<string> items = new();
+
+            string firstCategoryName = null, firstCountry = null, firstCompany = null;
+
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
-                string itemName = nameTextBox.Text;
+                string itemName = nameTextBox.Text.Trim();
+
+                string currentCategoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
+                string currentCountry = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
+                string currentCompany = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
+
+                if (firstCategoryName == null)
+                {
+                    firstCategoryName = currentCategoryName;
+                }
+                else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName)
+                {
+                    isCategoryNameConsistent = false;
+                }
+
+                if (firstCountry == null)
+                {
+                    firstCountry = currentCountry;
+                }
+                else if (isCountryConsistent && firstCountry != currentCountry)
+                {
+                    isCountryConsistent = false;
+                }
+
+                if (firstCompany == null)
+                {
+                    firstCompany = currentCompany;
+                }
+                else if (isCompanyConsistent && firstCompany != currentCompany)
+                {
+                    isCompanyConsistent = false;
+                }
 
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
-                int quantity = int.Parse(quantityTextBox.Text);
-
+                quantity = int.Parse(quantityTextBox.Text);
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
-                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
+                pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
+                totalPrice += quantity * pricePerUnit;
 
-                decimal shipping = decimal.Parse(Shipping_TextBox.Text) / quantity;
-                decimal tax = decimal.Parse(Tax_TextBox.Text) / quantity;
+                string item = string.Join(",",
+                    itemName,
+                    currentCategoryName,
+                    currentCountry,
+                    currentCompany,
+                    quantity.ToString(),
+                    pricePerUnit.ToString("N2"),
+                    (quantity * pricePerUnit).ToString("N2")
+                );
 
-                AddSale(itemName, quantity, pricePerUnit, shipping, tax);
+                items.Add(item);
             }
+
+            totalPrice += shipping + tax + fee;
+            totalPrice = Math.Round(totalPrice, 2);
+
+            MainMenu_Form.Instance.selectedDataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
+
+            string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
+            string finalCountry = isCountryConsistent ? firstCountry : MainMenu_Form.emptyCell;
+            string finalCompany = isCompanyConsistent ? firstCompany : MainMenu_Form.emptyCell;
+
+            int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
+                saleID,
+                sellerName,
+                MainMenu_Form.multipleItems,
+                finalCategoryName,
+                finalCountry,
+                finalCompany,
+                date,
+                quantity.ToString(),
+                MainMenu_Form.emptyCell,
+                shipping.ToString("N2"),
+                tax.ToString("N2"),
+                fee.ToString("N2"),
+                totalPrice.ToString("N2")
+            );
+
+            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
+            MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
+
+            MainMenu_Form.Instance.DataGridViewRowChanged();
+
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, saleID);
+            Log.Write(3, $"Added sale '{saleID}' with '{quantity}' items");
+
+            return true;
         }
+
 
         // Methods for multiple items
         private List<Control> GetControlsForMultipleProducts()
@@ -339,6 +465,8 @@ namespace Sales_Tracker
         }
         private void ConstructControlsForMultipleProducts()
         {
+            byte smallSearchBoxMaxHeight = 100;
+
             Guna2Panel panel = new()
             {
                 Size = new Size(initialWidthForPanel, initialHeightForPanel),
@@ -350,24 +478,23 @@ namespace Sales_Tracker
             int left;
 
             // Product name
-            textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), panel);
+            textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), UI.KeyPressValidation.None, panel);
             textBox.Click -= CloseAllPanels;
             textBox.Click += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), searchBoxMaxHeight);
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), smallSearchBoxMaxHeight);
             };
             textBox.GotFocus += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), searchBoxMaxHeight);
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), smallSearchBoxMaxHeight);
             };
             textBox.TextChanged += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, searchBoxMaxHeight);
+                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, smallSearchBoxMaxHeight);
             };
-            textBox.TextChanged += ValidateInputs;
             textBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             textBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(textBox, this, AddSale_Label, e); };
 
@@ -375,12 +502,12 @@ namespace Sales_Tracker
 
             // Quantity
             left = textBox.Right + spaceBetweenControlsHorizontally;
-            textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), panel);
+            textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), UI.KeyPressValidation.OnlyNumbers, panel);
             CosntructLabel(Quantity_Label.Text, left, panel);
 
             // Price per unit
             left = textBox.Right + spaceBetweenControlsHorizontally;
-            textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), panel);
+            textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), UI.KeyPressValidation.OnlyNumbersAndDecimal, panel);
             CosntructLabel(PricePerUnit_Label.Text, left, panel);
 
             // Add minus button unless this is the first panel
@@ -396,7 +523,7 @@ namespace Sales_Tracker
             FlowPanel.ResumeLayout();
             FlowPanel.ScrollControlIntoView(panel);
         }
-        private static void CosntructLabel(string text, int left, Control parent)
+        private void CosntructLabel(string text, int left, Control parent)
         {
             Label label = new()
             {
@@ -406,9 +533,10 @@ namespace Sales_Tracker
                 Left = left,
                 AutoSize = true
             };
+            label.Click += CloseAllPanels;
             parent.Controls.Add(label);
         }
-        private Guna2TextBox CosntructTextBox(int left, int width, string name, Control parent)
+        private Guna2TextBox CosntructTextBox(int left, int width, string name, UI.KeyPressValidation keyPressValidation, Control parent)
         {
             Guna2TextBox textBox = new()
             {
@@ -423,7 +551,31 @@ namespace Sales_Tracker
             textBox.HoverState.BorderColor = CustomColors.accent_blue;
             textBox.FocusedState.BorderColor = CustomColors.accent_blue;
             textBox.FocusedState.FillColor = CustomColors.controlBack;
+
+            // Assign the appropriate KeyPress event handler based on the keyPressValidation parameter
+            switch (keyPressValidation)
+            {
+                case UI.KeyPressValidation.OnlyNumbersAndDecimalAndMinus:
+                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox;
+                    break;
+                case UI.KeyPressValidation.OnlyNumbersAndDecimal:
+                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+                    break;
+                case UI.KeyPressValidation.OnlyNumbers:
+                    textBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+                    break;
+                case UI.KeyPressValidation.OnlyLetters:
+                    textBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+                    break;
+                case UI.KeyPressValidation.None:
+                    break;
+            }
+
             textBox.Click += CloseAllPanels;
+            textBox.TextChanged += ValidateInputs;
+            textBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            textBox.KeyDown += UI.TextBox_KeyDown;
 
             parent.Controls.Add(textBox);
             return textBox;

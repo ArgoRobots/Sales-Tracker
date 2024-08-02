@@ -11,7 +11,7 @@ namespace Sales_Tracker.Charts
             Color gridColor = CustomColors.grayText;
             Color foreColor = CustomColors.text;
 
-            var chartFont = new ChartFont()
+            ChartFont chartFont = new()
             {
                 FontName = "Segoe UI",
                 Size = 10,
