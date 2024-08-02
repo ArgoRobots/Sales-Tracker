@@ -188,9 +188,9 @@ namespace Sales_Tracker.Charts
             }
 
             // Add separate datapoints with percentage labels
-            double shippingPercentage = (totalShipping / totalCost) * 100;
-            double taxPercentage = (totalTax / totalCost) * 100;
-            double feePercentage = (totalFee / totalCost) * 100;
+            double shippingPercentage = totalShipping / totalCost * 100;
+            double taxPercentage = totalTax / totalCost * 100;
+            double feePercentage = totalFee / totalCost * 100;
 
             totalShipping = Math.Round(totalShipping, 2);
 
@@ -590,10 +590,12 @@ namespace Sales_Tracker.Charts
             DateTime minDate = DateTime.MaxValue;
             DateTime maxDate = DateTime.MinValue;
 
-            foreach (var rows in rowCollections)
+            foreach (DataGridViewRowCollection rows in rowCollections)
             {
                 foreach (DataGridViewRow row in rows)
                 {
+                    if (!row.Visible) { continue; }
+
                     if (row.Cells[MainMenu_Form.Column.Date.ToString()].Value != null)
                     {
                         DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
