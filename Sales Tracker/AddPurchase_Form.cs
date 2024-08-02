@@ -79,7 +79,7 @@ namespace Sales_Tracker
         }
         private void AddSearchBoxEvents()
         {
-            byte searchBoxMaxHeight = 150;
+            byte searchBoxMaxHeight = 175;
 
             BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
@@ -219,8 +219,8 @@ namespace Sales_Tracker
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
-            decimal disount = decimal.Parse(Discount_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee - disount;
+            decimal discount = decimal.Parse(Discount_TextBox.Text);
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee - discount;
 
             // Convert currency
             if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
@@ -272,6 +272,7 @@ namespace Sales_Tracker
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
+                discount.ToString("N2"),
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );
@@ -431,6 +432,7 @@ namespace Sales_Tracker
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
+                discount.ToString("N2"),
                 chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2")
             );

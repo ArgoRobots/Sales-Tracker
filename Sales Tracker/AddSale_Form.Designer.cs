@@ -58,6 +58,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Date_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             Date_Label = new Label();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -88,6 +90,8 @@ namespace Sales_Tracker
             WarningBuyer_PictureBox = new PictureBox();
             CountryOfDestination_Label = new Label();
             CountryOfDestinaion_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            Discount_Label = new Label();
+            Discount_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).BeginInit();
             SuspendLayout();
@@ -100,7 +104,7 @@ namespace Sales_Tracker
             Date_DateTimePicker.FillColor = Color.White;
             Date_DateTimePicker.Font = new Font("Segoe UI", 9F);
             Date_DateTimePicker.Format = DateTimePickerFormat.Long;
-            Date_DateTimePicker.Location = new Point(77, 218);
+            Date_DateTimePicker.Location = new Point(24, 218);
             Date_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             Date_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             Date_DateTimePicker.Name = "Date_DateTimePicker";
@@ -116,7 +120,7 @@ namespace Sales_Tracker
             Date_Label.Anchor = AnchorStyles.Top;
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Date_Label.Location = new Point(77, 195);
+            Date_Label.Location = new Point(24, 195);
             Date_Label.Name = "Date_Label";
             Date_Label.Size = new Size(41, 20);
             Date_Label.TabIndex = 42;
@@ -149,7 +153,7 @@ namespace Sales_Tracker
             Tax_Label.Anchor = AnchorStyles.Top;
             Tax_Label.AutoSize = true;
             Tax_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tax_Label.Location = new Point(601, 195);
+            Tax_Label.Location = new Point(548, 195);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(30, 20);
             Tax_Label.TabIndex = 37;
@@ -168,7 +172,7 @@ namespace Sales_Tracker
             Tax_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Tax_TextBox.Font = new Font("Segoe UI", 9F);
             Tax_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Tax_TextBox.Location = new Point(601, 218);
+            Tax_TextBox.Location = new Point(548, 218);
             Tax_TextBox.MaxLength = 10;
             Tax_TextBox.Name = "Tax_TextBox";
             Tax_TextBox.PasswordChar = '\0';
@@ -180,17 +184,13 @@ namespace Sales_Tracker
             Tax_TextBox.TabIndex = 36;
             Tax_TextBox.TextChanged += ValidateInputs;
             Tax_TextBox.Click += CloseAllPanels;
-            Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Tax_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Tax_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // Shipping_Label
             // 
             Shipping_Label.Anchor = AnchorStyles.Top;
             Shipping_Label.AutoSize = true;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Shipping_Label.Location = new Point(495, 195);
+            Shipping_Label.Location = new Point(442, 195);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(68, 20);
             Shipping_Label.TabIndex = 35;
@@ -209,7 +209,7 @@ namespace Sales_Tracker
             Shipping_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Shipping_TextBox.Font = new Font("Segoe UI", 9F);
             Shipping_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Shipping_TextBox.Location = new Point(495, 218);
+            Shipping_TextBox.Location = new Point(442, 218);
             Shipping_TextBox.MaxLength = 10;
             Shipping_TextBox.Name = "Shipping_TextBox";
             Shipping_TextBox.PasswordChar = '\0';
@@ -221,17 +221,13 @@ namespace Sales_Tracker
             Shipping_TextBox.TabIndex = 34;
             Shipping_TextBox.TextChanged += ValidateInputs;
             Shipping_TextBox.Click += CloseAllPanels;
-            Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            Shipping_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Shipping_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Shipping_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // PricePerUnit_Label
             // 
             PricePerUnit_Label.Anchor = AnchorStyles.Top;
             PricePerUnit_Label.AutoSize = true;
             PricePerUnit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PricePerUnit_Label.Location = new Point(389, 195);
+            PricePerUnit_Label.Location = new Point(336, 195);
             PricePerUnit_Label.Name = "PricePerUnit_Label";
             PricePerUnit_Label.Size = new Size(96, 20);
             PricePerUnit_Label.TabIndex = 33;
@@ -250,7 +246,7 @@ namespace Sales_Tracker
             PricePerUnit_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PricePerUnit_TextBox.Font = new Font("Segoe UI", 9F);
             PricePerUnit_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PricePerUnit_TextBox.Location = new Point(389, 218);
+            PricePerUnit_TextBox.Location = new Point(336, 218);
             PricePerUnit_TextBox.MaxLength = 10;
             PricePerUnit_TextBox.Name = "PricePerUnit_TextBox";
             PricePerUnit_TextBox.PasswordChar = '\0';
@@ -262,17 +258,13 @@ namespace Sales_Tracker
             PricePerUnit_TextBox.TabIndex = 32;
             PricePerUnit_TextBox.TextChanged += ValidateInputs;
             PricePerUnit_TextBox.Click += CloseAllPanels;
-            PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            PricePerUnit_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            PricePerUnit_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            PricePerUnit_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // Quantity_Label
             // 
             Quantity_Label.Anchor = AnchorStyles.Top;
             Quantity_Label.AutoSize = true;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Quantity_Label.Location = new Point(283, 195);
+            Quantity_Label.Location = new Point(230, 195);
             Quantity_Label.Name = "Quantity_Label";
             Quantity_Label.Size = new Size(65, 20);
             Quantity_Label.TabIndex = 31;
@@ -291,7 +283,7 @@ namespace Sales_Tracker
             Quantity_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Quantity_TextBox.Font = new Font("Segoe UI", 9F);
             Quantity_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Quantity_TextBox.Location = new Point(283, 218);
+            Quantity_TextBox.Location = new Point(230, 218);
             Quantity_TextBox.MaxLength = 10;
             Quantity_TextBox.Name = "Quantity_TextBox";
             Quantity_TextBox.PasswordChar = '\0';
@@ -303,10 +295,6 @@ namespace Sales_Tracker
             Quantity_TextBox.TabIndex = 30;
             Quantity_TextBox.TextChanged += ValidateInputs;
             Quantity_TextBox.Click += CloseAllPanels;
-            Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
-            Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Quantity_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Quantity_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // ProductName_Label
             // 
@@ -343,9 +331,6 @@ namespace Sales_Tracker
             ProductName_TextBox.Size = new Size(200, 36);
             ProductName_TextBox.TabIndex = 28;
             ProductName_TextBox.Tag = "1";
-            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // BuyerName_Label
             // 
@@ -382,10 +367,6 @@ namespace Sales_Tracker
             BuyerName_TextBox.Size = new Size(200, 36);
             BuyerName_TextBox.TabIndex = 26;
             BuyerName_TextBox.Tag = "1";
-            BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
-            BuyerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            BuyerName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            BuyerName_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // AddSale_Label
             // 
@@ -435,9 +416,6 @@ namespace Sales_Tracker
             SaleID_TextBox.TabIndex = 23;
             SaleID_TextBox.TextChanged += ValidateInputs;
             SaleID_TextBox.Click += CloseAllPanels;
-            SaleID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            SaleID_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            SaleID_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // ImportExcel_Button
             // 
@@ -531,7 +509,7 @@ namespace Sales_Tracker
             PaymentFee_Label.Anchor = AnchorStyles.Top;
             PaymentFee_Label.AutoSize = true;
             PaymentFee_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PaymentFee_Label.Location = new Point(707, 195);
+            PaymentFee_Label.Location = new Point(654, 195);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(90, 20);
             PaymentFee_Label.TabIndex = 50;
@@ -550,7 +528,7 @@ namespace Sales_Tracker
             PaymentFee_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PaymentFee_TextBox.Font = new Font("Segoe UI", 9F);
             PaymentFee_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PaymentFee_TextBox.Location = new Point(707, 218);
+            PaymentFee_TextBox.Location = new Point(654, 218);
             PaymentFee_TextBox.MaxLength = 10;
             PaymentFee_TextBox.Name = "PaymentFee_TextBox";
             PaymentFee_TextBox.PasswordChar = '\0';
@@ -562,10 +540,6 @@ namespace Sales_Tracker
             PaymentFee_TextBox.TabIndex = 49;
             PaymentFee_TextBox.TextChanged += ValidateInputs;
             PaymentFee_TextBox.Click += CloseAllPanels;
-            PaymentFee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
             // 
             // MultipleItems_CheckBox
             // 
@@ -646,15 +620,48 @@ namespace Sales_Tracker
             CountryOfDestinaion_TextBox.Size = new Size(200, 36);
             CountryOfDestinaion_TextBox.TabIndex = 61;
             CountryOfDestinaion_TextBox.Tag = "1";
-            CountryOfDestinaion_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            CountryOfDestinaion_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            CountryOfDestinaion_TextBox.KeyDown += UI.TextBox_KeyDown;
+            // 
+            // Discount_Label
+            // 
+            Discount_Label.Anchor = AnchorStyles.Top;
+            Discount_Label.AutoSize = true;
+            Discount_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Discount_Label.Location = new Point(760, 195);
+            Discount_Label.Name = "Discount_Label";
+            Discount_Label.Size = new Size(67, 20);
+            Discount_Label.TabIndex = 63;
+            Discount_Label.Text = "Discount";
+            // 
+            // Discount_TextBox
+            // 
+            Discount_TextBox.Anchor = AnchorStyles.Top;
+            Discount_TextBox.CustomizableEdges = customizableEdges29;
+            Discount_TextBox.DefaultText = "";
+            Discount_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Discount_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Discount_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Discount_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Discount_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Discount_TextBox.Font = new Font("Segoe UI", 9F);
+            Discount_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Discount_TextBox.Location = new Point(760, 218);
+            Discount_TextBox.MaxLength = 10;
+            Discount_TextBox.Name = "Discount_TextBox";
+            Discount_TextBox.PasswordChar = '\0';
+            Discount_TextBox.PlaceholderText = "";
+            Discount_TextBox.SelectedText = "";
+            Discount_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            Discount_TextBox.ShortcutsEnabled = false;
+            Discount_TextBox.Size = new Size(100, 36);
+            Discount_TextBox.TabIndex = 62;
             // 
             // AddSale_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(884, 386);
+            Controls.Add(Discount_Label);
+            Controls.Add(Discount_TextBox);
             Controls.Add(CountryOfDestination_Label);
             Controls.Add(CountryOfDestinaion_TextBox);
             Controls.Add(WarningBuyer_LinkLabel);
@@ -731,5 +738,7 @@ namespace Sales_Tracker
         private PictureBox WarningBuyer_PictureBox;
         private Label CountryOfDestination_Label;
         private Guna.UI2.WinForms.Guna2TextBox CountryOfDestinaion_TextBox;
+        private Label Discount_Label;
+        private Guna.UI2.WinForms.Guna2TextBox Discount_TextBox;
     }
 }

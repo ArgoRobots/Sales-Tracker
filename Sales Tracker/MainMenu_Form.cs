@@ -68,6 +68,11 @@ namespace Sales_Tracker
             string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax differences across countries.";
             chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
+            DataGridViewColumn totalColumn = Sales_DataGridView.Columns[Column.Total.ToString()];
+            existingHeaderText = totalColumn.HeaderText;
+            messageBoxText = "The revenue exludes the shipping, tax and fee.";
+            totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
+
             AddTimeRangesIntoComboBox();
         }
         private static void LoadCategoriesFromFile(string filePath, List<Category> categoryList)
@@ -952,6 +957,7 @@ namespace Sales_Tracker
             Shipping,
             Tax,
             Fee,
+            Discount,
             ChargedDifference,
             Total
         }
@@ -969,6 +975,7 @@ namespace Sales_Tracker
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
             { Column.Fee, "Fee" },
+            { Column.Discount, "Discount" },
             { Column.ChargedDifference, "Charged difference" },
             { Column.Total, "Total expenses" }
         };
@@ -986,6 +993,7 @@ namespace Sales_Tracker
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
             { Column.Fee, "Fee" },
+            { Column.Discount, "Discount" },
             { Column.Total, "Total revenue" }
         };
         public enum DataGridViewTag

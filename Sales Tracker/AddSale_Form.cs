@@ -67,7 +67,7 @@ namespace Sales_Tracker
         }
         private void AddSearchBoxEvents()
         {
-            byte searchBoxMaxHeight = 150;
+            byte searchBoxMaxHeight = 175;
 
             BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
             BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
@@ -164,7 +164,7 @@ namespace Sales_Tracker
             CheckIfBuyersExist();
         }
 
-        // Methods to add Sales
+        // Methods to add sales
         private void AddSingleSale()
         {
             string saleID = SaleID_TextBox.Text.Trim();
@@ -180,24 +180,22 @@ namespace Sales_Tracker
                 }
             }
 
+            string buyerName = BuyerName_TextBox.Text;
             string itemName = ProductName_TextBox.Text;
+            string country = CountryOfDestinaion_TextBox.Text;
+            string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
-
-            string SaleID = SaleID_TextBox.Text;
-            string buyerName = BuyerName_TextBox.Text;
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
-            string country = CountryOfDestinaion_TextBox.Text;
-            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
-            string date = Tools.FormatDate(Date_DateTimePicker.Value);
-
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+            decimal discount = decimal.Parse(Discount_TextBox.Text);
+            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
+            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
+            decimal totalPrice = quantity * pricePerUnit - discount;
 
             MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
-                SaleID,
+                saleID,
                 buyerName,
                 itemName,
                 categoryName,
@@ -209,6 +207,7 @@ namespace Sales_Tracker
                 shipping.ToString("N"),
                 tax.ToString("N"),
                 fee.ToString("N"),
+                discount.ToString("N"),
                 totalPrice.ToString("N")
             );
 
@@ -240,6 +239,7 @@ namespace Sales_Tracker
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
+            decimal discount = decimal.Parse(Discount_TextBox.Text);
 
             List<string> items = new();
 
@@ -300,7 +300,7 @@ namespace Sales_Tracker
                 items.Add(item);
             }
 
-            totalPrice += shipping + tax + fee;
+            totalPrice -= discount;
             totalPrice = Math.Round(totalPrice, 2);
 
             MainMenu_Form.Instance.selectedDataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
@@ -322,6 +322,7 @@ namespace Sales_Tracker
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
+                discount.ToString("N2"),
                 totalPrice.ToString("N2")
             );
 
@@ -335,7 +336,6 @@ namespace Sales_Tracker
 
             return true;
         }
-
 
         // Methods for multiple items
         private List<Control> GetControlsForMultipleProducts()
