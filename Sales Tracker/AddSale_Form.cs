@@ -234,7 +234,7 @@ namespace Sales_Tracker
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
             }
 
-            MainMenu_Form.Instance.DataGridView_RowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added Sale '{itemName}'");
@@ -364,7 +364,7 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
 
-            MainMenu_Form.Instance.DataGridView_RowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, saleNumber);
             Log.Write(3, $"Added sale '{saleNumber}' with '{totalQuantity}' items");

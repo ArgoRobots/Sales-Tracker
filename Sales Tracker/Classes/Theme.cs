@@ -205,6 +205,52 @@ namespace Sales_Tracker.Classes
                 }
             }
         }
+        public static void UpdateThemeForPanel(List<Guna2Panel> listOfMenus)
+        {
+            foreach (Guna2Panel guna2Panel in listOfMenus)
+            {
+                guna2Panel.FillColor = CustomColors.panelBtn;
+                guna2Panel.BorderColor = CustomColors.controlPanelBorder;
+
+                Control.ControlCollection list;
+                FlowLayoutPanel flowPanel = guna2Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+                if (flowPanel != null)
+                {
+                    flowPanel.BackColor = CustomColors.panelBtn;
+                    list = flowPanel.Controls;
+                }
+                else
+                {
+                    list = guna2Panel.Controls;
+                }
+
+                foreach (Control control in list)
+                {
+                    switch (control)
+                    {
+                        case Guna2Separator guna2Separator:
+                            guna2Separator.FillColor = CustomColors.controlPanelBorder;
+                            guna2Separator.BackColor = CustomColors.panelBtn;
+                            break;
+
+                        case Guna2Button guna2Button:
+                            guna2Button.FillColor = CustomColors.panelBtn;
+                            guna2Button.ForeColor = CustomColors.text;
+                            guna2Button.BorderColor = CustomColors.controlBorder;
+                            guna2Button.HoverState.BorderColor = CustomColors.controlBorder;
+                            guna2Button.HoverState.FillColor = CustomColors.panelBtnHover;
+                            guna2Button.PressedColor = CustomColors.panelBtnHover;
+
+                            foreach (Label label in guna2Button.Controls)
+                            {
+                                label.ForeColor = CustomColors.text;
+                                label.BackColor = CustomColors.panelBtn;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
         public static void UpdateDataGridViewHeaderTheme(Guna2DataGridView dataGridView)
         {
             foreach (DataGridViewColumn column in dataGridView.Columns)
@@ -225,7 +271,10 @@ namespace Sales_Tracker.Classes
             Guna2Button button = (Guna2Button)sender;
 
             // Revert the button's appearance when it loses focus
-            button.BorderColor = CustomColors.controlBorder;
+            if (button.BorderThickness == 1)
+            {
+                button.BorderColor = CustomColors.controlBorder;
+            }
         }
         public static void CustomizeScrollBar(Control control)
         {

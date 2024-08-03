@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Settings.Menus;
+using Sales_Tracker.Startup.Menus;
 
 namespace Sales_Tracker.Settings
 {
@@ -100,51 +101,10 @@ namespace Sales_Tracker.Settings
                     UI.helpMenu,
                     UI.accountMenu,
                     UI.ControlDropDown_Panel,
-                    MainMenu_Form.Instance.rightClickDataGridView_Panel];
+                    MainMenu_Form.Instance.rightClickDataGridView_Panel,
+                    GetStarted_Form.Instance.rightClickOpenRecent_Panel];
 
-                foreach (Guna2Panel guna2Panel in listOfMenus)
-                {
-                    guna2Panel.FillColor = CustomColors.panelBtn;
-                    guna2Panel.BorderColor = CustomColors.controlPanelBorder;
-
-                    Control.ControlCollection list;
-                    FlowLayoutPanel flowPanel = guna2Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-                    if (flowPanel != null)
-                    {
-                        flowPanel.BackColor = CustomColors.panelBtn;
-                        list = flowPanel.Controls;
-                    }
-                    else
-                    {
-                        list = guna2Panel.Controls;
-                    }
-
-                    foreach (Control control in list)
-                    {
-                        switch (control)
-                        {
-                            case Guna2Separator guna2Separator:
-                                guna2Separator.FillColor = CustomColors.controlPanelBorder;
-                                guna2Separator.BackColor = CustomColors.panelBtn;
-                                break;
-
-                            case Guna2Button guna2Button:
-                                guna2Button.FillColor = CustomColors.panelBtn;
-                                guna2Button.ForeColor = CustomColors.text;
-                                guna2Button.BorderColor = CustomColors.controlBorder;
-                                guna2Button.HoverState.BorderColor = CustomColors.controlBorder;
-                                guna2Button.HoverState.FillColor = CustomColors.panelBtnHover;
-                                guna2Button.PressedColor = CustomColors.panelBtnHover;
-
-                                foreach (Label label in guna2Button.Controls)
-                                {
-                                    label.ForeColor = CustomColors.text;
-                                    label.BackColor = CustomColors.panelBtn;
-                                }
-                                break;
-                        }
-                    }
-                }
+                Theme.UpdateThemeForPanel(listOfMenus);
 
                 MainMenu_Form.Instance.rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
 

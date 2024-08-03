@@ -63,7 +63,7 @@
             }
         }
         /// <summary>
-        /// Appends a value to a setting.
+        /// Appends a value to a setting. If the value already exists, it is moved to the front of the list.
         /// </summary>
         public static void AppendValue<TEnum>(string filePath, TEnum key, string appendValue) where TEnum : Enum
         {
@@ -80,7 +80,10 @@
             // Split into list
             List<string> valuesList = value.Split([','], StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            // Append new value
+            // Remove all instances of the value
+            valuesList.RemoveAll(val => val == appendValue);
+
+            // Add the value to the end
             valuesList.Add(appendValue);
 
             // Ensure the total count does not exceed maxValue
@@ -88,6 +91,7 @@
             {
                 valuesList.RemoveAt(0);
             }
+
             settings[keyString] = string.Join(",", valuesList);
 
             Save(filePath);

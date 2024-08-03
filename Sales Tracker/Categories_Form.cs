@@ -81,12 +81,14 @@ namespace Sales_Tracker
             if (Purchase_RadioButton.Checked)
             {
                 MainMenu_Form.Instance.categoryPurchaseList.Add(new Category(name));
-                Purchases_DataGridView.Rows.Add(name);
+                int newRowIndex = Purchases_DataGridView.Rows.Add(name);
+                MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             else
             {
                 MainMenu_Form.Instance.categorySaleList.Add(new Category(name));
-                Sales_DataGridView.Rows.Add(name);
+                int newRowIndex = Sales_DataGridView.Rows.Add(name);
+                MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);

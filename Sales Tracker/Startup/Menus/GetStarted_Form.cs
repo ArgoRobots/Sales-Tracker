@@ -16,11 +16,15 @@ namespace Sales_Tracker.Startup.Menus
             Instance = this;
             fileWatchers = [];
 
+            ConstructRightClickOpenRecentMenu();
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
             LoadListOfRecentProjects();
             SetFlowLayoutPanel();
+
             Theme.SetThemeForForm(this);
+            Theme.UpdateThemeForPanel([rightClickOpenRecent_Panel]);
+            rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.accent_red;
         }
         private void SetFlowLayoutPanel()
         {
@@ -57,8 +61,9 @@ namespace Sales_Tracker.Startup.Menus
                     Font = new Font("Segoe UI", 11),
                     Tag = projectDir
                 };
-                gBtn.Click += (sender, e) =>
+                gBtn.MouseDown += (sender, e) =>
                 {
+                    if (e.Button != MouseButtons.Left) { return; }
                     Guna2Button Gbtn = (Guna2Button)sender;
 
                     string projectName = Path.GetFileNameWithoutExtension(Gbtn.Tag.ToString());
@@ -68,17 +73,33 @@ namespace Sales_Tracker.Startup.Menus
                     }
 
                     // Save new ProjectDirectory
-                    Properties.Settings.Default.ProjectDirectory = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
+                    string newDir = Directory.GetParent(Gbtn.Tag.ToString()).FullName;
+                    Properties.Settings.Default.ProjectDirectory = newDir;
                     Properties.Settings.Default.Save();
 
-                    Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, projectName);
+                    Directories.SetDirectories(newDir, projectName);
                     ArgoCompany.InitThings();
+
+                    DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension);
 
                     List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
                     Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
                     DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
 
                     ShowMainMenu();
+                };
+                gBtn.MouseUp += (sender, e) =>
+                {
+                    if (e.Button == MouseButtons.Right)
+                    {
+                        Guna2Button Gbtn = (Guna2Button)sender;
+
+                        // Position and show the right-click panel
+                        rightClickOpenRecent_Panel.Location = new Point(e.X, OpenRecent_FlowLayoutPanel.Top + gBtn.Height);
+                        rightClickOpenRecent_Panel.Tag = Gbtn;
+                        Controls.Add(rightClickOpenRecent_Panel);
+                        rightClickOpenRecent_Panel.BringToFront();
+                    }
                 };
                 OpenRecent_FlowLayoutPanel.Controls.Add(gBtn);
 
@@ -159,11 +180,83 @@ namespace Sales_Tracker.Startup.Menus
         // Event handlers
         private void CreateNewCompany_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormConfigureProject);
         }
         private void OpenCompany_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             ArgoCompany.OpenCompany();
+        }
+
+        // Right click open recent menu
+        public Guna2Panel rightClickOpenRecent_Panel;
+        private Guna2Button rightClickOpenRecent_DeleteBtn;
+        private void ConstructRightClickOpenRecentMenu()
+        {
+            rightClickOpenRecent_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 3 * 22 + 10));
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickOpenRecent_Panel.Controls[0];
+
+            Guna2Button menuBtn = UI.ConstructBtnForMenu("Show in folder", UI.panelBtnWidth, false, flowPanel);
+            menuBtn.Click += ShowInFolder;
+
+            menuBtn = UI.ConstructBtnForMenu("Hide", UI.panelBtnWidth, false, flowPanel);
+            menuBtn.Click += Hide;
+
+            rightClickOpenRecent_DeleteBtn = UI.ConstructBtnForMenu("Delete in folder", UI.panelBtnWidth, false, flowPanel);
+            rightClickOpenRecent_DeleteBtn.Click += DeleteInFolder;
+        }
+        private void ShowInFolder(object? sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+
+            if (OpenRecent_FlowLayoutPanel.Controls.OfType<Guna2Button>().FirstOrDefault() is Guna2Button gBtn)
+            {
+                string projectDir = Path.GetDirectoryName(gBtn.Tag.ToString());
+                if (Directory.Exists(projectDir))
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", projectDir);
+                }
+            }
+        }
+        private void Hide(object? sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+
+            if (rightClickOpenRecent_Panel.Tag is Guna2Button gBtn)
+            {
+                string projectDir = gBtn.Tag.ToString();
+
+                // Remove from recent project in file
+                string? value = DataFileManager.GetValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects);
+                if (value != null)
+                {
+                    List<string> projectDirs = value.Split(',').ToList();
+                    projectDirs.RemoveAll(dir => dir == projectDir);
+                    DataFileManager.SetValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, string.Join(",", projectDirs));
+                }
+
+                // Remove the button from the FlowLayoutPanel
+                OpenRecent_FlowLayoutPanel.Controls.Remove(gBtn);
+            }
+        }
+        private void DeleteInFolder(object? sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+
+            if (rightClickOpenRecent_Panel.Tag is Guna2Button gBtn)
+            {
+                string projectDir = gBtn.Tag.ToString();
+                if (File.Exists(projectDir))
+                {
+                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(
+                        projectDir,
+                        Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                        Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+
+                    OpenRecent_FlowLayoutPanel.Controls.Remove(gBtn);
+                }
+            }
         }
 
         // Methods
@@ -177,6 +270,10 @@ namespace Sales_Tracker.Startup.Menus
             FormMainMenu.FormClosed += (s, args) => Startup_Form.Instance.Close();
 
             FormMainMenu.Show();
+        }
+        private void CloseAllPanels(object sender, EventArgs e)
+        {
+            Controls.Remove(rightClickOpenRecent_Panel);
         }
     }
 }

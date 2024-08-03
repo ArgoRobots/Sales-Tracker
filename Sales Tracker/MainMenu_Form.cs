@@ -50,11 +50,11 @@ namespace Sales_Tracker
             accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
             companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
 
-            LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
-            AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
-
             LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
             AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
+
+            LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
+            AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
 
             // Load image into column header
             DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
@@ -1535,7 +1535,7 @@ namespace Sales_Tracker
 
 
         // Methods for DataGridView
-        public void DataGridView_RowsAdded(DataGridViewRowsAddedEventArgs e)
+        public void DataGridViewRowsAdded(DataGridViewRowsAddedEventArgs e)
         {
             DataGridViewRowChanged();
             DataGridViewRow row;

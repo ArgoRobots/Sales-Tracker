@@ -672,6 +672,7 @@ namespace Sales_Tracker
             Notes_Labal.Size = new Size(118, 20);
             Notes_Labal.TabIndex = 64;
             Notes_Labal.Text = "Notes (optional)";
+            Notes_Labal.Click += CloseAllPanels;
             // 
             // Notes_TextBox
             // 
@@ -698,6 +699,7 @@ namespace Sales_Tracker
             Notes_TextBox.ShortcutsEnabled = false;
             Notes_TextBox.Size = new Size(350, 70);
             Notes_TextBox.TabIndex = 65;
+            Notes_TextBox.Click += CloseAllPanels;
             // 
             // AddSale_Form
             // 

@@ -298,7 +298,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
             }
 
-            MainMenu_Form.Instance.DataGridView_RowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
@@ -467,7 +467,7 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
 
-            MainMenu_Form.Instance.DataGridView_RowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, purchaseNumber);
             Log.Write(3, $"Added purchase '{purchaseNumber}' with '{totalQuantity}' items");
