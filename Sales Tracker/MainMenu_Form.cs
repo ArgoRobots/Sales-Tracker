@@ -15,8 +15,8 @@ namespace Sales_Tracker
         // Proprties
         public static readonly List<string> thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-        private static readonly string jsonTag = "Tag";
-        public static readonly string emptyCell = "-", multipleItems = "Multiple items", receipt = "receipt:";
+        private static readonly string jsonTag = "Tag", note_text = "note";
+        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
         private readonly byte spaceForRightClickPanel = 30;
 
         // Init.
@@ -50,27 +50,21 @@ namespace Sales_Tracker
             accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
             companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
 
-            Sales_DataGridView.RowsAdded -= DataGridView_RowsAdded;
-            Purchases_DataGridView.RowsAdded -= DataGridView_RowsAdded;
-
             LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
             AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
 
             LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
             AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
 
-            Sales_DataGridView.RowsAdded += DataGridView_RowsAdded;
-            Purchases_DataGridView.RowsAdded += DataGridView_RowsAdded;
-
             // Load image into column header
             DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
-            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax differences across countries.";
+            string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax variations across countries.";
             chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
             DataGridViewColumn totalColumn = Sales_DataGridView.Columns[Column.Total.ToString()];
             existingHeaderText = totalColumn.HeaderText;
-            messageBoxText = "The revenue exludes the shipping, tax and fee.";
+            messageBoxText = "The revenue excludes shipping, taxes, and fees.";
             totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
             AddTimeRangesIntoComboBox();
@@ -111,13 +105,21 @@ namespace Sales_Tracker
             foreach (Dictionary<string, object> rowData in rowsData)
             {
                 // Extract cell values
-                string?[] cellValues = rowData.Where(kv => kv.Key != jsonTag).Select(kv => kv.Value?.ToString()).ToArray();
+                List<string?> cellValuesList = [];
+                foreach (var kv in rowData)
+                {
+                    if (kv.Key != jsonTag && kv.Key != note_text)
+                    {
+                        cellValuesList.Add(kv.Value?.ToString());
+                    }
+                }
+                string?[] cellValues = cellValuesList.ToArray();
 
                 // Add the row values to the DataGridView
                 int rowIndex = dataGridView.Rows.Add(cellValues);
 
                 // Set the row tag
-                if (rowData.TryGetValue(jsonTag, out object? value))
+                if (rowData.TryGetValue(jsonTag, out object value))
                 {
                     if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
                     {
@@ -127,6 +129,15 @@ namespace Sales_Tracker
                     {
                         dataGridView.Rows[rowIndex].Tag = value?.ToString();
                     }
+                }
+
+                // Set the cell tag for the last cell if note_text key exists
+                if (rowData.TryGetValue(note_text, out object noteValue))
+                {
+                    DataGridViewCell lastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 1];
+                    lastCell.Value = show_text;
+                    lastCell.Tag = noteValue;
+                    AddUnderlineToCell(lastCell);
                 }
             }
         }
@@ -621,7 +632,9 @@ namespace Sales_Tracker
             LoadCharts();
             UpdateTotals();
 
-            Purchases_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+            UnselectButtons();
+            SelectButton(Purchases_Button);
+
             Purchases_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             Search_TextBox.PlaceholderText = "Search for purchases";
@@ -640,7 +653,9 @@ namespace Sales_Tracker
             LoadCharts();
             UpdateTotals();
 
-            Sales_DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+            UnselectButtons();
+            SelectButton(Sales_Button);
+
             Sales_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             Search_TextBox.PlaceholderText = "Search for sales";
@@ -651,6 +666,9 @@ namespace Sales_Tracker
             ConstructControlsForStatistics();
             AddStatisticsControls();
             ResizeControls();
+
+            UnselectButtons();
+            SelectButton(Statistics_Button);
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -707,6 +725,20 @@ namespace Sales_Tracker
         }
 
         // Methods for Event handlers
+        private static void SelectButton(Guna2Button button)
+        {
+            button.BorderThickness = 2;
+            button.BorderColor = CustomColors.accent_blue;
+        }
+        private void UnselectButtons()
+        {
+            Purchases_Button.BorderThickness = 1;
+            Sales_Button.BorderThickness = 1;
+            Statistics_Button.BorderThickness = 1;
+            Purchases_Button.BorderColor = CustomColors.controlBorder;
+            Sales_Button.BorderColor = CustomColors.controlBorder;
+            Statistics_Button.BorderColor = CustomColors.controlBorder;
+        }
         private void SortDataGridViewBySearchBox()
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
@@ -959,7 +991,8 @@ namespace Sales_Tracker
             Fee,
             Discount,
             ChargedDifference,
-            Total
+            Total,
+            Note
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
@@ -977,11 +1010,12 @@ namespace Sales_Tracker
             { Column.Fee, "Fee" },
             { Column.Discount, "Discount" },
             { Column.ChargedDifference, "Charged difference" },
-            { Column.Total, "Total expenses" }
+            { Column.Total, "Total expenses" },
+            { Column.Note, "Notes" }
         };
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
-            { Column.OrderNumber, "Sales ID" },
+            { Column.OrderNumber, "Sale #" },
             { Column.Name, "Customer name" },
             { Column.Product, "Product name" },
             { Column.Category, "Category" },
@@ -994,7 +1028,8 @@ namespace Sales_Tracker
             { Column.Tax, "Tax" },
             { Column.Fee, "Fee" },
             { Column.Discount, "Discount" },
-            { Column.Total, "Total revenue" }
+            { Column.Total, "Total revenue" },
+            { Column.Note, "Notes" }
         };
         public enum DataGridViewTag
         {
@@ -1044,13 +1079,15 @@ namespace Sales_Tracker
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
 
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
-            dataGridView.RowsAdded += DataGridView_RowsAdded;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.CellValueChanged += DataGridView_CellValueChanged;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.MouseDown += DataGridView_MouseDown;
             dataGridView.MouseUp += DataGridView_MouseUp;
             dataGridView.KeyDown += DataGridView_KeyDown;
+            dataGridView.CellMouseClick += DataGridView_CellMouseClick;
+            dataGridView.CellMouseMove += DataGridView_CellMouseMove;
+            dataGridView.CellMouseLeave += DataGridView_CellMouseLeave;
 
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
@@ -1158,7 +1195,7 @@ namespace Sales_Tracker
                     List<string> tagList = (List<string>)selectedRowInMainMenu.Tag;
 
                     byte index = 1;
-                    if (tagList.Last().StartsWith(receipt))
+                    if (tagList.Last().StartsWith(receipt_text))
                     {
                         index = 2;
                     }
@@ -1201,47 +1238,6 @@ namespace Sales_Tracker
         public void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             AlignTotalLabels();
-        }
-        public void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            DataGridViewRowChanged();
-            DataGridViewRow row;
-
-            if (e.RowIndex >= 0 && e.RowIndex < selectedDataGridView.RowCount)
-            {
-                row = selectedDataGridView.Rows[e.RowIndex];
-            }
-            else
-            {
-                Log.Error_RowIsOutOfRange();
-                return;
-            }
-
-            // Perform sorting based on the current sorted column and direction
-            if (selectedDataGridView.SortedColumn != null)
-            {
-                SortOrder sortOrder = selectedDataGridView.SortOrder;
-                DataGridViewColumn sortedColumn = selectedDataGridView.SortedColumn;
-                ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
-                                              ListSortDirection.Ascending : ListSortDirection.Descending;
-                selectedDataGridView.Sort(sortedColumn, direction);
-            }
-
-            SortDataGridViewBySearchBox();
-
-            // Calculate the middle index
-            int visibleRowCount = selectedDataGridView.DisplayedRowCount(true);
-            int middleIndex = Math.Max(0, row.Index - (visibleRowCount / 2) + 1);
-
-            // Ensure the row at middleIndex is visible
-            if (middleIndex >= 0 && middleIndex < selectedDataGridView.RowCount && selectedDataGridView.Rows[middleIndex].Visible)
-            {
-                selectedDataGridView.FirstDisplayedScrollingRowIndex = middleIndex;
-            }
-
-            // Select the added row
-            UnselectAllRowsInCurrentDataGridView();
-            selectedDataGridView.Rows[row.Index].Selected = true;
         }
         public void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
@@ -1445,8 +1441,141 @@ namespace Sales_Tracker
                 }
             }
         }
+        private void DataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridView dataGridView = (DataGridView)sender;
+
+            if (IsLastCellClicked(e, dataGridView))
+            {
+                DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                if (IsClickOnText(cell, out Rectangle hitbox))
+                {
+                    Point mousePos = dataGridView.PointToClient(Cursor.Position);
+                    if (hitbox.Contains(mousePos))
+                    {
+                        CustomMessageBox.Show("Note for purchase", cell.Tag.ToString(), CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    }
+                }
+            }
+        }
+        private void DataGridView_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridView dataGridView = (DataGridView)sender;
+
+            if (IsLastCellClicked(e, dataGridView))
+            {
+                DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                if (IsClickOnText(cell, out Rectangle hitbox))
+                {
+                    // Draw a rectangle around the hitbox for debugging
+                    //using (Graphics g = dataGridView.CreateGraphics())
+                    //{
+                    //    g.DrawRectangle(Pens.Red, hitbox);
+                    //}
+
+                    Point mousePos = dataGridView.PointToClient(Cursor.Position);
+                    UpdateCellStyleBasedOnMousePosition(cell, hitbox, mousePos);
+                }
+            }
+        }
+        private void DataGridView_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridView dataGridView = (DataGridView)sender;
+
+            if (e.RowIndex >= 0 && e.ColumnIndex == dataGridView.Columns.Count - 1)
+            {
+                DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                if (cell.Value != null && cell.Value.ToString() == show_text)
+                {
+                    ResetCellStyle(cell);
+                }
+            }
+        }
+        private static bool IsLastCellClicked(DataGridViewCellMouseEventArgs e, DataGridView dataGridView)
+        {
+            return e.RowIndex >= 0 && e.ColumnIndex == dataGridView.Columns.Count - 1;
+        }
+        private static bool IsClickOnText(DataGridViewCell cell, out Rectangle hitbox)
+        {
+            hitbox = Rectangle.Empty;
+
+            if (cell.Value != null && cell.Value.ToString() == show_text)
+            {
+                Size textSize = TextRenderer.MeasureText(cell.Value.ToString(), cell.DataGridView.Font);
+                byte padding = 3;
+                textSize.Width += 10 + padding + padding;
+                textSize.Height += padding + padding;
+
+                Rectangle cellRect = cell.DataGridView.GetCellDisplayRectangle(cell.ColumnIndex, cell.RowIndex, false);
+                int relativeX = cellRect.X + cell.InheritedStyle.Padding.Left - padding;
+                int relativeY = cellRect.Y + (cell.Size.Height - textSize.Height) / 2;
+                hitbox = new Rectangle(relativeX, relativeY, textSize.Width, textSize.Height);
+
+                return true;
+            }
+            return false;
+        }
+        private static void UpdateCellStyleBasedOnMousePosition(DataGridViewCell cell, Rectangle hitbox, Point mousePos)
+        {
+            if (hitbox.Contains(mousePos))
+            {
+                cell.Style.ForeColor = CustomColors.accent_blue;
+                cell.Style.SelectionForeColor = CustomColors.accent_blue;
+            }
+            else
+            {
+                ResetCellStyle(cell);
+            }
+        }
+        private static void ResetCellStyle(DataGridViewCell cell)
+        {
+            cell.Style.ForeColor = CustomColors.text;
+            cell.Style.SelectionForeColor = CustomColors.text;
+        }
+
 
         // Methods for DataGridView
+        public void DataGridView_RowsAdded(DataGridViewRowsAddedEventArgs e)
+        {
+            DataGridViewRowChanged();
+            DataGridViewRow row;
+
+            if (e.RowIndex >= 0 && e.RowIndex < selectedDataGridView.RowCount)
+            {
+                row = selectedDataGridView.Rows[e.RowIndex];
+            }
+            else
+            {
+                Log.Error_RowIsOutOfRange();
+                return;
+            }
+
+            // Perform sorting based on the current sorted column and direction
+            if (selectedDataGridView.SortedColumn != null)
+            {
+                SortOrder sortOrder = selectedDataGridView.SortOrder;
+                DataGridViewColumn sortedColumn = selectedDataGridView.SortedColumn;
+                ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
+                                              ListSortDirection.Ascending : ListSortDirection.Descending;
+                selectedDataGridView.Sort(sortedColumn, direction);
+            }
+
+            SortDataGridViewBySearchBox();
+
+            // Calculate the middle index
+            int visibleRowCount = selectedDataGridView.DisplayedRowCount(true);
+            int middleIndex = Math.Max(0, row.Index - (visibleRowCount / 2) + 1);
+
+            // Ensure the row at middleIndex is visible
+            if (middleIndex >= 0 && middleIndex < selectedDataGridView.RowCount && selectedDataGridView.Rows[middleIndex].Visible)
+            {
+                selectedDataGridView.FirstDisplayedScrollingRowIndex = middleIndex;
+            }
+
+            // Select the added row
+            UnselectAllRowsInCurrentDataGridView();
+            selectedDataGridView.Rows[row.Index].Selected = true;
+        }
         public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
             columnsToLoad ??= Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
@@ -1670,6 +1799,17 @@ namespace Sales_Tracker
 
             isProgramLoading = false;
         }
+        public static void AddNoteToCell(int newRowIndex, string note)
+        {
+            Guna2DataGridView selectedDataGridView = Instance.selectedDataGridView;
+            DataGridViewCell cell = selectedDataGridView.Rows[newRowIndex].Cells[^1];
+            cell.Tag = note;
+            AddUnderlineToCell(cell);
+        }
+        private static void AddUnderlineToCell(DataGridViewCell cell)
+        {
+            cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, FontStyle.Underline);
+        }
 
         // Save to file for DataGridView
         public void SaveDataGridViewToFileAsJson()
@@ -1684,7 +1824,15 @@ namespace Sales_Tracker
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    rowData[cell.OwningColumn.Name] = cell.Value;
+                    // Save the cell tag if cell value is "show"
+                    if (cell.Value?.ToString() == show_text && cell.Tag != null)
+                    {
+                        rowData[note_text] = cell.Tag;
+                    }
+                    else
+                    {
+                        rowData[cell.OwningColumn.Name] = cell.Value;
+                    }
                 }
 
                 // Add the row tag

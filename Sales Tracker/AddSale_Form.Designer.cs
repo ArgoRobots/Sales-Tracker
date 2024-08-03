@@ -60,6 +60,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Date_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             Date_Label = new Label();
             AddSale_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -73,11 +75,11 @@ namespace Sales_Tracker
             Quantity_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ProductName_Label = new Label();
             ProductName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            BuyerName_Label = new Label();
-            BuyerName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            AccountantName_Label = new Label();
+            AccountantName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddSale_Label = new Label();
-            SaleID_Label = new Label();
-            SaleID_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            SaleNumber_Label = new Label();
+            SaleNumber_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ImportExcel_Button = new Guna.UI2.WinForms.Guna2Button();
             ImportEbay_Button = new Guna.UI2.WinForms.Guna2Button();
             ImportAmazon_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -92,6 +94,8 @@ namespace Sales_Tracker
             CountryOfDestinaion_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Discount_Label = new Label();
             Discount_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            Notes_Labal = new Label();
+            Notes_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).BeginInit();
             SuspendLayout();
@@ -129,7 +133,7 @@ namespace Sales_Tracker
             // 
             // AddSale_Button
             // 
-            AddSale_Button.Anchor = AnchorStyles.Bottom;
+            AddSale_Button.Anchor = AnchorStyles.Top;
             AddSale_Button.BackColor = Color.Transparent;
             AddSale_Button.BorderColor = Color.LightGray;
             AddSale_Button.BorderRadius = 2;
@@ -139,7 +143,7 @@ namespace Sales_Tracker
             AddSale_Button.FillColor = Color.White;
             AddSale_Button.Font = new Font("Segoe UI", 9.5F);
             AddSale_Button.ForeColor = Color.Black;
-            AddSale_Button.Location = new Point(371, 280);
+            AddSale_Button.Location = new Point(371, 380);
             AddSale_Button.Margin = new Padding(4, 3, 4, 3);
             AddSale_Button.Name = "AddSale_Button";
             AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -332,41 +336,41 @@ namespace Sales_Tracker
             ProductName_TextBox.TabIndex = 28;
             ProductName_TextBox.Tag = "1";
             // 
-            // BuyerName_Label
+            // AccountantName_Label
             // 
-            BuyerName_Label.Anchor = AnchorStyles.Top;
-            BuyerName_Label.AutoSize = true;
-            BuyerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            BuyerName_Label.Location = new Point(239, 80);
-            BuyerName_Label.Name = "BuyerName_Label";
-            BuyerName_Label.Size = new Size(87, 20);
-            BuyerName_Label.TabIndex = 27;
-            BuyerName_Label.Text = "Buyer name";
-            BuyerName_Label.Click += CloseAllPanels;
+            AccountantName_Label.Anchor = AnchorStyles.Top;
+            AccountantName_Label.AutoSize = true;
+            AccountantName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            AccountantName_Label.Location = new Point(239, 80);
+            AccountantName_Label.Name = "AccountantName_Label";
+            AccountantName_Label.Size = new Size(125, 20);
+            AccountantName_Label.TabIndex = 27;
+            AccountantName_Label.Text = "Accountant name";
+            AccountantName_Label.Click += CloseAllPanels;
             // 
-            // BuyerName_TextBox
+            // AccountantName_TextBox
             // 
-            BuyerName_TextBox.Anchor = AnchorStyles.Top;
-            BuyerName_TextBox.CustomizableEdges = customizableEdges15;
-            BuyerName_TextBox.DefaultText = "";
-            BuyerName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            BuyerName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            BuyerName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            BuyerName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            BuyerName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            BuyerName_TextBox.Font = new Font("Segoe UI", 9F);
-            BuyerName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            BuyerName_TextBox.Location = new Point(239, 103);
-            BuyerName_TextBox.MaxLength = 32;
-            BuyerName_TextBox.Name = "BuyerName_TextBox";
-            BuyerName_TextBox.PasswordChar = '\0';
-            BuyerName_TextBox.PlaceholderText = "";
-            BuyerName_TextBox.SelectedText = "";
-            BuyerName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            BuyerName_TextBox.ShortcutsEnabled = false;
-            BuyerName_TextBox.Size = new Size(200, 36);
-            BuyerName_TextBox.TabIndex = 26;
-            BuyerName_TextBox.Tag = "1";
+            AccountantName_TextBox.Anchor = AnchorStyles.Top;
+            AccountantName_TextBox.CustomizableEdges = customizableEdges15;
+            AccountantName_TextBox.DefaultText = "";
+            AccountantName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            AccountantName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            AccountantName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            AccountantName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            AccountantName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            AccountantName_TextBox.Font = new Font("Segoe UI", 9F);
+            AccountantName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            AccountantName_TextBox.Location = new Point(239, 103);
+            AccountantName_TextBox.MaxLength = 32;
+            AccountantName_TextBox.Name = "AccountantName_TextBox";
+            AccountantName_TextBox.PasswordChar = '\0';
+            AccountantName_TextBox.PlaceholderText = "";
+            AccountantName_TextBox.SelectedText = "";
+            AccountantName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            AccountantName_TextBox.ShortcutsEnabled = false;
+            AccountantName_TextBox.Size = new Size(200, 36);
+            AccountantName_TextBox.TabIndex = 26;
+            AccountantName_TextBox.Tag = "1";
             // 
             // AddSale_Label
             // 
@@ -380,46 +384,46 @@ namespace Sales_Tracker
             AddSale_Label.Text = "Add sale";
             AddSale_Label.Click += CloseAllPanels;
             // 
-            // SaleID_Label
+            // SaleNumber_Label
             // 
-            SaleID_Label.Anchor = AnchorStyles.Top;
-            SaleID_Label.AutoSize = true;
-            SaleID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SaleID_Label.Location = new Point(33, 80);
-            SaleID_Label.Name = "SaleID_Label";
-            SaleID_Label.Size = new Size(56, 20);
-            SaleID_Label.TabIndex = 24;
-            SaleID_Label.Text = "Sale ID";
-            SaleID_Label.Click += CloseAllPanels;
+            SaleNumber_Label.Anchor = AnchorStyles.Top;
+            SaleNumber_Label.AutoSize = true;
+            SaleNumber_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            SaleNumber_Label.Location = new Point(33, 80);
+            SaleNumber_Label.Name = "SaleNumber_Label";
+            SaleNumber_Label.Size = new Size(50, 20);
+            SaleNumber_Label.TabIndex = 24;
+            SaleNumber_Label.Text = "Sale #";
+            SaleNumber_Label.Click += CloseAllPanels;
             // 
-            // SaleID_TextBox
+            // SaleNumber_TextBox
             // 
-            SaleID_TextBox.Anchor = AnchorStyles.Top;
-            SaleID_TextBox.CustomizableEdges = customizableEdges17;
-            SaleID_TextBox.DefaultText = "";
-            SaleID_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            SaleID_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            SaleID_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            SaleID_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            SaleID_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            SaleID_TextBox.Font = new Font("Segoe UI", 9F);
-            SaleID_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            SaleID_TextBox.Location = new Point(33, 103);
-            SaleID_TextBox.MaxLength = 32;
-            SaleID_TextBox.Name = "SaleID_TextBox";
-            SaleID_TextBox.PasswordChar = '\0';
-            SaleID_TextBox.PlaceholderText = "";
-            SaleID_TextBox.SelectedText = "";
-            SaleID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            SaleID_TextBox.ShortcutsEnabled = false;
-            SaleID_TextBox.Size = new Size(200, 36);
-            SaleID_TextBox.TabIndex = 23;
-            SaleID_TextBox.TextChanged += ValidateInputs;
-            SaleID_TextBox.Click += CloseAllPanels;
+            SaleNumber_TextBox.Anchor = AnchorStyles.Top;
+            SaleNumber_TextBox.CustomizableEdges = customizableEdges17;
+            SaleNumber_TextBox.DefaultText = "";
+            SaleNumber_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            SaleNumber_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            SaleNumber_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            SaleNumber_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            SaleNumber_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            SaleNumber_TextBox.Font = new Font("Segoe UI", 9F);
+            SaleNumber_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            SaleNumber_TextBox.Location = new Point(33, 103);
+            SaleNumber_TextBox.MaxLength = 32;
+            SaleNumber_TextBox.Name = "SaleNumber_TextBox";
+            SaleNumber_TextBox.PasswordChar = '\0';
+            SaleNumber_TextBox.PlaceholderText = "";
+            SaleNumber_TextBox.SelectedText = "";
+            SaleNumber_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            SaleNumber_TextBox.ShortcutsEnabled = false;
+            SaleNumber_TextBox.Size = new Size(200, 36);
+            SaleNumber_TextBox.TabIndex = 23;
+            SaleNumber_TextBox.TextChanged += ValidateInputs;
+            SaleNumber_TextBox.Click += CloseAllPanels;
             // 
             // ImportExcel_Button
             // 
-            ImportExcel_Button.Anchor = AnchorStyles.Bottom;
+            ImportExcel_Button.Anchor = AnchorStyles.Top;
             ImportExcel_Button.BackColor = Color.Transparent;
             ImportExcel_Button.BorderColor = Color.LightGray;
             ImportExcel_Button.BorderRadius = 2;
@@ -428,7 +432,7 @@ namespace Sales_Tracker
             ImportExcel_Button.FillColor = Color.White;
             ImportExcel_Button.Font = new Font("Segoe UI", 9.5F);
             ImportExcel_Button.ForeColor = Color.Black;
-            ImportExcel_Button.Location = new Point(535, 330);
+            ImportExcel_Button.Location = new Point(535, 424);
             ImportExcel_Button.Margin = new Padding(4, 3, 4, 3);
             ImportExcel_Button.Name = "ImportExcel_Button";
             ImportExcel_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
@@ -439,7 +443,7 @@ namespace Sales_Tracker
             // 
             // ImportEbay_Button
             // 
-            ImportEbay_Button.Anchor = AnchorStyles.Bottom;
+            ImportEbay_Button.Anchor = AnchorStyles.Top;
             ImportEbay_Button.BackColor = Color.Transparent;
             ImportEbay_Button.BorderColor = Color.LightGray;
             ImportEbay_Button.BorderRadius = 2;
@@ -448,7 +452,7 @@ namespace Sales_Tracker
             ImportEbay_Button.FillColor = Color.White;
             ImportEbay_Button.Font = new Font("Segoe UI", 9.5F);
             ImportEbay_Button.ForeColor = Color.Black;
-            ImportEbay_Button.Location = new Point(357, 330);
+            ImportEbay_Button.Location = new Point(357, 424);
             ImportEbay_Button.Margin = new Padding(4, 3, 4, 3);
             ImportEbay_Button.Name = "ImportEbay_Button";
             ImportEbay_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
@@ -459,7 +463,7 @@ namespace Sales_Tracker
             // 
             // ImportAmazon_Button
             // 
-            ImportAmazon_Button.Anchor = AnchorStyles.Bottom;
+            ImportAmazon_Button.Anchor = AnchorStyles.Top;
             ImportAmazon_Button.BackColor = Color.Transparent;
             ImportAmazon_Button.BorderColor = Color.LightGray;
             ImportAmazon_Button.BorderRadius = 2;
@@ -468,7 +472,7 @@ namespace Sales_Tracker
             ImportAmazon_Button.FillColor = Color.White;
             ImportAmazon_Button.Font = new Font("Segoe UI", 9.5F);
             ImportAmazon_Button.ForeColor = Color.Black;
-            ImportAmazon_Button.Location = new Point(179, 330);
+            ImportAmazon_Button.Location = new Point(179, 424);
             ImportAmazon_Button.Margin = new Padding(4, 3, 4, 3);
             ImportAmazon_Button.Name = "ImportAmazon_Button";
             ImportAmazon_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
@@ -631,6 +635,7 @@ namespace Sales_Tracker
             Discount_Label.Size = new Size(67, 20);
             Discount_Label.TabIndex = 63;
             Discount_Label.Text = "Discount";
+            Discount_Label.Click += CloseAllPanels;
             // 
             // Discount_TextBox
             // 
@@ -654,12 +659,53 @@ namespace Sales_Tracker
             Discount_TextBox.ShortcutsEnabled = false;
             Discount_TextBox.Size = new Size(100, 36);
             Discount_TextBox.TabIndex = 62;
+            Discount_TextBox.TextChanged += ValidateInputs;
+            Discount_TextBox.Click += CloseAllPanels;
+            // 
+            // Notes_Labal
+            // 
+            Notes_Labal.Anchor = AnchorStyles.Top;
+            Notes_Labal.AutoSize = true;
+            Notes_Labal.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Notes_Labal.Location = new Point(383, 274);
+            Notes_Labal.Name = "Notes_Labal";
+            Notes_Labal.Size = new Size(118, 20);
+            Notes_Labal.TabIndex = 64;
+            Notes_Labal.Text = "Notes (optional)";
+            // 
+            // Notes_TextBox
+            // 
+            Notes_TextBox.Anchor = AnchorStyles.Top;
+            Notes_TextBox.AutoSize = true;
+            Notes_TextBox.CustomizableEdges = customizableEdges31;
+            Notes_TextBox.DefaultText = "";
+            Notes_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Notes_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Notes_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Notes_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Notes_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Notes_TextBox.Font = new Font("Segoe UI", 9F);
+            Notes_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Notes_TextBox.Location = new Point(265, 297);
+            Notes_TextBox.MaxLength = 1000;
+            Notes_TextBox.MinimumSize = new Size(350, 70);
+            Notes_TextBox.Multiline = true;
+            Notes_TextBox.Name = "Notes_TextBox";
+            Notes_TextBox.PasswordChar = '\0';
+            Notes_TextBox.PlaceholderText = "";
+            Notes_TextBox.SelectedText = "";
+            Notes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            Notes_TextBox.ShortcutsEnabled = false;
+            Notes_TextBox.Size = new Size(350, 70);
+            Notes_TextBox.TabIndex = 65;
             // 
             // AddSale_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(884, 386);
+            ClientSize = new Size(884, 469);
+            Controls.Add(Notes_Labal);
+            Controls.Add(Notes_TextBox);
             Controls.Add(Discount_Label);
             Controls.Add(Discount_TextBox);
             Controls.Add(CountryOfDestination_Label);
@@ -687,17 +733,18 @@ namespace Sales_Tracker
             Controls.Add(Quantity_TextBox);
             Controls.Add(ProductName_Label);
             Controls.Add(ProductName_TextBox);
-            Controls.Add(BuyerName_Label);
-            Controls.Add(BuyerName_TextBox);
+            Controls.Add(AccountantName_Label);
+            Controls.Add(AccountantName_TextBox);
             Controls.Add(AddSale_Label);
-            Controls.Add(SaleID_Label);
-            Controls.Add(SaleID_TextBox);
+            Controls.Add(SaleNumber_Label);
+            Controls.Add(SaleNumber_TextBox);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             KeyPreview = true;
             MinimumSize = new Size(900, 415);
             Name = "AddSale_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            Shown += AddSale_Form_Shown;
             TextChanged += ValidateInputs;
             Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).EndInit();
@@ -721,11 +768,11 @@ namespace Sales_Tracker
         private Guna.UI2.WinForms.Guna2TextBox Quantity_TextBox;
         private Label ProductName_Label;
         private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
-        private Label BuyerName_Label;
-        private Guna.UI2.WinForms.Guna2TextBox BuyerName_TextBox;
+        private Label AccountantName_Label;
+        private Guna.UI2.WinForms.Guna2TextBox AccountantName_TextBox;
         private Label AddSale_Label;
-        private Label SaleID_Label;
-        private Guna.UI2.WinForms.Guna2TextBox SaleID_TextBox;
+        private Label SaleNumber_Label;
+        private Guna.UI2.WinForms.Guna2TextBox SaleNumber_TextBox;
         private Guna.UI2.WinForms.Guna2Button ImportExcel_Button;
         private Guna.UI2.WinForms.Guna2Button ImportEbay_Button;
         private Guna.UI2.WinForms.Guna2Button ImportAmazon_Button;
@@ -740,5 +787,7 @@ namespace Sales_Tracker
         private Guna.UI2.WinForms.Guna2TextBox CountryOfDestinaion_TextBox;
         private Label Discount_Label;
         private Guna.UI2.WinForms.Guna2TextBox Discount_TextBox;
+        private Label Notes_Labal;
+        private Guna.UI2.WinForms.Guna2TextBox Notes_TextBox;
     }
 }

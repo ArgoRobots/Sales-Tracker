@@ -105,14 +105,14 @@ namespace Sales_Tracker.Classes
         }
         public static void Rename(string name)
         {
-            // Rename in file
-            string newDir = Directories.argoCompany_dir + "\\" + name + ArgoFiles.ArgoCompanyFileExtension;
-            Directories.MoveFile(Directories.argoCompany_file, newDir);
-            Directories.argoCompany_file = newDir;
+            string newFile = Directories.argoCompany_dir + name + ArgoFiles.ArgoCompanyFileExtension;
+            string newDir = Directories.appData_dir + name;
 
-            newDir = Directories.appData_dir + name;
+            // Rename in file
+            Directories.MoveFile(Directories.argoCompany_file, newFile);
             Directories.RenameFolder(Directories.tempCompany_dir, newDir);
-            Directories.tempCompany_dir = newDir;
+
+            Directories.SetDirectories(Directories.argoCompany_dir, name);
 
             // Update recently opened projects
             DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);

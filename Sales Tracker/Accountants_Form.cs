@@ -34,15 +34,11 @@ namespace Sales_Tracker
         }
         private void LoadAccountants()
         {
-            Accountants_DataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
-
             foreach (string accountant in MainMenu_Form.Instance.accountantList)
             {
                 Accountants_DataGridView.Rows.Add(accountant);
             }
             Tools.ScrollToTopOfDataGridView(Accountants_DataGridView);
-
-            Accountants_DataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
         }
 
         // Form event handlers

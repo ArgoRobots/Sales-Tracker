@@ -215,17 +215,17 @@ namespace Sales_Tracker.Classes
         }
         private static void Guna2Button_GotFocus(object sender, EventArgs e)
         {
-            Guna2Button btn = (Guna2Button)sender;
+            Guna2Button button = (Guna2Button)sender;
 
             // Change the button's appearance when it receives focus
-            btn.BorderColor = CustomColors.accent_blue;
+            button.BorderColor = CustomColors.accent_blue;
         }
         private static void Guna2Button_LostFocus(object sender, EventArgs e)
         {
-            Guna2Button btn = (Guna2Button)sender;
+            Guna2Button button = (Guna2Button)sender;
 
             // Revert the button's appearance when it loses focus
-            btn.BorderColor = CustomColors.controlBorder;
+            button.BorderColor = CustomColors.controlBorder;
         }
         public static void CustomizeScrollBar(Control control)
         {
@@ -262,7 +262,7 @@ namespace Sales_Tracker.Classes
         {
             if (CurrentTheme == ThemeType.Windows)
             {
-                int value = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
+                int? value = (int?)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
 
                 if (value == 0)
                 {

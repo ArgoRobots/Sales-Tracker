@@ -14,6 +14,8 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
@@ -76,6 +78,10 @@ namespace Sales_Tracker
             AmountCharged_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             AmountCharged_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             AmountCharged_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Notes_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Notes_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Notes_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
         private void AddSearchBoxEvents()
         {
@@ -100,6 +106,12 @@ namespace Sales_Tracker
             SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
         }
 
+        // Form event handlers
+        private void AddPurchase_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideLoadingPanel(this);
+        }
+
         // Event handlers
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -113,10 +125,7 @@ namespace Sales_Tracker
 
             if (panelsForMultipleProducts_List.Count == 0)
             {
-                if (!AddSinglePurchase())
-                {
-                    return;
-                }
+                if (!AddSinglePurchase()) { return; }
             }
             // When the user selects "multiple items in this order" but only adds one, treat it as one
             else if (panelsForMultipleProducts_List.Count == 1)
@@ -127,10 +136,7 @@ namespace Sales_Tracker
                 Quantity_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault()).Text;
                 PricePerUnit_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault()).Text;
 
-                if (!AddSinglePurchase())
-                {
-                    return;
-                }
+                if (!AddSinglePurchase()) { return; }
             }
             else if (!AddMultiplePurchases())
             {
@@ -195,12 +201,12 @@ namespace Sales_Tracker
         // Methods to add purchases
         private bool AddSinglePurchase()
         {
-            string purchaseID = OrderNumber_TextBox.Text.Trim();
+            string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
+            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase ID already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase # already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -221,6 +227,12 @@ namespace Sales_Tracker
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
             decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee - discount;
+            string noteLabel = MainMenu_Form.emptyCell;
+            string note = Notes_TextBox.Text.Trim();
+            if (note != "")
+            {
+                noteLabel = MainMenu_Form.show_text;
+            }
 
             // Convert currency
             if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
@@ -260,7 +272,7 @@ namespace Sales_Tracker
             }
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
-                purchaseID,
+                purchaseNumber,
                 buyerName,
                 itemName,
                 categoryName,
@@ -274,12 +286,19 @@ namespace Sales_Tracker
                 fee.ToString("N2"),
                 discount.ToString("N2"),
                 chargedDifference.ToString("N2"),
-                totalPrice.ToString("N2")
+                totalPrice.ToString("N2"),
+                noteLabel
             );
+            if (noteLabel == MainMenu_Form.show_text)
+            {
+                MainMenu_Form.AddNoteToCell(newRowIndex, note);
+            }
             if (newFilePath != "")
             {
                 MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
             }
+
+            MainMenu_Form.Instance.DataGridView_RowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
@@ -288,15 +307,14 @@ namespace Sales_Tracker
         }
         private bool AddMultiplePurchases()
         {
-            decimal totalPrice = 0;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
 
-            string purchaseID = OrderNumber_TextBox.Text.Trim();
+            string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseID))
+            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase ID already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase # already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -306,12 +324,16 @@ namespace Sales_Tracker
 
             string buyerName = BuyerName_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
-            int quantity = 0;
-            decimal pricePerUnit = 0;
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
+            string noteLabel = MainMenu_Form.emptyCell;
+            string note = Notes_TextBox.Text.Trim();
+            if (note != "")
+            {
+                noteLabel = MainMenu_Form.show_text;
+            }
 
             decimal exchangeRate = 1;
             if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
@@ -322,6 +344,8 @@ namespace Sales_Tracker
             List<string> items = [];
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
+            decimal totalPrice = 0;
+            int totalQuantity = 0;
 
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
@@ -360,10 +384,11 @@ namespace Sales_Tracker
                 }
 
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
-                quantity = int.Parse(quantityTextBox.Text);
+                int quantity = int.Parse(quantityTextBox.Text);
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
-                pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
+                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
                 totalPrice += quantity * pricePerUnit;
+                totalQuantity += quantity;
 
                 string item = string.Join(",",
                     itemName,
@@ -379,7 +404,6 @@ namespace Sales_Tracker
             }
 
             // Convert currency
-            pricePerUnit *= exchangeRate;
             shipping *= exchangeRate;
             tax *= exchangeRate;
             fee *= exchangeRate;
@@ -413,39 +437,40 @@ namespace Sales_Tracker
                 }
             }
 
-            MainMenu_Form.Instance.selectedDataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
-
             string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
             string finalCountry = isCountryConsistent ? firstCountry : MainMenu_Form.emptyCell;
             string finalCompany = isCompanyConsistent ? firstCompany : MainMenu_Form.emptyCell;
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
-                purchaseID,
+                purchaseNumber,
                 buyerName,
-                MainMenu_Form.multipleItems,
+                MainMenu_Form.multipleItems_text,
                 finalCategoryName,
                 finalCountry,
                 finalCompany,
                 date,
-                quantity.ToString(),
+                totalQuantity.ToString(),
                 MainMenu_Form.emptyCell,
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
                 discount.ToString("N2"),
                 chargedDifference.ToString("N2"),
-                totalPrice.ToString("N2")
+                totalPrice.ToString("N2"),
+                noteLabel
             );
-
-            items.Add(MainMenu_Form.receipt + newFilePath);
+            if (noteLabel == MainMenu_Form.show_text)
+            {
+                MainMenu_Form.AddNoteToCell(newRowIndex, note);
+            }
+            items.Add(MainMenu_Form.receipt_text + newFilePath);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
-            MainMenu_Form.Instance.selectedDataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
 
-            MainMenu_Form.Instance.DataGridViewRowChanged();
+            MainMenu_Form.Instance.DataGridView_RowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, purchaseID);
-            Log.Write(3, $"Added purchase '{purchaseID}' with '{quantity}' items");
+            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, purchaseNumber);
+            Log.Write(3, $"Added purchase '{purchaseNumber}' with '{totalQuantity}' items");
 
             return true;
         }

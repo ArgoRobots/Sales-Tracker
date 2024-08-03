@@ -59,7 +59,7 @@ namespace Sales_Tracker
             {
                 // The last item which is the receipt file path needs to stay the same
                 string lastItem = null;
-                if (existingItems.Last().StartsWith(MainMenu_Form.receipt))
+                if (existingItems.Last().StartsWith(MainMenu_Form.receipt_text))
                 {
                     lastItem = existingItems.Last();
                 }
@@ -87,7 +87,6 @@ namespace Sales_Tracker
         {
             MainMenu_Form.Instance.InitializeDataGridView(Items_DataGridView, Items_DataGridView.Size);
             Items_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            Items_DataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
             Items_DataGridView.RowsRemoved -= MainMenu_Form.Instance.DataGridView_RowsRemoved;
             Items_DataGridView.UserDeletingRow -= MainMenu_Form.Instance.DataGridView_UserDeletingRow;
             Items_DataGridView.Tag = MainMenu_Form.DataGridViewTag.ItemsInPurchase;
@@ -102,7 +101,7 @@ namespace Sales_Tracker
         {
             string receiptFilePath = null;
 
-            if (tag.Last().StartsWith(MainMenu_Form.receipt))
+            if (tag.Last().StartsWith(MainMenu_Form.receipt_text))
             {
                 receiptFilePath = tag.Last();
                 tag.RemoveAt(tag.Count - 1);  // Remove the receipt file path

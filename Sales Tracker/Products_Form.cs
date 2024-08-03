@@ -94,9 +94,6 @@ namespace Sales_Tracker
         }
         private void LoadProducts()
         {
-            Purchases_DataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
-            Sales_DataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
-
             foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
@@ -114,9 +111,6 @@ namespace Sales_Tracker
                 }
             }
             Tools.ScrollToTopOfDataGridView(Sales_DataGridView);
-
-            Purchases_DataGridView.RowsAdded += MainMenu_Form.Instance.DataGridView_RowsAdded;
-            Sales_DataGridView.RowsAdded -= MainMenu_Form.Instance.DataGridView_RowsAdded;
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)
         {
