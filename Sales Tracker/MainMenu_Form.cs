@@ -1027,6 +1027,7 @@ namespace Sales_Tracker
             { Column.Tax, "Tax" },
             { Column.Fee, "Fee" },
             { Column.Discount, "Discount" },
+            { Column.ChargedDifference, "Charged difference" },
             { Column.Total, "Total revenue" },
             { Column.Note, "Notes" }
         };

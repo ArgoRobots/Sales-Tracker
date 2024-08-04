@@ -418,7 +418,7 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount charged (${amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
+                string message = $"Amount credited (${amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -514,7 +514,7 @@ namespace Sales_Tracker
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
         private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3, spaceToOffsetFormNotCenter = 15,
-            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 150, spaceBetweenPanels = 10,
+            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 140, spaceBetweenPanels = 10,
                initialHeightForPanel = 59, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
         private readonly short initialWidthForPanel = 449, maxFlowPanelHeight = 300;
         private void SetControlsForSingleProduct()
@@ -556,10 +556,10 @@ namespace Sales_Tracker
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
-            AmountCharged_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
-            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
-            Discount_TextBox.Left = AmountCharged_TextBox.Right + spaceBetweenControlsHorizontally;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
             Discount_Label.Left = Discount_TextBox.Left;
+            AmountCharged_TextBox.Left = Discount_TextBox.Right + spaceBetweenControlsHorizontally;
+            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
 
             // Add controls
             foreach (Control control in GetControlsForMultipleProducts())
@@ -569,7 +569,7 @@ namespace Sales_Tracker
 
             Controls.Remove(FlowPanel);
             Controls.Remove(AddButton);
-            Height = 400;
+            Height = 465;
 
             RelocateBuyerWarning();
             SetReceiptLabelLocation();
@@ -611,10 +611,10 @@ namespace Sales_Tracker
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
-            AmountCharged_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
-            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
-            Discount_TextBox.Left = AmountCharged_TextBox.Right + spaceBetweenControlsHorizontally;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
             Discount_Label.Left = Discount_TextBox.Left;
+            AmountCharged_TextBox.Left = Discount_TextBox.Right + spaceBetweenControlsHorizontally;
+            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
 
             // Remove controls
             foreach (Control control in GetControlsForMultipleProducts())
@@ -807,7 +807,7 @@ namespace Sales_Tracker
             FlowPanel = new()
             {
                 AutoScroll = false,
-                Location = new Point((Width - width + 10) / 2 - 5, 270),
+                Location = new Point((Width - width + 10) / 2 - 5, 380),
                 Size = new Size(width, 20 + spaceBetweenControlsVertically + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),

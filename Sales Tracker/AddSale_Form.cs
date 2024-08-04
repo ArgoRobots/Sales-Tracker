@@ -22,6 +22,11 @@ namespace Sales_Tracker
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
+            RemoveReceiptLabel();
+
+            // Despite this being the default, it's still needed for some reason
+            RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
+            RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(20, 20);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -136,6 +141,7 @@ namespace Sales_Tracker
             }
 
             // Reset
+            RemoveReceiptLabel();
             SaleNumber_TextBox.Text = "";
         }
         private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
@@ -175,6 +181,28 @@ namespace Sales_Tracker
             new Accountants_Form().ShowDialog();
             CheckIfBuyersExist();
         }
+        private void Receipt_Button_Click(object sender, EventArgs e)
+        {
+            // Select file
+            OpenFileDialog dialog = new();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                receiptFilePath = dialog.FileName;
+                ShowReceiptLabel(dialog.SafeFileName);
+            }
+        }
+        private void RemoveReceipt_ImageButton_Click(object sender, EventArgs e)
+        {
+            RemoveReceiptLabel();
+        }
+        private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
+        {
+            RemoveReceipt_ImageButton.BackColor = CustomColors.fileHover;
+        }
+        private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
+        {
+            RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
+        }
 
         // Methods to add sales
         private bool AddSingleSale()
@@ -212,6 +240,32 @@ namespace Sales_Tracker
                 noteLabel = MainMenu_Form.show_text;
             }
 
+            // Round to 2 decimal places
+            decimal amountCharged = decimal.Parse(AmountCredited_TextBox.Text);
+            totalPrice = Math.Round(totalPrice, 2);
+            decimal chargedDifference = amountCharged - totalPrice;
+
+            if (totalPrice != amountCharged)
+            {
+                string message = $"Amount charged (${amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
+                if (result != CustomMessageBoxResult.Ok)
+                {
+                    return false;
+                }
+            }
+            totalPrice += chargedDifference;
+
+            string newFilePath = "";
+            if (Controls.Contains(SelectedReceipt_Label))
+            {
+                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
+                {
+                    return false;
+                }
+            }
+
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 saleNumber,
                 buyerName,
@@ -226,12 +280,17 @@ namespace Sales_Tracker
                 tax.ToString("N"),
                 fee.ToString("N"),
                 discount.ToString("N"),
+                chargedDifference.ToString("N2"),
                 totalPrice.ToString("N"),
                 noteLabel
             );
             if (noteLabel == MainMenu_Form.show_text)
             {
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
+            }
+            if (newFilePath != "")
+            {
+                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
             }
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
@@ -336,6 +395,30 @@ namespace Sales_Tracker
             totalPrice -= discount;
             totalPrice = Math.Round(totalPrice, 2);
 
+            decimal amountCharged = decimal.Parse(AmountCredited_TextBox.Text);
+            decimal chargedDifference = amountCharged - totalPrice;
+
+            if (totalPrice != amountCharged)
+            {
+                string message = $"Amount credited (${amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+
+                if (result != CustomMessageBoxResult.Ok)
+                {
+                    return false;
+                }
+            }
+            totalPrice += chargedDifference;
+
+            string newFilePath = "";
+            if (Controls.Contains(SelectedReceipt_Label))
+            {
+                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
+                {
+                    return false;
+                }
+            }
+
             string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
             string finalCountry = isCountryConsistent ? firstCountry : MainMenu_Form.emptyCell;
             string finalCompany = isCompanyConsistent ? firstCompany : MainMenu_Form.emptyCell;
@@ -354,6 +437,7 @@ namespace Sales_Tracker
                 tax.ToString("N2"),
                 fee.ToString("N2"),
                 discount.ToString("N2"),
+                chargedDifference.ToString("N2"),
                 totalPrice.ToString("N2"),
                 noteLabel
             );
@@ -361,6 +445,7 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
             }
+            items.Add(MainMenu_Form.receipt_text + newFilePath);
 
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
 
@@ -372,6 +457,37 @@ namespace Sales_Tracker
             return true;
         }
 
+        // Receipts
+        private string receiptFilePath;
+        private void ShowReceiptLabel(string text)
+        {
+            SelectedReceipt_Label.Text = text;
+
+            Controls.Add(SelectedReceipt_Label);
+            Controls.Add(RemoveReceipt_ImageButton);
+            SetReceiptLabelLocation();
+
+            ValidateInputs(null, null);
+        }
+        private void SetReceiptLabelLocation()
+        {
+            if (!Controls.Contains(SelectedReceipt_Label))
+            {
+                return;
+            }
+
+            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + spaceBetweenControlsVertically);
+            SelectedReceipt_Label.Location = new Point(
+                RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
+                RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
+        }
+        private void RemoveReceiptLabel()
+        {
+            Controls.Remove(SelectedReceipt_Label);
+            Controls.Remove(RemoveReceipt_ImageButton);
+            ValidateInputs(null, null);
+        }
+
         // Methods for multiple items
         private List<Control> GetControlsForMultipleProducts()
         {
@@ -380,7 +496,7 @@ namespace Sales_Tracker
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
         private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3, spaceToOffsetFormNotCenter = 15,
-            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 200, spaceBetweenPanels = 10,
+            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 190, spaceBetweenPanels = 10,
                initialHeightForPanel = 59, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
         private readonly short initialWidthForPanel = 449, maxFlowPanelHeight = 300;
         private void SetControlsForSingleProduct()
@@ -389,7 +505,8 @@ namespace Sales_Tracker
             SaleNumber_TextBox.Left = (Width - SaleNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 AccountantName_TextBox.Width - spaceBetweenControlsHorizontally -
                 ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
-                CountryOfDestinaion_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
+                CountryOfDestinaion_TextBox.Width - spaceBetweenControlsHorizontally -
+                Receipt_Button.Width - spaceToOffsetFormNotCenter) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
             AccountantName_TextBox.Left = SaleNumber_TextBox.Right + spaceBetweenControlsHorizontally;
@@ -398,13 +515,16 @@ namespace Sales_Tracker
             ProductName_Label.Left = ProductName_TextBox.Left;
             CountryOfDestinaion_TextBox.Left = ProductName_TextBox.Right + spaceBetweenControlsHorizontally;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
+            Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + spaceBetweenControlsHorizontally;
 
             Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Quantity_TextBox.Width - spaceBetweenControlsHorizontally -
                 PricePerUnit_TextBox.Width - spaceBetweenControlsHorizontally -
                 Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
-                PaymentFee_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
+                PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
+                Discount_TextBox.Width - spaceBetweenControlsHorizontally -
+                AmountCredited_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Quantity_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -417,6 +537,10 @@ namespace Sales_Tracker
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
+            Discount_Label.Left = Discount_TextBox.Left;
+            AmountCredited_TextBox.Left = Discount_TextBox.Right + spaceBetweenControlsHorizontally;
+            AmountCredited_Label.Left = AmountCredited_TextBox.Left;
 
             // Add controls
             List<Control> controls = GetControlsForMultipleProducts();
@@ -427,7 +551,7 @@ namespace Sales_Tracker
 
             Controls.Remove(FlowPanel);
             Controls.Remove(AddButton);
-            Height = 400;
+            Height = 508;
 
             RelocateBuyerWarning();
 
@@ -442,19 +566,23 @@ namespace Sales_Tracker
             // Center controls
             SaleNumber_TextBox.Left = (Width - SaleNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 AccountantName_TextBox.Width - spaceBetweenControlsHorizontally -
-                CountryOfDestinaion_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
+                CountryOfDestinaion_TextBox.Width - spaceBetweenControlsHorizontally -
+                Receipt_Button.Width - spaceToOffsetFormNotCenter) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
             AccountantName_TextBox.Left = SaleNumber_TextBox.Right + spaceBetweenControlsHorizontally;
             AccountantName_Label.Left = AccountantName_TextBox.Left;
             CountryOfDestinaion_TextBox.Left = AccountantName_TextBox.Right + spaceBetweenControlsHorizontally;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
+            Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + spaceBetweenControlsHorizontally;
 
             Date_DateTimePicker.Left = (Width -
                 Date_DateTimePicker.Width - spaceBetweenControlsHorizontally -
                 Shipping_TextBox.Width - spaceBetweenControlsHorizontally -
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
-                PaymentFee_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
+                PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
+                Discount_TextBox.Width - spaceBetweenControlsHorizontally -
+                AmountCredited_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -463,6 +591,10 @@ namespace Sales_Tracker
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + spaceBetweenControlsHorizontally;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + spaceBetweenControlsHorizontally;
+            Discount_Label.Left = Discount_TextBox.Left;
+            AmountCredited_TextBox.Left = Discount_TextBox.Right + spaceBetweenControlsHorizontally;
+            AmountCredited_Label.Left = AmountCredited_TextBox.Left;
 
             // Remove controls
             foreach (Control control in GetControlsForMultipleProducts())
@@ -653,7 +785,7 @@ namespace Sales_Tracker
             FlowPanel = new()
             {
                 AutoScroll = false,
-                Location = new Point((Width - width + 10) / 2 - 5, 270),
+                Location = new Point((Width - width + 10) / 2 - 5, 380),
                 Size = new Size(width, 20 + spaceBetweenControlsVertically + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
@@ -745,7 +877,8 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(CountryOfDestinaion_TextBox.Text) && CountryOfDestinaion_TextBox.Tag.ToString() != "0" &&
-                                   !string.IsNullOrWhiteSpace(Discount_TextBox.Text);
+                                   !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(AmountCredited_TextBox.Text);
 
             bool allMultipleFieldsFilled = true;
 
