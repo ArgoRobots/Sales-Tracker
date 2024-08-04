@@ -19,6 +19,12 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.FillColor = CustomColors.accent_blue;
         }
 
+        // Form event handlers
+        private void Updates_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideLoadingPanel(this);
+        }
+
         // Event handlers
         private void CheckForUpdates_Button_Click(object sender, EventArgs e)
         {

@@ -18,12 +18,20 @@ namespace Sales_Tracker.Settings
             InitializeComponent();
             Instance = this;
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             UpdateTheme();
             General_Button.PerformClick();
         }
         private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
+        }
+
+        // Form event handlers
+        private void Settings_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         // Left menu buttons

@@ -11,12 +11,20 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             Instance = this;
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             UpdateControls();
             UpdateTheme();
         }
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
+        }
+
+        // Form event handlers
+        private void Security_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         // Methods

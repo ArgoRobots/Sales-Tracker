@@ -14,6 +14,8 @@ namespace Sales_Tracker.Startup.Menus
             InitializeComponent();
             Instance = this;
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
         }
@@ -67,6 +69,8 @@ namespace Sales_Tracker.Startup.Menus
             ProjectName_textBox.Focus();
             ProjectName_textBox.SelectionStart = ProjectName_textBox.Text.Length;
             ProjectName_textBox.SelectionLength = 0;
+
+            LoadingPanel.HideLoadingPanel(this);
         }
         private void ConfigureProject_form_Click(object sender, EventArgs e)
         {

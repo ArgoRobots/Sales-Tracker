@@ -113,6 +113,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += ItemsInPurchase_Form_FormClosed;
+            Shown += ItemsInPurchase_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)Items_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();

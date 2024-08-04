@@ -26,7 +26,6 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
-            LoadingPanel.InitLoadingPanel();
             LoadingPanel.ShowLoadingPanel(this);
 
             UI.ConstructControls();

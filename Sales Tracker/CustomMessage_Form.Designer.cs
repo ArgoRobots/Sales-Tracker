@@ -28,18 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Icon_pictureBox = new PictureBox();
             Ok_Button = new Guna.UI2.WinForms.Guna2Button();
             No_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -70,7 +70,7 @@
             Ok_Button.BorderColor = Color.LightGray;
             Ok_Button.BorderRadius = 4;
             Ok_Button.BorderThickness = 1;
-            Ok_Button.CustomizableEdges = customizableEdges13;
+            Ok_Button.CustomizableEdges = customizableEdges1;
             Ok_Button.DisabledState.BorderColor = Color.DarkGray;
             Ok_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Ok_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -81,7 +81,7 @@
             Ok_Button.Location = new Point(327, 119);
             Ok_Button.Margin = new Padding(4, 3, 4, 3);
             Ok_Button.Name = "Ok_Button";
-            Ok_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Ok_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Ok_Button.Size = new Size(100, 30);
             Ok_Button.TabIndex = 3;
             Ok_Button.Text = "Ok";
@@ -93,7 +93,7 @@
             No_Button.BorderColor = Color.LightGray;
             No_Button.BorderRadius = 4;
             No_Button.BorderThickness = 1;
-            No_Button.CustomizableEdges = customizableEdges15;
+            No_Button.CustomizableEdges = customizableEdges3;
             No_Button.DisabledState.BorderColor = Color.DarkGray;
             No_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             No_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -105,7 +105,7 @@
             No_Button.Location = new Point(219, 119);
             No_Button.Margin = new Padding(4, 3, 4, 3);
             No_Button.Name = "No_Button";
-            No_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            No_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             No_Button.Size = new Size(100, 30);
             No_Button.TabIndex = 2;
             No_Button.Text = "No";
@@ -117,7 +117,7 @@
             Yes_Button.BorderColor = Color.LightGray;
             Yes_Button.BorderRadius = 4;
             Yes_Button.BorderThickness = 1;
-            Yes_Button.CustomizableEdges = customizableEdges17;
+            Yes_Button.CustomizableEdges = customizableEdges5;
             Yes_Button.DisabledState.BorderColor = Color.DarkGray;
             Yes_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Yes_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -129,7 +129,7 @@
             Yes_Button.Location = new Point(111, 119);
             Yes_Button.Margin = new Padding(4, 3, 4, 3);
             Yes_Button.Name = "Yes_Button";
-            Yes_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Yes_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Yes_Button.Size = new Size(100, 30);
             Yes_Button.TabIndex = 1;
             Yes_Button.Text = "Yes";
@@ -141,7 +141,7 @@
             Cancel_Button.BorderColor = Color.LightGray;
             Cancel_Button.BorderRadius = 4;
             Cancel_Button.BorderThickness = 1;
-            Cancel_Button.CustomizableEdges = customizableEdges19;
+            Cancel_Button.CustomizableEdges = customizableEdges7;
             Cancel_Button.DisabledState.BorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -153,7 +153,7 @@
             Cancel_Button.Location = new Point(435, 119);
             Cancel_Button.Margin = new Padding(4, 3, 4, 3);
             Cancel_Button.Name = "Cancel_Button";
-            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Cancel_Button.Size = new Size(100, 30);
             Cancel_Button.TabIndex = 4;
             Cancel_Button.Text = "Cancel";
@@ -191,7 +191,7 @@
             Save_Button.BorderColor = Color.LightGray;
             Save_Button.BorderRadius = 4;
             Save_Button.BorderThickness = 1;
-            Save_Button.CustomizableEdges = customizableEdges21;
+            Save_Button.CustomizableEdges = customizableEdges9;
             Save_Button.DisabledState.BorderColor = Color.DarkGray;
             Save_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Save_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -203,7 +203,7 @@
             Save_Button.Location = new Point(3, 119);
             Save_Button.Margin = new Padding(4, 3, 4, 3);
             Save_Button.Name = "Save_Button";
-            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Save_Button.Size = new Size(100, 30);
             Save_Button.TabIndex = 5;
             Save_Button.Text = "Save";
@@ -215,7 +215,7 @@
             DontSave_Button.BorderColor = Color.LightGray;
             DontSave_Button.BorderRadius = 4;
             DontSave_Button.BorderThickness = 1;
-            DontSave_Button.CustomizableEdges = customizableEdges23;
+            DontSave_Button.CustomizableEdges = customizableEdges11;
             DontSave_Button.DisabledState.BorderColor = Color.DarkGray;
             DontSave_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             DontSave_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -227,7 +227,7 @@
             DontSave_Button.Location = new Point(50, 119);
             DontSave_Button.Margin = new Padding(4, 3, 4, 3);
             DontSave_Button.Name = "DontSave_Button";
-            DontSave_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            DontSave_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             DontSave_Button.Size = new Size(100, 30);
             DontSave_Button.TabIndex = 6;
             DontSave_Button.Text = "Don't save";
@@ -254,6 +254,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             TopMost = true;
+            Shown += CustomMessage_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)Icon_pictureBox).EndInit();
             Back_Panel.ResumeLayout(false);
             Back_Panel.PerformLayout();

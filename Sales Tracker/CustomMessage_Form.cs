@@ -17,9 +17,17 @@ namespace Sales_Tracker
             Instance = this;
             DoubleBuffered = true;
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             Theme.SetThemeForForm(this);
 
             SetMessageBox(title, message, icon, buttons);
+        }
+
+        // Form event handlers
+        private void CustomMessage_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         // Methods

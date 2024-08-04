@@ -97,6 +97,7 @@ namespace Sales_Tracker.Settings.Menus
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 3, 4, 3);
             Name = "Security_Form";
+            Shown += Security_Form_Shown;
             Back_Panel.ResumeLayout(false);
             Back_Panel.PerformLayout();
             ResumeLayout(false);

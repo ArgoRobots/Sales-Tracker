@@ -11,6 +11,8 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             Instance = this;
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(Theme.ThemeType));
             UpdateControls();
@@ -26,6 +28,8 @@ namespace Sales_Tracker.Settings.Menus
         {
             // Deselect controls
             General_Label.Focus();
+
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         // Methods

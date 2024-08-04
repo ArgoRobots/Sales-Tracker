@@ -17,6 +17,8 @@ namespace Sales_Tracker
             InitializeComponent();
             Instance = this;
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             AddEventHandlersToTextBoxes();
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
@@ -70,6 +72,10 @@ namespace Sales_Tracker
         {
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
+        }
+        private void Categories_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         // Event handlers

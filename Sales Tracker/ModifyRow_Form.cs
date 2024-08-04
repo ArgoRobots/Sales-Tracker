@@ -16,6 +16,8 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
+            LoadingPanel.ShowLoadingPanel(this);
+
             selectedRow = row;
             selectedTag = row.DataGridView.Tag.ToString();
             receiptFilePath = MainMenu_Form.GetFilePathFromRowTag(row.Tag);
@@ -36,6 +38,7 @@ namespace Sales_Tracker
         {
             controlToFocus?.Focus();
             ResizeControls();
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         // Event handlers

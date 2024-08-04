@@ -7,6 +7,7 @@ namespace Sales_Tracker
         public Export_Form()
         {
             InitializeComponent();
+            LoadingPanel.ShowLoadingPanel(this);
             Theme.SetThemeForForm(this);
         }
         private void Export_Form_Load(object sender, EventArgs e)
@@ -27,6 +28,8 @@ namespace Sales_Tracker
         {
             // This fixes a bug
             BeginInvoke(() => Export_Button.Focus());
+
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         private void Name_TextBox_TextChanged(object sender, EventArgs e)

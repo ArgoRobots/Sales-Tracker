@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Microsoft.VisualBasic.FileIO;
 using Sales_Tracker.Classes;
 
 namespace Sales_Tracker.Startup.Menus
@@ -16,15 +17,15 @@ namespace Sales_Tracker.Startup.Menus
             Instance = this;
             fileWatchers = [];
 
+            LoadingPanel.InitLoadingPanel();
+            LoadingPanel.ShowLoadingPanel(this);
+
             ConstructRightClickOpenRecentMenu();
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
             LoadListOfRecentProjects();
             SetFlowLayoutPanel();
-
-            Theme.SetThemeForForm(this);
-            Theme.UpdateThemeForPanel([rightClickOpenRecent_Panel]);
-            rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.accent_red;
+            SetTheme();
         }
         private void SetFlowLayoutPanel()
         {
@@ -32,6 +33,19 @@ namespace Sales_Tracker.Startup.Menus
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Maximum = 0;
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Visible = false;
             OpenRecent_FlowLayoutPanel.AutoScroll = true;
+        }
+        private void SetTheme()
+        {
+            Theme.SetThemeForForm(this);
+            Theme.UpdateThemeForPanel([rightClickOpenRecent_Panel]);
+            rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.accent_red;
+        }
+
+        // Form event handlers
+        private void GetStarted_Form_Shown(object sender, EventArgs e)
+        {
+            ArgoCompany.RecoverUnsavedWork();
+            LoadingPanel.HideLoadingPanel(this);
         }
 
         // Recent projects
@@ -94,8 +108,8 @@ namespace Sales_Tracker.Startup.Menus
                     {
                         Guna2Button Gbtn = (Guna2Button)sender;
 
-                        // Position and show the right-click panel
-                        rightClickOpenRecent_Panel.Location = new Point(e.X, OpenRecent_FlowLayoutPanel.Top + gBtn.Height);
+                        // Position and show the right click panel
+                        rightClickOpenRecent_Panel.Location = new Point(e.X, OpenRecent_FlowLayoutPanel.Top + gBtn.Top + gBtn.Height);
                         rightClickOpenRecent_Panel.Tag = Gbtn;
                         Controls.Add(rightClickOpenRecent_Panel);
                         rightClickOpenRecent_Panel.BringToFront();
@@ -171,12 +185,6 @@ namespace Sales_Tracker.Startup.Menus
             });
         }
 
-        // Form event handlers
-        private void GetStarted_Form_Shown(object sender, EventArgs e)
-        {
-            ArgoCompany.RecoverUnsavedWork();
-        }
-
         // Event handlers
         private void CreateNewCompany_Click(object sender, EventArgs e)
         {
@@ -206,7 +214,7 @@ namespace Sales_Tracker.Startup.Menus
             rightClickOpenRecent_DeleteBtn = UI.ConstructBtnForMenu("Delete in folder", UI.panelBtnWidth, false, flowPanel);
             rightClickOpenRecent_DeleteBtn.Click += DeleteInFolder;
         }
-        private void ShowInFolder(object? sender, EventArgs e)
+        private void ShowInFolder(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
@@ -219,7 +227,7 @@ namespace Sales_Tracker.Startup.Menus
                 }
             }
         }
-        private void Hide(object? sender, EventArgs e)
+        private void Hide(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
@@ -240,7 +248,7 @@ namespace Sales_Tracker.Startup.Menus
                 OpenRecent_FlowLayoutPanel.Controls.Remove(gBtn);
             }
         }
-        private void DeleteInFolder(object? sender, EventArgs e)
+        private void DeleteInFolder(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
@@ -249,12 +257,21 @@ namespace Sales_Tracker.Startup.Menus
                 string projectDir = gBtn.Tag.ToString();
                 if (File.Exists(projectDir))
                 {
-                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(
-                        projectDir,
-                        Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
-                        Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"Are you sure you want to delete this company? It will be moved to the recycle bin.", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
-                    OpenRecent_FlowLayoutPanel.Controls.Remove(gBtn);
+                    if (result == CustomMessageBoxResult.Yes)
+                    {
+                        FileSystem.DeleteFile(
+                        projectDir,
+                        UIOption.OnlyErrorDialogs,
+                        RecycleOption.SendToRecycleBin);
+
+                        OpenRecent_FlowLayoutPanel.Controls.Remove(gBtn);
+                    }
+                }
+                else
+                {
+                    Hide(null, null);
                 }
             }
         }

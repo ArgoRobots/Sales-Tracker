@@ -213,6 +213,7 @@ namespace Sales_Tracker.Settings
             MinimumSize = new Size(1000, 500);
             Name = "Settings_Form";
             Text = "Settings";
+            Shown += Settings_Form_Shown;
             ResumeLayout(false);
         }
 
