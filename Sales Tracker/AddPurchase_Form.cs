@@ -513,7 +513,7 @@ namespace Sales_Tracker
                 Quantity_TextBox, Quantity_Label,
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3, spaceToOffsetFormNotCenter = 15,
+        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3,
             textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 140, spaceBetweenPanels = 10,
                initialHeightForPanel = 59, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
         private readonly short initialWidthForPanel = 449, maxFlowPanelHeight = 300;
@@ -524,7 +524,7 @@ namespace Sales_Tracker
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
                 ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
-                Receipt_Button.Width - spaceToOffsetFormNotCenter) / 2;
+                Receipt_Button.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
@@ -543,7 +543,7 @@ namespace Sales_Tracker
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
                 PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
                 AmountCharged_TextBox.Width - spaceBetweenControlsHorizontally -
-                Discount_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
+                Discount_TextBox.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Quantity_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -587,7 +587,7 @@ namespace Sales_Tracker
                 Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
-                Receipt_Button.Width - spaceToOffsetFormNotCenter) / 2;
+                Receipt_Button.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
@@ -602,7 +602,7 @@ namespace Sales_Tracker
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
                 PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
                 AmountCharged_TextBox.Width - spaceBetweenControlsHorizontally -
-                Discount_TextBox.Width - spaceToOffsetFormNotCenter) / 2;
+                Discount_TextBox.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;

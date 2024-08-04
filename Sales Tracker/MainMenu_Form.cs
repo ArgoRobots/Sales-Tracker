@@ -18,6 +18,8 @@ namespace Sales_Tracker
         private static readonly string jsonTag = "Tag", note_text = "note";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
         private readonly byte spaceForRightClickPanel = 30;
+        public DateTime fromDate, toDate;
+        public byte spaceToOffsetFormNotCenter = 15;
 
         // Init.
         public static MainMenu_Form? Instance { get; private set; }
@@ -722,6 +724,11 @@ namespace Sales_Tracker
         {
             SortDataGridViewBySearchBox();
         }
+        private void DateRange_Button_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            new DateRange_Form().ShowDialog();
+        }
 
         // Methods for Event handlers
         private static void SelectButton(Guna2Button button)
@@ -742,7 +749,7 @@ namespace Sales_Tracker
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                ShowShowingResultsForLabel(Search_TextBox.Text);
+                ShowShowingResultsForLabel();
             }
             else
             {
@@ -788,10 +795,34 @@ namespace Sales_Tracker
         }
 
         // Search DataGridView
-        private void ShowShowingResultsForLabel(string text)
+        public void ShowShowingResultsForLabel()
         {
-            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
-            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            string text = "Showing results for";
+
+            if (Search_TextBox.Text != "")
+            {
+                text += $" '{Search_TextBox.Text}'";
+            }
+
+            if (Filter_ComboBox.Text != "" && Filter_ComboBox.Text != timeIntervals[0].displayString)
+            {
+                if (Search_TextBox.Text != "")
+                {
+                    text += $"\nin the last {Filter_ComboBox.Text}";
+                }
+            }
+
+            if (!Filter_ComboBox.Enabled)
+            {
+                text += $" from {Tools.FormatDate(fromDate)} to {Tools.FormatDate(toDate)}";
+            }
+
+            ShowingResultsFor_Label.Text = text;
+
+            ShowingResultsFor_Label.Location = new Point(
+                (Width - ShowingResultsFor_Label.Width) / 2 - spaceToOffsetFormNotCenter,
+                MainTop_Panel.Bottom + (Distribution_Chart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
+
             Controls.Add(ShowingResultsFor_Label);
         }
         private void HideShowingResultsForLabel()
@@ -835,6 +866,7 @@ namespace Sales_Tracker
             if (isProgramLoading) { return; }
             CloseAllPanels(null, null);
             FilterDataGridViewByDate();
+            ShowShowingResultsForLabel();
             LoadCharts();
         }
         private void FilterDataGridViewByDate()

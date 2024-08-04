@@ -112,6 +112,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             ManageCompanies_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -149,6 +151,7 @@
             Statistics_Button = new Guna.UI2.WinForms.Guna2Button();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
+            DateRange_Button = new Guna.UI2.WinForms.Guna2Button();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
@@ -571,10 +574,10 @@
             Sales_Button.FillColor = Color.White;
             Sales_Button.Font = new Font("Segoe UI", 9F);
             Sales_Button.ForeColor = Color.Black;
-            Sales_Button.Location = new Point(168, 96);
+            Sales_Button.Location = new Point(138, 96);
             Sales_Button.Name = "Sales_Button";
             Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            Sales_Button.Size = new Size(150, 35);
+            Sales_Button.Size = new Size(120, 35);
             Sales_Button.TabIndex = 7;
             Sales_Button.Text = "Sales";
             Sales_Button.Click += Sales_Button_Click;
@@ -596,7 +599,7 @@
             Purchases_Button.Location = new Point(12, 96);
             Purchases_Button.Name = "Purchases_Button";
             Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            Purchases_Button.Size = new Size(150, 35);
+            Purchases_Button.Size = new Size(120, 35);
             Purchases_Button.TabIndex = 6;
             Purchases_Button.Text = "Purchases";
             Purchases_Button.Click += Purchases_Button_Click;
@@ -724,7 +727,7 @@
             Filter_ComboBox.Font = new Font("Segoe UI", 10F);
             Filter_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Filter_ComboBox.ItemHeight = 30;
-            Filter_ComboBox.Location = new Point(1451, 96);
+            Filter_ComboBox.Location = new Point(1346, 96);
             Filter_ComboBox.Name = "Filter_ComboBox";
             Filter_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
             Filter_ComboBox.Size = new Size(140, 36);
@@ -738,7 +741,7 @@
             LineGraph_Label.AutoSize = true;
             LineGraph_Label.BackColor = Color.Transparent;
             LineGraph_Label.Font = new Font("Segoe UI", 11.25F);
-            LineGraph_Label.Location = new Point(1114, 104);
+            LineGraph_Label.Location = new Point(1029, 104);
             LineGraph_Label.Name = "LineGraph_Label";
             LineGraph_Label.Size = new Size(79, 20);
             LineGraph_Label.TabIndex = 16;
@@ -755,7 +758,7 @@
             LineGraph_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
             LineGraph_ToggleSwitch.CheckedState.InnerColor = Color.White;
             LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges33;
-            LineGraph_ToggleSwitch.Location = new Point(1199, 104);
+            LineGraph_ToggleSwitch.Location = new Point(1114, 104);
             LineGraph_ToggleSwitch.Name = "LineGraph_ToggleSwitch";
             LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges34;
             LineGraph_ToggleSwitch.Size = new Size(40, 20);
@@ -780,10 +783,10 @@
             Statistics_Button.FillColor = Color.White;
             Statistics_Button.Font = new Font("Segoe UI", 9F);
             Statistics_Button.ForeColor = Color.Black;
-            Statistics_Button.Location = new Point(324, 96);
+            Statistics_Button.Location = new Point(264, 96);
             Statistics_Button.Name = "Statistics_Button";
             Statistics_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
-            Statistics_Button.Size = new Size(150, 35);
+            Statistics_Button.Size = new Size(120, 35);
             Statistics_Button.TabIndex = 18;
             Statistics_Button.Text = "Statistics";
             Statistics_Button.Click += Statistics_Button_Click;
@@ -800,7 +803,7 @@
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(1245, 96);
+            Search_TextBox.Location = new Point(1160, 96);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
@@ -808,7 +811,7 @@
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
             Search_TextBox.ShortcutsEnabled = false;
-            Search_TextBox.Size = new Size(200, 36);
+            Search_TextBox.Size = new Size(180, 36);
             Search_TextBox.TabIndex = 55;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
@@ -817,17 +820,42 @@
             // 
             ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
             ShowingResultsFor_Label.AutoSize = true;
-            ShowingResultsFor_Label.Font = new Font("Segoe UI", 12.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ShowingResultsFor_Label.Location = new Point(719, 101);
+            ShowingResultsFor_Label.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ShowingResultsFor_Label.Location = new Point(719, 97);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
-            ShowingResultsFor_Label.Size = new Size(166, 23);
+            ShowingResultsFor_Label.Size = new Size(157, 21);
             ShowingResultsFor_Label.TabIndex = 56;
             ShowingResultsFor_Label.Text = "Showing results for";
+            ShowingResultsFor_Label.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // DateRange_Button
+            // 
+            DateRange_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            DateRange_Button.BackColor = Color.Transparent;
+            DateRange_Button.BorderColor = Color.LightGray;
+            DateRange_Button.BorderRadius = 2;
+            DateRange_Button.BorderThickness = 1;
+            DateRange_Button.CustomizableEdges = customizableEdges39;
+            DateRange_Button.DisabledState.BorderColor = Color.DarkGray;
+            DateRange_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            DateRange_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            DateRange_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            DateRange_Button.FillColor = Color.White;
+            DateRange_Button.Font = new Font("Segoe UI", 9F);
+            DateRange_Button.ForeColor = Color.Black;
+            DateRange_Button.Location = new Point(1492, 96);
+            DateRange_Button.Name = "DateRange_Button";
+            DateRange_Button.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            DateRange_Button.Size = new Size(100, 36);
+            DateRange_Button.TabIndex = 17;
+            DateRange_Button.Text = "Date range";
+            DateRange_Button.Click += DateRange_Button_Click;
             // 
             // MainMenu_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1604, 1041);
+            Controls.Add(DateRange_Button);
             Controls.Add(ShowingResultsFor_Label);
             Controls.Add(Search_TextBox);
             Controls.Add(Statistics_Button);
@@ -890,7 +918,6 @@
         private Guna.Charts.WinForms.GunaChart Totals_Chart;
         private Guna.Charts.WinForms.GunaChart Distribution_Chart;
         private Guna.Charts.WinForms.GunaChart Profits_Chart;
-        private Guna.UI2.WinForms.Guna2ComboBox Filter_ComboBox;
         private Label LineGraph_Label;
         public Guna.UI2.WinForms.Guna2ToggleSwitch LineGraph_ToggleSwitch;
         public Guna.UI2.WinForms.Guna2Button ManageProducts_Button;
@@ -905,5 +932,7 @@
         public Label PaymentFee_Label;
         private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
+        public Guna.UI2.WinForms.Guna2Button DateRange_Button;
+        public Guna.UI2.WinForms.Guna2ComboBox Filter_ComboBox;
     }
 }

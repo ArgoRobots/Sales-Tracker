@@ -6,6 +6,7 @@
 
         public static readonly List<SearchBox.SearchResult> countries =
         [
+            new SearchBox.SearchResult("Unkown", null, 0),
             new SearchBox.SearchResult("United States", Properties.Flags.United_States_of_America, 0),
             new SearchBox.SearchResult("China", Properties.Flags.China, 0),
             new SearchBox.SearchResult("Japan", Properties.Flags.Japan, 0),
