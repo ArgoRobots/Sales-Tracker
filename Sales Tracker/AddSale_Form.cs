@@ -880,6 +880,11 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(AmountCredited_TextBox.Text);
 
+            if (Properties.Settings.Default.SalesReceipts)
+            {
+                allFieldsFilled &= Controls.Contains(SelectedReceipt_Label);
+            }
+
             bool allMultipleFieldsFilled = true;
 
             if (MultipleItems_CheckBox.Checked)

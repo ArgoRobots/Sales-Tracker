@@ -4,12 +4,13 @@ namespace Sales_Tracker.Classes
 {
     internal class Currency
     {
+        // In alphabetical order
         public enum CurrencyTypes
         {
+            AUD,
             CAD,
-            USD,
             EUR,
-            AUD
+            USD
         }
 
         private static readonly HttpClient httpClient = new();
