@@ -56,11 +56,17 @@ namespace Sales_Tracker
         }
         private void SetFromDateTimePickerToOldestDate()
         {
-            DateTime oldestDate = new[]
+            DateTime oldestDate = DateTime.Now;  // Default to today if no rows are found
+
+            // Check if there are rows in both DataGridViews
+            if (MainMenu_Form.Instance.Sales_DataGridView.Rows.Count > 0 || MainMenu_Form.Instance.Purchases_DataGridView.Rows.Count > 0)
             {
-                GetOldestDateFromDataGridView(MainMenu_Form.Instance.Sales_DataGridView),
-                GetOldestDateFromDataGridView(MainMenu_Form.Instance.Purchases_DataGridView)
-            }.Min();
+                oldestDate = new[]
+                {
+                    GetOldestDateFromDataGridView(MainMenu_Form.Instance.Sales_DataGridView),
+                    GetOldestDateFromDataGridView(MainMenu_Form.Instance.Purchases_DataGridView)
+                }.Min();
+            }
 
             From_DateTimePicker.Value = oldestDate;
         }

@@ -45,7 +45,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(484, 411);
+            ClientSize = new Size(484, 381);
             Controls.Add(PasswordManager_Label);
             ForeColor = SystemColors.ControlText;
             FormBorderStyle = FormBorderStyle.SizableToolWindow;

@@ -52,8 +52,8 @@ namespace Sales_Tracker.Settings.Menus
         // Methods
         private void SetPassword()
         {
-            PasswordManager.Password = Password_TextBox.Text; 
-
+            PasswordManager.Password = Password_TextBox.Text;
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.thingsThatHaveChangedInFile, $"Added password");
             CustomMessageBox.Show("Argo Sales Tracker", "Password set successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             Close();
         }

@@ -9,7 +9,13 @@ namespace Sales_Tracker.Password
         {
             InitializeComponent();
             LoadingPanel.ShowLoadingPanel(this);
+            AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            Password_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Password_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
 
         // Form event handlers
