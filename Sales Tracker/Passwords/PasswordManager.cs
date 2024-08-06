@@ -1,6 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 
-namespace Sales_Tracker.Password
+namespace Sales_Tracker.Passwords
 {
     internal class PasswordManager
     {

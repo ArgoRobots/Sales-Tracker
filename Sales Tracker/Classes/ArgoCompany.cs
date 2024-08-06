@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.Password;
+﻿using Sales_Tracker.Passwords;
 using Sales_Tracker.Startup.Menus;
 using System.Text;
 
@@ -84,14 +84,18 @@ namespace Sales_Tracker.Classes
             {
                 if (!OnlyAllowOneInstanceOfAProject(Path.GetFileNameWithoutExtension(dialog.FileName)))
                 {
+                    applicationMutex?.Dispose();  // Reset
                     return;
                 }
 
-                Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName);
+                if (!Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName))
+                {
+                    return;
+                }
                 GetStarted_Form.Instance.ShowMainMenu();
             }
         }
-        private static void Open(string filePath, string name)
+        private static bool Open(string filePath, string name)
         {
             // Save new ProjectDirectory
             Properties.Settings.Default.ProjectDirectory = filePath;
@@ -102,7 +106,8 @@ namespace Sales_Tracker.Classes
 
             if (!PasswordManager.EnterPassword())
             {
-                return;
+                applicationMutex?.Dispose();  // Reset
+                return false;
             }
 
             // Save recently opened projects
@@ -112,6 +117,8 @@ namespace Sales_Tracker.Classes
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
             Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
             DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+
+            return true;
         }
         public static void Rename(string name)
         {
@@ -167,12 +174,16 @@ namespace Sales_Tracker.Classes
 
                 Directories.DeleteDirectory(Directories.tempCompany_dir, true);
 
-                Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName);
+                if (!Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName))
+                {
+                    return;
+                }
+
                 MainMenu_Form.Instance.LoadData();
             }
         }
 
-        private static Mutex? applicationMutex = null;
+        public static Mutex? applicationMutex = null;
         public static bool OnlyAllowOneInstanceOfAProject(string projectFilePath)
         {
             if (!CreateMutex(projectFilePath))

@@ -1,5 +1,5 @@
 ﻿using Sales_Tracker.Classes;
-using Sales_Tracker.Password;
+using Sales_Tracker.Passwords;
 
 namespace Sales_Tracker.Settings.Menus
 {

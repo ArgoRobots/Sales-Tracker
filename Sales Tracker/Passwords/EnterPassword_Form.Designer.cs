@@ -1,4 +1,4 @@
-﻿namespace Sales_Tracker.Password
+﻿namespace Sales_Tracker.Passwords
 {
     partial class EnterPassword_Form
     {

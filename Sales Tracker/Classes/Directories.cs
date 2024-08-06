@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.Password;
+﻿using Sales_Tracker.Passwords;
 using System.Formats.Tar;
 using System.IO.Compression;
 

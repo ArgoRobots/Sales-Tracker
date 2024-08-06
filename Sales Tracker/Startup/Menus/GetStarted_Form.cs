@@ -1,7 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Microsoft.VisualBasic.FileIO;
 using Sales_Tracker.Classes;
-using Sales_Tracker.Password;
+using Sales_Tracker.Passwords;
 
 namespace Sales_Tracker.Startup.Menus
 {
@@ -84,6 +84,7 @@ namespace Sales_Tracker.Startup.Menus
                     string projectName = Path.GetFileNameWithoutExtension(Gbtn.Tag.ToString());
                     if (!ArgoCompany.OnlyAllowOneInstanceOfAProject(projectName))
                     {
+                        ArgoCompany.applicationMutex?.Dispose();  // Reset
                         return;
                     }
 
@@ -97,6 +98,7 @@ namespace Sales_Tracker.Startup.Menus
 
                     if (!PasswordManager.EnterPassword())
                     {
+                        ArgoCompany.applicationMutex?.Dispose();  // Reset
                         return;
                     }
 

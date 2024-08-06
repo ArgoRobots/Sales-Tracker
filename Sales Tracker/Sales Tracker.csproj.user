@@ -37,7 +37,7 @@
     <Compile Update="ModifyRow_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Password\EnterPassword_Form.cs">
+    <Compile Update="Passwords\EnterPassword_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Products_Form.cs">
@@ -46,13 +46,13 @@
     <Compile Update="Receipts_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Password\AddPassword_Form.cs">
+    <Compile Update="Passwords\AddPassword_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Settings\Menus\General_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Password\PasswordManager_Form.cs">
+    <Compile Update="Passwords\PasswordManager_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Settings\Menus\Security_Form.cs">

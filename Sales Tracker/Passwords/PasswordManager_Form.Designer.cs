@@ -1,4 +1,4 @@
-﻿namespace Sales_Tracker.Settings.Menus
+﻿namespace Sales_Tracker.Passwords
 {
     partial class PasswordManager_Form
     {

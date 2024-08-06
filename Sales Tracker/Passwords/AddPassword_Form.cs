@@ -1,7 +1,6 @@
 ﻿using Sales_Tracker.Classes;
-using Sales_Tracker.Password;
 
-namespace Sales_Tracker.Settings.Menus
+namespace Sales_Tracker.Passwords
 {
     public partial class AddPassword_Form : Form
     {
