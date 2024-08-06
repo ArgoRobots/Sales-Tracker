@@ -31,7 +31,7 @@ namespace Sales_Tracker.Settings.Menus
             SetPassword_Button.Enabled = PasswordManager.ValidatePassword(
                 LengthRequirement_Label,
                 UppercaseRequirement_Label,
-                DigitRequirement_Label,
+                NumberRequirement_Label,
                 SpecialCharacterRequirement_Label,
                 Password_TextBox.Text
             );

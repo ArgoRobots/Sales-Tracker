@@ -28,16 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             AddPassword_Label = new Label();
             Password_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             SetPassword_Button = new Guna.UI2.WinForms.Guna2Button();
             LengthRequirement_Label = new Label();
             UppercaseRequirement_Label = new Label();
-            DigitRequirement_Label = new Label();
+            NumberRequirement_Label = new Label();
             SpecialCharacterRequirement_Label = new Label();
             Message_Label = new Label();
             SuspendLayout();
@@ -55,7 +55,7 @@
             // Password_TextBox
             // 
             Password_TextBox.Anchor = AnchorStyles.Top;
-            Password_TextBox.CustomizableEdges = customizableEdges1;
+            Password_TextBox.CustomizableEdges = customizableEdges9;
             Password_TextBox.DefaultText = "";
             Password_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Password_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -70,7 +70,7 @@
             Password_TextBox.PasswordChar = '\0';
             Password_TextBox.PlaceholderText = "Password";
             Password_TextBox.SelectedText = "";
-            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Password_TextBox.ShortcutsEnabled = false;
             Password_TextBox.Size = new Size(250, 36);
             Password_TextBox.TabIndex = 55;
@@ -84,7 +84,7 @@
             SetPassword_Button.BorderColor = Color.LightGray;
             SetPassword_Button.BorderRadius = 2;
             SetPassword_Button.BorderThickness = 1;
-            SetPassword_Button.CustomizableEdges = customizableEdges3;
+            SetPassword_Button.CustomizableEdges = customizableEdges11;
             SetPassword_Button.Enabled = false;
             SetPassword_Button.FillColor = Color.White;
             SetPassword_Button.Font = new Font("Segoe UI", 9.5F);
@@ -92,7 +92,7 @@
             SetPassword_Button.Location = new Point(167, 335);
             SetPassword_Button.Margin = new Padding(4, 3, 4, 3);
             SetPassword_Button.Name = "SetPassword_Button";
-            SetPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            SetPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             SetPassword_Button.Size = new Size(150, 36);
             SetPassword_Button.TabIndex = 56;
             SetPassword_Button.Tag = "";
@@ -104,7 +104,7 @@
             LengthRequirement_Label.Anchor = AnchorStyles.Top;
             LengthRequirement_Label.AutoSize = true;
             LengthRequirement_Label.Font = new Font("Segoe UI", 12F);
-            LengthRequirement_Label.Location = new Point(142, 132);
+            LengthRequirement_Label.Location = new Point(147, 132);
             LengthRequirement_Label.Name = "LengthRequirement_Label";
             LengthRequirement_Label.Size = new Size(149, 21);
             LengthRequirement_Label.TabIndex = 57;
@@ -115,29 +115,29 @@
             UppercaseRequirement_Label.Anchor = AnchorStyles.Top;
             UppercaseRequirement_Label.AutoSize = true;
             UppercaseRequirement_Label.Font = new Font("Segoe UI", 12F);
-            UppercaseRequirement_Label.Location = new Point(142, 192);
+            UppercaseRequirement_Label.Location = new Point(147, 192);
             UppercaseRequirement_Label.Name = "UppercaseRequirement_Label";
             UppercaseRequirement_Label.Size = new Size(186, 21);
             UppercaseRequirement_Label.TabIndex = 58;
             UppercaseRequirement_Label.Text = "Contains uppercase letter";
             // 
-            // DigitRequirement_Label
+            // NumberRequirement_Label
             // 
-            DigitRequirement_Label.Anchor = AnchorStyles.Top;
-            DigitRequirement_Label.AutoSize = true;
-            DigitRequirement_Label.Font = new Font("Segoe UI", 12F);
-            DigitRequirement_Label.Location = new Point(142, 162);
-            DigitRequirement_Label.Name = "DigitRequirement_Label";
-            DigitRequirement_Label.Size = new Size(130, 21);
-            DigitRequirement_Label.TabIndex = 60;
-            DigitRequirement_Label.Text = "Contains number";
+            NumberRequirement_Label.Anchor = AnchorStyles.Top;
+            NumberRequirement_Label.AutoSize = true;
+            NumberRequirement_Label.Font = new Font("Segoe UI", 12F);
+            NumberRequirement_Label.Location = new Point(147, 162);
+            NumberRequirement_Label.Name = "NumberRequirement_Label";
+            NumberRequirement_Label.Size = new Size(130, 21);
+            NumberRequirement_Label.TabIndex = 60;
+            NumberRequirement_Label.Text = "Contains number";
             // 
             // SpecialCharacterRequirement_Label
             // 
             SpecialCharacterRequirement_Label.Anchor = AnchorStyles.Top;
             SpecialCharacterRequirement_Label.AutoSize = true;
             SpecialCharacterRequirement_Label.Font = new Font("Segoe UI", 12F);
-            SpecialCharacterRequirement_Label.Location = new Point(142, 222);
+            SpecialCharacterRequirement_Label.Location = new Point(147, 222);
             SpecialCharacterRequirement_Label.Name = "SpecialCharacterRequirement_Label";
             SpecialCharacterRequirement_Label.Size = new Size(190, 21);
             SpecialCharacterRequirement_Label.TabIndex = 61;
@@ -162,7 +162,7 @@
             ClientSize = new Size(484, 381);
             Controls.Add(Message_Label);
             Controls.Add(SpecialCharacterRequirement_Label);
-            Controls.Add(DigitRequirement_Label);
+            Controls.Add(NumberRequirement_Label);
             Controls.Add(UppercaseRequirement_Label);
             Controls.Add(LengthRequirement_Label);
             Controls.Add(SetPassword_Button);
@@ -184,7 +184,7 @@
         private Guna.UI2.WinForms.Guna2Button SetPassword_Button;
         private Label LengthRequirement_Label;
         private Label UppercaseRequirement_Label;
-        private Label DigitRequirement_Label;
+        private Label NumberRequirement_Label;
         private Label SpecialCharacterRequirement_Label;
         private Label Message_Label;
     }
