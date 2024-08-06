@@ -214,7 +214,8 @@ namespace Sales_Tracker.Classes
             }
             else
             {
-                return lines[^1].Split(':')[1];
+                string password = DecryptString(lines[^1], key, iv);
+                return password.Split(":")[1];
             }
         }
         public static void DecryptAndWriteToFile(string inputFile, string outputFile, byte[] key, byte[] iv)
