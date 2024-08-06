@@ -29,6 +29,7 @@ namespace Sales_Tracker.Classes
         public static byte[] AesKey => aesKey;
         public static byte[] AesIV => aesIV;
 
+        // Streams
         public static MemoryStream EncryptStream(Stream inputStream, byte[] key, byte[] iv)
         {
             MemoryStream outputStream = new();
@@ -126,6 +127,52 @@ namespace Sales_Tracker.Classes
                 return (null, []);
             }
         }
+
+        // Strings
+        public static string EncryptString(string plainText, byte[] key, byte[] iv)
+        {
+            using Aes aesAlg = Aes.Create();
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
+
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+            using MemoryStream msEncrypt = new();
+            using CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write);
+            using StreamWriter swEncrypt = new(csEncrypt);
+
+            swEncrypt.Write(plainText);
+            swEncrypt.Flush();
+            csEncrypt.FlushFinalBlock();
+
+            return Convert.ToBase64String(msEncrypt.ToArray());
+        }
+        public static string? DecryptString(string cipherText, byte[] key, byte[] iv)
+        {
+            using Aes aesAlg = Aes.Create();
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
+
+            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            byte[] cipherTextBytes = Convert.FromBase64String(cipherText);
+
+            using MemoryStream msDecrypt = new(cipherTextBytes);
+            using CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Read);
+            using StreamReader srDecrypt = new(csDecrypt);
+
+            try
+            {
+                return srDecrypt.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(0, $"Error during string decryption: {ex.Message}");
+                return null;
+            }
+        }
+
+        // Methods
         public static string? GetPasswordFromFile(string inputFile, byte[] key, byte[] iv)
         {
             if (!File.Exists(inputFile))
@@ -161,7 +208,8 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Get the second last line from the footer
-                string password = footerLines[^1].Split(':')[1];
+                string password = DecryptString(footerLines[^1], key, iv);
+                password = password.Split(':')[1];
                 return string.IsNullOrEmpty(password) ? null : password;
             }
             else

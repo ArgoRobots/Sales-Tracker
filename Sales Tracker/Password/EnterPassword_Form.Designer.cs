@@ -70,7 +70,7 @@
             Password_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Password_TextBox.Font = new Font("Segoe UI", 9F);
             Password_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Password_TextBox.Location = new Point(117, 93);
+            Password_TextBox.Location = new Point(117, 90);
             Password_TextBox.MaxLength = 32;
             Password_TextBox.Name = "Password_TextBox";
             Password_TextBox.PasswordChar = '\0';

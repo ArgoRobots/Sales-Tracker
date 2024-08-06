@@ -17,6 +17,9 @@ namespace Sales_Tracker.Settings.Menus
         {
             CurrentPassword_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             CurrentPassword_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            NewPassword_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            NewPassword_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
 
         // Form event handlers

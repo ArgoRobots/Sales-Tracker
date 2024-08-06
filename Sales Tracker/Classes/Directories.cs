@@ -343,8 +343,11 @@ namespace Sales_Tracker.Classes
                         encryptedMemoryStream.CopyTo(destFileStream);
                     }
 
+                    // Encrypt the password
+                    string encryptedPassword = EncryptionHelper.EncryptString(EncryptionHelper.passwordTag + PasswordManager.Password, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+
                     // Create and append the footer
-                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + EncryptionHelper.encryptionHeader + Environment.NewLine + EncryptionHelper.passwordTag + PasswordManager.Password;
+                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + EncryptionHelper.encryptionHeader + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
 
                     Log.Write(2, $"File successfully created and encrypted: {destinationFile}");
@@ -357,8 +360,11 @@ namespace Sales_Tracker.Classes
                         tarMemoryStream.CopyTo(destFileStream);
                     }
 
-                    // Create and append the footer
-                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + Environment.NewLine + EncryptionHelper.passwordTag + PasswordManager.Password;
+                    // Encrypt the password
+                    string encryptedPassword = EncryptionHelper.EncryptString(EncryptionHelper.passwordTag + PasswordManager.Password, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+
+                    // Create and append the footer with the encrypted password
+                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
 
                     Log.Write(2, $"File successfully created: {destinationFile}");
