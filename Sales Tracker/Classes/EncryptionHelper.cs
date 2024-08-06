@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 namespace Sales_Tracker.Classes
@@ -7,7 +8,7 @@ namespace Sales_Tracker.Classes
     {
         private static byte[] aesKey;
         private static byte[] aesIV;
-        public const string EncryptionHeader = "ENCRYPTED";
+        public const string encryptedTag = "encrypted:", encryptionHeader = "true", passwordTag = "key:";
         private static readonly string ConfigPath = "config.json";
 
         public static void Initialize()
@@ -28,26 +29,22 @@ namespace Sales_Tracker.Classes
         public static byte[] AesKey => aesKey;
         public static byte[] AesIV => aesIV;
 
-        public static void EncryptStream(Stream inputStream, Stream outputStream, byte[] key, byte[] iv)
+        public static MemoryStream EncryptStream(Stream inputStream, byte[] key, byte[] iv)
         {
+            MemoryStream outputStream = new();
+
             try
             {
                 using Aes aes = Aes.Create();
                 aes.Key = key;
                 aes.IV = iv;
 
-                // Write the header indicating encryption
-                using (StreamWriter writer = new(outputStream, leaveOpen: true))
-                {
-                    writer.WriteLine(EncryptionHeader);
-                }
+                // Create the CryptoStream for encryption
+                CryptoStream cryptoStream = new(outputStream, aes.CreateEncryptor(), CryptoStreamMode.Write, leaveOpen: true);
 
-                outputStream.Flush();  // Ensure the header is written before the encryption starts
-
-                using (CryptoStream cryptoStream = new(outputStream, aes.CreateEncryptor(), CryptoStreamMode.Write, leaveOpen: true))
-                {
-                    inputStream.CopyTo(cryptoStream);
-                }
+                // Copy the inputStream to the CryptoStream
+                inputStream.CopyTo(cryptoStream);
+                cryptoStream.FlushFinalBlock();
 
                 Log.Write(2, "Encryption successful");
             }
@@ -55,38 +52,140 @@ namespace Sales_Tracker.Classes
             {
                 Log.Write(0, $"Error during encryption: {ex.Message}");
             }
-        }
-        public static void DecryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)
-        {
-            using (FileStream inputFileStream = new(inputFile, FileMode.Open, FileAccess.Read))
-            using (StreamReader reader = new(inputFileStream))
-            {
-                // Read the header to check if the file is encrypted
-                string header = reader.ReadLine();
 
-                if (header != EncryptionHeader)
+            outputStream.Position = 0;
+            return outputStream;
+        }
+        public static (MemoryStream?, string[]) DecryptFileToMemoryStream(string inputFile, byte[] key, byte[] iv)
+        {
+            try
+            {
+                // Read the file content as bytes
+                byte[] fileContentBytes = File.ReadAllBytes(inputFile);
+
+                string[] footerLines = [];
+
+                // Find the position of the last two newline characters
+                int newlineCount = 0;
+                int footerStartIndex = -1;
+
+                for (int i = fileContentBytes.Length - 1; i >= 0; i--)
                 {
-                    // Reset the stream position and copy the file as is if it's not encrypted
-                    inputFileStream.Position = 0;
-                    inputFileStream.CopyTo(new FileStream(outputFile, FileMode.Create, FileAccess.Write));
-                    return;
+                    if (fileContentBytes[i] == '\n')
+                    {
+                        newlineCount++;
+                        if (newlineCount == 2)
+                        {
+                            footerStartIndex = i + 1;
+                            break;
+                        }
+                    }
                 }
 
-                // Move the stream position back to start reading the encrypted content
-                inputFileStream.Position = header.Length + Environment.NewLine.Length;
+                // Ensure footerStartIndex was found
+                if (footerStartIndex != -1)
+                {
+                    // Extract the footer content from the identified position
+                    string footerContent = Encoding.UTF8.GetString(fileContentBytes, footerStartIndex, fileContentBytes.Length - footerStartIndex);
+                    footerLines = footerContent.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-                using FileStream outputFileStream = new(outputFile, FileMode.Create, FileAccess.Write);
-                using Aes aes = Aes.Create();
-                aes.Key = key;
-                aes.IV = iv;
+                    fileContentBytes = fileContentBytes[..(footerStartIndex - 2)];
+                }
+                else
+                {
+                    Log.Write(0, "Footer start index not found.");
+                }
 
-                using CryptoStream cryptoStream = new(outputFileStream, aes.CreateDecryptor(), CryptoStreamMode.Write);
-                inputFileStream.CopyTo(cryptoStream);
+                // Check if the length of the data is valid for decryption
+                if (fileContentBytes.Length % 16 != 0)
+                {
+                    Log.Write(0, $"The input data length {fileContentBytes.Length} is not a multiple of the AES block size (16 bytes).");
+                    return (null, footerLines);
+                }
+
+                // Create a MemoryStream from the byte array
+                using MemoryStream inputMemoryStream = new(fileContentBytes);
+
+                // Decrypt the content
+                MemoryStream decryptedStream = new();
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = key;
+                    aes.IV = iv;
+
+                    using CryptoStream cryptoStream = new(inputMemoryStream, aes.CreateDecryptor(), CryptoStreamMode.Read);
+                    cryptoStream.CopyTo(decryptedStream);
+                }
+
+                decryptedStream.Position = 0;
+                return (decryptedStream, footerLines);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(0, $"Error during decryption: {ex.Message}");
+                return (null, []);
+            }
+        }
+        public static string? GetPasswordFromFile(string inputFile, byte[] key, byte[] iv)
+        {
+            if (!File.Exists(inputFile))
+            {
+                return null;
             }
 
-            // Force garbage collection to ensure all file handles are released
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            // Check if the file is encrypted and decrypt if necessary
+            using FileStream fs = new(inputFile, FileMode.Open, FileAccess.Read);
+            using StreamReader reader = new(fs);
+
+            // Read all lines to determine the encryption status from the second-to-last line
+            List<string> lines = [];
+            while (!reader.EndOfStream)
+            {
+                lines.Add(reader.ReadLine());
+            }
+
+            if (lines.Count < 2)
+            {
+                return null;
+            }
+
+            string secondLastLine = lines[^2];
+
+            // Check if the file is encrypted by examining the second-to-last line
+            if (secondLastLine.Split(':')[1] == encryptionHeader)
+            {
+                (MemoryStream decryptedStream, string[] footerLines) = DecryptFileToMemoryStream(inputFile, key, iv);
+                if (decryptedStream == null)
+                {
+                    return null;
+                }
+
+                // Get the second last line from the footer
+                string password = footerLines[^1].Split(':')[1];
+                return string.IsNullOrEmpty(password) ? null : password;
+            }
+            else
+            {
+                return lines[^1].Split(':')[1];
+            }
+        }
+        public static void DecryptAndWriteToFile(string inputFile, string outputFile, byte[] key, byte[] iv)
+        {
+            (MemoryStream decryptedStream, string[] footerLines) = DecryptFileToMemoryStream(inputFile, key, iv);
+            if (decryptedStream == null)
+            {
+                return;
+            }
+
+            using FileStream outputFileStream = new(outputFile, FileMode.Create, FileAccess.Write);
+            decryptedStream.CopyTo(outputFileStream);
+
+            // Optionally, write the footer lines to the output file if needed
+            using StreamWriter writer = new(outputFileStream, Encoding.UTF8, leaveOpen: true);
+            foreach (string line in footerLines)
+            {
+                writer.WriteLine(line);
+            }
         }
         public static byte[] GenerateRandomKey(int size)
         {

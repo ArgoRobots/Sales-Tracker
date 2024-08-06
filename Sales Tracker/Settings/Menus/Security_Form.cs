@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Password;
 
 namespace Sales_Tracker.Settings.Menus
 {
@@ -14,6 +15,7 @@ namespace Sales_Tracker.Settings.Menus
             LoadingPanel.ShowLoadingPanel(this);
 
             UpdateControls();
+            SetPasswordButton();
             UpdateTheme();
         }
         public void UpdateTheme()
@@ -27,7 +29,50 @@ namespace Sales_Tracker.Settings.Menus
             LoadingPanel.HideLoadingPanel(this);
         }
 
+        // Event handlers
+        private void EncryptFiles_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!EncryptFiles_CheckBox.Checked)
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Argo Sales Tracker",
+                    "Disabling this feature will make your data vulnerable to unauthorized access. Are you sure you want to disable this feature?",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.YesNo);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    EncryptFiles_CheckBox.Checked = true;
+                }
+            }
+        }
+        private void AddPassword_Button_Click(object sender, EventArgs e)
+        {
+            string password = PasswordManager.Password;
+            if (password == null)
+            {
+                new AddPassword_Form().ShowDialog();
+            }
+            else
+            {
+                new PasswordManager_Form().ShowDialog();
+            }
+            SetPasswordButton();
+        }
+
         // Methods
+        private void SetPasswordButton()
+        {
+            string password = PasswordManager.Password;
+            if (password == null)
+            {
+                AddPassword_Button.Text = "Add password protection";
+            }
+            else
+            {
+                AddPassword_Button.Text = "Manage password";
+            }
+        }
         public void UpdateControls()
         {
             EncryptFiles_CheckBox.Checked = Properties.Settings.Default.EncryptFiles;

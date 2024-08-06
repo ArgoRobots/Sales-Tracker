@@ -13,7 +13,13 @@ namespace Sales_Tracker.Classes
             Properties.Settings.Default.PurchaseReceipts = General_Form.Instance.PurchaseReceipts_CheckBox.Checked;
             Properties.Settings.Default.SalesReceipts = General_Form.Instance.SalesReceipts_CheckBox.Checked;
 
-            Properties.Settings.Default.EncryptFiles = Security_Form.Instance.EncryptFiles_CheckBox.Checked;
+            // If the EncryptFiles setting has changed
+            if (Properties.Settings.Default.EncryptFiles != Security_Form.Instance.EncryptFiles_CheckBox.Checked)
+            {
+                Properties.Settings.Default.EncryptFiles = Security_Form.Instance.EncryptFiles_CheckBox.Checked;
+                ArgoCompany.SaveAll();
+            }
+
             Properties.Settings.Default.Save();
         }
         public static void ResetAllToDefault()

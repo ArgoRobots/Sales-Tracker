@@ -43,7 +43,7 @@ namespace Sales_Tracker
 
             HideShowingResultsForLabel();
         }
-        private void LoadData()
+        public void LoadData()
         {
             LoadCategoriesFromFile(Directories.categoryPurchases_file, categoryPurchaseList);
             LoadCategoriesFromFile(Directories.categorySales_file, categorySaleList);
@@ -51,10 +51,13 @@ namespace Sales_Tracker
             accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
             companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
 
-            LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
-            AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
+            if (Purchases_DataGridView.Columns.Count == 0)
+            {
+                LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
+                LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
+            }
 
-            LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
+            AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
 
             // Load image into column header

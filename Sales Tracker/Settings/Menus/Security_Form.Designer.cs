@@ -29,8 +29,11 @@ namespace Sales_Tracker.Settings.Menus
         /// </summary>
         private void InitializeComponent()
         {
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Security_Label = new Label();
             Back_Panel = new Panel();
+            AddPassword_Button = new Guna.UI2.WinForms.Guna2Button();
             EncryptFiles_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             guna2vSeparator1 = new Guna.UI2.WinForms.Guna2VSeparator();
             Back_Panel.SuspendLayout();
@@ -50,12 +53,31 @@ namespace Sales_Tracker.Settings.Menus
             // Back_Panel
             // 
             Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Back_Panel.Controls.Add(AddPassword_Button);
             Back_Panel.Controls.Add(EncryptFiles_CheckBox);
             Back_Panel.Controls.Add(guna2vSeparator1);
             Back_Panel.Location = new Point(87, 209);
             Back_Panel.Name = "Back_Panel";
             Back_Panel.Size = new Size(700, 100);
             Back_Panel.TabIndex = 327;
+            // 
+            // AddPassword_Button
+            // 
+            AddPassword_Button.BorderColor = Color.LightGray;
+            AddPassword_Button.BorderRadius = 2;
+            AddPassword_Button.BorderThickness = 1;
+            AddPassword_Button.CustomizableEdges = customizableEdges1;
+            AddPassword_Button.FillColor = Color.FromArgb(250, 250, 250);
+            AddPassword_Button.Font = new Font("Segoe UI", 9F);
+            AddPassword_Button.ForeColor = Color.Black;
+            AddPassword_Button.Location = new Point(260, 47);
+            AddPassword_Button.Margin = new Padding(3, 4, 3, 4);
+            AddPassword_Button.Name = "AddPassword_Button";
+            AddPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            AddPassword_Button.Size = new Size(180, 28);
+            AddPassword_Button.TabIndex = 276;
+            AddPassword_Button.Text = "Add password protection";
+            AddPassword_Button.Click += AddPassword_Button_Click;
             // 
             // EncryptFiles_CheckBox
             // 
@@ -66,17 +88,18 @@ namespace Sales_Tracker.Settings.Menus
             EncryptFiles_CheckBox.CheckedState.BorderThickness = 0;
             EncryptFiles_CheckBox.CheckedState.FillColor = Color.FromArgb(62, 101, 207);
             EncryptFiles_CheckBox.Font = new Font("Segoe UI", 9.75F);
-            EncryptFiles_CheckBox.Location = new Point(241, 4);
+            EncryptFiles_CheckBox.Location = new Point(161, 4);
             EncryptFiles_CheckBox.Margin = new Padding(3, 4, 3, 4);
             EncryptFiles_CheckBox.Name = "EncryptFiles_CheckBox";
             EncryptFiles_CheckBox.RightToLeft = RightToLeft.Yes;
-            EncryptFiles_CheckBox.Size = new Size(130, 21);
+            EncryptFiles_CheckBox.Size = new Size(210, 21);
             EncryptFiles_CheckBox.TabIndex = 275;
-            EncryptFiles_CheckBox.Text = "Encrypt Argo files";
+            EncryptFiles_CheckBox.Text = "Encrypt Argo Sales Tracker files";
             EncryptFiles_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             EncryptFiles_CheckBox.UncheckedState.BorderRadius = 0;
             EncryptFiles_CheckBox.UncheckedState.BorderThickness = 0;
             EncryptFiles_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            EncryptFiles_CheckBox.CheckedChanged += EncryptFiles_CheckBox_CheckedChanged;
             // 
             // guna2vSeparator1
             // 
@@ -109,5 +132,6 @@ namespace Sales_Tracker.Settings.Menus
         private Panel Back_Panel;
         public Guna.UI2.WinForms.Guna2CheckBox EncryptFiles_CheckBox;
         private Guna.UI2.WinForms.Guna2VSeparator guna2vSeparator1;
+        private Guna.UI2.WinForms.Guna2Button AddPassword_Button;
     }
 }

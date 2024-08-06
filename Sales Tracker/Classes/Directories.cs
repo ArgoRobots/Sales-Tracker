@@ -1,4 +1,5 @@
-﻿using System.Formats.Tar;
+﻿using Sales_Tracker.Password;
+using System.Formats.Tar;
 using System.IO.Compression;
 
 namespace Sales_Tracker.Classes
@@ -6,7 +7,7 @@ namespace Sales_Tracker.Classes
     internal static class Directories
     {
         // Directories
-        public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataCongig_file, purchases_file,
+        public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataConfig_file, purchases_file,
           sales_file, categoryPurchases_file, categorySales_file, accountants_file, companies_file, receipts_dir, logs_dir, info_file, desktop_dir;
 
         public static void SetDirectories(string projectDir, string project_name)
@@ -39,7 +40,7 @@ namespace Sales_Tracker.Classes
         {
             // App data
             appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
-            appDataCongig_file = appData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
+            appDataConfig_file = appData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
 
             // Other
             desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -310,7 +311,6 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                // Extract the file name and directory from the destinationFile path
                 string destinationDirectory = Path.GetDirectoryName(destinationFile);
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(destinationFile);
                 string fileExtension = Path.GetExtension(destinationFile);
@@ -323,33 +323,46 @@ namespace Sales_Tracker.Classes
                     destinationFile = Path.Combine(destinationDirectory, fileNameWithoutExtension + fileExtension);
                 }
 
-                // Use MemoryStream to securely hold the tar data, avoiding the security risk of writing it to a temporary file.
-                using (MemoryStream tarMemoryStream = new())
+                // Use MemoryStream to securely hold the tar data, avoiding the security risk of writing it to a temporary file
+                using MemoryStream tarMemoryStream = new();
+
+                // Create the tar file in memory
+                TarFile.CreateFromDirectory(sourceDirectory, tarMemoryStream, true);
+
+                tarMemoryStream.Seek(0, SeekOrigin.Begin);
+
+                if (Properties.Settings.Default.EncryptFiles)
                 {
-                    // Create the tar file in memory
-                    TarFile.CreateFromDirectory(sourceDirectory, tarMemoryStream, true);
-                    tarMemoryStream.Seek(0, SeekOrigin.Begin);
+                    // Encrypt the tar data in memory
+                    MemoryStream encryptedMemoryStream = EncryptionHelper.EncryptStream(tarMemoryStream, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                    encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                    if (Properties.Settings.Default.EncryptFiles)
+                    // Write the encrypted data to the destination file
+                    using (FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
-                        // Encrypt the tar data in memory
-                        using MemoryStream encryptedMemoryStream = new();
-                        EncryptionHelper.EncryptStream(tarMemoryStream, encryptedMemoryStream, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
-                        encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
-
-                        // Write the encrypted data to the destination file
-                        using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write);
                         encryptedMemoryStream.CopyTo(destFileStream);
                     }
-                    else
+
+                    // Create and append the footer
+                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + EncryptionHelper.encryptionHeader + Environment.NewLine + EncryptionHelper.passwordTag + PasswordManager.Password;
+                    File.AppendAllText(destinationFile, footer);
+
+                    Log.Write(2, $"File successfully created and encrypted: {destinationFile}");
+                }
+                else
+                {
+                    // Write the unencrypted data to the destination file
+                    using (FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
-                        // Write the unencrypted data to the destination file
-                        using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write);
                         tarMemoryStream.CopyTo(destFileStream);
                     }
-                }
 
-                Log.Write(2, $"File successfully created and encrypted at {destinationFile}");
+                    // Create and append the footer
+                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + Environment.NewLine + EncryptionHelper.passwordTag + PasswordManager.Password;
+                    File.AppendAllText(destinationFile, footer);
+
+                    Log.Write(2, $"File successfully created: {destinationFile}");
+                }
             }
             catch (Exception ex)
             {
@@ -378,16 +391,17 @@ namespace Sales_Tracker.Classes
                 using (FileStream fs = new(sourceFile, FileMode.Open, FileAccess.Read))
                 using (StreamReader reader = new(fs))
                 {
-                    string header = reader.ReadLine();
-                    if (header == EncryptionHelper.EncryptionHeader)
+                    List<string> lines = new();
+                    while (!reader.EndOfStream)
+                    {
+                        lines.Add(reader.ReadLine());
+                    }
+
+                    if (lines[^2].Split(':')[1] == EncryptionHelper.encryptionHeader)
                     {
                         decryptedTempFile = Path.GetTempFileName();
-                        EncryptionHelper.DecryptFile(sourceFile, decryptedTempFile, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                        EncryptionHelper.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
                         sourceFile = decryptedTempFile;
-                    }
-                    else
-                    {
-                        fs.Position = 0;  // Reset stream position if not encrypted
                     }
                 }
 
@@ -453,25 +467,22 @@ namespace Sales_Tracker.Classes
         /// Reads a TAR file and returns the name of the top-most directory or file.
         /// </summary>
         /// <returns>The name of the top-most directory found in the TAR file, or null if no directories are found.</returns>
-        public static string GetTopDirectoryFromTarFile(string sourceFile)
+        public static string GetTopDirectoryFromTarFile(string tarFilePath)
         {
-            using FileStream fs = new(sourceFile, FileMode.Open);
-            using TarReader reader = new(fs);
-            TarEntry entry;
-            while ((entry = reader.GetNextEntry()) != null)
+            foreach (string line in File.ReadLines(tarFilePath))
             {
-                if (entry.EntryType == TarEntryType.Directory)
+                if (line.Contains("path="))
                 {
-                    string[] pathSegments = entry.Name.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
-                    if (pathSegments.Length > 0)
+                    int pathStartIndex = line.IndexOf("path=") + 5;
+                    int pathEndIndex = line.IndexOf('/', pathStartIndex);
+                    if (pathEndIndex != -1)
                     {
-                        return pathSegments[0];
+                        return line.Substring(pathStartIndex, pathEndIndex - pathStartIndex);
                     }
                 }
             }
-            return "";
+            throw new Exception("Path not found in the provided tar file string.");
         }
-
         /// <summary>
         /// This also saves all.
         /// </summary>

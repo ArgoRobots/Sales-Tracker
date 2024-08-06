@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Startup.Menus;
+﻿using Sales_Tracker.Password;
+using Sales_Tracker.Startup.Menus;
 using System.Text;
 
 namespace Sales_Tracker.Classes
@@ -9,6 +10,7 @@ namespace Sales_Tracker.Classes
         {
             EncryptionHelper.Initialize();
             InitDataFile();
+            PasswordManager.Password = EncryptionHelper.GetPasswordFromFile(Directories.argoCompany_file, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
         }
         public static void InitDataFile()
         {
@@ -16,12 +18,12 @@ namespace Sales_Tracker.Classes
             {
                 Directories.CreateDirectory(Directories.appData_dir, false);
             }
-            if (!File.Exists(Directories.appDataCongig_file))
+            if (!File.Exists(Directories.appDataConfig_file))
             {
-                Directories.CreateFile(Directories.appDataCongig_file);
+                Directories.CreateFile(Directories.appDataConfig_file);
 
-                DataFileManager.SetValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RPTutorial, bool.TrueString);
-                DataFileManager.Save(Directories.appDataCongig_file);
+                DataFileManager.SetValue(Directories.appDataConfig_file, DataFileManager.GlobalAppDataSettings.RPTutorial, bool.TrueString);
+                DataFileManager.Save(Directories.appDataConfig_file);
             }
         }
 
@@ -85,23 +87,31 @@ namespace Sales_Tracker.Classes
                     return;
                 }
 
-                // Save new ProjectDirectory
-                Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
-                Properties.Settings.Default.Save();
-
-                Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
-                InitThings();
-
-                // Save recently opened projects
-                DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
-                DataFileManager.Save(Directories.appDataCongig_file);
-
-                List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
-                DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
-
+                Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName);
                 GetStarted_Form.Instance.ShowMainMenu();
             }
+        }
+        private static void Open(string filePath, string name)
+        {
+            // Save new ProjectDirectory
+            Properties.Settings.Default.ProjectDirectory = filePath;
+            Properties.Settings.Default.Save();
+
+            Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(name));
+            InitThings();
+
+            if (!PasswordManager.EnterPassword())
+            {
+                return;
+            }
+
+            // Save recently opened projects
+            DataFileManager.AppendValue(Directories.appDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
+            DataFileManager.Save(Directories.appDataConfig_file);
+
+            List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
+            Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
+            DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
         }
         public static void Rename(string name)
         {
@@ -115,8 +125,8 @@ namespace Sales_Tracker.Classes
             Directories.SetDirectories(Directories.argoCompany_dir, name);
 
             // Update recently opened projects
-            DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
-            DataFileManager.Save(Directories.appDataCongig_file);
+            DataFileManager.AppendValue(Directories.appDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
+            DataFileManager.Save(Directories.appDataConfig_file);
         }
         public static void OpenProjectWhenAProgramIsAlreadyOpen()
         {
@@ -157,20 +167,8 @@ namespace Sales_Tracker.Classes
 
                 Directories.DeleteDirectory(Directories.tempCompany_dir, true);
 
-                // Save new ProjectDirectory
-                Properties.Settings.Default.ProjectDirectory = Directory.GetParent(dialog.FileName).FullName;
-                Properties.Settings.Default.Save();
-
-                Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(dialog.FileName));
-                InitThings();
-
-                // Save recently opened projects
-                DataFileManager.AppendValue(Directories.appDataCongig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
-                DataFileManager.Save(Directories.appDataCongig_file);
-
-                List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-                Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
-                DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+                Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName);
+                MainMenu_Form.Instance.LoadData();
             }
         }
 

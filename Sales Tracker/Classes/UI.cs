@@ -264,7 +264,7 @@ namespace Sales_Tracker.Classes
             menuBtn = ConstructBtnForMenu("Clear cache", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
-                Directories.DeleteFile(Directories.appDataCongig_file);
+                Directories.DeleteFile(Directories.appDataConfig_file);
             };
 
             ConstructSeperator(panelBtnWidth, flowPanel);

@@ -41,6 +41,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;
             SendAnonymousInformation_CheckBox.Checked = Properties.Settings.Default.SendAnonymousInformation;
             PurchaseReceipts_CheckBox.Checked = Properties.Settings.Default.PurchaseReceipts;
+            SalesReceipts_CheckBox.Checked = Properties.Settings.Default.SalesReceipts;
         }
     }
 }

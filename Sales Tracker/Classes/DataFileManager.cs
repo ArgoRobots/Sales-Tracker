@@ -12,7 +12,8 @@
         }
         public enum AppDataSettings
         {
-            ChangesMade  // bool
+            ChangesMade,  // bool
+            Password  // string
         }
 
         // Dictionary to hold settings loaded from files, with file path as key.
