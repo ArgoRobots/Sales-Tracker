@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Startup.Menus;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
@@ -13,7 +14,6 @@ namespace Sales_Tracker.Classes
             ConstructFileMenu();
             ConstructHelpMenu();
             ConstructProfileMenu();
-            ConstructRightClickRename();
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
             MainMenu_Form.Instance.ConstructRightClickDataGridViewRowMenu();
@@ -447,10 +447,10 @@ namespace Sales_Tracker.Classes
 
             rename_textBox.KeyDown += (sender, e) =>
             {
-                if (e.KeyCode == Keys.Enter)
+                if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
                 {
                     e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
-                    MainMenu_Form.Instance.RenameCompany();
+                    Rename();
                 }
             };
             rename_textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
@@ -522,8 +522,20 @@ namespace Sales_Tracker.Classes
         }
 
         // Close all panels
+        public static void Rename()
+        {
+            if (Tools.IsFormOpen(typeof(MainMenu_Form)))
+            {
+                MainMenu_Form.Instance.RenameCompany();
+            }
+            else if (Tools.IsFormOpen(typeof(GetStarted_Form)))
+            {
+                GetStarted_Form.Instance.RenameCompany();
+            }
+        }
         public static void CloseAllPanels(object sender, EventArgs? e)
         {
+            Rename();
             MainMenu_Form.Instance.Controls.Remove(fileMenu);
             MainMenu_Form.Instance.Controls.Remove(helpMenu);
             MainMenu_Form.Instance.Controls.Remove(accountMenu);
@@ -535,7 +547,6 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
             MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
-            MainMenu_Form.Instance.RenameCompany();
             MainMenu_Form.Instance.CloseRightClickPanels();
         }
         private static void DeselectAllMenuButtons(Guna2Panel panel)

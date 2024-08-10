@@ -743,10 +743,10 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             UI.rename_textBox.Text = CompanyName_Label.Text;
-            UI.rename_textBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
-            UI.rename_textBox.Size = new Size(200, CompanyName_Label.Height + 2);
             UI.rename_textBox.Font = CompanyName_Label.Font;
             Controls.Add(UI.rename_textBox);
+            UI.rename_textBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
+            UI.rename_textBox.Size = new Size(200, CompanyName_Label.Height + 2);
             UI.rename_textBox.Focus();
             UI.rename_textBox.SelectAll();
             UI.rename_textBox.BringToFront();
@@ -1375,9 +1375,6 @@ namespace Sales_Tracker
                 grid.Rows[info.RowIndex].Selected = true;
                 grid.Focus();
             }
-
-            // Set color
-            selectedDataGridView.RowsDefaultCellStyle.SelectionBackColor = CustomColors.fileSelected;
         }
         public void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
