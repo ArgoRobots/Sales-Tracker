@@ -1,15 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "/3XRU+LHhC4=",
+  "dgSpecHash": "yv2AC+/8kE4=",
   "success": true,
   "projectFilePath": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Sales Tracker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\evand\\.nuget\\packages\\guna.charts.winforms\\1.0.8\\guna.charts.winforms.1.0.8.nupkg.sha512",
     "C:\\Users\\evand\\.nuget\\packages\\guna.ui2.winforms\\2.0.4.6\\guna.ui2.winforms.2.0.4.6.nupkg.sha512",
+    "C:\\Users\\evand\\.nuget\\packages\\microsoft.netcore.universalwindowsplatform\\6.2.14\\microsoft.netcore.universalwindowsplatform.6.2.14.nupkg.sha512",
     "C:\\Users\\evand\\.nuget\\packages\\ookii.dialogs.winforms\\4.0.0\\ookii.dialogs.winforms.4.0.0.nupkg.sha512",
     "C:\\Users\\evand\\.nuget\\packages\\system.codedom\\7.0.0\\system.codedom.7.0.0.nupkg.sha512",
     "C:\\Users\\evand\\.nuget\\packages\\system.management\\7.0.0\\system.management.7.0.0.nupkg.sha512",
-    "C:\\Users\\evand\\.nuget\\packages\\system.resources.extensions\\6.0.0\\system.resources.extensions.6.0.0.nupkg.sha512"
+    "C:\\Users\\evand\\.nuget\\packages\\system.resources.extensions\\6.0.0\\system.resources.extensions.6.0.0.nupkg.sha512",
+    "C:\\Users\\evand\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.26100.1\\microsoft.windows.sdk.net.ref.10.0.26100.1.nupkg.sha512"
   ],
   "logs": []
 }

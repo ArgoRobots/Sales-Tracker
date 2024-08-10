@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <RootNamespace>Sales_Tracker</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -10,6 +10,8 @@
     <StartupObject>Sales_Tracker.Program</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TargetFramework>net8.0-windows10.0.26100.1</TargetFramework>
+    <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
     <!-- Disable null warnings -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
     <NoWarn>$(NoWarn);CS8625</NoWarn>
@@ -28,8 +30,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <WindowsSdkSupportedTargetPlatformVersion Include="10.0.26100.1" WindowsSdkPackageVersion="10.0.26100.1" MinimumNETVersion="6.0" />
+		<SdkSupportedTargetPlatformVersion Include="10.0.26100.1" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.0.8" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
   </ItemGroup>
 

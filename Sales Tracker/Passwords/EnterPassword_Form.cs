@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Windows.Security.Credentials;
 
 namespace Sales_Tracker.Passwords
 {
@@ -10,6 +11,7 @@ namespace Sales_Tracker.Passwords
             InitializeComponent();
             LoadingPanel.ShowLoadingPanel(this);
             AddEventHandlersToTextBoxes();
+            SetAuthenticationSupported();
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -37,8 +39,48 @@ namespace Sales_Tracker.Passwords
                 e.SuppressKeyPress = true;
             }
         }
+        private async void WindowsHello_Button_Click(object sender, EventArgs e)
+        {
+            KeyCredentialRetrievalResult result =
+                await KeyCredentialManager.RequestCreateAsync("login",
+                KeyCredentialCreationOption.ReplaceExisting);
+
+            if (result.Status == KeyCredentialStatus.Success)
+            {
+                PasswordManager.isPasswordValid = true;
+                Close();
+            }
+            else
+            {
+                CustomMessageBox.Show("Windows Hello", "Login failed.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            }
+        }
 
         // Methods
+        private async void SetAuthenticationSupported()
+        {
+            bool supported = await KeyCredentialManager.IsSupportedAsync();
+            if (supported)
+            {
+                WindowsHello_Button.Enabled = true;
+            }
+            else
+            {
+                Label label = new()
+                {
+                    Text = "Windows Hello is not supported on this device.",
+                    Font = new Font("Segoe UI", 11),
+                    ForeColor = CustomColors.text,
+                    MaximumSize = new Size(Width - 80, 80),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Top = WindowsHello_Button.Top - 30,
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Top
+                };
+                Controls.Add(label);
+                label.Left = (Width - label.Width) / 2;
+            }
+        }
         private void CheckPassword()
         {
             if (PasswordManager.Password == Password_TextBox.Text)
