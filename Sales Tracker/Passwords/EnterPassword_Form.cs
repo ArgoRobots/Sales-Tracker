@@ -11,6 +11,7 @@ namespace Sales_Tracker.Passwords
             InitializeComponent();
             LoadingPanel.ShowLoadingPanel(this);
             AddEventHandlersToTextBoxes();
+            InitMessageLabel();
             SetAuthenticationSupported();
             Theme.SetThemeForForm(this);
         }
@@ -41,6 +42,11 @@ namespace Sales_Tracker.Passwords
         }
         private async void WindowsHello_Button_Click(object sender, EventArgs e)
         {
+            // https://stackoverflow.com/questions/78856599/how-to-add-windows-hello-in-c-sharp-net-8-winforms
+
+            message_Label.Text = "Authorizing...";
+            DisableControlsForAuthentication();
+
             KeyCredentialRetrievalResult result =
                 await KeyCredentialManager.RequestCreateAsync("login",
                 KeyCredentialCreationOption.ReplaceExisting);
@@ -52,11 +58,46 @@ namespace Sales_Tracker.Passwords
             }
             else
             {
-                CustomMessageBox.Show("Windows Hello", "Login failed.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                EnableControlsForAuthentication();
+                Controls.Remove(message_Label);
             }
         }
 
+        // Message label
+        private Label message_Label;
+        private void InitMessageLabel()
+        {
+            message_Label = new()
+            {
+                Font = new Font("Segoe UI", 11),
+                ForeColor = CustomColors.text,
+                MaximumSize = new Size(Width - 80, 80),
+                TextAlign = ContentAlignment.MiddleCenter,
+                Top = WindowsHello_Button.Top - 30,
+                AutoSize = true,
+                Anchor = AnchorStyles.Top
+            };
+            message_Label.TextChanged += Message_Label_TextChanged;
+        }
+        private void Message_Label_TextChanged(object sender, EventArgs e)
+        {
+            message_Label.Left = (Width - message_Label.Width) / 2;
+            Controls.Add(message_Label);
+        }
+
         // Methods
+        private void EnableControlsForAuthentication()
+        {
+            Password_TextBox.Enabled = true;
+            Enter_Button.Enabled = true;
+            WindowsHello_Button.Enabled = true;
+        }
+        private void DisableControlsForAuthentication()
+        {
+            Password_TextBox.Enabled = false;
+            Enter_Button.Enabled = false;
+            WindowsHello_Button.Enabled = false;
+        }
         private async void SetAuthenticationSupported()
         {
             bool supported = await KeyCredentialManager.IsSupportedAsync();
@@ -66,19 +107,7 @@ namespace Sales_Tracker.Passwords
             }
             else
             {
-                Label label = new()
-                {
-                    Text = "Windows Hello is not supported on this device.",
-                    Font = new Font("Segoe UI", 11),
-                    ForeColor = CustomColors.text,
-                    MaximumSize = new Size(Width - 80, 80),
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    Top = WindowsHello_Button.Top - 30,
-                    AutoSize = true,
-                    Anchor = AnchorStyles.Top
-                };
-                Controls.Add(label);
-                label.Left = (Width - label.Width) / 2;
+                message_Label.Text = "Windows Hello is not supported on this device";
             }
         }
         private void CheckPassword()
@@ -91,6 +120,7 @@ namespace Sales_Tracker.Passwords
             else
             {
                 CustomMessageBox.Show("Argo Sales Tracker", "The password is incorrect", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                Password_TextBox.Focus();
             }
         }
     }

@@ -79,6 +79,8 @@ namespace Sales_Tracker.Startup.Menus
                 };
                 gBtn.MouseDown += (sender, e) =>
                 {
+                    Controls.Remove(rightClickOpenRecent_Panel);
+
                     if (e.Button != MouseButtons.Left) { return; }
                     Guna2Button Gbtn = (Guna2Button)sender;
 
