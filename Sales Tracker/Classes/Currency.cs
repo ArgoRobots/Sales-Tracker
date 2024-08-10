@@ -2,7 +2,7 @@
 
 namespace Sales_Tracker.Classes
 {
-    internal class Currency
+    internal static class Currency
     {
         // In alphabetical order
         public enum CurrencyTypes
@@ -10,9 +10,28 @@ namespace Sales_Tracker.Classes
             AUD,
             CAD,
             EUR,
+            GBP,
             USD
         }
-
+        private static readonly Dictionary<CurrencyTypes, string> CurrencySymbols = new()
+        {
+            { CurrencyTypes.AUD, "$" },
+            { CurrencyTypes.CAD, "$" },
+            { CurrencyTypes.EUR, "€" },
+            { CurrencyTypes.GBP, "£" },
+            { CurrencyTypes.USD, "$" }
+        };
+        public static string GetSymbol(string currencyTypeString)
+        {
+            if (Enum.TryParse(currencyTypeString, out CurrencyTypes currencyType))
+            {
+                if (CurrencySymbols.TryGetValue(currencyType, out string symbol))
+                {
+                    return symbol;
+                }
+            }
+            throw new ArgumentException("Invalid currency type");
+        }
         private static readonly HttpClient httpClient = new();
 
         /// <summary>

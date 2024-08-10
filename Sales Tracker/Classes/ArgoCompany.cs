@@ -189,7 +189,7 @@ namespace Sales_Tracker.Classes
             if (!CreateMutex(projectFilePath))
             {
                 CustomMessageBox.Show("Argo Sales Tracker", "This project is already open in another instance of Argo Studio", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                applicationMutex?.Dispose();
+                applicationMutex?.Dispose();  // Reset
                 return false;
             }
             return true;

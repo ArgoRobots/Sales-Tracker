@@ -30,7 +30,22 @@ namespace Sales_Tracker
             selectedRow = row;
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
-            SetDataGridView((List<string>)row.Tag);
+
+            // Check if the Tag is a ValueTuple
+            if (row.Tag is (List<string> itemList, MainMenu_Form.TagData tagData))
+            {
+                SetDataGridView(itemList);
+            }
+            else if (row.Tag is List<string> list)
+            {
+                SetDataGridView(list);
+            }
+            else
+            {
+                // Handle the case where the Tag is not what we expect
+                throw new InvalidCastException("Unexpected Tag type. Expected List<string> or ValueTuple<List<string>, TagData>.");
+            }
+
             Theme.SetThemeForForm(this);
         }
 
@@ -61,9 +76,11 @@ namespace Sales_Tracker
         {
             List<string> items = new();
 
-            if (oldSelectedDataGridView.SelectedRows[0].Tag is List<string> existingItems && existingItems.Count > 0)
+            // Check if the current Tag is a ValueTuple
+            if (oldSelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, MainMenu_Form.TagData tagData))
             {
-                // The last item which is the receipt file path needs to stay the same
+                // Handle the case where Tag is a ValueTuple
+
                 string lastItem = null;
                 if (existingItems.Last().StartsWith(MainMenu_Form.receipt_text))
                 {
@@ -81,13 +98,18 @@ namespace Sales_Tracker
                     items.Add(itemBuilder.ToString());
                 }
 
-                // Add the receipt file path
+                // Add the receipt file path if it exists
                 if (lastItem != null)
                 {
                     items.Add(lastItem);
                 }
+
+                oldSelectedDataGridView.SelectedRows[0].Tag = (items, tagData);
             }
-            oldSelectedDataGridView.SelectedRows[0].Tag = items;
+            else
+            {
+                throw new InvalidCastException("Unexpected Tag type. Expected ValueTuple<List<string>, TagData>.");
+            }
         }
         private void SetDataGridView(List<string> tag)
         {

@@ -45,12 +45,12 @@ namespace Sales_Tracker.Settings.Menus
             Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Language_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Back_Panel = new Panel();
+            SalesReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             PurchaseReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             ColorTheme_Label = new Label();
             ColorTheme_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             ShowDebugInfo_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             guna2vSeparator1 = new Guna.UI2.WinForms.Guna2VSeparator();
-            SalesReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             Back_Panel.SuspendLayout();
             SuspendLayout();
             // 
@@ -179,6 +179,27 @@ namespace Sales_Tracker.Settings.Menus
             Back_Panel.Size = new Size(700, 250);
             Back_Panel.TabIndex = 274;
             // 
+            // SalesReceipts_CheckBox
+            // 
+            SalesReceipts_CheckBox.Animated = true;
+            SalesReceipts_CheckBox.AutoSize = true;
+            SalesReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(62, 101, 207);
+            SalesReceipts_CheckBox.CheckedState.BorderRadius = 0;
+            SalesReceipts_CheckBox.CheckedState.BorderThickness = 0;
+            SalesReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(62, 101, 207);
+            SalesReceipts_CheckBox.Font = new Font("Segoe UI", 9.75F);
+            SalesReceipts_CheckBox.Location = new Point(162, 196);
+            SalesReceipts_CheckBox.Margin = new Padding(3, 4, 3, 4);
+            SalesReceipts_CheckBox.Name = "SalesReceipts_CheckBox";
+            SalesReceipts_CheckBox.RightToLeft = RightToLeft.Yes;
+            SalesReceipts_CheckBox.Size = new Size(209, 21);
+            SalesReceipts_CheckBox.TabIndex = 336;
+            SalesReceipts_CheckBox.Text = "Make sales receipts mandatory";
+            SalesReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            SalesReceipts_CheckBox.UncheckedState.BorderRadius = 0;
+            SalesReceipts_CheckBox.UncheckedState.BorderThickness = 0;
+            SalesReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            // 
             // PurchaseReceipts_CheckBox
             // 
             PurchaseReceipts_CheckBox.Animated = true;
@@ -257,27 +278,6 @@ namespace Sales_Tracker.Settings.Menus
             guna2vSeparator1.Size = new Size(10, 250);
             guna2vSeparator1.TabIndex = 274;
             guna2vSeparator1.Visible = false;
-            // 
-            // SalesReceipts_CheckBox
-            // 
-            SalesReceipts_CheckBox.Animated = true;
-            SalesReceipts_CheckBox.AutoSize = true;
-            SalesReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(62, 101, 207);
-            SalesReceipts_CheckBox.CheckedState.BorderRadius = 0;
-            SalesReceipts_CheckBox.CheckedState.BorderThickness = 0;
-            SalesReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(62, 101, 207);
-            SalesReceipts_CheckBox.Font = new Font("Segoe UI", 9.75F);
-            SalesReceipts_CheckBox.Location = new Point(162, 196);
-            SalesReceipts_CheckBox.Margin = new Padding(3, 4, 3, 4);
-            SalesReceipts_CheckBox.Name = "SalesReceipts_CheckBox";
-            SalesReceipts_CheckBox.RightToLeft = RightToLeft.Yes;
-            SalesReceipts_CheckBox.Size = new Size(209, 21);
-            SalesReceipts_CheckBox.TabIndex = 336;
-            SalesReceipts_CheckBox.Text = "Make sales receipts mandatory";
-            SalesReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            SalesReceipts_CheckBox.UncheckedState.BorderRadius = 0;
-            SalesReceipts_CheckBox.UncheckedState.BorderThickness = 0;
-            SalesReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
             // 
             // General_Form
             // 

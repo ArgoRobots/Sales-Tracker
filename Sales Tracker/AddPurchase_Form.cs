@@ -20,10 +20,12 @@ namespace Sales_Tracker
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
+            Currency_ComboBox.SelectedIndex = 0;
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
+            AmountCharged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({Properties.Settings.Default.Currency})";
 
             // Despite this being the default, it's still needed for some reason
             RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
@@ -234,15 +236,33 @@ namespace Sales_Tracker
                 noteLabel = MainMenu_Form.show_text;
             }
 
-            // Convert currency
-            if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
+            // Convert to USD
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
+            decimal shippingUSD = shipping * exchangeRateToUSD;
+            decimal taxUSD = tax * exchangeRateToUSD;
+            decimal feeUSD = fee * exchangeRateToUSD;
+            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+
+            // Store the USD value in the Tag property
+            MainMenu_Form.TagData purchaseData = new()
             {
-                decimal exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, "CAD", date);
-                pricePerUnit *= exchangeRate;
-                shipping *= exchangeRate;
-                tax *= exchangeRate;
-                fee *= exchangeRate;
-                totalPrice *= exchangeRate;
+                PricePerUnitUSD = pricePerUnitUSD,
+                ShippingUSD = shippingUSD,
+                TaxUSD = taxUSD,
+                FeeUSD = feeUSD,
+                TotalPriceUSD = totalPriceUSD
+            };
+
+            // Convert back to default currency for display
+            if (Currency_ComboBox.Text != Properties.Settings.Default.Currency)
+            {
+                decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
+                pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
+                shipping = shippingUSD * exchangeRateToDefault;
+                tax = taxUSD * exchangeRateToDefault;
+                fee = feeUSD * exchangeRateToDefault;
+                totalPrice = totalPriceUSD * exchangeRateToDefault;
             }
 
             // Round to 2 decimal places
@@ -252,7 +272,7 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount charged (${amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
+                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -289,14 +309,19 @@ namespace Sales_Tracker
                 totalPrice.ToString("N2"),
                 noteLabel
             );
+
             if (noteLabel == MainMenu_Form.show_text)
             {
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
             }
+
             if (newFilePath != "")
             {
                 MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
             }
+
+            // Store the USD values in the row's Tag
+            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = purchaseData;
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
@@ -336,9 +361,9 @@ namespace Sales_Tracker
             }
 
             decimal exchangeRate = 1;
-            if (Currency_ComboBox.Text != Currency.CurrencyTypes.CAD.ToString())
+            if (Currency_ComboBox.Text != Properties.Settings.Default.Currency)
             {
-                exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, "CAD", date);
+                exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, Properties.Settings.Default.Currency, date);
             }
 
             List<string> items = [];
@@ -418,7 +443,7 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount credited (${amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
+                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -463,9 +488,33 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
             }
-            items.Add(MainMenu_Form.receipt_text + newFilePath);
+            if (newFilePath != "")
+            {
+                items.Add(MainMenu_Form.receipt_text + newFilePath);
+            }
 
-            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = items;
+            // Calculate USD values
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+            decimal shippingUSD = shipping * exchangeRateToUSD;
+            decimal taxUSD = tax * exchangeRateToUSD;
+            decimal feeUSD = fee * exchangeRateToUSD;
+
+            // Store the USD value in the Tag property
+            MainMenu_Form.TagData purchaseData = new()
+            {
+                PricePerUnitUSD = totalPriceUSD,
+                ShippingUSD = shippingUSD,
+                TaxUSD = taxUSD,
+                FeeUSD = feeUSD,
+                TotalPriceUSD = totalPriceUSD
+            };
+
+            // Combine existing items and USD data in a tuple
+            (List<string> Items, MainMenu_Form.TagData USDData) combinedTag = (Items: items, USDData: purchaseData);
+
+            // Set the combined tag
+            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = combinedTag;
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 

@@ -23,6 +23,7 @@ namespace Sales_Tracker
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
+            AmountCredited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({Properties.Settings.Default.Currency})";
 
             // Despite this being the default, it's still needed for some reason
             RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
@@ -247,7 +248,7 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount charged (${amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
+                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -400,7 +401,7 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount credited (${amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
+                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)

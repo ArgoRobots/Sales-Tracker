@@ -15,11 +15,17 @@ namespace Sales_Tracker
         // Proprties
         public static readonly List<string> thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-        private static readonly string jsonTag = "Tag", note_text = "note";
+        private static readonly string note_text = "note", rowTag = "RowTag";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
         public byte spaceToOffsetFormNotCenter = 15;
+        private static string _currencySymbol;
+        public static string CurrencySymbol
+        {
+            get => _currencySymbol;
+            set => _currencySymbol = value;
+        }
 
         // Init.
         public static MainMenu_Form? Instance { get; private set; }
@@ -32,6 +38,7 @@ namespace Sales_Tracker
 
             UI.ConstructControls();
             SearchBox.ConstructSearchBox();
+            CurrencySymbol = Currency.GetSymbol(Properties.Settings.Default.Currency);
 
             ConstructDataGridViews();
             SetCompanyLabel();
@@ -102,17 +109,20 @@ namespace Sales_Tracker
 
             // Read the JSON content from the file
             string json = File.ReadAllText(filePath);
-            if (json == "") { return; }
+            if (string.IsNullOrEmpty(json))
+            {
+                return;
+            }
 
             List<Dictionary<string, object>>? rowsData = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
 
             foreach (Dictionary<string, object> rowData in rowsData)
             {
                 // Extract cell values
-                List<string?> cellValuesList = [];
+                List<string?> cellValuesList = new();
                 foreach (var kv in rowData)
                 {
-                    if (kv.Key != jsonTag && kv.Key != note_text)
+                    if (kv.Key != rowTag && kv.Key != note_text)
                     {
                         cellValuesList.Add(kv.Value?.ToString());
                     }
@@ -123,15 +133,30 @@ namespace Sales_Tracker
                 int rowIndex = dataGridView.Rows.Add(cellValues);
 
                 // Set the row tag
-                if (rowData.TryGetValue(jsonTag, out object value))
+                if (rowData.TryGetValue(rowTag, out object value))
                 {
-                    if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
+                    if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Object)
                     {
-                        dataGridView.Rows[rowIndex].Tag = jsonElement.EnumerateArray().Select(e => e.GetString()).ToList();
-                    }
-                    else
-                    {
-                        dataGridView.Rows[rowIndex].Tag = value?.ToString();
+                        Dictionary<string, object>? tagObject = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonElement.GetRawText());
+
+                        if (tagObject != null)
+                        {
+                            // Extract the List<string> and TagData from the tagObject
+                            if (tagObject.TryGetValue("Items", out var itemsElement) && itemsElement is JsonElement itemsJsonElement && itemsJsonElement.ValueKind == JsonValueKind.Array)
+                            {
+                                var itemList = itemsJsonElement.EnumerateArray().Select(e => e.GetString()).ToList();
+
+                                if (tagObject.TryGetValue("PurchaseData", out var purchaseDataElement) && purchaseDataElement is JsonElement purchaseDataJsonElement)
+                                {
+                                    var purchaseData = JsonSerializer.Deserialize<TagData>(purchaseDataJsonElement.GetRawText());
+
+                                    if (itemList != null && purchaseData != null)
+                                    {
+                                        dataGridView.Rows[rowIndex].Tag = (itemList, purchaseData);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -151,7 +176,7 @@ namespace Sales_Tracker
             if (Selected == SelectedOption.Sales)
             {
                 total = LoadChart.LoadTotalsIntoChart(Sales_DataGridView, Totals_Chart, LineGraph_ToggleSwitch.Checked);
-                Totals_Chart.Title.Text = $"Total revenue: {total:C}";
+                Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{total:N2}";
 
                 LoadChart.LoadDistributionIntoChart(Sales_DataGridView, Distribution_Chart);
                 Distribution_Chart.Title.Text = "Distribution of revenue";
@@ -159,13 +184,13 @@ namespace Sales_Tracker
             else
             {
                 total = LoadChart.LoadTotalsIntoChart(Purchases_DataGridView, Totals_Chart, LineGraph_ToggleSwitch.Checked);
-                Totals_Chart.Title.Text = $"Total expenses: {total:C}";
+                Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{total:N2}";
 
                 LoadChart.LoadDistributionIntoChart(Purchases_DataGridView, Distribution_Chart);
                 Distribution_Chart.Title.Text = "Distribution of expenses";
             }
             total = LoadChart.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Profits_Chart, LineGraph_ToggleSwitch.Checked);
-            Profits_Chart.Title.Text = $"Total profits: {total:C}";
+            Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
         }
         public void UpdateTheme()
         {
@@ -1075,6 +1100,14 @@ namespace Sales_Tracker
             Accountant,
             ItemsInPurchase
         }
+        public class TagData
+        {
+            public decimal PricePerUnitUSD { get; set; }
+            public decimal ShippingUSD { get; set; }
+            public decimal TaxUSD { get; set; }
+            public decimal FeeUSD { get; set; }
+            public decimal TotalPriceUSD { get; set; }
+        }
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView, selectedDataGridView;
         private DataGridViewRow removedRow;
         private Control controlRightClickPanelWasAddedTo;
@@ -1112,6 +1145,7 @@ namespace Sales_Tracker
             dataGridView.Size = size;
             dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            dataGridView.ScrollBars = ScrollBars.Vertical;
 
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
@@ -1392,8 +1426,10 @@ namespace Sales_Tracker
                 flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
                 flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
 
-                if (grid.SelectedRows[0].Tag is List<string> list)
+                if (grid.SelectedRows[0].Tag is (List<string> itemList, TagData))
                 {
+                    List<string> list = itemList;
+
                     ShowShowItemsBtn(flowPanel, 1);
 
                     if (list[^1].Contains('\\') && File.Exists(list[^1]))
@@ -1786,7 +1822,23 @@ namespace Sales_Tracker
         {
             isProgramLoading = true;
 
-            List<string> items = selectedRowInMainMenu.Tag as List<string>;
+            List<string> items = null;
+
+            // Check if Tag is a ValueTuple
+            if (selectedRowInMainMenu.Tag is (List<string> itemList, TagData))
+            {
+                items = itemList;
+            }
+            else if (selectedRowInMainMenu.Tag is List<string> list)
+            {
+                items = list;
+            }
+
+            if (items == null)
+            {
+                // Handle case where items are null (Optional)
+                throw new InvalidOperationException("Tag does not contain a valid list of items.");
+            }
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
@@ -1850,12 +1902,12 @@ namespace Sales_Tracker
         public void SaveDataGridViewToFileAsJson()
         {
             string filePath = GetFilePathForDataGridView(Selected);
-            List<Dictionary<string, object>> rowsData = [];
+            List<Dictionary<string, object>> rowsData = new();
 
             // Collect data from the DataGridView
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
-                Dictionary<string, object> rowData = [];
+                Dictionary<string, object> rowData = new();
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
@@ -1871,13 +1923,16 @@ namespace Sales_Tracker
                 }
 
                 // Add the row tag
-                if (row.Tag is List<string> tagList)
+                if (row.Tag is (List<string> itemList, TagData purchaseData))
                 {
-                    rowData[jsonTag] = tagList;
-                }
-                else if (row.Tag != null)
-                {
-                    rowData[jsonTag] = row.Tag?.ToString();
+                    // Convert the ValueTuple to an anonymous object or a dictionary
+                    var tagDataToSerialize = new
+                    {
+                        Items = itemList,
+                        PurchaseData = purchaseData
+                    };
+
+                    rowData[rowTag] = tagDataToSerialize;
                 }
 
                 rowsData.Add(rowData);
