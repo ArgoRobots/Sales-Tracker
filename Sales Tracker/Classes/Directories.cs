@@ -4,11 +4,25 @@ using System.IO.Compression;
 
 namespace Sales_Tracker.Classes
 {
-    internal static class Directories
+    public static class Directories
     {
         // Directories
-        public static string companyName, tempCompany_dir, argoCompany_dir, argoCompany_file, appData_dir, appDataConfig_file, purchases_file,
-          sales_file, categoryPurchases_file, categorySales_file, accountants_file, companies_file, receipts_dir, logs_dir, info_file, desktop_dir;
+        public static string CompanyName { get; private set; }
+        public static string TempCompany_dir { get; private set; }
+        public static string ArgoCompany_dir { get; private set; }
+        public static string ArgoCompany_file { get; private set; }
+        public static string AppData_dir { get; private set; }
+        public static string AppDataConfig_file { get; private set; }
+        public static string Purchases_file { get; private set; }
+        public static string Sales_file { get; private set; }
+        public static string CategoryPurchases_file { get; private set; }
+        public static string CategorySales_file { get; private set; }
+        public static string Accountants_file { get; private set; }
+        public static string Companies_file { get; private set; }
+        public static string Receipts_dir { get; private set; }
+        public static string Logs_dir { get; private set; }
+        public static string Info_file { get; private set; }
+        public static string Desktop_dir { get; private set; }
 
         public static void SetDirectories(string projectDir, string project_name)
         {
@@ -17,33 +31,33 @@ namespace Sales_Tracker.Classes
                 projectDir += "\\";
             }
 
-            companyName = project_name;
-            tempCompany_dir = appData_dir + project_name + @"\";
+            CompanyName = project_name;
+            TempCompany_dir = AppData_dir + project_name + @"\";
 
-            argoCompany_dir = projectDir;
-            argoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
+            ArgoCompany_dir = projectDir;
+            ArgoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
 
-            purchases_file = tempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
-            sales_file = tempCompany_dir + "sales" + ArgoFiles.TxtFileExtension;
-            categoryPurchases_file = tempCompany_dir + "categoryPurchases" + ArgoFiles.JsonFileExtension;
-            categorySales_file = tempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
-            accountants_file = tempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
-            companies_file = tempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
-            receipts_dir = tempCompany_dir + @"receipts\";
+            Purchases_file = TempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
+            Sales_file = TempCompany_dir + "sales" + ArgoFiles.TxtFileExtension;
+            CategoryPurchases_file = TempCompany_dir + "categoryPurchases" + ArgoFiles.JsonFileExtension;
+            CategorySales_file = TempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
+            Accountants_file = TempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
+            Companies_file = TempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
+            Receipts_dir = TempCompany_dir + @"receipts\";
 
             // Logs
-            logs_dir = tempCompany_dir + @"logs\";
+            Logs_dir = TempCompany_dir + @"logs\";
 
-            info_file = tempCompany_dir + "info" + ArgoFiles.TxtFileExtension;
+            Info_file = TempCompany_dir + "info" + ArgoFiles.TxtFileExtension;
         }
         public static void SetUniversalDirectories()
         {
             // App data
-            appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
-            appDataConfig_file = appData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
+            AppData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+            AppDataConfig_file = AppData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
 
             // Other
-            desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            Desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
         // Directories
@@ -387,7 +401,7 @@ namespace Sales_Tracker.Classes
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, ImportType importType, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
-            string tempDir = destinationDirectory + ArgoCompany.GetUniqueProjectIdentifier(appData_dir);
+            string tempDir = destinationDirectory + ArgoCompany.GetUniqueProjectIdentifier(AppData_dir);
             string decryptedTempFile = null;
             string extractedDir;
 
@@ -521,7 +535,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Copy the directory to the new location, and rename it so the tar file will have the new name
-            CopyFile(argoCompany_file, tarName + fileExtension);
+            CopyFile(ArgoCompany_file, tarName + fileExtension);
 
             // Move the file into a temp folder so it can be zipped. Use tarName to make sure the folder name does not already exist
             CreateDirectory(tarName, true);

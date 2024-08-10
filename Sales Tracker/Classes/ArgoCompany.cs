@@ -10,27 +10,27 @@ namespace Sales_Tracker.Classes
         {
             EncryptionHelper.Initialize();
             InitDataFile();
-            PasswordManager.Password = EncryptionHelper.GetPasswordFromFile(Directories.argoCompany_file, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+            PasswordManager.Password = EncryptionHelper.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
         }
         public static void InitDataFile()
         {
-            if (!Directory.Exists(Directories.appData_dir))
+            if (!Directory.Exists(Directories.AppData_dir))
             {
-                Directories.CreateDirectory(Directories.appData_dir, false);
+                Directories.CreateDirectory(Directories.AppData_dir, false);
             }
-            if (!File.Exists(Directories.appDataConfig_file))
+            if (!File.Exists(Directories.AppDataConfig_file))
             {
-                Directories.CreateFile(Directories.appDataConfig_file);
+                Directories.CreateFile(Directories.AppDataConfig_file);
 
-                DataFileManager.SetValue(Directories.appDataConfig_file, DataFileManager.GlobalAppDataSettings.RPTutorial, bool.TrueString);
-                DataFileManager.Save(Directories.appDataConfig_file);
+                DataFileManager.SetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RPTutorial, bool.TrueString);
+                DataFileManager.Save(Directories.AppDataConfig_file);
             }
         }
 
         public static void SaveAll()
         {
-            Directories.CreateArgoTarFileFromDirectory(Directories.tempCompany_dir, Directories.argoCompany_file, true);
-            Log.Write(2, $"Saved '{Directories.companyName}'");
+            Directories.CreateArgoTarFileFromDirectory(Directories.TempCompany_dir, Directories.ArgoCompany_file, true);
+            Log.Write(2, $"Saved '{Directories.CompanyName}'");
             ResetChanges();
             CustomMessage_Form.AddChangesMadeToInfoFile(false);
         }
@@ -45,7 +45,7 @@ namespace Sales_Tracker.Classes
                 SaveAll();
 
                 // Copy the project to a new location
-                Directories.CopyFile(Directories.argoCompany_file, dialog.SelectedPath + Directories.companyName + ArgoFiles.ArgoCompanyFileExtension);
+                Directories.CopyFile(Directories.ArgoCompany_file, dialog.SelectedPath + Directories.CompanyName + ArgoFiles.ArgoCompanyFileExtension);
             }
         }
         public static bool AreAnyChangesMade()
@@ -111,29 +111,29 @@ namespace Sales_Tracker.Classes
             }
 
             // Save recently opened projects
-            DataFileManager.AppendValue(Directories.appDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
-            DataFileManager.Save(Directories.appDataConfig_file);
+            DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+            DataFileManager.Save(Directories.AppDataConfig_file);
 
-            List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.appData_dir);
-            Directories.ImportArgoTarFile(Directories.argoCompany_file, Directories.appData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
-            DataFileManager.SetValue(Directories.info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+            List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
+            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
+            DataFileManager.SetValue(Directories.Info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
 
             return true;
         }
         public static void Rename(string name)
         {
-            string newFile = Directories.argoCompany_dir + name + ArgoFiles.ArgoCompanyFileExtension;
-            string newDir = Directories.appData_dir + name;
+            string newFile = Directories.ArgoCompany_dir + name + ArgoFiles.ArgoCompanyFileExtension;
+            string newDir = Directories.AppData_dir + name;
 
             // Rename in file
-            Directories.MoveFile(Directories.argoCompany_file, newFile);
-            Directories.RenameFolder(Directories.tempCompany_dir, newDir);
+            Directories.MoveFile(Directories.ArgoCompany_file, newFile);
+            Directories.RenameFolder(Directories.TempCompany_dir, newDir);
 
-            Directories.SetDirectories(Directories.argoCompany_dir, name);
+            Directories.SetDirectories(Directories.ArgoCompany_dir, name);
 
             // Update recently opened projects
-            DataFileManager.AppendValue(Directories.appDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
-            DataFileManager.Save(Directories.appDataConfig_file);
+            DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+            DataFileManager.Save(Directories.AppDataConfig_file);
         }
         public static void OpenProjectWhenAProgramIsAlreadyOpen()
         {
@@ -146,7 +146,7 @@ namespace Sales_Tracker.Classes
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 // If this project is already open
-                if (Directories.argoCompany_file == dialog.FileName)
+                if (Directories.ArgoCompany_file == dialog.FileName)
                 {
                     CustomMessageBox.Show("Argo Sales Tracker", "This project is already open", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return;
@@ -172,7 +172,7 @@ namespace Sales_Tracker.Classes
                     }
                 }
 
-                Directories.DeleteDirectory(Directories.tempCompany_dir, true);
+                Directories.DeleteDirectory(Directories.TempCompany_dir, true);
 
                 if (!Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName))
                 {
@@ -226,7 +226,7 @@ namespace Sales_Tracker.Classes
         /// </returns>
         public static void RecoverUnsavedWork()
         {
-            List<string> projects = Directories.GetListOfAllDirectoriesInDirectory(Directories.appData_dir);
+            List<string> projects = Directories.GetListOfAllDirectoriesInDirectory(Directories.AppData_dir);
 
             foreach (string project in projects)
             {

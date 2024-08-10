@@ -55,7 +55,7 @@ namespace Sales_Tracker.Startup.Menus
             // Set default file location
             if (Properties.Settings.Default.ProjectDirectory == "")
             {
-                Properties.Settings.Default.ProjectDirectory = Directories.desktop_dir;
+                Properties.Settings.Default.ProjectDirectory = Directories.Desktop_dir;
                 Properties.Settings.Default.Save();
                 Directory_textBox.Text = Properties.Settings.Default.ProjectDirectory;
             }
@@ -108,22 +108,22 @@ namespace Sales_Tracker.Startup.Menus
             ArgoCompany.InitThings();
 
             // Create directories and files
-            Directories.CreateDirectory(Directories.tempCompany_dir, true);
+            Directories.CreateDirectory(Directories.TempCompany_dir, true);
 
-            Directories.CreateDirectory(Directories.logs_dir, false);
-            Directories.CreateDirectory(Directories.receipts_dir, false);
-            Directories.CreateFile(Directories.purchases_file);
-            Directories.CreateFile(Directories.sales_file);
-            Directories.CreateFile(Directories.categorySales_file);
-            Directories.CreateFile(Directories.categoryPurchases_file);
-            Directories.CreateFile(Directories.accountants_file);
-            Directories.CreateFile(Directories.companies_file);
-            Directories.CreateFile(Directories.info_file);
+            Directories.CreateDirectory(Directories.Logs_dir, false);
+            Directories.CreateDirectory(Directories.Receipts_dir, false);
+            Directories.CreateFile(Directories.Purchases_file);
+            Directories.CreateFile(Directories.Sales_file);
+            Directories.CreateFile(Directories.CategorySales_file);
+            Directories.CreateFile(Directories.CategoryPurchases_file);
+            Directories.CreateFile(Directories.Accountants_file);
+            Directories.CreateFile(Directories.Companies_file);
+            Directories.CreateFile(Directories.Info_file);
             ArgoCompany.SaveAll();
 
             // Save recently opened projects
-            DataFileManager.AppendValue(Directories.appDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.argoCompany_file);
-            DataFileManager.Save(Directories.appDataConfig_file);
+            DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+            DataFileManager.Save(Directories.AppDataConfig_file);
 
             ArgoCompany.CreateMutex(projectName);
 

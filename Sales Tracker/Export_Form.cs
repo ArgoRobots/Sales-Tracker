@@ -14,7 +14,7 @@ namespace Sales_Tracker
         {
             if (Properties.Settings.Default.ExportDirectory == "")
             {
-                Properties.Settings.Default.ExportDirectory = Directories.desktop_dir;
+                Properties.Settings.Default.ExportDirectory = Directories.Desktop_dir;
                 Properties.Settings.Default.Save();
             }
 
@@ -22,7 +22,7 @@ namespace Sales_Tracker
 
             FileType_ComboBox.SelectedIndex = 0; ;
 
-            Name_TextBox.Text = Directories.companyName + " " + Tools.FormatDate(DateTime.Today);
+            Name_TextBox.Text = Directories.CompanyName + " " + Tools.FormatDate(DateTime.Today);
         }
         private void Export_Form_Shown(object sender, EventArgs e)
         {
@@ -89,7 +89,7 @@ namespace Sales_Tracker
             {
                 case ".ArgoProject (backup)":
                     Directories.CreateBackup(Directory_TextBox.Text + "\\" + Name_TextBox.Text, ".ArgoProject");
-                    CustomMessageBox.Show("Argo Sales Tracker", $"Successfully backed up '{Directories.companyName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker", $"Successfully backed up '{Directories.CompanyName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     Close();
                     break;
 

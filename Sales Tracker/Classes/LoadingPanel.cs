@@ -4,9 +4,10 @@
     /// This prevents the screen from flashing white while the Form is loading.
     /// This is especially useful when dark theme is enabled and there are a lot of things to load.
     /// </summary>
-    internal class LoadingPanel
+    public class LoadingPanel
     {
         private static Panel loadingPanel;
+        public static Panel LoadingPanelInstance => loadingPanel;
 
         public static void InitLoadingPanel()
         {

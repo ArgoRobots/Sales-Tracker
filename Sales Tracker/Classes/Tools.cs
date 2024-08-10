@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
 {
-    internal static class Tools
+    public static class Tools
     {
         // Formatting
         /// <summary>
@@ -147,7 +147,6 @@ namespace Sales_Tracker.Classes
             }
             return name;
         }
-
         /// <summary>
         /// Searches a DataGridView for the text in the search_TextBox.
         /// </summary>
@@ -162,7 +161,6 @@ namespace Sales_Tracker.Classes
             }
             return !string.IsNullOrEmpty(search_TextBox.Text);
         }
-
         public static void ScrollToTopOfDataGridView(DataGridView dataGridView)
         {
             if (dataGridView.Rows.Count > 0)

@@ -52,11 +52,11 @@ namespace Sales_Tracker
         }
         public void LoadData()
         {
-            LoadCategoriesFromFile(Directories.categoryPurchases_file, categoryPurchaseList);
-            LoadCategoriesFromFile(Directories.categorySales_file, categorySaleList);
+            LoadCategoriesFromFile(Directories.CategoryPurchases_file, categoryPurchaseList);
+            LoadCategoriesFromFile(Directories.CategorySales_file, categorySaleList);
 
-            accountantList = Directories.ReadAllLinesInFile(Directories.accountants_file).ToList();
-            companyList = Directories.ReadAllLinesInFile(Directories.companies_file).ToList();
+            accountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
+            companyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
             if (Purchases_DataGridView.Columns.Count == 0)
             {
@@ -103,7 +103,7 @@ namespace Sales_Tracker
 
             if (!File.Exists(filePath))
             {
-                Log.Error_FailedToWriteToFile(Directories.companyName);
+                Log.Error_FailedToWriteToFile(Directories.CompanyName);
                 return;
             }
 
@@ -423,7 +423,7 @@ namespace Sales_Tracker
             UI.CloseAllPanels(null, null);
 
             // Save logs in file
-            if (Directory.Exists(Directories.logs_dir))
+            if (Directory.Exists(Directories.Logs_dir))
             {
                 DateTime time = DateTime.Now;
                 int count = 0;
@@ -433,11 +433,11 @@ namespace Sales_Tracker
                 {
                     if (count == 0)
                     {
-                        directory = Directories.logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + ArgoFiles.TxtFileExtension;
+                        directory = Directories.Logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + ArgoFiles.TxtFileExtension;
                     }
                     else
                     {
-                        directory = Directories.logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + "-" + count + ArgoFiles.TxtFileExtension;
+                        directory = Directories.Logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + "-" + count + ArgoFiles.TxtFileExtension;
                     }
                     if (!Directory.Exists(directory))
                     {
@@ -459,7 +459,7 @@ namespace Sales_Tracker
             }
 
             // Delete hidden directory
-            Directories.DeleteDirectory(Directories.tempCompany_dir, true);
+            Directories.DeleteDirectory(Directories.TempCompany_dir, true);
         }
 
         // Resize controls
@@ -814,7 +814,7 @@ namespace Sales_Tracker
         }
         private void SetCompanyLabel()
         {
-            CompanyName_Label.Text = Directories.companyName;
+            CompanyName_Label.Text = Directories.CompanyName;
             MoveEditButton();
         }
         private void MoveEditButton()
@@ -1754,14 +1754,14 @@ namespace Sales_Tracker
         {
             return selected switch
             {
-                SelectedOption.Purchases => Directories.purchases_file,
-                SelectedOption.Sales => Directories.sales_file,
-                SelectedOption.CategoryPurchases => Directories.categoryPurchases_file,
-                SelectedOption.CategorySales => Directories.categorySales_file,
-                SelectedOption.ProductPurchases => Directories.categoryPurchases_file,
-                SelectedOption.ProductSales => Directories.categorySales_file,
-                SelectedOption.Accountants => Directories.accountants_file,
-                SelectedOption.Companies => Directories.companies_file,
+                SelectedOption.Purchases => Directories.Purchases_file,
+                SelectedOption.Sales => Directories.Sales_file,
+                SelectedOption.CategoryPurchases => Directories.CategoryPurchases_file,
+                SelectedOption.CategorySales => Directories.CategorySales_file,
+                SelectedOption.ProductPurchases => Directories.CategoryPurchases_file,
+                SelectedOption.ProductSales => Directories.CategorySales_file,
+                SelectedOption.Accountants => Directories.Accountants_file,
+                SelectedOption.Companies => Directories.Companies_file,
                 _ => ""
             };
         }
@@ -2374,11 +2374,11 @@ namespace Sales_Tracker
         public static bool SaveReceiptInFile(string receiptFilePath, out string newFilePath)
         {
             newFilePath = "";
-            if (File.Exists(Directories.receipts_dir + Path.GetFileName(receiptFilePath)))
+            if (File.Exists(Directories.Receipts_dir + Path.GetFileName(receiptFilePath)))
             {
                 // Get a new name for the file
                 string name = Path.GetFileNameWithoutExtension(receiptFilePath);
-                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(Directories.receipts_dir);
+                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(Directories.Receipts_dir);
 
                 string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
 
@@ -2390,13 +2390,13 @@ namespace Sales_Tracker
 
                 if (result == CustomMessageBoxResult.Ok)
                 {
-                    newFilePath = Directories.receipts_dir + suggestedThingName + Path.GetExtension(receiptFilePath);
+                    newFilePath = Directories.Receipts_dir + suggestedThingName + Path.GetExtension(receiptFilePath);
                 }
                 else { return false; }
             }
             else
             {
-                newFilePath = Directories.receipts_dir + Path.GetFileName(receiptFilePath);
+                newFilePath = Directories.Receipts_dir + Path.GetFileName(receiptFilePath);
             }
 
             // Save receipt
