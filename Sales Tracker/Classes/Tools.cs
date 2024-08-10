@@ -161,7 +161,7 @@ namespace Sales_Tracker.Classes
             }
             return !string.IsNullOrEmpty(search_TextBox.Text);
         }
-        public static void ScrollToTopOfDataGridView(DataGridView dataGridView)
+        public static void ScrollToTopOfDataGridView(Guna2DataGridView dataGridView)
         {
             if (dataGridView.Rows.Count > 0)
             {

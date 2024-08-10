@@ -40,7 +40,6 @@ namespace Sales_Tracker
             SearchBox.ConstructSearchBox();
             CurrencySymbol = Currency.GetSymbol(Properties.Settings.Default.Currency);
 
-            ConstructDataGridViews();
             SetCompanyLabel();
 
             isProgramLoading = true;
@@ -58,10 +57,16 @@ namespace Sales_Tracker
             accountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
             companyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
-            if (Purchases_DataGridView.Columns.Count == 0)
+            if (Purchases_DataGridView == null)
             {
-                LoadColumnsInDataGridView(Purchases_DataGridView, PurchaseColumnHeaders);
-                LoadColumnsInDataGridView(Sales_DataGridView, SalesColumnHeaders);
+                Size size = new(1300, 350);
+                Purchases_DataGridView = new Guna2DataGridView();
+                InitializeDataGridView(Purchases_DataGridView, size, PurchaseColumnHeaders);
+                Purchases_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+
+                Sales_DataGridView = new Guna2DataGridView();
+                InitializeDataGridView(Sales_DataGridView, size, SalesColumnHeaders);
+                Sales_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
             }
 
             AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
@@ -1113,19 +1118,8 @@ namespace Sales_Tracker
         private Control controlRightClickPanelWasAddedTo;
         private bool doNotDeleteRows;
         public DataGridViewRow selectedRowInMainMenu;
-        private void ConstructDataGridViews()
-        {
-            Size size = new(1300, 350);
-            Purchases_DataGridView = new Guna2DataGridView();
-            InitializeDataGridView(Purchases_DataGridView, size);
-            Purchases_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
-
-            Sales_DataGridView = new Guna2DataGridView();
-            InitializeDataGridView(Sales_DataGridView, size);
-            Sales_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
-        }
         private readonly byte rowHeight = 25, columnHeaderHeight = 45;
-        public void InitializeDataGridView(Guna2DataGridView dataGridView, Size size)
+        public void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
             dataGridView.ReadOnly = true;
             dataGridView.AllowUserToAddRows = false;
@@ -1158,6 +1152,7 @@ namespace Sales_Tracker
             dataGridView.CellMouseMove += DataGridView_CellMouseMove;
             dataGridView.CellMouseLeave += DataGridView_CellMouseLeave;
 
+            LoadColumnsInDataGridView(dataGridView, columnHeaders, columnsToLoad);
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
         public void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)

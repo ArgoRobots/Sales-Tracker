@@ -132,9 +132,8 @@ namespace Sales_Tracker
             Size size = new(740, 280);
 
             Accountants_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Accountants_DataGridView, size);
+            MainMenu_Form.Instance.InitializeDataGridView(Accountants_DataGridView, size, ColumnHeaders);
             Accountants_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            MainMenu_Form.LoadColumnsInDataGridView(Accountants_DataGridView, ColumnHeaders);
             Accountants_DataGridView.Location = new Point((Width - Accountants_DataGridView.Width) / 2, topForDataGridView);
             Accountants_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Accountant;
 
