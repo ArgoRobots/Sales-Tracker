@@ -168,9 +168,10 @@ namespace Sales_Tracker
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             if (Purchase_RadioButton.Checked)
             {
-                CloseAllPanels(null, null);
                 Controls.Add(Purchases_DataGridView);
                 Controls.Remove(Sales_DataGridView);
                 MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
@@ -183,9 +184,10 @@ namespace Sales_Tracker
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             if (Sale_RadioButton.Checked)
             {
-                CloseAllPanels(null, null);
                 Controls.Add(Sales_DataGridView);
                 Controls.Remove(Purchases_DataGridView);
                 MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
@@ -239,9 +241,8 @@ namespace Sales_Tracker
                 Controls.Remove(ProductsRemaining_LinkLabel);
                 return;
             }
-            // For some reason, this checks the other radio button
+            Purchase_RadioButton.AutoCheck = false;  // For some reason, the code below checks the other radio button. It probably a bug with Guna
             Sale_RadioButton.AutoCheck = false;
-            Purchase_RadioButton.AutoCheck = false;
 
             int productsRemaining = GetProductsRemaining();
             if (productsRemaining <= 0)
@@ -254,13 +255,15 @@ namespace Sales_Tracker
                 AddProduct_Button.Enabled = true;
                 ProductsRemaining_LinkLabel.ForeColor = CustomColors.text;
             }
+
+            Purchase_RadioButton.AutoCheck = true;
+            Sale_RadioButton.AutoCheck = true;
+
             ProductsRemaining_LinkLabel.LinkArea = new LinkArea(0, 0);  // This fixes a rendering bug. The last letter "w" was being cut off
             ProductsRemaining_LinkLabel.Text = $"{productsRemaining} products remaining. Upgrade now";
             ProductsRemaining_LinkLabel.LinkArea = new LinkArea(ProductsRemaining_LinkLabel.Text.IndexOf("Upgrade now"), "Upgrade now".Length);
             ProductsRemaining_LinkLabel.Left = CompanyOfOrigin_TextBox.Right - ProductsRemaining_LinkLabel.Width;
-
-            Sale_RadioButton.AutoCheck = true;
-            Purchase_RadioButton.AutoCheck = true;
+            AddProduct_Label.Focus();
         }
 
         // Validate product name

@@ -11,9 +11,8 @@ namespace Sales_Tracker.Passwords
             InitializeComponent();
             LoadingPanel.ShowLoadingPanel(this);
             AddEventHandlersToTextBoxes();
-            InitMessageLabel();
-            SetAuthenticationSupported();
             Theme.SetThemeForForm(this);
+            SetWindowsHelloControls();
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -40,11 +39,37 @@ namespace Sales_Tracker.Passwords
                 e.SuppressKeyPress = true;
             }
         }
+        private void Message_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Tools.OpenLink("");
+        }
+
+        // Windows Hello
+        private Guna.UI2.WinForms.Guna2Button WindowsHello_Button;
+        private void ConstructWindowsHelloButton()
+        {
+            if (WindowsHello_Button != null) { return; }
+
+            WindowsHello_Button = new()
+            {
+                Anchor = AnchorStyles.Top,
+                BorderRadius = 2,
+                BorderThickness = 1,
+                Enabled = false,
+                Font = new Font("Segoe UI", 9.5F),
+                Location = new Point(167, 195),
+                Size = new Size(150, 36),
+                Text = "Windows Hello"
+            };
+            WindowsHello_Button.Click += WindowsHello_Button_Click;
+            Controls.Add(WindowsHello_Button);
+            Theme.SetThemeForControl([WindowsHello_Button]);
+        }
         private async void WindowsHello_Button_Click(object sender, EventArgs e)
         {
             // https://stackoverflow.com/questions/78856599/how-to-add-windows-hello-in-c-sharp-net-8-winforms
 
-            message_Label.Text = "Authorizing...";
+            SetMessageText("Authorizing...");
             DisableControlsForAuthentication();
 
             KeyCredentialRetrievalResult result =
@@ -59,30 +84,41 @@ namespace Sales_Tracker.Passwords
             else
             {
                 EnableControlsForAuthentication();
-                Controls.Remove(message_Label);
+                Controls.Remove(Message_LinkLabel);
             }
         }
-
-        // Message label
-        private Label message_Label;
-        private void InitMessageLabel()
+        private async void SetWindowsHelloControls()
         {
-            message_Label = new()
+            if (MainMenu_Form.isFullVersion)
             {
-                Font = new Font("Segoe UI", 11),
-                ForeColor = CustomColors.text,
-                MaximumSize = new Size(Width - 80, 80),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Top = WindowsHello_Button.Top - 30,
-                AutoSize = true,
-                Anchor = AnchorStyles.Top
-            };
-            message_Label.TextChanged += Message_Label_TextChanged;
+                ConstructWindowsHelloButton();
+
+                bool supported = await KeyCredentialManager.IsSupportedAsync();
+                if (supported)
+                {
+                    WindowsHello_Button.Enabled = true;
+                }
+                else
+                {
+                    SetMessageText("Windows Hello is not supported on this device");
+                }
+                Message_LinkLabel.Top = WindowsHello_Button.Top - 30;
+                Height = 280;
+                Controls.Remove(Message_LinkLabel);
+            }
+            else
+            {
+                SetMessageText("Upgrade now to enable Windows Hello");
+                Message_LinkLabel.LinkArea = new LinkArea(Message_LinkLabel.Text.IndexOf("Upgrade now"), "Upgrade now".Length);
+                Message_LinkLabel.Top = Enter_Button.Bottom + 20;
+                Height = 250;
+            }
         }
-        private void Message_Label_TextChanged(object sender, EventArgs e)
+        private void SetMessageText(string text)
         {
-            message_Label.Left = (Width - message_Label.Width) / 2;
-            Controls.Add(message_Label);
+            Message_LinkLabel.Text = text;
+            Controls.Add(Message_LinkLabel);
+            Message_LinkLabel.Left = (Width - Message_LinkLabel.Width) / 2;
         }
 
         // Methods
@@ -97,18 +133,6 @@ namespace Sales_Tracker.Passwords
             Password_TextBox.Enabled = false;
             Enter_Button.Enabled = false;
             WindowsHello_Button.Enabled = false;
-        }
-        private async void SetAuthenticationSupported()
-        {
-            bool supported = await KeyCredentialManager.IsSupportedAsync();
-            if (supported)
-            {
-                WindowsHello_Button.Enabled = true;
-            }
-            else
-            {
-                message_Label.Text = "Windows Hello is not supported on this device";
-            }
         }
         private void CheckPassword()
         {

@@ -32,12 +32,10 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Enter_Button = new Guna.UI2.WinForms.Guna2Button();
             Password_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             EnterPassword_Label = new Label();
-            WindowsHello_Button = new Guna.UI2.WinForms.Guna2Button();
+            Message_LinkLabel = new LinkLabel();
             SuspendLayout();
             // 
             // Enter_Button
@@ -96,38 +94,29 @@
             EnterPassword_Label.TabIndex = 57;
             EnterPassword_Label.Text = "Enter password";
             // 
-            // WindowsHello_Button
+            // Message_LinkLabel
             // 
-            WindowsHello_Button.Anchor = AnchorStyles.Top;
-            WindowsHello_Button.BackColor = Color.Transparent;
-            WindowsHello_Button.BorderColor = Color.LightGray;
-            WindowsHello_Button.BorderRadius = 2;
-            WindowsHello_Button.BorderThickness = 1;
-            WindowsHello_Button.CustomizableEdges = customizableEdges5;
-            WindowsHello_Button.Enabled = false;
-            WindowsHello_Button.FillColor = Color.White;
-            WindowsHello_Button.Font = new Font("Segoe UI", 9.5F);
-            WindowsHello_Button.ForeColor = Color.Black;
-            WindowsHello_Button.Location = new Point(167, 195);
-            WindowsHello_Button.Margin = new Padding(4, 3, 4, 3);
-            WindowsHello_Button.Name = "WindowsHello_Button";
-            WindowsHello_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            WindowsHello_Button.Size = new Size(150, 36);
-            WindowsHello_Button.TabIndex = 60;
-            WindowsHello_Button.Tag = "";
-            WindowsHello_Button.Text = "Windows Hello";
-            WindowsHello_Button.Click += WindowsHello_Button_Click;
+            Message_LinkLabel.Anchor = AnchorStyles.Top;
+            Message_LinkLabel.AutoSize = true;
+            Message_LinkLabel.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Message_LinkLabel.LinkArea = new LinkArea(0, 0);
+            Message_LinkLabel.Location = new Point(209, 181);
+            Message_LinkLabel.Name = "Message_LinkLabel";
+            Message_LinkLabel.Size = new Size(67, 20);
+            Message_LinkLabel.TabIndex = 60;
+            Message_LinkLabel.Text = "Message";
+            Message_LinkLabel.LinkClicked += Message_LinkLabel_LinkClicked;
             // 
             // EnterPassword_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(484, 241);
-            Controls.Add(WindowsHello_Button);
+            ClientSize = new Size(484, 211);
+            Controls.Add(Message_LinkLabel);
             Controls.Add(Enter_Button);
             Controls.Add(Password_TextBox);
             Controls.Add(EnterPassword_Label);
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "EnterPassword_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
@@ -141,6 +130,6 @@
         private Guna.UI2.WinForms.Guna2Button Enter_Button;
         private Guna.UI2.WinForms.Guna2TextBox Password_TextBox;
         private Label EnterPassword_Label;
-        private Guna.UI2.WinForms.Guna2Button WindowsHello_Button;
+        private LinkLabel Message_LinkLabel;
     }
 }

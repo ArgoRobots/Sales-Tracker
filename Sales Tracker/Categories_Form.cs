@@ -101,11 +101,11 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added category '{name}'");
 
-            Sale_RadioButton.AutoCheck = false;
             Purchase_RadioButton.AutoCheck = false;
-            Category_TextBox.Text = "";  // For some reason, this checks the other radio button
+            Sale_RadioButton.AutoCheck = false;
+            Category_TextBox.Text = "";  // For some reason, this checks the other radio button. It probably a bug with Guna
+            Purchase_RadioButton.AutoCheck = true; 
             Sale_RadioButton.AutoCheck = true;
-            Purchase_RadioButton.AutoCheck = true;
 
             Category_TextBox.Focus();
         }

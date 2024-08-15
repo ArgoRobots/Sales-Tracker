@@ -234,7 +234,6 @@ namespace Sales_Tracker
             Sale_RadioButton.UncheckedState.FillColor = Color.Transparent;
             Sale_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             Sale_RadioButton.CheckedChanged += Sale_RadioButton_CheckedChanged;
-            Sale_RadioButton.Click += CloseAllPanels;
             // 
             // Purchase_RadioButton
             // 
@@ -255,7 +254,6 @@ namespace Sales_Tracker
             Purchase_RadioButton.UncheckedState.FillColor = Color.Transparent;
             Purchase_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             Purchase_RadioButton.CheckedChanged += Purchase_RadioButton_CheckedChanged;
-            Purchase_RadioButton.Click += CloseAllPanels;
             // 
             // ProductID_TextBox
             // 
@@ -467,6 +465,7 @@ namespace Sales_Tracker
             ProductsRemaining_LinkLabel.TabIndex = 49;
             ProductsRemaining_LinkLabel.Text = "Products remaining";
             ProductsRemaining_LinkLabel.LinkClicked += ProductsRemaining_LinkLabel_LinkClicked;
+            ProductsRemaining_LinkLabel.Click += CloseAllPanels;
             // 
             // Products_Form
             // 

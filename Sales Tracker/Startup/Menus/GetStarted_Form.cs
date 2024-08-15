@@ -298,10 +298,7 @@ namespace Sales_Tracker.Startup.Menus
                         OpenRecent_FlowLayoutPanel.Controls.Remove(gBtn);
                     }
                 }
-                else
-                {
-                    Hide(null, null);
-                }
+                else { Hide(null, null); }
             }
         }
 
