@@ -66,6 +66,7 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             WarningCompany_PictureBox = new PictureBox();
             WarningCompany_LinkLabel = new LinkLabel();
+            ProductsRemaining_LinkLabel = new LinkLabel();
             ((System.ComponentModel.ISupportInitialize)WarningProductName_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningCategory_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningCompany_PictureBox).BeginInit();
@@ -283,7 +284,8 @@ namespace Sales_Tracker
             // 
             // WarningProductName_PictureBox
             // 
-            WarningProductName_PictureBox.Image = Properties.Resources.Warning;
+            WarningProductName_PictureBox.Anchor = AnchorStyles.Top;
+            WarningProductName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningProductName_PictureBox.Location = new Point(239, 145);
             WarningProductName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningProductName_PictureBox.Name = "WarningProductName_PictureBox";
@@ -296,6 +298,7 @@ namespace Sales_Tracker
             // 
             // WarningProductName_Label
             // 
+            WarningProductName_Label.Anchor = AnchorStyles.Top;
             WarningProductName_Label.AutoSize = true;
             WarningProductName_Label.Font = new Font("Segoe UI", 10F);
             WarningProductName_Label.Location = new Point(266, 144);
@@ -309,7 +312,8 @@ namespace Sales_Tracker
             // 
             // WarningCategory_PictureBox
             // 
-            WarningCategory_PictureBox.Image = Properties.Resources.Warning;
+            WarningCategory_PictureBox.Anchor = AnchorStyles.Top;
+            WarningCategory_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningCategory_PictureBox.Location = new Point(445, 145);
             WarningCategory_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningCategory_PictureBox.Name = "WarningCategory_PictureBox";
@@ -322,6 +326,7 @@ namespace Sales_Tracker
             // 
             // WarningCategory_LinkLabel
             // 
+            WarningCategory_LinkLabel.Anchor = AnchorStyles.Top;
             WarningCategory_LinkLabel.AutoSize = true;
             WarningCategory_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCategory_LinkLabel.LinkArea = new LinkArea(21, 15);
@@ -422,7 +427,8 @@ namespace Sales_Tracker
             // 
             // WarningCompany_PictureBox
             // 
-            WarningCompany_PictureBox.Image = Properties.Resources.Warning;
+            WarningCompany_PictureBox.Anchor = AnchorStyles.Top;
+            WarningCompany_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningCompany_PictureBox.Location = new Point(854, 145);
             WarningCompany_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningCompany_PictureBox.Name = "WarningCompany_PictureBox";
@@ -435,6 +441,7 @@ namespace Sales_Tracker
             // 
             // WarningCompany_LinkLabel
             // 
+            WarningCompany_LinkLabel.Anchor = AnchorStyles.Top;
             WarningCompany_LinkLabel.AutoSize = true;
             WarningCompany_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCompany_LinkLabel.LinkArea = new LinkArea(20, 15);
@@ -448,11 +455,25 @@ namespace Sales_Tracker
             WarningCompany_LinkLabel.Visible = false;
             WarningCompany_LinkLabel.LinkClicked += WarningCompany_LinkLabel_LinkClicked;
             // 
+            // ProductsRemaining_LinkLabel
+            // 
+            ProductsRemaining_LinkLabel.Anchor = AnchorStyles.Top;
+            ProductsRemaining_LinkLabel.AutoSize = true;
+            ProductsRemaining_LinkLabel.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ProductsRemaining_LinkLabel.LinkArea = new LinkArea(0, 0);
+            ProductsRemaining_LinkLabel.Location = new Point(917, 24);
+            ProductsRemaining_LinkLabel.Name = "ProductsRemaining_LinkLabel";
+            ProductsRemaining_LinkLabel.Size = new Size(137, 20);
+            ProductsRemaining_LinkLabel.TabIndex = 49;
+            ProductsRemaining_LinkLabel.Text = "Products remaining";
+            ProductsRemaining_LinkLabel.LinkClicked += ProductsRemaining_LinkLabel_LinkClicked;
+            // 
             // Products_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1084, 521);
+            Controls.Add(ProductsRemaining_LinkLabel);
             Controls.Add(WarningCompany_LinkLabel);
             Controls.Add(WarningCompany_PictureBox);
             Controls.Add(Company_Label);
@@ -477,7 +498,7 @@ namespace Sales_Tracker
             Controls.Add(ProductName_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            MinimumSize = new Size(900, 560);
+            MinimumSize = new Size(1100, 560);
             Name = "Products_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
@@ -515,5 +536,6 @@ namespace Sales_Tracker
         private Guna.UI2.WinForms.Guna2TextBox CompanyOfOrigin_TextBox;
         private PictureBox WarningCompany_PictureBox;
         private LinkLabel WarningCompany_LinkLabel;
+        private LinkLabel ProductsRemaining_LinkLabel;
     }
 }

@@ -85,18 +85,12 @@ namespace Sales_Tracker
         }
         private void Export_Button_Click(object sender, EventArgs e)
         {
-            switch (FileType_ComboBox.SelectedItem)
+            switch (FileType_ComboBox.Text)
             {
-                case ".ArgoProject (backup)":
-                    Directories.CreateBackup(Directory_TextBox.Text + "\\" + Name_TextBox.Text, ".ArgoProject");
+                case ".ArgoSales (.zip)":
+                    Directories.CreateBackup(Directory_TextBox.Text + "\\" + Name_TextBox.Text, ArgoFiles.ArgoCompanyFileExtension);
                     CustomMessageBox.Show("Argo Sales Tracker", $"Successfully backed up '{Directories.CompanyName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     Close();
-                    break;
-
-                case ".stl":
-                    break;
-
-                case ".obj":
                     break;
             }
         }

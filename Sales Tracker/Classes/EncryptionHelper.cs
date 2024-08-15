@@ -16,7 +16,6 @@ namespace Sales_Tracker.Classes
             try
             {
                 (aesKey, aesIV) = EnsureConfigurationExists();
-                Log.Write(1, "EncryptionHelper initialized successfully.");
             }
             catch (Exception ex)
             {

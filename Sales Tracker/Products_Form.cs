@@ -168,25 +168,33 @@ namespace Sales_Tracker
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-            Controls.Add(Purchases_DataGridView);
-            Controls.Remove(Sales_DataGridView);
-            MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
-            CenterSelectedDataGridView();
-            ProductCategory_TextBox.Text = "";
-            ValidateCategoryTextBox();
+            if (Purchase_RadioButton.Checked)
+            {
+                CloseAllPanels(null, null);
+                Controls.Add(Purchases_DataGridView);
+                Controls.Remove(Sales_DataGridView);
+                MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
+                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
+                CenterSelectedDataGridView();
+                ProductCategory_TextBox.Text = "";
+                ValidateCategoryTextBox();
+                SetProductsRemainingLabel();
+            }
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-            Controls.Add(Sales_DataGridView);
-            Controls.Remove(Purchases_DataGridView);
-            MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
-            CenterSelectedDataGridView();
-            ProductCategory_TextBox.Text = "";
-            ValidateCategoryTextBox();
+            if (Sale_RadioButton.Checked)
+            {
+                CloseAllPanels(null, null);
+                Controls.Add(Sales_DataGridView);
+                Controls.Remove(Purchases_DataGridView);
+                MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
+                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
+                CenterSelectedDataGridView();
+                ProductCategory_TextBox.Text = "";
+                ValidateCategoryTextBox();
+                SetProductsRemainingLabel();
+            }
         }
         private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -214,41 +222,45 @@ namespace Sales_Tracker
                 HideShowingResultsForLabel();
             }
         }
-
-        // DataGridView
-        public enum Columns
+        private void ProductsRemaining_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ProductID,
-            ProductName,
-            ProductCategory,
-            CountryOfOrigin,
-            CompanyOfOrigin
+            Tools.OpenLink("");
         }
-        public readonly Dictionary<Columns, string> ColumnHeaders = new()
-        {
-            { Columns.ProductID, "Product ID" },
-            { Columns.ProductName, "Product name" },
-            { Columns.ProductCategory, "Product category" },
-            { Columns.CountryOfOrigin, "Country of origin" },
-            { Columns.CompanyOfOrigin, "Company of origin" },
-        };
-        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte topForDataGridView = 255;
-        private void ConstructDataGridViews()
-        {
-            Size size = new(840, 270);
 
-            Purchases_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size, ColumnHeaders);
-            Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
-            Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+        // Products remaining
+        private static int GetProductsRemaining()
+        {
+            return 10 - MainMenu_Form.Instance.selectedDataGridView.Rows.Count;
+        }
+        private void SetProductsRemainingLabel()
+        {
+            if (MainMenu_Form.isFullVersion)
+            {
+                Controls.Remove(ProductsRemaining_LinkLabel);
+                return;
+            }
+            // For some reason, this checks the other radio button
+            Sale_RadioButton.AutoCheck = false;
+            Purchase_RadioButton.AutoCheck = false;
 
-            Sales_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size, ColumnHeaders);
-            Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
-            Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+            int productsRemaining = GetProductsRemaining();
+            if (productsRemaining <= 0)
+            {
+                AddProduct_Button.Enabled = false;
+                ProductsRemaining_LinkLabel.ForeColor = CustomColors.accent_red;
+            }
+            else
+            {
+                AddProduct_Button.Enabled = true;
+                ProductsRemaining_LinkLabel.ForeColor = CustomColors.text;
+            }
+            ProductsRemaining_LinkLabel.LinkArea = new LinkArea(0, 0);  // This fixes a rendering bug. The last letter "w" was being cut off
+            ProductsRemaining_LinkLabel.Text = $"{productsRemaining} products remaining. Upgrade now";
+            ProductsRemaining_LinkLabel.LinkArea = new LinkArea(ProductsRemaining_LinkLabel.Text.IndexOf("Upgrade now"), "Upgrade now".Length);
+            ProductsRemaining_LinkLabel.Left = CompanyOfOrigin_TextBox.Right - ProductsRemaining_LinkLabel.Width;
+
+            Sale_RadioButton.AutoCheck = true;
+            Purchase_RadioButton.AutoCheck = true;
         }
 
         // Validate product name
@@ -357,6 +369,56 @@ namespace Sales_Tracker
             Controls.Remove(ShowingResultsFor_Label);
         }
 
+        // DataGridView
+        public enum Columns
+        {
+            ProductID,
+            ProductName,
+            ProductCategory,
+            CountryOfOrigin,
+            CompanyOfOrigin
+        }
+        public readonly Dictionary<Columns, string> ColumnHeaders = new()
+        {
+            { Columns.ProductID, "Product ID" },
+            { Columns.ProductName, "Product name" },
+            { Columns.ProductCategory, "Product category" },
+            { Columns.CountryOfOrigin, "Country of origin" },
+            { Columns.CompanyOfOrigin, "Company of origin" },
+        };
+        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
+        private const byte topForDataGridView = 255;
+        private void ConstructDataGridViews()
+        {
+            Size size = new(840, 270);
+
+            Purchases_DataGridView = new Guna2DataGridView();
+            MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size, ColumnHeaders);
+            Purchases_DataGridView.RowsAdded += Sales_DataGridView_RowsChanged;
+            Purchases_DataGridView.RowsRemoved += Sales_DataGridView_RowsChanged;
+            Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            Purchases_DataGridView.Location = new Point((Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
+            Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+
+            Sales_DataGridView = new Guna2DataGridView();
+            MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size, ColumnHeaders);
+            Sales_DataGridView.RowsAdded += Sales_DataGridView_RowsChanged;
+            Sales_DataGridView.RowsRemoved += Sales_DataGridView_RowsChanged;
+            Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
+            Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+        }
+        void Sales_DataGridView_RowsChanged(object sender, EventArgs e)
+        {
+            SetProductsRemainingLabel();
+        }
+        private void CenterSelectedDataGridView()
+        {
+            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
+        }
+
         // Methods
         private void ValidateInputs(object sender, EventArgs e)
         {
@@ -366,13 +428,8 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text) && CountryOfOrigin_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(CompanyOfOrigin_TextBox.Text) && CompanyOfOrigin_TextBox.Tag.ToString() != "0";
 
+            allFieldsFilled &= GetProductsRemaining() > 0;
             AddProduct_Button.Enabled = allFieldsFilled;
-        }
-        private void CenterSelectedDataGridView()
-        {
-            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
         }
         public void CloseAllPanels(object sender, EventArgs e)
         {

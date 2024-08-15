@@ -20,6 +20,9 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.ConstructMessage_Panel();
         }
 
+        // Properties
+        public static readonly byte panelButtonHeight = 22, spaceForSeperator = 10, spaceForPanel = 10;
+
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -42,11 +45,12 @@ namespace Sales_Tracker.Classes
                 FillColor = CustomColors.panelBtn,
                 Size = size
             };
+            int half = spaceForPanel / 2;
             FlowLayoutPanel flowLayoutPanel = new()
             {
                 BackColor = CustomColors.panelBtn,
-                Size = new Size(size.Width - 10, size.Height - 6),
-                Location = new Point(5, 5)
+                Size = new Size(size.Width - spaceForPanel, size.Height - spaceForPanel),
+                Location = new Point(half, half)
             };
             panel.Controls.Add(flowLayoutPanel);
             return panel;
@@ -67,7 +71,7 @@ namespace Sales_Tracker.Classes
         {
             Guna2Button menuBtn = new()
             {
-                Size = new Size(width, 22),
+                Size = new Size(width, panelButtonHeight),
                 FillColor = CustomColors.panelBtn,
                 ForeColor = CustomColors.text,
                 TextAlign = HorizontalAlignment.Left,
@@ -154,7 +158,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(panelWidth, 6 * 22 + 10 + 10));
+            fileMenu = ConstructPanelForMenu(new Size(panelWidth, 6 * panelButtonHeight + spaceForSeperator + spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", panelBtnWidth, true, flowPanel);
@@ -198,7 +202,6 @@ namespace Sales_Tracker.Classes
             {
                 new Receipts_Form().ShowDialog();
             };
-            ConstructKeyShortcut("Ctrl+E", menuBtn);
         }
         public static void SaveAll()
         {
@@ -233,7 +236,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel helpMenu;
         private static void ConstructHelpMenu()
         {
-            helpMenu = ConstructPanelForMenu(new Size(panelWidth, 7 * 22 + 10 + 20));
+            helpMenu = ConstructPanelForMenu(new Size(panelWidth, 7 * panelButtonHeight + spaceForSeperator * 2 + spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)helpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Support", panelBtnWidth, true, flowPanel);
@@ -285,7 +288,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel accountMenu;
         private static void ConstructProfileMenu()
         {
-            accountMenu = ConstructPanelForMenu(new Size(panelWidth, 4 * 22 + 10 + 10));
+            accountMenu = ConstructPanelForMenu(new Size(panelWidth, 4 * panelButtonHeight + spaceForSeperator + spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)accountMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Argo account", panelBtnWidth, true, flowPanel);
@@ -544,7 +547,7 @@ namespace Sales_Tracker.Classes
             DeselectAllMenuButtons(accountMenu);
 
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
-            MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
+            MainMenu_Form.Instance.Help_Button.Image = Resources.QuestionMarkGray;
             MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
             MainMenu_Form.Instance.CloseRightClickPanels();

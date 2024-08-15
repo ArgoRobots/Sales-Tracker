@@ -49,16 +49,16 @@ namespace Sales_Tracker
             switch (icon)
             {
                 case CustomMessageBoxIcon.Question:
-                    Icon_pictureBox.BackgroundImage = Resources.Minus;
+                    Icon_pictureBox.BackgroundImage = Resources.QuestionMarkGray;
                     break;
                 case CustomMessageBoxIcon.Exclamation:
-                    Icon_pictureBox.BackgroundImage = Resources.Minus;
+                    Icon_pictureBox.BackgroundImage = Resources.ExclamationMark;
                     break;
                 case CustomMessageBoxIcon.Error:
-                    Icon_pictureBox.BackgroundImage = Resources.Minus;
+                    Icon_pictureBox.BackgroundImage = Resources.Error;
                     break;
                 case CustomMessageBoxIcon.Info:
-                    Icon_pictureBox.BackgroundImage = Resources.Minus;
+                    Icon_pictureBox.BackgroundImage = Resources.Info;
                     break;
                 case CustomMessageBoxIcon.None:
                     Icon_pictureBox.BackgroundImage = null;

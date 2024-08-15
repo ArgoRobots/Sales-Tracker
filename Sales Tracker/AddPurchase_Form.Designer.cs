@@ -61,6 +61,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddPurchase_Form));
             OrderNumber_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             OrderNumber_Label = new Label();
@@ -98,6 +100,7 @@ namespace Sales_Tracker
             Discount_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Notes_Labal = new Label();
             Notes_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            ImportExcel_Button = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).BeginInit();
             SuspendLayout();
@@ -384,7 +387,7 @@ namespace Sales_Tracker
             AddPurchase_Button.FillColor = Color.White;
             AddPurchase_Button.Font = new Font("Segoe UI", 9.5F);
             AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(433, 380);
+            AddPurchase_Button.Location = new Point(433, 382);
             AddPurchase_Button.Margin = new Padding(4, 3, 4, 3);
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
@@ -443,7 +446,7 @@ namespace Sales_Tracker
             // WarningProduct_PictureBox
             // 
             WarningProduct_PictureBox.Anchor = AnchorStyles.Top;
-            WarningProduct_PictureBox.Image = Properties.Resources.Warning;
+            WarningProduct_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningProduct_PictureBox.Location = new Point(588, 145);
             WarningProduct_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningProduct_PictureBox.Name = "WarningProduct_PictureBox";
@@ -559,7 +562,7 @@ namespace Sales_Tracker
             // WarningBuyer_PictureBox
             // 
             WarningBuyer_PictureBox.Anchor = AnchorStyles.Top;
-            WarningBuyer_PictureBox.Image = Properties.Resources.Warning;
+            WarningBuyer_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningBuyer_PictureBox.Location = new Point(382, 145);
             WarningBuyer_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningBuyer_PictureBox.Name = "WarningBuyer_PictureBox";
@@ -729,11 +732,32 @@ namespace Sales_Tracker
             Notes_TextBox.TabIndex = 60;
             Notes_TextBox.Click += CloseAllPanels;
             // 
+            // ImportExcel_Button
+            // 
+            ImportExcel_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            ImportExcel_Button.BackColor = Color.Transparent;
+            ImportExcel_Button.BorderColor = Color.LightGray;
+            ImportExcel_Button.BorderRadius = 2;
+            ImportExcel_Button.BorderThickness = 1;
+            ImportExcel_Button.CustomizableEdges = customizableEdges32;
+            ImportExcel_Button.FillColor = Color.White;
+            ImportExcel_Button.Font = new Font("Segoe UI", 9.5F);
+            ImportExcel_Button.ForeColor = Color.Black;
+            ImportExcel_Button.Location = new Point(826, 382);
+            ImportExcel_Button.Margin = new Padding(4, 3, 4, 3);
+            ImportExcel_Button.Name = "ImportExcel_Button";
+            ImportExcel_Button.ShadowDecoration.CustomizableEdges = customizableEdges33;
+            ImportExcel_Button.Size = new Size(170, 32);
+            ImportExcel_Button.TabIndex = 61;
+            ImportExcel_Button.Text = "Import from Excel";
+            ImportExcel_Button.Click += ImportExcel_Button_Click;
+            // 
             // AddPurchase_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1009, 426);
+            Controls.Add(ImportExcel_Button);
             Controls.Add(Notes_Labal);
             Controls.Add(Notes_TextBox);
             Controls.Add(Discount_Label);
@@ -770,10 +794,10 @@ namespace Sales_Tracker
             Controls.Add(AddPurchase_Label);
             Controls.Add(OrderNumber_Label);
             Controls.Add(OrderNumber_TextBox);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
-            MinimumSize = new Size(1000, 360);
+            MinimumSize = new Size(1025, 465);
             Name = "AddPurchase_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
@@ -824,5 +848,6 @@ namespace Sales_Tracker
         private Guna.UI2.WinForms.Guna2TextBox Discount_TextBox;
         private Label Notes_Labal;
         private Guna.UI2.WinForms.Guna2TextBox Notes_TextBox;
+        private Guna.UI2.WinForms.Guna2Button ImportExcel_Button;
     }
 }

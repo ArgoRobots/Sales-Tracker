@@ -25,6 +25,7 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
+            CenterSelectedDataGridView();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
             MainMenu_Form.SortTheDataGridViewByFirstColumn(Purchases_DataGridView, Sales_DataGridView);
@@ -110,23 +111,29 @@ namespace Sales_Tracker
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-            Controls.Add(Purchases_DataGridView);
-            Controls.Remove(Sales_DataGridView);
-            MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
-            CenterSelectedDataGridView();
-            VaidateCategoryTextBox();
+            if (Purchase_RadioButton.Checked)
+            {
+                CloseAllPanels(null, null);
+                Controls.Add(Purchases_DataGridView);
+                Controls.Remove(Sales_DataGridView);
+                MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
+                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
+                CenterSelectedDataGridView();
+                VaidateCategoryTextBox();
+            }
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-            Controls.Add(Sales_DataGridView);
-            Controls.Remove(Purchases_DataGridView);
-            MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
-            CenterSelectedDataGridView();
-            VaidateCategoryTextBox();
+            if (Sale_RadioButton.Checked)
+            {
+                CloseAllPanels(null, null);
+                Controls.Add(Sales_DataGridView);
+                Controls.Remove(Purchases_DataGridView);
+                MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
+                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
+                CenterSelectedDataGridView();
+                VaidateCategoryTextBox();
+            }
         }
         private void Category_TextBox_KeyDown(object sender, KeyEventArgs e)
         {

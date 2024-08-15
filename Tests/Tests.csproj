@@ -7,9 +7,15 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    
+    <TargetFramework>net8.0-windows10.0.26100.1</TargetFramework>
+    <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <WindowsSdkSupportedTargetPlatformVersion Include="10.0.26100.1" WindowsSdkPackageVersion="10.0.26100.1" MinimumNETVersion="6.0" />
+		<SdkSupportedTargetPlatformVersion Include="10.0.26100.1" />
+    
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />

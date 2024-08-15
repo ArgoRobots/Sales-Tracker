@@ -50,7 +50,7 @@ namespace Sales_Tracker
             // WarningAccountantName_PictureBox
             // 
             WarningAccountantName_PictureBox.Anchor = AnchorStyles.Top;
-            WarningAccountantName_PictureBox.Image = Properties.Resources.Warning;
+            WarningAccountantName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningAccountantName_PictureBox.Location = new Point(114, 145);
             WarningAccountantName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningAccountantName_PictureBox.Name = "WarningAccountantName_PictureBox";

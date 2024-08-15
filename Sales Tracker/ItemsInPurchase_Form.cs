@@ -9,7 +9,6 @@ namespace Sales_Tracker
         // Properties
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
-        private readonly DataGridViewRow selectedRow;
         private readonly List<MainMenu_Form.Column> columnsToLoad = [
             MainMenu_Form.Column.Product,
             MainMenu_Form.Column.Category,
@@ -27,12 +26,11 @@ namespace Sales_Tracker
 
             LoadingPanel.ShowLoadingPanel(this);
 
-            selectedRow = row;
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
 
             // Check if the Tag is a ValueTuple
-            if (row.Tag is (List<string> itemList, MainMenu_Form.TagData tagData))
+            if (row.Tag is (List<string> itemList, MainMenu_Form.TagData))
             {
                 SetDataGridView(itemList);
             }

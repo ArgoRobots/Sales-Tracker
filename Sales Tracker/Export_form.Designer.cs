@@ -28,16 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Export_Form));
             WarningDir_PictureBox = new PictureBox();
             WarningDir_Label = new Label();
@@ -58,7 +58,7 @@
             // 
             // WarningDir_PictureBox
             // 
-            WarningDir_PictureBox.Image = Properties.Resources.Warning;
+            WarningDir_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningDir_PictureBox.Location = new Point(32, 358);
             WarningDir_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningDir_PictureBox.Name = "WarningDir_PictureBox";
@@ -83,7 +83,7 @@
             // 
             // WarningName_PictureBox
             // 
-            WarningName_PictureBox.Image = Properties.Resources.Warning;
+            WarningName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningName_PictureBox.Location = new Point(33, 143);
             WarningName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningName_PictureBox.Name = "WarningName_PictureBox";
@@ -109,7 +109,7 @@
             // Directory_TextBox
             // 
             Directory_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Directory_TextBox.CustomizableEdges = customizableEdges11;
+            Directory_TextBox.CustomizableEdges = customizableEdges1;
             Directory_TextBox.DefaultText = "";
             Directory_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Directory_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -125,7 +125,7 @@
             Directory_TextBox.PasswordChar = '\0';
             Directory_TextBox.PlaceholderText = "";
             Directory_TextBox.SelectedText = "";
-            Directory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Directory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Directory_TextBox.ShortcutsEnabled = false;
             Directory_TextBox.Size = new Size(709, 46);
             Directory_TextBox.TabIndex = 41;
@@ -145,7 +145,7 @@
             // Name_TextBox
             // 
             Name_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Name_TextBox.CustomizableEdges = customizableEdges13;
+            Name_TextBox.CustomizableEdges = customizableEdges3;
             Name_TextBox.DefaultText = "";
             Name_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Name_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -161,7 +161,7 @@
             Name_TextBox.PasswordChar = '\0';
             Name_TextBox.PlaceholderText = "";
             Name_TextBox.SelectedText = "";
-            Name_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Name_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Name_TextBox.ShortcutsEnabled = false;
             Name_TextBox.Size = new Size(708, 46);
             Name_TextBox.TabIndex = 40;
@@ -205,7 +205,7 @@
             ThreeDots_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ThreeDots_Button.BorderColor = Color.FromArgb(213, 218, 223);
             ThreeDots_Button.BorderThickness = 1;
-            ThreeDots_Button.CustomizableEdges = customizableEdges15;
+            ThreeDots_Button.CustomizableEdges = customizableEdges5;
             ThreeDots_Button.FillColor = Color.White;
             ThreeDots_Button.Font = new Font("Segoe UI", 9F);
             ThreeDots_Button.ForeColor = Color.White;
@@ -215,7 +215,7 @@
             ThreeDots_Button.Location = new Point(743, 301);
             ThreeDots_Button.Margin = new Padding(4, 3, 4, 3);
             ThreeDots_Button.Name = "ThreeDots_Button";
-            ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ThreeDots_Button.Size = new Size(47, 46);
             ThreeDots_Button.TabIndex = 50;
             ThreeDots_Button.Click += ThreeDots_Button_Click;
@@ -226,14 +226,14 @@
             Export_Button.BorderColor = Color.LightGray;
             Export_Button.BorderRadius = 2;
             Export_Button.BorderThickness = 1;
-            Export_Button.CustomizableEdges = customizableEdges17;
+            Export_Button.CustomizableEdges = customizableEdges7;
             Export_Button.FillColor = Color.White;
             Export_Button.Font = new Font("Segoe UI", 9.5F);
             Export_Button.ForeColor = Color.Black;
             Export_Button.Location = new Point(659, 420);
             Export_Button.Margin = new Padding(4, 3, 4, 3);
             Export_Button.Name = "Export_Button";
-            Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Export_Button.Size = new Size(131, 32);
             Export_Button.TabIndex = 51;
             Export_Button.Text = "Export";
@@ -243,7 +243,7 @@
             // 
             FileType_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             FileType_ComboBox.BackColor = Color.Transparent;
-            FileType_ComboBox.CustomizableEdges = customizableEdges19;
+            FileType_ComboBox.CustomizableEdges = customizableEdges9;
             FileType_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             FileType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             FileType_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
@@ -251,11 +251,11 @@
             FileType_ComboBox.Font = new Font("Segoe UI", 10F);
             FileType_ComboBox.ForeColor = Color.Black;
             FileType_ComboBox.ItemHeight = 40;
-            FileType_ComboBox.Items.AddRange(new object[] { ".ArgoProject (backup)" });
+            FileType_ComboBox.Items.AddRange(new object[] { ".ArgoSales (.zip)" });
             FileType_ComboBox.Location = new Point(26, 208);
             FileType_ComboBox.Margin = new Padding(3, 4, 3, 4);
             FileType_ComboBox.Name = "FileType_ComboBox";
-            FileType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            FileType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             FileType_ComboBox.Size = new Size(708, 46);
             FileType_ComboBox.TabIndex = 332;
             // 

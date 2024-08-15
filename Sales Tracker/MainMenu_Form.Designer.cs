@@ -404,7 +404,7 @@
             Help_Button.Font = new Font("Segoe UI", 9F);
             Help_Button.ForeColor = Color.White;
             Help_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
-            Help_Button.Image = Properties.Resources.HelpGray;
+            Help_Button.Image = Properties.Resources.QuestionMarkGray;
             Help_Button.Location = new Point(1524, 0);
             Help_Button.Name = "Help_Button";
             Help_Button.PressedColor = Color.Empty;

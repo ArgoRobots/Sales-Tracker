@@ -163,15 +163,6 @@ namespace Sales_Tracker
                 SetControlsForSingleProduct();
             }
         }
-        private void ImportAmazon_Button_Click(object sender, EventArgs e)
-        {
-        }
-        private void ImportEbay_Button_Click(object sender, EventArgs e)
-        {
-        }
-        private void ImportExcel_Button_Click(object sender, EventArgs e)
-        {
-        }
         private void WarningProduct_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Products_Form(false).ShowDialog();
@@ -203,6 +194,9 @@ namespace Sales_Tracker
         private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
         {
             RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
+        }
+        private void ImportExcel_Button_Click(object sender, EventArgs e)
+        {
         }
 
         // Methods to add sales

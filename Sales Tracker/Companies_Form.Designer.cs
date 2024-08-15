@@ -50,7 +50,7 @@ namespace Sales_Tracker
             // WarningCompanyName_PictureBox
             // 
             WarningCompanyName_PictureBox.Anchor = AnchorStyles.Top;
-            WarningCompanyName_PictureBox.Image = Properties.Resources.Warning;
+            WarningCompanyName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningCompanyName_PictureBox.Location = new Point(114, 145);
             WarningCompanyName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningCompanyName_PictureBox.Name = "WarningCompanyName_PictureBox";
@@ -198,6 +198,7 @@ namespace Sales_Tracker
             Controls.Add(AddCompany_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
+            MinimumSize = new Size(800, 510);
             Name = "Companies_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

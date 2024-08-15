@@ -23,6 +23,7 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             AddEventHandlersToTextBoxes();
             ConstructDataGridViews();
+            CenterSelectedDataGridView();
             LoadCompanies();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();

@@ -164,7 +164,7 @@ namespace Sales_Tracker
             // WarningCategoryName_PictureBox
             // 
             WarningCategoryName_PictureBox.Anchor = AnchorStyles.Top;
-            WarningCategoryName_PictureBox.Image = Properties.Resources.Warning;
+            WarningCategoryName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningCategoryName_PictureBox.Location = new Point(114, 145);
             WarningCategoryName_PictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningCategoryName_PictureBox.Name = "WarningCategoryName_PictureBox";

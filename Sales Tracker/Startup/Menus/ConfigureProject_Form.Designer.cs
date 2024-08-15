@@ -202,7 +202,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // WarningDir_pictureBox
             // 
-            WarningDir_pictureBox.Image = Properties.Resources.Warning;
+            WarningDir_pictureBox.Image = Properties.Resources.ExclamationMark;
             WarningDir_pictureBox.Location = new Point(38, 291);
             WarningDir_pictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningDir_pictureBox.Name = "WarningDir_pictureBox";
@@ -214,7 +214,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // WarningName_pictureBox
             // 
-            WarningName_pictureBox.Image = Properties.Resources.Warning;
+            WarningName_pictureBox.Image = Properties.Resources.ExclamationMark;
             WarningName_pictureBox.Location = new Point(38, 178);
             WarningName_pictureBox.Margin = new Padding(4, 3, 4, 3);
             WarningName_pictureBox.Name = "WarningName_pictureBox";

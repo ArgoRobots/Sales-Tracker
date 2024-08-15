@@ -21,6 +21,7 @@ namespace Sales_Tracker
         public DateTime fromDate, toDate;
         public byte spaceToOffsetFormNotCenter = 15;
         private static string _currencySymbol;
+        public static readonly bool isFullVersion = false;
         public static string CurrencySymbol
         {
             get => _currencySymbol;
@@ -76,12 +77,12 @@ namespace Sales_Tracker
             DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
             string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax variations across countries.";
-            chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
+            chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.QuestionMarkGray, existingHeaderText, messageBoxText);
 
             DataGridViewColumn totalColumn = Sales_DataGridView.Columns[Column.Total.ToString()];
             existingHeaderText = totalColumn.HeaderText;
             messageBoxText = "The revenue excludes shipping, taxes, and fees.";
-            totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
+            totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.QuestionMarkGray, existingHeaderText, messageBoxText);
 
             AddTimeRangesIntoComboBox();
         }
@@ -623,12 +624,12 @@ namespace Sales_Tracker
             if (Controls.Contains(UI.helpMenu))
             {
                 Controls.Remove(UI.helpMenu);
-                Help_Button.Image = Resources.HelpGray;
+                Help_Button.Image = Resources.QuestionMarkGray;
             }
             else
             {
                 UI.CloseAllPanels(null, null);
-                Help_Button.Image = Resources.HelpWhite;
+                Help_Button.Image = Resources.QuestionMarkWhite;
                 UI.helpMenu.Location = new Point(Help_Button.Left - UI.helpMenu.Width + Help_Button.Width, Top_Panel.Height);
                 Controls.Add(UI.helpMenu);
                 UI.helpMenu.BringToFront();
@@ -1436,9 +1437,8 @@ namespace Sales_Tracker
 
                 // Adjust the panel height based on the number of controls
                 int controlCount = flowPanel.Controls.Count;
-                int controlHeight = 22;
-                rightClickDataGridView_Panel.Height = controlCount * controlHeight + 10;
-                flowPanel.Height = controlCount * controlHeight;
+                rightClickDataGridView_Panel.Height = controlCount * UI.panelButtonHeight + 10;
+                flowPanel.Height = controlCount * UI.panelButtonHeight;
 
                 Control controlSender = (Control)sender;
                 controlRightClickPanelWasAddedTo = controlSender.Parent;
@@ -1595,7 +1595,6 @@ namespace Sales_Tracker
             cell.Style.ForeColor = CustomColors.text;
             cell.Style.SelectionForeColor = CustomColors.text;
         }
-
 
         // Methods for DataGridView
         public void DataGridViewRowsAdded(DataGridViewRowsAddedEventArgs e)
@@ -1997,7 +1996,7 @@ namespace Sales_Tracker
         public Guna2Button rightClickDataGridView_DeleteBtn;
         public void ConstructRightClickDataGridViewRowMenu()
         {
-            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 5 * 22 + 10));
+            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 5 * UI.panelButtonHeight + UI.spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
 
             Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", UI.panelBtnWidth, false, flowPanel);

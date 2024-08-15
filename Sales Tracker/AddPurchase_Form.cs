@@ -199,6 +199,10 @@ namespace Sales_Tracker
         {
             RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
         }
+        private void ImportExcel_Button_Click(object sender, EventArgs e)
+        {
+
+        }
 
         // Methods to add purchases
         private bool AddSinglePurchase()

@@ -608,7 +608,7 @@ namespace Sales_Tracker
             WarningAccountantName_PictureBox = new()
             {
                 Size = new Size(19, 19),
-                Image = Properties.Resources.Warning,
+                Image = Properties.Resources.ExclamationMark,
                 SizeMode = PictureBoxSizeMode.StretchImage,
             };
 

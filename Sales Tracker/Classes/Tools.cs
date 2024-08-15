@@ -23,6 +23,12 @@ namespace Sales_Tracker.Classes
 
         public static void OpenLink(string URL)
         {
+            if (string.IsNullOrEmpty(URL))
+            {
+                Log.Write(0, "URL is empty");
+                return;
+            }
+
             new Process
             {
                 StartInfo = new ProcessStartInfo(URL)
