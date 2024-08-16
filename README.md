@@ -3,8 +3,9 @@
 ## Introduction
 **Argo Sales Tracker** is a simple, powerful, and effective C# WinForms application designed to track the sales and purchases of products. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, overpriced, and overcomplicated. Argo Sales Tracker offers advanced features while remaining easy to use, filling the gap between basic spreadsheets (e.g., Excel or Google Sheets) and enterprise-level software.
 
-### Importing data from spreadsheets
+## Importing data from spreadsheets
 NOT IMPLEMENTED YET
+
 To import your existing sales, purchase, or product data from a spreadsheet into the Argo Sales Tracker:
 
 1. **Prepare Your Spreadsheet**: Ensure your data is organized in a structured manner. The columns should match the fields in the application (e.g., Product Name, Category, Date, Amount, etc.).
@@ -27,13 +28,11 @@ To import your existing sales, purchase, or product data from a spreadsheet into
 - **Guna UI**: Enhances the look and feel of the application with modern controls and components.
 - **Guna Charts**: Used to visualize data through beautiful and interactive charts.
 
-## Getting started
-
-### Prerequisites
+## Prerequisites
 - **.NET 8 SDK**: Make sure you have the latest .NET 8 SDK installed on your machine. You can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 - **Visual Studio 2022 or later**: This project is developed using Visual Studio.
 
-### Installation
+## Installation
 1. Clone the repository to your local machine using the following command:
    ```bash
    git clone <repository-url>
@@ -41,7 +40,7 @@ To import your existing sales, purchase, or product data from a spreadsheet into
 3.	Restore the NuGet packages by going to Tools > NuGet Package Manager > Restore NuGet Packages.
 4.	Build the project by pressing Ctrl + Shift + B.
 
-### Running the application
+## Running the application
 After building the solution, press F5 to run the application in Debug mode, or Ctrl + F5 to run it in Release mode.
 Initial Setup
 
