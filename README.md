@@ -37,7 +37,7 @@ Initial Setup
 
 To use the program effectively, follow these steps:
 1.	**Add an Accountant**: The first step is to add an accountant that will be associated with the sales and purchases.
-2.	**Add Company Names**: Enter the companies you will be buying from.
-3.	**Add Categories**: Organize your products by creating categories, making it easier to manage inventory and track sales. For example, if your company buys a many different types of robotic components, you can add the categories "Bolts, nuts, screws, ball bearings, motors, etc.
+2.	**Add Companies**: Enter the companies you will be buying from.
+3.	**Add Categories**: Organize your products by creating categories, making it easier to manage inventory and track sales. For example, if your company buys many different types of robotic components, you can add the categories "Bolts, nuts, screws, ball bearings, motors, etc.
 4.	**Add Products**: Once categories are set, you can create products within those categories.
 5.	**Add Sales and Purchases**: After setting up accountants, companies, categories, and products, you can start adding sales and purchases into the system.
