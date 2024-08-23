@@ -8,9 +8,9 @@ namespace Sales_Tracker.Classes
     {
         public static void InitThings()
         {
-            EncryptionHelper.Initialize();
+            EncryptionManager.Initialize();
             InitDataFile();
-            PasswordManager.Password = EncryptionHelper.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+            PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
         }
         public static void InitDataFile()
         {

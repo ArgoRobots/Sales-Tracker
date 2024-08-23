@@ -1,51 +1,62 @@
 ﻿using Microsoft.Win32;
 using System.Reflection;
-using System.Resources;
+using System.Runtime.InteropServices;
 
 namespace Sales_Tracker.Classes
 {
-    internal class ArgoFiles
+    internal partial class ArgoFiles
     {
         public static readonly string ArgoCompanyFileExtension = ".ArgoSales",
                                       TxtFileExtension = ".txt",
-                                      JsonFileExtension = ".json";
+                                      JsonFileExtension = ".json",
+                                      ExcelFileExtension = ".xlsx";
 
-        public static void RegisterFileIcon(string extension, string resourceName, int iconIndex)
+        // Refresh Explorer to show changes in the file icons
+        [LibraryImport("shell32.dll", SetLastError = true)]
+        private static partial void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
+
+        const uint SHCNE_ASSOCCHANGED = 0x8000000;
+        const uint SHCNF_IDLIST = 0x0;
+
+        public static void RegisterFileIcon(string extension, Icon icon, int iconIndex)
         {
             // Dynamically get the path of the currently running executable
             string applicationPath = Assembly.GetExecutingAssembly().Location;
 
-            ResourceManager rm = Properties.Resources.ResourceManager;
-
-            // Extract icon from resources
-            Icon icon = (Icon)rm.GetObject(resourceName);
-
             if (icon != null)
             {
                 // Save the icon to a temporary file
-                string tempIconPath = Path.Combine(Path.GetTempPath(), resourceName + ".ico");
+                string tempIconPath = Path.Combine(Path.GetTempPath(), extension.Replace(".", "") + ".ico");
                 using (FileStream fs = new(tempIconPath, FileMode.Create))
                 {
                     icon.Save(fs);
                 }
 
                 string className = $"ArgoSalesTracker{extension.Replace(".", "")}";
-                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(extension))
+
+                // Create registry entries for file association
+                using (RegistryKey extensionKey = Registry.ClassesRoot.CreateSubKey(extension))
                 {
-                    key.SetValue("", className);
+                    extensionKey.SetValue("", className);
                 }
-                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(className))
+
+                using (RegistryKey classKey = Registry.ClassesRoot.CreateSubKey(className))
                 {
-                    key.SetValue("", $"Argo Sales Tracker {extension} File");
+                    classKey.SetValue("", $"Argo Sales Tracker File");
                 }
-                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey($@"{className}\DefaultIcon"))
+
+                using (RegistryKey defaultIconKey = Registry.ClassesRoot.CreateSubKey($@"{className}\DefaultIcon"))
                 {
-                    key.SetValue("", $"{tempIconPath},{iconIndex}");
+                    defaultIconKey.SetValue("", $"{tempIconPath},{iconIndex}");
                 }
-                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey($@"{className}\shell\open\command"))
+
+                using (RegistryKey commandKey = Registry.ClassesRoot.CreateSubKey($@"{className}\shell\open\command"))
                 {
-                    key.SetValue("", $"\"{applicationPath}\" \"%1\"");
+                    commandKey.SetValue("", $"\"{applicationPath}\" \"%1\"");
                 }
+
+                // Notify the shell to refresh the icons
+                SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
             }
         }
     }

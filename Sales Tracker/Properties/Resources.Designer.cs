@@ -73,9 +73,9 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon A_logo {
+        internal static System.Drawing.Icon Argo_color {
             get {
-                object obj = ResourceManager.GetObject("A_logo", resourceCulture);
+                object obj = ResourceManager.GetObject("Argo_color", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

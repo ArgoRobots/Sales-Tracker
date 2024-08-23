@@ -24,6 +24,7 @@ namespace Sales_Tracker.Startup.Menus
             ConstructRightClickOpenRecentMenu();
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
+            Directories.EnsureAppDataDirectoriesExist();
             UI.ConstructRightClickRename();
             LoadListOfRecentProjects();
             SetFlowLayoutPanel();

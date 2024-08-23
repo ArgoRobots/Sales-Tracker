@@ -105,7 +105,6 @@
             Controls.Add(AutoScroll_ComboBox);
             Controls.Add(RichTextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4, 3, 4, 3);
             MinimumSize = new Size(464, 340);
             Name = "Log_Form";

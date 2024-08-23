@@ -4,11 +4,11 @@ using System.Text.Json;
 
 namespace Sales_Tracker.Classes
 {
-    public static class EncryptionHelper
+    public static class EncryptionManager
     {
         private static byte[] aesKey;
         private static byte[] aesIV;
-        public const string encryptedTag = "encrypted:", encryptionHeader = "true", passwordTag = "key:";
+        public const string encryptedTag = "encrypted:", encryptedValue = "true", passwordTag = "key:";
         private static readonly string ConfigPath = "config.json";
 
         public static void Initialize()
@@ -197,7 +197,7 @@ namespace Sales_Tracker.Classes
             string secondLastLine = lines[^2];
 
             // Check if the file is encrypted by examining the second-to-last line
-            if (secondLastLine.Split(':')[1] == encryptionHeader)
+            if (secondLastLine.Split(':')[1] == encryptedValue)
             {
                 (MemoryStream decryptedStream, string[] footerLines) = DecryptFileToMemoryStream(inputFile, key, iv);
                 if (decryptedStream == null)

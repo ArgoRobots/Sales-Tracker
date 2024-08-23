@@ -12,16 +12,16 @@ namespace Tests
         [TestMethod]
         public void TestEncryptionDecryption()
         {
-            EncryptionHelper.Initialize();
+            EncryptionManager.Initialize();
             string originalText = "MySecretPassword";
-            byte[] key = EncryptionHelper.AesKey;
-            byte[] iv = EncryptionHelper.AesIV;
+            byte[] key = EncryptionManager.AesKey;
+            byte[] iv = EncryptionManager.AesIV;
 
             // Encrypt the string
-            string encryptedText = EncryptionHelper.EncryptString(originalText, key, iv);
+            string encryptedText = EncryptionManager.EncryptString(originalText, key, iv);
 
             // Decrypt the string
-            string? decryptedText = EncryptionHelper.DecryptString(encryptedText, key, iv);
+            string? decryptedText = EncryptionManager.DecryptString(encryptedText, key, iv);
 
             // Validate the result
             Assert.AreEqual(originalText, decryptedText, "Encryption and decryption failed.");
@@ -30,16 +30,16 @@ namespace Tests
         [TestMethod]
         public void TestEncryptDecryptStream()
         {
-            EncryptionHelper.Initialize();
+            EncryptionManager.Initialize();
             string originalText = "This is a stream test.";
-            byte[] key = EncryptionHelper.AesKey;
-            byte[] iv = EncryptionHelper.AesIV;
+            byte[] key = EncryptionManager.AesKey;
+            byte[] iv = EncryptionManager.AesIV;
 
             // Convert string to stream
             MemoryStream inputStream = new(Encoding.UTF8.GetBytes(originalText));
 
             // Encrypt the stream
-            MemoryStream encryptedStream = EncryptionHelper.EncryptStream(inputStream, key, iv);
+            MemoryStream encryptedStream = EncryptionManager.EncryptStream(inputStream, key, iv);
 
             // Reset position for reading the encrypted stream
             encryptedStream.Position = 0;
@@ -68,8 +68,8 @@ namespace Tests
         [TestMethod]
         public void TestGenerateRandomKeyAndIV()
         {
-            byte[] key = EncryptionHelper.GenerateRandomKey(32);
-            byte[] iv = EncryptionHelper.GenerateRandomIV(16);
+            byte[] key = EncryptionManager.GenerateRandomKey(32);
+            byte[] iv = EncryptionManager.GenerateRandomIV(16);
 
             // Validate key and IV sizes
             Assert.AreEqual(32, key.Length, "Key size is incorrect.");
@@ -80,14 +80,14 @@ namespace Tests
         public void TestEncryptDecryptWithGeneratedKeys()
         {
             string originalText = "RandomKeyAndIVTest";
-            byte[] key = EncryptionHelper.GenerateRandomKey(32);
-            byte[] iv = EncryptionHelper.GenerateRandomIV(16);
+            byte[] key = EncryptionManager.GenerateRandomKey(32);
+            byte[] iv = EncryptionManager.GenerateRandomIV(16);
 
             // Encrypt the string
-            string encryptedText = EncryptionHelper.EncryptString(originalText, key, iv);
+            string encryptedText = EncryptionManager.EncryptString(originalText, key, iv);
 
             // Decrypt the string
-            string? decryptedText = EncryptionHelper.DecryptString(encryptedText, key, iv);
+            string? decryptedText = EncryptionManager.DecryptString(encryptedText, key, iv);
 
             // Validate the result
             Assert.AreEqual(originalText, decryptedText, "Encryption and decryption with generated keys failed.");

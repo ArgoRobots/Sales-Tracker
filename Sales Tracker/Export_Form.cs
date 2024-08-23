@@ -26,16 +26,12 @@ namespace Sales_Tracker
         }
         private void Export_Form_Shown(object sender, EventArgs e)
         {
-            // This fixes a bug
-            BeginInvoke(() => Export_Button.Focus());
-
+            BeginInvoke(() => Export_Button.Focus());  // This fixes a bug
             LoadingPanel.HideLoadingPanel(this);
         }
 
         private void Name_TextBox_TextChanged(object sender, EventArgs e)
         {
-            // TEMP NOTE: the backround color of WarningDir_pictureBox is always white even in dark mode because the background is not transparent. It needs to be a .png
-
             if ("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "")
             {
                 Export_Button.Enabled = false;
@@ -53,8 +49,6 @@ namespace Sales_Tracker
         }
         private void Directory_TextBox_TextChanged(object sender, EventArgs e)
         {
-            // TEMP NOTE: the backround color of WarningDir_pictureBox is always white even in dark mode because the background is not transparent. It needs to be a .png
-
             if ("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'))
             {
                 Export_Button.Enabled = false;
@@ -87,10 +81,15 @@ namespace Sales_Tracker
         {
             switch (FileType_ComboBox.Text)
             {
-                case ".ArgoSales (.zip)":
+                case "ArgoSales (.zip)":
                     Directories.CreateBackup(Directory_TextBox.Text + "\\" + Name_TextBox.Text, ArgoFiles.ArgoCompanyFileExtension);
                     CustomMessageBox.Show("Argo Sales Tracker", $"Successfully backed up '{Directories.CompanyName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     Close();
+                    break;
+
+                case "Excel spreadsheet (.xlsx)":
+                    ExcelManager.ExportToExcel(Directory_TextBox.Text + "\\" + Name_TextBox.Text + ArgoFiles.ExcelFileExtension);
+                    CustomMessageBox.Show("Argo Sales Tracker", $"Successfully created spreadsheet for '{Directories.CompanyName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     break;
             }
         }

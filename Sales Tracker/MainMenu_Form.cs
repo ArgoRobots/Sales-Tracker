@@ -6,6 +6,7 @@ using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using System.Collections;
 using System.ComponentModel;
+using System.Configuration;
 using System.Text.Json;
 
 namespace Sales_Tracker
@@ -15,7 +16,7 @@ namespace Sales_Tracker
         // Proprties
         public static readonly List<string> thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-        private static readonly string note_text = "note", rowTag = "RowTag";
+        private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
@@ -126,9 +127,9 @@ namespace Sales_Tracker
             {
                 // Extract cell values
                 List<string?> cellValuesList = new();
-                foreach (var kv in rowData)
+                foreach (KeyValuePair<string, object> kv in rowData)
                 {
-                    if (kv.Key != rowTag && kv.Key != note_text)
+                    if (kv.Key != rowTagKey && kv.Key != noteTextKey)
                     {
                         cellValuesList.Add(kv.Value?.ToString());
                     }
@@ -139,35 +140,52 @@ namespace Sales_Tracker
                 int rowIndex = dataGridView.Rows.Add(cellValues);
 
                 // Set the row tag
-                if (rowData.TryGetValue(rowTag, out object value))
+                if (rowData.TryGetValue(rowTagKey, out object value) && value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Object)
                 {
-                    if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Object)
+                    Dictionary<string, object>? tagObject = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonElement.GetRawText());
+
+                    if (tagObject != null)
                     {
-                        Dictionary<string, object>? tagObject = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonElement.GetRawText());
-
-                        if (tagObject != null)
+                        // If the tagObject is a list of items and TagData
+                        if (tagObject.TryGetValue(itemsKey, out object? itemsElement) && itemsElement is JsonElement itemsJsonElement && itemsJsonElement.ValueKind == JsonValueKind.Array)
                         {
-                            // Extract the List<string> and TagData from the tagObject
-                            if (tagObject.TryGetValue("Items", out var itemsElement) && itemsElement is JsonElement itemsJsonElement && itemsJsonElement.ValueKind == JsonValueKind.Array)
+                            List<string?> itemList = itemsJsonElement.EnumerateArray().Select(e => e.GetString()).ToList();
+
+                            if (tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement) && purchaseDataElement is JsonElement purchaseDataJsonElement)
                             {
-                                var itemList = itemsJsonElement.EnumerateArray().Select(e => e.GetString()).ToList();
+                                TagData? purchaseData = JsonSerializer.Deserialize<TagData>(purchaseDataJsonElement.GetRawText());
 
-                                if (tagObject.TryGetValue("PurchaseData", out var purchaseDataElement) && purchaseDataElement is JsonElement purchaseDataJsonElement)
+                                if (itemList != null && purchaseData != null)
                                 {
-                                    var purchaseData = JsonSerializer.Deserialize<TagData>(purchaseDataJsonElement.GetRawText());
-
-                                    if (itemList != null && purchaseData != null)
-                                    {
-                                        dataGridView.Rows[rowIndex].Tag = (itemList, purchaseData);
-                                    }
+                                    dataGridView.Rows[rowIndex].Tag = (itemList, purchaseData);
                                 }
+                            }
+                        }
+                        // If the tagObject is a string and TagData
+                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement) && tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
+                        {
+                            string? tagString = tagStringElement?.ToString();
+                            TagData? purchaseData1 = JsonSerializer.Deserialize<TagData>(purchaseData1Element?.ToString());
+
+                            if (tagString != null && purchaseData1 != null)
+                            {
+                                dataGridView.Rows[rowIndex].Tag = (tagString, purchaseData1);
+                            }
+                        }
+                        // If the tagObject is a string
+                        else if (value is JsonElement stringElement && stringElement.ValueKind == JsonValueKind.Object)
+                        {
+                            if (stringElement.TryGetProperty(tagKey, out JsonElement tagProperty) && tagProperty.ValueKind == JsonValueKind.String)
+                            {
+                                string singleTag = tagProperty.GetString();
+                                dataGridView.Rows[rowIndex].Tag = singleTag;
                             }
                         }
                     }
                 }
 
                 // Set the cell tag for the last cell if note_text key exists
-                if (rowData.TryGetValue(note_text, out object noteValue))
+                if (rowData.TryGetValue(noteTextKey, out object noteValue))
                 {
                     DataGridViewCell lastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 1];
                     lastCell.Value = show_text;
@@ -1419,16 +1437,25 @@ namespace Sales_Tracker
                 flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
                 flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
 
-                if (grid.SelectedRows[0].Tag is (List<string> itemList, TagData))
+                if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
                 {
-                    List<string> list = itemList;
-
                     ShowShowItemsBtn(flowPanel, 1);
 
-                    if (list[^1].Contains('\\') && File.Exists(list[^1]))
+                    // Check if the last item starts with "receipt:" and remove it
+                    string lastItem = tagList[^1];
+                    if (lastItem.StartsWith(receipt_text))
                     {
-                        ShowExportReceiptBtn(flowPanel, 2);
+                        lastItem = lastItem.Substring(8);
+
+                        if (File.Exists(lastItem))
+                        {
+                            ShowExportReceiptBtn(flowPanel, 2);
+                        }
                     }
+                }
+                else if (grid.SelectedRows[0].Tag is (string, TagData))
+                {
+                    ShowExportReceiptBtn(flowPanel, 1);
                 }
                 else if (grid.SelectedRows[0].Tag is string)
                 {
@@ -1902,10 +1929,9 @@ namespace Sales_Tracker
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    // Save the cell tag if cell value is "show"
                     if (cell.Value?.ToString() == show_text && cell.Tag != null)
                     {
-                        rowData[note_text] = cell.Tag;
+                        rowData[noteTextKey] = cell.Tag;
                     }
                     else
                     {
@@ -1914,16 +1940,28 @@ namespace Sales_Tracker
                 }
 
                 // Add the row tag
-                if (row.Tag is (List<string> itemList, TagData purchaseData))
+                if (row.Tag is (List<string> tagList, TagData purchaseData))
                 {
-                    // Convert the ValueTuple to an anonymous object or a dictionary
-                    var tagDataToSerialize = new
+                    rowData[rowTagKey] = new
                     {
-                        Items = itemList,
+                        Items = tagList,
                         PurchaseData = purchaseData
                     };
-
-                    rowData[rowTag] = tagDataToSerialize;
+                }
+                else if (row.Tag is (string tagString, TagData purchaseData1))
+                {
+                    rowData[rowTagKey] = new
+                    {
+                        Tag = tagString,
+                        PurchaseData = purchaseData1
+                    };
+                }
+                else if (row.Tag is string singleTag)
+                {
+                    rowData[rowTagKey] = new
+                    {
+                        Tag = singleTag
+                    };
                 }
 
                 rowsData.Add(rowData);
@@ -2133,11 +2171,11 @@ namespace Sales_Tracker
         // Methods for right click DataGridView row
         public static string GetFilePathFromRowTag(object tag)
         {
-            if (tag is List<string> list && list[^1].Contains('\\') && File.Exists(list[^1]))
+            if (tag is (List<string> tagList, TagData) && tagList[^1].Contains('\\') && File.Exists(tagList[^1]))
             {
-                return list[^1];
+                return tagList[^1];
             }
-            if (tag is string tagString)
+            if (tag is (string tagString, TagData))
             {
                 return tagString;
             }

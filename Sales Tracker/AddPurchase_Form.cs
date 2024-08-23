@@ -319,13 +319,8 @@ namespace Sales_Tracker
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
             }
 
-            if (newFilePath != "")
-            {
-                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
-            }
-
-            // Store the USD values in the row's Tag
-            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = purchaseData;
+            // Store the receipt and USD values in the row's Tag
+            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = Tuple.Create(newFilePath, purchaseData);
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 

@@ -130,9 +130,6 @@
   <data name="CloseGrey" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CloseGrey.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="A_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\A logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="BackArrowBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BackArrowBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -186,5 +183,8 @@
   </data>
   <data name="Info" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Argo_color" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Argo - color.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -251,7 +251,7 @@
             FileType_ComboBox.Font = new Font("Segoe UI", 10F);
             FileType_ComboBox.ForeColor = Color.Black;
             FileType_ComboBox.ItemHeight = 40;
-            FileType_ComboBox.Items.AddRange(new object[] { ".ArgoSales (.zip)" });
+            FileType_ComboBox.Items.AddRange(new object[] { "ArgoSales (.zip)", "Excel spreadsheet (.xlsx)" });
             FileType_ComboBox.Location = new Point(26, 208);
             FileType_ComboBox.Margin = new Padding(3, 4, 3, 4);
             FileType_ComboBox.Name = "FileType_ComboBox";
@@ -283,7 +283,6 @@
             Name = "Export_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Export";
             Load += Export_Form_Load;
             Shown += Export_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();

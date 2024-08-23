@@ -50,6 +50,10 @@
         "net8.0-windows10.0.26100.1": {
           "targetAlias": "net8.0-windows10.0.26100.1",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.102.3, )"
+            },
             "Guna.Charts.WinForms": {
               "target": "Package",
               "version": "[1.0.8, )"

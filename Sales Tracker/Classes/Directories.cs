@@ -59,6 +59,13 @@ namespace Sales_Tracker.Classes
             // Other
             Desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
+        public static void EnsureAppDataDirectoriesExist()
+        {
+            if (!Directory.Exists(AppData_dir))
+            {
+                CreateDirectory(AppData_dir, false);
+            }
+        }
 
         // Directories
         /// <summary>
@@ -325,16 +332,9 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                string destinationDirectory = Path.GetDirectoryName(destinationFile);
-                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(destinationFile);
-                string fileExtension = Path.GetExtension(destinationFile);
-
-                // Check if the file already exists and get a new name if necessary
-                if (File.Exists(destinationFile) && !overwrite)
+                if (!overwrite)
                 {
-                    List<string> filesList = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
-                    fileNameWithoutExtension = Tools.AddNumberForAStringThatAlreadyExists(fileNameWithoutExtension, filesList);
-                    destinationFile = Path.Combine(destinationDirectory, fileNameWithoutExtension + fileExtension);
+                    destinationFile = GetNewFileNameIfItAlreadyExists(destinationFile);
                 }
 
                 // Use MemoryStream to securely hold the tar data, avoiding the security risk of writing it to a temporary file
@@ -348,7 +348,7 @@ namespace Sales_Tracker.Classes
                 if (Properties.Settings.Default.EncryptFiles)
                 {
                     // Encrypt the tar data in memory
-                    MemoryStream encryptedMemoryStream = EncryptionHelper.EncryptStream(tarMemoryStream, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                    MemoryStream encryptedMemoryStream = EncryptionManager.EncryptStream(tarMemoryStream, EncryptionManager.AesKey, EncryptionManager.AesIV);
                     encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
 
                     // Write the encrypted data to the destination file
@@ -358,10 +358,10 @@ namespace Sales_Tracker.Classes
                     }
 
                     // Encrypt the password
-                    string encryptedPassword = EncryptionHelper.EncryptString(EncryptionHelper.passwordTag + PasswordManager.Password, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                    string encryptedPassword = EncryptionManager.EncryptString(EncryptionManager.passwordTag + PasswordManager.Password, EncryptionManager.AesKey, EncryptionManager.AesIV);
 
                     // Create and append the footer
-                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + EncryptionHelper.encryptionHeader + Environment.NewLine + encryptedPassword;
+                    string footer = Environment.NewLine + EncryptionManager.encryptedTag + EncryptionManager.encryptedValue + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
 
                     Log.Write(2, $"File successfully created and encrypted: {destinationFile}");
@@ -375,10 +375,10 @@ namespace Sales_Tracker.Classes
                     }
 
                     // Encrypt the password
-                    string encryptedPassword = EncryptionHelper.EncryptString(EncryptionHelper.passwordTag + PasswordManager.Password, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                    string encryptedPassword = EncryptionManager.EncryptString(EncryptionManager.passwordTag + PasswordManager.Password, EncryptionManager.AesKey, EncryptionManager.AesIV);
 
                     // Create and append the footer with the encrypted password
-                    string footer = Environment.NewLine + EncryptionHelper.encryptedTag + Environment.NewLine + encryptedPassword;
+                    string footer = Environment.NewLine + EncryptionManager.encryptedTag + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
 
                     Log.Write(2, $"File successfully created: {destinationFile}");
@@ -417,10 +417,10 @@ namespace Sales_Tracker.Classes
                         lines.Add(reader.ReadLine());
                     }
 
-                    if (lines[^2].Split(':')[1] == EncryptionHelper.encryptionHeader)
+                    if (lines[^2].Split(':')[1] == EncryptionManager.encryptedValue)
                     {
                         decryptedTempFile = Path.GetTempFileName();
-                        EncryptionHelper.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionHelper.AesKey, EncryptionHelper.AesIV);
+                        EncryptionManager.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionManager.AesKey, EncryptionManager.AesIV);
                         sourceFile = decryptedTempFile;
                     }
                 }
@@ -575,6 +575,22 @@ namespace Sales_Tracker.Classes
                           .Where(name => name != null)
                           .Cast<string>()
                           .ToList();
+        }
+   
+        public static string GetNewFileNameIfItAlreadyExists(string filePath)
+        {
+            string destinationDirectory = Path.GetDirectoryName(filePath);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+            string fileExtension = Path.GetExtension(filePath);
+
+            // Check if the file already exists and get a new name if necessary
+            if (File.Exists(filePath))
+            {
+                List<string> filesList = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
+                fileNameWithoutExtension = Tools.AddNumberForAStringThatAlreadyExists(fileNameWithoutExtension, filesList);
+                return Path.Combine(destinationDirectory, fileNameWithoutExtension + fileExtension);
+            }
+            return filePath;
         }
     }
 }
