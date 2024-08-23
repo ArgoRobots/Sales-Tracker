@@ -4,12 +4,18 @@ namespace Sales_Tracker.Settings.Menus
 {
     public partial class General_Form : Form
     {
+        // Properties
+        private static General_Form _instance;
+        public static General_Form Instance
+        {
+            get { return _instance; }
+        }
+
         // Init.
-        public static General_Form Instance { get; private set; }
         public General_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowLoadingPanel(this);
 

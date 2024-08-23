@@ -50,11 +50,11 @@ namespace Sales_Tracker.Classes
         }
         public static bool AreAnyChangesMade()
         {
-            if (MainMenu_Form.thingsThatHaveChangedInFile.Count > 0 ||
+            if (MainMenu_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 Accountants_Form.thingsThatHaveChangedInFile.Count > 0 ||
-                Categories_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                Categories_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 Companies_Form.thingsThatHaveChangedInFile.Count > 0 ||
-                Products_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                Products_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 AddSale_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 AddPurchase_Form.thingsThatHaveChangedInFile.Count > 0)
             {
@@ -64,11 +64,11 @@ namespace Sales_Tracker.Classes
         }
         public static void ResetChanges()
         {
-            MainMenu_Form.thingsThatHaveChangedInFile.Clear();
+            MainMenu_Form.ThingsThatHaveChangedInFile.Clear();
             Accountants_Form.thingsThatHaveChangedInFile.Clear();
-            Categories_Form.thingsThatHaveChangedInFile.Clear();
+            Categories_Form.ThingsThatHaveChangedInFile.Clear();
             Companies_Form.thingsThatHaveChangedInFile.Clear();
-            Products_Form.thingsThatHaveChangedInFile.Clear();
+            Products_Form.ThingsThatHaveChangedInFile.Clear();
             AddSale_Form.thingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.thingsThatHaveChangedInFile.Clear();
         }

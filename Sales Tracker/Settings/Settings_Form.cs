@@ -7,16 +7,21 @@ namespace Sales_Tracker.Settings
 {
     public partial class Settings_Form : Form
     {
+        // Properties
+        private static Settings_Form _instance;
+        public static Settings_Form Instance
+        {
+            get { return _instance; }
+        }
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
 
         // Init.
-        public static Settings_Form Instance { get; private set; }
         public Settings_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowLoadingPanel(this);
 

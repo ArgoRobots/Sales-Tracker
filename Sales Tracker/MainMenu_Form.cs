@@ -14,7 +14,17 @@ namespace Sales_Tracker
     public partial class MainMenu_Form : Form
     {
         // Proprties
-        public static readonly List<string> thingsThatHaveChangedInFile = [];
+        private static MainMenu_Form _instance;
+        public static MainMenu_Form Instance
+        {
+            get { return _instance; }
+        }
+        private static List<string> _thingsThatHaveChangedInFile = [];
+        public static List<string> ThingsThatHaveChangedInFile
+        {
+            get { return _thingsThatHaveChangedInFile; }
+            private set { _thingsThatHaveChangedInFile = value; }
+        }
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
@@ -30,11 +40,10 @@ namespace Sales_Tracker
         }
 
         // Init.
-        public static MainMenu_Form? Instance { get; private set; }
         public MainMenu_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowLoadingPanel(this);
 
@@ -834,7 +843,7 @@ namespace Sales_Tracker
             MoveEditButton();
             ResizeControls();
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
         }
         private void SetCompanyLabel()
         {
@@ -1347,7 +1356,7 @@ namespace Sales_Tracker
         private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (isProgramLoading) { return; }
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
             DataGridViewRowChanged();
         }
         public void DataGridViewRowChanged()
@@ -1971,7 +1980,7 @@ namespace Sales_Tracker
             string json = JsonSerializer.Serialize(rowsData, jsonOptions);
             Directories.WriteTextToFile(filePath, json);
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
         public void SaveCategoriesToFile(SelectedOption option)
         {
@@ -1995,7 +2004,7 @@ namespace Sales_Tracker
             string json = JsonSerializer.Serialize(categoryList, jsonOptions);
             Directories.WriteTextToFile(filePath, json);
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
         private void SaveDataGridViewToFile()
         {
@@ -2025,7 +2034,7 @@ namespace Sales_Tracker
 
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, $"{Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
 
         // Right click DataGridView row

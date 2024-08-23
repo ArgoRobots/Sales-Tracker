@@ -6,12 +6,18 @@ namespace Sales_Tracker
 {
     public partial class Log_Form : Form
     {
+        // Properties
+        private static Log_Form _instance;
+        public static Log_Form Instance
+        {
+            get { return _instance; }
+        }
+
         // Init
-        public static Log_Form Instance { get; private set; }
         public Log_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowLoadingPanel(this);
             Theme.SetThemeForForm(this);

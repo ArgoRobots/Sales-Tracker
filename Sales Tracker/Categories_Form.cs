@@ -6,16 +6,25 @@ namespace Sales_Tracker
     public partial class Categories_Form : Form
     {
         // Properties
-        public static readonly List<string> thingsThatHaveChangedInFile = [];
+        private static Categories_Form _instance;
+        public static Categories_Form Instance
+        {
+            get { return _instance; }
+        }
+        private static List<string> _thingsThatHaveChangedInFile = [];
+        public static List<string> ThingsThatHaveChangedInFile
+        {
+            get { return _thingsThatHaveChangedInFile; }
+            private set { _thingsThatHaveChangedInFile = value; }
+        }
 
         // Init.
-        public static Categories_Form Instance { get; private set; }
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
         public Categories_Form(bool checkPurchaseRadioButton)
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowLoadingPanel(this);
 
@@ -98,13 +107,13 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added category '{name}'");
 
             Purchase_RadioButton.AutoCheck = false;
             Sale_RadioButton.AutoCheck = false;
             Category_TextBox.Text = "";  // For some reason, this checks the other radio button. It probably a bug with Guna
-            Purchase_RadioButton.AutoCheck = true; 
+            Purchase_RadioButton.AutoCheck = true;
             Sale_RadioButton.AutoCheck = true;
 
             Category_TextBox.Focus();

@@ -5,12 +5,18 @@ namespace Sales_Tracker.Settings.Menus
 {
     public partial class Security_Form : Form
     {
+        // Properties
+        private static Security_Form _instance;
+        public static Security_Form Instance
+        {
+            get { return _instance; }
+        }
+
         // Init.
-        public static Security_Form Instance { get; private set; }
         public Security_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowLoadingPanel(this);
 

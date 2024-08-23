@@ -7,14 +7,18 @@ namespace Sales_Tracker
     public partial class CustomMessage_Form : Form
     {
         // Properties
+        private static CustomMessage_Form _instance;
+        public static CustomMessage_Form Instance
+        {
+            get { return _instance; }
+        }
         public CustomMessageBoxResult result;
 
         // Init.
-        public static CustomMessage_Form Instance { get; private set; }
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
             DoubleBuffered = true;
 
             LoadingPanel.ShowLoadingPanel(this);
@@ -184,13 +188,13 @@ namespace Sales_Tracker
             // Add list of things that has changed to panel
             int top = 5;
 
-            top = AddListForThingsChanged("General", MainMenu_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("General", MainMenu_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Accountants", Accountants_Form.thingsThatHaveChangedInFile, top);
-            top = AddListForThingsChanged("Categories", Categories_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Categories", Categories_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Companies", Companies_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Purchases", AddPurchase_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Sales", AddSale_Form.thingsThatHaveChangedInFile, top);
-            top = AddListForThingsChanged("Products", Products_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Products", Products_Form.ThingsThatHaveChangedInFile, top);
 
             // This is a dummy control to add extra space at the end, even when the panel is scrollable
             Changed_Panel.Controls.Add(new Label()

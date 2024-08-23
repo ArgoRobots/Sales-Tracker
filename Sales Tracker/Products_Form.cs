@@ -6,8 +6,17 @@ namespace Sales_Tracker
     public partial class Products_Form : Form
     {
         // Properties
-        public static readonly List<string> thingsThatHaveChangedInFile = [];
-        public static Products_Form Instance { get; private set; }
+        private static List<string> _thingsThatHaveChangedInFile = [];
+        public static List<string> ThingsThatHaveChangedInFile
+        {
+            get { return _thingsThatHaveChangedInFile; }
+            private set { _thingsThatHaveChangedInFile = value; }
+        }
+        private static Products_Form _instance;
+        public static Products_Form Instance
+        {
+            get { return _instance; }
+        }
 
         // Init.
         private readonly MainMenu_Form.SelectedOption oldOption;
@@ -15,7 +24,7 @@ namespace Sales_Tracker
         public Products_Form(bool checkPurchaseRadioButton)
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
@@ -156,7 +165,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added product '{name}'");
 
             Sale_RadioButton.AutoCheck = false;

@@ -6,16 +6,20 @@ namespace Sales_Tracker
     public partial class Accountants_Form : Form
     {
         // Properties
+        private static Accountants_Form _instance;
+        public static Accountants_Form Instance
+        {
+            get { return _instance; }
+        }
         public static readonly List<string> thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Init.
-        public static Accountants_Form Instance { get; private set; }
         public Accountants_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowLoadingPanel(this);
 

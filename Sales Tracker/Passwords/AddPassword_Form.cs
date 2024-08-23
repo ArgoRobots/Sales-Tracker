@@ -52,7 +52,7 @@ namespace Sales_Tracker.Passwords
         private void SetPassword()
         {
             PasswordManager.Password = Password_TextBox.Text;
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.thingsThatHaveChangedInFile, $"Added password");
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Added password");
             CustomMessageBox.Show("Argo Sales Tracker", "Password set successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             Close();
         }

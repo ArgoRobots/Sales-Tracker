@@ -3,28 +3,52 @@
   "WorkspaceRootPath": "C:\\Users\\evand\\Desktop\\Sales Tracker\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|c:\\users\\evand\\desktop\\sales tracker\\tests\\tools_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|solutionrelative:tests\\tools_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\classes\\tools.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\classes\\tools.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\excelmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\excelmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\classes\\encryptionmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\classes\\encryptionmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\menus\\updates_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\menus\\updates_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|c:\\users\\evand\\desktop\\sales tracker\\tests\\encryption_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|solutionrelative:tests\\encryption_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\settings_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\settings_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|c:\\users\\evand\\desktop\\sales tracker\\tests\\directories_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|solutionrelative:tests\\directories_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\menus\\general_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\menus\\general_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|c:\\users\\evand\\desktop\\sales tracker\\tests\\misc_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}|Tests\\Tests.csproj|solutionrelative:tests\\misc_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\menus\\security_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\menus\\security_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\menus\\updates_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\menus\\updates_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\menus\\security_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\menus\\security_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\menus\\general_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\menus\\general_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\settings\\settings_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\settings\\settings_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|c:\\users\\evand\\desktop\\sales tracker\\sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{B418D847-E789-4BCC-A965-5ADAD2A18EBF}|Sales Tracker\\Sales Tracker.csproj|solutionrelative:sales tracker\\mainmenu_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,21 +58,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 5,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Tools.cs",
-              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Classes\\Tools.cs",
-              "RelativeDocumentMoniker": "Sales Tracker\\Classes\\Tools.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Classes\\Tools.cs",
-              "RelativeToolTip": "Sales Tracker\\Classes\\Tools.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAIAxwJ8AAABSAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-23T07:19:34.414Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
@@ -67,68 +78,154 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EncryptionManager.cs",
-              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Classes\\EncryptionManager.cs",
-              "RelativeDocumentMoniker": "Sales Tracker\\Classes\\EncryptionManager.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Classes\\EncryptionManager.cs",
-              "RelativeToolTip": "Sales Tracker\\Classes\\EncryptionManager.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAQwOwAAAAWAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "ExcelManager.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\ExcelManager.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\ExcelManager.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\ExcelManager.cs",
+              "RelativeToolTip": "Sales Tracker\\ExcelManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-23T07:18:44.198Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Directories_UnitTest.cs",
-              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Directories_UnitTest.cs",
-              "RelativeDocumentMoniker": "Tests\\Directories_UnitTest.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Directories_UnitTest.cs",
-              "RelativeToolTip": "Tests\\Directories_UnitTest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-23T06:13:57.844Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Misc_UnitTest.cs",
-              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Misc_UnitTest.cs",
-              "RelativeDocumentMoniker": "Tests\\Misc_UnitTest.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Misc_UnitTest.cs",
-              "RelativeToolTip": "Tests\\Misc_UnitTest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-23T06:13:25.055Z",
+              "WhenOpened": "2024-08-23T08:24:15.107Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Tools_UnitTest.cs",
-              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Tools_UnitTest.cs",
-              "RelativeDocumentMoniker": "Tests\\Tools_UnitTest.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Tools_UnitTest.cs",
-              "RelativeToolTip": "Tests\\Tools_UnitTest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAPAAAAAAAAAA==",
+              "Title": "Category.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Category.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Category.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Category.cs",
+              "RelativeToolTip": "Sales Tracker\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-23T06:12:15.693Z",
+              "WhenOpened": "2024-08-23T08:19:58.86Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Encryption_UnitTest.cs",
-              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Encryption_UnitTest.cs",
-              "RelativeDocumentMoniker": "Tests\\Encryption_UnitTest.cs",
-              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Tests\\Encryption_UnitTest.cs",
-              "RelativeToolTip": "Tests\\Encryption_UnitTest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA2AAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Updates_Form.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Updates_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Menus\\Updates_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Updates_Form.cs",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Menus\\Updates_Form.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-23T06:08:57.399Z",
+              "WhenOpened": "2024-08-23T08:17:43.832Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Updates_Form.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Updates_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Menus\\Updates_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Updates_Form.cs [Design]",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Menus\\Updates_Form.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:17:43.019Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Security_Form.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Security_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Menus\\Security_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Security_Form.cs",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Menus\\Security_Form.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:17:33.512Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Security_Form.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Security_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Menus\\Security_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\Security_Form.cs [Design]",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Menus\\Security_Form.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:17:32.739Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "General_Form.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\General_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Menus\\General_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\General_Form.cs",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Menus\\General_Form.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:17:17.776Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "General_Form.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\General_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Menus\\General_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Menus\\General_Form.cs [Design]",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Menus\\General_Form.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:17:17.039Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Settings_Form.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Settings_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Settings_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Settings_Form.cs",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Settings_Form.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:16:58.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Settings_Form.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Settings_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\Settings\\Settings_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\Settings\\Settings_Form.cs [Design]",
+              "RelativeToolTip": "Sales Tracker\\Settings\\Settings_Form.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:16:56.98Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MainMenu_Form.cs",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\MainMenu_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\MainMenu_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\MainMenu_Form.cs",
+              "RelativeToolTip": "Sales Tracker\\MainMenu_Form.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:11:37.6Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "MainMenu_Form.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\MainMenu_Form.cs",
+              "RelativeDocumentMoniker": "Sales Tracker\\MainMenu_Form.cs",
+              "ToolTip": "C:\\Users\\evand\\Desktop\\Sales Tracker\\Sales Tracker\\MainMenu_Form.cs [Design]",
+              "RelativeToolTip": "Sales Tracker\\MainMenu_Form.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T08:11:36.065Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }
