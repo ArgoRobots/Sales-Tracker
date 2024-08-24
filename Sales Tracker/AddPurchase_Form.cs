@@ -14,7 +14,7 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
@@ -111,7 +111,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void AddPurchase_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

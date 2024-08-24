@@ -21,7 +21,7 @@ namespace Sales_Tracker
             _instance = this;
             DoubleBuffered = true;
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             Theme.SetThemeForForm(this);
 
@@ -31,7 +31,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void CustomMessage_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Methods

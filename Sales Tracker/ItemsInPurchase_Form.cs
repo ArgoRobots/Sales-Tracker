@@ -24,7 +24,7 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
@@ -66,7 +66,7 @@ namespace Sales_Tracker
         }
         private void ItemsInPurchase_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Methods

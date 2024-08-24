@@ -16,7 +16,7 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             selectedRow = row;
             selectedTag = row.DataGridView.Tag.ToString();
@@ -38,7 +38,7 @@ namespace Sales_Tracker
         {
             controlToFocus?.Focus();
             ResizeControls();
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

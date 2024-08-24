@@ -26,7 +26,7 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             AddEventHandlersToTextBoxes();
             oldOption = MainMenu_Form.Instance.Selected;
@@ -85,7 +85,7 @@ namespace Sales_Tracker
         }
         private void Categories_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

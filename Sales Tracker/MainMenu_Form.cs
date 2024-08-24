@@ -45,7 +45,7 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             UI.ConstructControls();
             SearchBox.ConstructSearchBox();
@@ -271,7 +271,7 @@ namespace Sales_Tracker
 
             Log.Write(2, "Argo Sales Tracker has finished starting");
 
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {

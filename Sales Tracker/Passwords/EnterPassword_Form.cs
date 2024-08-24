@@ -9,7 +9,7 @@ namespace Sales_Tracker.Passwords
         public EnterPassword_Form()
         {
             InitializeComponent();
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
             SetWindowsHelloControls();
@@ -23,7 +23,7 @@ namespace Sales_Tracker.Passwords
         // Form event handlers
         private void EnterPassword_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

@@ -8,7 +8,7 @@ namespace Sales_Tracker.Passwords
         public PasswordManager_Form()
         {
             InitializeComponent();
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
         }
@@ -24,7 +24,7 @@ namespace Sales_Tracker.Passwords
         // Form event handlers
         private void PasswordManager_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

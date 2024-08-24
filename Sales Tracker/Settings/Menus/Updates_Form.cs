@@ -28,7 +28,7 @@ namespace Sales_Tracker.Settings.Menus
         // Form event handlers
         private void Updates_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

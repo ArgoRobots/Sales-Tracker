@@ -23,7 +23,7 @@ namespace Sales_Tracker.Settings
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             UpdateTheme();
             General_Button.PerformClick();
@@ -36,7 +36,7 @@ namespace Sales_Tracker.Settings
         // Form event handlers
         private void Settings_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Left menu buttons

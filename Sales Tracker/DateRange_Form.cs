@@ -7,7 +7,7 @@ namespace Sales_Tracker
         public DateRange_Form()
         {
             InitializeComponent();
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
             InitializeDatePickers();
             Theme.SetThemeForForm(this);
         }
@@ -15,7 +15,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void DateRange_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

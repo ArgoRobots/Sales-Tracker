@@ -4,12 +4,15 @@ namespace Sales_Tracker
 {
     public partial class Export_Form : Form
     {
+        // Init.
         public Export_Form()
         {
             InitializeComponent();
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
         }
+
+        // Form event handlers
         private void Export_Form_Load(object sender, EventArgs e)
         {
             if (Properties.Settings.Default.ExportDirectory == "")
@@ -27,9 +30,10 @@ namespace Sales_Tracker
         private void Export_Form_Shown(object sender, EventArgs e)
         {
             BeginInvoke(() => Export_Button.Focus());  // This fixes a bug
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
+        // Event handlers
         private void Name_TextBox_TextChanged(object sender, EventArgs e)
         {
             if ("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "")
@@ -66,7 +70,6 @@ namespace Sales_Tracker
                 WarningDir_PictureBox.Visible = false;
             }
         }
-
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
             // Select folder
@@ -77,21 +80,43 @@ namespace Sales_Tracker
                 Directory_TextBox.Text = dialog.SelectedPath + @"\";
             }
         }
-        private void Export_Button_Click(object sender, EventArgs e)
+        private async void Export_Button_Click(object sender, EventArgs e)
         {
-            switch (FileType_ComboBox.Text)
+            LoadingPanel.InitLoadingPanel();
+            LoadingPanel.ShowLoadingScreen(this);
+
+            string fileType = FileType_ComboBox.Text;
+
+            await Task.Run(() => { Export(fileType); });
+
+            Close();
+        }
+
+        // Methods
+        private void Export(string fileType)
+        {
+            string filePath = Directory_TextBox.Text + "\\" + Name_TextBox.Text;
+
+            switch (fileType)
             {
                 case "ArgoSales (.zip)":
-                    Directories.CreateBackup(Directory_TextBox.Text + "\\" + Name_TextBox.Text, ArgoFiles.ArgoCompanyFileExtension);
-                    CustomMessageBox.Show("Argo Sales Tracker", $"Successfully backed up '{Directories.CompanyName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                    Close();
+                    Directories.CreateBackup(filePath, ArgoFiles.ArgoCompanyFileExtension);
+                    FinalizeExport($"Successfully backed up '{Directories.CompanyName}'");
                     break;
 
                 case "Excel spreadsheet (.xlsx)":
-                    ExcelManager.ExportToExcel(Directory_TextBox.Text + "\\" + Name_TextBox.Text + ArgoFiles.ExcelFileExtension);
-                    CustomMessageBox.Show("Argo Sales Tracker", $"Successfully created spreadsheet for '{Directories.CompanyName}'", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    ExcelManager.ExportToExcel(filePath + ArgoFiles.ExcelFileExtension);
+                    FinalizeExport($"Successfully created spreadsheet for '{Directories.CompanyName}'");
                     break;
             }
+        }
+        private void FinalizeExport(string message)
+        {
+            Invoke(() =>
+            {
+                LoadingPanel.HideLoadingScreen(this);
+                CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            });
         }
     }
 }

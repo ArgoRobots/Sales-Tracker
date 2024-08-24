@@ -18,8 +18,8 @@ namespace Sales_Tracker.Startup.Menus
             Instance = this;
             fileWatchers = [];
 
-            LoadingPanel.InitLoadingPanel();
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.InitBlankLoadingPanel();
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             ConstructRightClickOpenRecentMenu();
             CustomColors.SetColors();
@@ -48,7 +48,7 @@ namespace Sales_Tracker.Startup.Menus
         private void GetStarted_Form_Shown(object sender, EventArgs e)
         {
             ArgoCompany.RecoverUnsavedWork();
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Recent projects

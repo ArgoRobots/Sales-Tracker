@@ -18,7 +18,7 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
 
             UpdateControls();
             SetPasswordButton();
@@ -32,7 +32,7 @@ namespace Sales_Tracker.Settings.Menus
         // Form event handlers
         private void Security_Form_Shown(object sender, EventArgs e)
         {
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

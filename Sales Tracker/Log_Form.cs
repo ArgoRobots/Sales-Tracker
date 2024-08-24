@@ -19,7 +19,7 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowLoadingPanel(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
 
             // Hide caret
@@ -41,7 +41,7 @@ namespace Sales_Tracker
         {
             BtnClear.Focus();  // Remove the caret (blinking text cursor)
 
-            LoadingPanel.HideLoadingPanel(this);
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

@@ -10,15 +10,15 @@ namespace Tests
         public void TestLoadingPanel()
         {
             Form testForm = new();
-            LoadingPanel.InitLoadingPanel();
+            LoadingPanel.InitBlankLoadingPanel();
 
             // Show the loading panel
-            LoadingPanel.ShowLoadingPanel(testForm);
-            Assert.IsTrue(testForm.Controls.Contains(LoadingPanel.LoadingPanelInstance));
+            LoadingPanel.ShowBlankLoadingPanel(testForm);
+            Assert.IsTrue(testForm.Controls.Contains(LoadingPanel.BlankLoadingPanelInstance));
 
             // Hide the loading panel
-            LoadingPanel.HideLoadingPanel(testForm);
-            Assert.IsFalse(testForm.Controls.Contains(LoadingPanel.LoadingPanelInstance));
+            LoadingPanel.HideBlankLoadingPanel(testForm);
+            Assert.IsFalse(testForm.Controls.Contains(LoadingPanel.BlankLoadingPanelInstance));
         }
     }
 }
