@@ -61,21 +61,11 @@ namespace Sales_Tracker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap _3Dots {
-            get {
-                object obj = ResourceManager.GetObject("_3Dots", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Argo_color {
+        internal static System.Drawing.Icon ArgoColor {
             get {
-                object obj = ResourceManager.GetObject("Argo_color", resourceCulture);
+                object obj = ResourceManager.GetObject("ArgoColor", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -93,9 +83,9 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CloseGrey {
+        internal static System.Drawing.Bitmap Checkmark {
             get {
-                object obj = ResourceManager.GetObject("CloseGrey", resourceCulture);
+                object obj = ResourceManager.GetObject("Checkmark", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +93,9 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CreateFile {
+        internal static System.Drawing.Bitmap CloseGray {
             get {
-                object obj = ResourceManager.GetObject("CreateFile", resourceCulture);
+                object obj = ResourceManager.GetObject("CloseGray", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +103,29 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DownArrowFull {
+        internal static System.Drawing.Bitmap CreateFileBlack {
             get {
-                object obj = ResourceManager.GetObject("DownArrowFull", resourceCulture);
+                object obj = ResourceManager.GetObject("CreateFileBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CreateFileWhite {
+            get {
+                object obj = ResourceManager.GetObject("CreateFileWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DownArrowFullBlack {
+            get {
+                object obj = ResourceManager.GetObject("DownArrowFullBlack", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -183,6 +193,26 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap HelpGray {
+            get {
+                object obj = ResourceManager.GetObject("HelpGray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap HelpWhite {
+            get {
+                object obj = ResourceManager.GetObject("HelpWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Info {
             get {
                 object obj = ResourceManager.GetObject("Info", resourceCulture);
@@ -193,9 +223,9 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Minus {
+        internal static System.Drawing.Bitmap MinusBlack {
             get {
-                object obj = ResourceManager.GetObject("Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("MinusBlack", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,9 +233,9 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap OpenFolder {
+        internal static System.Drawing.Bitmap MinusWhite {
             get {
-                object obj = ResourceManager.GetObject("OpenFolder", resourceCulture);
+                object obj = ResourceManager.GetObject("MinusWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +243,39 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Plus {
+        internal static System.Drawing.Bitmap OpenFolderBlack {
             get {
-                object obj = ResourceManager.GetObject("Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("OpenFolderBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OpenFolderWhite {
+            get {
+                object obj = ResourceManager.GetObject("OpenFolderWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PlusBlack {
+            get {
+                object obj = ResourceManager.GetObject("PlusBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PlusWhite {
+            get {
+                object obj = ResourceManager.GetObject("PlusWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -243,36 +303,6 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap QuestionMarkGray {
-            get {
-                object obj = ResourceManager.GetObject("QuestionMarkGray", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap QuestionMarkWhite {
-            get {
-                object obj = ResourceManager.GetObject("QuestionMarkWhite", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap RightArrowGray {
-            get {
-                object obj = ResourceManager.GetObject("RightArrowGray", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap SaveGray {
             get {
                 object obj = ResourceManager.GetObject("SaveGray", resourceCulture);
@@ -286,6 +316,26 @@ namespace Sales_Tracker.Properties {
         internal static System.Drawing.Bitmap SaveWhite {
             get {
                 object obj = ResourceManager.GetObject("SaveWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ThreeDotsBlack {
+            get {
+                object obj = ResourceManager.GetObject("ThreeDotsBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ThreeDotsWhite {
+            get {
+                object obj = ResourceManager.GetObject("ThreeDotsWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

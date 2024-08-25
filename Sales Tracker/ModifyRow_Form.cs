@@ -444,7 +444,7 @@ namespace Sales_Tracker
                         {
                             Size = new Size(25, 25),
                             ImageSize = new Size(20, 20),
-                            Image = Properties.Resources.CloseGrey
+                            Image = Properties.Resources.CloseGray
                         };
                         RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
                         RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(20, 20);

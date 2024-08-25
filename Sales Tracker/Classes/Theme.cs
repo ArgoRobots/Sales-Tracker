@@ -200,6 +200,12 @@ namespace Sales_Tracker.Classes
                                     LoadChart.ConfigureChartForPie(gunaChart);
                                 }
                             }
+
+                            gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
+                            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 16);
+                            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 16, ChartFontStyle.Bold);
+                            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 16);
+                            gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 16);
                             break;
                     }
                 }

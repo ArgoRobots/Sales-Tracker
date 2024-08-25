@@ -21,7 +21,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Properties
-        public static readonly byte panelButtonHeight = 22, spaceForSeperator = 10, spaceForPanel = 10;
+        public static readonly byte panelButtonHeight = 35, spaceForSeperator = 10, spaceForPanel = 10;
 
         public enum KeyPressValidation
         {
@@ -33,7 +33,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Construct things for menus
-        public static readonly byte panelWidth = 250, panelBtnWidth = 240;
+        public static readonly int panelWidth = 350, panelBtnWidth = 340;
         public static Guna2Panel ConstructPanelForMenu(Size size)
         {
             Guna2Panel panel = new()
@@ -329,17 +329,17 @@ namespace Sales_Tracker.Classes
                 BorderThickness = 2,
                 Cursor = Cursors.Hand,
                 Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold),
-                Image = Resources.DownArrowFull,
+                Image = Resources.DownArrowFullBlack,
                 ImageAlign = HorizontalAlignment.Right,
                 ImageSize = new Size(8, 8),
-                Size = new Size(150, 40),
+                Size = new Size(225, 60),
                 TabIndex = 13,
                 Text = "Controls",
                 TextOffset = new Point(-10, 0)
             };
             controlsDropDown_Button.Click += (sender, e) =>
             {
-                if (MainMenu_Form.Instance.Controls.Contains(UI.fileMenu))
+                if (MainMenu_Form.Instance.Controls.Contains(fileMenu))
                 {
                     MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 }
@@ -356,61 +356,61 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel ControlDropDown_Panel;
         private static void ConstructControlsDropDownMenu()
         {
-            ControlDropDown_Panel = ConstructPanelForMenu(new Size(200, 6 * 30 + 15 + 50));
+            ControlDropDown_Panel = ConstructPanelForMenu(new Size(300, 50 * 6 + 15 + spaceForSeperator * 5));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
-            menuBtn.Size = new Size(190, 30);
+            menuBtn.Size = new Size(290, 50);
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
                 MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
             };
 
-            ConstructSeperator(190, flowPanel);
+            ConstructSeperator(290, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
-            menuBtn.Size = new Size(190, 30);
+            menuBtn.Size = new Size(290, 50);
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
                 MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
             };
 
-            ConstructSeperator(190, flowPanel);
+            ConstructSeperator(290, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCompanies_Button.Text, 0, true, flowPanel);
-            menuBtn.Size = new Size(190, 30);
+            menuBtn.Size = new Size(290, 50);
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
                 MainMenu_Form.Instance.ManageCompanies_Button.PerformClick();
             };
 
-            ConstructSeperator(190, flowPanel);
+            ConstructSeperator(290, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageProducts_Button.Text, 0, true, flowPanel);
-            menuBtn.Size = new Size(190, 30);
+            menuBtn.Size = new Size(290, 50);
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
                 MainMenu_Form.Instance.ManageProducts_Button.PerformClick();
             };
 
-            ConstructSeperator(190, flowPanel);
+            ConstructSeperator(290, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Sales_Button.Text, 0, true, flowPanel);
-            menuBtn.Size = new Size(190, 30);
+            menuBtn.Size = new Size(290, 50);
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
                 MainMenu_Form.Instance.AddSale_Button.PerformClick();
             };
 
-            ConstructSeperator(190, flowPanel);
+            ConstructSeperator(290, flowPanel);
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Purchases_Button.Text, 0, true, flowPanel);
-            menuBtn.Size = new Size(190, 30);
+            menuBtn.Size = new Size(290, 50);
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
@@ -547,7 +547,7 @@ namespace Sales_Tracker.Classes
             DeselectAllMenuButtons(accountMenu);
 
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
-            MainMenu_Form.Instance.Help_Button.Image = Resources.QuestionMarkGray;
+            MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
             MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
             MainMenu_Form.Instance.CloseRightClickPanels();

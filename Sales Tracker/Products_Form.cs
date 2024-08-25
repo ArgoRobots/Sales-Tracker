@@ -245,7 +245,7 @@ namespace Sales_Tracker
         }
         private void SetProductsRemainingLabel()
         {
-            if (MainMenu_Form.isFullVersion)
+            if (MainMenu_Form.IsFullVersion)
             {
                 Controls.Remove(ProductsRemaining_LinkLabel);
                 return;
@@ -373,7 +373,7 @@ namespace Sales_Tracker
         private void ShowShowingResultsForLabel(string text)
         {
             ShowingResultsFor_Label.Text = $"Showing results for: {text}";
-            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - MainMenu_Form.spaceToOffsetFormNotCenter;
             Controls.Add(ShowingResultsFor_Label);
         }
         private void HideShowingResultsForLabel()
@@ -399,7 +399,7 @@ namespace Sales_Tracker
             { Columns.CompanyOfOrigin, "Company of origin" },
         };
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte topForDataGridView = 255;
+        private const int topForDataGridView = 380;
         private void ConstructDataGridViews()
         {
             Size size = new(840, 270);
@@ -427,8 +427,8 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - MainMenu_Form.spaceToOffsetFormNotCenter, topForDataGridView);
         }
 
         // Methods

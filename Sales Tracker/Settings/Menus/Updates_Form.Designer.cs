@@ -43,22 +43,22 @@ namespace Sales_Tracker.Settings.Menus
             // 
             UpToDate_Label.AutoSize = true;
             UpToDate_Label.Font = new Font("Segoe UI", 15.75F);
-            UpToDate_Label.Location = new Point(198, 31);
-            UpToDate_Label.Margin = new Padding(4, 0, 4, 0);
+            UpToDate_Label.Location = new Point(266, 52);
+            UpToDate_Label.Margin = new Padding(6, 0, 6, 0);
             UpToDate_Label.Name = "UpToDate_Label";
-            UpToDate_Label.Size = new Size(304, 30);
-            UpToDate_Label.TabIndex = 329;
+            UpToDate_Label.Size = new Size(468, 45);
+            UpToDate_Label.TabIndex = 0;
             UpToDate_Label.Text = "Argo Sales Tracker is up to date";
             // 
             // Updates_Label
             // 
             Updates_Label.AutoSize = true;
             Updates_Label.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold);
-            Updates_Label.Location = new Point(40, 22);
-            Updates_Label.Margin = new Padding(4, 0, 4, 0);
+            Updates_Label.Location = new Point(57, 37);
+            Updates_Label.Margin = new Padding(6, 0, 6, 0);
             Updates_Label.Name = "Updates_Label";
-            Updates_Label.Size = new Size(82, 25);
-            Updates_Label.TabIndex = 330;
+            Updates_Label.Size = new Size(124, 40);
+            Updates_Label.TabIndex = 0;
             Updates_Label.Text = "Updates";
             // 
             // LastCheck_Label
@@ -66,11 +66,11 @@ namespace Sales_Tracker.Settings.Menus
             LastCheck_Label.AutoSize = true;
             LastCheck_Label.Font = new Font("Segoe UI", 9.75F);
             LastCheck_Label.ForeColor = SystemColors.ControlDarkDark;
-            LastCheck_Label.Location = new Point(258, 65);
-            LastCheck_Label.Margin = new Padding(4, 0, 4, 0);
+            LastCheck_Label.Location = new Point(363, 108);
+            LastCheck_Label.Margin = new Padding(6, 0, 6, 0);
             LastCheck_Label.Name = "LastCheck_Label";
-            LastCheck_Label.Size = new Size(185, 17);
-            LastCheck_Label.TabIndex = 331;
+            LastCheck_Label.Size = new Size(274, 28);
+            LastCheck_Label.TabIndex = 0;
             LastCheck_Label.Text = "Last checked: Today, 12:00 PM";
             // 
             // CheckForUpdates_Button
@@ -84,36 +84,37 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.FillColor = Color.FromArgb(0, 103, 192);
             CheckForUpdates_Button.Font = new Font("Segoe UI", 9.75F);
             CheckForUpdates_Button.ForeColor = Color.White;
-            CheckForUpdates_Button.Location = new Point(274, 125);
-            CheckForUpdates_Button.Margin = new Padding(4, 3, 4, 3);
+            CheckForUpdates_Button.Location = new Point(400, 200);
+            CheckForUpdates_Button.Margin = new Padding(6, 5, 6, 5);
             CheckForUpdates_Button.Name = "CheckForUpdates_Button";
             CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            CheckForUpdates_Button.Size = new Size(152, 35);
-            CheckForUpdates_Button.TabIndex = 332;
+            CheckForUpdates_Button.Size = new Size(200, 50);
+            CheckForUpdates_Button.TabIndex = 1;
             CheckForUpdates_Button.Text = "Check for updates";
             CheckForUpdates_Button.Click += CheckForUpdates_Button_Click;
             // 
             // Back_Panel
             // 
             Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Back_Panel.Controls.Add(UpToDate_Label);
             Back_Panel.Controls.Add(CheckForUpdates_Button);
+            Back_Panel.Controls.Add(UpToDate_Label);
             Back_Panel.Controls.Add(LastCheck_Label);
-            Back_Panel.Location = new Point(87, 164);
+            Back_Panel.Location = new Point(125, 277);
+            Back_Panel.Margin = new Padding(4, 5, 4, 5);
             Back_Panel.Name = "Back_Panel";
-            Back_Panel.Size = new Size(700, 190);
-            Back_Panel.TabIndex = 333;
+            Back_Panel.Size = new Size(1000, 310);
+            Back_Panel.TabIndex = 0;
             // 
             // Updates_Form
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(875, 519);
+            ClientSize = new Size(1250, 865);
             Controls.Add(Back_Panel);
             Controls.Add(Updates_Label);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(4, 3, 4, 3);
+            Margin = new Padding(6, 5, 6, 5);
             Name = "Updates_Form";
             Shown += Updates_Form_Shown;
             Back_Panel.ResumeLayout(false);

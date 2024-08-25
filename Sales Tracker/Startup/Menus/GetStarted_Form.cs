@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.FileIO;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Passwords;
+using Sales_Tracker.Properties;
 
 namespace Sales_Tracker.Startup.Menus
 {
@@ -42,6 +43,17 @@ namespace Sales_Tracker.Startup.Menus
             Theme.SetThemeForForm(this);
             Theme.UpdateThemeForPanel([rightClickOpenRecent_Panel]);
             rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.accent_red;
+
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            {
+                CreateCompany_Button.Image = Resources.CreateFileWhite;
+                OpenCompany_Button.Image = Resources.OpenFolderWhite;
+            }
+            else
+            {
+                CreateCompany_Button.Image = Resources.CreateFileBlack;
+                OpenCompany_Button.Image = Resources.OpenFolderBlack;
+            }
         }
 
         // Form event handlers
@@ -73,7 +85,7 @@ namespace Sales_Tracker.Startup.Menus
                 {
                     BackColor = CustomColors.controlBack,
                     FillColor = CustomColors.controlBack,
-                    Size = new Size(CalculateButtonWidth(validProjectDirs.Count), 40),
+                    Size = new Size(CalculateButtonWidth(validProjectDirs.Count), 60),
                     Text = Path.GetFileNameWithoutExtension(projectDir),
                     Font = new Font("Segoe UI", 11),
                     Tag = projectDir

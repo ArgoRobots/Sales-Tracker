@@ -125,12 +125,12 @@ namespace Sales_Tracker
             { Columns.AccountantName, "Accountant" },
         };
         public Guna2DataGridView Accountants_DataGridView;
-        private const byte topForDataGridView = 170;
+        private const byte topForDataGridView = 220;
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 12, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {

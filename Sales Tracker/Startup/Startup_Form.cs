@@ -24,7 +24,7 @@ namespace Sales_Tracker.Startup
             Theme.UseImmersiveDarkMode(Handle, Theme.CurrentTheme == Theme.ThemeType.Dark);
 
             // TO DO: make this only run once, during progam installation
-            ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.Argo_color, 0);
+            ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.ArgoColor, 0);
         }
 
         public readonly Form formGetStarted = new GetStarted_Form();

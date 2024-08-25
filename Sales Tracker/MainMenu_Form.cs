@@ -6,7 +6,6 @@ using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using System.Collections;
 using System.ComponentModel;
-using System.Configuration;
 using System.Text.Json;
 
 namespace Sales_Tracker
@@ -30,9 +29,14 @@ namespace Sales_Tracker
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
-        public byte spaceToOffsetFormNotCenter = 15;
+        public static readonly byte spaceToOffsetFormNotCenter = 15;  // This is just a weird thing with WinForms
         private static string _currencySymbol;
-        public static readonly bool isFullVersion = false;
+        private static bool _isFullVersion = true;
+        public static bool IsFullVersion
+        {
+            get => _isFullVersion;
+            set => _isFullVersion = value;
+        }
         public static string CurrencySymbol
         {
             get => _currencySymbol;
@@ -83,16 +87,16 @@ namespace Sales_Tracker
             AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
 
-            // Load image into column header
+            // Load images into column headers
             DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
             string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax variations across countries.";
-            chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.QuestionMarkGray, existingHeaderText, messageBoxText);
+            chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
             DataGridViewColumn totalColumn = Sales_DataGridView.Columns[Column.Total.ToString()];
             existingHeaderText = totalColumn.HeaderText;
             messageBoxText = "The revenue excludes shipping, taxes, and fees.";
-            totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.QuestionMarkGray, existingHeaderText, messageBoxText);
+            totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
             AddTimeRangesIntoComboBox();
         }
@@ -275,6 +279,7 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
+            if (_instance == null) { return; }
             UI.CloseAllPanels(null, null);
             ResizeControls();
         }
@@ -501,17 +506,17 @@ namespace Sales_Tracker
         {
             if (isProgramLoading) { return; }
 
-            if (Height > 1000)
+            if (Height > 1400)
             {
-                Totals_Chart.Height = 350;
+                Totals_Chart.Height = 500;
             }
-            else if (Height > 800)
+            else if (Height > 1000)
             {
-                Totals_Chart.Height = 300;
+                Totals_Chart.Height = 400;
             }
             else
             {
-                Totals_Chart.Height = 200;
+                Totals_Chart.Height = 300;
             }
 
             Totals_Chart.Width = Width / 3 - 30;
@@ -529,7 +534,7 @@ namespace Sales_Tracker
             Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
             Total_Panel.Width = selectedDataGridView.Width;
 
-            if (Width < 1000 + Edit_Button.Left + Edit_Button.Width)
+            if (Width < 1500 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
                 wasControlsDropDownAdded = true;
@@ -627,7 +632,7 @@ namespace Sales_Tracker
             {
                 UI.CloseAllPanels(null, null);
                 File_Button.Image = Resources.FileWhite;
-                UI.fileMenu.Location = new Point(File_Button.Left, 30);
+                UI.fileMenu.Location = new Point(File_Button.Left, Top_Panel.Height);
                 Controls.Add(UI.fileMenu);
                 UI.fileMenu.BringToFront();
                 Focus();
@@ -640,23 +645,37 @@ namespace Sales_Tracker
         }
         private void Save_Button_MouseDown(object sender, MouseEventArgs e)
         {
-            Save_Button.Image = Resources.SaveWhite;
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            {
+                Save_Button.Image = Resources.SaveWhite;
+            }
+            else
+            {
+                Save_Button.Image = Resources.SaveGray;
+            }
         }
         private void Save_Button_MouseUp(object sender, MouseEventArgs e)
         {
-            Save_Button.Image = Resources.SaveGray;
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            {
+                Save_Button.Image = Resources.SaveGray;
+            }
+            else
+            {
+                Save_Button.Image = Resources.SaveWhite;
+            }
         }
         private void Help_Button_Click(object sender, EventArgs e)
         {
             if (Controls.Contains(UI.helpMenu))
             {
                 Controls.Remove(UI.helpMenu);
-                Help_Button.Image = Resources.QuestionMarkGray;
+                Help_Button.Image = Resources.HelpGray;
             }
             else
             {
                 UI.CloseAllPanels(null, null);
-                Help_Button.Image = Resources.QuestionMarkWhite;
+                Help_Button.Image = Resources.HelpWhite;
                 UI.helpMenu.Location = new Point(Help_Button.Left - UI.helpMenu.Width + Help_Button.Width, Top_Panel.Height);
                 Controls.Add(UI.helpMenu);
                 UI.helpMenu.BringToFront();
@@ -774,7 +793,7 @@ namespace Sales_Tracker
             UI.rename_textBox.Font = CompanyName_Label.Font;
             Controls.Add(UI.rename_textBox);
             UI.rename_textBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
-            UI.rename_textBox.Size = new Size(200, CompanyName_Label.Height + 2);
+            UI.rename_textBox.Size = new Size(300, CompanyName_Label.Height + 2);
             UI.rename_textBox.Focus();
             UI.rename_textBox.SelectAll();
             UI.rename_textBox.BringToFront();
@@ -1146,7 +1165,7 @@ namespace Sales_Tracker
         private Control controlRightClickPanelWasAddedTo;
         private bool doNotDeleteRows;
         public DataGridViewRow selectedRowInMainMenu;
-        private readonly byte rowHeight = 25, columnHeaderHeight = 45;
+        private readonly byte rowHeight = 35, columnHeaderHeight = 60;
         public void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
             dataGridView.ReadOnly = true;
@@ -1163,7 +1182,6 @@ namespace Sales_Tracker
             dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = CustomColors.text;
             dataGridView.Theme = CustomColors.dataGridViewTheme;
             dataGridView.BackgroundColor = CustomColors.controlBack;
-            dataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Top;
             dataGridView.Size = size;
             dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
@@ -2240,9 +2258,9 @@ namespace Sales_Tracker
                 return;
             }
 
-            countriesOfOrigin_Chart = ConstructStatisticsChart(171, "Countries of origin for purchased products");
-            companiesOfOrigin_Chart = ConstructStatisticsChart(171, "Companies of origin for purchased products");
-            countriesOfDestination_Chart = ConstructStatisticsChart(171, "Countries of destination for sold products");
+            countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products");
+            companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products");
+            countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products");
 
             statisticsControls =
             [
@@ -2251,11 +2269,12 @@ namespace Sales_Tracker
                 countriesOfDestination_Chart
             ];
         }
-        private static GunaChart ConstructStatisticsChart(short top, string title)
+        private static GunaChart ConstructStatisticsChart(int top, string title)
         {
             GunaChart gunaChart = new()
             {
-                Top = top
+                Top = top,
+                Height = 500
             };
 
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
@@ -2269,6 +2288,10 @@ namespace Sales_Tracker
             LoadChart.ConfigureChartForPie(gunaChart);
             gunaChart.Title.Text = title;
             gunaChart.Title.Display = true;
+            gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
+            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 16);
+            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 16, ChartFontStyle.Bold);
+            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 16);
 
             return gunaChart;
         }
@@ -2355,7 +2378,7 @@ namespace Sales_Tracker
                 Size = new Size(15, 15),
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.None,
-                Image = Resources.CloseGrey,
+                Image = Resources.CloseGray,
                 SizeMode = PictureBoxSizeMode.StretchImage
             };
             picture.Click += MessagePanelClose;

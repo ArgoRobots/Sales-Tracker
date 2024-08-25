@@ -59,10 +59,10 @@
             // WarningDir_PictureBox
             // 
             WarningDir_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningDir_PictureBox.Location = new Point(32, 358);
-            WarningDir_PictureBox.Margin = new Padding(4, 3, 4, 3);
+            WarningDir_PictureBox.Location = new Point(60, 540);
+            WarningDir_PictureBox.Margin = new Padding(6, 3, 6, 3);
             WarningDir_PictureBox.Name = "WarningDir_PictureBox";
-            WarningDir_PictureBox.Size = new Size(19, 18);
+            WarningDir_PictureBox.Size = new Size(27, 27);
             WarningDir_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningDir_PictureBox.TabIndex = 44;
             WarningDir_PictureBox.TabStop = false;
@@ -72,22 +72,21 @@
             // 
             WarningDir_Label.AutoSize = true;
             WarningDir_Label.Font = new Font("Segoe UI", 10F);
-            WarningDir_Label.ForeColor = Color.Red;
-            WarningDir_Label.Location = new Point(58, 357);
-            WarningDir_Label.Margin = new Padding(4, 0, 4, 0);
+            WarningDir_Label.Location = new Point(99, 539);
+            WarningDir_Label.Margin = new Padding(6, 0, 6, 0);
             WarningDir_Label.Name = "WarningDir_Label";
-            WarningDir_Label.Size = new Size(166, 19);
-            WarningDir_Label.TabIndex = 36;
+            WarningDir_Label.Size = new Size(239, 28);
+            WarningDir_Label.TabIndex = 0;
             WarningDir_Label.Text = "Emtpy or invalid directory";
             WarningDir_Label.Visible = false;
             // 
             // WarningName_PictureBox
             // 
             WarningName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningName_PictureBox.Location = new Point(33, 143);
-            WarningName_PictureBox.Margin = new Padding(4, 3, 4, 3);
+            WarningName_PictureBox.Location = new Point(60, 220);
+            WarningName_PictureBox.Margin = new Padding(6, 3, 6, 3);
             WarningName_PictureBox.Name = "WarningName_PictureBox";
-            WarningName_PictureBox.Size = new Size(19, 18);
+            WarningName_PictureBox.Size = new Size(27, 27);
             WarningName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningName_PictureBox.TabIndex = 43;
             WarningName_PictureBox.TabStop = false;
@@ -97,12 +96,11 @@
             // 
             WarningName_Label.AutoSize = true;
             WarningName_Label.Font = new Font("Segoe UI", 10F);
-            WarningName_Label.ForeColor = Color.Red;
-            WarningName_Label.Location = new Point(59, 142);
-            WarningName_Label.Margin = new Padding(4, 0, 4, 0);
+            WarningName_Label.Location = new Point(99, 219);
+            WarningName_Label.Margin = new Padding(6, 0, 6, 0);
             WarningName_Label.Name = "WarningName_Label";
-            WarningName_Label.Size = new Size(206, 19);
-            WarningName_Label.TabIndex = 37;
+            WarningName_Label.Size = new Size(294, 28);
+            WarningName_Label.TabIndex = 0;
             WarningName_Label.Text = "Emtpy or invalid company name";
             WarningName_Label.Visible = false;
             // 
@@ -116,30 +114,30 @@
             Directory_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             Directory_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             Directory_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Directory_TextBox.Font = new Font("Segoe UI", 12F);
+            Directory_TextBox.Font = new Font("Segoe UI", 11F);
             Directory_TextBox.ForeColor = SystemColors.ControlText;
             Directory_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Directory_TextBox.Location = new Point(25, 301);
-            Directory_TextBox.Margin = new Padding(5);
+            Directory_TextBox.Location = new Point(48, 470);
+            Directory_TextBox.Margin = new Padding(10);
             Directory_TextBox.Name = "Directory_TextBox";
             Directory_TextBox.PasswordChar = '\0';
             Directory_TextBox.PlaceholderText = "";
             Directory_TextBox.SelectedText = "";
             Directory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Directory_TextBox.ShortcutsEnabled = false;
-            Directory_TextBox.Size = new Size(709, 46);
-            Directory_TextBox.TabIndex = 41;
+            Directory_TextBox.Size = new Size(1015, 60);
+            Directory_TextBox.TabIndex = 3;
             Directory_TextBox.TextChanged += Directory_TextBox_TextChanged;
             // 
             // Directory_Label
             // 
             Directory_Label.AutoSize = true;
             Directory_Label.Font = new Font("Segoe UI", 12F);
-            Directory_Label.Location = new Point(21, 275);
-            Directory_Label.Margin = new Padding(4, 0, 4, 0);
+            Directory_Label.Location = new Point(48, 428);
+            Directory_Label.Margin = new Padding(6, 0, 6, 0);
             Directory_Label.Name = "Directory_Label";
-            Directory_Label.Size = new Size(74, 21);
-            Directory_Label.TabIndex = 38;
+            Directory_Label.Size = new Size(111, 32);
+            Directory_Label.TabIndex = 0;
             Directory_Label.Text = "Directory";
             // 
             // Name_TextBox
@@ -152,72 +150,70 @@
             Name_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
             Name_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
             Name_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Name_TextBox.Font = new Font("Segoe UI", 12F);
+            Name_TextBox.Font = new Font("Segoe UI", 11F);
             Name_TextBox.ForeColor = SystemColors.ControlText;
             Name_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Name_TextBox.Location = new Point(26, 87);
-            Name_TextBox.Margin = new Padding(5);
+            Name_TextBox.Location = new Point(48, 150);
+            Name_TextBox.Margin = new Padding(10);
             Name_TextBox.Name = "Name_TextBox";
             Name_TextBox.PasswordChar = '\0';
             Name_TextBox.PlaceholderText = "";
             Name_TextBox.SelectedText = "";
             Name_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Name_TextBox.ShortcutsEnabled = false;
-            Name_TextBox.Size = new Size(708, 46);
-            Name_TextBox.TabIndex = 40;
+            Name_TextBox.Size = new Size(1015, 60);
+            Name_TextBox.TabIndex = 1;
             Name_TextBox.TextChanged += Name_TextBox_TextChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F);
-            label2.Location = new Point(22, 58);
-            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Location = new Point(48, 108);
+            label2.Margin = new Padding(6, 0, 6, 0);
             label2.Name = "label2";
-            label2.Size = new Size(52, 21);
-            label2.TabIndex = 39;
+            label2.Size = new Size(78, 32);
+            label2.TabIndex = 0;
             label2.Text = "Name";
             // 
             // ExportYourCompany_Label
             // 
             ExportYourCompany_Label.AutoSize = true;
             ExportYourCompany_Label.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            ExportYourCompany_Label.Location = new Point(10, 9);
-            ExportYourCompany_Label.Margin = new Padding(4, 0, 4, 0);
+            ExportYourCompany_Label.Location = new Point(30, 15);
+            ExportYourCompany_Label.Margin = new Padding(6, 0, 6, 0);
             ExportYourCompany_Label.Name = "ExportYourCompany_Label";
-            ExportYourCompany_Label.Size = new Size(225, 30);
-            ExportYourCompany_Label.TabIndex = 45;
+            ExportYourCompany_Label.Size = new Size(333, 45);
+            ExportYourCompany_Label.TabIndex = 0;
             ExportYourCompany_Label.Text = "Export your company";
             // 
             // FileType_Label
             // 
             FileType_Label.AutoSize = true;
             FileType_Label.Font = new Font("Segoe UI", 12F);
-            FileType_Label.Location = new Point(25, 179);
-            FileType_Label.Margin = new Padding(4, 0, 4, 0);
+            FileType_Label.Location = new Point(48, 272);
+            FileType_Label.Margin = new Padding(6, 0, 6, 0);
             FileType_Label.Name = "FileType_Label";
-            FileType_Label.Size = new Size(68, 21);
-            FileType_Label.TabIndex = 47;
+            FileType_Label.Size = new Size(105, 32);
+            FileType_Label.TabIndex = 0;
             FileType_Label.Text = "File type";
             // 
             // ThreeDots_Button
             // 
-            ThreeDots_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ThreeDots_Button.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ThreeDots_Button.BorderColor = Color.FromArgb(213, 218, 223);
             ThreeDots_Button.BorderThickness = 1;
             ThreeDots_Button.CustomizableEdges = customizableEdges5;
             ThreeDots_Button.FillColor = Color.White;
             ThreeDots_Button.Font = new Font("Segoe UI", 9F);
             ThreeDots_Button.ForeColor = Color.White;
-            ThreeDots_Button.Image = Properties.Resources._3Dots;
-            ThreeDots_Button.ImageOffset = new Point(0, 2);
-            ThreeDots_Button.ImageSize = new Size(12, 12);
-            ThreeDots_Button.Location = new Point(743, 301);
-            ThreeDots_Button.Margin = new Padding(4, 3, 4, 3);
+            ThreeDots_Button.Image = Properties.Resources.ThreeDotsBlack;
+            ThreeDots_Button.Location = new Point(1077, 470);
+            ThreeDots_Button.Margin = new Padding(6, 4, 6, 4);
             ThreeDots_Button.Name = "ThreeDots_Button";
             ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            ThreeDots_Button.Size = new Size(47, 46);
-            ThreeDots_Button.TabIndex = 50;
+            ThreeDots_Button.Size = new Size(60, 60);
+            ThreeDots_Button.TabIndex = 4;
             ThreeDots_Button.Click += ThreeDots_Button_Click;
             // 
             // Export_Button
@@ -230,12 +226,12 @@
             Export_Button.FillColor = Color.White;
             Export_Button.Font = new Font("Segoe UI", 9.5F);
             Export_Button.ForeColor = Color.Black;
-            Export_Button.Location = new Point(659, 420);
-            Export_Button.Margin = new Padding(4, 3, 4, 3);
+            Export_Button.Location = new Point(937, 630);
+            Export_Button.Margin = new Padding(6, 4, 6, 4);
             Export_Button.Name = "Export_Button";
             Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Export_Button.Size = new Size(131, 32);
-            Export_Button.TabIndex = 51;
+            Export_Button.Size = new Size(200, 50);
+            Export_Button.TabIndex = 5;
             Export_Button.Text = "Export";
             Export_Button.Click += Export_Button_Click;
             // 
@@ -248,23 +244,22 @@
             FileType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             FileType_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             FileType_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            FileType_ComboBox.Font = new Font("Segoe UI", 10F);
+            FileType_ComboBox.Font = new Font("Segoe UI", 11F);
             FileType_ComboBox.ForeColor = Color.Black;
-            FileType_ComboBox.ItemHeight = 40;
+            FileType_ComboBox.ItemHeight = 54;
             FileType_ComboBox.Items.AddRange(new object[] { "ArgoSales (.zip)", "Excel spreadsheet (.xlsx)" });
-            FileType_ComboBox.Location = new Point(26, 208);
-            FileType_ComboBox.Margin = new Padding(3, 4, 3, 4);
+            FileType_ComboBox.Location = new Point(48, 310);
+            FileType_ComboBox.Margin = new Padding(4, 6, 4, 6);
             FileType_ComboBox.Name = "FileType_ComboBox";
             FileType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            FileType_ComboBox.Size = new Size(708, 46);
-            FileType_ComboBox.TabIndex = 332;
+            FileType_ComboBox.Size = new Size(1015, 60);
+            FileType_ComboBox.TabIndex = 2;
             // 
             // Export_Form
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
-            ClientSize = new Size(826, 482);
+            ClientSize = new Size(1178, 724);
             Controls.Add(FileType_ComboBox);
             Controls.Add(Export_Button);
             Controls.Add(ThreeDots_Button);
@@ -278,8 +273,9 @@
             Controls.Add(Directory_Label);
             Controls.Add(Name_TextBox);
             Controls.Add(label2);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(4);
             Name = "Export_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

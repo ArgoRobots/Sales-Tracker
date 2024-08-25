@@ -45,28 +45,28 @@ namespace Sales_Tracker
             Message_Label.ActiveLinkColor = CustomColors.linkColor;
 
             CustomMessageBoxVariables.Reset();
-            Back_Panel.Controls.Add(Icon_pictureBox);
+            Controls.Add(Icon_PictureBox);
 
-            Height = 120 + Message_Label.Height;
+            Height = 130 + Message_Label.Height;
 
             // Set icon
             switch (icon)
             {
                 case CustomMessageBoxIcon.Question:
-                    Icon_pictureBox.BackgroundImage = Resources.QuestionMarkGray;
+                    Icon_PictureBox.BackgroundImage = Resources.HelpGray;
                     break;
                 case CustomMessageBoxIcon.Exclamation:
-                    Icon_pictureBox.BackgroundImage = Resources.ExclamationMark;
+                    Icon_PictureBox.BackgroundImage = Resources.ExclamationMark;
                     break;
                 case CustomMessageBoxIcon.Error:
-                    Icon_pictureBox.BackgroundImage = Resources.Error;
+                    Icon_PictureBox.BackgroundImage = Resources.Error;
                     break;
                 case CustomMessageBoxIcon.Info:
-                    Icon_pictureBox.BackgroundImage = Resources.Info;
+                    Icon_PictureBox.BackgroundImage = Resources.Info;
                     break;
                 case CustomMessageBoxIcon.None:
-                    Icon_pictureBox.BackgroundImage = null;
-                    Back_Panel.Controls.Remove(Icon_pictureBox);
+                    Icon_PictureBox.BackgroundImage = null;
+                    Controls.Remove(Icon_PictureBox);
                     break;
             }
 
@@ -170,7 +170,8 @@ namespace Sales_Tracker
             ChangedBackground_Panel.Left = (Width - Changed_Panel.Width) / 2;  // Center
             ChangedBackground_Panel.Controls.Add(Changed_Panel);
             Controls.Add(ChangedBackground_Panel);
-            Controls.Remove(Back_Panel);
+            Controls.Remove(Icon_PictureBox);
+            Controls.Remove(Message_Label);
 
             // Construct new message label
             Label label = new()
@@ -192,8 +193,8 @@ namespace Sales_Tracker
             top = AddListForThingsChanged("Accountants", Accountants_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Categories", Categories_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Companies", Companies_Form.thingsThatHaveChangedInFile, top);
-            top = AddListForThingsChanged("Purchases", AddPurchase_Form.thingsThatHaveChangedInFile, top);
-            top = AddListForThingsChanged("Sales", AddSale_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Purchases", AddPurchase_Form.ThingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Sales", AddSale_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Products", Products_Form.ThingsThatHaveChangedInFile, top);
 
             // This is a dummy control to add extra space at the end, even when the panel is scrollable
@@ -211,7 +212,7 @@ namespace Sales_Tracker
         {
             if (list.Count == 0) { return top; }
 
-            Message_Label.Location = new Point((Back_Panel.Width - Message_Label.Width) / 2, 0);
+            Message_Label.Location = new Point((Width - Message_Label.Width) / 2, 0);
 
             Label label = new()
             {

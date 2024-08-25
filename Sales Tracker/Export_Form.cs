@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Properties;
 
 namespace Sales_Tracker
 {
@@ -9,7 +10,20 @@ namespace Sales_Tracker
         {
             InitializeComponent();
             LoadingPanel.ShowBlankLoadingPanel(this);
+            UpdateTheme();
+        }
+        public void UpdateTheme()
+        {
+            CustomColors.SetColors();
             Theme.SetThemeForForm(this);
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            {
+                ThreeDots_Button.Image = Resources.ThreeDotsWhite;
+            }
+            else
+            {
+                ThreeDots_Button.Image = Resources.ThreeDotsBlack;
+            }
         }
 
         // Form event handlers

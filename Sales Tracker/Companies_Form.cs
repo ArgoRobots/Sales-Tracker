@@ -121,12 +121,12 @@ namespace Sales_Tracker
             { Columns.Company, "Company" },
         };
         public Guna2DataGridView Company_DataGridView;
-        private const byte topForDataGridView = 170;
+        private const byte topForDataGridView = 220;
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 55, Height - topForDataGridView - 57);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 8, topForDataGridView);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - MainMenu_Form.spaceToOffsetFormNotCenter, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {

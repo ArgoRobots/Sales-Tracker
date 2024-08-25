@@ -14,7 +14,7 @@
         public List<Product> ProductList
         {
             get { return _productList; }
-            private set { _productList = value; }
+            set { _productList = value; }
         }
 
         // Default constructor required for deserialization

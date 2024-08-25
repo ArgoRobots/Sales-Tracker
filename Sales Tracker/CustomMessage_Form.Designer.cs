@@ -40,29 +40,27 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Icon_pictureBox = new PictureBox();
+            Icon_PictureBox = new PictureBox();
             Ok_Button = new Guna.UI2.WinForms.Guna2Button();
             No_Button = new Guna.UI2.WinForms.Guna2Button();
             Yes_Button = new Guna.UI2.WinForms.Guna2Button();
             Cancel_Button = new Guna.UI2.WinForms.Guna2Button();
-            Back_Panel = new Panel();
             Message_Label = new LinkLabel();
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             DontSave_Button = new Guna.UI2.WinForms.Guna2Button();
-            ((System.ComponentModel.ISupportInitialize)Icon_pictureBox).BeginInit();
-            Back_Panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)Icon_PictureBox).BeginInit();
             SuspendLayout();
             // 
-            // Icon_pictureBox
+            // Icon_PictureBox
             // 
-            Icon_pictureBox.BackgroundImage = Properties.Resources.BackArrowBlack;
-            Icon_pictureBox.BackgroundImageLayout = ImageLayout.Stretch;
-            Icon_pictureBox.Location = new Point(14, 9);
-            Icon_pictureBox.Margin = new Padding(4, 3, 4, 3);
-            Icon_pictureBox.Name = "Icon_pictureBox";
-            Icon_pictureBox.Size = new Size(52, 52);
-            Icon_pictureBox.TabIndex = 0;
-            Icon_pictureBox.TabStop = false;
+            Icon_PictureBox.BackgroundImage = Properties.Resources.Info;
+            Icon_PictureBox.BackgroundImageLayout = ImageLayout.Stretch;
+            Icon_PictureBox.Location = new Point(15, 13);
+            Icon_PictureBox.Margin = new Padding(6, 4, 6, 4);
+            Icon_PictureBox.Name = "Icon_PictureBox";
+            Icon_PictureBox.Size = new Size(80, 80);
+            Icon_PictureBox.TabIndex = 0;
+            Icon_PictureBox.TabStop = false;
             // 
             // Ok_Button
             // 
@@ -78,11 +76,11 @@
             Ok_Button.FillColor = SystemColors.Window;
             Ok_Button.Font = new Font("Segoe UI", 9F);
             Ok_Button.ForeColor = Color.Black;
-            Ok_Button.Location = new Point(327, 119);
-            Ok_Button.Margin = new Padding(4, 3, 4, 3);
+            Ok_Button.Location = new Point(491, 130);
+            Ok_Button.Margin = new Padding(6, 4, 6, 4);
             Ok_Button.Name = "Ok_Button";
             Ok_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Ok_Button.Size = new Size(100, 30);
+            Ok_Button.Size = new Size(150, 45);
             Ok_Button.TabIndex = 3;
             Ok_Button.Text = "Ok";
             Ok_Button.Click += Ok_Button_Click;
@@ -102,11 +100,11 @@
             No_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             No_Button.Font = new Font("Segoe UI", 9F);
             No_Button.ForeColor = Color.Black;
-            No_Button.Location = new Point(219, 119);
-            No_Button.Margin = new Padding(4, 3, 4, 3);
+            No_Button.Location = new Point(329, 130);
+            No_Button.Margin = new Padding(6, 4, 6, 4);
             No_Button.Name = "No_Button";
             No_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            No_Button.Size = new Size(100, 30);
+            No_Button.Size = new Size(150, 45);
             No_Button.TabIndex = 2;
             No_Button.Text = "No";
             No_Button.Click += No_Button_Click;
@@ -126,11 +124,11 @@
             Yes_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             Yes_Button.Font = new Font("Segoe UI", 9F);
             Yes_Button.ForeColor = Color.Black;
-            Yes_Button.Location = new Point(111, 119);
-            Yes_Button.Margin = new Padding(4, 3, 4, 3);
+            Yes_Button.Location = new Point(167, 130);
+            Yes_Button.Margin = new Padding(6, 4, 6, 4);
             Yes_Button.Name = "Yes_Button";
             Yes_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Yes_Button.Size = new Size(100, 30);
+            Yes_Button.Size = new Size(150, 45);
             Yes_Button.TabIndex = 1;
             Yes_Button.Text = "Yes";
             Yes_Button.Click += Yes_Button_Click;
@@ -150,37 +148,25 @@
             Cancel_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             Cancel_Button.Font = new Font("Segoe UI", 9F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(435, 119);
-            Cancel_Button.Margin = new Padding(4, 3, 4, 3);
+            Cancel_Button.Location = new Point(653, 130);
+            Cancel_Button.Margin = new Padding(6, 4, 6, 4);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Cancel_Button.Size = new Size(100, 30);
+            Cancel_Button.Size = new Size(150, 45);
             Cancel_Button.TabIndex = 4;
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
-            // 
-            // Back_Panel
-            // 
-            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
-            Back_Panel.BackColor = Color.White;
-            Back_Panel.Controls.Add(Message_Label);
-            Back_Panel.Controls.Add(Icon_pictureBox);
-            Back_Panel.Location = new Point(0, 12);
-            Back_Panel.Margin = new Padding(4, 3, 4, 3);
-            Back_Panel.Name = "Back_Panel";
-            Back_Panel.Size = new Size(524, 95);
-            Back_Panel.TabIndex = 4;
             // 
             // Message_Label
             // 
             Message_Label.AutoSize = true;
             Message_Label.Font = new Font("Segoe UI", 11.25F);
             Message_Label.LinkArea = new LinkArea(0, 0);
-            Message_Label.Location = new Point(76, 9);
-            Message_Label.Margin = new Padding(4, 0, 4, 0);
-            Message_Label.MaximumSize = new Size(427, 0);
+            Message_Label.Location = new Point(108, 13);
+            Message_Label.Margin = new Padding(6, 0, 6, 0);
+            Message_Label.MaximumSize = new Size(640, 0);
             Message_Label.Name = "Message_Label";
-            Message_Label.Size = new Size(67, 20);
+            Message_Label.Size = new Size(104, 31);
             Message_Label.TabIndex = 2;
             Message_Label.Text = "message";
             Message_Label.LinkClicked += Message_Label_LinkClicked;
@@ -200,11 +186,11 @@
             Save_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             Save_Button.Font = new Font("Segoe UI", 9F);
             Save_Button.ForeColor = Color.Black;
-            Save_Button.Location = new Point(3, 119);
-            Save_Button.Margin = new Padding(4, 3, 4, 3);
+            Save_Button.Location = new Point(5, 130);
+            Save_Button.Margin = new Padding(6, 4, 6, 4);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            Save_Button.Size = new Size(100, 30);
+            Save_Button.Size = new Size(150, 45);
             Save_Button.TabIndex = 5;
             Save_Button.Text = "Save";
             Save_Button.Click += Save_Button_Click;
@@ -224,46 +210,43 @@
             DontSave_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             DontSave_Button.Font = new Font("Segoe UI", 9F);
             DontSave_Button.ForeColor = Color.Black;
-            DontSave_Button.Location = new Point(50, 119);
-            DontSave_Button.Margin = new Padding(4, 3, 4, 3);
+            DontSave_Button.Location = new Point(97, 130);
+            DontSave_Button.Margin = new Padding(6, 4, 6, 4);
             DontSave_Button.Name = "DontSave_Button";
             DontSave_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            DontSave_Button.Size = new Size(100, 30);
+            DontSave_Button.Size = new Size(150, 45);
             DontSave_Button.TabIndex = 6;
             DontSave_Button.Text = "Don't save";
             DontSave_Button.Click += DontSave_Button_Click;
             // 
             // CustomMessage_Form
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(215, 215, 215);
-            ClientSize = new Size(524, 161);
+            AutoScaleMode = AutoScaleMode.None;
+            ClientSize = new Size(778, 194);
+            Controls.Add(Message_Label);
             Controls.Add(DontSave_Button);
+            Controls.Add(Icon_PictureBox);
             Controls.Add(Save_Button);
             Controls.Add(No_Button);
             Controls.Add(Yes_Button);
-            Controls.Add(Back_Panel);
             Controls.Add(Cancel_Button);
             Controls.Add(Ok_Button);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Margin = new Padding(4, 3, 4, 3);
-            MaximumSize = new Size(540, 400);
-            MinimumSize = new Size(540, 180);
+            Margin = new Padding(6, 4, 6, 4);
+            MaximumSize = new Size(800, 570);
+            MinimumSize = new Size(800, 250);
             Name = "CustomMessage_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             TopMost = true;
             Shown += CustomMessage_Form_Shown;
-            ((System.ComponentModel.ISupportInitialize)Icon_pictureBox).EndInit();
-            Back_Panel.ResumeLayout(false);
-            Back_Panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)Icon_PictureBox).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-        private System.Windows.Forms.Panel Back_Panel;
-        public System.Windows.Forms.PictureBox Icon_pictureBox;
+        public System.Windows.Forms.PictureBox Icon_PictureBox;
         public Guna.UI2.WinForms.Guna2Button Ok_Button;
         public Guna.UI2.WinForms.Guna2Button No_Button;
         public Guna.UI2.WinForms.Guna2Button Yes_Button;

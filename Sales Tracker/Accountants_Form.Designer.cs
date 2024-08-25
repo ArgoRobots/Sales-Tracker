@@ -51,10 +51,10 @@ namespace Sales_Tracker
             // 
             WarningAccountantName_PictureBox.Anchor = AnchorStyles.Top;
             WarningAccountantName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningAccountantName_PictureBox.Location = new Point(114, 145);
-            WarningAccountantName_PictureBox.Margin = new Padding(4, 3, 4, 3);
+            WarningAccountantName_PictureBox.Location = new Point(173, 210);
+            WarningAccountantName_PictureBox.Margin = new Padding(6, 4, 6, 4);
             WarningAccountantName_PictureBox.Name = "WarningAccountantName_PictureBox";
-            WarningAccountantName_PictureBox.Size = new Size(19, 19);
+            WarningAccountantName_PictureBox.Size = new Size(28, 28);
             WarningAccountantName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningAccountantName_PictureBox.TabIndex = 47;
             WarningAccountantName_PictureBox.TabStop = false;
@@ -66,10 +66,10 @@ namespace Sales_Tracker
             WarningAccountantName_Label.Anchor = AnchorStyles.Top;
             WarningAccountantName_Label.AutoSize = true;
             WarningAccountantName_Label.Font = new Font("Segoe UI", 10F);
-            WarningAccountantName_Label.Location = new Point(141, 145);
-            WarningAccountantName_Label.Margin = new Padding(4, 0, 4, 0);
+            WarningAccountantName_Label.Location = new Point(213, 210);
+            WarningAccountantName_Label.Margin = new Padding(6, 0, 6, 0);
             WarningAccountantName_Label.Name = "WarningAccountantName_Label";
-            WarningAccountantName_Label.Size = new Size(164, 19);
+            WarningAccountantName_Label.Size = new Size(233, 28);
             WarningAccountantName_Label.TabIndex = 46;
             WarningAccountantName_Label.Text = "Accountant already exists";
             WarningAccountantName_Label.Visible = false;
@@ -80,9 +80,10 @@ namespace Sales_Tracker
             AccountantName_Label.Anchor = AnchorStyles.Top;
             AccountantName_Label.AutoSize = true;
             AccountantName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AccountantName_Label.Location = new Point(114, 80);
+            AccountantName_Label.Location = new Point(173, 111);
+            AccountantName_Label.Margin = new Padding(4, 0, 4, 0);
             AccountantName_Label.Name = "AccountantName_Label";
-            AccountantName_Label.Size = new Size(125, 20);
+            AccountantName_Label.Size = new Size(194, 31);
             AccountantName_Label.TabIndex = 40;
             AccountantName_Label.Text = "Accountant name";
             AccountantName_Label.Click += CloseAllPanels;
@@ -99,7 +100,8 @@ namespace Sales_Tracker
             Accountant_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Accountant_TextBox.Font = new Font("Segoe UI", 9F);
             Accountant_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Accountant_TextBox.Location = new Point(114, 103);
+            Accountant_TextBox.Location = new Point(170, 150);
+            Accountant_TextBox.Margin = new Padding(6, 8, 6, 8);
             Accountant_TextBox.MaxLength = 32;
             Accountant_TextBox.Name = "Accountant_TextBox";
             Accountant_TextBox.PasswordChar = '\0';
@@ -107,7 +109,7 @@ namespace Sales_Tracker
             Accountant_TextBox.SelectedText = "";
             Accountant_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Accountant_TextBox.ShortcutsEnabled = false;
-            Accountant_TextBox.Size = new Size(200, 36);
+            Accountant_TextBox.Size = new Size(300, 48);
             Accountant_TextBox.TabIndex = 42;
             Accountant_TextBox.Tag = "1";
             Accountant_TextBox.TextChanged += Accountant_TextBox_TextChanged;
@@ -126,11 +128,11 @@ namespace Sales_Tracker
             AddAccountant_Button.FillColor = Color.White;
             AddAccountant_Button.Font = new Font("Segoe UI", 9.5F);
             AddAccountant_Button.ForeColor = Color.Black;
-            AddAccountant_Button.Location = new Point(321, 103);
-            AddAccountant_Button.Margin = new Padding(4, 3, 4, 3);
+            AddAccountant_Button.Location = new Point(482, 150);
+            AddAccountant_Button.Margin = new Padding(6, 4, 6, 4);
             AddAccountant_Button.Name = "AddAccountant_Button";
             AddAccountant_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            AddAccountant_Button.Size = new Size(143, 36);
+            AddAccountant_Button.Size = new Size(215, 48);
             AddAccountant_Button.TabIndex = 43;
             AddAccountant_Button.Tag = "";
             AddAccountant_Button.Text = "Add accountant";
@@ -141,9 +143,10 @@ namespace Sales_Tracker
             AddCategory_Label.Anchor = AnchorStyles.Top;
             AddCategory_Label.AutoSize = true;
             AddCategory_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AddCategory_Label.Location = new Point(324, 20);
+            AddCategory_Label.Location = new Point(467, 30);
+            AddCategory_Label.Margin = new Padding(4, 0, 4, 0);
             AddCategory_Label.Name = "AddCategory_Label";
-            AddCategory_Label.Size = new Size(161, 30);
+            AddCategory_Label.Size = new Size(245, 45);
             AddCategory_Label.TabIndex = 41;
             AddCategory_Label.Text = "Add accountant";
             AddCategory_Label.Click += CloseAllPanels;
@@ -160,7 +163,8 @@ namespace Sales_Tracker
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(471, 103);
+            Search_TextBox.Location = new Point(709, 150);
+            Search_TextBox.Margin = new Padding(6, 8, 6, 8);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
@@ -168,7 +172,7 @@ namespace Sales_Tracker
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Search_TextBox.ShortcutsEnabled = false;
-            Search_TextBox.Size = new Size(200, 36);
+            Search_TextBox.Size = new Size(300, 48);
             Search_TextBox.TabIndex = 48;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
@@ -178,18 +182,18 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
             ShowingResultsFor_Label.AutoSize = true;
             ShowingResultsFor_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ShowingResultsFor_Label.Location = new Point(325, 142);
+            ShowingResultsFor_Label.Location = new Point(485, 207);
+            ShowingResultsFor_Label.Margin = new Padding(4, 0, 4, 0);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
-            ShowingResultsFor_Label.Size = new Size(135, 20);
+            ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 49;
             ShowingResultsFor_Label.Text = "Showing results for";
             ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // Accountants_Form
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(784, 471);
+            AutoScaleMode = AutoScaleMode.None;
+            ClientSize = new Size(1178, 704);
             Controls.Add(ShowingResultsFor_Label);
             Controls.Add(Search_TextBox);
             Controls.Add(WarningAccountantName_PictureBox);
@@ -200,7 +204,8 @@ namespace Sales_Tracker
             Controls.Add(AddCategory_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            MinimumSize = new Size(800, 510);
+            Margin = new Padding(4);
+            MinimumSize = new Size(1200, 760);
             Name = "Accountants_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

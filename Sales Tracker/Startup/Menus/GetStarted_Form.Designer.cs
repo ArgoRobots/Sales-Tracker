@@ -44,21 +44,24 @@ namespace Sales_Tracker.Startup.Menus
             // 
             ArgoSalesTracker_Label.AutoSize = true;
             ArgoSalesTracker_Label.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
-            ArgoSalesTracker_Label.Location = new Point(22, 9);
+            ArgoSalesTracker_Label.Location = new Point(30, 15);
+            ArgoSalesTracker_Label.Margin = new Padding(4, 0, 4, 0);
             ArgoSalesTracker_Label.Name = "ArgoSalesTracker_Label";
-            ArgoSalesTracker_Label.Size = new Size(268, 41);
+            ArgoSalesTracker_Label.Size = new Size(390, 60);
             ArgoSalesTracker_Label.TabIndex = 0;
             ArgoSalesTracker_Label.Text = "Argo Sales Tracker";
             ArgoSalesTracker_Label.Click += CloseAllPanels;
             // 
             // OpenRecent_FlowLayoutPanel
             // 
+            OpenRecent_FlowLayoutPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             OpenRecent_FlowLayoutPanel.AutoSize = true;
             OpenRecent_FlowLayoutPanel.BorderStyle = BorderStyle.FixedSingle;
-            OpenRecent_FlowLayoutPanel.Location = new Point(29, 101);
-            OpenRecent_FlowLayoutPanel.MaximumSize = new Size(260, 350);
+            OpenRecent_FlowLayoutPanel.FlowDirection = FlowDirection.TopDown;
+            OpenRecent_FlowLayoutPanel.Location = new Point(45, 150);
+            OpenRecent_FlowLayoutPanel.Margin = new Padding(4);
             OpenRecent_FlowLayoutPanel.Name = "OpenRecent_FlowLayoutPanel";
-            OpenRecent_FlowLayoutPanel.Size = new Size(260, 350);
+            OpenRecent_FlowLayoutPanel.Size = new Size(390, 570);
             OpenRecent_FlowLayoutPanel.TabIndex = 1;
             OpenRecent_FlowLayoutPanel.Click += CloseAllPanels;
             // 
@@ -69,17 +72,17 @@ namespace Sales_Tracker.Startup.Menus
             CreateCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
             CreateCompany_Button.Font = new Font("Segoe UI", 12F);
             CreateCompany_Button.ForeColor = Color.Black;
-            CreateCompany_Button.Image = Properties.Resources.CreateFile;
+            CreateCompany_Button.Image = Properties.Resources.CreateFileBlack;
             CreateCompany_Button.ImageAlign = HorizontalAlignment.Left;
             CreateCompany_Button.ImageOffset = new Point(5, 0);
             CreateCompany_Button.ImageSize = new Size(30, 30);
-            CreateCompany_Button.Location = new Point(305, 101);
-            CreateCompany_Button.Margin = new Padding(10);
+            CreateCompany_Button.Location = new Point(458, 150);
+            CreateCompany_Button.Margin = new Padding(15);
             CreateCompany_Button.Name = "CreateCompany_Button";
             CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            CreateCompany_Button.Size = new Size(279, 69);
+            CreateCompany_Button.Size = new Size(420, 105);
             CreateCompany_Button.TabIndex = 2;
-            CreateCompany_Button.Text = "Create a new company";
+            CreateCompany_Button.Text = "Create new company";
             CreateCompany_Button.TextAlign = HorizontalAlignment.Left;
             CreateCompany_Button.TextOffset = new Point(10, 0);
             CreateCompany_Button.Click += CreateNewCompany_Click;
@@ -88,9 +91,10 @@ namespace Sales_Tracker.Startup.Menus
             // 
             OpenRecent_Label.AutoSize = true;
             OpenRecent_Label.Font = new Font("Segoe UI", 12F);
-            OpenRecent_Label.Location = new Point(25, 73);
+            OpenRecent_Label.Location = new Point(45, 114);
+            OpenRecent_Label.Margin = new Padding(4, 0, 4, 0);
             OpenRecent_Label.Name = "OpenRecent_Label";
-            OpenRecent_Label.Size = new Size(95, 21);
+            OpenRecent_Label.Size = new Size(147, 32);
             OpenRecent_Label.TabIndex = 0;
             OpenRecent_Label.Text = "Open recent";
             OpenRecent_Label.Click += CloseAllPanels;
@@ -102,33 +106,34 @@ namespace Sales_Tracker.Startup.Menus
             OpenCompany_Button.FillColor = Color.FromArgb(240, 240, 240);
             OpenCompany_Button.Font = new Font("Segoe UI", 12F);
             OpenCompany_Button.ForeColor = Color.Black;
-            OpenCompany_Button.Image = Properties.Resources.OpenFolder;
+            OpenCompany_Button.Image = Properties.Resources.OpenFolderBlack;
             OpenCompany_Button.ImageAlign = HorizontalAlignment.Left;
             OpenCompany_Button.ImageOffset = new Point(5, 0);
             OpenCompany_Button.ImageSize = new Size(30, 30);
-            OpenCompany_Button.Location = new Point(305, 185);
-            OpenCompany_Button.Margin = new Padding(10);
+            OpenCompany_Button.Location = new Point(458, 278);
+            OpenCompany_Button.Margin = new Padding(15);
             OpenCompany_Button.Name = "OpenCompany_Button";
             OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            OpenCompany_Button.Size = new Size(279, 69);
+            OpenCompany_Button.Size = new Size(420, 105);
             OpenCompany_Button.TabIndex = 3;
-            OpenCompany_Button.Text = "Open a company";
+            OpenCompany_Button.Text = "Open company";
             OpenCompany_Button.TextAlign = HorizontalAlignment.Left;
             OpenCompany_Button.TextOffset = new Point(10, 0);
             OpenCompany_Button.Click += OpenCompany_Button_Click;
             // 
             // GetStarted_Form
             // 
-            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleDimensions = new SizeF(144F, 144F);
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(250, 250, 250);
-            ClientSize = new Size(880, 550);
+            ClientSize = new Size(1320, 825);
             Controls.Add(OpenCompany_Button);
             Controls.Add(CreateCompany_Button);
             Controls.Add(ArgoSalesTracker_Label);
             Controls.Add(OpenRecent_FlowLayoutPanel);
             Controls.Add(OpenRecent_Label);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4);
             Name = "GetStarted_Form";
             Shown += GetStarted_Form_Shown;
             Click += CloseAllPanels;

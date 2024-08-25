@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Properties;
 
 namespace Sales_Tracker.Startup.Menus
 {
@@ -17,15 +18,28 @@ namespace Sales_Tracker.Startup.Menus
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             AddEventHandlersToTextBoxes();
+            UpdateTheme();
+        }
+        public void UpdateTheme()
+        {
+            CustomColors.SetColors();
             Theme.SetThemeForForm(this);
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            {
+                ThreeDots_Button.Image = Resources.ThreeDotsWhite;
+            }
+            else
+            {
+                ThreeDots_Button.Image = Resources.ThreeDotsBlack;
+            }
         }
         private void AddEventHandlersToTextBoxes()
         {
-            ProjectName_textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProjectName_textBox.KeyDown += UI.TextBox_KeyDown;
+            ProjectName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            ProjectName_TextBox.KeyDown += UI.TextBox_KeyDown;
 
-            Directory_textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Directory_textBox.KeyDown += UI.TextBox_KeyDown;
+            Directory_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Directory_TextBox.KeyDown += UI.TextBox_KeyDown;
         }
 
         // Form event handlers
@@ -35,7 +49,7 @@ namespace Sales_Tracker.Startup.Menus
             if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName") &&
                 !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName" + ArgoFiles.ArgoCompanyFileExtension))
             {
-                ProjectName_textBox.Text = "CompanyName";
+                ProjectName_TextBox.Text = "CompanyName";
             }
             else
             {
@@ -45,7 +59,7 @@ namespace Sales_Tracker.Startup.Menus
                     if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName (" + count + ")") &&
                         !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName (" + count + ")" + ArgoFiles.ArgoCompanyFileExtension))
                     {
-                        ProjectName_textBox.Text = "CompanyName (" + count + ")";
+                        ProjectName_TextBox.Text = "CompanyName (" + count + ")";
                         break;
                     }
                     count++;
@@ -57,18 +71,18 @@ namespace Sales_Tracker.Startup.Menus
             {
                 Properties.Settings.Default.ProjectDirectory = Directories.Desktop_dir;
                 Properties.Settings.Default.Save();
-                Directory_textBox.Text = Properties.Settings.Default.ProjectDirectory;
+                Directory_TextBox.Text = Properties.Settings.Default.ProjectDirectory;
             }
             else
             {
-                Directory_textBox.Text = Properties.Settings.Default.ProjectDirectory;
+                Directory_TextBox.Text = Properties.Settings.Default.ProjectDirectory;
             }
         }
         private void ConfigureProject_Form_Shown(object sender, EventArgs e)
         {
-            ProjectName_textBox.Focus();
-            ProjectName_textBox.SelectionStart = ProjectName_textBox.Text.Length;
-            ProjectName_textBox.SelectionLength = 0;
+            ProjectName_TextBox.Focus();
+            ProjectName_TextBox.SelectionStart = ProjectName_TextBox.Text.Length;
+            ProjectName_TextBox.SelectionLength = 0;
 
             LoadingPanel.HideBlankLoadingPanel(this);
         }
@@ -85,22 +99,22 @@ namespace Sales_Tracker.Startup.Menus
         private void Create_Button_Click(object sender, EventArgs e)
         {
             // Set main directory
-            selectedDirectory = Directory_textBox.Text;
+            selectedDirectory = Directory_TextBox.Text;
 
-            if (Directory_textBox.Text == "")
+            if (Directory_TextBox.Text == "")
             {
-                Directory_textBox.Focus();
+                Directory_TextBox.Focus();
                 CustomMessageBox.Show("Argo Sales Tracker", "Select a directory to create the project", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
 
-            if (File.Exists(selectedDirectory + @"\" + ProjectName_textBox.Text + ArgoFiles.ArgoCompanyFileExtension))
+            if (File.Exists(selectedDirectory + @"\" + ProjectName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
                 CustomMessageBox.Show("Argo Sales Tracker", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
 
-            projectName = ProjectName_textBox.Text;
+            projectName = ProjectName_TextBox.Text;
             // Hide current form. Don't close it or both forms will close
             Parent.Hide();
 
@@ -140,8 +154,8 @@ namespace Sales_Tracker.Startup.Menus
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Directory_textBox.Text = dialog.SelectedPath + @"\";
-                selectedDirectory = Directory_textBox.Text;
+                Directory_TextBox.Text = dialog.SelectedPath + @"\";
+                selectedDirectory = Directory_TextBox.Text;
             }
             // Save
             Properties.Settings.Default.ProjectDirectory = selectedDirectory;
@@ -149,18 +163,18 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void TextBoxProjectName_TextChanged(object sender, EventArgs e)
         {
-            if (@"/\#%&*|;".Any(ProjectName_textBox.Text.Contains) || ProjectName_textBox.Text == "")
+            if (@"/\#%&*|;".Any(ProjectName_TextBox.Text.Contains) || ProjectName_TextBox.Text == "")
             {
                 Create_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(ProjectName_textBox);
-                WarningName_pictureBox.Visible = true;
+                UI.SetGTextBoxToInvalid(ProjectName_TextBox);
+                WarningName_PictureBox.Visible = true;
                 WarningName_Label.Visible = true;
             }
             else
             {
                 Create_Button.Enabled = true;
-                UI.SetGTextBoxToValid(ProjectName_textBox);
-                WarningName_pictureBox.Visible = false;
+                UI.SetGTextBoxToValid(ProjectName_TextBox);
+                WarningName_PictureBox.Visible = false;
                 WarningName_Label.Visible = false;
             }
         }
@@ -168,22 +182,22 @@ namespace Sales_Tracker.Startup.Menus
         {
             // TEMP NOTE: the backround color of WarningDir_pictureBox is always white even in dark mode because the backround is not transparent. It needs to be a .png
 
-            if ("/#%&*|;".Any(Directory_textBox.Text.Contains) || Directory_textBox.Text == "" || !Directory_textBox.Text.Contains('\\'))
+            if ("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'))
             {
                 Create_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(Directory_textBox);
-                WarningDir_pictureBox.Visible = true;
+                UI.SetGTextBoxToInvalid(Directory_TextBox);
+                WarningDir_PictureBox.Visible = true;
                 WarningDir_Label.Visible = true;
             }
             else
             {
                 Create_Button.Enabled = true;
-                UI.SetGTextBoxToValid(Directory_textBox);
-                WarningDir_pictureBox.Visible = false;
+                UI.SetGTextBoxToValid(Directory_TextBox);
+                WarningDir_PictureBox.Visible = false;
                 WarningDir_Label.Visible = false;
             }
             // Save
-            Properties.Settings.Default.ProjectDirectory = Directory_textBox.Text;
+            Properties.Settings.Default.ProjectDirectory = Directory_TextBox.Text;
             Properties.Settings.Default.Save();
         }
     }

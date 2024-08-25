@@ -55,8 +55,8 @@ namespace Sales_Tracker.Classes
                 Categories_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 Companies_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 Products_Form.ThingsThatHaveChangedInFile.Count > 0 ||
-                AddSale_Form.thingsThatHaveChangedInFile.Count > 0 ||
-                AddPurchase_Form.thingsThatHaveChangedInFile.Count > 0)
+                AddSale_Form.ThingsThatHaveChangedInFile.Count > 0 ||
+                AddPurchase_Form.ThingsThatHaveChangedInFile.Count > 0)
             {
                 return true;
             }
@@ -69,8 +69,8 @@ namespace Sales_Tracker.Classes
             Categories_Form.ThingsThatHaveChangedInFile.Clear();
             Companies_Form.thingsThatHaveChangedInFile.Clear();
             Products_Form.ThingsThatHaveChangedInFile.Clear();
-            AddSale_Form.thingsThatHaveChangedInFile.Clear();
-            AddPurchase_Form.thingsThatHaveChangedInFile.Clear();
+            AddSale_Form.ThingsThatHaveChangedInFile.Clear();
+            AddPurchase_Form.ThingsThatHaveChangedInFile.Clear();
         }
         public static void OpenCompany()
         {

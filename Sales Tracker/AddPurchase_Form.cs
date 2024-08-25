@@ -7,7 +7,12 @@ namespace Sales_Tracker
     public partial class AddPurchase_Form : Form
     {
         // Properties
-        public static readonly List<string> thingsThatHaveChangedInFile = [];
+        private static List<string> _thingsThatHaveChangedInFile = [];
+        public static List<string> ThingsThatHaveChangedInFile
+        {
+            get { return _thingsThatHaveChangedInFile; }
+            private set { _thingsThatHaveChangedInFile = value; }
+        }
 
         // Init.
         public AddPurchase_Form()
@@ -20,7 +25,7 @@ namespace Sales_Tracker
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
-            Currency_ComboBox.SelectedIndex = 0;
+            Currency_ComboBox.Text = Properties.Settings.Default.Currency;
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
@@ -324,7 +329,7 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, itemName);
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
 
             return true;
@@ -517,7 +522,7 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, purchaseNumber);
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, purchaseNumber);
             Log.Write(3, $"Added purchase '{purchaseNumber}' with '{totalQuantity}' items");
 
             return true;
@@ -561,10 +566,10 @@ namespace Sales_Tracker
                 Quantity_TextBox, Quantity_Label,
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3,
-            textBoxHeight = 36, circleButtonHeight = 25, extraSpaceForBottom = 140, spaceBetweenPanels = 10,
-               initialHeightForPanel = 59, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
-        private readonly short initialWidthForPanel = 449, maxFlowPanelHeight = 300;
+        private readonly byte spaceBetweenControlsHorizontally = 10, spaceBetweenControlsVertically = 4,
+            textBoxHeight = 48, circleButtonHeight = 38, extraSpaceForBottom = 210, spaceBetweenPanels = 10,
+               initialHeightForPanel = 88, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
+        private readonly short initialWidthForPanel = 673, maxFlowPanelHeight = 300;
         private void SetControlsForSingleProduct()
         {
             // Center controls
@@ -572,7 +577,7 @@ namespace Sales_Tracker
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
                 ProductName_TextBox.Width - spaceBetweenControlsHorizontally -
-                Receipt_Button.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
+                Receipt_Button.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
@@ -591,7 +596,7 @@ namespace Sales_Tracker
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
                 PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
                 AmountCharged_TextBox.Width - spaceBetweenControlsHorizontally -
-                Discount_TextBox.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
+                Discount_TextBox.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Quantity_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -635,7 +640,7 @@ namespace Sales_Tracker
                 Currency_ComboBox.Width - spaceBetweenControlsHorizontally -
                 OrderNumber_TextBox.Width - spaceBetweenControlsHorizontally -
                 BuyerName_TextBox.Width - spaceBetweenControlsHorizontally -
-                Receipt_Button.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
+                Receipt_Button.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + spaceBetweenControlsHorizontally;
@@ -650,7 +655,7 @@ namespace Sales_Tracker
                 Tax_TextBox.Width - spaceBetweenControlsHorizontally -
                 PaymentFee_TextBox.Width - spaceBetweenControlsHorizontally -
                 AmountCharged_TextBox.Width - spaceBetweenControlsHorizontally -
-                Discount_TextBox.Width - MainMenu_Form.Instance.spaceToOffsetFormNotCenter) / 2;
+                Discount_TextBox.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + spaceBetweenControlsHorizontally;
@@ -778,7 +783,7 @@ namespace Sales_Tracker
             {
                 Size = new Size(width, textBoxHeight),
                 Name = name,
-                Location = new Point(left, 20 + spaceBetweenControlsVertically),
+                Location = new Point(left, 28 + spaceBetweenControlsVertically),
                 FillColor = CustomColors.controlBack,
                 BorderColor = CustomColors.controlBorder,
                 ForeColor = CustomColors.text,
@@ -820,15 +825,21 @@ namespace Sales_Tracker
         {
             Guna2CircleButton circleBtn = new()
             {
-                BackColor = CustomColors.controlBack,
-                FillColor = CustomColors.controlBack,
+                FillColor = CustomColors.mainBackground,
+                BackColor = CustomColors.mainBackground,
                 Location = location,
                 Size = new Size(circleButtonHeight, circleButtonHeight),
-                Image = Resources.Minus,
-                ImageSize = new Size(22, 22)
+                ImageSize = new Size(32, 32),
+                PressedColor = CustomColors.controlBack
             };
-            circleBtn.HoverState.FillColor = CustomColors.controlBack;
-            circleBtn.PressedColor = CustomColors.controlBack;
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            {
+                circleBtn.Image = Resources.MinusWhite;
+            }
+            else
+            {
+                circleBtn.Image = Resources.MinusBlack;
+            }
             circleBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
@@ -854,12 +865,13 @@ namespace Sales_Tracker
             int width = initialWidthForPanel + spaceOnSidesOfPanel;
             FlowPanel = new()
             {
+                Anchor = AnchorStyles.Top,
                 AutoScroll = false,
-                Location = new Point((Width - width + 10) / 2 - 5, 380),
+                Location = new Point((Width - width) / 2 - MainMenu_Form.spaceToOffsetFormNotCenter, 570),
                 Size = new Size(width, 20 + spaceBetweenControlsVertically + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
-                MaximumSize = new Size(initialWidthForPanel + spaceOnSidesOfPanel, maxFlowPanelHeight)
+                MaximumSize = new Size(width, maxFlowPanelHeight)
             };
             FlowPanel.Click += CloseAllPanels;
         }
@@ -867,16 +879,23 @@ namespace Sales_Tracker
         {
             AddButton = new()
             {
-                BackColor = CustomColors.controlBack,
-                FillColor = CustomColors.controlBack,
+                FillColor = CustomColors.mainBackground,
+                BackColor = CustomColors.mainBackground,
                 Location = new Point(0, 60),
                 Size = new Size(circleButtonHeight, circleButtonHeight),
-                Image = Resources.Plus,
-                ImageSize = new Size(22, 22),
-                Left = FlowPanel.Left + spaceOnSidesOfPanel / 2
+                Image = Resources.PlusWhite,
+                ImageSize = new Size(32, 32),
+                Left = FlowPanel.Left + spaceOnSidesOfPanel / 2,
+                PressedColor = CustomColors.controlBack
             };
-            AddButton.HoverState.FillColor = CustomColors.controlBack;
-            AddButton.PressedColor = CustomColors.controlBack;
+            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            {
+                AddButton.Image = Resources.PlusWhite;
+            }
+            else
+            {
+                AddButton.Image = Resources.PlusBlack;
+            }
             AddButton.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);

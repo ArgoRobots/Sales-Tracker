@@ -44,8 +44,6 @@ namespace Sales_Tracker.Classes
                 // Copy the inputStream to the CryptoStream
                 inputStream.CopyTo(cryptoStream);
                 cryptoStream.FlushFinalBlock();
-
-                Log.Write(2, "Encryption successful");
             }
             catch (Exception ex)
             {
