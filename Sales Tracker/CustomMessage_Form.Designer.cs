@@ -163,7 +163,6 @@
             Message_Label.Font = new Font("Segoe UI", 11.25F);
             Message_Label.LinkArea = new LinkArea(0, 0);
             Message_Label.Location = new Point(108, 13);
-            Message_Label.Margin = new Padding(6, 0, 6, 0);
             Message_Label.MaximumSize = new Size(640, 0);
             Message_Label.Name = "Message_Label";
             Message_Label.Size = new Size(104, 31);

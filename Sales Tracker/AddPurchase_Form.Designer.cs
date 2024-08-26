@@ -63,6 +63,8 @@ namespace Sales_Tracker
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddPurchase_Form));
             OrderNumber_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             OrderNumber_Label = new Label();
@@ -86,7 +88,6 @@ namespace Sales_Tracker
             WarningProduct_PictureBox = new PictureBox();
             PaymentFee_Label = new Label();
             PaymentFee_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            MultipleItems_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Currency_Label = new Label();
             WarningBuyer_LinkLabel = new LinkLabel();
@@ -101,6 +102,8 @@ namespace Sales_Tracker
             Notes_Labal = new Label();
             Notes_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ImportExcel_Button = new Guna.UI2.WinForms.Guna2Button();
+            MultipleItems_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
+            MultipleItems_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).BeginInit();
             SuspendLayout();
@@ -138,7 +141,6 @@ namespace Sales_Tracker
             OrderNumber_Label.AutoSize = true;
             OrderNumber_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             OrderNumber_Label.Location = new Point(267, 115);
-            OrderNumber_Label.Margin = new Padding(4, 0, 4, 0);
             OrderNumber_Label.Name = "OrderNumber_Label";
             OrderNumber_Label.Size = new Size(93, 31);
             OrderNumber_Label.TabIndex = 0;
@@ -164,7 +166,6 @@ namespace Sales_Tracker
             BuyerName_Label.AutoSize = true;
             BuyerName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             BuyerName_Label.Location = new Point(576, 115);
-            BuyerName_Label.Margin = new Padding(4, 0, 4, 0);
             BuyerName_Label.Name = "BuyerName_Label";
             BuyerName_Label.Size = new Size(134, 31);
             BuyerName_Label.TabIndex = 0;
@@ -202,7 +203,6 @@ namespace Sales_Tracker
             ProductName_Label.AutoSize = true;
             ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ProductName_Label.Location = new Point(885, 115);
-            ProductName_Label.Margin = new Padding(4, 0, 4, 0);
             ProductName_Label.Name = "ProductName_Label";
             ProductName_Label.Size = new Size(157, 31);
             ProductName_Label.TabIndex = 0;
@@ -240,7 +240,6 @@ namespace Sales_Tracker
             Quantity_Label.AutoSize = true;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Quantity_Label.Location = new Point(359, 292);
-            Quantity_Label.Margin = new Padding(4, 0, 4, 0);
             Quantity_Label.Name = "Quantity_Label";
             Quantity_Label.Size = new Size(102, 31);
             Quantity_Label.TabIndex = 0;
@@ -279,7 +278,6 @@ namespace Sales_Tracker
             PricePerUnit_Label.AutoSize = true;
             PricePerUnit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PricePerUnit_Label.Location = new Point(519, 288);
-            PricePerUnit_Label.Margin = new Padding(4, 0, 4, 0);
             PricePerUnit_Label.Name = "PricePerUnit_Label";
             PricePerUnit_Label.Size = new Size(150, 31);
             PricePerUnit_Label.TabIndex = 0;
@@ -318,7 +316,6 @@ namespace Sales_Tracker
             Shipping_Label.AutoSize = true;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Shipping_Label.Location = new Point(677, 288);
-            Shipping_Label.Margin = new Padding(4, 0, 4, 0);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 0;
@@ -357,7 +354,6 @@ namespace Sales_Tracker
             Tax_Label.AutoSize = true;
             Tax_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Tax_Label.Location = new Point(837, 288);
-            Tax_Label.Margin = new Padding(4, 0, 4, 0);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 0;
@@ -418,7 +414,6 @@ namespace Sales_Tracker
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Date_Label.Location = new Point(51, 292);
-            Date_Label.Margin = new Padding(4, 0, 4, 0);
             Date_Label.Name = "Date_Label";
             Date_Label.Size = new Size(62, 31);
             Date_Label.TabIndex = 0;
@@ -451,8 +446,7 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel.AutoSize = true;
             WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
-            WarningProduct_LinkLabel.Location = new Point(924, 213);
-            WarningProduct_LinkLabel.Margin = new Padding(4, 0, 4, 0);
+            WarningProduct_LinkLabel.Location = new Point(922, 216);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
             WarningProduct_LinkLabel.Size = new Size(181, 59);
             WarningProduct_LinkLabel.TabIndex = 7;
@@ -479,7 +473,6 @@ namespace Sales_Tracker
             PaymentFee_Label.AutoSize = true;
             PaymentFee_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PaymentFee_Label.Location = new Point(995, 288);
-            PaymentFee_Label.Margin = new Padding(4, 0, 4, 0);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(139, 31);
             PaymentFee_Label.TabIndex = 0;
@@ -512,27 +505,6 @@ namespace Sales_Tracker
             PaymentFee_TextBox.TextChanged += ValidateInputs;
             PaymentFee_TextBox.Click += CloseAllPanels;
             // 
-            // MultipleItems_CheckBox
-            // 
-            MultipleItems_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            MultipleItems_CheckBox.AutoSize = true;
-            MultipleItems_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            MultipleItems_CheckBox.CheckedState.BorderRadius = 0;
-            MultipleItems_CheckBox.CheckedState.BorderThickness = 0;
-            MultipleItems_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            MultipleItems_CheckBox.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            MultipleItems_CheckBox.Location = new Point(1158, 40);
-            MultipleItems_CheckBox.Margin = new Padding(4);
-            MultipleItems_CheckBox.Name = "MultipleItems_CheckBox";
-            MultipleItems_CheckBox.Size = new Size(298, 34);
-            MultipleItems_CheckBox.TabIndex = 20;
-            MultipleItems_CheckBox.Text = "Multiple items in this order";
-            MultipleItems_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            MultipleItems_CheckBox.UncheckedState.BorderRadius = 0;
-            MultipleItems_CheckBox.UncheckedState.BorderThickness = 0;
-            MultipleItems_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            MultipleItems_CheckBox.CheckedChanged += MultipleItems_CheckBox_CheckedChanged;
-            // 
             // Currency_ComboBox
             // 
             Currency_ComboBox.Anchor = AnchorStyles.Top;
@@ -560,7 +532,6 @@ namespace Sales_Tracker
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Currency_Label.Location = new Point(109, 119);
-            Currency_Label.Margin = new Padding(4, 0, 4, 0);
             Currency_Label.Name = "Currency_Label";
             Currency_Label.Size = new Size(104, 31);
             Currency_Label.TabIndex = 0;
@@ -573,8 +544,7 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.AutoSize = true;
             WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningBuyer_LinkLabel.LinkArea = new LinkArea(22, 15);
-            WarningBuyer_LinkLabel.Location = new Point(615, 218);
-            WarningBuyer_LinkLabel.Margin = new Padding(4, 0, 4, 0);
+            WarningBuyer_LinkLabel.Location = new Point(613, 218);
             WarningBuyer_LinkLabel.Name = "WarningBuyer_LinkLabel";
             WarningBuyer_LinkLabel.Size = new Size(210, 59);
             WarningBuyer_LinkLabel.TabIndex = 6;
@@ -601,7 +571,6 @@ namespace Sales_Tracker
             AmountCharged_Label.AutoSize = true;
             AmountCharged_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             AmountCharged_Label.Location = new Point(1313, 288);
-            AmountCharged_Label.Margin = new Padding(4, 0, 4, 0);
             AmountCharged_Label.Name = "AmountCharged_Label";
             AmountCharged_Label.Size = new Size(181, 31);
             AmountCharged_Label.TabIndex = 0;
@@ -690,7 +659,6 @@ namespace Sales_Tracker
             Discount_Label.AutoSize = true;
             Discount_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Discount_Label.Location = new Point(1155, 288);
-            Discount_Label.Margin = new Padding(4, 0, 4, 0);
             Discount_Label.Name = "Discount_Label";
             Discount_Label.Size = new Size(93, 31);
             Discount_Label.TabIndex = 57;
@@ -729,7 +697,6 @@ namespace Sales_Tracker
             Notes_Labal.AutoSize = true;
             Notes_Labal.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Notes_Labal.Location = new Point(668, 407);
-            Notes_Labal.Margin = new Padding(4, 0, 4, 0);
             Notes_Labal.Name = "Notes_Labal";
             Notes_Labal.Size = new Size(179, 31);
             Notes_Labal.TabIndex = 0;
@@ -784,10 +751,45 @@ namespace Sales_Tracker
             ImportExcel_Button.Text = "Import from Excel";
             ImportExcel_Button.Click += ImportExcel_Button_Click;
             // 
+            // MultipleItems_CheckBox
+            // 
+            MultipleItems_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            MultipleItems_CheckBox.Animated = true;
+            MultipleItems_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            MultipleItems_CheckBox.CheckedState.BorderRadius = 2;
+            MultipleItems_CheckBox.CheckedState.BorderThickness = 0;
+            MultipleItems_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            MultipleItems_CheckBox.CustomizableEdges = customizableEdges34;
+            MultipleItems_CheckBox.Location = new Point(1168, 50);
+            MultipleItems_CheckBox.Name = "MultipleItems_CheckBox";
+            MultipleItems_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges35;
+            MultipleItems_CheckBox.Size = new Size(20, 20);
+            MultipleItems_CheckBox.TabIndex = 20;
+            MultipleItems_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            MultipleItems_CheckBox.UncheckedState.BorderRadius = 2;
+            MultipleItems_CheckBox.UncheckedState.BorderThickness = 0;
+            MultipleItems_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            MultipleItems_CheckBox.CheckedChanged += MultipleItems_CheckBox_CheckedChanged;
+            // 
+            // MultipleItems_Label
+            // 
+            MultipleItems_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            MultipleItems_Label.AutoSize = true;
+            MultipleItems_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            MultipleItems_Label.Location = new Point(1191, 45);
+            MultipleItems_Label.Margin = new Padding(0);
+            MultipleItems_Label.Name = "MultipleItems_Label";
+            MultipleItems_Label.Size = new Size(272, 30);
+            MultipleItems_Label.TabIndex = 0;
+            MultipleItems_Label.Text = "Multiple items in this order";
+            MultipleItems_Label.Click += MultipleItems_Label_Click;
+            // 
             // AddPurchase_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1514, 639);
+            Controls.Add(MultipleItems_Label);
+            Controls.Add(MultipleItems_CheckBox);
             Controls.Add(ImportExcel_Button);
             Controls.Add(Notes_Labal);
             Controls.Add(Notes_TextBox);
@@ -802,7 +804,6 @@ namespace Sales_Tracker
             Controls.Add(WarningBuyer_PictureBox);
             Controls.Add(Currency_Label);
             Controls.Add(Currency_ComboBox);
-            Controls.Add(MultipleItems_CheckBox);
             Controls.Add(PaymentFee_Label);
             Controls.Add(PaymentFee_TextBox);
             Controls.Add(WarningProduct_LinkLabel);
@@ -866,7 +867,6 @@ namespace Sales_Tracker
         private PictureBox WarningProduct_PictureBox;
         private Label PaymentFee_Label;
         private Guna.UI2.WinForms.Guna2TextBox PaymentFee_TextBox;
-        private Guna.UI2.WinForms.Guna2CheckBox MultipleItems_CheckBox;
         private Guna.UI2.WinForms.Guna2ComboBox Currency_ComboBox;
         private Label Currency_Label;
         private LinkLabel WarningBuyer_LinkLabel;
@@ -881,5 +881,7 @@ namespace Sales_Tracker
         private Label Notes_Labal;
         private Guna.UI2.WinForms.Guna2TextBox Notes_TextBox;
         private Guna.UI2.WinForms.Guna2Button ImportExcel_Button;
+        private Guna.UI2.WinForms.Guna2CustomCheckBox MultipleItems_CheckBox;
+        private Label MultipleItems_Label;
     }
 }

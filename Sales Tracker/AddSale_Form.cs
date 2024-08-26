@@ -203,6 +203,10 @@ namespace Sales_Tracker
         private void ImportExcel_Button_Click(object sender, EventArgs e)
         {
         }
+        private void MultipleItems_Label_Click(object sender, EventArgs e)
+        {
+            MultipleItems_CheckBox.Checked = !MultipleItems_CheckBox.Checked;
+        }
 
         // Methods to add sales
         private bool AddSingleSale()

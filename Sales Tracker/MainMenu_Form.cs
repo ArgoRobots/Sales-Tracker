@@ -29,7 +29,7 @@ namespace Sales_Tracker
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
-        public static readonly byte spaceToOffsetFormNotCenter = 15;  // This is just a weird thing with WinForms
+        public static readonly byte spaceToOffsetFormNotCenter = 12;  // This is just a weird thing with WinForms
         private static string _currencySymbol;
         private static bool _isFullVersion = true;
         public static bool IsFullVersion

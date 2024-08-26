@@ -50,7 +50,6 @@
             DateRange_Label.AutoSize = true;
             DateRange_Label.Font = new Font("Segoe UI", 16F);
             DateRange_Label.Location = new Point(196, 21);
-            DateRange_Label.Margin = new Padding(4, 0, 4, 0);
             DateRange_Label.Name = "DateRange_Label";
             DateRange_Label.Size = new Size(252, 45);
             DateRange_Label.TabIndex = 1;
@@ -65,7 +64,7 @@
             From_DateTimePicker.Font = new Font("Segoe UI", 9F);
             From_DateTimePicker.Format = DateTimePickerFormat.Long;
             From_DateTimePicker.Location = new Point(176, 136);
-            From_DateTimePicker.Margin = new Padding(4, 4, 4, 4);
+            From_DateTimePicker.Margin = new Padding(4);
             From_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             From_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             From_DateTimePicker.Name = "From_DateTimePicker";
@@ -80,7 +79,6 @@
             From_Label.AutoSize = true;
             From_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             From_Label.Location = new Point(176, 102);
-            From_Label.Margin = new Padding(4, 0, 4, 0);
             From_Label.Name = "From_Label";
             From_Label.Size = new Size(66, 31);
             From_Label.TabIndex = 7;
@@ -95,7 +93,7 @@
             To_DateTimePicker.Font = new Font("Segoe UI", 9F);
             To_DateTimePicker.Format = DateTimePickerFormat.Long;
             To_DateTimePicker.Location = new Point(176, 236);
-            To_DateTimePicker.Margin = new Padding(4, 4, 4, 4);
+            To_DateTimePicker.Margin = new Padding(4);
             To_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             To_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             To_DateTimePicker.Name = "To_DateTimePicker";
@@ -110,7 +108,6 @@
             To_Label.AutoSize = true;
             To_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             To_Label.Location = new Point(176, 201);
-            To_Label.Margin = new Padding(4, 0, 4, 0);
             To_Label.Name = "To_Label";
             To_Label.Size = new Size(37, 31);
             To_Label.TabIndex = 9;
@@ -170,7 +167,7 @@
             Controls.Add(From_Label);
             Controls.Add(DateRange_Label);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             Name = "DateRange_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

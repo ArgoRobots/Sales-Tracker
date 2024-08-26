@@ -110,12 +110,7 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added category '{name}'");
 
-            Purchase_RadioButton.AutoCheck = false;
-            Sale_RadioButton.AutoCheck = false;
-            Category_TextBox.Text = "";  // For some reason, this checks the other radio button. It probably a bug with Guna
-            Purchase_RadioButton.AutoCheck = true;
-            Sale_RadioButton.AutoCheck = true;
-
+            Category_TextBox.Text = "";
             Category_TextBox.Focus();
         }
         private void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
@@ -170,6 +165,14 @@ namespace Sales_Tracker
             {
                 HideShowingResultsForLabel();
             }
+        }
+        private void ForPurchase_Label_Click(object sender, EventArgs e)
+        {
+            Purchase_RadioButton.Checked = true;
+        }
+        private void ForSale_Label_Click(object sender, EventArgs e)
+        {
+            Sale_RadioButton.Checked = true;
         }
 
         // DataGridView

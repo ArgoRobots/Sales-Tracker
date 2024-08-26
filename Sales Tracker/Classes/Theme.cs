@@ -101,20 +101,18 @@ namespace Sales_Tracker.Classes
                             guna2TextBox.FocusedState.FillColor = CustomColors.controlBack;
                             break;
 
-                        case Guna2CheckBox guna2CheckBox:
-                            guna2CheckBox.ForeColor = CustomColors.text;
-                            guna2CheckBox.CheckedState.BorderColor = CustomColors.accent_blue;
-                            guna2CheckBox.CheckedState.FillColor = CustomColors.accent_blue;
-                            guna2CheckBox.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
-                            guna2CheckBox.UncheckedState.FillColor = CustomColors.controlBack;
+                        case Guna2CustomCheckBox guna2CustomCheckBox:
+                            guna2CustomCheckBox.CheckedState.BorderColor = CustomColors.accent_blue;
+                            guna2CustomCheckBox.CheckedState.FillColor = CustomColors.accent_blue;
+                            guna2CustomCheckBox.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
+                            guna2CustomCheckBox.UncheckedState.FillColor = CustomColors.controlBack;
                             break;
 
-                        case Guna2RadioButton guna2RadioButton:
-                            guna2RadioButton.ForeColor = CustomColors.text;
-                            guna2RadioButton.CheckedState.BorderColor = CustomColors.accent_blue;
-                            guna2RadioButton.CheckedState.FillColor = CustomColors.accent_blue;
-                            guna2RadioButton.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
-                            guna2RadioButton.UncheckedState.FillColor = CustomColors.controlBack;
+                        case Guna2CustomRadioButton guna2CustomRadioButton:
+                            guna2CustomRadioButton.CheckedState.BorderColor = CustomColors.accent_blue;
+                            guna2CustomRadioButton.CheckedState.FillColor = CustomColors.accent_blue;
+                            guna2CustomRadioButton.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
+                            guna2CustomRadioButton.UncheckedState.FillColor = CustomColors.controlBack;
                             break;
 
                         case Guna2Panel guna2Panel:

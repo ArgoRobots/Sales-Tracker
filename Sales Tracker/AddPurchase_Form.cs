@@ -208,6 +208,10 @@ namespace Sales_Tracker
         {
 
         }
+        private void MultipleItems_Label_Click(object sender, EventArgs e)
+        {
+            MultipleItems_CheckBox.Checked = !MultipleItems_CheckBox.Checked;
+        }
 
         // Methods to add purchases
         private bool AddSinglePurchase()

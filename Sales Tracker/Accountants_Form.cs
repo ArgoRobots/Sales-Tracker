@@ -130,7 +130,7 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
             MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - 12, topForDataGridView);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - MainMenu_Form.spaceToOffsetFormNotCenter, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {

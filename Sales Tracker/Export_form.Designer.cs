@@ -73,7 +73,6 @@
             WarningDir_Label.AutoSize = true;
             WarningDir_Label.Font = new Font("Segoe UI", 10F);
             WarningDir_Label.Location = new Point(99, 539);
-            WarningDir_Label.Margin = new Padding(6, 0, 6, 0);
             WarningDir_Label.Name = "WarningDir_Label";
             WarningDir_Label.Size = new Size(239, 28);
             WarningDir_Label.TabIndex = 0;
@@ -97,7 +96,6 @@
             WarningName_Label.AutoSize = true;
             WarningName_Label.Font = new Font("Segoe UI", 10F);
             WarningName_Label.Location = new Point(99, 219);
-            WarningName_Label.Margin = new Padding(6, 0, 6, 0);
             WarningName_Label.Name = "WarningName_Label";
             WarningName_Label.Size = new Size(294, 28);
             WarningName_Label.TabIndex = 0;
@@ -134,7 +132,6 @@
             Directory_Label.AutoSize = true;
             Directory_Label.Font = new Font("Segoe UI", 12F);
             Directory_Label.Location = new Point(48, 428);
-            Directory_Label.Margin = new Padding(6, 0, 6, 0);
             Directory_Label.Name = "Directory_Label";
             Directory_Label.Size = new Size(111, 32);
             Directory_Label.TabIndex = 0;
@@ -170,7 +167,6 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F);
             label2.Location = new Point(48, 108);
-            label2.Margin = new Padding(6, 0, 6, 0);
             label2.Name = "label2";
             label2.Size = new Size(78, 32);
             label2.TabIndex = 0;
@@ -181,7 +177,6 @@
             ExportYourCompany_Label.AutoSize = true;
             ExportYourCompany_Label.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             ExportYourCompany_Label.Location = new Point(30, 15);
-            ExportYourCompany_Label.Margin = new Padding(6, 0, 6, 0);
             ExportYourCompany_Label.Name = "ExportYourCompany_Label";
             ExportYourCompany_Label.Size = new Size(333, 45);
             ExportYourCompany_Label.TabIndex = 0;
@@ -192,7 +187,6 @@
             FileType_Label.AutoSize = true;
             FileType_Label.Font = new Font("Segoe UI", 12F);
             FileType_Label.Location = new Point(48, 272);
-            FileType_Label.Margin = new Padding(6, 0, 6, 0);
             FileType_Label.Name = "FileType_Label";
             FileType_Label.Size = new Size(105, 32);
             FileType_Label.TabIndex = 0;

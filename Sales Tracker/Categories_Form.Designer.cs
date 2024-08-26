@@ -30,29 +30,33 @@ namespace Sales_Tracker
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Category_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddCategory_Button = new Guna.UI2.WinForms.Guna2Button();
             AddCategory_Label = new Label();
             CategoryName_Label = new Label();
-            Sale_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
-            Purchase_RadioButton = new Guna.UI2.WinForms.Guna2RadioButton();
             WarningCategoryName_PictureBox = new PictureBox();
             WarningCategoryName_Label = new Label();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
+            Purchase_RadioButton = new Guna.UI2.WinForms.Guna2CustomRadioButton();
+            ForPurchase_Label = new Label();
+            ForSale_Label = new Label();
+            Sale_RadioButton = new Guna.UI2.WinForms.Guna2CustomRadioButton();
             ((System.ComponentModel.ISupportInitialize)WarningCategoryName_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // Category_TextBox
             // 
             Category_TextBox.Anchor = AnchorStyles.Top;
-            Category_TextBox.CustomizableEdges = customizableEdges1;
+            Category_TextBox.CustomizableEdges = customizableEdges9;
             Category_TextBox.DefaultText = "";
             Category_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Category_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -68,7 +72,7 @@ namespace Sales_Tracker
             Category_TextBox.PasswordChar = '\0';
             Category_TextBox.PlaceholderText = "";
             Category_TextBox.SelectedText = "";
-            Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Category_TextBox.ShortcutsEnabled = false;
             Category_TextBox.Size = new Size(300, 48);
             Category_TextBox.TabIndex = 1;
@@ -83,7 +87,7 @@ namespace Sales_Tracker
             AddCategory_Button.BorderColor = Color.LightGray;
             AddCategory_Button.BorderRadius = 2;
             AddCategory_Button.BorderThickness = 1;
-            AddCategory_Button.CustomizableEdges = customizableEdges3;
+            AddCategory_Button.CustomizableEdges = customizableEdges11;
             AddCategory_Button.Enabled = false;
             AddCategory_Button.FillColor = Color.White;
             AddCategory_Button.Font = new Font("Segoe UI", 9.5F);
@@ -91,7 +95,7 @@ namespace Sales_Tracker
             AddCategory_Button.Location = new Point(481, 150);
             AddCategory_Button.Margin = new Padding(6, 4, 6, 4);
             AddCategory_Button.Name = "AddCategory_Button";
-            AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             AddCategory_Button.Size = new Size(215, 48);
             AddCategory_Button.TabIndex = 2;
             AddCategory_Button.Tag = "";
@@ -104,7 +108,6 @@ namespace Sales_Tracker
             AddCategory_Label.AutoSize = true;
             AddCategory_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             AddCategory_Label.Location = new Point(484, 30);
-            AddCategory_Label.Margin = new Padding(4, 0, 4, 0);
             AddCategory_Label.Name = "AddCategory_Label";
             AddCategory_Label.Size = new Size(211, 45);
             AddCategory_Label.TabIndex = 0;
@@ -116,55 +119,12 @@ namespace Sales_Tracker
             CategoryName_Label.Anchor = AnchorStyles.Top;
             CategoryName_Label.AutoSize = true;
             CategoryName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CategoryName_Label.Location = new Point(172, 111);
-            CategoryName_Label.Margin = new Padding(4, 0, 4, 0);
+            CategoryName_Label.Location = new Point(170, 111);
             CategoryName_Label.Name = "CategoryName_Label";
             CategoryName_Label.Size = new Size(169, 31);
             CategoryName_Label.TabIndex = 0;
             CategoryName_Label.Text = "Category name";
             CategoryName_Label.Click += CloseAllPanels;
-            // 
-            // Sale_RadioButton
-            // 
-            Sale_RadioButton.AutoSize = true;
-            Sale_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Sale_RadioButton.CheckedState.BorderThickness = 0;
-            Sale_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            Sale_RadioButton.CheckedState.InnerColor = Color.White;
-            Sale_RadioButton.CheckedState.InnerOffset = -4;
-            Sale_RadioButton.Font = new Font("Segoe UI", 11F);
-            Sale_RadioButton.Location = new Point(220, 30);
-            Sale_RadioButton.Margin = new Padding(4);
-            Sale_RadioButton.Name = "Sale_RadioButton";
-            Sale_RadioButton.Size = new Size(113, 34);
-            Sale_RadioButton.TabIndex = 3;
-            Sale_RadioButton.Text = "For sale";
-            Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            Sale_RadioButton.UncheckedState.BorderThickness = 2;
-            Sale_RadioButton.UncheckedState.FillColor = Color.Transparent;
-            Sale_RadioButton.UncheckedState.InnerColor = Color.Transparent;
-            Sale_RadioButton.CheckedChanged += Sale_RadioButton_CheckedChanged;
-            // 
-            // Purchase_RadioButton
-            // 
-            Purchase_RadioButton.AutoSize = true;
-            Purchase_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Purchase_RadioButton.CheckedState.BorderThickness = 0;
-            Purchase_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            Purchase_RadioButton.CheckedState.InnerColor = Color.White;
-            Purchase_RadioButton.CheckedState.InnerOffset = -4;
-            Purchase_RadioButton.Font = new Font("Segoe UI", 11F);
-            Purchase_RadioButton.Location = new Point(45, 30);
-            Purchase_RadioButton.Margin = new Padding(4);
-            Purchase_RadioButton.Name = "Purchase_RadioButton";
-            Purchase_RadioButton.Size = new Size(163, 34);
-            Purchase_RadioButton.TabIndex = 4;
-            Purchase_RadioButton.Text = "For purchase";
-            Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            Purchase_RadioButton.UncheckedState.BorderThickness = 2;
-            Purchase_RadioButton.UncheckedState.FillColor = Color.Transparent;
-            Purchase_RadioButton.UncheckedState.InnerColor = Color.Transparent;
-            Purchase_RadioButton.CheckedChanged += Purchase_RadioButton_CheckedChanged;
             // 
             // WarningCategoryName_PictureBox
             // 
@@ -197,7 +157,7 @@ namespace Sales_Tracker
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top;
-            Search_TextBox.CustomizableEdges = customizableEdges5;
+            Search_TextBox.CustomizableEdges = customizableEdges13;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -213,7 +173,7 @@ namespace Sales_Tracker
             Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for categories";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 48);
             Search_TextBox.TabIndex = 49;
@@ -225,23 +185,84 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.AutoSize = true;
             ShowingResultsFor_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ShowingResultsFor_Label.Location = new Point(485, 209);
-            ShowingResultsFor_Label.Margin = new Padding(4, 0, 4, 0);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
             ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 50;
             ShowingResultsFor_Label.Text = "Showing results for";
             ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
+            // Purchase_RadioButton
+            // 
+            Purchase_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Purchase_RadioButton.CheckedState.BorderThickness = 0;
+            Purchase_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            Purchase_RadioButton.CheckedState.InnerColor = Color.White;
+            Purchase_RadioButton.Location = new Point(32, 35);
+            Purchase_RadioButton.Name = "Purchase_RadioButton";
+            Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges15;
+            Purchase_RadioButton.Size = new Size(20, 20);
+            Purchase_RadioButton.TabIndex = 51;
+            Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            Purchase_RadioButton.UncheckedState.BorderThickness = 2;
+            Purchase_RadioButton.UncheckedState.FillColor = Color.Transparent;
+            Purchase_RadioButton.UncheckedState.InnerColor = Color.Transparent;
+            Purchase_RadioButton.CheckedChanged += Purchase_RadioButton_CheckedChanged;
+            // 
+            // ForPurchase_Label
+            // 
+            ForPurchase_Label.Anchor = AnchorStyles.Top;
+            ForPurchase_Label.AutoSize = true;
+            ForPurchase_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ForPurchase_Label.Location = new Point(55, 30);
+            ForPurchase_Label.Margin = new Padding(0);
+            ForPurchase_Label.Name = "ForPurchase_Label";
+            ForPurchase_Label.Size = new Size(145, 31);
+            ForPurchase_Label.TabIndex = 52;
+            ForPurchase_Label.Text = "For purchase";
+            ForPurchase_Label.Click += ForPurchase_Label_Click;
+            // 
+            // ForSale_Label
+            // 
+            ForSale_Label.Anchor = AnchorStyles.Top;
+            ForSale_Label.AutoSize = true;
+            ForSale_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ForSale_Label.Location = new Point(247, 30);
+            ForSale_Label.Margin = new Padding(0);
+            ForSale_Label.Name = "ForSale_Label";
+            ForSale_Label.Size = new Size(92, 31);
+            ForSale_Label.TabIndex = 54;
+            ForSale_Label.Text = "For sale";
+            ForSale_Label.Click += ForSale_Label_Click;
+            // 
+            // Sale_RadioButton
+            // 
+            Sale_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Sale_RadioButton.CheckedState.BorderThickness = 0;
+            Sale_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            Sale_RadioButton.CheckedState.InnerColor = Color.White;
+            Sale_RadioButton.Location = new Point(224, 35);
+            Sale_RadioButton.Name = "Sale_RadioButton";
+            Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Sale_RadioButton.Size = new Size(20, 20);
+            Sale_RadioButton.TabIndex = 53;
+            Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            Sale_RadioButton.UncheckedState.BorderThickness = 2;
+            Sale_RadioButton.UncheckedState.FillColor = Color.Transparent;
+            Sale_RadioButton.UncheckedState.InnerColor = Color.Transparent;
+            Sale_RadioButton.CheckedChanged += Sale_RadioButton_CheckedChanged;
+            // 
             // Categories_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1178, 704);
+            Controls.Add(ForSale_Label);
+            Controls.Add(Sale_RadioButton);
+            Controls.Add(ForPurchase_Label);
+            Controls.Add(Purchase_RadioButton);
             Controls.Add(ShowingResultsFor_Label);
             Controls.Add(Search_TextBox);
             Controls.Add(WarningCategoryName_PictureBox);
             Controls.Add(WarningCategoryName_Label);
-            Controls.Add(Sale_RadioButton);
-            Controls.Add(Purchase_RadioButton);
             Controls.Add(CategoryName_Label);
             Controls.Add(Category_TextBox);
             Controls.Add(AddCategory_Button);
@@ -269,9 +290,11 @@ namespace Sales_Tracker
         private Label CategoryName_Label;
         private PictureBox WarningCategoryName_PictureBox;
         private Label WarningCategoryName_Label;
-        public Guna.UI2.WinForms.Guna2RadioButton Purchase_RadioButton;
-        private Guna.UI2.WinForms.Guna2RadioButton Sale_RadioButton;
         private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
+        private Label ForPurchase_Label;
+        private Label ForSale_Label;
+        private Guna.UI2.WinForms.Guna2CustomRadioButton Sale_RadioButton;
+        public Guna.UI2.WinForms.Guna2CustomRadioButton Purchase_RadioButton;
     }
 }

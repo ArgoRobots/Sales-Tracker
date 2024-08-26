@@ -62,7 +62,7 @@
             Items_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
             Items_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
             Items_DataGridView.Location = new Point(18, 104);
-            Items_DataGridView.Margin = new Padding(4, 4, 4, 4);
+            Items_DataGridView.Margin = new Padding(4);
             Items_DataGridView.Name = "Items_DataGridView";
             Items_DataGridView.RowHeadersVisible = false;
             Items_DataGridView.RowHeadersWidth = 62;
@@ -97,7 +97,6 @@
             ExportReceipts_Label.AutoSize = true;
             ExportReceipts_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ExportReceipts_Label.Location = new Point(756, 30);
-            ExportReceipts_Label.Margin = new Padding(4, 0, 4, 0);
             ExportReceipts_Label.Name = "ExportReceipts_Label";
             ExportReceipts_Label.Size = new Size(271, 45);
             ExportReceipts_Label.TabIndex = 12;
@@ -111,7 +110,7 @@
             Controls.Add(Items_DataGridView);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             MinimumSize = new Size(1789, 497);
             Name = "ItemsInPurchase_Form";
             ShowInTaskbar = false;

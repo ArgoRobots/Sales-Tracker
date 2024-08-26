@@ -189,8 +189,7 @@
             ManageCompanies_Button.FillColor = Color.White;
             ManageCompanies_Button.Font = new Font("Segoe UI", 9.5F);
             ManageCompanies_Button.ForeColor = Color.Black;
-            ManageCompanies_Button.Location = new Point(1688, 20);
-            ManageCompanies_Button.Margin = new Padding(6, 4, 6, 4);
+            ManageCompanies_Button.Location = new Point(1700, 21);
             ManageCompanies_Button.Name = "ManageCompanies_Button";
             ManageCompanies_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             ManageCompanies_Button.Size = new Size(225, 48);
@@ -209,8 +208,7 @@
             ManageAccountants_Button.FillColor = Color.White;
             ManageAccountants_Button.Font = new Font("Segoe UI", 9.5F);
             ManageAccountants_Button.ForeColor = Color.Black;
-            ManageAccountants_Button.Location = new Point(2162, 20);
-            ManageAccountants_Button.Margin = new Padding(6, 4, 6, 4);
+            ManageAccountants_Button.Location = new Point(2162, 21);
             ManageAccountants_Button.Name = "ManageAccountants_Button";
             ManageAccountants_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             ManageAccountants_Button.Size = new Size(225, 48);
@@ -229,8 +227,7 @@
             ManageCategories_Button.FillColor = Color.White;
             ManageCategories_Button.Font = new Font("Segoe UI", 9.5F);
             ManageCategories_Button.ForeColor = Color.Black;
-            ManageCategories_Button.Location = new Point(1924, 20);
-            ManageCategories_Button.Margin = new Padding(6, 4, 6, 4);
+            ManageCategories_Button.Location = new Point(1931, 21);
             ManageCategories_Button.Name = "ManageCategories_Button";
             ManageCategories_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ManageCategories_Button.Size = new Size(225, 48);
@@ -253,8 +250,7 @@
             AddSale_Button.FillColor = Color.White;
             AddSale_Button.Font = new Font("Segoe UI", 9F);
             AddSale_Button.ForeColor = Color.Black;
-            AddSale_Button.Location = new Point(1215, 20);
-            AddSale_Button.Margin = new Padding(4);
+            AddSale_Button.Location = new Point(1238, 21);
             AddSale_Button.Name = "AddSale_Button";
             AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             AddSale_Button.Size = new Size(225, 48);
@@ -277,8 +273,7 @@
             AddPurchase_Button.FillColor = Color.White;
             AddPurchase_Button.Font = new Font("Segoe UI", 9F);
             AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(981, 20);
-            AddPurchase_Button.Margin = new Padding(4);
+            AddPurchase_Button.Location = new Point(1007, 21);
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             AddPurchase_Button.Size = new Size(225, 48);
@@ -320,8 +315,7 @@
             ManageProducts_Button.FillColor = Color.White;
             ManageProducts_Button.Font = new Font("Segoe UI", 9.5F);
             ManageProducts_Button.ForeColor = Color.Black;
-            ManageProducts_Button.Location = new Point(1450, 20);
-            ManageProducts_Button.Margin = new Padding(6, 4, 6, 4);
+            ManageProducts_Button.Location = new Point(1469, 21);
             ManageProducts_Button.Name = "ManageProducts_Button";
             ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ManageProducts_Button.Size = new Size(225, 48);
@@ -335,7 +329,6 @@
             CompanyName_Label.BackColor = Color.Transparent;
             CompanyName_Label.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             CompanyName_Label.Location = new Point(18, 22);
-            CompanyName_Label.Margin = new Padding(4, 0, 4, 0);
             CompanyName_Label.Name = "CompanyName_Label";
             CompanyName_Label.Size = new Size(248, 45);
             CompanyName_Label.TabIndex = 1;
@@ -391,7 +384,6 @@
             Saved_Label.BackColor = Color.Transparent;
             Saved_Label.Font = new Font("Segoe UI", 11.25F);
             Saved_Label.Location = new Point(117, 8);
-            Saved_Label.Margin = new Padding(4, 0, 4, 0);
             Saved_Label.Name = "Saved_Label";
             Saved_Label.Size = new Size(75, 31);
             Saved_Label.TabIndex = 2;
@@ -478,7 +470,6 @@
             TotalText_Label.BackColor = Color.Transparent;
             TotalText_Label.Font = new Font("Segoe UI", 11.25F);
             TotalText_Label.Location = new Point(4, 22);
-            TotalText_Label.Margin = new Padding(4, 0, 4, 0);
             TotalText_Label.Name = "TotalText_Label";
             TotalText_Label.Size = new Size(78, 31);
             TotalText_Label.TabIndex = 5;
@@ -491,7 +482,6 @@
             Quantity_Label.BackColor = Color.Transparent;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F);
             Quantity_Label.Location = new Point(524, 22);
-            Quantity_Label.Margin = new Padding(4, 0, 4, 0);
             Quantity_Label.Name = "Quantity_Label";
             Quantity_Label.Size = new Size(102, 31);
             Quantity_Label.TabIndex = 3;
@@ -504,7 +494,6 @@
             Price_Label.BackColor = Color.Transparent;
             Price_Label.Font = new Font("Segoe UI", 11.25F);
             Price_Label.Location = new Point(1632, 22);
-            Price_Label.Margin = new Padding(4, 0, 4, 0);
             Price_Label.Name = "Price_Label";
             Price_Label.Size = new Size(64, 31);
             Price_Label.TabIndex = 5;
@@ -517,7 +506,6 @@
             Shipping_Label.BackColor = Color.Transparent;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F);
             Shipping_Label.Location = new Point(726, 22);
-            Shipping_Label.Margin = new Padding(4, 0, 4, 0);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 7;
@@ -530,7 +518,6 @@
             Tax_Label.BackColor = Color.Transparent;
             Tax_Label.Font = new Font("Segoe UI", 11.25F);
             Tax_Label.Location = new Point(933, 22);
-            Tax_Label.Margin = new Padding(4, 0, 4, 0);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 9;
@@ -562,7 +549,6 @@
             ChargedDifference_Label.BackColor = Color.Transparent;
             ChargedDifference_Label.Font = new Font("Segoe UI", 11.25F);
             ChargedDifference_Label.Location = new Point(1323, 22);
-            ChargedDifference_Label.Margin = new Padding(4, 0, 4, 0);
             ChargedDifference_Label.Name = "ChargedDifference_Label";
             ChargedDifference_Label.Size = new Size(209, 31);
             ChargedDifference_Label.TabIndex = 11;
@@ -574,7 +560,6 @@
             PaymentFee_Label.BackColor = Color.Transparent;
             PaymentFee_Label.Font = new Font("Segoe UI", 11.25F);
             PaymentFee_Label.Location = new Point(1083, 22);
-            PaymentFee_Label.Margin = new Padding(4, 0, 4, 0);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(139, 31);
             PaymentFee_Label.TabIndex = 10;
@@ -594,8 +579,7 @@
             Sales_Button.FillColor = Color.White;
             Sales_Button.Font = new Font("Segoe UI", 9F);
             Sales_Button.ForeColor = Color.Black;
-            Sales_Button.Location = new Point(207, 144);
-            Sales_Button.Margin = new Padding(4);
+            Sales_Button.Location = new Point(204, 144);
             Sales_Button.Name = "Sales_Button";
             Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
             Sales_Button.Size = new Size(180, 52);
@@ -618,7 +602,6 @@
             Purchases_Button.Font = new Font("Segoe UI", 9F);
             Purchases_Button.ForeColor = Color.Black;
             Purchases_Button.Location = new Point(18, 144);
-            Purchases_Button.Margin = new Padding(4);
             Purchases_Button.Name = "Purchases_Button";
             Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Purchases_Button.Size = new Size(180, 52);
@@ -768,7 +751,6 @@
             LineGraph_Label.BackColor = Color.Transparent;
             LineGraph_Label.Font = new Font("Segoe UI", 11.25F);
             LineGraph_Label.Location = new Point(1544, 156);
-            LineGraph_Label.Margin = new Padding(4, 0, 4, 0);
             LineGraph_Label.Name = "LineGraph_Label";
             LineGraph_Label.Size = new Size(123, 31);
             LineGraph_Label.TabIndex = 16;
@@ -815,8 +797,7 @@
             Statistics_Button.FillColor = Color.White;
             Statistics_Button.Font = new Font("Segoe UI", 9F);
             Statistics_Button.ForeColor = Color.Black;
-            Statistics_Button.Location = new Point(396, 144);
-            Statistics_Button.Margin = new Padding(4);
+            Statistics_Button.Location = new Point(390, 144);
             Statistics_Button.Name = "Statistics_Button";
             Statistics_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
             Statistics_Button.Size = new Size(180, 52);
@@ -856,7 +837,6 @@
             ShowingResultsFor_Label.AutoSize = true;
             ShowingResultsFor_Label.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ShowingResultsFor_Label.Location = new Point(1078, 146);
-            ShowingResultsFor_Label.Margin = new Padding(4, 0, 4, 0);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
             ShowingResultsFor_Label.Size = new Size(236, 32);
             ShowingResultsFor_Label.TabIndex = 56;

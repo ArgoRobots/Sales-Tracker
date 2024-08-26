@@ -92,6 +92,10 @@ namespace Sales_Tracker
                 }
             }
         }
+        private void FilterByDate_Label_Click(object sender, EventArgs e)
+        {
+            FilterByDate_CheckBox.Checked = !FilterByDate_CheckBox.Checked;
+        }
 
         public enum Column
         {

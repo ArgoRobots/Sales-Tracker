@@ -45,6 +45,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Receipts_Form));
             ExportReceipts_Label = new Label();
             Category_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -53,13 +55,14 @@
             From_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             To_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             To_Label = new Label();
-            FilterByDate_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             Receipts_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
             ClearFilters_Button = new Guna.UI2.WinForms.Guna2Button();
             Product_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Sort_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             label1 = new Label();
             ExportSelected_Button = new Guna.UI2.WinForms.Guna2Button();
+            FilterByDate_Label = new Label();
+            FilterByDate_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -69,7 +72,6 @@
             ExportReceipts_Label.AutoSize = true;
             ExportReceipts_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ExportReceipts_Label.Location = new Point(597, 30);
-            ExportReceipts_Label.Margin = new Padding(4, 0, 4, 0);
             ExportReceipts_Label.Name = "ExportReceipts_Label";
             ExportReceipts_Label.Size = new Size(232, 45);
             ExportReceipts_Label.TabIndex = 0;
@@ -104,7 +106,6 @@
             ProductID_Label.AutoSize = true;
             ProductID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ProductID_Label.Location = new Point(73, 120);
-            ProductID_Label.Margin = new Padding(4, 0, 4, 0);
             ProductID_Label.Name = "ProductID_Label";
             ProductID_Label.Size = new Size(183, 31);
             ProductID_Label.TabIndex = 0;
@@ -116,7 +117,6 @@
             From_Label.AutoSize = true;
             From_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             From_Label.Location = new Point(439, 160);
-            From_Label.Margin = new Padding(4, 0, 4, 0);
             From_Label.Name = "From_Label";
             From_Label.Size = new Size(66, 31);
             From_Label.TabIndex = 0;
@@ -166,34 +166,10 @@
             To_Label.AutoSize = true;
             To_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             To_Label.Location = new Point(439, 254);
-            To_Label.Margin = new Padding(4, 0, 4, 0);
             To_Label.Name = "To_Label";
             To_Label.Size = new Size(37, 31);
             To_Label.TabIndex = 0;
             To_Label.Text = "To";
-            // 
-            // FilterByDate_CheckBox
-            // 
-            FilterByDate_CheckBox.Anchor = AnchorStyles.Top;
-            FilterByDate_CheckBox.AutoSize = true;
-            FilterByDate_CheckBox.Checked = true;
-            FilterByDate_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            FilterByDate_CheckBox.CheckedState.BorderRadius = 0;
-            FilterByDate_CheckBox.CheckedState.BorderThickness = 0;
-            FilterByDate_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            FilterByDate_CheckBox.CheckState = CheckState.Checked;
-            FilterByDate_CheckBox.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            FilterByDate_CheckBox.Location = new Point(443, 120);
-            FilterByDate_CheckBox.Margin = new Padding(4);
-            FilterByDate_CheckBox.Name = "FilterByDate_CheckBox";
-            FilterByDate_CheckBox.Size = new Size(174, 35);
-            FilterByDate_CheckBox.TabIndex = 9;
-            FilterByDate_CheckBox.Text = "Filter by date";
-            FilterByDate_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            FilterByDate_CheckBox.UncheckedState.BorderRadius = 0;
-            FilterByDate_CheckBox.UncheckedState.BorderThickness = 0;
-            FilterByDate_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            FilterByDate_CheckBox.CheckedChanged += FilterReceipts;
             // 
             // Receipts_DataGridView
             // 
@@ -323,7 +299,6 @@
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.Location = new Point(805, 120);
-            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
             label1.Size = new Size(55, 31);
             label1.TabIndex = 0;
@@ -354,17 +329,50 @@
             ExportSelected_Button.Text = "Export selected";
             ExportSelected_Button.Click += ExportSelected_Button_Click;
             // 
+            // FilterByDate_Label
+            // 
+            FilterByDate_Label.Anchor = AnchorStyles.Top;
+            FilterByDate_Label.AutoSize = true;
+            FilterByDate_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            FilterByDate_Label.Location = new Point(462, 121);
+            FilterByDate_Label.Margin = new Padding(0);
+            FilterByDate_Label.Name = "FilterByDate_Label";
+            FilterByDate_Label.Size = new Size(140, 30);
+            FilterByDate_Label.TabIndex = 21;
+            FilterByDate_Label.Text = "Filter by date";
+            FilterByDate_Label.Click += FilterByDate_Label_Click;
+            // 
+            // FilterByDate_CheckBox
+            // 
+            FilterByDate_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            FilterByDate_CheckBox.Animated = true;
+            FilterByDate_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            FilterByDate_CheckBox.CheckedState.BorderRadius = 2;
+            FilterByDate_CheckBox.CheckedState.BorderThickness = 0;
+            FilterByDate_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            FilterByDate_CheckBox.CustomizableEdges = customizableEdges15;
+            FilterByDate_CheckBox.Location = new Point(439, 126);
+            FilterByDate_CheckBox.Name = "FilterByDate_CheckBox";
+            FilterByDate_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            FilterByDate_CheckBox.Size = new Size(20, 20);
+            FilterByDate_CheckBox.TabIndex = 22;
+            FilterByDate_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            FilterByDate_CheckBox.UncheckedState.BorderRadius = 2;
+            FilterByDate_CheckBox.UncheckedState.BorderThickness = 0;
+            FilterByDate_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            // 
             // Receipts_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1418, 794);
+            Controls.Add(FilterByDate_Label);
+            Controls.Add(FilterByDate_CheckBox);
             Controls.Add(ExportSelected_Button);
             Controls.Add(label1);
             Controls.Add(Sort_ComboBox);
             Controls.Add(Product_TextBox);
             Controls.Add(ClearFilters_Button);
             Controls.Add(Receipts_DataGridView);
-            Controls.Add(FilterByDate_CheckBox);
             Controls.Add(To_Label);
             Controls.Add(To_DateTimePicker);
             Controls.Add(From_DateTimePicker);
@@ -394,7 +402,6 @@
         private Guna.UI2.WinForms.Guna2DateTimePicker From_DateTimePicker;
         private Guna.UI2.WinForms.Guna2DateTimePicker To_DateTimePicker;
         private Label To_Label;
-        private Guna.UI2.WinForms.Guna2CheckBox FilterByDate_CheckBox;
         private Guna.UI2.WinForms.Guna2DataGridView Receipts_DataGridView;
         public Guna.UI2.WinForms.Guna2Button ClearFilters_Button;
         private Guna.UI2.WinForms.Guna2TextBox Product_TextBox;
@@ -402,5 +409,7 @@
         private Label label1;
         public Guna.UI2.WinForms.Guna2Button DownloadSelected_Button;
         public Guna.UI2.WinForms.Guna2Button ExportSelected_Button;
+        private Label FilterByDate_Label;
+        private Guna.UI2.WinForms.Guna2CustomCheckBox FilterByDate_CheckBox;
     }
 }

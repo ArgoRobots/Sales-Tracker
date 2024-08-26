@@ -168,12 +168,8 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added product '{name}'");
 
-            Sale_RadioButton.AutoCheck = false;
-            Purchase_RadioButton.AutoCheck = false;
-            ProductName_TextBox.Text = "";  // For some reason, this checks the other radio button
+            ProductName_TextBox.Text = "";
             ProductID_TextBox.Text = "";
-            Sale_RadioButton.AutoCheck = true;
-            Purchase_RadioButton.AutoCheck = true;
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -237,6 +233,14 @@ namespace Sales_Tracker
         {
             Tools.OpenLink("");
         }
+        private void ForPurchase_Label_Click(object sender, EventArgs e)
+        {
+            Purchase_RadioButton.Checked = true;
+        }
+        private void ForSale_Label_Click(object sender, EventArgs e)
+        {
+            Sale_RadioButton.Checked = true;
+        }
 
         // Products remaining
         private static int GetProductsRemaining()
@@ -250,8 +254,6 @@ namespace Sales_Tracker
                 Controls.Remove(ProductsRemaining_LinkLabel);
                 return;
             }
-            Purchase_RadioButton.AutoCheck = false;  // For some reason, the code below checks the other radio button. It probably a bug with Guna
-            Sale_RadioButton.AutoCheck = false;
 
             int productsRemaining = GetProductsRemaining();
             if (productsRemaining <= 0)
@@ -264,9 +266,6 @@ namespace Sales_Tracker
                 AddProduct_Button.Enabled = true;
                 ProductsRemaining_LinkLabel.ForeColor = CustomColors.text;
             }
-
-            Purchase_RadioButton.AutoCheck = true;
-            Sale_RadioButton.AutoCheck = true;
 
             ProductsRemaining_LinkLabel.LinkArea = new LinkArea(0, 0);  // This fixes a rendering bug. The last letter "w" was being cut off
             ProductsRemaining_LinkLabel.Text = $"{productsRemaining} products remaining. Upgrade now";
