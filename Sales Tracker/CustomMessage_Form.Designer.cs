@@ -56,7 +56,6 @@
             Icon_PictureBox.BackgroundImage = Properties.Resources.Info;
             Icon_PictureBox.BackgroundImageLayout = ImageLayout.Stretch;
             Icon_PictureBox.Location = new Point(15, 13);
-            Icon_PictureBox.Margin = new Padding(6, 4, 6, 4);
             Icon_PictureBox.Name = "Icon_PictureBox";
             Icon_PictureBox.Size = new Size(80, 80);
             Icon_PictureBox.TabIndex = 0;
@@ -77,7 +76,6 @@
             Ok_Button.Font = new Font("Segoe UI", 9F);
             Ok_Button.ForeColor = Color.Black;
             Ok_Button.Location = new Point(491, 130);
-            Ok_Button.Margin = new Padding(6, 4, 6, 4);
             Ok_Button.Name = "Ok_Button";
             Ok_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Ok_Button.Size = new Size(150, 45);
@@ -101,7 +99,6 @@
             No_Button.Font = new Font("Segoe UI", 9F);
             No_Button.ForeColor = Color.Black;
             No_Button.Location = new Point(329, 130);
-            No_Button.Margin = new Padding(6, 4, 6, 4);
             No_Button.Name = "No_Button";
             No_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             No_Button.Size = new Size(150, 45);
@@ -125,7 +122,6 @@
             Yes_Button.Font = new Font("Segoe UI", 9F);
             Yes_Button.ForeColor = Color.Black;
             Yes_Button.Location = new Point(167, 130);
-            Yes_Button.Margin = new Padding(6, 4, 6, 4);
             Yes_Button.Name = "Yes_Button";
             Yes_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Yes_Button.Size = new Size(150, 45);
@@ -149,7 +145,6 @@
             Cancel_Button.Font = new Font("Segoe UI", 9F);
             Cancel_Button.ForeColor = Color.Black;
             Cancel_Button.Location = new Point(653, 130);
-            Cancel_Button.Margin = new Padding(6, 4, 6, 4);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Cancel_Button.Size = new Size(150, 45);
@@ -186,7 +181,6 @@
             Save_Button.Font = new Font("Segoe UI", 9F);
             Save_Button.ForeColor = Color.Black;
             Save_Button.Location = new Point(5, 130);
-            Save_Button.Margin = new Padding(6, 4, 6, 4);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Save_Button.Size = new Size(150, 45);
@@ -210,7 +204,6 @@
             DontSave_Button.Font = new Font("Segoe UI", 9F);
             DontSave_Button.ForeColor = Color.Black;
             DontSave_Button.Location = new Point(97, 130);
-            DontSave_Button.Margin = new Padding(6, 4, 6, 4);
             DontSave_Button.Name = "DontSave_Button";
             DontSave_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             DontSave_Button.Size = new Size(150, 45);
@@ -231,7 +224,6 @@
             Controls.Add(Cancel_Button);
             Controls.Add(Ok_Button);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Margin = new Padding(6, 4, 6, 4);
             MaximumSize = new Size(800, 570);
             MinimumSize = new Size(800, 250);
             Name = "CustomMessage_Form";

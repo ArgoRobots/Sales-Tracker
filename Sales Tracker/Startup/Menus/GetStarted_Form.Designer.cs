@@ -45,7 +45,6 @@ namespace Sales_Tracker.Startup.Menus
             ArgoSalesTracker_Label.AutoSize = true;
             ArgoSalesTracker_Label.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
             ArgoSalesTracker_Label.Location = new Point(30, 15);
-            ArgoSalesTracker_Label.Margin = new Padding(4, 0, 4, 0);
             ArgoSalesTracker_Label.Name = "ArgoSalesTracker_Label";
             ArgoSalesTracker_Label.Size = new Size(390, 60);
             ArgoSalesTracker_Label.TabIndex = 0;
@@ -59,7 +58,6 @@ namespace Sales_Tracker.Startup.Menus
             OpenRecent_FlowLayoutPanel.BorderStyle = BorderStyle.FixedSingle;
             OpenRecent_FlowLayoutPanel.FlowDirection = FlowDirection.TopDown;
             OpenRecent_FlowLayoutPanel.Location = new Point(45, 150);
-            OpenRecent_FlowLayoutPanel.Margin = new Padding(4);
             OpenRecent_FlowLayoutPanel.Name = "OpenRecent_FlowLayoutPanel";
             OpenRecent_FlowLayoutPanel.Size = new Size(390, 570);
             OpenRecent_FlowLayoutPanel.TabIndex = 1;
@@ -77,7 +75,6 @@ namespace Sales_Tracker.Startup.Menus
             CreateCompany_Button.ImageOffset = new Point(5, 0);
             CreateCompany_Button.ImageSize = new Size(30, 30);
             CreateCompany_Button.Location = new Point(458, 150);
-            CreateCompany_Button.Margin = new Padding(15);
             CreateCompany_Button.Name = "CreateCompany_Button";
             CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CreateCompany_Button.Size = new Size(420, 105);
@@ -91,8 +88,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             OpenRecent_Label.AutoSize = true;
             OpenRecent_Label.Font = new Font("Segoe UI", 12F);
-            OpenRecent_Label.Location = new Point(45, 114);
-            OpenRecent_Label.Margin = new Padding(4, 0, 4, 0);
+            OpenRecent_Label.Location = new Point(45, 115);
             OpenRecent_Label.Name = "OpenRecent_Label";
             OpenRecent_Label.Size = new Size(147, 32);
             OpenRecent_Label.TabIndex = 0;
@@ -111,7 +107,6 @@ namespace Sales_Tracker.Startup.Menus
             OpenCompany_Button.ImageOffset = new Point(5, 0);
             OpenCompany_Button.ImageSize = new Size(30, 30);
             OpenCompany_Button.Location = new Point(458, 278);
-            OpenCompany_Button.Margin = new Padding(15);
             OpenCompany_Button.Name = "OpenCompany_Button";
             OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             OpenCompany_Button.Size = new Size(420, 105);
@@ -133,7 +128,6 @@ namespace Sales_Tracker.Startup.Menus
             Controls.Add(OpenRecent_FlowLayoutPanel);
             Controls.Add(OpenRecent_Label);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(4);
             Name = "GetStarted_Form";
             Shown += GetStarted_Form_Shown;
             Click += CloseAllPanels;

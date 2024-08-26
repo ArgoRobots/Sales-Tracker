@@ -29,13 +29,16 @@ namespace Sales_Tracker.Settings.Menus
         /// </summary>
         private void InitializeComponent()
         {
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Security_Label = new Label();
             Back_Panel = new Panel();
+            EncryptFiles_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             AddPassword_Button = new Guna.UI2.WinForms.Guna2Button();
-            EncryptFiles_CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             guna2vSeparator1 = new Guna.UI2.WinForms.Guna2VSeparator();
+            EncryptFiles_Label = new Label();
             Back_Panel.SuspendLayout();
             SuspendLayout();
             // 
@@ -53,14 +56,34 @@ namespace Sales_Tracker.Settings.Menus
             // Back_Panel
             // 
             Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Back_Panel.Controls.Add(AddPassword_Button);
             Back_Panel.Controls.Add(EncryptFiles_CheckBox);
+            Back_Panel.Controls.Add(AddPassword_Button);
             Back_Panel.Controls.Add(guna2vSeparator1);
+            Back_Panel.Controls.Add(EncryptFiles_Label);
             Back_Panel.Location = new Point(124, 348);
             Back_Panel.Margin = new Padding(4, 5, 4, 5);
             Back_Panel.Name = "Back_Panel";
             Back_Panel.Size = new Size(1000, 167);
             Back_Panel.TabIndex = 327;
+            // 
+            // EncryptFiles_CheckBox
+            // 
+            EncryptFiles_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            EncryptFiles_CheckBox.Animated = true;
+            EncryptFiles_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            EncryptFiles_CheckBox.CheckedState.BorderRadius = 2;
+            EncryptFiles_CheckBox.CheckedState.BorderThickness = 0;
+            EncryptFiles_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            EncryptFiles_CheckBox.CustomizableEdges = customizableEdges1;
+            EncryptFiles_CheckBox.Location = new Point(505, 20);
+            EncryptFiles_CheckBox.Name = "EncryptFiles_CheckBox";
+            EncryptFiles_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            EncryptFiles_CheckBox.Size = new Size(20, 20);
+            EncryptFiles_CheckBox.TabIndex = 329;
+            EncryptFiles_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            EncryptFiles_CheckBox.UncheckedState.BorderRadius = 2;
+            EncryptFiles_CheckBox.UncheckedState.BorderThickness = 0;
+            EncryptFiles_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
             // 
             // AddPassword_Button
             // 
@@ -80,36 +103,28 @@ namespace Sales_Tracker.Settings.Menus
             AddPassword_Button.Text = "Add password protection";
             AddPassword_Button.Click += AddPassword_Button_Click;
             // 
-            // EncryptFiles_CheckBox
-            // 
-            EncryptFiles_CheckBox.Animated = true;
-            EncryptFiles_CheckBox.AutoSize = true;
-            EncryptFiles_CheckBox.CheckedState.BorderColor = Color.FromArgb(62, 101, 207);
-            EncryptFiles_CheckBox.CheckedState.BorderRadius = 0;
-            EncryptFiles_CheckBox.CheckedState.BorderThickness = 0;
-            EncryptFiles_CheckBox.CheckedState.FillColor = Color.FromArgb(62, 101, 207);
-            EncryptFiles_CheckBox.Font = new Font("Segoe UI", 9.75F);
-            EncryptFiles_CheckBox.Location = new Point(221, 7);
-            EncryptFiles_CheckBox.Margin = new Padding(4, 7, 4, 7);
-            EncryptFiles_CheckBox.Name = "EncryptFiles_CheckBox";
-            EncryptFiles_CheckBox.RightToLeft = RightToLeft.Yes;
-            EncryptFiles_CheckBox.Size = new Size(307, 32);
-            EncryptFiles_CheckBox.TabIndex = 275;
-            EncryptFiles_CheckBox.Text = "Encrypt Argo Sales Tracker files";
-            EncryptFiles_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            EncryptFiles_CheckBox.UncheckedState.BorderRadius = 0;
-            EncryptFiles_CheckBox.UncheckedState.BorderThickness = 0;
-            EncryptFiles_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            EncryptFiles_CheckBox.CheckedChanged += EncryptFiles_CheckBox_CheckedChanged;
-            // 
             // guna2vSeparator1
             // 
             guna2vSeparator1.Location = new Point(493, 0);
             guna2vSeparator1.Margin = new Padding(4, 5, 4, 5);
             guna2vSeparator1.Name = "guna2vSeparator1";
-            guna2vSeparator1.Size = new Size(14, 417);
+            guna2vSeparator1.Size = new Size(14, 167);
             guna2vSeparator1.TabIndex = 274;
             guna2vSeparator1.Visible = false;
+            // 
+            // EncryptFiles_Label
+            // 
+            EncryptFiles_Label.Anchor = AnchorStyles.Top;
+            EncryptFiles_Label.AutoSize = true;
+            EncryptFiles_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            EncryptFiles_Label.Location = new Point(183, 11);
+            EncryptFiles_Label.Margin = new Padding(0);
+            EncryptFiles_Label.Name = "EncryptFiles_Label";
+            EncryptFiles_Label.Padding = new Padding(5);
+            EncryptFiles_Label.Size = new Size(324, 40);
+            EncryptFiles_Label.TabIndex = 328;
+            EncryptFiles_Label.Text = "Encrypt Argo Sales Tracker files";
+            EncryptFiles_Label.Click += EncryptFiles_Label_Click;
             // 
             // Security_Form
             // 
@@ -132,8 +147,9 @@ namespace Sales_Tracker.Settings.Menus
         #endregion
         private System.Windows.Forms.Label Security_Label;
         private Panel Back_Panel;
-        public Guna.UI2.WinForms.Guna2CheckBox EncryptFiles_CheckBox;
         private Guna.UI2.WinForms.Guna2VSeparator guna2vSeparator1;
         private Guna.UI2.WinForms.Guna2Button AddPassword_Button;
+        private Label EncryptFiles_Label;
+        public Guna.UI2.WinForms.Guna2CustomCheckBox EncryptFiles_CheckBox;
     }
 }

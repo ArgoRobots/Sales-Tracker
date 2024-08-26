@@ -171,7 +171,6 @@
             MainTop_Panel.Controls.Add(CompanyName_Label);
             MainTop_Panel.CustomizableEdges = customizableEdges15;
             MainTop_Panel.Location = new Point(0, 45);
-            MainTop_Panel.Margin = new Padding(4);
             MainTop_Panel.Name = "MainTop_Panel";
             MainTop_Panel.ShadowDecoration.CustomizableEdges = customizableEdges16;
             MainTop_Panel.Size = new Size(2406, 90);
@@ -297,7 +296,6 @@
             Edit_Button.Image = Properties.Resources.EditBlack;
             Edit_Button.ImageSize = new Size(27, 27);
             Edit_Button.Location = new Point(279, 24);
-            Edit_Button.Margin = new Padding(4);
             Edit_Button.Name = "Edit_Button";
             Edit_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Edit_Button.Size = new Size(45, 45);
@@ -349,7 +347,6 @@
             Top_Panel.Controls.Add(Save_Button);
             Top_Panel.Controls.Add(File_Button);
             Top_Panel.Location = new Point(0, 0);
-            Top_Panel.Margin = new Padding(4);
             Top_Panel.Name = "Top_Panel";
             Top_Panel.Size = new Size(2406, 45);
             Top_Panel.TabIndex = 0;
@@ -370,7 +367,6 @@
             Account_Button.Image = Properties.Resources.ProfileGray;
             Account_Button.ImageSize = new Size(37, 37);
             Account_Button.Location = new Point(2346, 0);
-            Account_Button.Margin = new Padding(4);
             Account_Button.Name = "Account_Button";
             Account_Button.PressedColor = Color.Empty;
             Account_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
@@ -407,7 +403,6 @@
             Help_Button.Image = Properties.Resources.HelpGray;
             Help_Button.ImageSize = new Size(30, 30);
             Help_Button.Location = new Point(2301, 0);
-            Help_Button.Margin = new Padding(4);
             Help_Button.Name = "Help_Button";
             Help_Button.PressedColor = Color.Empty;
             Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
@@ -431,7 +426,6 @@
             Save_Button.Image = Properties.Resources.SaveGray;
             Save_Button.ImageSize = new Size(27, 27);
             Save_Button.Location = new Point(63, 0);
-            Save_Button.Margin = new Padding(4);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Save_Button.Size = new Size(45, 45);
@@ -456,7 +450,6 @@
             File_Button.Image = Properties.Resources.FileGray;
             File_Button.ImageSize = new Size(52, 37);
             File_Button.Location = new Point(0, 0);
-            File_Button.Margin = new Padding(4);
             File_Button.Name = "File_Button";
             File_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             File_Button.Size = new Size(63, 45);
@@ -493,7 +486,7 @@
             Price_Label.AutoSize = true;
             Price_Label.BackColor = Color.Transparent;
             Price_Label.Font = new Font("Segoe UI", 11.25F);
-            Price_Label.Location = new Point(1632, 22);
+            Price_Label.Location = new Point(1631, 22);
             Price_Label.Name = "Price_Label";
             Price_Label.Size = new Size(64, 31);
             Price_Label.TabIndex = 5;
@@ -505,7 +498,7 @@
             Shipping_Label.AutoSize = true;
             Shipping_Label.BackColor = Color.Transparent;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F);
-            Shipping_Label.Location = new Point(726, 22);
+            Shipping_Label.Location = new Point(727, 22);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 7;
@@ -517,7 +510,7 @@
             Tax_Label.AutoSize = true;
             Tax_Label.BackColor = Color.Transparent;
             Tax_Label.Font = new Font("Segoe UI", 11.25F);
-            Tax_Label.Location = new Point(933, 22);
+            Tax_Label.Location = new Point(934, 22);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 9;
@@ -536,7 +529,6 @@
             Total_Panel.Controls.Add(TotalText_Label);
             Total_Panel.CustomizableEdges = customizableEdges25;
             Total_Panel.Location = new Point(228, 1446);
-            Total_Panel.Margin = new Padding(4);
             Total_Panel.Name = "Total_Panel";
             Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges26;
             Total_Panel.Size = new Size(1950, 75);
@@ -548,7 +540,7 @@
             ChargedDifference_Label.AutoSize = true;
             ChargedDifference_Label.BackColor = Color.Transparent;
             ChargedDifference_Label.Font = new Font("Segoe UI", 11.25F);
-            ChargedDifference_Label.Location = new Point(1323, 22);
+            ChargedDifference_Label.Location = new Point(1321, 22);
             ChargedDifference_Label.Name = "ChargedDifference_Label";
             ChargedDifference_Label.Size = new Size(209, 31);
             ChargedDifference_Label.TabIndex = 11;
@@ -559,7 +551,7 @@
             PaymentFee_Label.AutoSize = true;
             PaymentFee_Label.BackColor = Color.Transparent;
             PaymentFee_Label.Font = new Font("Segoe UI", 11.25F);
-            PaymentFee_Label.Location = new Point(1083, 22);
+            PaymentFee_Label.Location = new Point(1081, 22);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(139, 31);
             PaymentFee_Label.TabIndex = 10;
@@ -616,7 +608,6 @@
             chartFont1.FontName = "Arial";
             Totals_Chart.Legend.LabelFont = chartFont1;
             Totals_Chart.Location = new Point(100, 219);
-            Totals_Chart.Margin = new Padding(4);
             Totals_Chart.Name = "Totals_Chart";
             Totals_Chart.Size = new Size(726, 495);
             Totals_Chart.TabIndex = 8;
@@ -654,7 +645,6 @@
             chartFont9.FontName = "Arial";
             Distribution_Chart.Legend.LabelFont = chartFont9;
             Distribution_Chart.Location = new Point(836, 219);
-            Distribution_Chart.Margin = new Padding(4);
             Distribution_Chart.Name = "Distribution_Chart";
             Distribution_Chart.Size = new Size(726, 495);
             Distribution_Chart.TabIndex = 17;
@@ -692,7 +682,6 @@
             chartFont17.FontName = "Arial";
             Profits_Chart.Legend.LabelFont = chartFont17;
             Profits_Chart.Location = new Point(1570, 219);
-            Profits_Chart.Margin = new Padding(4);
             Profits_Chart.Name = "Profits_Chart";
             Profits_Chart.Size = new Size(736, 495);
             Profits_Chart.TabIndex = 10;
@@ -735,8 +724,7 @@
             Filter_ComboBox.Font = new Font("Segoe UI", 10F);
             Filter_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Filter_ComboBox.ItemHeight = 48;
-            Filter_ComboBox.Location = new Point(2019, 144);
-            Filter_ComboBox.Margin = new Padding(4);
+            Filter_ComboBox.Location = new Point(2024, 142);
             Filter_ComboBox.Name = "Filter_ComboBox";
             Filter_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
             Filter_ComboBox.Size = new Size(208, 54);
@@ -750,7 +738,7 @@
             LineGraph_Label.AutoSize = true;
             LineGraph_Label.BackColor = Color.Transparent;
             LineGraph_Label.Font = new Font("Segoe UI", 11.25F);
-            LineGraph_Label.Location = new Point(1544, 156);
+            LineGraph_Label.Location = new Point(1555, 154);
             LineGraph_Label.Name = "LineGraph_Label";
             LineGraph_Label.Size = new Size(123, 31);
             LineGraph_Label.TabIndex = 16;
@@ -769,8 +757,7 @@
             LineGraph_ToggleSwitch.CheckedState.InnerBorderRadius = 10;
             LineGraph_ToggleSwitch.CheckedState.InnerColor = Color.White;
             LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges33;
-            LineGraph_ToggleSwitch.Location = new Point(1671, 156);
-            LineGraph_ToggleSwitch.Margin = new Padding(4);
+            LineGraph_ToggleSwitch.Location = new Point(1682, 154);
             LineGraph_ToggleSwitch.Name = "LineGraph_ToggleSwitch";
             LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges34;
             LineGraph_ToggleSwitch.Size = new Size(60, 30);
@@ -817,8 +804,8 @@
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(1740, 144);
-            Search_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Search_TextBox.Location = new Point(1748, 142);
+            Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
@@ -858,8 +845,7 @@
             DateRange_Button.FillColor = Color.White;
             DateRange_Button.Font = new Font("Segoe UI", 9F);
             DateRange_Button.ForeColor = Color.Black;
-            DateRange_Button.Location = new Point(2238, 144);
-            DateRange_Button.Margin = new Padding(4);
+            DateRange_Button.Location = new Point(2238, 142);
             DateRange_Button.Name = "DateRange_Button";
             DateRange_Button.ShadowDecoration.CustomizableEdges = customizableEdges40;
             DateRange_Button.Size = new Size(150, 54);
@@ -889,7 +875,6 @@
             DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
-            Margin = new Padding(4);
             MinimumSize = new Size(1489, 977);
             Name = "MainMenu_Form";
             Text = "Argo Sales Tracker";

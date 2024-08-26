@@ -65,6 +65,10 @@ namespace Sales_Tracker.Settings.Menus
             }
             SetPasswordButton();
         }
+        private void EncryptFiles_Label_Click(object sender, EventArgs e)
+        {
+            EncryptFiles_CheckBox.Checked = !EncryptFiles_CheckBox.Checked;
+        }
 
         // Methods
         private void SetPasswordButton()

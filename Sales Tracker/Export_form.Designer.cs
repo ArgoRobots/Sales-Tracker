@@ -60,7 +60,6 @@
             // 
             WarningDir_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningDir_PictureBox.Location = new Point(60, 540);
-            WarningDir_PictureBox.Margin = new Padding(6, 3, 6, 3);
             WarningDir_PictureBox.Name = "WarningDir_PictureBox";
             WarningDir_PictureBox.Size = new Size(27, 27);
             WarningDir_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -83,7 +82,6 @@
             // 
             WarningName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningName_PictureBox.Location = new Point(60, 220);
-            WarningName_PictureBox.Margin = new Padding(6, 3, 6, 3);
             WarningName_PictureBox.Name = "WarningName_PictureBox";
             WarningName_PictureBox.Size = new Size(27, 27);
             WarningName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -116,7 +114,7 @@
             Directory_TextBox.ForeColor = SystemColors.ControlText;
             Directory_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Directory_TextBox.Location = new Point(48, 470);
-            Directory_TextBox.Margin = new Padding(10);
+            Directory_TextBox.Margin = new Padding(4, 5, 4, 5);
             Directory_TextBox.Name = "Directory_TextBox";
             Directory_TextBox.PasswordChar = '\0';
             Directory_TextBox.PlaceholderText = "";
@@ -131,7 +129,7 @@
             // 
             Directory_Label.AutoSize = true;
             Directory_Label.Font = new Font("Segoe UI", 12F);
-            Directory_Label.Location = new Point(48, 428);
+            Directory_Label.Location = new Point(48, 433);
             Directory_Label.Name = "Directory_Label";
             Directory_Label.Size = new Size(111, 32);
             Directory_Label.TabIndex = 0;
@@ -151,7 +149,7 @@
             Name_TextBox.ForeColor = SystemColors.ControlText;
             Name_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Name_TextBox.Location = new Point(48, 150);
-            Name_TextBox.Margin = new Padding(10);
+            Name_TextBox.Margin = new Padding(4, 5, 4, 5);
             Name_TextBox.Name = "Name_TextBox";
             Name_TextBox.PasswordChar = '\0';
             Name_TextBox.PlaceholderText = "";
@@ -166,7 +164,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F);
-            label2.Location = new Point(48, 108);
+            label2.Location = new Point(48, 113);
             label2.Name = "label2";
             label2.Size = new Size(78, 32);
             label2.TabIndex = 0;
@@ -186,7 +184,7 @@
             // 
             FileType_Label.AutoSize = true;
             FileType_Label.Font = new Font("Segoe UI", 12F);
-            FileType_Label.Location = new Point(48, 272);
+            FileType_Label.Location = new Point(48, 275);
             FileType_Label.Name = "FileType_Label";
             FileType_Label.Size = new Size(105, 32);
             FileType_Label.TabIndex = 0;
@@ -203,7 +201,6 @@
             ThreeDots_Button.ForeColor = Color.White;
             ThreeDots_Button.Image = Properties.Resources.ThreeDotsBlack;
             ThreeDots_Button.Location = new Point(1077, 470);
-            ThreeDots_Button.Margin = new Padding(6, 4, 6, 4);
             ThreeDots_Button.Name = "ThreeDots_Button";
             ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ThreeDots_Button.Size = new Size(60, 60);
@@ -221,7 +218,6 @@
             Export_Button.Font = new Font("Segoe UI", 9.5F);
             Export_Button.ForeColor = Color.Black;
             Export_Button.Location = new Point(937, 630);
-            Export_Button.Margin = new Padding(6, 4, 6, 4);
             Export_Button.Name = "Export_Button";
             Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Export_Button.Size = new Size(200, 50);
@@ -243,7 +239,6 @@
             FileType_ComboBox.ItemHeight = 54;
             FileType_ComboBox.Items.AddRange(new object[] { "ArgoSales (.zip)", "Excel spreadsheet (.xlsx)" });
             FileType_ComboBox.Location = new Point(48, 310);
-            FileType_ComboBox.Margin = new Padding(4, 6, 4, 6);
             FileType_ComboBox.Name = "FileType_ComboBox";
             FileType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             FileType_ComboBox.Size = new Size(1015, 60);
@@ -269,7 +264,6 @@
             Controls.Add(label2);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(4);
             Name = "Export_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

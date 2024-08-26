@@ -796,7 +796,7 @@ namespace Sales_Tracker
             {
                 Anchor = AnchorStyles.Top,
                 AutoScroll = false,
-                Location = new Point((Width - width) / 2 - MainMenu_Form.spaceToOffsetFormNotCenter, 570),
+                Location = new Point((Width - width) / 2, 570),
                 Size = new Size(width, 20 + spaceBetweenControlsVertically + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),

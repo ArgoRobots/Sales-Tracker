@@ -66,7 +66,6 @@ namespace Sales_Tracker.Startup.Menus
             Back_Button.Font = new Font("Segoe UI", 9.5F);
             Back_Button.ForeColor = Color.Black;
             Back_Button.Location = new Point(844, 735);
-            Back_Button.Margin = new Padding(6, 3, 6, 3);
             Back_Button.Name = "Back_Button";
             Back_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Back_Button.Size = new Size(200, 50);
@@ -85,7 +84,6 @@ namespace Sales_Tracker.Startup.Menus
             Create_Button.Font = new Font("Segoe UI", 9.5F);
             Create_Button.ForeColor = Color.Black;
             Create_Button.Location = new Point(1056, 735);
-            Create_Button.Margin = new Padding(6, 3, 6, 3);
             Create_Button.Name = "Create_Button";
             Create_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Create_Button.Size = new Size(200, 50);
@@ -98,7 +96,6 @@ namespace Sales_Tracker.Startup.Menus
             ConfigureNewCompany_Label.AutoSize = true;
             ConfigureNewCompany_Label.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             ConfigureNewCompany_Label.Location = new Point(30, 15);
-            ConfigureNewCompany_Label.Margin = new Padding(6, 0, 6, 0);
             ConfigureNewCompany_Label.Name = "ConfigureNewCompany_Label";
             ConfigureNewCompany_Label.Size = new Size(450, 45);
             ConfigureNewCompany_Label.TabIndex = 0;
@@ -108,8 +105,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             CompanyName_Label.AutoSize = true;
             CompanyName_Label.Font = new Font("Segoe UI", 12F);
-            CompanyName_Label.Location = new Point(48, 108);
-            CompanyName_Label.Margin = new Padding(6, 0, 6, 0);
+            CompanyName_Label.Location = new Point(48, 113);
             CompanyName_Label.Name = "CompanyName_Label";
             CompanyName_Label.Size = new Size(183, 32);
             CompanyName_Label.TabIndex = 0;
@@ -129,7 +125,7 @@ namespace Sales_Tracker.Startup.Menus
             ProjectName_TextBox.ForeColor = SystemColors.ControlText;
             ProjectName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             ProjectName_TextBox.Location = new Point(48, 150);
-            ProjectName_TextBox.Margin = new Padding(11, 10, 11, 10);
+            ProjectName_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProjectName_TextBox.Name = "ProjectName_TextBox";
             ProjectName_TextBox.PasswordChar = '\0';
             ProjectName_TextBox.PlaceholderText = "";
@@ -154,7 +150,7 @@ namespace Sales_Tracker.Startup.Menus
             Directory_TextBox.ForeColor = SystemColors.ControlText;
             Directory_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Directory_TextBox.Location = new Point(48, 330);
-            Directory_TextBox.Margin = new Padding(11, 10, 11, 10);
+            Directory_TextBox.Margin = new Padding(4, 5, 4, 5);
             Directory_TextBox.Name = "Directory_TextBox";
             Directory_TextBox.PasswordChar = '\0';
             Directory_TextBox.PlaceholderText = "";
@@ -169,8 +165,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             Directory_Label.AutoSize = true;
             Directory_Label.Font = new Font("Segoe UI", 12F);
-            Directory_Label.Location = new Point(48, 288);
-            Directory_Label.Margin = new Padding(6, 0, 6, 0);
+            Directory_Label.Location = new Point(48, 293);
             Directory_Label.Name = "Directory_Label";
             Directory_Label.Size = new Size(111, 32);
             Directory_Label.TabIndex = 0;
@@ -181,7 +176,6 @@ namespace Sales_Tracker.Startup.Menus
             WarningName_Label.AutoSize = true;
             WarningName_Label.Font = new Font("Segoe UI", 10F);
             WarningName_Label.Location = new Point(99, 219);
-            WarningName_Label.Margin = new Padding(6, 0, 6, 0);
             WarningName_Label.Name = "WarningName_Label";
             WarningName_Label.Size = new Size(294, 28);
             WarningName_Label.TabIndex = 0;
@@ -193,7 +187,6 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_Label.AutoSize = true;
             WarningDir_Label.Font = new Font("Segoe UI", 10F);
             WarningDir_Label.Location = new Point(99, 399);
-            WarningDir_Label.Margin = new Padding(6, 0, 6, 0);
             WarningDir_Label.Name = "WarningDir_Label";
             WarningDir_Label.Size = new Size(239, 28);
             WarningDir_Label.TabIndex = 0;
@@ -204,7 +197,6 @@ namespace Sales_Tracker.Startup.Menus
             // 
             WarningDir_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningDir_PictureBox.Location = new Point(60, 400);
-            WarningDir_PictureBox.Margin = new Padding(6, 3, 6, 3);
             WarningDir_PictureBox.Name = "WarningDir_PictureBox";
             WarningDir_PictureBox.Size = new Size(27, 27);
             WarningDir_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -216,7 +208,6 @@ namespace Sales_Tracker.Startup.Menus
             // 
             WarningName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningName_PictureBox.Location = new Point(60, 220);
-            WarningName_PictureBox.Margin = new Padding(6, 3, 6, 3);
             WarningName_PictureBox.Name = "WarningName_PictureBox";
             WarningName_PictureBox.Size = new Size(27, 27);
             WarningName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -235,7 +226,6 @@ namespace Sales_Tracker.Startup.Menus
             ThreeDots_Button.ForeColor = Color.White;
             ThreeDots_Button.Image = Properties.Resources.ThreeDotsBlack;
             ThreeDots_Button.Location = new Point(1198, 325);
-            ThreeDots_Button.Margin = new Padding(6, 3, 6, 3);
             ThreeDots_Button.Name = "ThreeDots_Button";
             ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ThreeDots_Button.Size = new Size(60, 60);
@@ -262,7 +252,6 @@ namespace Sales_Tracker.Startup.Menus
             Controls.Add(Create_Button);
             FormBorderStyle = FormBorderStyle.None;
             KeyPreview = true;
-            Margin = new Padding(6, 3, 6, 3);
             Name = "ConfigureProject_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Load += ConfigureProject_form_Load;

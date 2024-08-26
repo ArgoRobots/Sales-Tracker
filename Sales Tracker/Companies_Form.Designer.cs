@@ -51,8 +51,7 @@ namespace Sales_Tracker
             // 
             WarningCompanyName_PictureBox.Anchor = AnchorStyles.Top;
             WarningCompanyName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCompanyName_PictureBox.Location = new Point(172, 210);
-            WarningCompanyName_PictureBox.Margin = new Padding(6, 4, 6, 4);
+            WarningCompanyName_PictureBox.Location = new Point(175, 206);
             WarningCompanyName_PictureBox.Name = "WarningCompanyName_PictureBox";
             WarningCompanyName_PictureBox.Size = new Size(28, 28);
             WarningCompanyName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -66,7 +65,7 @@ namespace Sales_Tracker
             WarningCompanyName_Label.Anchor = AnchorStyles.Top;
             WarningCompanyName_Label.AutoSize = true;
             WarningCompanyName_Label.Font = new Font("Segoe UI", 10F);
-            WarningCompanyName_Label.Location = new Point(210, 210);
+            WarningCompanyName_Label.Location = new Point(213, 206);
             WarningCompanyName_Label.Name = "WarningCompanyName_Label";
             WarningCompanyName_Label.Size = new Size(217, 28);
             WarningCompanyName_Label.TabIndex = 52;
@@ -79,7 +78,7 @@ namespace Sales_Tracker
             CompanyName_Label.Anchor = AnchorStyles.Top;
             CompanyName_Label.AutoSize = true;
             CompanyName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CompanyName_Label.Location = new Point(172, 111);
+            CompanyName_Label.Location = new Point(175, 114);
             CompanyName_Label.Name = "CompanyName_Label";
             CompanyName_Label.Size = new Size(174, 31);
             CompanyName_Label.TabIndex = 48;
@@ -98,8 +97,8 @@ namespace Sales_Tracker
             Company_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Company_TextBox.Font = new Font("Segoe UI", 9F);
             Company_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Company_TextBox.Location = new Point(170, 150);
-            Company_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Company_TextBox.Location = new Point(175, 150);
+            Company_TextBox.Margin = new Padding(4, 5, 4, 5);
             Company_TextBox.MaxLength = 32;
             Company_TextBox.Name = "Company_TextBox";
             Company_TextBox.PasswordChar = '\0';
@@ -126,7 +125,6 @@ namespace Sales_Tracker
             AddCompany_Button.Font = new Font("Segoe UI", 9.5F);
             AddCompany_Button.ForeColor = Color.Black;
             AddCompany_Button.Location = new Point(482, 150);
-            AddCompany_Button.Margin = new Padding(6, 4, 6, 4);
             AddCompany_Button.Name = "AddCompany_Button";
             AddCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddCompany_Button.Size = new Size(215, 48);
@@ -159,8 +157,8 @@ namespace Sales_Tracker
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(709, 150);
-            Search_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Search_TextBox.Location = new Point(704, 150);
+            Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
@@ -198,7 +196,6 @@ namespace Sales_Tracker
             Controls.Add(AddCompany_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            Margin = new Padding(4);
             MinimumSize = new Size(1200, 760);
             Name = "Companies_Form";
             ShowInTaskbar = false;

@@ -49,7 +49,7 @@
             // 
             DateRange_Label.AutoSize = true;
             DateRange_Label.Font = new Font("Segoe UI", 16F);
-            DateRange_Label.Location = new Point(196, 21);
+            DateRange_Label.Location = new Point(199, 21);
             DateRange_Label.Name = "DateRange_Label";
             DateRange_Label.Size = new Size(252, 45);
             DateRange_Label.TabIndex = 1;
@@ -63,8 +63,7 @@
             From_DateTimePicker.FillColor = Color.White;
             From_DateTimePicker.Font = new Font("Segoe UI", 9F);
             From_DateTimePicker.Format = DateTimePickerFormat.Long;
-            From_DateTimePicker.Location = new Point(176, 136);
-            From_DateTimePicker.Margin = new Padding(4);
+            From_DateTimePicker.Location = new Point(175, 136);
             From_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             From_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             From_DateTimePicker.Name = "From_DateTimePicker";
@@ -78,7 +77,7 @@
             From_Label.Anchor = AnchorStyles.Top;
             From_Label.AutoSize = true;
             From_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            From_Label.Location = new Point(176, 102);
+            From_Label.Location = new Point(175, 102);
             From_Label.Name = "From_Label";
             From_Label.Size = new Size(66, 31);
             From_Label.TabIndex = 7;
@@ -92,8 +91,7 @@
             To_DateTimePicker.FillColor = Color.White;
             To_DateTimePicker.Font = new Font("Segoe UI", 9F);
             To_DateTimePicker.Format = DateTimePickerFormat.Long;
-            To_DateTimePicker.Location = new Point(176, 236);
-            To_DateTimePicker.Margin = new Padding(4);
+            To_DateTimePicker.Location = new Point(175, 236);
             To_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             To_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             To_DateTimePicker.Name = "To_DateTimePicker";
@@ -107,7 +105,7 @@
             To_Label.Anchor = AnchorStyles.Top;
             To_Label.AutoSize = true;
             To_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            To_Label.Location = new Point(176, 201);
+            To_Label.Location = new Point(175, 202);
             To_Label.Name = "To_Label";
             To_Label.Size = new Size(37, 31);
             To_Label.TabIndex = 9;
@@ -124,8 +122,7 @@
             Apply_Button.FillColor = Color.White;
             Apply_Button.Font = new Font("Segoe UI", 9.5F);
             Apply_Button.ForeColor = Color.Black;
-            Apply_Button.Location = new Point(332, 326);
-            Apply_Button.Margin = new Padding(6, 4, 6, 4);
+            Apply_Button.Location = new Point(328, 326);
             Apply_Button.Name = "Apply_Button";
             Apply_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Apply_Button.Size = new Size(214, 48);
@@ -145,8 +142,7 @@
             Reset_Button.FillColor = Color.White;
             Reset_Button.Font = new Font("Segoe UI", 9.5F);
             Reset_Button.ForeColor = Color.Black;
-            Reset_Button.Location = new Point(105, 326);
-            Reset_Button.Margin = new Padding(6, 4, 6, 4);
+            Reset_Button.Location = new Point(108, 326);
             Reset_Button.Name = "Reset_Button";
             Reset_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Reset_Button.Size = new Size(214, 48);
@@ -167,7 +163,6 @@
             Controls.Add(From_Label);
             Controls.Add(DateRange_Label);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            Margin = new Padding(4);
             Name = "DateRange_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

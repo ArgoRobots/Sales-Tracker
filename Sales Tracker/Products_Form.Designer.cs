@@ -30,22 +30,22 @@ namespace Sales_Tracker
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges49 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges50 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges51 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges52 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges53 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges54 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges55 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges56 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges57 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges58 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges59 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges60 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges61 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges62 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges63 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges64 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             CountryOfOrigin_Label = new Label();
             CountryOfOrigin_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddProduct_Label = new Label();
@@ -91,7 +91,7 @@ namespace Sales_Tracker
             // CountryOfOrigin_TextBox
             // 
             CountryOfOrigin_TextBox.Anchor = AnchorStyles.Top;
-            CountryOfOrigin_TextBox.CustomizableEdges = customizableEdges49;
+            CountryOfOrigin_TextBox.CustomizableEdges = customizableEdges1;
             CountryOfOrigin_TextBox.DefaultText = "";
             CountryOfOrigin_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             CountryOfOrigin_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -101,13 +101,13 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.Font = new Font("Segoe UI", 9F);
             CountryOfOrigin_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             CountryOfOrigin_TextBox.Location = new Point(972, 154);
-            CountryOfOrigin_TextBox.Margin = new Padding(6, 8, 6, 8);
+            CountryOfOrigin_TextBox.Margin = new Padding(4, 5, 4, 5);
             CountryOfOrigin_TextBox.MaxLength = 32;
             CountryOfOrigin_TextBox.Name = "CountryOfOrigin_TextBox";
             CountryOfOrigin_TextBox.PasswordChar = '\0';
             CountryOfOrigin_TextBox.PlaceholderText = "";
             CountryOfOrigin_TextBox.SelectedText = "";
-            CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges50;
+            CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CountryOfOrigin_TextBox.ShortcutsEnabled = false;
             CountryOfOrigin_TextBox.Size = new Size(300, 48);
             CountryOfOrigin_TextBox.TabIndex = 4;
@@ -140,7 +140,7 @@ namespace Sales_Tracker
             // ProductName_TextBox
             // 
             ProductName_TextBox.Anchor = AnchorStyles.Top;
-            ProductName_TextBox.CustomizableEdges = customizableEdges51;
+            ProductName_TextBox.CustomizableEdges = customizableEdges3;
             ProductName_TextBox.DefaultText = "";
             ProductName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             ProductName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -150,13 +150,13 @@ namespace Sales_Tracker
             ProductName_TextBox.Font = new Font("Segoe UI", 9F);
             ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductName_TextBox.Location = new Point(354, 154);
-            ProductName_TextBox.Margin = new Padding(6, 8, 6, 8);
+            ProductName_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductName_TextBox.MaxLength = 50;
             ProductName_TextBox.Name = "ProductName_TextBox";
             ProductName_TextBox.PasswordChar = '\0';
             ProductName_TextBox.PlaceholderText = "";
             ProductName_TextBox.SelectedText = "";
-            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges52;
+            ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             ProductName_TextBox.ShortcutsEnabled = false;
             ProductName_TextBox.Size = new Size(300, 48);
             ProductName_TextBox.TabIndex = 2;
@@ -170,15 +170,14 @@ namespace Sales_Tracker
             AddProduct_Button.BorderColor = Color.LightGray;
             AddProduct_Button.BorderRadius = 2;
             AddProduct_Button.BorderThickness = 1;
-            AddProduct_Button.CustomizableEdges = customizableEdges53;
+            AddProduct_Button.CustomizableEdges = customizableEdges5;
             AddProduct_Button.Enabled = false;
             AddProduct_Button.FillColor = Color.White;
             AddProduct_Button.Font = new Font("Segoe UI", 9.5F);
             AddProduct_Button.ForeColor = Color.Black;
             AddProduct_Button.Location = new Point(706, 292);
-            AddProduct_Button.Margin = new Padding(6, 4, 6, 4);
             AddProduct_Button.Name = "AddProduct_Button";
-            AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges54;
+            AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             AddProduct_Button.Size = new Size(215, 48);
             AddProduct_Button.TabIndex = 5;
             AddProduct_Button.Tag = "0";
@@ -200,7 +199,7 @@ namespace Sales_Tracker
             // ProductCategory_TextBox
             // 
             ProductCategory_TextBox.Anchor = AnchorStyles.Top;
-            ProductCategory_TextBox.CustomizableEdges = customizableEdges55;
+            ProductCategory_TextBox.CustomizableEdges = customizableEdges7;
             ProductCategory_TextBox.DefaultText = "";
             ProductCategory_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             ProductCategory_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -210,13 +209,13 @@ namespace Sales_Tracker
             ProductCategory_TextBox.Font = new Font("Segoe UI", 9F);
             ProductCategory_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductCategory_TextBox.Location = new Point(663, 154);
-            ProductCategory_TextBox.Margin = new Padding(6, 8, 6, 8);
+            ProductCategory_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductCategory_TextBox.MaxLength = 32;
             ProductCategory_TextBox.Name = "ProductCategory_TextBox";
             ProductCategory_TextBox.PasswordChar = '\0';
             ProductCategory_TextBox.PlaceholderText = "";
             ProductCategory_TextBox.SelectedText = "";
-            ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges56;
+            ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ProductCategory_TextBox.ShortcutsEnabled = false;
             ProductCategory_TextBox.Size = new Size(300, 48);
             ProductCategory_TextBox.TabIndex = 3;
@@ -225,7 +224,7 @@ namespace Sales_Tracker
             // ProductID_TextBox
             // 
             ProductID_TextBox.Anchor = AnchorStyles.Top;
-            ProductID_TextBox.CustomizableEdges = customizableEdges57;
+            ProductID_TextBox.CustomizableEdges = customizableEdges9;
             ProductID_TextBox.DefaultText = "";
             ProductID_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             ProductID_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -235,13 +234,13 @@ namespace Sales_Tracker
             ProductID_TextBox.Font = new Font("Segoe UI", 9F);
             ProductID_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductID_TextBox.Location = new Point(45, 154);
-            ProductID_TextBox.Margin = new Padding(6, 8, 6, 8);
+            ProductID_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductID_TextBox.MaxLength = 50;
             ProductID_TextBox.Name = "ProductID_TextBox";
             ProductID_TextBox.PasswordChar = '\0';
             ProductID_TextBox.PlaceholderText = "";
             ProductID_TextBox.SelectedText = "";
-            ProductID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges58;
+            ProductID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ProductID_TextBox.ShortcutsEnabled = false;
             ProductID_TextBox.Size = new Size(300, 48);
             ProductID_TextBox.TabIndex = 1;
@@ -253,7 +252,6 @@ namespace Sales_Tracker
             WarningProductName_PictureBox.Anchor = AnchorStyles.Top;
             WarningProductName_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningProductName_PictureBox.Location = new Point(354, 214);
-            WarningProductName_PictureBox.Margin = new Padding(6, 4, 6, 4);
             WarningProductName_PictureBox.Name = "WarningProductName_PictureBox";
             WarningProductName_PictureBox.Size = new Size(28, 28);
             WarningProductName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -268,7 +266,6 @@ namespace Sales_Tracker
             WarningProductName_Label.AutoSize = true;
             WarningProductName_Label.Font = new Font("Segoe UI", 10F);
             WarningProductName_Label.Location = new Point(394, 214);
-            WarningProductName_Label.Margin = new Padding(6, 0, 6, 0);
             WarningProductName_Label.Name = "WarningProductName_Label";
             WarningProductName_Label.Size = new Size(202, 28);
             WarningProductName_Label.TabIndex = 36;
@@ -281,7 +278,6 @@ namespace Sales_Tracker
             WarningCategory_PictureBox.Anchor = AnchorStyles.Top;
             WarningCategory_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningCategory_PictureBox.Location = new Point(663, 214);
-            WarningCategory_PictureBox.Margin = new Padding(6, 4, 6, 4);
             WarningCategory_PictureBox.Name = "WarningCategory_PictureBox";
             WarningCategory_PictureBox.Size = new Size(28, 28);
             WarningCategory_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -309,7 +305,7 @@ namespace Sales_Tracker
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top;
-            Search_TextBox.CustomizableEdges = customizableEdges59;
+            Search_TextBox.CustomizableEdges = customizableEdges11;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -319,13 +315,13 @@ namespace Sales_Tracker
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Location = new Point(1281, 286);
-            Search_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for products";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges60;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 48);
             Search_TextBox.TabIndex = 42;
@@ -371,7 +367,7 @@ namespace Sales_Tracker
             // CompanyOfOrigin_TextBox
             // 
             CompanyOfOrigin_TextBox.Anchor = AnchorStyles.Top;
-            CompanyOfOrigin_TextBox.CustomizableEdges = customizableEdges61;
+            CompanyOfOrigin_TextBox.CustomizableEdges = customizableEdges13;
             CompanyOfOrigin_TextBox.DefaultText = "";
             CompanyOfOrigin_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             CompanyOfOrigin_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -381,13 +377,13 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox.Font = new Font("Segoe UI", 9F);
             CompanyOfOrigin_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             CompanyOfOrigin_TextBox.Location = new Point(1281, 154);
-            CompanyOfOrigin_TextBox.Margin = new Padding(6, 8, 6, 8);
+            CompanyOfOrigin_TextBox.Margin = new Padding(4, 5, 4, 5);
             CompanyOfOrigin_TextBox.MaxLength = 32;
             CompanyOfOrigin_TextBox.Name = "CompanyOfOrigin_TextBox";
             CompanyOfOrigin_TextBox.PasswordChar = '\0';
             CompanyOfOrigin_TextBox.PlaceholderText = "";
             CompanyOfOrigin_TextBox.SelectedText = "";
-            CompanyOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges62;
+            CompanyOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             CompanyOfOrigin_TextBox.ShortcutsEnabled = false;
             CompanyOfOrigin_TextBox.Size = new Size(300, 48);
             CompanyOfOrigin_TextBox.TabIndex = 45;
@@ -398,7 +394,6 @@ namespace Sales_Tracker
             WarningCompany_PictureBox.Anchor = AnchorStyles.Top;
             WarningCompany_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningCompany_PictureBox.Location = new Point(1281, 214);
-            WarningCompany_PictureBox.Margin = new Padding(6, 4, 6, 4);
             WarningCompany_PictureBox.Name = "WarningCompany_PictureBox";
             WarningCompany_PictureBox.Size = new Size(28, 28);
             WarningCompany_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -442,8 +437,7 @@ namespace Sales_Tracker
             ForSale_Label.Anchor = AnchorStyles.Top;
             ForSale_Label.AutoSize = true;
             ForSale_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForSale_Label.Location = new Point(260, 42);
-            ForSale_Label.Margin = new Padding(0);
+            ForSale_Label.Location = new Point(255, 42);
             ForSale_Label.Name = "ForSale_Label";
             ForSale_Label.Size = new Size(92, 31);
             ForSale_Label.TabIndex = 58;
@@ -458,7 +452,7 @@ namespace Sales_Tracker
             Sale_RadioButton.CheckedState.InnerColor = Color.White;
             Sale_RadioButton.Location = new Point(237, 47);
             Sale_RadioButton.Name = "Sale_RadioButton";
-            Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges63;
+            Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges15;
             Sale_RadioButton.Size = new Size(20, 20);
             Sale_RadioButton.TabIndex = 57;
             Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -472,8 +466,7 @@ namespace Sales_Tracker
             ForPurchase_Label.Anchor = AnchorStyles.Top;
             ForPurchase_Label.AutoSize = true;
             ForPurchase_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForPurchase_Label.Location = new Point(68, 42);
-            ForPurchase_Label.Margin = new Padding(0);
+            ForPurchase_Label.Location = new Point(63, 42);
             ForPurchase_Label.Name = "ForPurchase_Label";
             ForPurchase_Label.Size = new Size(145, 31);
             ForPurchase_Label.TabIndex = 56;
@@ -488,7 +481,7 @@ namespace Sales_Tracker
             Purchase_RadioButton.CheckedState.InnerColor = Color.White;
             Purchase_RadioButton.Location = new Point(45, 47);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
-            Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges64;
+            Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Purchase_RadioButton.Size = new Size(20, 20);
             Purchase_RadioButton.TabIndex = 55;
             Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -501,10 +494,10 @@ namespace Sales_Tracker
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1626, 782);
-            Controls.Add(ForSale_Label);
             Controls.Add(Sale_RadioButton);
-            Controls.Add(ForPurchase_Label);
             Controls.Add(Purchase_RadioButton);
+            Controls.Add(ForSale_Label);
+            Controls.Add(ForPurchase_Label);
             Controls.Add(ProductsRemaining_LinkLabel);
             Controls.Add(WarningCompany_LinkLabel);
             Controls.Add(WarningCompany_PictureBox);
@@ -528,7 +521,6 @@ namespace Sales_Tracker
             Controls.Add(ProductName_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            Margin = new Padding(4);
             MinimumSize = new Size(1639, 812);
             Name = "Products_Form";
             ShowInTaskbar = false;

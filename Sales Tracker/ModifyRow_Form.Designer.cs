@@ -43,7 +43,7 @@
             ModifyRow_Label.Anchor = AnchorStyles.Top;
             ModifyRow_Label.AutoSize = true;
             ModifyRow_Label.Font = new Font("Segoe UI", 16F);
-            ModifyRow_Label.Location = new Point(345, 21);
+            ModifyRow_Label.Location = new Point(347, 21);
             ModifyRow_Label.Name = "ModifyRow_Label";
             ModifyRow_Label.Size = new Size(182, 45);
             ModifyRow_Label.TabIndex = 0;
@@ -65,8 +65,7 @@
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 9F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(504, 298);
-            Cancel_Button.Margin = new Padding(4);
+            Cancel_Button.Location = new Point(507, 305);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Cancel_Button.Size = new Size(172, 45);
@@ -89,8 +88,7 @@
             Save_Button.FillColor = Color.White;
             Save_Button.Font = new Font("Segoe UI", 9F);
             Save_Button.ForeColor = Color.Black;
-            Save_Button.Location = new Point(686, 298);
-            Save_Button.Margin = new Padding(4);
+            Save_Button.Location = new Point(685, 305);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Save_Button.Size = new Size(172, 45);
@@ -101,7 +99,6 @@
             // Panel
             // 
             Panel.Location = new Point(20, 81);
-            Panel.Margin = new Padding(4);
             Panel.Name = "Panel";
             Panel.Size = new Size(837, 150);
             Panel.TabIndex = 15;
@@ -116,7 +113,6 @@
             Controls.Add(Cancel_Button);
             Controls.Add(ModifyRow_Label);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            Margin = new Padding(4);
             Name = "ModifyRow_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

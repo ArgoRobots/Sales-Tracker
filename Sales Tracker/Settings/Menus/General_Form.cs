@@ -38,6 +38,24 @@ namespace Sales_Tracker.Settings.Menus
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
+        // Event handlers
+        private void ShowDebugInfo_Label_Click(object sender, EventArgs e)
+        {
+            ShowDebugInfo_CheckBox.Checked = !ShowDebugInfo_CheckBox.Checked;
+        }
+        private void SendAnonymousInformation_Label_Click(object sender, EventArgs e)
+        {
+            SendAnonymousInformation_CheckBox.Checked = !SendAnonymousInformation_CheckBox.Checked;
+        }
+        private void PurchaseReceipts_Label_Click(object sender, EventArgs e)
+        {
+            PurchaseReceipts_CheckBox.Checked = !PurchaseReceipts_CheckBox.Checked;
+        }
+        private void SalesReceipts_Label_Click(object sender, EventArgs e)
+        {
+            SalesReceipts_CheckBox.Checked = !SalesReceipts_CheckBox.Checked;
+        }
+
         // Methods
         public void UpdateControls()
         {

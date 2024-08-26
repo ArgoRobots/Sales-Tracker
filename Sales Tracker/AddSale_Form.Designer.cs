@@ -115,8 +115,7 @@ namespace Sales_Tracker
             Date_DateTimePicker.FillColor = Color.White;
             Date_DateTimePicker.Font = new Font("Segoe UI", 9F);
             Date_DateTimePicker.Format = DateTimePickerFormat.Long;
-            Date_DateTimePicker.Location = new Point(50, 327);
-            Date_DateTimePicker.Margin = new Padding(4);
+            Date_DateTimePicker.Location = new Point(55, 327);
             Date_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             Date_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             Date_DateTimePicker.Name = "Date_DateTimePicker";
@@ -132,7 +131,7 @@ namespace Sales_Tracker
             Date_Label.Anchor = AnchorStyles.Top;
             Date_Label.AutoSize = true;
             Date_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Date_Label.Location = new Point(50, 292);
+            Date_Label.Location = new Point(55, 293);
             Date_Label.Name = "Date_Label";
             Date_Label.Size = new Size(62, 31);
             Date_Label.TabIndex = 0;
@@ -152,7 +151,6 @@ namespace Sales_Tracker
             AddSale_Button.Font = new Font("Segoe UI", 9.5F);
             AddSale_Button.ForeColor = Color.Black;
             AddSale_Button.Location = new Point(650, 573);
-            AddSale_Button.Margin = new Padding(6, 4, 6, 4);
             AddSale_Button.Name = "AddSale_Button";
             AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddSale_Button.Size = new Size(214, 48);
@@ -165,7 +163,7 @@ namespace Sales_Tracker
             Tax_Label.Anchor = AnchorStyles.Top;
             Tax_Label.AutoSize = true;
             Tax_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Tax_Label.Location = new Point(836, 292);
+            Tax_Label.Location = new Point(836, 291);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 0;
@@ -185,7 +183,7 @@ namespace Sales_Tracker
             Tax_TextBox.Font = new Font("Segoe UI", 9F);
             Tax_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Tax_TextBox.Location = new Point(836, 327);
-            Tax_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Tax_TextBox.Margin = new Padding(4, 5, 4, 5);
             Tax_TextBox.MaxLength = 10;
             Tax_TextBox.Name = "Tax_TextBox";
             Tax_TextBox.PasswordChar = '\0';
@@ -203,7 +201,7 @@ namespace Sales_Tracker
             Shipping_Label.Anchor = AnchorStyles.Top;
             Shipping_Label.AutoSize = true;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Shipping_Label.Location = new Point(676, 292);
+            Shipping_Label.Location = new Point(678, 291);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 0;
@@ -222,8 +220,8 @@ namespace Sales_Tracker
             Shipping_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Shipping_TextBox.Font = new Font("Segoe UI", 9F);
             Shipping_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Shipping_TextBox.Location = new Point(676, 327);
-            Shipping_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Shipping_TextBox.Location = new Point(678, 327);
+            Shipping_TextBox.Margin = new Padding(4, 5, 4, 5);
             Shipping_TextBox.MaxLength = 10;
             Shipping_TextBox.Name = "Shipping_TextBox";
             Shipping_TextBox.PasswordChar = '\0';
@@ -241,7 +239,7 @@ namespace Sales_Tracker
             PricePerUnit_Label.Anchor = AnchorStyles.Top;
             PricePerUnit_Label.AutoSize = true;
             PricePerUnit_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PricePerUnit_Label.Location = new Point(518, 292);
+            PricePerUnit_Label.Location = new Point(520, 291);
             PricePerUnit_Label.Name = "PricePerUnit_Label";
             PricePerUnit_Label.Size = new Size(150, 31);
             PricePerUnit_Label.TabIndex = 0;
@@ -260,8 +258,8 @@ namespace Sales_Tracker
             PricePerUnit_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             PricePerUnit_TextBox.Font = new Font("Segoe UI", 9F);
             PricePerUnit_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PricePerUnit_TextBox.Location = new Point(518, 327);
-            PricePerUnit_TextBox.Margin = new Padding(6, 8, 6, 8);
+            PricePerUnit_TextBox.Location = new Point(520, 327);
+            PricePerUnit_TextBox.Margin = new Padding(4, 5, 4, 5);
             PricePerUnit_TextBox.MaxLength = 10;
             PricePerUnit_TextBox.Name = "PricePerUnit_TextBox";
             PricePerUnit_TextBox.PasswordChar = '\0';
@@ -279,7 +277,7 @@ namespace Sales_Tracker
             Quantity_Label.Anchor = AnchorStyles.Top;
             Quantity_Label.AutoSize = true;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Quantity_Label.Location = new Point(358, 288);
+            Quantity_Label.Location = new Point(362, 291);
             Quantity_Label.Name = "Quantity_Label";
             Quantity_Label.Size = new Size(102, 31);
             Quantity_Label.TabIndex = 0;
@@ -298,8 +296,8 @@ namespace Sales_Tracker
             Quantity_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Quantity_TextBox.Font = new Font("Segoe UI", 9F);
             Quantity_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Quantity_TextBox.Location = new Point(358, 327);
-            Quantity_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Quantity_TextBox.Location = new Point(362, 327);
+            Quantity_TextBox.Margin = new Padding(4, 5, 4, 5);
             Quantity_TextBox.MaxLength = 10;
             Quantity_TextBox.Name = "Quantity_TextBox";
             Quantity_TextBox.PasswordChar = '\0';
@@ -317,7 +315,7 @@ namespace Sales_Tracker
             ProductName_Label.Anchor = AnchorStyles.Top;
             ProductName_Label.AutoSize = true;
             ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductName_Label.Location = new Point(652, 115);
+            ProductName_Label.Location = new Point(653, 118);
             ProductName_Label.Name = "ProductName_Label";
             ProductName_Label.Size = new Size(157, 31);
             ProductName_Label.TabIndex = 0;
@@ -336,8 +334,8 @@ namespace Sales_Tracker
             ProductName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             ProductName_TextBox.Font = new Font("Segoe UI", 9F);
             ProductName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ProductName_TextBox.Location = new Point(652, 154);
-            ProductName_TextBox.Margin = new Padding(6, 8, 6, 8);
+            ProductName_TextBox.Location = new Point(653, 154);
+            ProductName_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductName_TextBox.MaxLength = 32;
             ProductName_TextBox.Name = "ProductName_TextBox";
             ProductName_TextBox.PasswordChar = '\0';
@@ -354,7 +352,7 @@ namespace Sales_Tracker
             AccountantName_Label.Anchor = AnchorStyles.Top;
             AccountantName_Label.AutoSize = true;
             AccountantName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AccountantName_Label.Location = new Point(343, 115);
+            AccountantName_Label.Location = new Point(345, 118);
             AccountantName_Label.Name = "AccountantName_Label";
             AccountantName_Label.Size = new Size(194, 31);
             AccountantName_Label.TabIndex = 0;
@@ -373,8 +371,8 @@ namespace Sales_Tracker
             AccountantName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             AccountantName_TextBox.Font = new Font("Segoe UI", 9F);
             AccountantName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            AccountantName_TextBox.Location = new Point(343, 154);
-            AccountantName_TextBox.Margin = new Padding(6, 8, 6, 8);
+            AccountantName_TextBox.Location = new Point(345, 154);
+            AccountantName_TextBox.Margin = new Padding(4, 5, 4, 5);
             AccountantName_TextBox.MaxLength = 32;
             AccountantName_TextBox.Name = "AccountantName_TextBox";
             AccountantName_TextBox.PasswordChar = '\0';
@@ -391,8 +389,7 @@ namespace Sales_Tracker
             AddSale_Label.Anchor = AnchorStyles.Top;
             AddSale_Label.AutoSize = true;
             AddSale_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AddSale_Label.Location = new Point(687, 30);
-            AddSale_Label.Margin = new Padding(4, 0, 4, 0);
+            AddSale_Label.Location = new Point(686, 30);
             AddSale_Label.Name = "AddSale_Label";
             AddSale_Label.Size = new Size(143, 45);
             AddSale_Label.TabIndex = 0;
@@ -404,7 +401,7 @@ namespace Sales_Tracker
             SaleNumber_Label.Anchor = AnchorStyles.Top;
             SaleNumber_Label.AutoSize = true;
             SaleNumber_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SaleNumber_Label.Location = new Point(34, 115);
+            SaleNumber_Label.Location = new Point(37, 118);
             SaleNumber_Label.Name = "SaleNumber_Label";
             SaleNumber_Label.Size = new Size(76, 31);
             SaleNumber_Label.TabIndex = 0;
@@ -423,8 +420,8 @@ namespace Sales_Tracker
             SaleNumber_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             SaleNumber_TextBox.Font = new Font("Segoe UI", 9F);
             SaleNumber_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            SaleNumber_TextBox.Location = new Point(34, 154);
-            SaleNumber_TextBox.Margin = new Padding(6, 8, 6, 8);
+            SaleNumber_TextBox.Location = new Point(37, 154);
+            SaleNumber_TextBox.Margin = new Padding(4, 5, 4, 5);
             SaleNumber_TextBox.MaxLength = 32;
             SaleNumber_TextBox.Name = "SaleNumber_TextBox";
             SaleNumber_TextBox.PasswordChar = '\0';
@@ -449,7 +446,6 @@ namespace Sales_Tracker
             ImportExcel_Button.Font = new Font("Segoe UI", 9.5F);
             ImportExcel_Button.ForeColor = Color.Black;
             ImportExcel_Button.Location = new Point(1258, 573);
-            ImportExcel_Button.Margin = new Padding(6, 4, 6, 4);
             ImportExcel_Button.Name = "ImportExcel_Button";
             ImportExcel_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
             ImportExcel_Button.Size = new Size(250, 48);
@@ -477,7 +473,6 @@ namespace Sales_Tracker
             WarningProduct_PictureBox.Anchor = AnchorStyles.Top;
             WarningProduct_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningProduct_PictureBox.Location = new Point(651, 218);
-            WarningProduct_PictureBox.Margin = new Padding(6, 4, 6, 4);
             WarningProduct_PictureBox.Name = "WarningProduct_PictureBox";
             WarningProduct_PictureBox.Size = new Size(28, 28);
             WarningProduct_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -489,7 +484,7 @@ namespace Sales_Tracker
             PaymentFee_Label.Anchor = AnchorStyles.Top;
             PaymentFee_Label.AutoSize = true;
             PaymentFee_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PaymentFee_Label.Location = new Point(994, 292);
+            PaymentFee_Label.Location = new Point(994, 291);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(139, 31);
             PaymentFee_Label.TabIndex = 0;
@@ -509,7 +504,7 @@ namespace Sales_Tracker
             PaymentFee_TextBox.Font = new Font("Segoe UI", 9F);
             PaymentFee_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             PaymentFee_TextBox.Location = new Point(994, 327);
-            PaymentFee_TextBox.Margin = new Padding(6, 8, 6, 8);
+            PaymentFee_TextBox.Margin = new Padding(4, 5, 4, 5);
             PaymentFee_TextBox.MaxLength = 10;
             PaymentFee_TextBox.Name = "PaymentFee_TextBox";
             PaymentFee_TextBox.PasswordChar = '\0';
@@ -542,7 +537,6 @@ namespace Sales_Tracker
             WarningBuyer_PictureBox.Anchor = AnchorStyles.Top;
             WarningBuyer_PictureBox.Image = Properties.Resources.ExclamationMark;
             WarningBuyer_PictureBox.Location = new Point(342, 218);
-            WarningBuyer_PictureBox.Margin = new Padding(6, 4, 6, 4);
             WarningBuyer_PictureBox.Name = "WarningBuyer_PictureBox";
             WarningBuyer_PictureBox.Size = new Size(28, 28);
             WarningBuyer_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -554,7 +548,7 @@ namespace Sales_Tracker
             CountryOfDestination_Label.Anchor = AnchorStyles.Top;
             CountryOfDestination_Label.AutoSize = true;
             CountryOfDestination_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CountryOfDestination_Label.Location = new Point(961, 115);
+            CountryOfDestination_Label.Location = new Point(961, 118);
             CountryOfDestination_Label.Name = "CountryOfDestination_Label";
             CountryOfDestination_Label.Size = new Size(241, 31);
             CountryOfDestination_Label.TabIndex = 0;
@@ -573,7 +567,7 @@ namespace Sales_Tracker
             CountryOfDestinaion_TextBox.Font = new Font("Segoe UI", 9F);
             CountryOfDestinaion_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             CountryOfDestinaion_TextBox.Location = new Point(961, 154);
-            CountryOfDestinaion_TextBox.Margin = new Padding(6, 8, 6, 8);
+            CountryOfDestinaion_TextBox.Margin = new Padding(4, 5, 4, 5);
             CountryOfDestinaion_TextBox.MaxLength = 32;
             CountryOfDestinaion_TextBox.Name = "CountryOfDestinaion_TextBox";
             CountryOfDestinaion_TextBox.PasswordChar = '\0';
@@ -590,7 +584,7 @@ namespace Sales_Tracker
             Discount_Label.Anchor = AnchorStyles.Top;
             Discount_Label.AutoSize = true;
             Discount_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Discount_Label.Location = new Point(1154, 292);
+            Discount_Label.Location = new Point(1152, 291);
             Discount_Label.Name = "Discount_Label";
             Discount_Label.Size = new Size(104, 31);
             Discount_Label.TabIndex = 0;
@@ -609,8 +603,8 @@ namespace Sales_Tracker
             Discount_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Discount_TextBox.Font = new Font("Segoe UI", 9F);
             Discount_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Discount_TextBox.Location = new Point(1154, 327);
-            Discount_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Discount_TextBox.Location = new Point(1152, 327);
+            Discount_TextBox.Margin = new Padding(4, 5, 4, 5);
             Discount_TextBox.MaxLength = 10;
             Discount_TextBox.Name = "Discount_TextBox";
             Discount_TextBox.PasswordChar = '\0';
@@ -649,7 +643,7 @@ namespace Sales_Tracker
             Notes_TextBox.Font = new Font("Segoe UI", 9F);
             Notes_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Notes_TextBox.Location = new Point(490, 446);
-            Notes_TextBox.Margin = new Padding(6, 8, 6, 8);
+            Notes_TextBox.Margin = new Padding(4, 5, 4, 5);
             Notes_TextBox.MaxLength = 1000;
             Notes_TextBox.MinimumSize = new Size(525, 105);
             Notes_TextBox.Multiline = true;
@@ -670,8 +664,7 @@ namespace Sales_Tracker
             RemoveReceipt_ImageButton.ImageOffset = new Point(0, 0);
             RemoveReceipt_ImageButton.ImageRotate = 0F;
             RemoveReceipt_ImageButton.ImageSize = new Size(30, 30);
-            RemoveReceipt_ImageButton.Location = new Point(1443, 218);
-            RemoveReceipt_ImageButton.Margin = new Padding(4);
+            RemoveReceipt_ImageButton.Location = new Point(1440, 214);
             RemoveReceipt_ImageButton.Name = "RemoveReceipt_ImageButton";
             RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges29;
             RemoveReceipt_ImageButton.Size = new Size(38, 38);
@@ -685,7 +678,7 @@ namespace Sales_Tracker
             SelectedReceipt_Label.Anchor = AnchorStyles.Top;
             SelectedReceipt_Label.AutoSize = true;
             SelectedReceipt_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceipt_Label.Location = new Point(1350, 223);
+            SelectedReceipt_Label.Location = new Point(1347, 219);
             SelectedReceipt_Label.Name = "SelectedReceipt_Label";
             SelectedReceipt_Label.Size = new Size(86, 28);
             SelectedReceipt_Label.TabIndex = 66;
@@ -702,8 +695,7 @@ namespace Sales_Tracker
             Receipt_Button.FillColor = Color.White;
             Receipt_Button.Font = new Font("Segoe UI", 9.5F);
             Receipt_Button.ForeColor = Color.Black;
-            Receipt_Button.Location = new Point(1271, 154);
-            Receipt_Button.Margin = new Padding(6, 4, 6, 4);
+            Receipt_Button.Location = new Point(1268, 154);
             Receipt_Button.Name = "Receipt_Button";
             Receipt_Button.ShadowDecoration.CustomizableEdges = customizableEdges31;
             Receipt_Button.Size = new Size(210, 54);
@@ -717,7 +709,7 @@ namespace Sales_Tracker
             AmountCredited_Label.Anchor = AnchorStyles.Top;
             AmountCredited_Label.AutoSize = true;
             AmountCredited_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AmountCredited_Label.Location = new Point(1312, 292);
+            AmountCredited_Label.Location = new Point(1310, 291);
             AmountCredited_Label.Name = "AmountCredited_Label";
             AmountCredited_Label.Size = new Size(182, 31);
             AmountCredited_Label.TabIndex = 0;
@@ -735,8 +727,8 @@ namespace Sales_Tracker
             AmountCredited_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             AmountCredited_TextBox.Font = new Font("Segoe UI", 9F);
             AmountCredited_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            AmountCredited_TextBox.Location = new Point(1312, 327);
-            AmountCredited_TextBox.Margin = new Padding(6, 8, 6, 8);
+            AmountCredited_TextBox.Location = new Point(1310, 327);
+            AmountCredited_TextBox.Margin = new Padding(4, 5, 4, 5);
             AmountCredited_TextBox.MaxLength = 10;
             AmountCredited_TextBox.Name = "AmountCredited_TextBox";
             AmountCredited_TextBox.PasswordChar = '\0';
@@ -752,10 +744,10 @@ namespace Sales_Tracker
             MultipleItems_Label.Anchor = AnchorStyles.Top;
             MultipleItems_Label.AutoSize = true;
             MultipleItems_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            MultipleItems_Label.Location = new Point(1209, 42);
-            MultipleItems_Label.Margin = new Padding(0);
+            MultipleItems_Label.Location = new Point(1196, 42);
             MultipleItems_Label.Name = "MultipleItems_Label";
-            MultipleItems_Label.Size = new Size(272, 30);
+            MultipleItems_Label.Padding = new Padding(5);
+            MultipleItems_Label.Size = new Size(282, 40);
             MultipleItems_Label.TabIndex = 0;
             MultipleItems_Label.Text = "Multiple items in this order";
             MultipleItems_Label.Click += MultipleItems_Label_Click;
@@ -769,7 +761,7 @@ namespace Sales_Tracker
             MultipleItems_CheckBox.CheckedState.BorderThickness = 0;
             MultipleItems_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             MultipleItems_CheckBox.CustomizableEdges = customizableEdges34;
-            MultipleItems_CheckBox.Location = new Point(1186, 47);
+            MultipleItems_CheckBox.Location = new Point(1178, 52);
             MultipleItems_CheckBox.Name = "MultipleItems_CheckBox";
             MultipleItems_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges35;
             MultipleItems_CheckBox.Size = new Size(20, 20);
@@ -784,8 +776,8 @@ namespace Sales_Tracker
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1514, 639);
-            Controls.Add(MultipleItems_Label);
             Controls.Add(MultipleItems_CheckBox);
+            Controls.Add(MultipleItems_Label);
             Controls.Add(RemoveReceipt_ImageButton);
             Controls.Add(SelectedReceipt_Label);
             Controls.Add(Receipt_Button);
@@ -824,7 +816,6 @@ namespace Sales_Tracker
             Controls.Add(SaleNumber_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            Margin = new Padding(4);
             MinimumSize = new Size(1536, 695);
             Name = "AddSale_Form";
             ShowInTaskbar = false;

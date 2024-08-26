@@ -44,7 +44,6 @@
             RichTextBox.BorderStyle = BorderStyle.None;
             RichTextBox.Font = new Font("Segoe UI", 12F);
             RichTextBox.Location = new Point(18, 18);
-            RichTextBox.Margin = new Padding(6, 4, 6, 4);
             RichTextBox.Name = "RichTextBox";
             RichTextBox.ReadOnly = true;
             RichTextBox.Size = new Size(1342, 690);
@@ -101,7 +100,6 @@
             Controls.Add(AutoScroll_ComboBox);
             Controls.Add(RichTextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Margin = new Padding(6, 4, 6, 4);
             MinimumSize = new Size(800, 600);
             Name = "Log_Form";
             StartPosition = FormStartPosition.CenterScreen;

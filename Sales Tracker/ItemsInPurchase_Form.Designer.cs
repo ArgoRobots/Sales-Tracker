@@ -62,7 +62,6 @@
             Items_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
             Items_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
             Items_DataGridView.Location = new Point(18, 104);
-            Items_DataGridView.Margin = new Padding(4);
             Items_DataGridView.Name = "Items_DataGridView";
             Items_DataGridView.RowHeadersVisible = false;
             Items_DataGridView.RowHeadersWidth = 62;
@@ -110,7 +109,6 @@
             Controls.Add(Items_DataGridView);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(4);
             MinimumSize = new Size(1789, 497);
             Name = "ItemsInPurchase_Form";
             ShowInTaskbar = false;
