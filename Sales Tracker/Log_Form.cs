@@ -8,9 +8,11 @@ namespace Sales_Tracker
     {
         // Properties
         private static Log_Form _instance;
+
+        // Getters and setters
         public static Log_Form Instance
         {
-            get { return _instance; }
+            get => _instance;
         }
 
         // Init

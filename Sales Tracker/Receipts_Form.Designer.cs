@@ -90,12 +90,13 @@
             Category_TextBox.Font = new Font("Segoe UI", 9F);
             Category_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Category_TextBox.Location = new Point(73, 154);
+            Category_TextBox.Margin = new Padding(4, 5, 4, 5);
             Category_TextBox.Name = "Category_TextBox";
             Category_TextBox.PasswordChar = '\0';
             Category_TextBox.PlaceholderText = "Category";
             Category_TextBox.SelectedText = "";
             Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Category_TextBox.Size = new Size(300, 54);
+            Category_TextBox.Size = new Size(300, 50);
             Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += FilterReceipts;
             // 
@@ -129,12 +130,12 @@
             From_DateTimePicker.FillColor = Color.White;
             From_DateTimePicker.Font = new Font("Segoe UI", 9F);
             From_DateTimePicker.Format = DateTimePickerFormat.Long;
-            From_DateTimePicker.Location = new Point(439, 195);
+            From_DateTimePicker.Location = new Point(439, 194);
             From_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             From_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             From_DateTimePicker.Name = "From_DateTimePicker";
             From_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            From_DateTimePicker.Size = new Size(300, 54);
+            From_DateTimePicker.Size = new Size(300, 50);
             From_DateTimePicker.TabIndex = 3;
             From_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             From_DateTimePicker.ValueChanged += FilterReceipts;
@@ -147,12 +148,12 @@
             To_DateTimePicker.FillColor = Color.White;
             To_DateTimePicker.Font = new Font("Segoe UI", 9F);
             To_DateTimePicker.Format = DateTimePickerFormat.Long;
-            To_DateTimePicker.Location = new Point(439, 288);
+            To_DateTimePicker.Location = new Point(439, 281);
             To_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             To_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             To_DateTimePicker.Name = "To_DateTimePicker";
             To_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            To_DateTimePicker.Size = new Size(300, 54);
+            To_DateTimePicker.Size = new Size(300, 50);
             To_DateTimePicker.TabIndex = 4;
             To_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             To_DateTimePicker.ValueChanged += FilterReceipts;
@@ -162,7 +163,7 @@
             To_Label.Anchor = AnchorStyles.Top;
             To_Label.AutoSize = true;
             To_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            To_Label.Location = new Point(439, 254);
+            To_Label.Location = new Point(439, 247);
             To_Label.Name = "To_Label";
             To_Label.Size = new Size(37, 31);
             To_Label.TabIndex = 0;
@@ -239,7 +240,7 @@
             ClearFilters_Button.Location = new Point(1118, 154);
             ClearFilters_Button.Name = "ClearFilters_Button";
             ClearFilters_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            ClearFilters_Button.Size = new Size(225, 54);
+            ClearFilters_Button.Size = new Size(225, 50);
             ClearFilters_Button.TabIndex = 6;
             ClearFilters_Button.Text = "Clear filters";
             ClearFilters_Button.Click += ClearFilters_Button_Click;
@@ -256,13 +257,14 @@
             Product_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Product_TextBox.Font = new Font("Segoe UI", 9F);
             Product_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Product_TextBox.Location = new Point(73, 218);
+            Product_TextBox.Location = new Point(73, 214);
+            Product_TextBox.Margin = new Padding(4, 5, 4, 5);
             Product_TextBox.Name = "Product_TextBox";
             Product_TextBox.PasswordChar = '\0';
             Product_TextBox.PlaceholderText = "Product";
             Product_TextBox.SelectedText = "";
             Product_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            Product_TextBox.Size = new Size(300, 54);
+            Product_TextBox.Size = new Size(300, 50);
             Product_TextBox.TabIndex = 2;
             Product_TextBox.TextChanged += FilterReceipts;
             // 
@@ -277,12 +279,12 @@
             Sort_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Sort_ComboBox.Font = new Font("Segoe UI", 10F);
             Sort_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
-            Sort_ComboBox.ItemHeight = 48;
+            Sort_ComboBox.ItemHeight = 44;
             Sort_ComboBox.Items.AddRange(new object[] { "Most recent", "Least recent", "Most expensive", "Least expensive" });
             Sort_ComboBox.Location = new Point(805, 154);
             Sort_ComboBox.Name = "Sort_ComboBox";
             Sort_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            Sort_ComboBox.Size = new Size(248, 54);
+            Sort_ComboBox.Size = new Size(248, 50);
             Sort_ComboBox.TabIndex = 5;
             Sort_ComboBox.SelectedIndexChanged += SortReceipts;
             // 
@@ -313,10 +315,10 @@
             ExportSelected_Button.FillColor = Color.White;
             ExportSelected_Button.Font = new Font("Segoe UI", 9F);
             ExportSelected_Button.ForeColor = Color.Black;
-            ExportSelected_Button.Location = new Point(1118, 218);
+            ExportSelected_Button.Location = new Point(1118, 210);
             ExportSelected_Button.Name = "ExportSelected_Button";
             ExportSelected_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ExportSelected_Button.Size = new Size(225, 54);
+            ExportSelected_Button.Size = new Size(225, 50);
             ExportSelected_Button.TabIndex = 7;
             ExportSelected_Button.Text = "Export selected";
             ExportSelected_Button.Click += ExportSelected_Button_Click;

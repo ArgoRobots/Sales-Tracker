@@ -8,11 +8,13 @@ namespace Sales_Tracker
     {
         // Properties
         private static CustomMessage_Form _instance;
+        public CustomMessageBoxResult result;
+
+        // Getters and setters
         public static CustomMessage_Form Instance
         {
-            get { return _instance; }
+            get => _instance;
         }
-        public CustomMessageBoxResult result;
 
         // Init.
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
@@ -74,8 +76,8 @@ namespace Sales_Tracker
             switch (buttons)
             {
                 case CustomMessageBoxButtons.YesNo:
-                    No_Button.Left = Width - No_Button.Width - 30;
-                    Yes_Button.Left = No_Button.Left - Yes_Button.Width - 15;
+                    No_Button.Left = Width - No_Button.Width - 35;
+                    Yes_Button.Left = No_Button.Left - Yes_Button.Width - MainMenu_Form.spaceBetweenControlsHorizontally;
                     Controls.Add(Yes_Button);
                     Controls.Add(No_Button);
                     Controls.Remove(Cancel_Button);
@@ -85,7 +87,7 @@ namespace Sales_Tracker
                     Yes_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.Ok:
-                    Ok_Button.Left = Width - Ok_Button.Width - 30;
+                    Ok_Button.Left = Width - Ok_Button.Width - 35;
                     Controls.Add(Ok_Button);
                     Controls.Remove(Yes_Button);
                     Controls.Remove(No_Button);
@@ -95,8 +97,8 @@ namespace Sales_Tracker
                     Ok_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.OkCancel:
-                    Cancel_Button.Left = Width - Cancel_Button.Width - 30;
-                    Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - 15;
+                    Cancel_Button.Left = Width - Cancel_Button.Width - 35;
+                    Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - MainMenu_Form.spaceBetweenControlsHorizontally;
                     Controls.Add(Ok_Button);
                     Controls.Add(Cancel_Button);
                     Controls.Remove(Yes_Button);
@@ -106,9 +108,9 @@ namespace Sales_Tracker
                     Ok_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.SaveDontSaveCancel:
-                    Cancel_Button.Left = Width - Cancel_Button.Width - 30;
-                    DontSave_Button.Left = Cancel_Button.Left - DontSave_Button.Width - 15;
-                    Save_Button.Left = DontSave_Button.Left - Save_Button.Width - 15;
+                    Cancel_Button.Left = Width - Cancel_Button.Width - 35;
+                    DontSave_Button.Left = Cancel_Button.Left - DontSave_Button.Width - MainMenu_Form.spaceBetweenControlsHorizontally;
+                    Save_Button.Left = DontSave_Button.Left - Save_Button.Width - MainMenu_Form.spaceBetweenControlsHorizontally;
                     Controls.Add(Save_Button);
                     Controls.Add(DontSave_Button);
                     Controls.Add(Cancel_Button);
@@ -127,19 +129,19 @@ namespace Sales_Tracker
         {
             int requiredHeight = Math.Min(contentHeight, MaximumSize.Height);
 
-            if (contentHeight > MaximumSize.Height - 150)
+            if (contentHeight > MaximumSize.Height - 190)
             {
                 Height = MaximumSize.Height;
-                ChangedBackground_Panel.Height = Height - 150;
-                Changed_Panel.Height = Height - 152;
+                ChangedBackground_Panel.Height = Height - 190;
+                Changed_Panel.Height = Height - 192;
                 FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Changed_Panel.AutoScroll = true;
             }
             else
             {
-                Height = requiredHeight + 150;
-                ChangedBackground_Panel.Height = Height - 150;
-                Changed_Panel.Height = Height - 152;
+                Height = requiredHeight + 190;
+                ChangedBackground_Panel.Height = Height - 190;
+                Changed_Panel.Height = Height - 192;
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
                 Changed_Panel.AutoScroll = false;
             }
@@ -151,7 +153,7 @@ namespace Sales_Tracker
             // Construct panels
             ChangedBackground_Panel = new()
             {
-                Top = 40,
+                Top = 50,
                 Size = new Size(450, 70),
                 BackColor = CustomColors.mainBackground,
                 BorderColor = CustomColors.controlBorder,

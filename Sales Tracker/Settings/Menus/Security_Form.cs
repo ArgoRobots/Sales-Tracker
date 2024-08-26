@@ -7,9 +7,11 @@ namespace Sales_Tracker.Settings.Menus
     {
         // Properties
         private static Security_Form _instance;
+
+        // Getters and setters
         public static Security_Form Instance
         {
-            get { return _instance; }
+            get => _instance;
         }
 
         // Init.

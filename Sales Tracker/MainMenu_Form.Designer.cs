@@ -191,7 +191,7 @@
             ManageCompanies_Button.Location = new Point(1700, 21);
             ManageCompanies_Button.Name = "ManageCompanies_Button";
             ManageCompanies_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            ManageCompanies_Button.Size = new Size(225, 48);
+            ManageCompanies_Button.Size = new Size(225, 50);
             ManageCompanies_Button.TabIndex = 16;
             ManageCompanies_Button.Text = "Manage companies";
             ManageCompanies_Button.Click += ManageCompanies_Button_Click;
@@ -210,7 +210,7 @@
             ManageAccountants_Button.Location = new Point(2162, 21);
             ManageAccountants_Button.Name = "ManageAccountants_Button";
             ManageAccountants_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            ManageAccountants_Button.Size = new Size(225, 48);
+            ManageAccountants_Button.Size = new Size(225, 50);
             ManageAccountants_Button.TabIndex = 15;
             ManageAccountants_Button.Text = "Manage accountants";
             ManageAccountants_Button.Click += ManageAccountants_Button_Click;
@@ -229,7 +229,7 @@
             ManageCategories_Button.Location = new Point(1931, 21);
             ManageCategories_Button.Name = "ManageCategories_Button";
             ManageCategories_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            ManageCategories_Button.Size = new Size(225, 48);
+            ManageCategories_Button.Size = new Size(225, 50);
             ManageCategories_Button.TabIndex = 14;
             ManageCategories_Button.Text = "Manage categories";
             ManageCategories_Button.Click += ManageCategories_Button_Click;
@@ -252,7 +252,7 @@
             AddSale_Button.Location = new Point(1238, 21);
             AddSale_Button.Name = "AddSale_Button";
             AddSale_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            AddSale_Button.Size = new Size(225, 48);
+            AddSale_Button.Size = new Size(225, 50);
             AddSale_Button.TabIndex = 13;
             AddSale_Button.Text = "Add sale";
             AddSale_Button.Click += AddSale_Button_Click;
@@ -275,7 +275,7 @@
             AddPurchase_Button.Location = new Point(1007, 21);
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            AddPurchase_Button.Size = new Size(225, 48);
+            AddPurchase_Button.Size = new Size(225, 50);
             AddPurchase_Button.TabIndex = 12;
             AddPurchase_Button.Text = "Add Purchase";
             AddPurchase_Button.Click += AddPurchase_Button_Click;
@@ -316,7 +316,7 @@
             ManageProducts_Button.Location = new Point(1469, 21);
             ManageProducts_Button.Name = "ManageProducts_Button";
             ManageProducts_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ManageProducts_Button.Size = new Size(225, 48);
+            ManageProducts_Button.Size = new Size(225, 50);
             ManageProducts_Button.TabIndex = 9;
             ManageProducts_Button.Text = "Manage products";
             ManageProducts_Button.Click += ManageProducts_Button_Click;
@@ -474,7 +474,7 @@
             Quantity_Label.AutoSize = true;
             Quantity_Label.BackColor = Color.Transparent;
             Quantity_Label.Font = new Font("Segoe UI", 11.25F);
-            Quantity_Label.Location = new Point(524, 22);
+            Quantity_Label.Location = new Point(525, 22);
             Quantity_Label.Name = "Quantity_Label";
             Quantity_Label.Size = new Size(102, 31);
             Quantity_Label.TabIndex = 3;
@@ -486,7 +486,7 @@
             Price_Label.AutoSize = true;
             Price_Label.BackColor = Color.Transparent;
             Price_Label.Font = new Font("Segoe UI", 11.25F);
-            Price_Label.Location = new Point(1631, 22);
+            Price_Label.Location = new Point(1632, 22);
             Price_Label.Name = "Price_Label";
             Price_Label.Size = new Size(64, 31);
             Price_Label.TabIndex = 5;
@@ -498,7 +498,7 @@
             Shipping_Label.AutoSize = true;
             Shipping_Label.BackColor = Color.Transparent;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F);
-            Shipping_Label.Location = new Point(727, 22);
+            Shipping_Label.Location = new Point(728, 22);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 7;
@@ -510,7 +510,7 @@
             Tax_Label.AutoSize = true;
             Tax_Label.BackColor = Color.Transparent;
             Tax_Label.Font = new Font("Segoe UI", 11.25F);
-            Tax_Label.Location = new Point(934, 22);
+            Tax_Label.Location = new Point(935, 22);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 9;
@@ -540,7 +540,7 @@
             ChargedDifference_Label.AutoSize = true;
             ChargedDifference_Label.BackColor = Color.Transparent;
             ChargedDifference_Label.Font = new Font("Segoe UI", 11.25F);
-            ChargedDifference_Label.Location = new Point(1321, 22);
+            ChargedDifference_Label.Location = new Point(1322, 22);
             ChargedDifference_Label.Name = "ChargedDifference_Label";
             ChargedDifference_Label.Size = new Size(209, 31);
             ChargedDifference_Label.TabIndex = 11;
@@ -551,7 +551,7 @@
             PaymentFee_Label.AutoSize = true;
             PaymentFee_Label.BackColor = Color.Transparent;
             PaymentFee_Label.Font = new Font("Segoe UI", 11.25F);
-            PaymentFee_Label.Location = new Point(1081, 22);
+            PaymentFee_Label.Location = new Point(1082, 22);
             PaymentFee_Label.Name = "PaymentFee_Label";
             PaymentFee_Label.Size = new Size(139, 31);
             PaymentFee_Label.TabIndex = 10;
@@ -574,7 +574,7 @@
             Sales_Button.Location = new Point(204, 144);
             Sales_Button.Name = "Sales_Button";
             Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            Sales_Button.Size = new Size(180, 52);
+            Sales_Button.Size = new Size(180, 50);
             Sales_Button.TabIndex = 7;
             Sales_Button.Text = "Sales";
             Sales_Button.Click += Sales_Button_Click;
@@ -596,7 +596,7 @@
             Purchases_Button.Location = new Point(18, 144);
             Purchases_Button.Name = "Purchases_Button";
             Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
-            Purchases_Button.Size = new Size(180, 52);
+            Purchases_Button.Size = new Size(180, 50);
             Purchases_Button.TabIndex = 6;
             Purchases_Button.Text = "Purchases";
             Purchases_Button.Click += Purchases_Button_Click;
@@ -787,7 +787,7 @@
             Statistics_Button.Location = new Point(390, 144);
             Statistics_Button.Name = "Statistics_Button";
             Statistics_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
-            Statistics_Button.Size = new Size(180, 52);
+            Statistics_Button.Size = new Size(180, 50);
             Statistics_Button.TabIndex = 18;
             Statistics_Button.Text = "Statistics";
             Statistics_Button.Click += Statistics_Button_Click;

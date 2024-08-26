@@ -7,13 +7,15 @@ namespace Sales_Tracker
     {
         // Properties
         private static Accountants_Form _instance;
-        public static Accountants_Form Instance
-        {
-            get { return _instance; }
-        }
         public static readonly List<string> thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
+
+        // Getters and setters
+        public static Accountants_Form Instance
+        {
+            get => _instance;
+        }
 
         // Init.
         public Accountants_Form()
@@ -125,7 +127,7 @@ namespace Sales_Tracker
             { Columns.AccountantName, "Accountant" },
         };
         public Guna2DataGridView Accountants_DataGridView;
-        private const byte topForDataGridView = 220;
+        private const byte topForDataGridView = 250;
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }

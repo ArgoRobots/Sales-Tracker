@@ -178,7 +178,7 @@ namespace Sales_Tracker
             AddProduct_Button.Location = new Point(706, 292);
             AddProduct_Button.Name = "AddProduct_Button";
             AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            AddProduct_Button.Size = new Size(215, 48);
+            AddProduct_Button.Size = new Size(215, 50);
             AddProduct_Button.TabIndex = 5;
             AddProduct_Button.Tag = "0";
             AddProduct_Button.Text = "Add product";
@@ -251,7 +251,7 @@ namespace Sales_Tracker
             // 
             WarningProductName_PictureBox.Anchor = AnchorStyles.Top;
             WarningProductName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningProductName_PictureBox.Location = new Point(354, 214);
+            WarningProductName_PictureBox.Location = new Point(366, 209);
             WarningProductName_PictureBox.Name = "WarningProductName_PictureBox";
             WarningProductName_PictureBox.Size = new Size(28, 28);
             WarningProductName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -265,7 +265,7 @@ namespace Sales_Tracker
             WarningProductName_Label.Anchor = AnchorStyles.Top;
             WarningProductName_Label.AutoSize = true;
             WarningProductName_Label.Font = new Font("Segoe UI", 10F);
-            WarningProductName_Label.Location = new Point(394, 214);
+            WarningProductName_Label.Location = new Point(406, 209);
             WarningProductName_Label.Name = "WarningProductName_Label";
             WarningProductName_Label.Size = new Size(202, 28);
             WarningProductName_Label.TabIndex = 36;
@@ -277,7 +277,7 @@ namespace Sales_Tracker
             // 
             WarningCategory_PictureBox.Anchor = AnchorStyles.Top;
             WarningCategory_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCategory_PictureBox.Location = new Point(663, 214);
+            WarningCategory_PictureBox.Location = new Point(675, 209);
             WarningCategory_PictureBox.Name = "WarningCategory_PictureBox";
             WarningCategory_PictureBox.Size = new Size(28, 28);
             WarningCategory_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -292,7 +292,7 @@ namespace Sales_Tracker
             WarningCategory_LinkLabel.AutoSize = true;
             WarningCategory_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCategory_LinkLabel.LinkArea = new LinkArea(21, 15);
-            WarningCategory_LinkLabel.Location = new Point(701, 214);
+            WarningCategory_LinkLabel.Location = new Point(713, 209);
             WarningCategory_LinkLabel.Name = "WarningCategory_LinkLabel";
             WarningCategory_LinkLabel.Size = new Size(194, 59);
             WarningCategory_LinkLabel.TabIndex = 40;
@@ -393,7 +393,7 @@ namespace Sales_Tracker
             // 
             WarningCompany_PictureBox.Anchor = AnchorStyles.Top;
             WarningCompany_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCompany_PictureBox.Location = new Point(1281, 214);
+            WarningCompany_PictureBox.Location = new Point(1293, 210);
             WarningCompany_PictureBox.Name = "WarningCompany_PictureBox";
             WarningCompany_PictureBox.Size = new Size(28, 28);
             WarningCompany_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -408,7 +408,7 @@ namespace Sales_Tracker
             WarningCompany_LinkLabel.AutoSize = true;
             WarningCompany_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCompany_LinkLabel.LinkArea = new LinkArea(20, 15);
-            WarningCompany_LinkLabel.Location = new Point(1320, 209);
+            WarningCompany_LinkLabel.Location = new Point(1332, 205);
             WarningCompany_LinkLabel.Name = "WarningCompany_LinkLabel";
             WarningCompany_LinkLabel.Size = new Size(199, 59);
             WarningCompany_LinkLabel.TabIndex = 48;

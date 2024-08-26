@@ -5,12 +5,20 @@ namespace Sales_Tracker.Startup
 {
     public partial class Startup_Form : Form
     {
-        // Init
-        public static Startup_Form Instance { get; private set; }
+        // Properties
+        private static Startup_Form _instance;
+
+        // Getters and setters
+        public static Startup_Form Instance
+        {
+            get => _instance;
+        }
+
+        // Init.
         public Startup_Form(string[] args)
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             BackColor = CustomColors.mainBackground;
 

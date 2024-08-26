@@ -9,14 +9,20 @@ namespace Sales_Tracker.Startup.Menus
     public partial class GetStarted_Form : Form
     {
         // Properties
+        private static GetStarted_Form _instance;
         private readonly Dictionary<string, FileSystemWatcher> fileWatchers;
 
+        // Getters and setters
+        public static GetStarted_Form Instance
+        {
+            get => _instance;
+        }
+
         // Init.
-        public static GetStarted_Form Instance { get; private set; }
         public GetStarted_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
             fileWatchers = [];
 
             LoadingPanel.InitBlankLoadingPanel();
@@ -260,14 +266,14 @@ namespace Sales_Tracker.Startup.Menus
 
             Guna2Button button = (Guna2Button)rightClickOpenRecent_Panel.Tag;
 
-            UI.rename_textBox.Text = button.Text;
-            UI.rename_textBox.Location = new Point(OpenRecent_FlowLayoutPanel.Left + button.Left + 1, OpenRecent_FlowLayoutPanel.Top + button.Top);
-            UI.rename_textBox.Size = new Size(button.Width, button.Height);
-            UI.rename_textBox.Font = button.Font;
-            Controls.Add(UI.rename_textBox);
-            UI.rename_textBox.Focus();
-            UI.rename_textBox.SelectAll();
-            UI.rename_textBox.BringToFront();
+            UI.Rename_TextBox.Text = button.Text;
+            UI.Rename_TextBox.Location = new Point(OpenRecent_FlowLayoutPanel.Left + button.Left + 1, OpenRecent_FlowLayoutPanel.Top + button.Top);
+            UI.Rename_TextBox.Size = new Size(button.Width, button.Height);
+            UI.Rename_TextBox.Font = button.Font;
+            Controls.Add(UI.Rename_TextBox);
+            UI.Rename_TextBox.Focus();
+            UI.Rename_TextBox.SelectAll();
+            UI.Rename_TextBox.BringToFront();
         }
         private void Hide(object sender, EventArgs e)
         {
@@ -318,31 +324,31 @@ namespace Sales_Tracker.Startup.Menus
         // Methods
         public void RenameCompany()
         {
-            if (!Controls.Contains(UI.rename_textBox))
+            if (!Controls.Contains(UI.Rename_TextBox))
             {
                 return;
             }
-            Controls.Remove(UI.rename_textBox);
+            Controls.Remove(UI.Rename_TextBox);
 
             Guna2Button button = (Guna2Button)rightClickOpenRecent_Panel.Tag;
 
             // If the name did not change
-            if (UI.rename_textBox.Text == button.Text)
+            if (UI.Rename_TextBox.Text == button.Text)
             {
                 return;
             }
 
-            button.Text = UI.rename_textBox.Text;
+            button.Text = UI.Rename_TextBox.Text;
 
             string projectDir = button.Tag.ToString();
-            string newProjectDir = Path.Combine(Path.GetDirectoryName(projectDir), UI.rename_textBox.Text + ArgoFiles.ArgoCompanyFileExtension);
+            string newProjectDir = Path.Combine(Path.GetDirectoryName(projectDir), UI.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension);
 
             if (Directories.MoveFile(projectDir, newProjectDir))
             {
                 button.Tag = newProjectDir;
             }
 
-            UI.rename_textBox.Text = "";
+            UI.Rename_TextBox.Text = "";
         }
         public void ShowMainMenu()
         {

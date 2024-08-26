@@ -6,16 +6,23 @@ namespace Sales_Tracker.Classes
 {
     public class SearchBox
     {
-        public static Guna2Panel SearchResultBox { get; set; }
-        public static Guna2Panel SearchResultBoxContainer { get; set; }
-
+        private static Guna2Panel _searchResultBox;
+        public static Guna2Panel SearchResultBox
+        {
+            get { return _searchResultBox; }
+        }
+        private static Guna2Panel _searchResultBoxContainer;
+        public static Guna2Panel SearchResultBoxContainer
+        {
+            get { return _searchResultBoxContainer; }
+        }
         private static Timer debounceTimer;
 
         public static void ConstructSearchBox()
         {
-            SearchResultBoxContainer = new Guna2Panel
+            _searchResultBoxContainer = new Guna2Panel
             {
-                Width = 200,
+                Width = 300,
                 BorderStyle = DashStyle.Solid,
                 BorderColor = Color.Gray,
                 BorderThickness = 1,
@@ -23,9 +30,9 @@ namespace Sales_Tracker.Classes
                 BorderRadius = 1,
                 UseTransparentBackground = true
             };
-            SearchResultBox = new Guna2Panel
+            _searchResultBox = new Guna2Panel
             {
-                Width = 197,
+                Width = 297,
                 Location = new Point(1, 1),
                 FillColor = CustomColors.controlBack
             };
@@ -40,15 +47,7 @@ namespace Sales_Tracker.Classes
             debounceTimer.Tick += DebounceTimer_Tick;
         }
 
-        public class SearchResult(string name, Image flag, int score)
-        {
-            public string Name { get; set; } = name;
-            public Image Flag { get; set; } = flag;
-            public int Score { get; set; } = score;
-        }
-
         public const string addLine = "ADD LINE CONTROL";
-
         private static Control controlToAddSearchBox;
         private static Guna2TextBox searchTextBox;
         private static List<SearchResult> resultList;
@@ -104,6 +103,7 @@ namespace Sales_Tracker.Classes
 
             // Add results to SearchResultBox
             int yOffset = 1;
+            int buttonHeight = 35;
 
             foreach (SearchResult meta in metaList)
             {
@@ -117,7 +117,7 @@ namespace Sales_Tracker.Classes
                     Guna2Button gBtn = new()
                     {
                         Text = meta.Name,
-                        Size = new Size(CalculateControlWidth(metaList.Count), 24),
+                        Size = new Size(CalculateControlWidth(metaList.Count), buttonHeight),
                         Location = new Point(1, yOffset),
                         Font = new Font("Segoe UI", 10),
                         FillColor = CustomColors.controlBack,
@@ -137,7 +137,7 @@ namespace Sales_Tracker.Classes
                     };
                     SearchResultBox.Controls.Add(gBtn);
                 }
-                yOffset += 24;
+                yOffset += buttonHeight;
             }
 
             int totalHeight = yOffset + 1;
@@ -303,7 +303,6 @@ namespace Sales_Tracker.Classes
             results[0].BorderThickness = 1;
             SearchResultBox.ScrollControlIntoView(results[0]);
         }
-
         private static void SetTextBoxToInvalid(Guna2TextBox gTextBox)
         {
             gTextBox.BorderColor = CustomColors.accent_red;

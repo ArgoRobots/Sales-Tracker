@@ -6,15 +6,16 @@
         private string _name;
         private List<Product> _productList = [];
 
+        // Getters and setters
         public string Name
         {
-            get { return _name; }
-            set { _name = value; }
+            get => _name;
+            set => _name = value;
         }
         public List<Product> ProductList
         {
-            get { return _productList; }
-            set { _productList = value; }
+            get => _productList;
+            set => _productList = value;
         }
 
         // Default constructor required for deserialization

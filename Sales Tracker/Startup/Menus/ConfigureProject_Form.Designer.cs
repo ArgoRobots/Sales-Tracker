@@ -225,7 +225,7 @@ namespace Sales_Tracker.Startup.Menus
             ThreeDots_Button.Font = new Font("Segoe UI", 9F);
             ThreeDots_Button.ForeColor = Color.White;
             ThreeDots_Button.Image = Properties.Resources.ThreeDotsBlack;
-            ThreeDots_Button.Location = new Point(1198, 325);
+            ThreeDots_Button.Location = new Point(1190, 330);
             ThreeDots_Button.Name = "ThreeDots_Button";
             ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ThreeDots_Button.Size = new Size(60, 60);

@@ -51,7 +51,7 @@ namespace Sales_Tracker
             // 
             WarningAccountantName_PictureBox.Anchor = AnchorStyles.Top;
             WarningAccountantName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningAccountantName_PictureBox.Location = new Point(173, 210);
+            WarningAccountantName_PictureBox.Location = new Point(185, 207);
             WarningAccountantName_PictureBox.Name = "WarningAccountantName_PictureBox";
             WarningAccountantName_PictureBox.Size = new Size(28, 28);
             WarningAccountantName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -65,7 +65,7 @@ namespace Sales_Tracker
             WarningAccountantName_Label.Anchor = AnchorStyles.Top;
             WarningAccountantName_Label.AutoSize = true;
             WarningAccountantName_Label.Font = new Font("Segoe UI", 10F);
-            WarningAccountantName_Label.Location = new Point(213, 210);
+            WarningAccountantName_Label.Location = new Point(225, 207);
             WarningAccountantName_Label.Name = "WarningAccountantName_Label";
             WarningAccountantName_Label.Size = new Size(233, 28);
             WarningAccountantName_Label.TabIndex = 46;
@@ -78,7 +78,7 @@ namespace Sales_Tracker
             AccountantName_Label.Anchor = AnchorStyles.Top;
             AccountantName_Label.AutoSize = true;
             AccountantName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AccountantName_Label.Location = new Point(173, 111);
+            AccountantName_Label.Location = new Point(170, 114);
             AccountantName_Label.Name = "AccountantName_Label";
             AccountantName_Label.Size = new Size(194, 31);
             AccountantName_Label.TabIndex = 40;
@@ -98,6 +98,7 @@ namespace Sales_Tracker
             Accountant_TextBox.Font = new Font("Segoe UI", 9F);
             Accountant_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Accountant_TextBox.Location = new Point(170, 150);
+            Accountant_TextBox.Margin = new Padding(4, 5, 4, 5);
             Accountant_TextBox.MaxLength = 32;
             Accountant_TextBox.Name = "Accountant_TextBox";
             Accountant_TextBox.PasswordChar = '\0';
@@ -105,7 +106,7 @@ namespace Sales_Tracker
             Accountant_TextBox.SelectedText = "";
             Accountant_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Accountant_TextBox.ShortcutsEnabled = false;
-            Accountant_TextBox.Size = new Size(300, 48);
+            Accountant_TextBox.Size = new Size(300, 50);
             Accountant_TextBox.TabIndex = 42;
             Accountant_TextBox.Tag = "1";
             Accountant_TextBox.TextChanged += Accountant_TextBox_TextChanged;
@@ -127,7 +128,7 @@ namespace Sales_Tracker
             AddAccountant_Button.Location = new Point(482, 150);
             AddAccountant_Button.Name = "AddAccountant_Button";
             AddAccountant_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            AddAccountant_Button.Size = new Size(215, 48);
+            AddAccountant_Button.Size = new Size(215, 50);
             AddAccountant_Button.TabIndex = 43;
             AddAccountant_Button.Tag = "";
             AddAccountant_Button.Text = "Add accountant";
@@ -158,6 +159,7 @@ namespace Sales_Tracker
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Location = new Point(709, 150);
+            Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
@@ -165,7 +167,7 @@ namespace Sales_Tracker
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Search_TextBox.ShortcutsEnabled = false;
-            Search_TextBox.Size = new Size(300, 48);
+            Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 48;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;

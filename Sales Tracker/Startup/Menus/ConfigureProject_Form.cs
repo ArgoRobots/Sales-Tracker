@@ -6,14 +6,20 @@ namespace Sales_Tracker.Startup.Menus
     public partial class ConfigureProject_Form : Form
     {
         // Properties
+        private static ConfigureProject_Form _instance;
         public string selectedDirectory, projectName;
 
+        // Getters and setters
+        public static ConfigureProject_Form Instance
+        {
+            get => _instance;
+        }
+
         // Init.
-        public static ConfigureProject_Form Instance { get; private set; }
         public ConfigureProject_Form()
         {
             InitializeComponent();
-            Instance = this;
+            _instance = this;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
@@ -22,7 +28,6 @@ namespace Sales_Tracker.Startup.Menus
         }
         public void UpdateTheme()
         {
-            CustomColors.SetColors();
             Theme.SetThemeForForm(this);
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {

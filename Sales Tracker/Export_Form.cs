@@ -14,7 +14,6 @@ namespace Sales_Tracker
         }
         public void UpdateTheme()
         {
-            CustomColors.SetColors();
             Theme.SetThemeForForm(this);
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {

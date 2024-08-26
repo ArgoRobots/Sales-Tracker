@@ -14,16 +14,8 @@ namespace Sales_Tracker
     {
         // Proprties
         private static MainMenu_Form _instance;
-        public static MainMenu_Form Instance
-        {
-            get { return _instance; }
-        }
         private static List<string> _thingsThatHaveChangedInFile = [];
-        public static List<string> ThingsThatHaveChangedInFile
-        {
-            get { return _thingsThatHaveChangedInFile; }
-            private set { _thingsThatHaveChangedInFile = value; }
-        }
+        public static readonly byte spaceBetweenControlsHorizontally = 10, spaceBetweenControlsVertically = 4;
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
@@ -32,6 +24,17 @@ namespace Sales_Tracker
         public static readonly byte spaceToOffsetFormNotCenter = 12;  // This is just a weird thing with WinForms
         private static string _currencySymbol;
         private static bool _isFullVersion = true;
+
+        // Getters and setters
+        public static MainMenu_Form Instance
+        {
+            get => _instance;
+        }
+        public static List<string> ThingsThatHaveChangedInFile
+        {
+            get => _thingsThatHaveChangedInFile;
+            private set => _thingsThatHaveChangedInFile = value;
+        }
         public static bool IsFullVersion
         {
             get => _isFullVersion;
@@ -231,7 +234,6 @@ namespace Sales_Tracker
         }
         public void UpdateTheme()
         {
-            CustomColors.SetColors();
             Theme.SetThemeForForm(this);
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
@@ -789,14 +791,14 @@ namespace Sales_Tracker
         private void Edit_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            UI.rename_textBox.Text = CompanyName_Label.Text;
-            UI.rename_textBox.Font = CompanyName_Label.Font;
-            Controls.Add(UI.rename_textBox);
-            UI.rename_textBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
-            UI.rename_textBox.Size = new Size(300, CompanyName_Label.Height + 2);
-            UI.rename_textBox.Focus();
-            UI.rename_textBox.SelectAll();
-            UI.rename_textBox.BringToFront();
+            UI.Rename_TextBox.Text = CompanyName_Label.Text;
+            UI.Rename_TextBox.Font = CompanyName_Label.Font;
+            Controls.Add(UI.Rename_TextBox);
+            UI.Rename_TextBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
+            UI.Rename_TextBox.Size = new Size(300, CompanyName_Label.Height + 2);
+            UI.Rename_TextBox.Focus();
+            UI.Rename_TextBox.SelectAll();
+            UI.Rename_TextBox.BringToFront();
             MainTop_Panel.Controls.Remove(Edit_Button);
             MainTop_Panel.Controls.Remove(CompanyName_Label);
         }
@@ -842,23 +844,23 @@ namespace Sales_Tracker
         // Company label
         public void RenameCompany()
         {
-            if (!Controls.Contains(UI.rename_textBox))
+            if (!Controls.Contains(UI.Rename_TextBox))
             {
                 return;
             }
-            Controls.Remove(UI.rename_textBox);
+            Controls.Remove(UI.Rename_TextBox);
             MainTop_Panel.Controls.Add(Edit_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
 
             // If the name did not change
-            if (UI.rename_textBox.Text == CompanyName_Label.Text)
+            if (UI.Rename_TextBox.Text == CompanyName_Label.Text)
             {
                 return;
             }
 
-            CompanyName_Label.Text = UI.rename_textBox.Text;
-            ArgoCompany.Rename(UI.rename_textBox.Text);
-            UI.rename_textBox.Text = "";
+            CompanyName_Label.Text = UI.Rename_TextBox.Text;
+            ArgoCompany.Rename(UI.Rename_TextBox.Text);
+            UI.Rename_TextBox.Text = "";
             MoveEditButton();
             ResizeControls();
 

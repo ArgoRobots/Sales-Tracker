@@ -7,15 +7,17 @@ namespace Sales_Tracker
     {
         // Properties
         private static List<string> _thingsThatHaveChangedInFile = [];
+        private static Products_Form _instance;
+
+        // Getters and setters
         public static List<string> ThingsThatHaveChangedInFile
         {
-            get { return _thingsThatHaveChangedInFile; }
-            private set { _thingsThatHaveChangedInFile = value; }
+            get => _thingsThatHaveChangedInFile;
+            private set => _thingsThatHaveChangedInFile = value;
         }
-        private static Products_Form _instance;
         public static Products_Form Instance
         {
-            get { return _instance; }
+            get => _instance;
         }
 
         // Init.
@@ -62,16 +64,16 @@ namespace Sales_Tracker
         }
         private void AddSearchBoxEvents()
         {
-            int maxHeight = 200;
+            int maxHeight = 300;
 
             ProductCategory_TextBox.Click += (sender, e) =>
             {
-                List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
+                List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
                 SearchBox.ShowSearchBox(this, ProductCategory_TextBox, searchResults, this, maxHeight);
             };
             ProductCategory_TextBox.TextChanged += (sender, e) =>
             {
-                List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
+                List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
                 SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, maxHeight);
             };
             ProductCategory_TextBox.TextChanged += ValidateInputs;

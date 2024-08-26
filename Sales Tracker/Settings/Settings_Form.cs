@@ -8,11 +8,6 @@ namespace Sales_Tracker.Settings
     public partial class Settings_Form : Form
     {
         // Properties
-        private static Settings_Form _instance;
-        public static Settings_Form Instance
-        {
-            get { return _instance; }
-        }
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
@@ -21,7 +16,6 @@ namespace Sales_Tracker.Settings
         public Settings_Form()
         {
             InitializeComponent();
-            _instance = this;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
@@ -123,15 +117,15 @@ namespace Sales_Tracker.Settings
 
                 if (Theme.CurrentTheme == Theme.ThemeType.Dark)
                 {
-                    UI.rename_textBox.HoverState.BorderColor = Color.White;
-                    UI.rename_textBox.FocusedState.BorderColor = Color.White;
-                    UI.rename_textBox.BorderColor = Color.White;
+                    UI.Rename_TextBox.HoverState.BorderColor = Color.White;
+                    UI.Rename_TextBox.FocusedState.BorderColor = Color.White;
+                    UI.Rename_TextBox.BorderColor = Color.White;
                 }
                 else
                 {
-                    UI.rename_textBox.HoverState.BorderColor = Color.Black;
-                    UI.rename_textBox.FocusedState.BorderColor = Color.Black;
-                    UI.rename_textBox.BorderColor = Color.Black;
+                    UI.Rename_TextBox.HoverState.BorderColor = Color.Black;
+                    UI.Rename_TextBox.FocusedState.BorderColor = Color.Black;
+                    UI.Rename_TextBox.BorderColor = Color.Black;
                 }
 
                 SearchBox.SearchResultBoxContainer.FillColor = CustomColors.controlBack;

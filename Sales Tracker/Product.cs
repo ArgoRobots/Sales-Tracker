@@ -8,25 +8,26 @@
         private string _countryOfOrigin;
         private string _companyOfOrigin;
 
+        // Getters and setters
         public string ProductID
         {
-            get { return _productID; }
-            set { _productID = value; }
+            get => _productID;
+            set => _productID = value;
         }
         public string Name
         {
-            get { return _name; }
-            set { _name = value; }
+            get => _name;
+            set => _name = value;
         }
         public string CountryOfOrigin
         {
-            get { return _countryOfOrigin; }
-            set { _countryOfOrigin = value; }
+            get => _countryOfOrigin;
+            set => _countryOfOrigin = value;
         }
         public string CompanyOfOrigin
         {
-            get { return _companyOfOrigin; }
-            set { _companyOfOrigin = value; }
+            get => _companyOfOrigin;
+            set => _companyOfOrigin = value;
         }
 
         // Default constructor required for deserialization

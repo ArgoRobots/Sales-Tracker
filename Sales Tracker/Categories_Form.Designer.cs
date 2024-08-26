@@ -65,7 +65,8 @@ namespace Sales_Tracker
             Category_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Category_TextBox.Font = new Font("Segoe UI", 9F);
             Category_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Category_TextBox.Location = new Point(170, 150);
+            Category_TextBox.Location = new Point(175, 150);
+            Category_TextBox.Margin = new Padding(4, 5, 4, 5);
             Category_TextBox.MaxLength = 32;
             Category_TextBox.Name = "Category_TextBox";
             Category_TextBox.PasswordChar = '\0';
@@ -73,7 +74,7 @@ namespace Sales_Tracker
             Category_TextBox.SelectedText = "";
             Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Category_TextBox.ShortcutsEnabled = false;
-            Category_TextBox.Size = new Size(300, 48);
+            Category_TextBox.Size = new Size(300, 50);
             Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += Category_TextBox_TextChanged;
             Category_TextBox.Click += CloseAllPanels;
@@ -91,10 +92,10 @@ namespace Sales_Tracker
             AddCategory_Button.FillColor = Color.White;
             AddCategory_Button.Font = new Font("Segoe UI", 9.5F);
             AddCategory_Button.ForeColor = Color.Black;
-            AddCategory_Button.Location = new Point(481, 150);
+            AddCategory_Button.Location = new Point(482, 150);
             AddCategory_Button.Name = "AddCategory_Button";
             AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            AddCategory_Button.Size = new Size(215, 48);
+            AddCategory_Button.Size = new Size(215, 50);
             AddCategory_Button.TabIndex = 2;
             AddCategory_Button.Tag = "";
             AddCategory_Button.Text = "Add category";
@@ -117,7 +118,7 @@ namespace Sales_Tracker
             CategoryName_Label.Anchor = AnchorStyles.Top;
             CategoryName_Label.AutoSize = true;
             CategoryName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CategoryName_Label.Location = new Point(170, 111);
+            CategoryName_Label.Location = new Point(175, 111);
             CategoryName_Label.Name = "CategoryName_Label";
             CategoryName_Label.Size = new Size(169, 31);
             CategoryName_Label.TabIndex = 0;
@@ -128,7 +129,7 @@ namespace Sales_Tracker
             // 
             WarningCategoryName_PictureBox.Anchor = AnchorStyles.Top;
             WarningCategoryName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCategoryName_PictureBox.Location = new Point(172, 210);
+            WarningCategoryName_PictureBox.Location = new Point(187, 208);
             WarningCategoryName_PictureBox.Name = "WarningCategoryName_PictureBox";
             WarningCategoryName_PictureBox.Size = new Size(28, 28);
             WarningCategoryName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -142,7 +143,7 @@ namespace Sales_Tracker
             WarningCategoryName_Label.Anchor = AnchorStyles.Top;
             WarningCategoryName_Label.AutoSize = true;
             WarningCategoryName_Label.Font = new Font("Segoe UI", 10F);
-            WarningCategoryName_Label.Location = new Point(210, 210);
+            WarningCategoryName_Label.Location = new Point(225, 208);
             WarningCategoryName_Label.Name = "WarningCategoryName_Label";
             WarningCategoryName_Label.Size = new Size(213, 28);
             WarningCategoryName_Label.TabIndex = 38;
@@ -162,7 +163,8 @@ namespace Sales_Tracker
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(708, 150);
+            Search_TextBox.Location = new Point(704, 150);
+            Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
@@ -170,7 +172,7 @@ namespace Sales_Tracker
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Search_TextBox.ShortcutsEnabled = false;
-            Search_TextBox.Size = new Size(300, 48);
+            Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 49;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             // 
@@ -179,7 +181,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
             ShowingResultsFor_Label.AutoSize = true;
             ShowingResultsFor_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ShowingResultsFor_Label.Location = new Point(485, 209);
+            ShowingResultsFor_Label.Location = new Point(490, 209);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
             ShowingResultsFor_Label.Size = new Size(209, 31);
             ShowingResultsFor_Label.TabIndex = 50;

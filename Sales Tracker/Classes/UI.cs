@@ -419,13 +419,17 @@ namespace Sales_Tracker.Classes
         }
 
         // Rename
-        public static Guna2TextBox rename_textBox;
+        private static Guna2TextBox _rename_TextBox;
+        public static Guna2TextBox Rename_TextBox
+        {
+            get { return _rename_TextBox; }
+            set { _rename_TextBox = value; }
+        }
         public static void ConstructRightClickRename()
         {
-            rename_textBox = new Guna2TextBox
+            _rename_TextBox = new Guna2TextBox
             {
                 Font = new Font("Segoe UI", 10),
-                Height = 23,
                 Top = 1,
                 MaxLength = 30,
                 ForeColor = CustomColors.text,
@@ -437,18 +441,18 @@ namespace Sales_Tracker.Classes
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
-                rename_textBox.BorderColor = Color.White;
-                rename_textBox.HoverState.BorderColor = Color.White;
-                rename_textBox.FocusedState.BorderColor = Color.White;
+                _rename_TextBox.BorderColor = Color.White;
+                _rename_TextBox.HoverState.BorderColor = Color.White;
+                _rename_TextBox.FocusedState.BorderColor = Color.White;
             }
             else
             {
-                rename_textBox.BorderColor = Color.Black;
-                rename_textBox.HoverState.BorderColor = Color.Black;
-                rename_textBox.FocusedState.BorderColor = Color.Black;
+                _rename_TextBox.BorderColor = Color.Black;
+                _rename_TextBox.HoverState.BorderColor = Color.Black;
+                _rename_TextBox.FocusedState.BorderColor = Color.Black;
             }
 
-            rename_textBox.KeyDown += (sender, e) =>
+            _rename_TextBox.KeyDown += (sender, e) =>
             {
                 if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
                 {
@@ -456,8 +460,8 @@ namespace Sales_Tracker.Classes
                     Rename();
                 }
             };
-            rename_textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
-            rename_textBox.KeyDown += TextBox_KeyDown;
+            _rename_TextBox.PreviewKeyDown += TextBox_PreviewKeyDown;
+            _rename_TextBox.KeyDown += TextBox_KeyDown;
         }
 
         // Validity

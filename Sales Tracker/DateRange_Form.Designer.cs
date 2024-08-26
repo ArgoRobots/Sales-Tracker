@@ -68,7 +68,7 @@
             From_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             From_DateTimePicker.Name = "From_DateTimePicker";
             From_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            From_DateTimePicker.Size = new Size(300, 54);
+            From_DateTimePicker.Size = new Size(300, 50);
             From_DateTimePicker.TabIndex = 8;
             From_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             // 
@@ -91,12 +91,12 @@
             To_DateTimePicker.FillColor = Color.White;
             To_DateTimePicker.Font = new Font("Segoe UI", 9F);
             To_DateTimePicker.Format = DateTimePickerFormat.Long;
-            To_DateTimePicker.Location = new Point(175, 236);
+            To_DateTimePicker.Location = new Point(175, 223);
             To_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             To_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             To_DateTimePicker.Name = "To_DateTimePicker";
             To_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            To_DateTimePicker.Size = new Size(300, 54);
+            To_DateTimePicker.Size = new Size(300, 50);
             To_DateTimePicker.TabIndex = 10;
             To_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             // 
@@ -105,7 +105,7 @@
             To_Label.Anchor = AnchorStyles.Top;
             To_Label.AutoSize = true;
             To_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            To_Label.Location = new Point(175, 202);
+            To_Label.Location = new Point(175, 189);
             To_Label.Name = "To_Label";
             To_Label.Size = new Size(37, 31);
             To_Label.TabIndex = 9;
@@ -125,7 +125,7 @@
             Apply_Button.Location = new Point(328, 326);
             Apply_Button.Name = "Apply_Button";
             Apply_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Apply_Button.Size = new Size(214, 48);
+            Apply_Button.Size = new Size(215, 45);
             Apply_Button.TabIndex = 14;
             Apply_Button.Tag = "";
             Apply_Button.Text = "Apply";
@@ -142,10 +142,10 @@
             Reset_Button.FillColor = Color.White;
             Reset_Button.Font = new Font("Segoe UI", 9.5F);
             Reset_Button.ForeColor = Color.Black;
-            Reset_Button.Location = new Point(108, 326);
+            Reset_Button.Location = new Point(107, 326);
             Reset_Button.Name = "Reset_Button";
             Reset_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Reset_Button.Size = new Size(214, 48);
+            Reset_Button.Size = new Size(215, 45);
             Reset_Button.TabIndex = 15;
             Reset_Button.Tag = "";
             Reset_Button.Text = "Reset";

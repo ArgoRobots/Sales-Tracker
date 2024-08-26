@@ -7,15 +7,17 @@ namespace Sales_Tracker
     {
         // Properties
         private static Categories_Form _instance;
+        private static List<string> _thingsThatHaveChangedInFile = [];
+
+        // Getters and setters
         public static Categories_Form Instance
         {
-            get { return _instance; }
+            get => _instance;
         }
-        private static List<string> _thingsThatHaveChangedInFile = [];
         public static List<string> ThingsThatHaveChangedInFile
         {
-            get { return _thingsThatHaveChangedInFile; }
-            private set { _thingsThatHaveChangedInFile = value; }
+            get => _thingsThatHaveChangedInFile;
+            private set => _thingsThatHaveChangedInFile = value;
         }
 
         // Init.
@@ -185,7 +187,7 @@ namespace Sales_Tracker
             { Columns.CategoryName, "Category" },
         };
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
-        private const byte topForDataGridView = 220;
+        private const byte topForDataGridView = 250;
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }

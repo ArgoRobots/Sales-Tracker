@@ -6,9 +6,11 @@ namespace Sales_Tracker.Settings.Menus
     {
         // Properties
         private static General_Form _instance;
+
+        // Getters and setters
         public static General_Form Instance
         {
-            get { return _instance; }
+            get => _instance;
         }
 
         // Init.

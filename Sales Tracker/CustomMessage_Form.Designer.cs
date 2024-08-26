@@ -75,7 +75,7 @@
             Ok_Button.FillColor = SystemColors.Window;
             Ok_Button.Font = new Font("Segoe UI", 9F);
             Ok_Button.ForeColor = Color.Black;
-            Ok_Button.Location = new Point(491, 130);
+            Ok_Button.Location = new Point(480, 137);
             Ok_Button.Name = "Ok_Button";
             Ok_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Ok_Button.Size = new Size(150, 45);
@@ -98,7 +98,7 @@
             No_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             No_Button.Font = new Font("Segoe UI", 9F);
             No_Button.ForeColor = Color.Black;
-            No_Button.Location = new Point(329, 130);
+            No_Button.Location = new Point(324, 137);
             No_Button.Name = "No_Button";
             No_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             No_Button.Size = new Size(150, 45);
@@ -121,7 +121,7 @@
             Yes_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             Yes_Button.Font = new Font("Segoe UI", 9F);
             Yes_Button.ForeColor = Color.Black;
-            Yes_Button.Location = new Point(167, 130);
+            Yes_Button.Location = new Point(168, 137);
             Yes_Button.Name = "Yes_Button";
             Yes_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Yes_Button.Size = new Size(150, 45);
@@ -144,7 +144,7 @@
             Cancel_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             Cancel_Button.Font = new Font("Segoe UI", 9F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(653, 130);
+            Cancel_Button.Location = new Point(623, 137);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Cancel_Button.Size = new Size(150, 45);
@@ -180,7 +180,7 @@
             Save_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             Save_Button.Font = new Font("Segoe UI", 9F);
             Save_Button.ForeColor = Color.Black;
-            Save_Button.Location = new Point(5, 130);
+            Save_Button.Location = new Point(12, 137);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Save_Button.Size = new Size(150, 45);
@@ -203,7 +203,7 @@
             DontSave_Button.FocusedColor = Color.FromArgb(0, 192, 192);
             DontSave_Button.Font = new Font("Segoe UI", 9F);
             DontSave_Button.ForeColor = Color.Black;
-            DontSave_Button.Location = new Point(97, 130);
+            DontSave_Button.Location = new Point(115, 137);
             DontSave_Button.Name = "DontSave_Button";
             DontSave_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             DontSave_Button.Size = new Size(150, 45);

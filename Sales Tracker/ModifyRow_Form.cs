@@ -307,12 +307,12 @@ namespace Sales_Tracker
 
                         ProductCategory_TextBox.Click += (sender, e) =>
                         {
-                            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(array);
+                            List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(array);
                             SearchBox.ShowSearchBox(this, ProductCategory_TextBox, searchResults, this, searchBoxMaxHeight);
                         };
                         ProductCategory_TextBox.TextChanged += (sender, e) =>
                         {
-                            List<SearchBox.SearchResult> searchResults = SearchBox.ConvertToSearchResults(array);
+                            List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(array);
                             SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, searchBoxMaxHeight);
                         };
                         ProductCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
@@ -636,7 +636,7 @@ namespace Sales_Tracker
         }
 
         // Methods
-        private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchBox.SearchResult> results, int maxHeight)
+        private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchResult> results, int maxHeight)
         {
             SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
         }

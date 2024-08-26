@@ -129,7 +129,7 @@ namespace Sales_Tracker
             OrderNumber_TextBox.SelectedText = "";
             OrderNumber_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             OrderNumber_TextBox.ShortcutsEnabled = false;
-            OrderNumber_TextBox.Size = new Size(300, 54);
+            OrderNumber_TextBox.Size = new Size(300, 50);
             OrderNumber_TextBox.TabIndex = 2;
             OrderNumber_TextBox.Tag = "";
             OrderNumber_TextBox.TextChanged += ValidateInputs;
@@ -140,7 +140,7 @@ namespace Sales_Tracker
             OrderNumber_Label.Anchor = AnchorStyles.Top;
             OrderNumber_Label.AutoSize = true;
             OrderNumber_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            OrderNumber_Label.Location = new Point(268, 118);
+            OrderNumber_Label.Location = new Point(268, 119);
             OrderNumber_Label.Name = "OrderNumber_Label";
             OrderNumber_Label.Size = new Size(93, 31);
             OrderNumber_Label.TabIndex = 0;
@@ -192,7 +192,7 @@ namespace Sales_Tracker
             BuyerName_TextBox.SelectedText = "";
             BuyerName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             BuyerName_TextBox.ShortcutsEnabled = false;
-            BuyerName_TextBox.Size = new Size(300, 54);
+            BuyerName_TextBox.Size = new Size(300, 50);
             BuyerName_TextBox.TabIndex = 3;
             BuyerName_TextBox.Tag = "";
             // 
@@ -201,7 +201,7 @@ namespace Sales_Tracker
             ProductName_Label.Anchor = AnchorStyles.Top;
             ProductName_Label.AutoSize = true;
             ProductName_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductName_Label.Location = new Point(886, 118);
+            ProductName_Label.Location = new Point(884, 118);
             ProductName_Label.Name = "ProductName_Label";
             ProductName_Label.Size = new Size(157, 31);
             ProductName_Label.TabIndex = 0;
@@ -229,7 +229,7 @@ namespace Sales_Tracker
             ProductName_TextBox.SelectedText = "";
             ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ProductName_TextBox.ShortcutsEnabled = false;
-            ProductName_TextBox.Size = new Size(300, 54);
+            ProductName_TextBox.Size = new Size(300, 50);
             ProductName_TextBox.TabIndex = 4;
             ProductName_TextBox.Tag = "";
             // 
@@ -266,7 +266,7 @@ namespace Sales_Tracker
             Quantity_TextBox.SelectedText = "";
             Quantity_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Quantity_TextBox.ShortcutsEnabled = false;
-            Quantity_TextBox.Size = new Size(150, 54);
+            Quantity_TextBox.Size = new Size(150, 50);
             Quantity_TextBox.TabIndex = 10;
             Quantity_TextBox.TextChanged += ValidateInputs;
             Quantity_TextBox.Click += CloseAllPanels;
@@ -304,7 +304,7 @@ namespace Sales_Tracker
             PricePerUnit_TextBox.SelectedText = "";
             PricePerUnit_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             PricePerUnit_TextBox.ShortcutsEnabled = false;
-            PricePerUnit_TextBox.Size = new Size(150, 54);
+            PricePerUnit_TextBox.Size = new Size(150, 50);
             PricePerUnit_TextBox.TabIndex = 11;
             PricePerUnit_TextBox.TextChanged += ValidateInputs;
             PricePerUnit_TextBox.Click += CloseAllPanels;
@@ -342,7 +342,7 @@ namespace Sales_Tracker
             Shipping_TextBox.SelectedText = "";
             Shipping_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Shipping_TextBox.ShortcutsEnabled = false;
-            Shipping_TextBox.Size = new Size(150, 54);
+            Shipping_TextBox.Size = new Size(150, 50);
             Shipping_TextBox.TabIndex = 12;
             Shipping_TextBox.TextChanged += ValidateInputs;
             Shipping_TextBox.Click += CloseAllPanels;
@@ -380,7 +380,7 @@ namespace Sales_Tracker
             Tax_TextBox.SelectedText = "";
             Tax_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Tax_TextBox.ShortcutsEnabled = false;
-            Tax_TextBox.Size = new Size(150, 54);
+            Tax_TextBox.Size = new Size(150, 50);
             Tax_TextBox.TabIndex = 13;
             Tax_TextBox.TextChanged += ValidateInputs;
             Tax_TextBox.Click += CloseAllPanels;
@@ -431,7 +431,7 @@ namespace Sales_Tracker
             Date_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             Date_DateTimePicker.Name = "Date_DateTimePicker";
             Date_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            Date_DateTimePicker.Size = new Size(300, 54);
+            Date_DateTimePicker.Size = new Size(300, 50);
             Date_DateTimePicker.TabIndex = 9;
             Date_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             Date_DateTimePicker.ValueChanged += ValidateInputs;
@@ -443,7 +443,7 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel.AutoSize = true;
             WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
-            WarningProduct_LinkLabel.Location = new Point(922, 216);
+            WarningProduct_LinkLabel.Location = new Point(933, 210);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
             WarningProduct_LinkLabel.Size = new Size(181, 59);
             WarningProduct_LinkLabel.TabIndex = 7;
@@ -456,7 +456,7 @@ namespace Sales_Tracker
             // 
             WarningProduct_PictureBox.Anchor = AnchorStyles.Top;
             WarningProduct_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningProduct_PictureBox.Location = new Point(885, 218);
+            WarningProduct_PictureBox.Location = new Point(896, 212);
             WarningProduct_PictureBox.Name = "WarningProduct_PictureBox";
             WarningProduct_PictureBox.Size = new Size(28, 28);
             WarningProduct_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -496,7 +496,7 @@ namespace Sales_Tracker
             PaymentFee_TextBox.SelectedText = "";
             PaymentFee_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             PaymentFee_TextBox.ShortcutsEnabled = false;
-            PaymentFee_TextBox.Size = new Size(150, 54);
+            PaymentFee_TextBox.Size = new Size(150, 50);
             PaymentFee_TextBox.TabIndex = 14;
             PaymentFee_TextBox.TextChanged += ValidateInputs;
             PaymentFee_TextBox.Click += CloseAllPanels;
@@ -512,11 +512,11 @@ namespace Sales_Tracker
             Currency_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Currency_ComboBox.Font = new Font("Segoe UI", 10F);
             Currency_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
-            Currency_ComboBox.ItemHeight = 48;
+            Currency_ComboBox.ItemHeight = 44;
             Currency_ComboBox.Location = new Point(113, 153);
             Currency_ComboBox.Name = "Currency_ComboBox";
             Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            Currency_ComboBox.Size = new Size(148, 54);
+            Currency_ComboBox.Size = new Size(148, 50);
             Currency_ComboBox.TabIndex = 1;
             Currency_ComboBox.TextChanged += ValidateInputs;
             Currency_ComboBox.Click += CloseAllPanels;
@@ -526,7 +526,7 @@ namespace Sales_Tracker
             Currency_Label.Anchor = AnchorStyles.Top;
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Currency_Label.Location = new Point(113, 119);
+            Currency_Label.Location = new Point(113, 118);
             Currency_Label.Name = "Currency_Label";
             Currency_Label.Size = new Size(104, 31);
             Currency_Label.TabIndex = 0;
@@ -539,7 +539,7 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.AutoSize = true;
             WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningBuyer_LinkLabel.LinkArea = new LinkArea(22, 15);
-            WarningBuyer_LinkLabel.Location = new Point(613, 218);
+            WarningBuyer_LinkLabel.Location = new Point(625, 208);
             WarningBuyer_LinkLabel.Name = "WarningBuyer_LinkLabel";
             WarningBuyer_LinkLabel.Size = new Size(210, 59);
             WarningBuyer_LinkLabel.TabIndex = 6;
@@ -552,7 +552,7 @@ namespace Sales_Tracker
             // 
             WarningBuyer_PictureBox.Anchor = AnchorStyles.Top;
             WarningBuyer_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningBuyer_PictureBox.Location = new Point(576, 218);
+            WarningBuyer_PictureBox.Location = new Point(588, 208);
             WarningBuyer_PictureBox.Name = "WarningBuyer_PictureBox";
             WarningBuyer_PictureBox.Size = new Size(28, 28);
             WarningBuyer_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -592,7 +592,7 @@ namespace Sales_Tracker
             AmountCharged_TextBox.SelectedText = "";
             AmountCharged_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
             AmountCharged_TextBox.ShortcutsEnabled = false;
-            AmountCharged_TextBox.Size = new Size(150, 54);
+            AmountCharged_TextBox.Size = new Size(150, 50);
             AmountCharged_TextBox.TabIndex = 16;
             AmountCharged_TextBox.TextChanged += ValidateInputs;
             AmountCharged_TextBox.Click += CloseAllPanels;
@@ -611,7 +611,7 @@ namespace Sales_Tracker
             Receipt_Button.Location = new Point(1191, 153);
             Receipt_Button.Name = "Receipt_Button";
             Receipt_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
-            Receipt_Button.Size = new Size(210, 54);
+            Receipt_Button.Size = new Size(210, 50);
             Receipt_Button.TabIndex = 5;
             Receipt_Button.Tag = "";
             Receipt_Button.Text = "Add receipt";
@@ -622,7 +622,7 @@ namespace Sales_Tracker
             SelectedReceipt_Label.Anchor = AnchorStyles.Top;
             SelectedReceipt_Label.AutoSize = true;
             SelectedReceipt_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceipt_Label.Location = new Point(1268, 218);
+            SelectedReceipt_Label.Location = new Point(1269, 213);
             SelectedReceipt_Label.Name = "SelectedReceipt_Label";
             SelectedReceipt_Label.Size = new Size(86, 28);
             SelectedReceipt_Label.TabIndex = 0;
@@ -635,7 +635,7 @@ namespace Sales_Tracker
             RemoveReceipt_ImageButton.ImageOffset = new Point(0, 0);
             RemoveReceipt_ImageButton.ImageRotate = 0F;
             RemoveReceipt_ImageButton.ImageSize = new Size(30, 30);
-            RemoveReceipt_ImageButton.Location = new Point(1362, 213);
+            RemoveReceipt_ImageButton.Location = new Point(1363, 208);
             RemoveReceipt_ImageButton.Name = "RemoveReceipt_ImageButton";
             RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges27;
             RemoveReceipt_ImageButton.Size = new Size(38, 38);
@@ -677,7 +677,7 @@ namespace Sales_Tracker
             Discount_TextBox.SelectedText = "";
             Discount_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges29;
             Discount_TextBox.ShortcutsEnabled = false;
-            Discount_TextBox.Size = new Size(150, 54);
+            Discount_TextBox.Size = new Size(150, 50);
             Discount_TextBox.TabIndex = 15;
             Discount_TextBox.TextChanged += ValidateInputs;
             Discount_TextBox.Click += CloseAllPanels;
