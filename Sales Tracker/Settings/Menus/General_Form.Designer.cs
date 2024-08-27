@@ -35,8 +35,6 @@ namespace Sales_Tracker.Settings.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -45,6 +43,8 @@ namespace Sales_Tracker.Settings.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             General_Label = new Label();
             Language_Label = new Label();
             MoreInformation_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -149,6 +149,9 @@ namespace Sales_Tracker.Settings.Menus
             // Back_Panel
             // 
             Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Back_Panel.Controls.Add(ColorTheme_ComboBox);
+            Back_Panel.Controls.Add(Language_ComboBox);
+            Back_Panel.Controls.Add(Currency_ComboBox);
             Back_Panel.Controls.Add(ShowDebugInfo_Label);
             Back_Panel.Controls.Add(SendAnonymousInformation_Label);
             Back_Panel.Controls.Add(PurchaseReceipts_Label);
@@ -160,9 +163,6 @@ namespace Sales_Tracker.Settings.Menus
             Back_Panel.Controls.Add(PurchaseReceipts_CheckBox);
             Back_Panel.Controls.Add(ShowDebugInfo_CheckBox);
             Back_Panel.Controls.Add(SendAnonymousInformation_CheckBox);
-            Back_Panel.Controls.Add(ColorTheme_ComboBox);
-            Back_Panel.Controls.Add(Language_ComboBox);
-            Back_Panel.Controls.Add(Currency_ComboBox);
             Back_Panel.Controls.Add(MoreInformation_Button);
             Back_Panel.Location = new Point(125, 252);
             Back_Panel.Name = "Back_Panel";
@@ -243,10 +243,10 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_CheckBox.CheckedState.BorderRadius = 2;
             SalesReceipts_CheckBox.CheckedState.BorderThickness = 0;
             SalesReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            SalesReceipts_CheckBox.CustomizableEdges = customizableEdges7;
+            SalesReceipts_CheckBox.CustomizableEdges = customizableEdges9;
             SalesReceipts_CheckBox.Location = new Point(508, 320);
             SalesReceipts_CheckBox.Name = "SalesReceipts_CheckBox";
-            SalesReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            SalesReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             SalesReceipts_CheckBox.Size = new Size(20, 20);
             SalesReceipts_CheckBox.TabIndex = 342;
             SalesReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -262,10 +262,10 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox.CheckedState.BorderRadius = 2;
             PurchaseReceipts_CheckBox.CheckedState.BorderThickness = 0;
             PurchaseReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            PurchaseReceipts_CheckBox.CustomizableEdges = customizableEdges9;
+            PurchaseReceipts_CheckBox.CustomizableEdges = customizableEdges11;
             PurchaseReceipts_CheckBox.Location = new Point(508, 274);
             PurchaseReceipts_CheckBox.Name = "PurchaseReceipts_CheckBox";
-            PurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            PurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             PurchaseReceipts_CheckBox.Size = new Size(20, 20);
             PurchaseReceipts_CheckBox.TabIndex = 340;
             PurchaseReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -281,10 +281,10 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_CheckBox.CheckedState.BorderRadius = 2;
             ShowDebugInfo_CheckBox.CheckedState.BorderThickness = 0;
             ShowDebugInfo_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            ShowDebugInfo_CheckBox.CustomizableEdges = customizableEdges11;
+            ShowDebugInfo_CheckBox.CustomizableEdges = customizableEdges13;
             ShowDebugInfo_CheckBox.Location = new Point(508, 182);
             ShowDebugInfo_CheckBox.Name = "ShowDebugInfo_CheckBox";
-            ShowDebugInfo_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            ShowDebugInfo_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ShowDebugInfo_CheckBox.Size = new Size(20, 20);
             ShowDebugInfo_CheckBox.TabIndex = 331;
             ShowDebugInfo_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -300,10 +300,10 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_CheckBox.CheckedState.BorderRadius = 2;
             SendAnonymousInformation_CheckBox.CheckedState.BorderThickness = 0;
             SendAnonymousInformation_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            SendAnonymousInformation_CheckBox.CustomizableEdges = customizableEdges13;
+            SendAnonymousInformation_CheckBox.CustomizableEdges = customizableEdges15;
             SendAnonymousInformation_CheckBox.Location = new Point(508, 228);
             SendAnonymousInformation_CheckBox.Name = "SendAnonymousInformation_CheckBox";
-            SendAnonymousInformation_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            SendAnonymousInformation_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
             SendAnonymousInformation_CheckBox.Size = new Size(20, 20);
             SendAnonymousInformation_CheckBox.TabIndex = 338;
             SendAnonymousInformation_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -314,7 +314,7 @@ namespace Sales_Tracker.Settings.Menus
             // ColorTheme_ComboBox
             // 
             ColorTheme_ComboBox.BackColor = Color.Transparent;
-            ColorTheme_ComboBox.CustomizableEdges = customizableEdges15;
+            ColorTheme_ComboBox.CustomizableEdges = customizableEdges7;
             ColorTheme_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             ColorTheme_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             ColorTheme_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
@@ -324,14 +324,13 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_ComboBox.ItemHeight = 39;
             ColorTheme_ComboBox.Location = new Point(507, 123);
             ColorTheme_ComboBox.Name = "ColorTheme_ComboBox";
-            ColorTheme_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            ColorTheme_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ColorTheme_ComboBox.Size = new Size(255, 45);
             ColorTheme_ComboBox.TabIndex = 334;
             // 
             // General_Form
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
             Controls.Add(Back_Panel);

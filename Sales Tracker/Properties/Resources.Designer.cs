@@ -61,6 +61,26 @@ namespace Sales_Tracker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AddBlack {
+            get {
+                object obj = ResourceManager.GetObject("AddBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AddWhite {
+            get {
+                object obj = ResourceManager.GetObject("AddWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon ArgoColor {
@@ -123,9 +143,9 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DownArrowFullBlack {
+        internal static System.Drawing.Bitmap DownArrowFullGray {
             get {
-                object obj = ResourceManager.GetObject("DownArrowFullBlack", resourceCulture);
+                object obj = ResourceManager.GetObject("DownArrowFullGray", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -256,26 +276,6 @@ namespace Sales_Tracker.Properties {
         internal static System.Drawing.Bitmap OpenFolderWhite {
             get {
                 object obj = ResourceManager.GetObject("OpenFolderWhite", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap PlusBlack {
-            get {
-                object obj = ResourceManager.GetObject("PlusBlack", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap PlusWhite {
-            get {
-                object obj = ResourceManager.GetObject("PlusWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

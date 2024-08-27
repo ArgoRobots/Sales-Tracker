@@ -63,7 +63,7 @@ namespace Sales_Tracker.Startup.Menus
             Back_Button.BorderThickness = 1;
             Back_Button.CustomizableEdges = customizableEdges1;
             Back_Button.FillColor = Color.White;
-            Back_Button.Font = new Font("Segoe UI", 9.5F);
+            Back_Button.Font = new Font("Segoe UI", 10F);
             Back_Button.ForeColor = Color.Black;
             Back_Button.Location = new Point(844, 735);
             Back_Button.Name = "Back_Button";
@@ -81,7 +81,7 @@ namespace Sales_Tracker.Startup.Menus
             Create_Button.BorderThickness = 1;
             Create_Button.CustomizableEdges = customizableEdges3;
             Create_Button.FillColor = Color.White;
-            Create_Button.Font = new Font("Segoe UI", 9.5F);
+            Create_Button.Font = new Font("Segoe UI", 10F);
             Create_Button.ForeColor = Color.Black;
             Create_Button.Location = new Point(1056, 735);
             Create_Button.Name = "Create_Button";
@@ -177,9 +177,9 @@ namespace Sales_Tracker.Startup.Menus
             WarningName_Label.Font = new Font("Segoe UI", 10F);
             WarningName_Label.Location = new Point(99, 219);
             WarningName_Label.Name = "WarningName_Label";
-            WarningName_Label.Size = new Size(294, 28);
+            WarningName_Label.Size = new Size(607, 28);
             WarningName_Label.TabIndex = 0;
-            WarningName_Label.Text = "Emtpy or invalid copmany name";
+            WarningName_Label.Text = "Emtpy or invalid company name. It cannot contain special characters";
             WarningName_Label.Visible = false;
             // 
             // WarningDir_Label
@@ -234,8 +234,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // ConfigureProject_Form
             // 
-            AutoScaleDimensions = new SizeF(144F, 144F);
-            AutoScaleMode = AutoScaleMode.Dpi;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1320, 825);
             Controls.Add(WarningDir_PictureBox);

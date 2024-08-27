@@ -29,8 +29,8 @@ namespace Sales_Tracker.Settings.Menus
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             UpToDate_Label = new Label();
             Updates_Label = new Label();
             LastCheck_Label = new Label();
@@ -72,7 +72,7 @@ namespace Sales_Tracker.Settings.Menus
             // CheckForUpdates_Button
             // 
             CheckForUpdates_Button.BorderRadius = 3;
-            CheckForUpdates_Button.CustomizableEdges = customizableEdges3;
+            CheckForUpdates_Button.CustomizableEdges = customizableEdges1;
             CheckForUpdates_Button.DisabledState.BorderColor = Color.DarkGray;
             CheckForUpdates_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             CheckForUpdates_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -82,7 +82,7 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.ForeColor = Color.White;
             CheckForUpdates_Button.Location = new Point(400, 140);
             CheckForUpdates_Button.Name = "CheckForUpdates_Button";
-            CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CheckForUpdates_Button.Size = new Size(200, 50);
             CheckForUpdates_Button.TabIndex = 1;
             CheckForUpdates_Button.Text = "Check for updates";
@@ -101,8 +101,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Updates_Form
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
             Controls.Add(Back_Panel);

@@ -132,7 +132,7 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
             MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - MainMenu_Form.spaceToOffsetFormNotCenter, topForDataGridView);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {
@@ -184,7 +184,7 @@ namespace Sales_Tracker
         private void ShowShowingResultsForLabel(string text)
         {
             ShowingResultsFor_Label.Text = $"Showing results for: {text}";
-            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - UI.spaceToOffsetFormNotCenter;
             Controls.Add(ShowingResultsFor_Label);
         }
         private void HideShowingResultsForLabel()

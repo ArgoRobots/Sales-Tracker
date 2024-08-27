@@ -215,7 +215,7 @@
             Export_Button.BorderThickness = 1;
             Export_Button.CustomizableEdges = customizableEdges7;
             Export_Button.FillColor = Color.White;
-            Export_Button.Font = new Font("Segoe UI", 9.5F);
+            Export_Button.Font = new Font("Segoe UI", 10F);
             Export_Button.ForeColor = Color.Black;
             Export_Button.Location = new Point(937, 630);
             Export_Button.Name = "Export_Button";

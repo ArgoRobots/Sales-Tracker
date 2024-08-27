@@ -56,11 +56,12 @@ namespace Sales_Tracker.Passwords
                 BorderRadius = 2,
                 BorderThickness = 1,
                 Enabled = false,
-                Font = new Font("Segoe UI", 9.5F),
-                Location = new Point(167, 195),
-                Size = new Size(150, 36),
+                Font = new Font("Segoe UI", 10F),
+                Top = 310,
+                Size = new Size(215, 50),
                 Text = "Windows Hello"
             };
+            WindowsHello_Button.Left = (Width - WindowsHello_Button.Width) / 2 - UI.spaceToOffsetFormNotCenter;
             WindowsHello_Button.Click += WindowsHello_Button_Click;
             Controls.Add(WindowsHello_Button);
             Theme.SetThemeForControl([WindowsHello_Button]);
@@ -78,7 +79,7 @@ namespace Sales_Tracker.Passwords
 
             if (result.Status == KeyCredentialStatus.Success)
             {
-                PasswordManager.isPasswordValid = true;
+                PasswordManager.IsPasswordValid = true;
                 Close();
             }
             else
@@ -97,28 +98,29 @@ namespace Sales_Tracker.Passwords
                 if (supported)
                 {
                     WindowsHello_Button.Enabled = true;
+                    Controls.Remove(Message_LinkLabel);
                 }
                 else
                 {
                     SetMessageText("Windows Hello is not supported on this device");
                 }
-                Message_LinkLabel.Top = WindowsHello_Button.Top - 30;
-                Height = 280;
-                Controls.Remove(Message_LinkLabel);
+
+                Message_LinkLabel.Top = WindowsHello_Button.Top - 40;
+                Height = 460;
             }
             else
             {
                 SetMessageText("Upgrade now to enable Windows Hello");
                 Message_LinkLabel.LinkArea = new LinkArea(Message_LinkLabel.Text.IndexOf("Upgrade now"), "Upgrade now".Length);
                 Message_LinkLabel.Top = Enter_Button.Bottom + 20;
-                Height = 250;
+                Height = 410;
             }
         }
         private void SetMessageText(string text)
         {
             Message_LinkLabel.Text = text;
             Controls.Add(Message_LinkLabel);
-            Message_LinkLabel.Left = (Width - Message_LinkLabel.Width) / 2;
+            Message_LinkLabel.Left = (Width - Message_LinkLabel.Width) / 2 - UI.spaceToOffsetFormNotCenter;
         }
 
         // Methods
@@ -138,7 +140,7 @@ namespace Sales_Tracker.Passwords
         {
             if (PasswordManager.Password == Password_TextBox.Text)
             {
-                PasswordManager.isPasswordValid = true;
+                PasswordManager.IsPasswordValid = true;
                 Close();
             }
             else

@@ -123,7 +123,7 @@ namespace Sales_Tracker
             AddAccountant_Button.CustomizableEdges = customizableEdges3;
             AddAccountant_Button.Enabled = false;
             AddAccountant_Button.FillColor = Color.White;
-            AddAccountant_Button.Font = new Font("Segoe UI", 9.5F);
+            AddAccountant_Button.Font = new Font("Segoe UI", 10F);
             AddAccountant_Button.ForeColor = Color.Black;
             AddAccountant_Button.Location = new Point(482, 150);
             AddAccountant_Button.Name = "AddAccountant_Button";

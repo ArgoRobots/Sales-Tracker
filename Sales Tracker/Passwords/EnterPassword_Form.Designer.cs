@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Enter_Button = new Guna.UI2.WinForms.Guna2Button();
             Password_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             EnterPassword_Label = new Label();
@@ -45,15 +45,14 @@
             Enter_Button.BorderColor = Color.LightGray;
             Enter_Button.BorderRadius = 2;
             Enter_Button.BorderThickness = 1;
-            Enter_Button.CustomizableEdges = customizableEdges1;
+            Enter_Button.CustomizableEdges = customizableEdges5;
             Enter_Button.FillColor = Color.White;
-            Enter_Button.Font = new Font("Segoe UI", 9.5F);
+            Enter_Button.Font = new Font("Segoe UI", 10F);
             Enter_Button.ForeColor = Color.Black;
-            Enter_Button.Location = new Point(167, 125);
-            Enter_Button.Margin = new Padding(4, 3, 4, 3);
+            Enter_Button.Location = new Point(232, 208);
             Enter_Button.Name = "Enter_Button";
-            Enter_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Enter_Button.Size = new Size(150, 36);
+            Enter_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Enter_Button.Size = new Size(215, 50);
             Enter_Button.TabIndex = 59;
             Enter_Button.Tag = "";
             Enter_Button.Text = "Enter";
@@ -62,7 +61,7 @@
             // Password_TextBox
             // 
             Password_TextBox.Anchor = AnchorStyles.Top;
-            Password_TextBox.CustomizableEdges = customizableEdges3;
+            Password_TextBox.CustomizableEdges = customizableEdges7;
             Password_TextBox.DefaultText = "";
             Password_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Password_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -71,15 +70,16 @@
             Password_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Password_TextBox.Font = new Font("Segoe UI", 9F);
             Password_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Password_TextBox.Location = new Point(115, 70);
+            Password_TextBox.Location = new Point(164, 117);
+            Password_TextBox.Margin = new Padding(4, 5, 4, 5);
             Password_TextBox.MaxLength = 32;
             Password_TextBox.Name = "Password_TextBox";
             Password_TextBox.PasswordChar = '\0';
             Password_TextBox.PlaceholderText = "Password";
             Password_TextBox.SelectedText = "";
-            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Password_TextBox.ShortcutsEnabled = false;
-            Password_TextBox.Size = new Size(250, 36);
+            Password_TextBox.Size = new Size(350, 50);
             Password_TextBox.TabIndex = 58;
             Password_TextBox.KeyDown += Password_TextBox_KeyDown;
             // 
@@ -88,9 +88,9 @@
             EnterPassword_Label.Anchor = AnchorStyles.Top;
             EnterPassword_Label.AutoSize = true;
             EnterPassword_Label.Font = new Font("Segoe UI", 16F);
-            EnterPassword_Label.Location = new Point(162, 14);
+            EnterPassword_Label.Location = new Point(221, 23);
             EnterPassword_Label.Name = "EnterPassword_Label";
-            EnterPassword_Label.Size = new Size(161, 30);
+            EnterPassword_Label.Size = new Size(237, 45);
             EnterPassword_Label.TabIndex = 57;
             EnterPassword_Label.Text = "Enter password";
             // 
@@ -100,23 +100,24 @@
             Message_LinkLabel.AutoSize = true;
             Message_LinkLabel.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Message_LinkLabel.LinkArea = new LinkArea(0, 0);
-            Message_LinkLabel.Location = new Point(209, 181);
+            Message_LinkLabel.Location = new Point(287, 302);
             Message_LinkLabel.Name = "Message_LinkLabel";
-            Message_LinkLabel.Size = new Size(67, 20);
+            Message_LinkLabel.Size = new Size(105, 31);
             Message_LinkLabel.TabIndex = 60;
             Message_LinkLabel.Text = "Message";
             Message_LinkLabel.LinkClicked += Message_LinkLabel_LinkClicked;
             // 
             // EnterPassword_Form
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(484, 211);
+            ClientSize = new Size(678, 354);
             Controls.Add(Message_LinkLabel);
             Controls.Add(Enter_Button);
             Controls.Add(Password_TextBox);
             Controls.Add(EnterPassword_Label);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            MinimumSize = new Size(700, 410);
             Name = "EnterPassword_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

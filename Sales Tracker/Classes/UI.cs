@@ -21,8 +21,9 @@ namespace Sales_Tracker.Classes
         }
 
         // Properties
-        public static readonly byte panelButtonHeight = 35, spaceForSeperator = 10, spaceForPanel = 10;
+        public static readonly byte panelButtonHeight = 35, spaceForSeperator = 10, spaceForPanel = 10, spaceBetweenControls = 8,
 
+            spaceToOffsetFormNotCenter = 12;  // This is just a weird thing with WinForms
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -75,7 +76,7 @@ namespace Sales_Tracker.Classes
                 FillColor = CustomColors.panelBtn,
                 ForeColor = CustomColors.text,
                 TextAlign = HorizontalAlignment.Left,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10F),
                 Text = text,
                 Margin = new Padding(0),
                 BorderColor = CustomColors.controlBorder
@@ -118,7 +119,7 @@ namespace Sales_Tracker.Classes
             {
                 ForeColor = CustomColors.text,
                 BackColor = CustomColors.panelBtn,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10F),
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = true,
                 Top = 1,
@@ -328,8 +329,8 @@ namespace Sales_Tracker.Classes
                 BorderRadius = 3,
                 BorderThickness = 2,
                 Cursor = Cursors.Hand,
-                Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold),
-                Image = Resources.DownArrowFullBlack,
+                Font = new Font("Segoe UI Semibold", 10, FontStyle.Bold),
+                Image = Resources.DownArrowFullGray,
                 ImageAlign = HorizontalAlignment.Right,
                 ImageSize = new Size(8, 8),
                 Size = new Size(225, 60),
@@ -429,7 +430,7 @@ namespace Sales_Tracker.Classes
         {
             _rename_TextBox = new Guna2TextBox
             {
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10F),
                 Top = 1,
                 MaxLength = 30,
                 ForeColor = CustomColors.text,

@@ -90,7 +90,7 @@ namespace Sales_Tracker
             AddCategory_Button.CustomizableEdges = customizableEdges3;
             AddCategory_Button.Enabled = false;
             AddCategory_Button.FillColor = Color.White;
-            AddCategory_Button.Font = new Font("Segoe UI", 9.5F);
+            AddCategory_Button.Font = new Font("Segoe UI", 10F);
             AddCategory_Button.ForeColor = Color.Black;
             AddCategory_Button.Location = new Point(482, 150);
             AddCategory_Button.Name = "AddCategory_Button";
@@ -190,6 +190,7 @@ namespace Sales_Tracker
             // 
             // Purchase_RadioButton
             // 
+            Purchase_RadioButton.Animated = true;
             Purchase_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Purchase_RadioButton.CheckedState.BorderThickness = 0;
             Purchase_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
@@ -233,6 +234,7 @@ namespace Sales_Tracker
             // 
             // Sale_RadioButton
             // 
+            Sale_RadioButton.Animated = true;
             Sale_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Sale_RadioButton.CheckedState.BorderThickness = 0;
             Sale_RadioButton.CheckedState.FillColor = Color.FromArgb(94, 148, 255);

@@ -4,13 +4,20 @@ namespace Sales_Tracker.Passwords
 {
     internal class PasswordManager
     {
-        public static bool isPasswordValid;
-        private static string password;
+        // Properties
+        private static bool _isPasswordValid;
+        private static string _password;
 
+        // Getters and setters
+        public static bool IsPasswordValid
+        {
+            get => _isPasswordValid;
+            set => _isPasswordValid = value;
+        }
         public static string Password
         {
-            get { return password; }
-            set { password = value; }
+            get => _password;
+            set => _password = value;
         }
 
         /// <summary>
@@ -73,7 +80,7 @@ namespace Sales_Tracker.Passwords
             if (Password != null)
             {
                 new EnterPassword_Form().ShowDialog();
-                return isPasswordValid;
+                return _isPasswordValid;
             }
             return true;
         }

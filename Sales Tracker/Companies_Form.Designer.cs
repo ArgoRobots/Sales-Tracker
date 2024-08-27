@@ -122,7 +122,7 @@ namespace Sales_Tracker
             AddCompany_Button.CustomizableEdges = customizableEdges9;
             AddCompany_Button.Enabled = false;
             AddCompany_Button.FillColor = Color.White;
-            AddCompany_Button.Font = new Font("Segoe UI", 9.5F);
+            AddCompany_Button.Font = new Font("Segoe UI", 10F);
             AddCompany_Button.ForeColor = Color.Black;
             AddCompany_Button.Location = new Point(482, 150);
             AddCompany_Button.Name = "AddCompany_Button";

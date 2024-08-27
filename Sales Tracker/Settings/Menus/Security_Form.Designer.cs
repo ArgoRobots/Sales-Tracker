@@ -29,10 +29,10 @@ namespace Sales_Tracker.Settings.Menus
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Security_Label = new Label();
             Back_Panel = new Panel();
             EncryptFiles_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
@@ -72,10 +72,10 @@ namespace Sales_Tracker.Settings.Menus
             EncryptFiles_CheckBox.CheckedState.BorderRadius = 2;
             EncryptFiles_CheckBox.CheckedState.BorderThickness = 0;
             EncryptFiles_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            EncryptFiles_CheckBox.CustomizableEdges = customizableEdges5;
+            EncryptFiles_CheckBox.CustomizableEdges = customizableEdges1;
             EncryptFiles_CheckBox.Location = new Point(635, 19);
             EncryptFiles_CheckBox.Name = "EncryptFiles_CheckBox";
-            EncryptFiles_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            EncryptFiles_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             EncryptFiles_CheckBox.Size = new Size(20, 20);
             EncryptFiles_CheckBox.TabIndex = 329;
             EncryptFiles_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -88,14 +88,14 @@ namespace Sales_Tracker.Settings.Menus
             AddPassword_Button.BorderColor = Color.LightGray;
             AddPassword_Button.BorderRadius = 2;
             AddPassword_Button.BorderThickness = 1;
-            AddPassword_Button.CustomizableEdges = customizableEdges7;
+            AddPassword_Button.CustomizableEdges = customizableEdges3;
             AddPassword_Button.FillColor = Color.FromArgb(250, 250, 250);
             AddPassword_Button.Font = new Font("Segoe UI", 9F);
             AddPassword_Button.ForeColor = Color.Black;
             AddPassword_Button.Location = new Point(375, 80);
             AddPassword_Button.Margin = new Padding(4, 7, 4, 7);
             AddPassword_Button.Name = "AddPassword_Button";
-            AddPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            AddPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddPassword_Button.Size = new Size(250, 45);
             AddPassword_Button.TabIndex = 276;
             AddPassword_Button.Text = "Add password protection";
@@ -117,8 +117,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Security_Form
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
             Controls.Add(Back_Panel);

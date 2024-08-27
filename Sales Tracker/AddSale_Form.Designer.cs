@@ -148,7 +148,7 @@ namespace Sales_Tracker
             AddSale_Button.CustomizableEdges = customizableEdges38;
             AddSale_Button.Enabled = false;
             AddSale_Button.FillColor = Color.White;
-            AddSale_Button.Font = new Font("Segoe UI", 9.5F);
+            AddSale_Button.Font = new Font("Segoe UI", 10F);
             AddSale_Button.ForeColor = Color.Black;
             AddSale_Button.Location = new Point(650, 573);
             AddSale_Button.Name = "AddSale_Button";
@@ -443,7 +443,7 @@ namespace Sales_Tracker
             ImportExcel_Button.BorderThickness = 1;
             ImportExcel_Button.CustomizableEdges = customizableEdges54;
             ImportExcel_Button.FillColor = Color.White;
-            ImportExcel_Button.Font = new Font("Segoe UI", 9.5F);
+            ImportExcel_Button.Font = new Font("Segoe UI", 10F);
             ImportExcel_Button.ForeColor = Color.Black;
             ImportExcel_Button.Location = new Point(1258, 573);
             ImportExcel_Button.Name = "ImportExcel_Button";
@@ -693,7 +693,7 @@ namespace Sales_Tracker
             Receipt_Button.BorderThickness = 1;
             Receipt_Button.CustomizableEdges = customizableEdges65;
             Receipt_Button.FillColor = Color.White;
-            Receipt_Button.Font = new Font("Segoe UI", 9.5F);
+            Receipt_Button.Font = new Font("Segoe UI", 10F);
             Receipt_Button.ForeColor = Color.Black;
             Receipt_Button.Location = new Point(1268, 154);
             Receipt_Button.Name = "Receipt_Button";

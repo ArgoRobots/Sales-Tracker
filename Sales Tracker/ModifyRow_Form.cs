@@ -8,7 +8,6 @@ namespace Sales_Tracker
         // Properties
         private readonly string selectedTag = "";
         private readonly DataGridViewRow selectedRow;
-        private readonly byte spaceBetweenControlsHorizontally = 6, spaceBetweenControlsVertically = 3;
         private string receiptFilePath;
 
         // Init
@@ -340,7 +339,7 @@ namespace Sales_Tracker
                         gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
                         break;
                 }
-                left += controlWidth + spaceBetweenControlsHorizontally;
+                left += controlWidth + UI.spaceBetweenControls;
             }
             return left;
         }
@@ -372,7 +371,7 @@ namespace Sales_Tracker
 
                         ConstructLabel(text, left, Panel);
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-                        left += controlWidth + spaceBetweenControlsHorizontally;
+                        left += controlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Name):
@@ -390,7 +389,7 @@ namespace Sales_Tracker
                         BuyerName_TextBox.TextChanged += ValidateInputs;
                         BuyerName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
                         BuyerName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(BuyerName_TextBox, this, ModifyRow_Label, e); };
-                        left += controlWidth + spaceBetweenControlsHorizontally;
+                        left += controlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Product):
@@ -404,7 +403,7 @@ namespace Sales_Tracker
                             ProductName_TextBox.TextChanged += ValidateInputs;
                             ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
                             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, ModifyRow_Label, e); };
-                            left += controlWidth + spaceBetweenControlsHorizontally;
+                            left += controlWidth + UI.spaceBetweenControls;
                         }
 
                         // Button
@@ -418,7 +417,7 @@ namespace Sales_Tracker
                             Size = new Size(buttonWidth, controlHeight),
                             BorderRadius = 2,
                             BorderThickness = 1,
-                            Font = new Font("Segoe UI", 10),
+                            Font = new Font("Segoe UI", 10F),
                         };
                         Receipt_Button.Click += (sender, e) =>
                         {
@@ -437,7 +436,7 @@ namespace Sales_Tracker
                         };
                         Panel.Controls.Add(Receipt_Button);
 
-                        left += buttonWidth + spaceBetweenControlsHorizontally;
+                        left += buttonWidth + UI.spaceBetweenControls;
 
                         // ImageButton
                         RemoveReceipt_ImageButton = new()
@@ -467,7 +466,7 @@ namespace Sales_Tracker
                         SelectedReceipt_Label = new()
                         {
                             ForeColor = CustomColors.text,
-                            Font = new Font("Segoe UI", 10),
+                            Font = new Font("Segoe UI", 10F),
                             AutoSize = true
                         };
                         SelectedReceipt_Label.Click += CloseAllPanels;
@@ -476,7 +475,7 @@ namespace Sales_Tracker
                     case nameof(MainMenu_Form.Column.Date):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], left, Panel);
                         ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), Panel);
-                        left += controlWidth + spaceBetweenControlsHorizontally;
+                        left += controlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Quantity):
@@ -485,7 +484,7 @@ namespace Sales_Tracker
 
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbers, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
+                        secondLeft += smallControlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.PricePerUnit):
@@ -493,31 +492,31 @@ namespace Sales_Tracker
 
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.PricePerUnit], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbersAndDecimal, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
+                        secondLeft += smallControlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Shipping):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Shipping], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbersAndDecimal, true, true, SecondPanel);
-                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
+                        secondLeft += smallControlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Tax):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Tax], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbersAndDecimal, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
+                        secondLeft += smallControlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Fee):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Fee], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbersAndDecimal, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
+                        secondLeft += smallControlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Total):
                         ConstructLabel("Charged amount", secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbersAndDecimal, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + spaceBetweenControlsHorizontally;
+                        secondLeft += smallControlWidth + UI.spaceBetweenControls;
                         break;
                 }
             }
@@ -545,25 +544,25 @@ namespace Sales_Tracker
                         ProductName_TextBox.TextChanged += ValidateInputs;
                         ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
                         ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, ModifyRow_Label, e); };
-                        left += controlWidth + spaceBetweenControlsHorizontally;
+                        left += controlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Quantity):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.OnlyNumbers, true, false, Panel);
-                        left += controlWidth + spaceBetweenControlsHorizontally;
+                        left += controlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.PricePerUnit):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.PricePerUnit], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.OnlyNumbersAndDecimal, true, false, Panel);
-                        left += controlWidth + spaceBetweenControlsHorizontally;
+                        left += controlWidth + UI.spaceBetweenControls;
                         break;
 
                     case nameof(MainMenu_Form.Column.Total):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Total], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.OnlyNumbersAndDecimal, true, false, Panel);
-                        left += controlWidth + spaceBetweenControlsHorizontally;
+                        left += controlWidth + UI.spaceBetweenControls;
                         break;
                 }
             }
@@ -587,7 +586,7 @@ namespace Sales_Tracker
         {
             RemoveReceipt_ImageButton.Location = new Point(
                 Receipt_Button.Parent.Left + Receipt_Button.Right - RemoveReceipt_ImageButton.Width,
-                Receipt_Button.Parent.Top + Receipt_Button.Bottom + spaceBetweenControlsVertically);
+                Receipt_Button.Parent.Top + Receipt_Button.Bottom + UI.spaceBetweenControls);
 
             SelectedReceipt_Label.Location = new Point(
                 RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
@@ -615,7 +614,7 @@ namespace Sales_Tracker
             WarningAccountantName_Label = new()
             {
                 ForeColor = CustomColors.text,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10F),
                 AutoSize = true
             };
         }
@@ -968,7 +967,7 @@ namespace Sales_Tracker
                 Text = text,
                 ForeColor = CustomColors.text,
                 BackColor = CustomColors.controlBack,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10F),
                 MaxLength = maxLength,
                 FillColor = CustomColors.controlBack,
                 BorderColor = CustomColors.controlBorder,

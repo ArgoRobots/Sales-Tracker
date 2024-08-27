@@ -92,6 +92,14 @@ namespace Sales_Tracker.Passwords
                 Close();
             }
         }
+        private void Modify_Label_Click(object sender, EventArgs e)
+        {
+            Modify_RadioButton.Checked = !Modify_RadioButton.Checked;
+        }
+        private void Remove_Label_Click(object sender, EventArgs e)
+        {
+            Remove_RadioButton.Checked = !Remove_RadioButton.Checked;
+        }
 
         // Methods
         private void SetUpdateButton()

@@ -186,7 +186,7 @@
             ManageCompanies_Button.BorderThickness = 1;
             ManageCompanies_Button.CustomizableEdges = customizableEdges1;
             ManageCompanies_Button.FillColor = Color.White;
-            ManageCompanies_Button.Font = new Font("Segoe UI", 9.5F);
+            ManageCompanies_Button.Font = new Font("Segoe UI", 10F);
             ManageCompanies_Button.ForeColor = Color.Black;
             ManageCompanies_Button.Location = new Point(1700, 21);
             ManageCompanies_Button.Name = "ManageCompanies_Button";
@@ -205,7 +205,7 @@
             ManageAccountants_Button.BorderThickness = 1;
             ManageAccountants_Button.CustomizableEdges = customizableEdges3;
             ManageAccountants_Button.FillColor = Color.White;
-            ManageAccountants_Button.Font = new Font("Segoe UI", 9.5F);
+            ManageAccountants_Button.Font = new Font("Segoe UI", 10F);
             ManageAccountants_Button.ForeColor = Color.Black;
             ManageAccountants_Button.Location = new Point(2162, 21);
             ManageAccountants_Button.Name = "ManageAccountants_Button";
@@ -224,7 +224,7 @@
             ManageCategories_Button.BorderThickness = 1;
             ManageCategories_Button.CustomizableEdges = customizableEdges5;
             ManageCategories_Button.FillColor = Color.White;
-            ManageCategories_Button.Font = new Font("Segoe UI", 9.5F);
+            ManageCategories_Button.Font = new Font("Segoe UI", 10F);
             ManageCategories_Button.ForeColor = Color.Black;
             ManageCategories_Button.Location = new Point(1931, 21);
             ManageCategories_Button.Name = "ManageCategories_Button";
@@ -311,7 +311,7 @@
             ManageProducts_Button.BorderThickness = 1;
             ManageProducts_Button.CustomizableEdges = customizableEdges13;
             ManageProducts_Button.FillColor = Color.White;
-            ManageProducts_Button.Font = new Font("Segoe UI", 9.5F);
+            ManageProducts_Button.Font = new Font("Segoe UI", 10F);
             ManageProducts_Button.ForeColor = Color.Black;
             ManageProducts_Button.Location = new Point(1469, 21);
             ManageProducts_Button.Name = "ManageProducts_Button";

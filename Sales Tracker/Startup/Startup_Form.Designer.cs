@@ -33,11 +33,11 @@
             // 
             // Startup_Form
             // 
-            AutoScaleDimensions = new SizeF(96F, 96F);
-            AutoScaleMode = AutoScaleMode.Dpi;
-            ClientSize = new Size(864, 511);
+            AutoScaleMode = AutoScaleMode.None;
+            ClientSize = new Size(1296, 766);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(700, 500);
+            Margin = new Padding(4, 4, 4, 4);
+            MinimumSize = new Size(1039, 722);
             Name = "Startup_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Argo Sales Tracker";

@@ -15,13 +15,11 @@ namespace Sales_Tracker
         // Proprties
         private static MainMenu_Form _instance;
         private static List<string> _thingsThatHaveChangedInFile = [];
-        public static readonly byte spaceBetweenControlsHorizontally = 10, spaceBetweenControlsVertically = 4;
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
-        public static readonly byte spaceToOffsetFormNotCenter = 12;  // This is just a weird thing with WinForms
         private static string _currencySymbol;
         private static bool _isFullVersion = true;
 
@@ -521,17 +519,21 @@ namespace Sales_Tracker
                 Totals_Chart.Height = 300;
             }
 
-            Totals_Chart.Width = Width / 3 - 30;
-            Totals_Chart.Left = 20;
+            // Center the charts
+            int chartWidth = Width / 3 - 35;
+            int chartHeight = Totals_Chart.Height;
 
-            Distribution_Chart.Size = Totals_Chart.Size;
-            Distribution_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - 8;
+            Totals_Chart.Width = chartWidth;
+            Totals_Chart.Left = (Width - chartWidth) / 2 - UI.spaceToOffsetFormNotCenter;
 
-            Profits_Chart.Size = Totals_Chart.Size;
-            Profits_Chart.Left = Width - Totals_Chart.Width - 35;
+            Distribution_Chart.Size = new Size(chartWidth, chartHeight);
+            Distribution_Chart.Left = Totals_Chart.Left - chartWidth - 20;
 
-            selectedDataGridView.Size = new Size(Width - 55, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
-            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - 7, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
+            Profits_Chart.Size = new Size(chartWidth, chartHeight);
+            Profits_Chart.Left = Totals_Chart.Right + 20;
+
+            selectedDataGridView.Size = new Size(Width - 65, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
+            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
 
             Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
             Total_Panel.Width = selectedDataGridView.Width;
@@ -553,7 +555,7 @@ namespace Sales_Tracker
                 countriesOfOrigin_Chart.Left = 20;
 
                 companiesOfOrigin_Chart.Width = countriesOfDestination_Chart.Width;
-                companiesOfOrigin_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - 8;
+                companiesOfOrigin_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - UI.spaceToOffsetFormNotCenter;
 
                 countriesOfDestination_Chart.Width = countriesOfOrigin_Chart.Width;
                 countriesOfDestination_Chart.Left = Width - Totals_Chart.Width - 35;
@@ -561,7 +563,7 @@ namespace Sales_Tracker
 
             if (Controls.Contains(messagePanel))
             {
-                messagePanel.Location = new Point((Width - messagePanel.Width) / 2, Height - messagePanel.Height - 80);
+                messagePanel.Location = new Point((Width - messagePanel.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - messagePanel.Height - 80);
             }
         }
         private void AddControlsDropDown()
@@ -902,7 +904,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Text = text;
 
             ShowingResultsFor_Label.Location = new Point(
-                (Width - ShowingResultsFor_Label.Width) / 2 - spaceToOffsetFormNotCenter,
+                (Width - ShowingResultsFor_Label.Width) / 2 - UI.spaceToOffsetFormNotCenter,
                 MainTop_Panel.Bottom + (Distribution_Chart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
 
             Controls.Add(ShowingResultsFor_Label);
@@ -2375,7 +2377,7 @@ namespace Sales_Tracker
 
             PictureBox picture = new()
             {
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10F),
                 Location = new Point(470, 10),
                 Size = new Size(15, 15),
                 BackColor = Color.White,

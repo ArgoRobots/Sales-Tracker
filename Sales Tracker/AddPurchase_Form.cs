@@ -553,7 +553,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + MainMenu_Form.spaceBetweenControlsVertically);
+            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + UI.spaceBetweenControls);
             SelectedReceipt_Label.Location = new Point(
                 RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
                 RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
@@ -578,45 +578,45 @@ namespace Sales_Tracker
         private void SetControlsForSingleProduct()
         {
             // Center controls
-            Currency_ComboBox.Left = (Width - Currency_ComboBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                OrderNumber_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                BuyerName_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                ProductName_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Receipt_Button.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
+            Currency_ComboBox.Left = (Width - Currency_ComboBox.Width - UI.spaceBetweenControls -
+                OrderNumber_TextBox.Width - UI.spaceBetweenControls -
+                BuyerName_TextBox.Width - UI.spaceBetweenControls -
+                ProductName_TextBox.Width - UI.spaceBetweenControls -
+                Receipt_Button.Width) / 2 - UI.spaceToOffsetFormNotCenter;
 
             Currency_Label.Left = Currency_ComboBox.Left;
-            OrderNumber_TextBox.Left = Currency_ComboBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            OrderNumber_TextBox.Left = Currency_ComboBox.Right + UI.spaceBetweenControls;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
-            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + UI.spaceBetweenControls;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
-            ProductName_TextBox.Left = BuyerName_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            ProductName_TextBox.Left = BuyerName_TextBox.Right + UI.spaceBetweenControls;
             ProductName_Label.Left = ProductName_TextBox.Left;
-            Receipt_Button.Left = ProductName_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Receipt_Button.Left = ProductName_TextBox.Right + UI.spaceBetweenControls;
 
             Date_DateTimePicker.Left = (Width -
-                Date_DateTimePicker.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Quantity_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                PricePerUnit_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Shipping_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Tax_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                PaymentFee_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                AmountCharged_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Discount_TextBox.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
+                Date_DateTimePicker.Width - UI.spaceBetweenControls -
+                Quantity_TextBox.Width - UI.spaceBetweenControls -
+                PricePerUnit_TextBox.Width - UI.spaceBetweenControls -
+                Shipping_TextBox.Width - UI.spaceBetweenControls -
+                Tax_TextBox.Width - UI.spaceBetweenControls -
+                PaymentFee_TextBox.Width - UI.spaceBetweenControls -
+                AmountCharged_TextBox.Width - UI.spaceBetweenControls -
+                Discount_TextBox.Width) / 2 - UI.spaceToOffsetFormNotCenter;
 
             Date_Label.Left = Date_DateTimePicker.Left;
-            Quantity_TextBox.Left = Date_DateTimePicker.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Quantity_TextBox.Left = Date_DateTimePicker.Right + UI.spaceBetweenControls;
             Quantity_Label.Left = Quantity_TextBox.Left;
-            PricePerUnit_TextBox.Left = Quantity_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            PricePerUnit_TextBox.Left = Quantity_TextBox.Right + UI.spaceBetweenControls;
             PricePerUnit_Label.Left = PricePerUnit_TextBox.Left;
-            Shipping_TextBox.Left = PricePerUnit_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Shipping_TextBox.Left = PricePerUnit_TextBox.Right + UI.spaceBetweenControls;
             Shipping_Label.Left = Shipping_TextBox.Left;
-            Tax_TextBox.Left = Shipping_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Tax_TextBox.Left = Shipping_TextBox.Right + UI.spaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
-            PaymentFee_TextBox.Left = Tax_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            PaymentFee_TextBox.Left = Tax_TextBox.Right + UI.spaceBetweenControls;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
-            Discount_TextBox.Left = PaymentFee_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + UI.spaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
-            AmountCharged_TextBox.Left = Discount_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            AmountCharged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;
             AmountCharged_Label.Left = AmountCharged_TextBox.Left;
 
             // Add controls
@@ -634,44 +634,44 @@ namespace Sales_Tracker
 
             if (Controls.Contains(WarningProduct_PictureBox))
             {
-                WarningProduct_PictureBox.Location = new Point(ProductName_TextBox.Left, ProductName_TextBox.Bottom + MainMenu_Form.spaceBetweenControlsVertically);
-                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + MainMenu_Form.spaceBetweenControlsHorizontally, WarningProduct_PictureBox.Top);
+                WarningProduct_PictureBox.Location = new Point(ProductName_TextBox.Left, ProductName_TextBox.Bottom + UI.spaceBetweenControls);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + UI.spaceBetweenControls, WarningProduct_PictureBox.Top);
             }
         }
         private void SetControlsForMultipleProducts()
         {
             // Center controls
             Currency_ComboBox.Left = (Width -
-                Currency_ComboBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                OrderNumber_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                BuyerName_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Receipt_Button.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
+                Currency_ComboBox.Width - UI.spaceBetweenControls -
+                OrderNumber_TextBox.Width - UI.spaceBetweenControls -
+                BuyerName_TextBox.Width - UI.spaceBetweenControls -
+                Receipt_Button.Width) / 2 - UI.spaceToOffsetFormNotCenter;
 
             Currency_Label.Left = Currency_ComboBox.Left;
-            OrderNumber_TextBox.Left = Currency_ComboBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            OrderNumber_TextBox.Left = Currency_ComboBox.Right + UI.spaceBetweenControls;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
-            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + UI.spaceBetweenControls;
             BuyerName_Label.Left = BuyerName_TextBox.Left;
-            Receipt_Button.Left = BuyerName_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Receipt_Button.Left = BuyerName_TextBox.Right + UI.spaceBetweenControls;
 
             Date_DateTimePicker.Left = (Width -
-                Date_DateTimePicker.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Shipping_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Tax_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                PaymentFee_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                AmountCharged_TextBox.Width - MainMenu_Form.spaceBetweenControlsHorizontally -
-                Discount_TextBox.Width - MainMenu_Form.spaceToOffsetFormNotCenter) / 2;
+                Date_DateTimePicker.Width - UI.spaceBetweenControls -
+                Shipping_TextBox.Width - UI.spaceBetweenControls -
+                Tax_TextBox.Width - UI.spaceBetweenControls -
+                PaymentFee_TextBox.Width - UI.spaceBetweenControls -
+                AmountCharged_TextBox.Width - UI.spaceBetweenControls -
+                Discount_TextBox.Width) / 2 - UI.spaceToOffsetFormNotCenter;
 
             Date_Label.Left = Date_DateTimePicker.Left;
-            Shipping_TextBox.Left = Date_DateTimePicker.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Shipping_TextBox.Left = Date_DateTimePicker.Right + UI.spaceBetweenControls;
             Shipping_Label.Left = Shipping_TextBox.Left;
-            Tax_TextBox.Left = Shipping_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Tax_TextBox.Left = Shipping_TextBox.Right + UI.spaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
-            PaymentFee_TextBox.Left = Tax_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            PaymentFee_TextBox.Left = Tax_TextBox.Right + UI.spaceBetweenControls;
             PaymentFee_Label.Left = PaymentFee_TextBox.Left;
-            Discount_TextBox.Left = PaymentFee_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + UI.spaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
-            AmountCharged_TextBox.Left = Discount_TextBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            AmountCharged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;
             AmountCharged_Label.Left = AmountCharged_TextBox.Left;
 
             // Remove controls
@@ -688,8 +688,8 @@ namespace Sales_Tracker
 
             if (Controls.Contains(WarningProduct_PictureBox))
             {
-                WarningProduct_PictureBox.Location = new Point(AddButton.Left + MainMenu_Form.spaceBetweenControlsHorizontally, AddButton.Top - flowPanelMargin * 2);
-                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + MainMenu_Form.spaceBetweenControlsHorizontally, WarningProduct_PictureBox.Top);
+                WarningProduct_PictureBox.Location = new Point(AddButton.Left + UI.spaceBetweenControls, AddButton.Top - flowPanelMargin * 2);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + UI.spaceBetweenControls, WarningProduct_PictureBox.Top);
                 Controls.Remove(AddButton);
             }
             else
@@ -699,8 +699,8 @@ namespace Sales_Tracker
         }
         private void RelocateBuyerWarning()
         {
-            WarningBuyer_PictureBox.Location = new Point(BuyerName_TextBox.Left, BuyerName_TextBox.Bottom + MainMenu_Form.spaceBetweenControlsHorizontally);
-            WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally, WarningBuyer_PictureBox.Top);
+            WarningBuyer_PictureBox.Location = new Point(BuyerName_TextBox.Left, BuyerName_TextBox.Bottom + UI.spaceBetweenControls);
+            WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + UI.spaceBetweenControls, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
         private enum TextBoxnames
@@ -747,20 +747,20 @@ namespace Sales_Tracker
             CosntructLabel(ProductName_Label.Text, 0, panel);
 
             // Quantity
-            left = textBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            left = textBox.Right + UI.spaceBetweenControls;
             textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), UI.KeyPressValidation.OnlyNumbers, panel);
             CosntructLabel(Quantity_Label.Text, left, panel);
 
             // Price per unit
-            left = textBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            left = textBox.Right + UI.spaceBetweenControls;
             textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), UI.KeyPressValidation.OnlyNumbersAndDecimal, panel);
             CosntructLabel(PricePerUnit_Label.Text, left, panel);
 
             // Add minus button unless this is the first panel
-            left = textBox.Right + MainMenu_Form.spaceBetweenControlsHorizontally;
+            left = textBox.Right + UI.spaceBetweenControls;
             if (panelsForMultipleProducts_List.Count > 1)
             {
-                CosntructMinusButton(new Point(left + MainMenu_Form.spaceBetweenControlsHorizontally, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
+                CosntructMinusButton(new Point(left + UI.spaceBetweenControls, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
             }
 
             FlowPanel.SuspendLayout();
@@ -774,7 +774,7 @@ namespace Sales_Tracker
             Label label = new()
             {
                 Text = text,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10F),
                 ForeColor = CustomColors.text,
                 Left = left,
                 AutoSize = true
@@ -788,7 +788,7 @@ namespace Sales_Tracker
             {
                 Size = new Size(width, textBoxHeight),
                 Name = name,
-                Location = new Point(left, 28 + MainMenu_Form.spaceBetweenControlsVertically),
+                Location = new Point(left, 28 + UI.spaceBetweenControls),
                 FillColor = CustomColors.controlBack,
                 BorderColor = CustomColors.controlBorder,
                 ForeColor = CustomColors.text,
@@ -873,7 +873,7 @@ namespace Sales_Tracker
                 Anchor = AnchorStyles.Top,
                 AutoScroll = false,
                 Location = new Point((Width - width) / 2, 570),
-                Size = new Size(width, 20 + MainMenu_Form.spaceBetweenControlsVertically + textBoxHeight),
+                Size = new Size(width, 20 + UI.spaceBetweenControls + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
                 MaximumSize = new Size(width, maxFlowPanelHeight)
@@ -888,18 +888,18 @@ namespace Sales_Tracker
                 BackColor = CustomColors.mainBackground,
                 Location = new Point(0, 60),
                 Size = new Size(circleButtonHeight, circleButtonHeight),
-                Image = Resources.PlusWhite,
+                Image = Resources.AddWhite,
                 ImageSize = new Size(32, 32),
                 Left = FlowPanel.Left + spaceOnSidesOfPanel / 2,
                 PressedColor = CustomColors.controlBack
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
-                AddButton.Image = Resources.PlusWhite;
+                AddButton.Image = Resources.AddWhite;
             }
             else
             {
-                AddButton.Image = Resources.PlusBlack;
+                AddButton.Image = Resources.AddBlack;
             }
             AddButton.Click += (sender, e) =>
             {
