@@ -41,11 +41,12 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // UpToDate_Label
             // 
+            UpToDate_Label.Anchor = AnchorStyles.Top;
             UpToDate_Label.AutoSize = true;
-            UpToDate_Label.Font = new Font("Segoe UI", 15.75F);
-            UpToDate_Label.Location = new Point(266, 1);
+            UpToDate_Label.Font = new Font("Segoe UI", 15F);
+            UpToDate_Label.Location = new Point(284, 1);
             UpToDate_Label.Name = "UpToDate_Label";
-            UpToDate_Label.Size = new Size(468, 45);
+            UpToDate_Label.Size = new Size(433, 41);
             UpToDate_Label.TabIndex = 0;
             UpToDate_Label.Text = "Argo Sales Tracker is up to date";
             // 
@@ -61,8 +62,9 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // LastCheck_Label
             // 
+            LastCheck_Label.Anchor = AnchorStyles.Top;
             LastCheck_Label.AutoSize = true;
-            LastCheck_Label.Font = new Font("Segoe UI", 10F);
+            LastCheck_Label.Font = new Font("Segoe UI", 10);
             LastCheck_Label.Location = new Point(363, 46);
             LastCheck_Label.Name = "LastCheck_Label";
             LastCheck_Label.Size = new Size(274, 28);
@@ -71,6 +73,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // CheckForUpdates_Button
             // 
+            CheckForUpdates_Button.Anchor = AnchorStyles.Top;
             CheckForUpdates_Button.BorderRadius = 3;
             CheckForUpdates_Button.CustomizableEdges = customizableEdges1;
             CheckForUpdates_Button.DisabledState.BorderColor = Color.DarkGray;
@@ -90,7 +93,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Back_Panel
             // 
-            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Back_Panel.Controls.Add(CheckForUpdates_Button);
             Back_Panel.Controls.Add(UpToDate_Label);
             Back_Panel.Controls.Add(LastCheck_Label);

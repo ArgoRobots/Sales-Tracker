@@ -774,7 +774,7 @@ namespace Sales_Tracker
             Label label = new()
             {
                 Text = text,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 ForeColor = CustomColors.text,
                 Left = left,
                 AutoSize = true

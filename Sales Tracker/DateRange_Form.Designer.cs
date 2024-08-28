@@ -120,7 +120,7 @@
             Apply_Button.BorderThickness = 1;
             Apply_Button.CustomizableEdges = customizableEdges5;
             Apply_Button.FillColor = Color.White;
-            Apply_Button.Font = new Font("Segoe UI", 10F);
+            Apply_Button.Font = new Font("Segoe UI", 10);
             Apply_Button.ForeColor = Color.Black;
             Apply_Button.Location = new Point(328, 326);
             Apply_Button.Name = "Apply_Button";
@@ -140,7 +140,7 @@
             Reset_Button.BorderThickness = 1;
             Reset_Button.CustomizableEdges = customizableEdges7;
             Reset_Button.FillColor = Color.White;
-            Reset_Button.Font = new Font("Segoe UI", 10F);
+            Reset_Button.Font = new Font("Segoe UI", 10);
             Reset_Button.ForeColor = Color.Black;
             Reset_Button.Location = new Point(107, 326);
             Reset_Button.Name = "Reset_Button";

@@ -174,14 +174,7 @@ namespace Sales_Tracker.Classes
                             break;
 
                         case GunaChart gunaChart:
-                            if (CurrentTheme == ThemeType.Dark)
-                            {
-                                gunaChart.ApplyConfig(Dark.Config(), CustomColors.background4);
-                            }
-                            else
-                            {
-                                gunaChart.ApplyConfig(Light.Config(), Color.White);
-                            }
+                            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.background4);
 
                             if (gunaChart.Datasets.Count > 0)
                             {
@@ -200,10 +193,11 @@ namespace Sales_Tracker.Classes
                             }
 
                             gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
-                            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 16);
-                            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 16, ChartFontStyle.Bold);
-                            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 16);
-                            gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 16);
+                            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
+                            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
+                            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
+                            gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
+                            gunaChart.YAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
                             break;
                     }
                 }

@@ -395,7 +395,7 @@ namespace Sales_Tracker
             AddPurchase_Button.CustomizableEdges = customizableEdges15;
             AddPurchase_Button.Enabled = false;
             AddPurchase_Button.FillColor = Color.White;
-            AddPurchase_Button.Font = new Font("Segoe UI", 10F);
+            AddPurchase_Button.Font = new Font("Segoe UI", 10);
             AddPurchase_Button.ForeColor = Color.Black;
             AddPurchase_Button.Location = new Point(650, 573);
             AddPurchase_Button.Name = "AddPurchase_Button";
@@ -441,7 +441,7 @@ namespace Sales_Tracker
             // 
             WarningProduct_LinkLabel.Anchor = AnchorStyles.Top;
             WarningProduct_LinkLabel.AutoSize = true;
-            WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
+            WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10);
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
             WarningProduct_LinkLabel.Location = new Point(933, 210);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
@@ -510,7 +510,7 @@ namespace Sales_Tracker
             Currency_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Currency_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             Currency_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.Font = new Font("Segoe UI", 10F);
+            Currency_ComboBox.Font = new Font("Segoe UI", 10);
             Currency_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Currency_ComboBox.ItemHeight = 44;
             Currency_ComboBox.Location = new Point(113, 153);
@@ -537,7 +537,7 @@ namespace Sales_Tracker
             // 
             WarningBuyer_LinkLabel.Anchor = AnchorStyles.Top;
             WarningBuyer_LinkLabel.AutoSize = true;
-            WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10F);
+            WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10);
             WarningBuyer_LinkLabel.LinkArea = new LinkArea(22, 15);
             WarningBuyer_LinkLabel.Location = new Point(625, 208);
             WarningBuyer_LinkLabel.Name = "WarningBuyer_LinkLabel";
@@ -606,7 +606,7 @@ namespace Sales_Tracker
             Receipt_Button.BorderThickness = 1;
             Receipt_Button.CustomizableEdges = customizableEdges25;
             Receipt_Button.FillColor = Color.White;
-            Receipt_Button.Font = new Font("Segoe UI", 10F);
+            Receipt_Button.Font = new Font("Segoe UI", 10);
             Receipt_Button.ForeColor = Color.Black;
             Receipt_Button.Location = new Point(1191, 153);
             Receipt_Button.Name = "Receipt_Button";
@@ -731,9 +731,9 @@ namespace Sales_Tracker
             ImportExcel_Button.BorderThickness = 1;
             ImportExcel_Button.CustomizableEdges = customizableEdges32;
             ImportExcel_Button.FillColor = Color.White;
-            ImportExcel_Button.Font = new Font("Segoe UI", 10F);
+            ImportExcel_Button.Font = new Font("Segoe UI", 10);
             ImportExcel_Button.ForeColor = Color.Black;
-            ImportExcel_Button.Location = new Point(1249, 573);
+            ImportExcel_Button.Location = new Point(1252, 573);
             ImportExcel_Button.Name = "ImportExcel_Button";
             ImportExcel_Button.ShadowDecoration.CustomizableEdges = customizableEdges33;
             ImportExcel_Button.Size = new Size(250, 48);

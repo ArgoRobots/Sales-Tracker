@@ -186,7 +186,7 @@
             ManageCompanies_Button.BorderThickness = 1;
             ManageCompanies_Button.CustomizableEdges = customizableEdges1;
             ManageCompanies_Button.FillColor = Color.White;
-            ManageCompanies_Button.Font = new Font("Segoe UI", 10F);
+            ManageCompanies_Button.Font = new Font("Segoe UI", 10);
             ManageCompanies_Button.ForeColor = Color.Black;
             ManageCompanies_Button.Location = new Point(1700, 21);
             ManageCompanies_Button.Name = "ManageCompanies_Button";
@@ -205,7 +205,7 @@
             ManageAccountants_Button.BorderThickness = 1;
             ManageAccountants_Button.CustomizableEdges = customizableEdges3;
             ManageAccountants_Button.FillColor = Color.White;
-            ManageAccountants_Button.Font = new Font("Segoe UI", 10F);
+            ManageAccountants_Button.Font = new Font("Segoe UI", 10);
             ManageAccountants_Button.ForeColor = Color.Black;
             ManageAccountants_Button.Location = new Point(2162, 21);
             ManageAccountants_Button.Name = "ManageAccountants_Button";
@@ -224,7 +224,7 @@
             ManageCategories_Button.BorderThickness = 1;
             ManageCategories_Button.CustomizableEdges = customizableEdges5;
             ManageCategories_Button.FillColor = Color.White;
-            ManageCategories_Button.Font = new Font("Segoe UI", 10F);
+            ManageCategories_Button.Font = new Font("Segoe UI", 10);
             ManageCategories_Button.ForeColor = Color.Black;
             ManageCategories_Button.Location = new Point(1931, 21);
             ManageCategories_Button.Name = "ManageCategories_Button";
@@ -311,7 +311,7 @@
             ManageProducts_Button.BorderThickness = 1;
             ManageProducts_Button.CustomizableEdges = customizableEdges13;
             ManageProducts_Button.FillColor = Color.White;
-            ManageProducts_Button.Font = new Font("Segoe UI", 10F);
+            ManageProducts_Button.Font = new Font("Segoe UI", 10);
             ManageProducts_Button.ForeColor = Color.Black;
             ManageProducts_Button.Location = new Point(1469, 21);
             ManageProducts_Button.Name = "ManageProducts_Button";
@@ -721,13 +721,13 @@
             Filter_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Filter_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             Filter_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Filter_ComboBox.Font = new Font("Segoe UI", 10F);
+            Filter_ComboBox.Font = new Font("Segoe UI", 10);
             Filter_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
-            Filter_ComboBox.ItemHeight = 48;
-            Filter_ComboBox.Location = new Point(2024, 142);
+            Filter_ComboBox.ItemHeight = 44;
+            Filter_ComboBox.Location = new Point(2021, 141);
             Filter_ComboBox.Name = "Filter_ComboBox";
             Filter_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
-            Filter_ComboBox.Size = new Size(208, 54);
+            Filter_ComboBox.Size = new Size(210, 50);
             Filter_ComboBox.TabIndex = 1;
             Filter_ComboBox.SelectedIndexChanged += Filter_ComboBox_SelectedIndexChanged;
             Filter_ComboBox.Click += CloseAllPanels;
@@ -738,7 +738,7 @@
             LineGraph_Label.AutoSize = true;
             LineGraph_Label.BackColor = Color.Transparent;
             LineGraph_Label.Font = new Font("Segoe UI", 11.25F);
-            LineGraph_Label.Location = new Point(1555, 154);
+            LineGraph_Label.Location = new Point(1550, 151);
             LineGraph_Label.Name = "LineGraph_Label";
             LineGraph_Label.Size = new Size(123, 31);
             LineGraph_Label.TabIndex = 16;
@@ -757,7 +757,7 @@
             LineGraph_ToggleSwitch.CheckedState.InnerBorderRadius = 10;
             LineGraph_ToggleSwitch.CheckedState.InnerColor = Color.White;
             LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges33;
-            LineGraph_ToggleSwitch.Location = new Point(1682, 154);
+            LineGraph_ToggleSwitch.Location = new Point(1677, 151);
             LineGraph_ToggleSwitch.Name = "LineGraph_ToggleSwitch";
             LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges34;
             LineGraph_ToggleSwitch.Size = new Size(60, 30);
@@ -804,7 +804,7 @@
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(1748, 142);
+            Search_TextBox.Location = new Point(1744, 141);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
@@ -813,7 +813,7 @@
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
             Search_TextBox.ShortcutsEnabled = false;
-            Search_TextBox.Size = new Size(270, 54);
+            Search_TextBox.Size = new Size(270, 50);
             Search_TextBox.TabIndex = 55;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
@@ -845,10 +845,10 @@
             DateRange_Button.FillColor = Color.White;
             DateRange_Button.Font = new Font("Segoe UI", 9F);
             DateRange_Button.ForeColor = Color.Black;
-            DateRange_Button.Location = new Point(2238, 142);
+            DateRange_Button.Location = new Point(2237, 141);
             DateRange_Button.Name = "DateRange_Button";
             DateRange_Button.ShadowDecoration.CustomizableEdges = customizableEdges40;
-            DateRange_Button.Size = new Size(150, 54);
+            DateRange_Button.Size = new Size(150, 50);
             DateRange_Button.TabIndex = 17;
             DateRange_Button.Text = "Date range";
             DateRange_Button.Click += DateRange_Button_Click;

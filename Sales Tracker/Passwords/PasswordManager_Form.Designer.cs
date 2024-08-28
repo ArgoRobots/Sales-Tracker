@@ -97,7 +97,7 @@
             Update_Button.CustomizableEdges = customizableEdges3;
             Update_Button.Enabled = false;
             Update_Button.FillColor = Color.White;
-            Update_Button.Font = new Font("Segoe UI", 10F);
+            Update_Button.Font = new Font("Segoe UI", 10);
             Update_Button.ForeColor = Color.Black;
             Update_Button.Location = new Point(214, 684);
             Update_Button.Name = "Update_Button";

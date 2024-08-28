@@ -89,7 +89,7 @@
             SetPassword_Button.CustomizableEdges = customizableEdges7;
             SetPassword_Button.Enabled = false;
             SetPassword_Button.FillColor = Color.White;
-            SetPassword_Button.Font = new Font("Segoe UI", 10F);
+            SetPassword_Button.Font = new Font("Segoe UI", 10);
             SetPassword_Button.ForeColor = Color.Black;
             SetPassword_Button.Location = new Point(214, 558);
             SetPassword_Button.Margin = new Padding(6, 5, 6, 5);

@@ -277,7 +277,7 @@
             Sort_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Sort_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             Sort_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Sort_ComboBox.Font = new Font("Segoe UI", 10F);
+            Sort_ComboBox.Font = new Font("Segoe UI", 10);
             Sort_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Sort_ComboBox.ItemHeight = 44;
             Sort_ComboBox.Items.AddRange(new object[] { "Most recent", "Least recent", "Most expensive", "Least expensive" });

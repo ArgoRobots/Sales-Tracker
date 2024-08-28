@@ -61,7 +61,7 @@
             AutoScroll_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             AutoScroll_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             AutoScroll_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            AutoScroll_ComboBox.Font = new Font("Segoe UI", 10F);
+            AutoScroll_ComboBox.Font = new Font("Segoe UI", 10);
             AutoScroll_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             AutoScroll_ComboBox.ItemHeight = 39;
             AutoScroll_ComboBox.Items.AddRange(new object[] { "Enable autoscroll", "Disable autoscroll" });
@@ -81,7 +81,7 @@
             BtnClear.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             BtnClear.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             BtnClear.FillColor = Color.White;
-            BtnClear.Font = new Font("Segoe UI", 10F);
+            BtnClear.Font = new Font("Segoe UI", 10);
             BtnClear.ForeColor = Color.Black;
             BtnClear.Location = new Point(1186, 737);
             BtnClear.Name = "BtnClear";

@@ -76,7 +76,7 @@ namespace Sales_Tracker.Classes
                 FillColor = CustomColors.panelBtn,
                 ForeColor = CustomColors.text,
                 TextAlign = HorizontalAlignment.Left,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 Text = text,
                 Margin = new Padding(0),
                 BorderColor = CustomColors.controlBorder
@@ -119,7 +119,7 @@ namespace Sales_Tracker.Classes
             {
                 ForeColor = CustomColors.text,
                 BackColor = CustomColors.panelBtn,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = true,
                 Top = 1,
@@ -430,7 +430,7 @@ namespace Sales_Tracker.Classes
         {
             _rename_TextBox = new Guna2TextBox
             {
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 Top = 1,
                 MaxLength = 30,
                 ForeColor = CustomColors.text,

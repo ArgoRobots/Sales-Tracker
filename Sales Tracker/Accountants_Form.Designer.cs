@@ -64,7 +64,7 @@ namespace Sales_Tracker
             // 
             WarningAccountantName_Label.Anchor = AnchorStyles.Top;
             WarningAccountantName_Label.AutoSize = true;
-            WarningAccountantName_Label.Font = new Font("Segoe UI", 10F);
+            WarningAccountantName_Label.Font = new Font("Segoe UI", 10);
             WarningAccountantName_Label.Location = new Point(225, 207);
             WarningAccountantName_Label.Name = "WarningAccountantName_Label";
             WarningAccountantName_Label.Size = new Size(233, 28);
@@ -123,7 +123,7 @@ namespace Sales_Tracker
             AddAccountant_Button.CustomizableEdges = customizableEdges3;
             AddAccountant_Button.Enabled = false;
             AddAccountant_Button.FillColor = Color.White;
-            AddAccountant_Button.Font = new Font("Segoe UI", 10F);
+            AddAccountant_Button.Font = new Font("Segoe UI", 10);
             AddAccountant_Button.ForeColor = Color.Black;
             AddAccountant_Button.Location = new Point(482, 150);
             AddAccountant_Button.Name = "AddAccountant_Button";

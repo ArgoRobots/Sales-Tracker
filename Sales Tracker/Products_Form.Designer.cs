@@ -173,7 +173,7 @@ namespace Sales_Tracker
             AddProduct_Button.CustomizableEdges = customizableEdges5;
             AddProduct_Button.Enabled = false;
             AddProduct_Button.FillColor = Color.White;
-            AddProduct_Button.Font = new Font("Segoe UI", 10F);
+            AddProduct_Button.Font = new Font("Segoe UI", 10);
             AddProduct_Button.ForeColor = Color.Black;
             AddProduct_Button.Location = new Point(706, 292);
             AddProduct_Button.Name = "AddProduct_Button";
@@ -264,7 +264,7 @@ namespace Sales_Tracker
             // 
             WarningProductName_Label.Anchor = AnchorStyles.Top;
             WarningProductName_Label.AutoSize = true;
-            WarningProductName_Label.Font = new Font("Segoe UI", 10F);
+            WarningProductName_Label.Font = new Font("Segoe UI", 10);
             WarningProductName_Label.Location = new Point(406, 209);
             WarningProductName_Label.Name = "WarningProductName_Label";
             WarningProductName_Label.Size = new Size(202, 28);
@@ -290,7 +290,7 @@ namespace Sales_Tracker
             // 
             WarningCategory_LinkLabel.Anchor = AnchorStyles.Top;
             WarningCategory_LinkLabel.AutoSize = true;
-            WarningCategory_LinkLabel.Font = new Font("Segoe UI", 10F);
+            WarningCategory_LinkLabel.Font = new Font("Segoe UI", 10);
             WarningCategory_LinkLabel.LinkArea = new LinkArea(21, 15);
             WarningCategory_LinkLabel.Location = new Point(713, 209);
             WarningCategory_LinkLabel.Name = "WarningCategory_LinkLabel";
@@ -406,7 +406,7 @@ namespace Sales_Tracker
             // 
             WarningCompany_LinkLabel.Anchor = AnchorStyles.Top;
             WarningCompany_LinkLabel.AutoSize = true;
-            WarningCompany_LinkLabel.Font = new Font("Segoe UI", 10F);
+            WarningCompany_LinkLabel.Font = new Font("Segoe UI", 10);
             WarningCompany_LinkLabel.LinkArea = new LinkArea(20, 15);
             WarningCompany_LinkLabel.Location = new Point(1332, 205);
             WarningCompany_LinkLabel.Name = "WarningCompany_LinkLabel";

@@ -64,7 +64,7 @@ namespace Sales_Tracker
             // 
             WarningCompanyName_Label.Anchor = AnchorStyles.Top;
             WarningCompanyName_Label.AutoSize = true;
-            WarningCompanyName_Label.Font = new Font("Segoe UI", 10F);
+            WarningCompanyName_Label.Font = new Font("Segoe UI", 10);
             WarningCompanyName_Label.Location = new Point(225, 208);
             WarningCompanyName_Label.Name = "WarningCompanyName_Label";
             WarningCompanyName_Label.Size = new Size(217, 28);
@@ -122,7 +122,7 @@ namespace Sales_Tracker
             AddCompany_Button.CustomizableEdges = customizableEdges9;
             AddCompany_Button.Enabled = false;
             AddCompany_Button.FillColor = Color.White;
-            AddCompany_Button.Font = new Font("Segoe UI", 10F);
+            AddCompany_Button.Font = new Font("Segoe UI", 10);
             AddCompany_Button.ForeColor = Color.Black;
             AddCompany_Button.Location = new Point(482, 150);
             AddCompany_Button.Name = "AddCompany_Button";

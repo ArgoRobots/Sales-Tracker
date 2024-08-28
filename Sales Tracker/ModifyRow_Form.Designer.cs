@@ -43,7 +43,7 @@
             ModifyRow_Label.Anchor = AnchorStyles.Top;
             ModifyRow_Label.AutoSize = true;
             ModifyRow_Label.Font = new Font("Segoe UI", 16F);
-            ModifyRow_Label.Location = new Point(347, 21);
+            ModifyRow_Label.Location = new Point(348, 21);
             ModifyRow_Label.Name = "ModifyRow_Label";
             ModifyRow_Label.Size = new Size(182, 45);
             ModifyRow_Label.TabIndex = 0;
@@ -65,10 +65,10 @@
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 9F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(507, 305);
+            Cancel_Button.Location = new Point(504, 267);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Cancel_Button.Size = new Size(172, 45);
+            Cancel_Button.Size = new Size(175, 45);
             Cancel_Button.TabIndex = 13;
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
@@ -88,26 +88,26 @@
             Save_Button.FillColor = Color.White;
             Save_Button.Font = new Font("Segoe UI", 9F);
             Save_Button.ForeColor = Color.Black;
-            Save_Button.Location = new Point(685, 305);
+            Save_Button.Location = new Point(685, 267);
             Save_Button.Name = "Save_Button";
             Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            Save_Button.Size = new Size(172, 45);
+            Save_Button.Size = new Size(175, 45);
             Save_Button.TabIndex = 14;
             Save_Button.Text = "Save";
             Save_Button.Click += Save_Button_Click;
             // 
             // Panel
             // 
-            Panel.Location = new Point(20, 81);
+            Panel.Location = new Point(18, 81);
             Panel.Name = "Panel";
-            Panel.Size = new Size(837, 150);
+            Panel.Size = new Size(840, 150);
             Panel.TabIndex = 15;
             Panel.Click += CloseAllPanels;
             // 
             // ModifyRow_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
-            ClientSize = new Size(876, 362);
+            ClientSize = new Size(878, 324);
             Controls.Add(Panel);
             Controls.Add(Save_Button);
             Controls.Add(Cancel_Button);

@@ -36,7 +36,7 @@ namespace Sales_Tracker
         private void ModifyRow_Form_Shown(object sender, EventArgs e)
         {
             controlToFocus?.Focus();
-            ResizeControls();
+            CenterControls();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
@@ -76,17 +76,17 @@ namespace Sales_Tracker
             if (selectedTag == MainMenu_Form.DataGridViewTag.Accountant.ToString())
             {
                 ConstructControlsForAccountant();
-                left = 300;
+                left = controlWidth;
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Category.ToString())
             {
                 ConstructControlsForCategory();
-                left = 300;
+                left = controlWidth;
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Company.ToString())
             {
                 ConstructControlsForCompany();
-                left = 300;
+                left = controlWidth;
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Product.ToString())
             {
@@ -101,11 +101,12 @@ namespace Sales_Tracker
                 left = ConstructControlsForItemsInPurchase();
             }
 
-            CenterControls(left, secondLeft);
+            SizeControls(left, secondLeft);
         }
-        private void CenterControls(int left, int secondLeft)
+        private void SizeControls(int left, int secondLeft)
         {
             Width = left + 80;
+            MinimumSize = new Size(500, 0);
             Panel.Width = left;
 
             if (secondRow)
@@ -119,12 +120,12 @@ namespace Sales_Tracker
                 SecondPanel.Width = secondLeft;
             }
         }
-        private void ResizeControls()
+        private void CenterControls()
         {
-            Panel.Left = (Width - Panel.Width) / 2 - 5;
+            Panel.Left = (Width - Panel.Width) / 2 - UI.spaceToOffsetFormNotCenter;
             if (secondRow)
             {
-                SecondPanel.Left = (Width - SecondPanel.Width) / 2 - 5;
+                SecondPanel.Left = (Width - SecondPanel.Width) / 2 - UI.spaceToOffsetFormNotCenter;
             }
 
             if (selectedRow.Tag != null && SelectedReceipt_Label != null)
@@ -341,7 +342,7 @@ namespace Sales_Tracker
                 }
                 left += controlWidth + UI.spaceBetweenControls;
             }
-            return left;
+            return left - UI.spaceBetweenControls;
         }
         private Label SelectedReceipt_Label;
         private Guna2ImageButton RemoveReceipt_ImageButton;
@@ -407,17 +408,17 @@ namespace Sales_Tracker
                         }
 
                         // Button
-                        byte buttonWidth = 140;
+                        byte buttonWidth = 200;
                         Receipt_Button = new()
                         {
-                            Location = new Point(left, 45),
+                            Location = new Point(left, 43 + UI.spaceBetweenControls),
                             Text = "Change receipt",
                             BackColor = CustomColors.controlBack,
                             FillColor = CustomColors.controlBack,
                             Size = new Size(buttonWidth, controlHeight),
                             BorderRadius = 2,
                             BorderThickness = 1,
-                            Font = new Font("Segoe UI", 10F),
+                            Font = new Font("Segoe UI", 10),
                         };
                         Receipt_Button.Click += (sender, e) =>
                         {
@@ -441,12 +442,12 @@ namespace Sales_Tracker
                         // ImageButton
                         RemoveReceipt_ImageButton = new()
                         {
-                            Size = new Size(25, 25),
-                            ImageSize = new Size(20, 20),
+                            Size = new Size(38, 38),
+                            ImageSize = new Size(30, 30),
                             Image = Properties.Resources.CloseGray
                         };
-                        RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
-                        RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(20, 20);
+                        RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(30, 30);
+                        RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
                         RemoveReceipt_ImageButton.Click += (sender, e) =>
                         {
                             CloseAllPanels(null, null);
@@ -466,7 +467,7 @@ namespace Sales_Tracker
                         SelectedReceipt_Label = new()
                         {
                             ForeColor = CustomColors.text,
-                            Font = new Font("Segoe UI", 10F),
+                            Font = new Font("Segoe UI", 10),
                             AutoSize = true
                         };
                         SelectedReceipt_Label.Click += CloseAllPanels;
@@ -475,7 +476,7 @@ namespace Sales_Tracker
                     case nameof(MainMenu_Form.Column.Date):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date], left, Panel);
                         ConstructDatePicker(left, columnName, DateTime.Parse(cellValue), Panel);
-                        left += controlWidth + UI.spaceBetweenControls;
+                        left += controlWidth;
                         break;
 
                     case nameof(MainMenu_Form.Column.Quantity):
@@ -516,7 +517,7 @@ namespace Sales_Tracker
                     case nameof(MainMenu_Form.Column.Total):
                         ConstructLabel("Charged amount", secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbersAndDecimal, false, true, SecondPanel);
-                        secondLeft += smallControlWidth + UI.spaceBetweenControls;
+                        secondLeft += smallControlWidth;
                         break;
                 }
             }
@@ -562,7 +563,7 @@ namespace Sales_Tracker
                     case nameof(MainMenu_Form.Column.Total):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Total], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.OnlyNumbersAndDecimal, true, false, Panel);
-                        left += controlWidth + UI.spaceBetweenControls;
+                        left += controlWidth;
                         break;
                 }
             }
@@ -614,7 +615,7 @@ namespace Sales_Tracker
             WarningAccountantName_Label = new()
             {
                 ForeColor = CustomColors.text,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 AutoSize = true
             };
         }
@@ -929,13 +930,13 @@ namespace Sales_Tracker
         }
 
         // Construct controls
-        private readonly byte controlWidth = 180, smallControlWidth = 120, controlHeight = 30;
+        private readonly byte controlWidth = 250, smallControlWidth = 180, controlHeight = 45;
         private Panel SecondPanel;
         private void ConstructPanel()
         {
             SecondPanel = new()
             {
-                Size = new Size(558, 95),
+                Size = Panel.Size,
                 Location = new Point(Panel.Left, Panel.Bottom),
             };
             SecondPanel.Click += CloseAllPanels;
@@ -949,7 +950,7 @@ namespace Sales_Tracker
                 Cursor = Cursors.Arrow,
                 Location = new Point(left, 20),
                 Text = text,
-                Font = new Font("Segoe UI", 12),
+                Font = new Font("Segoe UI", 11),
                 AutoSize = true
             };
             label.Click += CloseAllPanels;
@@ -961,13 +962,13 @@ namespace Sales_Tracker
         {
             Guna2TextBox textBox = new()
             {
-                Location = new Point(left, 45),
+                Location = new Point(left, 43 + UI.spaceBetweenControls),
                 Height = controlHeight,
                 Name = name,
                 Text = text,
                 ForeColor = CustomColors.text,
                 BackColor = CustomColors.controlBack,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 MaxLength = maxLength,
                 FillColor = CustomColors.controlBack,
                 BorderColor = CustomColors.controlBorder,
@@ -1038,7 +1039,7 @@ namespace Sales_Tracker
         {
             Guna2DateTimePicker gDatePicker = new()
             {
-                Location = new Point(left, 45),
+                Location = new Point(left, 43 + UI.spaceBetweenControls),
                 Size = new Size(controlWidth, controlHeight),
                 FillColor = CustomColors.controlBack,
                 ForeColor = CustomColors.text,

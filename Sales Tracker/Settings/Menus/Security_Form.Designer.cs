@@ -54,7 +54,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Back_Panel
             // 
-            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Back_Panel.Controls.Add(EncryptFiles_CheckBox);
             Back_Panel.Controls.Add(AddPassword_Button);
             Back_Panel.Controls.Add(EncryptFiles_Label);
@@ -66,7 +66,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // EncryptFiles_CheckBox
             // 
-            EncryptFiles_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            EncryptFiles_CheckBox.Anchor = AnchorStyles.Top;
             EncryptFiles_CheckBox.Animated = true;
             EncryptFiles_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             EncryptFiles_CheckBox.CheckedState.BorderRadius = 2;
@@ -85,6 +85,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // AddPassword_Button
             // 
+            AddPassword_Button.Anchor = AnchorStyles.Top;
             AddPassword_Button.BorderColor = Color.LightGray;
             AddPassword_Button.BorderRadius = 2;
             AddPassword_Button.BorderThickness = 1;
@@ -105,7 +106,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             EncryptFiles_Label.Anchor = AnchorStyles.Top;
             EncryptFiles_Label.AutoSize = true;
-            EncryptFiles_Label.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            EncryptFiles_Label.Font = new Font("Segoe UI", 10, FontStyle.Regular, GraphicsUnit.Point, 0);
             EncryptFiles_Label.Location = new Point(346, 10);
             EncryptFiles_Label.Margin = new Padding(0);
             EncryptFiles_Label.Name = "EncryptFiles_Label";

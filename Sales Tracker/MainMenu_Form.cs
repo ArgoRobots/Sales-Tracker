@@ -261,6 +261,8 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
+            LoadingPanel.HideBlankLoadingPanel(this);
+
             // Ensure the charts are rendered
             // BeginInvoke ensures that it runs on the main UI thread after all pending UI events have been processed
             BeginInvoke(() =>
@@ -274,8 +276,6 @@ namespace Sales_Tracker
             });
 
             Log.Write(2, "Argo Sales Tracker has finished starting");
-
-            LoadingPanel.HideBlankLoadingPanel(this);
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
@@ -523,14 +523,17 @@ namespace Sales_Tracker
             int chartWidth = Width / 3 - 35;
             int chartHeight = Totals_Chart.Height;
 
+            // Set Totals_Chart on the left
             Totals_Chart.Width = chartWidth;
-            Totals_Chart.Left = (Width - chartWidth) / 2 - UI.spaceToOffsetFormNotCenter;
+            Totals_Chart.Left = (Width - 3 * chartWidth - 40) / 2 - UI.spaceToOffsetFormNotCenter;
 
+            // Set Distribution_Chart in the middle
             Distribution_Chart.Size = new Size(chartWidth, chartHeight);
-            Distribution_Chart.Left = Totals_Chart.Left - chartWidth - 20;
+            Distribution_Chart.Left = Totals_Chart.Right + 20;
 
+            // Set Profits_Chart on the right
             Profits_Chart.Size = new Size(chartWidth, chartHeight);
-            Profits_Chart.Left = Totals_Chart.Right + 20;
+            Profits_Chart.Left = Distribution_Chart.Right + 20;
 
             selectedDataGridView.Size = new Size(Width - 65, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
             selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
@@ -2281,21 +2284,14 @@ namespace Sales_Tracker
                 Height = 500
             };
 
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
-            {
-                gunaChart.ApplyConfig(Dark.Config(), CustomColors.background4);
-            }
-            else
-            {
-                gunaChart.ApplyConfig(Light.Config(), Color.White);
-            }
+            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.background4);
             LoadChart.ConfigureChartForPie(gunaChart);
             gunaChart.Title.Text = title;
             gunaChart.Title.Display = true;
             gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
-            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 16);
-            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 16, ChartFontStyle.Bold);
-            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 16);
+            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
+            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
+            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
 
             return gunaChart;
         }
@@ -2377,7 +2373,7 @@ namespace Sales_Tracker
 
             PictureBox picture = new()
             {
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 Location = new Point(470, 10),
                 Size = new Size(15, 15),
                 BackColor = Color.White,

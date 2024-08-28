@@ -501,9 +501,9 @@ namespace Sales_Tracker
                 Quantity_TextBox, Quantity_Label,
                 PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte textBoxHeight = 48, circleButtonHeight = 38, spaceBetweenPanels = 10,
+        private readonly byte textBoxHeight = 48, circleButtonHeight = 38, extraSpaceForBottom = 210, spaceBetweenPanels = 10,
                initialHeightForPanel = 88, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
-        private readonly short initialWidthForPanel = 673, maxFlowPanelHeight = 300, extraSpaceForBottom = 285;
+        private readonly short initialWidthForPanel = 673, maxFlowPanelHeight = 300;
         private void SetControlsForSingleProduct()
         {
             // Center controls
@@ -556,7 +556,7 @@ namespace Sales_Tracker
 
             Controls.Remove(FlowPanel);
             Controls.Remove(AddButton);
-            Height = 508;
+            Height = 465;
 
             RelocateBuyerWarning();
 
@@ -637,7 +637,7 @@ namespace Sales_Tracker
         }
         private void ConstructControlsForMultipleProducts()
         {
-            byte smallSearchBoxMaxHeight = 100;
+            byte smallSearchBoxMaxHeight = 150;
 
             Guna2Panel panel = new()
             {
@@ -700,7 +700,7 @@ namespace Sales_Tracker
             Label label = new()
             {
                 Text = text,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 ForeColor = CustomColors.text,
                 Left = left,
                 AutoSize = true

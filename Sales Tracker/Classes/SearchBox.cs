@@ -119,7 +119,7 @@ namespace Sales_Tracker.Classes
                         Text = meta.Name,
                         Size = new Size(CalculateControlWidth(metaList.Count), buttonHeight),
                         Location = new Point(1, yOffset),
-                        Font = new Font("Segoe UI", 10F),
+                        Font = new Font("Segoe UI", 10),
                         FillColor = CustomColors.controlBack,
                         ForeColor = CustomColors.text,
                         BorderColor = CustomColors.accent_blue,

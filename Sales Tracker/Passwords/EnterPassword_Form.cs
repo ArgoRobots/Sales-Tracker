@@ -56,7 +56,7 @@ namespace Sales_Tracker.Passwords
                 BorderRadius = 2,
                 BorderThickness = 1,
                 Enabled = false,
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 10),
                 Top = 310,
                 Size = new Size(215, 50),
                 Text = "Windows Hello"

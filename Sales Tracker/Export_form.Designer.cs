@@ -70,7 +70,7 @@
             // WarningDir_Label
             // 
             WarningDir_Label.AutoSize = true;
-            WarningDir_Label.Font = new Font("Segoe UI", 10F);
+            WarningDir_Label.Font = new Font("Segoe UI", 10);
             WarningDir_Label.Location = new Point(99, 539);
             WarningDir_Label.Name = "WarningDir_Label";
             WarningDir_Label.Size = new Size(239, 28);
@@ -92,7 +92,7 @@
             // WarningName_Label
             // 
             WarningName_Label.AutoSize = true;
-            WarningName_Label.Font = new Font("Segoe UI", 10F);
+            WarningName_Label.Font = new Font("Segoe UI", 10);
             WarningName_Label.Location = new Point(99, 219);
             WarningName_Label.Name = "WarningName_Label";
             WarningName_Label.Size = new Size(294, 28);
@@ -215,7 +215,7 @@
             Export_Button.BorderThickness = 1;
             Export_Button.CustomizableEdges = customizableEdges7;
             Export_Button.FillColor = Color.White;
-            Export_Button.Font = new Font("Segoe UI", 10F);
+            Export_Button.Font = new Font("Segoe UI", 10);
             Export_Button.ForeColor = Color.Black;
             Export_Button.Location = new Point(937, 630);
             Export_Button.Name = "Export_Button";

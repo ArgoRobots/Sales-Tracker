@@ -47,7 +47,7 @@
             Enter_Button.BorderThickness = 1;
             Enter_Button.CustomizableEdges = customizableEdges5;
             Enter_Button.FillColor = Color.White;
-            Enter_Button.Font = new Font("Segoe UI", 10F);
+            Enter_Button.Font = new Font("Segoe UI", 10);
             Enter_Button.ForeColor = Color.Black;
             Enter_Button.Location = new Point(232, 208);
             Enter_Button.Name = "Enter_Button";
