@@ -79,6 +79,16 @@ namespace Sales_Tracker
             PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
+            
+            Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            Discount_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            Discount_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            Discount_TextBox.KeyDown += UI.TextBox_KeyDown;
+            
+            AmountCredited_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            AmountCredited_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            AmountCredited_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
+            AmountCredited_TextBox.KeyDown += UI.TextBox_KeyDown;
 
             Notes_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             Notes_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
@@ -281,7 +291,7 @@ namespace Sales_Tracker
                 company,
                 date,
                 quantity.ToString(),
-                pricePerUnit.ToString("C"),
+                pricePerUnit.ToString("N"),
                 shipping.ToString("N"),
                 tax.ToString("N"),
                 fee.ToString("N"),

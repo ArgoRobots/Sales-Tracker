@@ -178,7 +178,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            // Calculate total count for percentages
+            // Get total count to calculate percentages
             double totalCost = totalTax + totalShipping + totalFee + categoryCosts.Values.Sum();
 
             // Add combined category costs with percentage labels
@@ -354,7 +354,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            // Calculate total count for percentages
+            // Get total count to calculate percentages
             double totalCount = countryCounts.Values.Sum();
 
             // Add data points to the dataset with percentage labels
@@ -417,7 +417,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            // Calculate total count for percentages
+            // Get total count to calculate percentages
             double totalCount = companyCounts.Values.Sum();
 
             // Add data points to the dataset with percentage labels
@@ -480,7 +480,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            // Calculate total count for percentages
+            // Get total count to calculate percentages
             double totalCount = countryCounts.Values.Sum();
 
             // Add data points to the dataset with percentage labels
@@ -531,13 +531,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            if (accountantCounts.Count == 0)
-            {
-                ClearChart(chart);
-                return;
-            }
-
-            // Calculate total count for percentages
+            // Get total count to calculate percentages
             double totalCount = accountantCounts.Values.Sum();
 
             // Add data points to the dataset with percentage labels
@@ -571,11 +565,14 @@ namespace Sales_Tracker.Charts
                         Font = new Font("Segoe UI", 12),
                         ForeColor = CustomColors.text,
                         Text = "No data",
-                        Anchor = AnchorStyles.Top,
                         AutoSize = true
                     };
+
                     gunaChart.Controls.Add(label);
-                    label.Location = new Point((gunaChart.Width - label.Width) / 2, (gunaChart.Height - label.Height) / 2);
+                    CenterLabelInControl(label, gunaChart);
+
+                    gunaChart.Resize += (sender, e) => CenterLabelInControl(label, gunaChart);
+
                     label.BringToFront();
                 }
                 return false;
@@ -589,6 +586,13 @@ namespace Sales_Tracker.Charts
                     existingLabel.Dispose();
                 }
                 return true;
+            }
+        }
+        private static void CenterLabelInControl(Label label, Control parent)
+        {
+            if (label != null && parent != null)
+            {
+                label.Location = new Point((parent.Width - label.Width) / 2, (parent.Height - label.Height) / 2);
             }
         }
         private static void ApplyStyleToBarOrLineDataSet(IGunaDataset dataset, bool isLineChart)

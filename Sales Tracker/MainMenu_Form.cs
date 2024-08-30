@@ -500,11 +500,11 @@ namespace Sales_Tracker
                 {
                     if (count == 0)
                     {
-                        directory = Directories.Logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + ArgoFiles.TxtFileExtension;
+                        directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}{ArgoFiles.TxtFileExtension}";
                     }
                     else
                     {
-                        directory = Directories.Logs_dir + @"\" + time.Year + "-" + time.Month + "-" + time.Day + "-" + time.Hour + "-" + time.Minute + "-" + count + ArgoFiles.TxtFileExtension;
+                        directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}-{count}{ArgoFiles.TxtFileExtension}";
                     }
                     if (!Directory.Exists(directory))
                     {
@@ -520,7 +520,7 @@ namespace Sales_Tracker
                 if (AskUserToSaveBeforeClosing())
                 {
                     e.Cancel = true;
-                    Log.Write(2, "Close Canceled");
+                    Log.Write(2, "Close canceled");
                     return;
                 }
             }
