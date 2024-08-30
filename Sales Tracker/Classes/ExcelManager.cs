@@ -72,7 +72,7 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Handle receipts and adding new rows
-                if (row.Tag is (List<string> tagList, MainMenu_Form.TagData) && tagList.Count > 0)
+                if (row.Tag is (List<string> tagList, TagData) && tagList.Count > 0)
                 {
                     // Is there a receipt
                     byte receiptOffset = 0;
@@ -98,7 +98,7 @@ namespace Sales_Tracker.Classes
                         }
                     }
                 }
-                else if (row.Tag is (string tagString, MainMenu_Form.TagData))
+                else if (row.Tag is (string tagString, TagData))
                 {
                     string fileName = Path.GetFileName(tagString);
                     worksheet.Cell(currentRow, lastCellIndex).Value = fileName;

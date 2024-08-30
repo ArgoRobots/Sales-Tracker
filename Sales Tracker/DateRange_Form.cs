@@ -7,6 +7,7 @@ namespace Sales_Tracker
         public DateRange_Form()
         {
             InitializeComponent();
+
             LoadingPanel.ShowBlankLoadingPanel(this);
             InitializeDatePickers();
             Theme.SetThemeForForm(this);
@@ -25,14 +26,15 @@ namespace Sales_Tracker
         }
         private void Apply_Button_Click(object sender, EventArgs e)
         {
-            FilterDataGridViews();
-
             MainMenu_Form.Instance.fromDate = From_DateTimePicker.Value;
             MainMenu_Form.Instance.toDate = To_DateTimePicker.Value;
 
-            MainMenu_Form.Instance.Filter_ComboBox.Enabled = false;
-            MainMenu_Form.Instance.ShowShowingResultsForLabel();
+            // Check if the current values of the DateTimePickers match the default values
+            bool isDefaultRange = From_DateTimePicker.Value.Date == GetOldestDate().Date &&
+                                  To_DateTimePicker.Value.Date == DateTime.Now.Date;
 
+            MainMenu_Form.Instance.Filter_ComboBox.Enabled = isDefaultRange;
+            MainMenu_Form.Instance.SortDataGridView();
             Close();
         }
 
@@ -51,10 +53,10 @@ namespace Sales_Tracker
         }
         private void SetDatePickers()
         {
-            SetFromDateTimePickerToOldestDate();
+            From_DateTimePicker.Value = GetOldestDate();
             To_DateTimePicker.Value = DateTime.Now;
         }
-        private void SetFromDateTimePickerToOldestDate()
+        private static DateTime GetOldestDate()
         {
             DateTime oldestDate = DateTime.Now;  // Default to today if no rows are found
 
@@ -67,8 +69,7 @@ namespace Sales_Tracker
                     GetOldestDateFromDataGridView(MainMenu_Form.Instance.Purchases_DataGridView)
                 }.Min();
             }
-
-            From_DateTimePicker.Value = oldestDate;
+            return oldestDate;
         }
         private static DateTime GetOldestDateFromDataGridView(DataGridView dataGridView)
         {
@@ -86,23 +87,6 @@ namespace Sales_Tracker
                 }
             }
             return oldestDate;
-        }
-        private void FilterDataGridViews()
-        {
-            FilterDataGridViewByDateRange(MainMenu_Form.Instance.Sales_DataGridView);
-            FilterDataGridViewByDateRange(MainMenu_Form.Instance.Purchases_DataGridView);
-        }
-        private void FilterDataGridViewByDateRange(DataGridView dataGridView)
-        {
-            DateTime fromDate = From_DateTimePicker.Value;
-            DateTime toDate = To_DateTimePicker.Value;
-
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                DateTime rowDate = DateTime.Parse(row.Cells[MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Date]].Value.ToString());
-                bool isVisible = rowDate >= fromDate && rowDate <= toDate;
-                row.Visible = isVisible;
-            }
         }
     }
 }

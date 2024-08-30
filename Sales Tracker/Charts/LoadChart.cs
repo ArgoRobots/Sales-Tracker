@@ -10,18 +10,24 @@ namespace Sales_Tracker.Charts
         // Configuration
         public static void ConfigureChartForBar(GunaChart chart)
         {
+            if (chart == null) { return; }
+
             chart.XAxes.GridLines.Display = false;
             chart.YAxes.GridLines.Display = true;
             chart.Legend.Display = false;
         }
         public static void ConfigureChartForLine(GunaChart chart)
         {
+            if (chart == null) { return; }
+
             chart.XAxes.GridLines.Display = true;
             chart.YAxes.GridLines.Display = true;
             chart.Legend.Display = false;
         }
         public static void ConfigureChartForPie(GunaChart chart)
         {
+            if (chart == null) { return; }
+
             chart.XAxes.Display = false;
             chart.YAxes.Display = false;
             chart.Legend.Position = LegendPosition.Right;
@@ -212,6 +218,7 @@ namespace Sales_Tracker.Charts
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Fee ({feePercentage:F2}%)";
             }
 
+            ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
         public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
@@ -380,6 +387,7 @@ namespace Sales_Tracker.Charts
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
             }
 
+            ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
         public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
@@ -447,6 +455,7 @@ namespace Sales_Tracker.Charts
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{companyCount.Key} ({percentage:F2}%)";
             }
 
+            ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
         public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart)
@@ -514,10 +523,39 @@ namespace Sales_Tracker.Charts
                 dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
             }
 
+            ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
 
         // Methods
+        public static void ApplyCustomColorsToDataset(GunaPieDataset dataset)
+        {
+            // Define the colors
+            ColorCollection colors = new()
+            {
+                Color.FromArgb(102, 153, 204),  // Soft blue
+                Color.FromArgb(153, 204, 102),  // Muted green
+                Color.FromArgb(204, 102, 153),  // Soft pink
+                Color.FromArgb(153, 102, 204),  // Soft purple
+                Color.FromArgb(102, 204, 153),  // Muted teal
+                Color.FromArgb(204, 102, 102),  // Soft red
+                Color.FromArgb(153, 153, 204),  // Muted lavender
+                Color.FromArgb(204, 102, 102),  // Soft coral
+                Color.FromArgb(153, 204, 204),  // Soft aqua
+                Color.FromArgb(204, 153, 153),  // Muted peach
+                Color.FromArgb(204, 153, 204),  // Soft lilac
+                Color.FromArgb(153, 204, 153),  // Soft sage
+                Color.FromArgb(204, 204, 153),  // Muted gold
+                Color.FromArgb(204, 102, 102),  // Soft terracotta
+                Color.FromArgb(153, 204, 153),  // Muted mint
+                Color.FromArgb(153, 153, 204),  // Soft denim
+                Color.FromArgb(204, 102, 102),  // Warm rust
+                Color.FromArgb(153, 153, 153),  // Muted gray
+            };
+
+            // Apply the colors to the dataset
+            dataset.FillColors = colors;
+        }
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
         {
             // Sort the dictionary by date keys

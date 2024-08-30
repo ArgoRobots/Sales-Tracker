@@ -221,9 +221,9 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseNumber))
+            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase # already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -260,7 +260,7 @@ namespace Sales_Tracker
             decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
 
             // Store the USD value in the Tag property
-            MainMenu_Form.TagData purchaseData = new()
+            TagData purchaseData = new()
             {
                 PricePerUnitUSD = pricePerUnitUSD,
                 ShippingUSD = shippingUSD,
@@ -347,9 +347,9 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesIDExists(MainMenu_Form.Instance.Purchases_DataGridView, purchaseNumber))
+            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "The purchase # already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -511,7 +511,7 @@ namespace Sales_Tracker
             decimal feeUSD = fee * exchangeRateToUSD;
 
             // Store the USD value in the Tag property
-            MainMenu_Form.TagData purchaseData = new()
+            TagData purchaseData = new()
             {
                 PricePerUnitUSD = totalPriceUSD,
                 ShippingUSD = shippingUSD,
@@ -521,7 +521,7 @@ namespace Sales_Tracker
             };
 
             // Combine existing items and USD data in a tuple
-            (List<string> Items, MainMenu_Form.TagData USDData) combinedTag = (Items: items, USDData: purchaseData);
+            (List<string> Items, TagData USDData) combinedTag = (Items: items, USDData: purchaseData);
 
             // Set the combined tag
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = combinedTag;

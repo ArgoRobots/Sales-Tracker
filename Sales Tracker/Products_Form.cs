@@ -150,6 +150,18 @@ namespace Sales_Tracker
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
+            // Check if product ID already exists
+            string productID = ProductID_TextBox.Text.Trim();
+            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.selectedDataGridView, Column.ProductID.ToString(), productID))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The product #{productID} already exists. Would you like to add this product anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                if (result != CustomMessageBoxResult.Yes)
+                {
+                    return;
+                }
+            }
+
             string name = ProductName_TextBox.Text.Trim();
             Product product = new(ProductID_TextBox.Text.Trim(), name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
@@ -383,7 +395,7 @@ namespace Sales_Tracker
         }
 
         // DataGridView
-        public enum Columns
+        public enum Column
         {
             ProductID,
             ProductName,
@@ -391,13 +403,13 @@ namespace Sales_Tracker
             CountryOfOrigin,
             CompanyOfOrigin
         }
-        public readonly Dictionary<Columns, string> ColumnHeaders = new()
+        public readonly Dictionary<Column, string> ColumnHeaders = new()
         {
-            { Columns.ProductID, "Product ID" },
-            { Columns.ProductName, "Product name" },
-            { Columns.ProductCategory, "Product category" },
-            { Columns.CountryOfOrigin, "Country of origin" },
-            { Columns.CompanyOfOrigin, "Company of origin" },
+            { Column.ProductID, "Product ID" },
+            { Column.ProductName, "Product name" },
+            { Column.ProductCategory, "Product category" },
+            { Column.CountryOfOrigin, "Country of origin" },
+            { Column.CompanyOfOrigin, "Company of origin" },
         };
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView;
         private const int topForDataGridView = 380;

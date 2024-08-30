@@ -2,14 +2,42 @@
 {
     internal class DataGridViewImageHeaderCell(Image image, string headerText, string messageBoxText) : DataGridViewColumnHeaderCell
     {
-        public Image HeaderImage { get; set; } = new Bitmap(image, new Size(15, 15));
-        public int ImageOffsetX { get; set; } = -20;
-        public int ImageOffsetY { get; set; } = 5;
-        public string HeaderText { get; set; } = headerText;
-        public string MessageBoxText { get; set; } = messageBoxText;
+        // Properties
         private bool isImageHovered = false;
         private static readonly Color HoverBackgroundColor = Color.FromArgb(187, 187, 187);
         private const int Padding = 3;
+        private Image _headerImage = new Bitmap(image, new Size(28, 28));
+        private int _imageOffsetX = -20;
+        private int _imageOffsetY = 5;
+        private string _headerText = headerText;
+        private string _messageBoxText = messageBoxText;
+
+        // Getters and setters
+        public Image HeaderImage
+        {
+            get => _headerImage;
+            set => _headerImage = value;
+        }
+        public int ImageOffsetX
+        {
+            get => _imageOffsetX;
+            set => _imageOffsetX = value;
+        }
+        public int ImageOffsetY
+        {
+            get => _imageOffsetY;
+            set => _imageOffsetY = value;
+        }
+        public string HeaderText
+        {
+            get => _headerText;
+            set => _headerText = value;
+        }
+        public string MessageBoxText
+        {
+            get => _messageBoxText;
+            set => _messageBoxText = value;
+        }
 
         protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates dataGridViewElementState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
@@ -20,7 +48,7 @@
 
             if (HeaderImage != null)
             {
-                Size imgSize = new(15, 15);
+                Size imgSize = new(25, 25);
                 Point imgLocation = new(cellBounds.Right - imgSize.Width + ImageOffsetX - Padding, cellBounds.Y + ImageOffsetY);
 
                 // Draw background color if image is hovered
@@ -63,7 +91,7 @@
             if (HeaderImage != null)
             {
                 Rectangle cellBounds = DataGridView.GetCellDisplayRectangle(e.ColumnIndex, -1, true);
-                Size imgSize = new(15, 15);
+                Size imgSize = new(28, 28);
                 Rectangle imgBounds = new(
                     cellBounds.Right - imgSize.Width + ImageOffsetX - Padding,
                     cellBounds.Y + ImageOffsetY - Padding,
@@ -97,7 +125,7 @@
             if (HeaderImage != null)
             {
                 Rectangle cellBounds = DataGridView.GetCellDisplayRectangle(e.ColumnIndex, -1, true);
-                Size imgSize = new(15, 15);
+                Size imgSize = new(28, 28);
                 Rectangle imgBounds = new(
                     cellBounds.Right - imgSize.Width + ImageOffsetX - Padding,
                     cellBounds.Y + ImageOffsetY - Padding,

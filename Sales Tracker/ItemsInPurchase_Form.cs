@@ -30,7 +30,7 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
 
             // Check if the Tag is a ValueTuple
-            if (row.Tag is (List<string> itemList, MainMenu_Form.TagData))
+            if (row.Tag is (List<string> itemList, TagData))
             {
                 SetDataGridView(itemList);
             }
@@ -75,7 +75,7 @@ namespace Sales_Tracker
             List<string> items = new();
 
             // Check if the current Tag is a ValueTuple
-            if (oldSelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, MainMenu_Form.TagData tagData))
+            if (oldSelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, TagData tagData))
             {
                 // Handle the case where Tag is a ValueTuple
 

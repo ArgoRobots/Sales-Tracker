@@ -250,7 +250,35 @@ namespace Sales_Tracker
             Help_Button.FillColor = CustomColors.background3;
             Account_Button.FillColor = CustomColors.background3;
 
-            Theme.SetThemeForControl([Sales_DataGridView, Purchases_DataGridView]);
+            ShowingResultsFor_Label.ForeColor = CustomColors.text;
+            ReselectedButton();
+
+            Theme.SetThemeForControl([
+                Sales_DataGridView,
+                Purchases_DataGridView,
+                Totals_Chart,
+                Distribution_Chart,
+                Profits_Chart,
+                Total_Panel,
+                countriesOfOrigin_Chart,
+                companiesOfOrigin_Chart,
+                countriesOfDestination_Chart
+            ]);
+        }
+        public void ReselectedButton()
+        {
+            if (Purchases_Button.BorderThickness == 2)
+            {
+                Purchases_Button.BorderColor = CustomColors.accent_blue;
+            }
+            else if (Sales_Button.BorderThickness == 2)
+            {
+                Sales_Button.BorderColor = CustomColors.accent_blue;
+            }
+            else if (Statistics_Button.BorderThickness == 2)
+            {
+                Statistics_Button.BorderColor = CustomColors.accent_blue;
+            }
         }
 
         // Form event handlers
@@ -809,7 +837,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            SortDataGridViewBySearchBox();
+            SortDataGridView();
         }
         private void DateRange_Button_Click(object sender, EventArgs e)
         {
@@ -832,9 +860,57 @@ namespace Sales_Tracker
             Sales_Button.BorderColor = CustomColors.controlBorder;
             Statistics_Button.BorderColor = CustomColors.controlBorder;
         }
-        private void SortDataGridViewBySearchBox()
+        public void SortDataGridView()
         {
-            if (Tools.SearchSelectedDataGridView(Search_TextBox))
+            ApplyFilters();
+            LoadCharts();
+            UpdateTotals();
+        }
+        private void ApplyFilters()
+        {
+            bool comboBoxEnabled = Filter_ComboBox.Enabled;
+            TimeInterval interval = TimeInterval.AllTime;
+            TimeSpan timeSpan = TimeSpan.MaxValue;
+
+            if (comboBoxEnabled)
+            {
+                string filter = Filter_ComboBox.SelectedItem?.ToString();
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    (interval, _, timeSpan) = timeIntervals.FirstOrDefault(ti => ti.displayString == filter);
+                }
+            }
+            else
+            {
+                FilterDataGridViewByDateRange(selectedDataGridView);
+            }
+
+            bool anyVisible = false;
+            bool filterExists = interval != TimeInterval.AllTime ||
+                !string.IsNullOrEmpty(Search_TextBox.Text) ||
+                !Filter_ComboBox.Enabled;
+
+            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            {
+                DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
+                bool isVisibleByDate = comboBoxEnabled
+                    ? (interval == TimeInterval.AllTime || rowDate >= DateTime.Now - timeSpan)
+                    : row.Visible;
+
+                bool isVisibleBySearch = row.Cells.Cast<DataGridViewCell>()
+                                                  .Any(cell => cell.Value != null &&
+                                                               cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+
+                // Row is visible only if it matches both the date filter and the search filter
+                row.Visible = isVisibleByDate && isVisibleBySearch;
+
+                if (row.Visible)
+                {
+                    anyVisible = true;
+                }
+            }
+
+            if (filterExists && anyVisible)
             {
                 ShowShowingResultsForLabel();
             }
@@ -842,8 +918,15 @@ namespace Sales_Tracker
             {
                 HideShowingResultsForLabel();
             }
-            LoadCharts();
-            UpdateTotals();
+        }
+        private void FilterDataGridViewByDateRange(DataGridView dataGridView)
+        {
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                DateTime rowDate = DateTime.Parse(row.Cells[PurchaseColumnHeaders[Column.Date]].Value.ToString());
+                bool isVisible = rowDate >= fromDate && rowDate <= toDate;
+                row.Visible = isVisible;
+            }
         }
 
         // Company label
@@ -886,26 +969,40 @@ namespace Sales_Tracker
         {
             string text = "Showing results for";
 
-            if (Search_TextBox.Text != "")
+            // Append search text if available
+            if (!string.IsNullOrEmpty(Search_TextBox.Text))
             {
                 text += $" '{Search_TextBox.Text}'";
             }
 
-            if (Filter_ComboBox.Text != "" && Filter_ComboBox.Text != timeIntervals[0].displayString)
+            // Handle ComboBox case
+            if (Filter_ComboBox.Enabled && !string.IsNullOrEmpty(Filter_ComboBox.Text) && Filter_ComboBox.Text != timeIntervals[0].displayString)
             {
-                if (Search_TextBox.Text != "")
+                if (!string.IsNullOrEmpty(Search_TextBox.Text))
                 {
                     text += $"\nin the last {Filter_ComboBox.Text}";
                 }
+                else
+                {
+                    text = $"Showing results for\nthe last {Filter_ComboBox.Text}";
+                }
             }
 
+            // Handle DateRange case
             if (!Filter_ComboBox.Enabled)
             {
-                text += $" from {Tools.FormatDate(fromDate)} to {Tools.FormatDate(toDate)}";
+                if (!string.IsNullOrEmpty(Search_TextBox.Text))
+                {
+                    text += $"\nfrom {Tools.FormatDate(fromDate)} to {Tools.FormatDate(toDate)}";
+                }
+                else
+                {
+                    text = $"Showing results from\n{Tools.FormatDate(fromDate)} to {Tools.FormatDate(toDate)}";
+                }
             }
 
+            // Update label text and location
             ShowingResultsFor_Label.Text = text;
-
             ShowingResultsFor_Label.Location = new Point(
                 (Width - ShowingResultsFor_Label.Width) / 2 - UI.spaceToOffsetFormNotCenter,
                 MainTop_Panel.Bottom + (Distribution_Chart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
@@ -951,22 +1048,10 @@ namespace Sales_Tracker
         private void Filter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (isProgramLoading) { return; }
-            CloseAllPanels(null, null);
-            FilterDataGridViewByDate();
-            ShowShowingResultsForLabel();
-            LoadCharts();
-        }
-        private void FilterDataGridViewByDate()
-        {
-            string filter = Filter_ComboBox.SelectedItem.ToString();
-            (TimeInterval interval, string displayString, TimeSpan timeSpan) = timeIntervals.FirstOrDefault(ti => ti.displayString == filter);
 
-            foreach (DataGridViewRow row in selectedDataGridView.Rows)
-            {
-                DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
-                bool isVisible = interval == TimeInterval.AllTime || rowDate >= DateTime.Now - timeSpan;
-                row.Visible = isVisible;
-            }
+            CloseAllPanels(null, null);
+            ApplyFilters();
+            LoadCharts();
         }
 
         // Lists
@@ -1159,14 +1244,6 @@ namespace Sales_Tracker
             Accountant,
             ItemsInPurchase
         }
-        public class TagData
-        {
-            public decimal PricePerUnitUSD { get; set; }
-            public decimal ShippingUSD { get; set; }
-            public decimal TaxUSD { get; set; }
-            public decimal FeeUSD { get; set; }
-            public decimal TotalPriceUSD { get; set; }
-        }
         public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView, selectedDataGridView;
         private DataGridViewRow removedRow;
         private Control controlRightClickPanelWasAddedTo;
@@ -1237,7 +1314,7 @@ namespace Sales_Tracker
 
                 case SelectedOption.ProductPurchases:
                     type = "product for purchase";
-                    columnName = Products_Form.Columns.ProductName.ToString();
+                    columnName = Products_Form.Column.ProductName.ToString();
                     logIndex = 3;
 
                     // Remove product from list
@@ -1249,7 +1326,7 @@ namespace Sales_Tracker
 
                 case SelectedOption.ProductSales:
                     type = "product for sale";
-                    columnName = Products_Form.Columns.ProductName.ToString();
+                    columnName = Products_Form.Column.ProductName.ToString();
                     logIndex = 3;
 
                     // Remove product from list
@@ -1683,7 +1760,10 @@ namespace Sales_Tracker
                 selectedDataGridView.Sort(sortedColumn, direction);
             }
 
-            SortDataGridViewBySearchBox();
+            if (Selected is SelectedOption.Purchases or SelectedOption.Sales)
+            {
+                SortDataGridView();
+            }
 
             // Calculate the middle index
             int visibleRowCount = selectedDataGridView.DisplayedRowCount(true);
@@ -1824,11 +1904,11 @@ namespace Sales_Tracker
                 row.Selected = false;
             }
         }
-        public static bool DoesIDExists(Guna2DataGridView dataGridView, string purchaseID)
+        public static bool DoesValueExistInDataGridView(Guna2DataGridView dataGridView, string column, string purchaseID)
         {
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (purchaseID == row.Cells[Column.OrderNumber.ToString()].Value.ToString())
+                if (purchaseID == row.Cells[column].Value.ToString())
                 {
                     return true;
                 }
@@ -2257,7 +2337,7 @@ namespace Sales_Tracker
             ResizeControls();
         }
         private List<Control> statisticsControls;
-        private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart;
+        public GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart;
         private void ConstructControlsForStatistics()
         {
             if (countriesOfOrigin_Chart != null)

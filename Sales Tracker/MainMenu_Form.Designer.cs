@@ -186,7 +186,7 @@
             ManageCompanies_Button.BorderThickness = 1;
             ManageCompanies_Button.CustomizableEdges = customizableEdges1;
             ManageCompanies_Button.FillColor = Color.White;
-            ManageCompanies_Button.Font = new Font("Segoe UI", 10);
+            ManageCompanies_Button.Font = new Font("Segoe UI", 10F);
             ManageCompanies_Button.ForeColor = Color.Black;
             ManageCompanies_Button.Location = new Point(1700, 21);
             ManageCompanies_Button.Name = "ManageCompanies_Button";
@@ -205,7 +205,7 @@
             ManageAccountants_Button.BorderThickness = 1;
             ManageAccountants_Button.CustomizableEdges = customizableEdges3;
             ManageAccountants_Button.FillColor = Color.White;
-            ManageAccountants_Button.Font = new Font("Segoe UI", 10);
+            ManageAccountants_Button.Font = new Font("Segoe UI", 10F);
             ManageAccountants_Button.ForeColor = Color.Black;
             ManageAccountants_Button.Location = new Point(2162, 21);
             ManageAccountants_Button.Name = "ManageAccountants_Button";
@@ -224,7 +224,7 @@
             ManageCategories_Button.BorderThickness = 1;
             ManageCategories_Button.CustomizableEdges = customizableEdges5;
             ManageCategories_Button.FillColor = Color.White;
-            ManageCategories_Button.Font = new Font("Segoe UI", 10);
+            ManageCategories_Button.Font = new Font("Segoe UI", 10F);
             ManageCategories_Button.ForeColor = Color.Black;
             ManageCategories_Button.Location = new Point(1931, 21);
             ManageCategories_Button.Name = "ManageCategories_Button";
@@ -311,7 +311,7 @@
             ManageProducts_Button.BorderThickness = 1;
             ManageProducts_Button.CustomizableEdges = customizableEdges13;
             ManageProducts_Button.FillColor = Color.White;
-            ManageProducts_Button.Font = new Font("Segoe UI", 10);
+            ManageProducts_Button.Font = new Font("Segoe UI", 10F);
             ManageProducts_Button.ForeColor = Color.Black;
             ManageProducts_Button.Location = new Point(1469, 21);
             ManageProducts_Button.Name = "ManageProducts_Button";
@@ -721,7 +721,7 @@
             Filter_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Filter_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             Filter_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Filter_ComboBox.Font = new Font("Segoe UI", 10);
+            Filter_ComboBox.Font = new Font("Segoe UI", 10F);
             Filter_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Filter_ComboBox.ItemHeight = 44;
             Filter_ComboBox.Location = new Point(2021, 141);
@@ -917,9 +917,6 @@
         private Guna.UI2.WinForms.Guna2Panel Total_Panel;
         public Guna.UI2.WinForms.Guna2Button Sales_Button;
         public Guna.UI2.WinForms.Guna2Button Purchases_Button;
-        private Guna.Charts.WinForms.GunaChart Totals_Chart;
-        private Guna.Charts.WinForms.GunaChart Distribution_Chart;
-        private Guna.Charts.WinForms.GunaChart Profits_Chart;
         private Label LineGraph_Label;
         public Guna.UI2.WinForms.Guna2ToggleSwitch LineGraph_ToggleSwitch;
         public Guna.UI2.WinForms.Guna2Button ManageProducts_Button;
@@ -936,5 +933,8 @@
         private Label ShowingResultsFor_Label;
         public Guna.UI2.WinForms.Guna2Button DateRange_Button;
         public Guna.UI2.WinForms.Guna2ComboBox Filter_ComboBox;
+        public Guna.Charts.WinForms.GunaChart Totals_Chart;
+        public Guna.Charts.WinForms.GunaChart Distribution_Chart;
+        public Guna.Charts.WinForms.GunaChart Profits_Chart;
     }
 }

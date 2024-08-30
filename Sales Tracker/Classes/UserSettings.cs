@@ -39,7 +39,7 @@ namespace Sales_Tracker.Classes
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (row.Tag is (List<string>, MainMenu_Form.TagData tagData))
+                if (row.Tag is (List<string>, TagData tagData))
                 {
                     // Convert the USD values to the current currency
                     decimal pricePerUnit = tagData.PricePerUnitUSD * exchangeRate;

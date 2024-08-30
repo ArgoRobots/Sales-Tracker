@@ -37,6 +37,8 @@ namespace Sales_Tracker.Classes
         {
             foreach (Control control in list)
             {
+                if (control == null) { return; }
+
                 bool setCurrentControl = false;
                 if (control.HasChildren)
                 {

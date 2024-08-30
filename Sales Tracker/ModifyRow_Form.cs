@@ -284,17 +284,17 @@ namespace Sales_Tracker
 
                 switch (columnName)
                 {
-                    case nameof(Products_Form.Columns.ProductID):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductID], left, Panel);
+                    case nameof(Products_Form.Column.ProductID):
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductID], left, Panel);
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
                         break;
 
-                    case nameof(Products_Form.Columns.ProductName):
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductName], left, Panel);
+                    case nameof(Products_Form.Column.ProductName):
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductName], left, Panel);
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
                         break;
 
-                    case nameof(Products_Form.Columns.ProductCategory):
+                    case nameof(Products_Form.Column.ProductCategory):
                         List<string> array;
                         if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
                         {
@@ -302,7 +302,7 @@ namespace Sales_Tracker
                         }
                         else { array = MainMenu_Form.Instance.GetProductCategoryPurchaseNames(); }
 
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.ProductCategory], left, Panel);
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
                         Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
 
                         ProductCategory_TextBox.Click += (sender, e) =>
@@ -320,9 +320,9 @@ namespace Sales_Tracker
 
                         break;
 
-                    case nameof(Products_Form.Columns.CountryOfOrigin):
+                    case nameof(Products_Form.Column.CountryOfOrigin):
 
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CountryOfOrigin], left, Panel);
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
                         Guna2TextBox gTextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
                         gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, Country.countries, this, searchBoxMaxHeight); };
                         gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, Country.countries, this, searchBoxMaxHeight); };
@@ -330,9 +330,9 @@ namespace Sales_Tracker
                         gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
                         break;
 
-                    case nameof(Products_Form.Columns.CompanyOfOrigin):
+                    case nameof(Products_Form.Column.CompanyOfOrigin):
 
-                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Columns.CompanyOfOrigin], left, Panel);
+                        ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CompanyOfOrigin], left, Panel);
                         gTextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
                         gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, searchBoxMaxHeight); };
                         gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, searchBoxMaxHeight); };
