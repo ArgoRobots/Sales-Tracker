@@ -255,6 +255,7 @@ namespace Sales_Tracker.Classes
 
                         Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(project));
 
+                        InitThings();
                         SaveAll();
 
                         // Delete the temp folder

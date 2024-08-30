@@ -15,6 +15,7 @@ namespace Sales_Tracker.Charts
 
             chart.XAxes.GridLines.Display = false;
             chart.YAxes.GridLines.Display = true;
+            chart.YAxes.Display = true;
             chart.Legend.Display = false;
         }
         public static void ConfigureChartForLine(GunaChart chart)
@@ -23,6 +24,8 @@ namespace Sales_Tracker.Charts
 
             chart.XAxes.GridLines.Display = true;
             chart.YAxes.GridLines.Display = true;
+            chart.XAxes.Display = true;
+            chart.YAxes.Display = true;
             chart.Legend.Display = false;
         }
         public static void ConfigureChartForPie(GunaChart chart)
@@ -34,22 +37,29 @@ namespace Sales_Tracker.Charts
             chart.Legend.Position = LegendPosition.Right;
             chart.Legend.Display = true;
         }
+        private static void ClearChartConfig(GunaChart chart)
+        {
+            chart.XAxes.Display = false;
+            chart.YAxes.Display = false;
+            chart.XAxes.GridLines.Display = false;
+            chart.YAxes.GridLines.Display = false;
+            chart.Legend.Display = false;
+        }
 
         // Main charts
         public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart)
         {
+            if (!CheckForAnyData(dataGridView.Rows.Count, chart))
+            {
+                ClearChart(chart);
+                return 0;
+            }
+
             if (isLineChart)
             {
                 ConfigureChartForLine(chart);
             }
             else { ConfigureChartForBar(chart); }
-
-            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(dataGridView))
-            {
-                chart.Datasets.Clear();
-                chart.Update();
-                return 0;
-            }
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset(); }
@@ -95,14 +105,13 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
         {
-            ConfigureChartForPie(chart);
-
-            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(dataGridView))
+            if (!CheckForAnyData(dataGridView.Rows.Count, chart))
             {
-                chart.Datasets.Clear();
-                chart.Update();
+                ClearChart(chart);
                 return;
             }
+
+            ConfigureChartForPie(chart);
 
             GunaPieDataset dataset = new();
 
@@ -211,18 +220,17 @@ namespace Sales_Tracker.Charts
         }
         public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
         {
+            if (!CheckForAnyData(salesDataGridView.Rows.Count, chart))
+            {
+                ClearChart(chart);
+                return 0;
+            }
+
             if (isLineChart)
             {
                 ConfigureChartForLine(chart);
             }
             else { ConfigureChartForBar(chart); }
-
-            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView, purchasesDataGridView))
-            {
-                chart.Datasets.Clear();
-                chart.Update();
-                return 0;
-            }
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset(); }
@@ -299,14 +307,9 @@ namespace Sales_Tracker.Charts
         // Statistics charts
         public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
-            ConfigureChartForPie(chart);
+            if (!CheckForAnyData(purchasesDataGridView.Rows.Count, chart)) { return; }
 
-            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
-            {
-                chart.Datasets.Clear();
-                chart.Update();
-                return;
-            }
+            ConfigureChartForPie(chart);
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
@@ -367,14 +370,9 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
-            ConfigureChartForPie(chart);
+            if (!CheckForAnyData(purchasesDataGridView.Rows.Count, chart)) { return; }
 
-            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
-            {
-                chart.Datasets.Clear();
-                chart.Update();
-                return;
-            }
+            ConfigureChartForPie(chart);
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> companyCounts = [];
@@ -435,14 +433,9 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart)
         {
-            ConfigureChartForPie(chart);
+            if (!CheckForAnyData(salesDataGridView.Rows.Count, chart)) { return; }
 
-            if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView))
-            {
-                chart.Datasets.Clear();
-                chart.Update();
-                return;
-            }
+            ConfigureChartForPie(chart);
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
@@ -503,6 +496,9 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadAccountantsIntoChart(List<Guna2DataGridView> purchasesDataGridViews, GunaChart chart)
         {
+            int totalRowCount = purchasesDataGridViews.Sum(grid => grid.Rows.Count);
+            if (!CheckForAnyData(totalRowCount, chart)) { return; }
+
             ConfigureChartForPie(chart);
 
             GunaPieDataset dataset = new();
@@ -537,8 +533,7 @@ namespace Sales_Tracker.Charts
 
             if (accountantCounts.Count == 0)
             {
-                chart.Datasets.Clear();
-                chart.Update();
+                ClearChart(chart);
                 return;
             }
 
@@ -558,6 +553,44 @@ namespace Sales_Tracker.Charts
         }
 
         // Methods
+        /// <summary>
+        /// If there is no data, then it adds a Label to the chart that says "No data".
+        /// </summary>
+        /// <returns>True if there is any data, False if there is no data.</returns>
+        private static bool CheckForAnyData(int dataGridViewRowCount, GunaChart gunaChart)
+        {
+            Label existingLabel = gunaChart.Controls.OfType<Label>().FirstOrDefault(label => label.Text == "No data");
+
+            if (dataGridViewRowCount == 0)
+            {
+                // If there's no data and the label doesn't exist, create and add it
+                if (existingLabel == null)
+                {
+                    Label label = new()
+                    {
+                        Font = new Font("Segoe UI", 12),
+                        ForeColor = CustomColors.text,
+                        Text = "No data",
+                        Anchor = AnchorStyles.Top,
+                        AutoSize = true
+                    };
+                    gunaChart.Controls.Add(label);
+                    label.Location = new Point((gunaChart.Width - label.Width) / 2, (gunaChart.Height - label.Height) / 2);
+                    label.BringToFront();
+                }
+                return false;
+            }
+            else
+            {
+                // If there's data and the label exists, remove it
+                if (existingLabel != null)
+                {
+                    gunaChart.Controls.Remove(existingLabel);
+                    existingLabel.Dispose();
+                }
+                return true;
+            }
+        }
         private static void ApplyStyleToBarOrLineDataSet(IGunaDataset dataset, bool isLineChart)
         {
             if (isLineChart)
@@ -696,6 +729,12 @@ namespace Sales_Tracker.Charts
         {
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
+            chart.Update();
+        }
+        private static void ClearChart(GunaChart chart)
+        {
+            ClearChartConfig(chart);
+            chart.Datasets.Clear();
             chart.Update();
         }
     }

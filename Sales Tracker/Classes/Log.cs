@@ -50,6 +50,12 @@ namespace Sales_Tracker.Classes
                 }
                 else { Log_Form.Instance.RichTextBox.AppendText(newText); }
             }
+
+            // Show error
+            if (index == 0)
+            {
+                CustomMessageBox.Show("Argo Sales Tracker", text, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+            }
         }
         private static void Error(
             string message,

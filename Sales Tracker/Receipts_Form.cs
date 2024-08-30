@@ -83,11 +83,11 @@ namespace Sales_Tracker
                 // Iterate through selected rows and copy files
                 foreach (DataGridViewRow row in Receipts_DataGridView.SelectedRows)
                 {
-                    if (row.Tag != null)
+                    if (row.Tag is (string dir, TagData))
                     {
-                        string sourceFilePath = row.Tag.ToString();
+                        string sourceFilePath = dir;
                         string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(sourceFilePath));
-                        File.Copy(sourceFilePath, destinationFilePath);
+                        Directories.CopyFile(sourceFilePath, destinationFilePath);
                     }
                 }
             }

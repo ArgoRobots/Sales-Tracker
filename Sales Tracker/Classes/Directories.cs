@@ -237,7 +237,7 @@ namespace Sales_Tracker.Classes
         {
             if (!File.Exists(filePath))
             {
-                Log.Error_FileDoesNotExist(filePath);
+                CreateFile(filePath);
             }
             try
             {
@@ -257,7 +257,7 @@ namespace Sales_Tracker.Classes
         {
             if (!File.Exists(filePath))
             {
-                Log.Error_FileDoesNotExist(filePath);
+                CreateFile(filePath);
             }
             try
             {
@@ -576,7 +576,7 @@ namespace Sales_Tracker.Classes
                           .Cast<string>()
                           .ToList();
         }
-   
+
         public static string GetNewFileNameIfItAlreadyExists(string filePath)
         {
             string destinationDirectory = Path.GetDirectoryName(filePath);
