@@ -103,6 +103,7 @@ namespace Sales_Tracker.Settings
                 string countriesOriginText = MainMenu_Form.Instance.countriesOfOrigin_Chart?.Title.Text;
                 string companiesOriginText = MainMenu_Form.Instance.companiesOfOrigin_Chart?.Title.Text;
                 string countriesDestinationText = MainMenu_Form.Instance.countriesOfDestination_Chart?.Title.Text;
+                string accountants = MainMenu_Form.Instance.accountants_Chart?.Title.Text;
 
                 General_Form.Instance.UpdateTheme();
                 Security_Form.Instance.UpdateTheme();
@@ -124,6 +125,10 @@ namespace Sales_Tracker.Settings
                 if (MainMenu_Form.Instance.countriesOfDestination_Chart != null)
                 {
                     MainMenu_Form.Instance.countriesOfDestination_Chart.Title.Text = countriesDestinationText;
+                }
+                if (MainMenu_Form.Instance.accountants_Chart != null)
+                {
+                    MainMenu_Form.Instance.accountants_Chart.Title.Text = accountants;
                 }
 
                 List<Guna2Panel> listOfMenus = [

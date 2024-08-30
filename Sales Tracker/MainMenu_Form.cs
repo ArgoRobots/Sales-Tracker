@@ -262,7 +262,8 @@ namespace Sales_Tracker
                 Total_Panel,
                 countriesOfOrigin_Chart,
                 companiesOfOrigin_Chart,
-                countriesOfDestination_Chart
+                countriesOfDestination_Chart,
+                accountants_Chart
             ]);
         }
         public void ReselectedButton()
@@ -547,22 +548,22 @@ namespace Sales_Tracker
                 Totals_Chart.Height = 300;
             }
 
-            // Center the charts
             int chartWidth = Width / 3 - 35;
             int chartHeight = Totals_Chart.Height;
 
-            // Set Totals_Chart on the left
+            // Set chart on the left
             Totals_Chart.Width = chartWidth;
             Totals_Chart.Left = (Width - 3 * chartWidth - 40) / 2 - UI.spaceToOffsetFormNotCenter;
 
-            // Set Distribution_Chart in the middle
+            // Set chart in the middle
             Distribution_Chart.Size = new Size(chartWidth, chartHeight);
             Distribution_Chart.Left = Totals_Chart.Right + 20;
 
-            // Set Profits_Chart on the right
+            // Set chart on the right
             Profits_Chart.Size = new Size(chartWidth, chartHeight);
             Profits_Chart.Left = Distribution_Chart.Right + 20;
 
+            // Set chart on the left
             selectedDataGridView.Size = new Size(Width - 65, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
             selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
 
@@ -582,14 +583,32 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Statistics)
             {
-                countriesOfOrigin_Chart.Width = Width / 3 - 30;
+                int statChartWidth = Width / 3 - 30;
+                int statchartHeight = Height / 3 - 30;
+
+                // Set chart on the left
+                countriesOfOrigin_Chart.Size = new Size(statChartWidth, statchartHeight);
                 countriesOfOrigin_Chart.Left = 20;
 
-                companiesOfOrigin_Chart.Width = countriesOfDestination_Chart.Width;
+                // Set chart in the middle
+                companiesOfOrigin_Chart.Size = new Size(statChartWidth, statchartHeight);
                 companiesOfOrigin_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - UI.spaceToOffsetFormNotCenter;
 
-                countriesOfDestination_Chart.Width = countriesOfOrigin_Chart.Width;
+                // Set chart on the right
+                countriesOfDestination_Chart.Size = new Size(statChartWidth, statchartHeight);
                 countriesOfDestination_Chart.Left = Width - Totals_Chart.Width - 35;
+
+                // Set chart on the left
+                accountants_Chart.Size = new Size(statChartWidth, statchartHeight);
+                accountants_Chart.Left = 20;
+
+                // Calculate the available space between the top row and the bottom of the form
+                int topRowBottom = Math.Max(countriesOfOrigin_Chart.Bottom, Math.Max(companiesOfOrigin_Chart.Bottom, countriesOfDestination_Chart.Bottom));
+                int availableHeight = Height - topRowBottom - 30;
+
+                // Center the accountants_Chart in the remaining space
+                accountants_Chart.Left = 20;
+                accountants_Chart.Top = topRowBottom + (availableHeight - chartHeight) / 2;
             }
 
             if (Controls.Contains(messagePanel))
@@ -885,7 +904,6 @@ namespace Sales_Tracker
                 FilterDataGridViewByDateRange(selectedDataGridView);
             }
 
-            bool anyVisible = false;
             bool filterExists = interval != TimeInterval.AllTime ||
                 !string.IsNullOrEmpty(Search_TextBox.Text) ||
                 !Filter_ComboBox.Enabled;
@@ -903,14 +921,9 @@ namespace Sales_Tracker
 
                 // Row is visible only if it matches both the date filter and the search filter
                 row.Visible = isVisibleByDate && isVisibleBySearch;
-
-                if (row.Visible)
-                {
-                    anyVisible = true;
-                }
             }
 
-            if (filterExists && anyVisible)
+            if (filterExists)
             {
                 ShowShowingResultsForLabel();
             }
@@ -2337,7 +2350,7 @@ namespace Sales_Tracker
             ResizeControls();
         }
         private List<Control> statisticsControls;
-        public GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart;
+        public GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart, accountants_Chart;
         private void ConstructControlsForStatistics()
         {
             if (countriesOfOrigin_Chart != null)
@@ -2348,12 +2361,14 @@ namespace Sales_Tracker
             countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products");
             companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products");
             countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products");
+            accountants_Chart = ConstructStatisticsChart(800, "Transactions managed by accountants");
 
             statisticsControls =
             [
                 countriesOfOrigin_Chart,
                 companiesOfOrigin_Chart,
-                countriesOfDestination_Chart
+                countriesOfDestination_Chart,
+                accountants_Chart
             ];
         }
         private static GunaChart ConstructStatisticsChart(int top, string title)
@@ -2400,6 +2415,7 @@ namespace Sales_Tracker
             LoadChart.LoadCountriesOfOriginForProductsIntoChart(Purchases_DataGridView, countriesOfOrigin_Chart);
             LoadChart.LoadCompaniesOfOriginForProductsIntoChart(Purchases_DataGridView, companiesOfOrigin_Chart);
             LoadChart.LoadCountriesOfDestinationForProductsIntoChart(Sales_DataGridView, countriesOfDestination_Chart);
+            LoadChart.LoadAccountantsIntoChart([Purchases_DataGridView, Sales_DataGridView], accountants_Chart);
         }
 
         // Message panel

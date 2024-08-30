@@ -64,7 +64,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             LastCheck_Label.Anchor = AnchorStyles.Top;
             LastCheck_Label.AutoSize = true;
-            LastCheck_Label.Font = new Font("Segoe UI", 10);
+            LastCheck_Label.Font = new Font("Segoe UI", 10F);
             LastCheck_Label.Location = new Point(363, 46);
             LastCheck_Label.Name = "LastCheck_Label";
             LastCheck_Label.Size = new Size(274, 28);

@@ -2,6 +2,7 @@
 using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using System.Data;
 
 namespace Sales_Tracker.Charts
 {
@@ -54,20 +55,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            if (isLineChart)
-            {
-                ((GunaLineDataset)dataset).FillColor = CustomColors.accent_blue;
-                ((GunaLineDataset)dataset).BorderColor = CustomColors.accent_blue;
-                ((GunaLineDataset)dataset).PointRadius = 5;
-                ((GunaLineDataset)dataset).PointStyle = PointStyle.Circle;
-                ((GunaLineDataset)dataset).PointFillColors = [CustomColors.accent_blue];
-                ((GunaLineDataset)dataset).PointBorderColors = [CustomColors.accent_blue];
-            }
-            else
-            {
-                ((GunaBarDataset)dataset).BarPercentage = 0.6f;
-                ((GunaBarDataset)dataset).FillColors = [CustomColors.accent_blue];
-            }
+            ApplyStyleToBarOrLineDataSet(dataset, isLineChart);
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
@@ -240,20 +228,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            if (isLineChart)
-            {
-                ((GunaLineDataset)dataset).FillColor = CustomColors.accent_blue;
-                ((GunaLineDataset)dataset).BorderColor = CustomColors.accent_blue;
-                ((GunaLineDataset)dataset).PointRadius = 5;
-                ((GunaLineDataset)dataset).PointStyle = PointStyle.Circle;
-                ((GunaLineDataset)dataset).PointFillColors = [CustomColors.accent_blue];
-                ((GunaLineDataset)dataset).PointBorderColors = [CustomColors.accent_blue];
-            }
-            else
-            {
-                ((GunaBarDataset)dataset).BarPercentage = 0.6f;
-                ((GunaBarDataset)dataset).FillColors = [CustomColors.accent_blue];
-            }
+            ApplyStyleToBarOrLineDataSet(dataset, isLineChart);
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
@@ -526,8 +501,77 @@ namespace Sales_Tracker.Charts
             ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
+        public static void LoadAccountantsIntoChart(List<Guna2DataGridView> purchasesDataGridViews, GunaChart chart)
+        {
+            ConfigureChartForPie(chart);
+
+            GunaPieDataset dataset = new();
+            Dictionary<string, double> accountantCounts = new();
+
+            foreach (Guna2DataGridView purchasesDataGridView in purchasesDataGridViews)
+            {
+                if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
+                {
+                    continue;
+                }
+
+                foreach (DataGridViewRow row in purchasesDataGridView.Rows)
+                {
+                    if (!row.Visible) { continue; }
+
+                    string accountant = row.Cells[MainMenu_Form.Column.Name.ToString()].Value.ToString();
+
+                    if (!string.IsNullOrEmpty(accountant))
+                    {
+                        if (accountantCounts.TryGetValue(accountant, out double value))
+                        {
+                            accountantCounts[accountant] = ++value;
+                        }
+                        else
+                        {
+                            accountantCounts[accountant] = 1;
+                        }
+                    }
+                }
+            }
+
+            if (accountantCounts.Count == 0)
+            {
+                chart.Datasets.Clear();
+                chart.Update();
+                return;
+            }
+
+            // Add data points to the dataset with percentage labels
+            foreach (KeyValuePair<string, double> accountantCount in accountantCounts)
+            {
+                dataset.DataPoints.Add(accountantCount.Key, accountantCount.Value);
+                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{accountantCount.Key}";
+            }
+
+            ApplyCustomColorsToDataset(dataset);
+            UpdateChart(chart, dataset);
+        }
 
         // Methods
+        private static void ApplyStyleToBarOrLineDataSet(IGunaDataset dataset, bool isLineChart)
+        {
+            if (isLineChart)
+            {
+                ((GunaLineDataset)dataset).FillColor = CustomColors.accent_blue;
+                ((GunaLineDataset)dataset).BorderColor = CustomColors.accent_blue;
+                ((GunaLineDataset)dataset).PointRadius = 8;
+                ((GunaLineDataset)dataset).PointStyle = PointStyle.Circle;
+                ((GunaLineDataset)dataset).PointFillColors = [CustomColors.accent_blue];
+                ((GunaLineDataset)dataset).PointBorderColors = [CustomColors.accent_blue];
+                ((GunaLineDataset)dataset).BorderWidth = 5;
+            }
+            else
+            {
+                ((GunaBarDataset)dataset).BarPercentage = 0.6f;
+                ((GunaBarDataset)dataset).FillColors = [CustomColors.accent_blue];
+            }
+        }
         public static void ApplyCustomColorsToDataset(GunaPieDataset dataset)
         {
             // Define the colors

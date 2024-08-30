@@ -25,6 +25,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             Theme.SetThemeForForm(this);
             CheckForUpdates_Button.FillColor = CustomColors.accent_blue;
+            CheckForUpdates_Button.ForeColor = Color.White;
         }
 
         // Form event handlers
@@ -35,11 +36,6 @@ namespace Sales_Tracker.Settings.Menus
 
         // Event handlers
         private void CheckForUpdates_Button_Click(object sender, EventArgs e)
-        {
-        }
-
-        // Methods
-        public void UpdateControls()
         {
         }
     }
