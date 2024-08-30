@@ -699,25 +699,11 @@ namespace Sales_Tracker
         }
         private void Save_Button_MouseDown(object sender, MouseEventArgs e)
         {
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
-            {
-                Save_Button.Image = Resources.SaveWhite;
-            }
-            else
-            {
-                Save_Button.Image = Resources.SaveGray;
-            }
+            Save_Button.Image = Resources.SaveWhite;
         }
         private void Save_Button_MouseUp(object sender, MouseEventArgs e)
         {
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
-            {
-                Save_Button.Image = Resources.SaveGray;
-            }
-            else
-            {
-                Save_Button.Image = Resources.SaveWhite;
-            }
+            Save_Button.Image = Resources.SaveGray;
         }
         private void Help_Button_Click(object sender, EventArgs e)
         {
@@ -764,6 +750,7 @@ namespace Sales_Tracker
             Controls.Add(Purchases_DataGridView);
             ResizeControls();
             Controls.Remove(Sales_DataGridView);
+            ApplyFilters();
             LoadCharts();
             UpdateTotals();
 
@@ -785,6 +772,7 @@ namespace Sales_Tracker
             Controls.Add(Sales_DataGridView);
             ResizeControls();
             Controls.Remove(Purchases_DataGridView);
+            ApplyFilters();
             LoadCharts();
             UpdateTotals();
 

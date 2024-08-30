@@ -542,11 +542,15 @@ namespace Sales_Tracker.Charts
                 return;
             }
 
+            // Calculate total count for percentages
+            double totalCount = accountantCounts.Values.Sum();
+
             // Add data points to the dataset with percentage labels
             foreach (KeyValuePair<string, double> accountantCount in accountantCounts)
             {
+                double percentage = accountantCount.Value / totalCount * 100;
                 dataset.DataPoints.Add(accountantCount.Key, accountantCount.Value);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{accountantCount.Key}";
+                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{accountantCount.Key} ({percentage:F2}%)";
             }
 
             ApplyCustomColorsToDataset(dataset);
