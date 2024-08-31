@@ -85,8 +85,9 @@ namespace Sales_Tracker
                 {
                     if (row.Tag is (string dir, TagData))
                     {
-                        string sourceFilePath = dir;
+                        string sourceFilePath = dir.Replace(MainMenu_Form.companyName_text, Directories.CompanyName);
                         string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(sourceFilePath));
+                        destinationFilePath = Directories.GetNewFileNameIfItAlreadyExists(destinationFilePath);
                         Directories.CopyFile(sourceFilePath, destinationFilePath);
                     }
                 }

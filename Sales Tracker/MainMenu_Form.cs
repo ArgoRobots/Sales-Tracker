@@ -17,7 +17,7 @@ namespace Sales_Tracker
         private static List<string> _thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
-        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show";
+        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show", companyName_text = "CompanyName";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
         private static string _currencySymbol;
@@ -2233,6 +2233,8 @@ namespace Sales_Tracker
             DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
             string receiptFilePath = GetFilePathFromRowTag(selectedRow.Tag);
 
+            receiptFilePath = receiptFilePath.Replace(companyName_text, Directories.CompanyName);
+
             if (!File.Exists(receiptFilePath))
             {
                 CustomMessageBox.Show("Argo Sales Tracker", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
@@ -2245,7 +2247,9 @@ namespace Sales_Tracker
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Directories.CopyFile(receiptFilePath, dialog.SelectedPath + @"\" + Path.GetFileName(receiptFilePath));
+                string newFilepath = dialog.SelectedPath + @"\" + Path.GetFileName(receiptFilePath);
+                newFilepath = Directories.GetNewFileNameIfItAlreadyExists(newFilepath);
+                Directories.CopyFile(receiptFilePath, newFilepath);
             }
         }
         private ItemsInPurchase_Form itemsInPurchase_Form;
@@ -2290,9 +2294,13 @@ namespace Sales_Tracker
             {
                 return tagList[^1];
             }
-            if (tag is (string tagString, TagData))
+            else if (tag is (string tagString, TagData))
             {
                 return tagString;
+            }
+            else if (tag is string tagString1)
+            {
+                return tagString1;
             }
             return "";
         }

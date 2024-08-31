@@ -133,15 +133,15 @@ namespace Sales_Tracker
             {
                 Height = MaximumSize.Height;
                 ChangedBackground_Panel.Height = Height - 190;
-                Changed_Panel.Height = Height - 192;
+                Changed_Panel.Height = Height - 10;
                 FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Changed_Panel.AutoScroll = true;
             }
             else
             {
-                Height = requiredHeight + 190;
+                Height = requiredHeight + 200;
                 ChangedBackground_Panel.Height = Height - 190;
-                Changed_Panel.Height = Height - 192;
+                Changed_Panel.Height = Height - 190;
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
                 Changed_Panel.AutoScroll = false;
             }

@@ -7,23 +7,106 @@ namespace Sales_Tracker.Classes
     public static class Directories
     {
         // Directories
-        public static string CompanyName { get; private set; }
-        public static string TempCompany_dir { get; private set; }
-        public static string ArgoCompany_dir { get; private set; }
-        public static string ArgoCompany_file { get; private set; }
-        public static string AppData_dir { get; private set; }
-        public static string AppDataConfig_file { get; private set; }
-        public static string Purchases_file { get; private set; }
-        public static string Sales_file { get; private set; }
-        public static string CategoryPurchases_file { get; private set; }
-        public static string CategorySales_file { get; private set; }
-        public static string Accountants_file { get; private set; }
-        public static string Companies_file { get; private set; }
-        public static string Receipts_dir { get; private set; }
-        public static string Logs_dir { get; private set; }
-        public static string Info_file { get; private set; }
-        public static string Desktop_dir { get; private set; }
+        private static string _companyName;
+        private static string _tempCompanyDir;
+        private static string _argoCompanyDir;
+        private static string _argoCompanyFile;
+        private static string _appDataDir;
+        private static string _appDataConfigFile;
+        private static string _purchasesFile;
+        private static string _salesFile;
+        private static string _categoryPurchasesFile;
+        private static string _categorySalesFile;
+        private static string _accountantsFile;
+        private static string _companiesFile;
+        private static string _receiptsDir;
+        private static string _logsDir;
+        private static string _infoFile;
+        private static string _desktopDir;
 
+        // Getters and setters
+        public static string CompanyName
+        {
+            get => _companyName;
+            set => _companyName = value;
+        }
+        public static string TempCompany_dir
+        {
+            get => _tempCompanyDir;
+            set => _tempCompanyDir = value;
+        }
+        public static string ArgoCompany_dir
+        {
+            get => _argoCompanyDir;
+            set => _argoCompanyDir = value;
+        }
+        public static string ArgoCompany_file
+        {
+            get => _argoCompanyFile;
+            set => _argoCompanyFile = value;
+        }
+        public static string AppData_dir
+        {
+            get => _appDataDir;
+            set => _appDataDir = value;
+        }
+        public static string AppDataConfig_file
+        {
+            get => _appDataConfigFile;
+            set => _appDataConfigFile = value;
+        }
+        public static string Purchases_file
+        {
+            get => _purchasesFile;
+            set => _purchasesFile = value;
+        }
+        public static string Sales_file
+        {
+            get => _salesFile;
+            set => _salesFile = value;
+        }
+        public static string CategoryPurchases_file
+        {
+            get => _categoryPurchasesFile;
+            set => _categoryPurchasesFile = value;
+        }
+        public static string CategorySales_file
+        {
+            get => _categorySalesFile;
+            set => _categorySalesFile = value;
+        }
+        public static string Accountants_file
+        {
+            get => _accountantsFile;
+            set => _accountantsFile = value;
+        }
+        public static string Companies_file
+        {
+            get => _companiesFile;
+            set => _companiesFile = value;
+        }
+        public static string Receipts_dir
+        {
+            get => _receiptsDir;
+            set => _receiptsDir = value;
+        }
+        public static string Logs_dir
+        {
+            get => _logsDir;
+            set => _logsDir = value;
+        }
+        public static string Info_file
+        {
+            get => _infoFile;
+            set => _infoFile = value;
+        }
+        public static string Desktop_dir
+        {
+            get => _desktopDir;
+            set => _desktopDir = value;
+        }
+
+        // Methods
         public static void SetDirectories(string projectDir, string project_name)
         {
             if (!projectDir.EndsWith('\\'))
@@ -43,7 +126,7 @@ namespace Sales_Tracker.Classes
             CategorySales_file = TempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
             Accountants_file = TempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
             Companies_file = TempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
-            Receipts_dir = TempCompany_dir + @"receipts\";
+            Receipts_dir = AppData_dir + MainMenu_Form.companyName_text + @"\receipts\";
 
             // Logs
             Logs_dir = TempCompany_dir + @"logs\";

@@ -224,6 +224,7 @@
             Controls.Add(Cancel_Button);
             Controls.Add(Ok_Button);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MaximumSize = new Size(1000, 1000);
             MinimumSize = new Size(800, 250);
             Name = "CustomMessage_Form";
             ShowInTaskbar = false;
