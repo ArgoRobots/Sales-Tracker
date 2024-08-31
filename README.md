@@ -15,11 +15,11 @@ To import your existing sales, purchase, or product data from a spreadsheet into
 5. **Complete Import**: After verifying the data mapping, click Import. Your data will now be added to the application, and you can begin tracking from where you left off.
 
 ## Features
-- **Track Sales and Purchases**: Add and manage both sales and purchases.
+- **Track Sales and Purchases**: Add and manage sales and purchases.
 - **Accountants Integration**: Keep track of accountants working with the sales data.
 - **Product Management**: Add, edit, and organize your products with ease.
-- **Receipts and Exporting**: Generate and export receipts and sales data for your records.
-- **Custom Date Ranges**: Filter sales and purchases by custom date ranges.
+- **Receipts and Exporting**: Export receipts and sales data for your records.
+- **Custom Date Ranges**: Filter sales and purchases with custom date ranges.
 - **Charts and Analytics**: Visualize your data using charts to gain insights into sales trends and performance.
 
 ## Technologies used
