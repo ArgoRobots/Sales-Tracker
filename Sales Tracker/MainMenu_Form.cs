@@ -7,7 +7,6 @@ using Sales_Tracker.Settings;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.Json;
-using Windows.Storage;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
@@ -1584,7 +1583,7 @@ namespace Sales_Tracker
                     string lastItem = tagList[^1];
                     if (lastItem.StartsWith(receipt_text))
                     {
-                        lastItem = lastItem.Substring(8);
+                        lastItem = lastItem.Substring(8).Replace(companyName_text, Directories.CompanyName);
 
                         if (File.Exists(lastItem))
                         {
@@ -2249,8 +2248,6 @@ namespace Sales_Tracker
             DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
             string receiptFilePath = GetFilePathFromRowTag(selectedRow.Tag);
 
-            receiptFilePath = receiptFilePath.Replace(companyName_text, Directories.CompanyName);
-
             if (!File.Exists(receiptFilePath))
             {
                 CustomMessageBox.Show("Argo Sales Tracker", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
@@ -2543,10 +2540,10 @@ namespace Sales_Tracker
         }
 
         // Receipts
-        public static bool SaveReceiptInFile(string receiptFilePath, out string newFilePath)
+        public static (string, bool) SaveReceiptInFile(string receiptFilePath)
         {
             string newReceiptsDir = Directories.Receipts_dir.Replace(companyName_text, Directories.CompanyName);
-            newFilePath = newReceiptsDir + Path.GetFileName(receiptFilePath);
+            string newFilePath = newReceiptsDir + Path.GetFileName(receiptFilePath);
 
             if (File.Exists(newFilePath))
             {
@@ -2566,11 +2563,13 @@ namespace Sales_Tracker
                 {
                     newFilePath = newReceiptsDir + suggestedThingName + Path.GetExtension(receiptFilePath);
                 }
-                else { return false; }
+                else { return ("", false); }
             }
 
             // Save receipt
-            return Directories.CopyFile(receiptFilePath, newFilePath);
+            bool saved = Directories.CopyFile(receiptFilePath.Replace(receipt_text, ""), newFilePath);
+            string newPath = receipt_text + newFilePath.Replace(Directories.CompanyName, companyName_text);
+            return (newPath, saved);
         }
         public static void RemoveReceiptFromFile(DataGridViewRow row)
         {
@@ -2595,7 +2594,7 @@ namespace Sales_Tracker
         }
         public static bool CheckIfReceiptExists(string receiptFilePath)
         {
-            if (!File.Exists(receiptFilePath))
+            if (!File.Exists(receiptFilePath.Replace(receipt_text, "")))
             {
                 string message = $"The receipt you selected no longer exists";
                 CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);

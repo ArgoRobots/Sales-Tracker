@@ -264,7 +264,7 @@ namespace Sales_Tracker.Classes
         {
             if (!File.Exists(source))
             {
-                Log.Error_FileDoesNotExist(destination);
+                Log.Error_FileDoesNotExist(source);
                 return false;
             }
             if (File.Exists(destination))

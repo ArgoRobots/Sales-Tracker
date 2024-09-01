@@ -276,7 +276,9 @@ namespace Sales_Tracker
             string newFilePath = "";
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
+                (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
+
+                if (saved)
                 {
                     return false;
                 }
@@ -433,7 +435,9 @@ namespace Sales_Tracker
             string newFilePath = "";
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
+                (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
+
+                if (saved)
                 {
                     return false;
                 }

@@ -56,7 +56,7 @@ namespace Sales_Tracker
                 }
                 if (addedReceipt)
                 {
-                    MainMenu_Form.SaveReceiptInFile(receiptFilePath, out _);
+                    MainMenu_Form.SaveReceiptInFile(receiptFilePath);
                     MainMenu_Form.AddReceiptToTag(selectedRow, receiptFilePath);
                 }
             }

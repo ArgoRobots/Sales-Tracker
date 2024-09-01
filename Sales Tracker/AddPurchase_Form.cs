@@ -190,7 +190,7 @@ namespace Sales_Tracker
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                receiptFilePath = dialog.FileName;
+                receiptFilePath = MainMenu_Form.receipt_text + dialog.FileName;
                 ShowReceiptLabel(dialog.SafeFileName);
             }
         }
@@ -299,16 +299,17 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             string newFilePath = "";
+            if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
+            {
+                return false;
+            }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
+                (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
+                if (!saved)
                 {
                     return false;
                 }
-            }
-            if (!MainMenu_Form.CheckIfReceiptExists(newFilePath))
-            {
-                return false;
             }
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
@@ -469,16 +470,17 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             string newFilePath = "";
+            if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
+            {
+                return false;
+            }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                if (!MainMenu_Form.SaveReceiptInFile(receiptFilePath, out newFilePath))
+                (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
+                if (!saved)
                 {
                     return false;
                 }
-            }
-            if (!MainMenu_Form.CheckIfReceiptExists(newFilePath))
-            {
-                return false;
             }
 
             string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
@@ -509,7 +511,7 @@ namespace Sales_Tracker
             }
             if (newFilePath != "")
             {
-                items.Add(MainMenu_Form.receipt_text + newFilePath);
+                items.Add(newFilePath);
             }
 
             // Calculate USD values
