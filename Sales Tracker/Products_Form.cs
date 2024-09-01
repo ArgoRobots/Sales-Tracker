@@ -152,7 +152,7 @@ namespace Sales_Tracker
         {
             // Check if product ID already exists
             string productID = ProductID_TextBox.Text.Trim();
-            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.selectedDataGridView, Column.ProductID.ToString(), productID))
+            if (productID != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.selectedDataGridView, Column.ProductID.ToString(), productID))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The product #{productID} already exists. Would you like to add this product anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -453,7 +453,10 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text) && CountryOfOrigin_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(CompanyOfOrigin_TextBox.Text) && CompanyOfOrigin_TextBox.Tag.ToString() != "0";
 
-            allFieldsFilled &= GetProductsRemaining() > 0;
+            if (!MainMenu_Form.IsFullVersion)
+            {
+                allFieldsFilled &= GetProductsRemaining() > 0;
+            }
             AddProduct_Button.Enabled = allFieldsFilled;
         }
         public void CloseAllPanels(object sender, EventArgs e)

@@ -79,12 +79,12 @@ namespace Sales_Tracker
             PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
-            
+
             Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             Discount_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             Discount_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             Discount_TextBox.KeyDown += UI.TextBox_KeyDown;
-            
+
             AmountCredited_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             AmountCredited_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             AmountCredited_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
@@ -226,7 +226,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -281,6 +281,10 @@ namespace Sales_Tracker
                     return false;
                 }
             }
+            if (MainMenu_Form.CheckIfReceiptExists(newFilePath))
+            {
+                return false;
+            }
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 saleNumber,
@@ -323,7 +327,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -433,6 +437,10 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+            }
+            if (MainMenu_Form.CheckIfReceiptExists(newFilePath))
+            {
+                return false;
             }
 
             string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;

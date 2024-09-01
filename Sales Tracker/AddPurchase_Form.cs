@@ -221,7 +221,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -252,7 +252,11 @@ namespace Sales_Tracker
             }
 
             // Convert to USD
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            decimal exchangeRateToUSD = 1;
+            if (Currency_ComboBox.Text != "USD")
+            {
+                exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            }
             decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
             decimal shippingUSD = shipping * exchangeRateToUSD;
             decimal taxUSD = tax * exchangeRateToUSD;
@@ -270,15 +274,12 @@ namespace Sales_Tracker
             };
 
             // Convert back to default currency for display
-            if (Currency_ComboBox.Text != Properties.Settings.Default.Currency)
-            {
-                decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
-                pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
-                shipping = shippingUSD * exchangeRateToDefault;
-                tax = taxUSD * exchangeRateToDefault;
-                fee = feeUSD * exchangeRateToDefault;
-                totalPrice = totalPriceUSD * exchangeRateToDefault;
-            }
+            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
+            pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
+            shipping = shippingUSD * exchangeRateToDefault;
+            tax = taxUSD * exchangeRateToDefault;
+            fee = feeUSD * exchangeRateToDefault;
+            totalPrice = totalPriceUSD * exchangeRateToDefault;
 
             // Round to 2 decimal places
             decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
@@ -304,6 +305,10 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+            }
+            if (!MainMenu_Form.CheckIfReceiptExists(newFilePath))
+            {
+                return false;
             }
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
@@ -347,7 +352,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -453,7 +458,7 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice}). The difference will be accounted for.";
+                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -470,6 +475,10 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
+            }
+            if (!MainMenu_Form.CheckIfReceiptExists(newFilePath))
+            {
+                return false;
             }
 
             string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
@@ -504,7 +513,11 @@ namespace Sales_Tracker
             }
 
             // Calculate USD values
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            decimal exchangeRateToUSD = 1;
+            if (Currency_ComboBox.Text != "USD")
+            {
+                exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            }
             decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
             decimal shippingUSD = shipping * exchangeRateToUSD;
             decimal taxUSD = tax * exchangeRateToUSD;

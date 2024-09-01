@@ -40,7 +40,6 @@ namespace Sales_Tracker
             }
             else
             {
-                // Handle the case where the Tag is not what we expect
                 throw new InvalidCastException("Unexpected Tag type. Expected List<string> or ValueTuple<List<string>, TagData>.");
             }
 
@@ -125,19 +124,22 @@ namespace Sales_Tracker
         private void LoadAllItemsInDataGridView(List<string> tag)
         {
             string receiptFilePath = null;
+            int startIndex = 0;
 
-            if (tag.Last().StartsWith(MainMenu_Form.receipt_text))
+            // Check if the last item is the receipt file path
+            if (tag.Count > 0 && tag[^1].StartsWith(MainMenu_Form.receipt_text))
             {
-                receiptFilePath = tag.Last();
-                tag.RemoveAt(tag.Count - 1);  // Remove the receipt file path
+                receiptFilePath = tag[^1];
+                startIndex = 1; // Skip the check in the loop for the last item
             }
 
-            foreach (string row in tag)
+            for (int i = 0; i < tag.Count - startIndex; i++)
             {
-                string[] values = row.Split(',');
+                string[] values = tag[i].Split(',');
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
+
         }
         public void Reset()
         {

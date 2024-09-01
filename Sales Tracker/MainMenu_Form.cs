@@ -7,6 +7,8 @@ using Sales_Tracker.Settings;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.Json;
+using Windows.Storage;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
 {
@@ -53,6 +55,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             UI.ConstructControls();
+            InitiateSearchTimer();
             SearchBox.ConstructSearchBox();
             CurrencySymbol = Currency.GetSymbol(Properties.Settings.Default.Currency);
 
@@ -844,12 +847,35 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            SortDataGridView();
+            if (!timerRunning)
+            {
+                timerRunning = true;
+                searchTimer.Start();
+            }
         }
         private void DateRange_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
             new DateRange_Form().ShowDialog();
+        }
+
+        // Timer for loading the charts
+        private Timer searchTimer;
+        private bool timerRunning = false;
+        private void InitiateSearchTimer()
+        {
+            searchTimer = new()
+            {
+                Interval = 300
+            };
+            searchTimer.Tick += SearchTimer_Tick;
+        }
+        private void SearchTimer_Tick(object sender, EventArgs e)
+        {
+            searchTimer.Stop();
+            timerRunning = false;
+
+            SortDataGridView();
         }
 
         // Methods for Event handlers
@@ -894,7 +920,7 @@ namespace Sales_Tracker
 
             bool filterExists = interval != TimeInterval.AllTime ||
                 !string.IsNullOrEmpty(Search_TextBox.Text) ||
-                !Filter_ComboBox.Enabled;
+                !comboBoxEnabled;
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
@@ -937,6 +963,7 @@ namespace Sales_Tracker
             {
                 return;
             }
+
             Controls.Remove(UI.Rename_TextBox);
             MainTop_Panel.Controls.Add(Edit_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
@@ -1441,15 +1468,15 @@ namespace Sales_Tracker
             // Remove receipt from file
             if (Selected is SelectedOption.Purchases or SelectedOption.Sales && removedRow?.Tag != null)
             {
-                string tagValue;
+                string tagValue = "";
 
-                if (removedRow.Tag is List<string> tagList)
+                if (removedRow.Tag is (List<string> tagList, TagData))
                 {
-                    tagValue = tagList.FirstOrDefault();
+                    tagValue = tagList[^1];
                 }
-                else
+                else if (removedRow.Tag is (string tagString, TagData))
                 {
-                    tagValue = removedRow.Tag.ToString();
+                    tagValue = tagString;
                 }
                 Directories.DeleteFile(tagValue);
 
@@ -1553,7 +1580,7 @@ namespace Sales_Tracker
                 {
                     ShowShowItemsBtn(flowPanel, 1);
 
-                    // Check if the last item starts with "receipt:" and remove it
+                    // Check if the last item starts with "receipt:"
                     string lastItem = tagList[^1];
                     if (lastItem.StartsWith(receipt_text))
                     {
@@ -1566,10 +1593,6 @@ namespace Sales_Tracker
                     }
                 }
                 else if (grid.SelectedRows[0].Tag is (string, TagData))
-                {
-                    ShowExportReceiptBtn(flowPanel, 1);
-                }
-                else if (grid.SelectedRows[0].Tag is string)
                 {
                     ShowExportReceiptBtn(flowPanel, 1);
                 }
@@ -2071,13 +2094,6 @@ namespace Sales_Tracker
                         PurchaseData = purchaseData1
                     };
                 }
-                else if (row.Tag is string singleTag)
-                {
-                    rowData[rowTagKey] = new
-                    {
-                        Tag = singleTag
-                    };
-                }
 
                 rowsData.Add(rowData);
             }
@@ -2275,12 +2291,12 @@ namespace Sales_Tracker
             // Select the row under the row that was just deleted
             if (selectedDataGridView.Rows.Count != 0)
             {
-                // If the deleted row was not at the bottom
-                if (index > selectedDataGridView.SelectedRows.Count)
+                // If the deleted row was not the last one, select the next row
+                if (index < selectedDataGridView.Rows.Count)
                 {
-                    selectedDataGridView.Rows[index - 1].Selected = true;
+                    selectedDataGridView.Rows[index].Selected = true;
                 }
-                else  // Select the bottom row
+                else  // If the deleted row was the last one, select the new last row
                 {
                     selectedDataGridView.Rows[^1].Selected = true;
                 }
@@ -2290,19 +2306,22 @@ namespace Sales_Tracker
         // Methods for right click DataGridView row
         public static string GetFilePathFromRowTag(object tag)
         {
-            if (tag is (List<string> tagList, TagData) && tagList[^1].Contains('\\') && File.Exists(tagList[^1]))
+            if (tag is (List<string> tagList, TagData) && tagList[^1].Contains('\\'))
             {
-                return tagList[^1];
+                return ProcessDirectoryFromString(tagList[^1]);
             }
             else if (tag is (string tagString, TagData))
             {
-                return tagString;
-            }
-            else if (tag is string tagString1)
-            {
-                return tagString1;
+                return ProcessDirectoryFromString(tagString);
             }
             return "";
+        }
+        private static string ProcessDirectoryFromString(string path)
+        {
+            path = path.Replace(companyName_text, Directories.CompanyName)
+                       .Replace(receipt_text, "");
+
+            return File.Exists(path) ? path : "";
         }
         private void ShowShowItemsBtn(FlowLayoutPanel flowPanel, int index)
         {
@@ -2526,12 +2545,14 @@ namespace Sales_Tracker
         // Receipts
         public static bool SaveReceiptInFile(string receiptFilePath, out string newFilePath)
         {
-            newFilePath = "";
-            if (File.Exists(Directories.Receipts_dir + Path.GetFileName(receiptFilePath)))
+            string newReceiptsDir = Directories.Receipts_dir.Replace(companyName_text, Directories.CompanyName);
+            newFilePath = newReceiptsDir + Path.GetFileName(receiptFilePath);
+
+            if (File.Exists(newFilePath))
             {
                 // Get a new name for the file
                 string name = Path.GetFileNameWithoutExtension(receiptFilePath);
-                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(Directories.Receipts_dir);
+                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(newReceiptsDir);
 
                 string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
 
@@ -2543,19 +2564,13 @@ namespace Sales_Tracker
 
                 if (result == CustomMessageBoxResult.Ok)
                 {
-                    newFilePath = Directories.Receipts_dir + suggestedThingName + Path.GetExtension(receiptFilePath);
+                    newFilePath = newReceiptsDir + suggestedThingName + Path.GetExtension(receiptFilePath);
                 }
                 else { return false; }
             }
-            else
-            {
-                newFilePath = Directories.Receipts_dir + Path.GetFileName(receiptFilePath);
-            }
 
             // Save receipt
-            Directories.CopyFile(receiptFilePath, newFilePath);
-
-            return true;
+            return Directories.CopyFile(receiptFilePath, newFilePath);
         }
         public static void RemoveReceiptFromFile(DataGridViewRow row)
         {
@@ -2577,6 +2592,16 @@ namespace Sales_Tracker
             {
                 row.Tag = filePath;
             }
+        }
+        public static bool CheckIfReceiptExists(string receiptFilePath)
+        {
+            if (!File.Exists(receiptFilePath))
+            {
+                string message = $"The receipt you selected no longer exists";
+                CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                return false;
+            }
+            return true;
         }
 
         // Misc.

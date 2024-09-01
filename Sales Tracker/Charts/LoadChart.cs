@@ -12,37 +12,49 @@ namespace Sales_Tracker.Charts
         public static void ConfigureChartForBar(GunaChart chart)
         {
             if (chart == null) { return; }
+            ClearChartConfig(chart);
+            ClearChart(chart);
 
-            chart.XAxes.GridLines.Display = false;
-            chart.YAxes.GridLines.Display = true;
+            chart.XAxes.Display = true;
+            chart.XAxes.Ticks.Display = true;
+
             chart.YAxes.Display = true;
-            chart.Legend.Display = false;
+            chart.YAxes.GridLines.Display = true;
+            chart.YAxes.Ticks.Display = true;
         }
         public static void ConfigureChartForLine(GunaChart chart)
         {
             if (chart == null) { return; }
+            ClearChartConfig(chart);
+            ClearChart(chart);
 
-            chart.XAxes.GridLines.Display = true;
-            chart.YAxes.GridLines.Display = true;
             chart.XAxes.Display = true;
+            chart.XAxes.GridLines.Display = true;
+            chart.XAxes.Ticks.Display = true;
+
             chart.YAxes.Display = true;
-            chart.Legend.Display = false;
+            chart.YAxes.GridLines.Display = true;
+            chart.YAxes.Ticks.Display = true;
         }
         public static void ConfigureChartForPie(GunaChart chart)
         {
             if (chart == null) { return; }
+            ClearChartConfig(chart);
+            ClearChart(chart);
 
-            chart.XAxes.Display = false;
-            chart.YAxes.Display = false;
-            chart.Legend.Position = LegendPosition.Right;
             chart.Legend.Display = true;
+            chart.Legend.Position = LegendPosition.Right;
         }
         private static void ClearChartConfig(GunaChart chart)
         {
             chart.XAxes.Display = false;
-            chart.YAxes.Display = false;
             chart.XAxes.GridLines.Display = false;
+            chart.XAxes.Ticks.Display = false;
+
+            chart.YAxes.Display = false;
             chart.YAxes.GridLines.Display = false;
+            chart.YAxes.Ticks.Display = false;
+
             chart.Legend.Display = false;
         }
 
@@ -72,10 +84,12 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(dataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
             Dictionary<string, double> revenueByDate = [];
+            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total))
                 {
@@ -99,6 +113,12 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return 0;
+            }
+
             SortAndAddDatasetAndSetBarPercentage(revenueByDate, dateFormat, dataset, isLineChart);
             UpdateChart(chart, dataset);
             return grandTotal;
@@ -119,10 +139,12 @@ namespace Sales_Tracker.Charts
             double totalShipping = 0;
             double totalFee = 0;
             Dictionary<string, double> categoryCosts = [];
+            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double cost))
                 {
@@ -142,7 +164,7 @@ namespace Sales_Tracker.Charts
                 if (category == MainMenu_Form.emptyCell)
                 {
                     // Extract categories and costs from the Tag
-                    if (row.Tag is List<string> items)
+                    if (row.Tag is (List<string> items, TagData))
                     {
                         foreach (string item in items)
                         {
@@ -153,9 +175,9 @@ namespace Sales_Tracker.Charts
                                 string itemCategory = itemDetails[1];
                                 double itemCost = double.Parse(itemDetails[6]);
 
-                                if (categoryCosts.TryGetValue(itemCategory, out double value))
+                                if (categoryCosts.ContainsKey(itemCategory))
                                 {
-                                    categoryCosts[itemCategory] = Math.Round(value + itemCost, 2);
+                                    categoryCosts[itemCategory] += itemCost;
                                 }
                                 else
                                 {
@@ -178,8 +200,18 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return;
+            }
+
+            totalTax = Math.Round(totalTax, 2);
+            totalShipping = Math.Round(totalShipping, 2);
+            totalFee = Math.Round(totalFee, 2);
+
             // Get total count to calculate percentages
-            double totalCost = totalTax + totalShipping + totalFee + categoryCosts.Values.Sum();
+            double totalCost = Math.Round(totalTax + totalShipping + totalFee + categoryCosts.Values.Sum(), 2);
 
             // Add combined category costs with percentage labels
             foreach (KeyValuePair<string, double> category in categoryCosts)
@@ -191,9 +223,9 @@ namespace Sales_Tracker.Charts
             }
 
             // Add separate datapoints with percentage labels
-            double shippingPercentage = totalShipping / totalCost * 100;
-            double taxPercentage = totalTax / totalCost * 100;
-            double feePercentage = totalFee / totalCost * 100;
+            double shippingPercentage = Math.Round(totalShipping / totalCost * 100, 2);
+            double taxPercentage = Math.Round(totalTax / totalCost * 100, 2);
+            double feePercentage = Math.Round(totalFee / totalCost * 100, 2);
 
             totalShipping = Math.Round(totalShipping, 2);
 
@@ -246,11 +278,13 @@ namespace Sales_Tracker.Charts
 
             // Group and sum the total profit based on the determined date format
             Dictionary<string, double> profitByDate = [];
+            bool anyRowsVisible = false;
 
             // Calculate total revenue from sales
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total))
                 {
@@ -293,6 +327,12 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return 0;
+            }
+
             // Get grandTotal
             foreach (KeyValuePair<string, double> item in profitByDate)
             {
@@ -313,10 +353,12 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
+            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
                 // Check for additional data in Tag property first
                 if (row.Tag is List<string> items)
@@ -354,6 +396,12 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return;
+            }
+
             // Get total count to calculate percentages
             double totalCount = countryCounts.Values.Sum();
 
@@ -376,10 +424,12 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> companyCounts = [];
+            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
                 // Check for additional data in Tag property first
                 if (row.Tag is List<string> items)
@@ -417,6 +467,13 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return;
+            }
+
             // Get total count to calculate percentages
             double totalCount = companyCounts.Values.Sum();
 
@@ -439,10 +496,12 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
+            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
                 // Check for additional data in Tag property first
                 if (row.Tag is List<string> items)
@@ -480,6 +539,12 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return;
+            }
+
             // Get total count to calculate percentages
             double totalCount = countryCounts.Values.Sum();
 
@@ -503,6 +568,7 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> accountantCounts = new();
+            bool anyRowsVisible = false;
 
             foreach (Guna2DataGridView purchasesDataGridView in purchasesDataGridViews)
             {
@@ -514,6 +580,7 @@ namespace Sales_Tracker.Charts
                 foreach (DataGridViewRow row in purchasesDataGridView.Rows)
                 {
                     if (!row.Visible) { continue; }
+                    anyRowsVisible = true;
 
                     string accountant = row.Cells[MainMenu_Form.Column.Name.ToString()].Value.ToString();
 
@@ -529,6 +596,12 @@ namespace Sales_Tracker.Charts
                         }
                     }
                 }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return;
             }
 
             // Get total count to calculate percentages

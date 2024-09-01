@@ -109,8 +109,8 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.SelectedText = "";
             CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CountryOfOrigin_TextBox.ShortcutsEnabled = false;
-            CountryOfOrigin_TextBox.Size = new Size(300, 48);
-            CountryOfOrigin_TextBox.TabIndex = 4;
+            CountryOfOrigin_TextBox.Size = new Size(300, 50);
+            CountryOfOrigin_TextBox.TabIndex = 6;
             CountryOfOrigin_TextBox.Tag = "1";
             // 
             // AddProduct_Label
@@ -158,8 +158,8 @@ namespace Sales_Tracker
             ProductName_TextBox.SelectedText = "";
             ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             ProductName_TextBox.ShortcutsEnabled = false;
-            ProductName_TextBox.Size = new Size(300, 48);
-            ProductName_TextBox.TabIndex = 2;
+            ProductName_TextBox.Size = new Size(300, 50);
+            ProductName_TextBox.TabIndex = 4;
             ProductName_TextBox.TextChanged += ProductName_TextBox_TextChanged;
             ProductName_TextBox.Click += CloseAllPanels;
             // 
@@ -173,13 +173,13 @@ namespace Sales_Tracker
             AddProduct_Button.CustomizableEdges = customizableEdges5;
             AddProduct_Button.Enabled = false;
             AddProduct_Button.FillColor = Color.White;
-            AddProduct_Button.Font = new Font("Segoe UI", 10);
+            AddProduct_Button.Font = new Font("Segoe UI", 10F);
             AddProduct_Button.ForeColor = Color.Black;
             AddProduct_Button.Location = new Point(706, 292);
             AddProduct_Button.Name = "AddProduct_Button";
             AddProduct_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             AddProduct_Button.Size = new Size(215, 50);
-            AddProduct_Button.TabIndex = 5;
+            AddProduct_Button.TabIndex = 8;
             AddProduct_Button.Tag = "0";
             AddProduct_Button.Text = "Add product";
             AddProduct_Button.Click += AddProduct_Button_Click;
@@ -217,8 +217,8 @@ namespace Sales_Tracker
             ProductCategory_TextBox.SelectedText = "";
             ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ProductCategory_TextBox.ShortcutsEnabled = false;
-            ProductCategory_TextBox.Size = new Size(300, 48);
-            ProductCategory_TextBox.TabIndex = 3;
+            ProductCategory_TextBox.Size = new Size(300, 50);
+            ProductCategory_TextBox.TabIndex = 5;
             ProductCategory_TextBox.Tag = "1";
             // 
             // ProductID_TextBox
@@ -242,8 +242,8 @@ namespace Sales_Tracker
             ProductID_TextBox.SelectedText = "";
             ProductID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ProductID_TextBox.ShortcutsEnabled = false;
-            ProductID_TextBox.Size = new Size(300, 48);
-            ProductID_TextBox.TabIndex = 1;
+            ProductID_TextBox.Size = new Size(300, 50);
+            ProductID_TextBox.TabIndex = 3;
             ProductID_TextBox.TextChanged += ValidateInputs;
             ProductID_TextBox.Click += CloseAllPanels;
             // 
@@ -251,7 +251,7 @@ namespace Sales_Tracker
             // 
             WarningProductName_PictureBox.Anchor = AnchorStyles.Top;
             WarningProductName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningProductName_PictureBox.Location = new Point(366, 209);
+            WarningProductName_PictureBox.Location = new Point(366, 210);
             WarningProductName_PictureBox.Name = "WarningProductName_PictureBox";
             WarningProductName_PictureBox.Size = new Size(28, 28);
             WarningProductName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -264,11 +264,11 @@ namespace Sales_Tracker
             // 
             WarningProductName_Label.Anchor = AnchorStyles.Top;
             WarningProductName_Label.AutoSize = true;
-            WarningProductName_Label.Font = new Font("Segoe UI", 10);
-            WarningProductName_Label.Location = new Point(406, 209);
+            WarningProductName_Label.Font = new Font("Segoe UI", 10F);
+            WarningProductName_Label.Location = new Point(406, 210);
             WarningProductName_Label.Name = "WarningProductName_Label";
             WarningProductName_Label.Size = new Size(202, 28);
-            WarningProductName_Label.TabIndex = 36;
+            WarningProductName_Label.TabIndex = 0;
             WarningProductName_Label.Text = "Product already exists";
             WarningProductName_Label.Visible = false;
             WarningProductName_Label.Click += CloseAllPanels;
@@ -277,7 +277,7 @@ namespace Sales_Tracker
             // 
             WarningCategory_PictureBox.Anchor = AnchorStyles.Top;
             WarningCategory_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCategory_PictureBox.Location = new Point(675, 209);
+            WarningCategory_PictureBox.Location = new Point(675, 210);
             WarningCategory_PictureBox.Name = "WarningCategory_PictureBox";
             WarningCategory_PictureBox.Size = new Size(28, 28);
             WarningCategory_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -290,12 +290,12 @@ namespace Sales_Tracker
             // 
             WarningCategory_LinkLabel.Anchor = AnchorStyles.Top;
             WarningCategory_LinkLabel.AutoSize = true;
-            WarningCategory_LinkLabel.Font = new Font("Segoe UI", 10);
+            WarningCategory_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCategory_LinkLabel.LinkArea = new LinkArea(21, 15);
-            WarningCategory_LinkLabel.Location = new Point(713, 209);
+            WarningCategory_LinkLabel.Location = new Point(713, 210);
             WarningCategory_LinkLabel.Name = "WarningCategory_LinkLabel";
             WarningCategory_LinkLabel.Size = new Size(194, 59);
-            WarningCategory_LinkLabel.TabIndex = 40;
+            WarningCategory_LinkLabel.TabIndex = 0;
             WarningCategory_LinkLabel.TabStop = true;
             WarningCategory_LinkLabel.Text = "No categories exist.\r\nCreate one here";
             WarningCategory_LinkLabel.UseCompatibleTextRendering = true;
@@ -314,7 +314,7 @@ namespace Sales_Tracker
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(1281, 286);
+            Search_TextBox.Location = new Point(1281, 292);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
@@ -323,8 +323,8 @@ namespace Sales_Tracker
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Search_TextBox.ShortcutsEnabled = false;
-            Search_TextBox.Size = new Size(300, 48);
-            Search_TextBox.TabIndex = 42;
+            Search_TextBox.Size = new Size(300, 50);
+            Search_TextBox.TabIndex = 9;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
             // 
@@ -348,7 +348,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Location = new Point(709, 345);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
             ShowingResultsFor_Label.Size = new Size(209, 31);
-            ShowingResultsFor_Label.TabIndex = 43;
+            ShowingResultsFor_Label.TabIndex = 0;
             ShowingResultsFor_Label.Text = "Showing results for";
             ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
@@ -360,7 +360,7 @@ namespace Sales_Tracker
             Company_Label.Location = new Point(1281, 115);
             Company_Label.Name = "Company_Label";
             Company_Label.Size = new Size(203, 31);
-            Company_Label.TabIndex = 44;
+            Company_Label.TabIndex = 0;
             Company_Label.Text = "Company of origin";
             Company_Label.Click += CloseAllPanels;
             // 
@@ -385,15 +385,15 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox.SelectedText = "";
             CompanyOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             CompanyOfOrigin_TextBox.ShortcutsEnabled = false;
-            CompanyOfOrigin_TextBox.Size = new Size(300, 48);
-            CompanyOfOrigin_TextBox.TabIndex = 45;
+            CompanyOfOrigin_TextBox.Size = new Size(300, 50);
+            CompanyOfOrigin_TextBox.TabIndex = 7;
             CompanyOfOrigin_TextBox.Tag = "1";
             // 
             // WarningCompany_PictureBox
             // 
             WarningCompany_PictureBox.Anchor = AnchorStyles.Top;
             WarningCompany_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningCompany_PictureBox.Location = new Point(1293, 210);
+            WarningCompany_PictureBox.Location = new Point(1293, 211);
             WarningCompany_PictureBox.Name = "WarningCompany_PictureBox";
             WarningCompany_PictureBox.Size = new Size(28, 28);
             WarningCompany_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -406,12 +406,12 @@ namespace Sales_Tracker
             // 
             WarningCompany_LinkLabel.Anchor = AnchorStyles.Top;
             WarningCompany_LinkLabel.AutoSize = true;
-            WarningCompany_LinkLabel.Font = new Font("Segoe UI", 10);
+            WarningCompany_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningCompany_LinkLabel.LinkArea = new LinkArea(20, 15);
-            WarningCompany_LinkLabel.Location = new Point(1332, 205);
+            WarningCompany_LinkLabel.Location = new Point(1332, 206);
             WarningCompany_LinkLabel.Name = "WarningCompany_LinkLabel";
             WarningCompany_LinkLabel.Size = new Size(199, 59);
-            WarningCompany_LinkLabel.TabIndex = 48;
+            WarningCompany_LinkLabel.TabIndex = 0;
             WarningCompany_LinkLabel.TabStop = true;
             WarningCompany_LinkLabel.Text = "No companies exist.\r\nCreate one here";
             WarningCompany_LinkLabel.UseCompatibleTextRendering = true;
@@ -427,7 +427,7 @@ namespace Sales_Tracker
             ProductsRemaining_LinkLabel.Location = new Point(1376, 36);
             ProductsRemaining_LinkLabel.Name = "ProductsRemaining_LinkLabel";
             ProductsRemaining_LinkLabel.Size = new Size(214, 31);
-            ProductsRemaining_LinkLabel.TabIndex = 49;
+            ProductsRemaining_LinkLabel.TabIndex = 0;
             ProductsRemaining_LinkLabel.Text = "Products remaining";
             ProductsRemaining_LinkLabel.LinkClicked += ProductsRemaining_LinkLabel_LinkClicked;
             ProductsRemaining_LinkLabel.Click += CloseAllPanels;
@@ -440,7 +440,7 @@ namespace Sales_Tracker
             ForSale_Label.Location = new Point(255, 42);
             ForSale_Label.Name = "ForSale_Label";
             ForSale_Label.Size = new Size(92, 31);
-            ForSale_Label.TabIndex = 58;
+            ForSale_Label.TabIndex = 0;
             ForSale_Label.Text = "For sale";
             ForSale_Label.Click += ForSale_Label_Click;
             // 
@@ -455,7 +455,7 @@ namespace Sales_Tracker
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges15;
             Sale_RadioButton.Size = new Size(20, 20);
-            Sale_RadioButton.TabIndex = 57;
+            Sale_RadioButton.TabIndex = 2;
             Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             Sale_RadioButton.UncheckedState.BorderThickness = 2;
             Sale_RadioButton.UncheckedState.FillColor = Color.Transparent;
@@ -470,7 +470,7 @@ namespace Sales_Tracker
             ForPurchase_Label.Location = new Point(63, 42);
             ForPurchase_Label.Name = "ForPurchase_Label";
             ForPurchase_Label.Size = new Size(145, 31);
-            ForPurchase_Label.TabIndex = 56;
+            ForPurchase_Label.TabIndex = 0;
             ForPurchase_Label.Text = "For purchase";
             ForPurchase_Label.Click += ForPurchase_Label_Click;
             // 
@@ -485,7 +485,7 @@ namespace Sales_Tracker
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Purchase_RadioButton.Size = new Size(20, 20);
-            Purchase_RadioButton.TabIndex = 55;
+            Purchase_RadioButton.TabIndex = 1;
             Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             Purchase_RadioButton.UncheckedState.BorderThickness = 2;
             Purchase_RadioButton.UncheckedState.FillColor = Color.Transparent;

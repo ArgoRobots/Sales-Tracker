@@ -4,22 +4,22 @@ namespace Sales_Tracker.Classes
 {
     internal static class Currency
     {
-        // In alphabetical order
+        // Ordered by GDP
         public enum CurrencyTypes
         {
-            AUD,
-            CAD,
+            USD,
             EUR,
             GBP,
-            USD
+            CAD,
+            AUD
         }
         private static readonly Dictionary<CurrencyTypes, string> CurrencySymbols = new()
         {
-            { CurrencyTypes.AUD, "$" },
-            { CurrencyTypes.CAD, "$" },
+            { CurrencyTypes.USD, "$" },
             { CurrencyTypes.EUR, "€" },
             { CurrencyTypes.GBP, "£" },
-            { CurrencyTypes.USD, "$" }
+            { CurrencyTypes.CAD, "$" },
+            { CurrencyTypes.AUD, "$" }
         };
         public static string GetSymbol(string currencyTypeString)
         {

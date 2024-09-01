@@ -122,10 +122,10 @@
             Apply_Button.FillColor = Color.White;
             Apply_Button.Font = new Font("Segoe UI", 10F);
             Apply_Button.ForeColor = Color.Black;
-            Apply_Button.Location = new Point(328, 326);
+            Apply_Button.Location = new Point(346, 326);
             Apply_Button.Name = "Apply_Button";
             Apply_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Apply_Button.Size = new Size(215, 45);
+            Apply_Button.Size = new Size(180, 45);
             Apply_Button.TabIndex = 14;
             Apply_Button.Tag = "";
             Apply_Button.Text = "Apply";
@@ -142,10 +142,10 @@
             Reset_Button.FillColor = Color.White;
             Reset_Button.Font = new Font("Segoe UI", 10F);
             Reset_Button.ForeColor = Color.Black;
-            Reset_Button.Location = new Point(107, 326);
+            Reset_Button.Location = new Point(125, 326);
             Reset_Button.Name = "Reset_Button";
             Reset_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Reset_Button.Size = new Size(215, 45);
+            Reset_Button.Size = new Size(180, 45);
             Reset_Button.TabIndex = 15;
             Reset_Button.Tag = "";
             Reset_Button.Text = "Reset";
