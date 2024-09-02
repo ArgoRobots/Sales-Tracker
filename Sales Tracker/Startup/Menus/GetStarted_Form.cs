@@ -82,7 +82,10 @@ namespace Sales_Tracker.Startup.Menus
             Array.Reverse(projectDirs);  // Reverse the array so it loads in the correct order
 
             // Remove duplicates and filter valid directories
-            List<string> validProjectDirs = projectDirs.Distinct().Where(File.Exists).ToList();
+            List<string> validProjectDirs = projectDirs
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Where(File.Exists)
+                .ToList();
 
             foreach (string projectDir in validProjectDirs)
             {

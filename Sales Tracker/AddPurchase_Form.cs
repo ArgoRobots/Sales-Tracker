@@ -628,7 +628,7 @@ namespace Sales_Tracker
             Tax_TextBox.Left = Shipping_TextBox.Right + UI.spaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + UI.spaceBetweenControls;
-            PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+            Fee_Label.Left = PaymentFee_TextBox.Left;
             Discount_TextBox.Left = PaymentFee_TextBox.Right + UI.spaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
             AmountCharged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;
@@ -683,7 +683,7 @@ namespace Sales_Tracker
             Tax_TextBox.Left = Shipping_TextBox.Right + UI.spaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
             PaymentFee_TextBox.Left = Tax_TextBox.Right + UI.spaceBetweenControls;
-            PaymentFee_Label.Left = PaymentFee_TextBox.Left;
+            Fee_Label.Left = PaymentFee_TextBox.Left;
             Discount_TextBox.Left = PaymentFee_TextBox.Right + UI.spaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
             AmountCharged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;

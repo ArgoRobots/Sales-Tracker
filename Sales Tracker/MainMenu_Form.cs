@@ -963,6 +963,35 @@ namespace Sales_Tracker
                 return;
             }
 
+            // If the company name already exists in this directory
+            string parentDir = Directory.GetParent(Directories.ArgoCompany_file).FullName;
+            string filePath = parentDir + @"\" + UI.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension;
+            string fileName = Path.GetFileName(filePath);
+            List<string> files = Directory.GetFiles(parentDir).ToList();
+
+            bool fileExists = files.Any(f => Path.GetFileName(f).Equals(fileName, StringComparison.OrdinalIgnoreCase));
+
+            if (fileExists)
+            {
+                // Get a new name for the file
+                string name = Path.GetFileNameWithoutExtension(filePath);
+                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(parentDir);
+
+                string suggestedCompanyName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
+
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    $"Rename company",
+                    $"Do you want to rename '{name}' to '{suggestedCompanyName}'? There is already a company with the same name.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.OkCancel);
+
+                if (result == CustomMessageBoxResult.Ok)
+                {
+                    UI.Rename_TextBox.Text = suggestedCompanyName;
+                }
+                else { return; }
+            }
+
             Controls.Remove(UI.Rename_TextBox);
             MainTop_Panel.Controls.Add(Edit_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
