@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             AddPassword_Label = new Label();
             Password_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             SetPassword_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -44,9 +44,10 @@
             // 
             // AddPassword_Label
             // 
+            AddPassword_Label.Anchor = AnchorStyles.Top;
             AddPassword_Label.AutoSize = true;
             AddPassword_Label.Font = new Font("Segoe UI", 16F);
-            AddPassword_Label.Location = new Point(234, 23);
+            AddPassword_Label.Location = new Point(228, 23);
             AddPassword_Label.Margin = new Padding(4, 0, 4, 0);
             AddPassword_Label.Name = "AddPassword_Label";
             AddPassword_Label.Size = new Size(223, 45);
@@ -56,7 +57,7 @@
             // Password_TextBox
             // 
             Password_TextBox.Anchor = AnchorStyles.Top;
-            Password_TextBox.CustomizableEdges = customizableEdges5;
+            Password_TextBox.CustomizableEdges = customizableEdges1;
             Password_TextBox.DefaultText = "";
             Password_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Password_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -72,7 +73,7 @@
             Password_TextBox.PasswordChar = '\0';
             Password_TextBox.PlaceholderText = "Password";
             Password_TextBox.SelectedText = "";
-            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Password_TextBox.ShortcutsEnabled = false;
             Password_TextBox.Size = new Size(350, 50);
             Password_TextBox.TabIndex = 55;
@@ -86,15 +87,15 @@
             SetPassword_Button.BorderColor = Color.LightGray;
             SetPassword_Button.BorderRadius = 2;
             SetPassword_Button.BorderThickness = 1;
-            SetPassword_Button.CustomizableEdges = customizableEdges7;
+            SetPassword_Button.CustomizableEdges = customizableEdges3;
             SetPassword_Button.Enabled = false;
             SetPassword_Button.FillColor = Color.White;
-            SetPassword_Button.Font = new Font("Segoe UI", 10);
+            SetPassword_Button.Font = new Font("Segoe UI", 10F);
             SetPassword_Button.ForeColor = Color.Black;
             SetPassword_Button.Location = new Point(214, 558);
             SetPassword_Button.Margin = new Padding(6, 5, 6, 5);
             SetPassword_Button.Name = "SetPassword_Button";
-            SetPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            SetPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             SetPassword_Button.Size = new Size(250, 50);
             SetPassword_Button.TabIndex = 56;
             SetPassword_Button.Tag = "";

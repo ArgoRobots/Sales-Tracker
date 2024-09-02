@@ -32,7 +32,6 @@ namespace Sales_Tracker.Classes
             }
             throw new ArgumentException("Invalid currency type");
         }
-        private static readonly HttpClient httpClient = new();
 
         /// <summary>
         /// The date must be in yyyy-mm-dd format.
@@ -45,8 +44,15 @@ namespace Sales_Tracker.Classes
 
             try
             {
-                string response = httpClient.GetStringAsync(url).Result;
-                using JsonDocument jsonDocument = JsonDocument.Parse(response);
+                using HttpClient httpClient = new();
+                HttpResponseMessage response = httpClient.GetAsync(url).GetAwaiter().GetResult();
+                if (response.IsSuccessStatusCode)
+                {
+
+                }
+
+                string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                using JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
                 JsonElement root = jsonDocument.RootElement;
 
                 // Access the "rates" property and get the value for source and target currencies
@@ -71,6 +77,19 @@ namespace Sales_Tracker.Classes
                     Log.Write(0, "rates not found.");
                     return -1;
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                Log.Write(0, "The request timed out. Please try again later");
+                return -1;
+            }
+            catch (HttpRequestException)
+            {
+                CustomMessageBox.Show("Argo Sales Tracker",
+                    "It looks like you're not connected to the internet. Please check your connection and try again. A connection is needed to get the currency exchange rates",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.Ok);
+                return -1;
             }
             catch (Exception ex)
             {

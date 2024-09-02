@@ -256,6 +256,7 @@ namespace Sales_Tracker
             if (Currency_ComboBox.Text != "USD")
             {
                 exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+                if (exchangeRateToUSD == -1) { return false; }
             }
             decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
             decimal shippingUSD = shipping * exchangeRateToUSD;
@@ -275,6 +276,8 @@ namespace Sales_Tracker
 
             // Convert back to default currency for display
             decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
+            if (exchangeRateToDefault == -1) { return false; }
+
             pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
             shipping = shippingUSD * exchangeRateToDefault;
             tax = taxUSD * exchangeRateToDefault;
@@ -380,6 +383,7 @@ namespace Sales_Tracker
             if (Currency_ComboBox.Text != Properties.Settings.Default.Currency)
             {
                 exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, Properties.Settings.Default.Currency, date);
+                if (exchangeRate == -1) { return false; }
             }
 
             List<string> items = [];
@@ -519,6 +523,7 @@ namespace Sales_Tracker
             if (Currency_ComboBox.Text != "USD")
             {
                 exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+                if (exchangeRateToUSD == -1) { return false; }
             }
             decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
             decimal shippingUSD = shipping * exchangeRateToUSD;

@@ -85,6 +85,7 @@
             CurrentPassword_TextBox.ShortcutsEnabled = false;
             CurrentPassword_TextBox.Size = new Size(350, 50);
             CurrentPassword_TextBox.TabIndex = 7;
+            CurrentPassword_TextBox.TextChanged += CurrentPassword_TextBox_TextChanged;
             CurrentPassword_TextBox.KeyDown += CurrentPassword_TextBox_KeyDown;
             // 
             // Update_Button

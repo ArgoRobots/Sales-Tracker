@@ -53,6 +53,11 @@ namespace Sales_Tracker.Passwords
         {
             ValidateButton();
         }
+
+        private void CurrentPassword_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            Update_Button.Enabled = CurrentPassword_TextBox.Text != "";
+        }
         private void Update_Button_Click(object sender, EventArgs e)
         {
             if (Modify_RadioButton.Checked)
@@ -60,6 +65,7 @@ namespace Sales_Tracker.Passwords
                 if (PasswordManager.Password != CurrentPassword_TextBox.Text)
                 {
                     CustomMessageBox.Show("Argo Sales Tracker", "The current password is incorrect", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CurrentPassword_TextBox.Focus();
                     return;
                 }
 
@@ -127,7 +133,6 @@ namespace Sales_Tracker.Passwords
                 }
                 Height = 420;
                 Update_Button.Top = 285;
-                Update_Button.Enabled = true;
             }
         }
         private List<Control> GetControls()
