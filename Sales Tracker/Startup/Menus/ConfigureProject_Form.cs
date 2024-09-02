@@ -150,6 +150,7 @@ namespace Sales_Tracker.Startup.Menus
             Form FormMainMenu = new MainMenu_Form();
             FormMainMenu.FormClosed += (s, args) => Startup_Form.Instance.Close();
 
+            FormMainMenu.Text = $"Argo Sales Tracker - {Directories.CompanyName}";
             FormMainMenu.Show();
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)

@@ -1008,6 +1008,8 @@ namespace Sales_Tracker
             MoveEditButton();
             ResizeControls();
 
+            Text = $"Argo Sales Tracker - {Directories.CompanyName}";
+
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
         }
         private void SetCompanyLabel()
