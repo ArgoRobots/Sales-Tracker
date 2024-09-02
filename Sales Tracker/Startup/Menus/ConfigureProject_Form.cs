@@ -147,10 +147,10 @@ namespace Sales_Tracker.Startup.Menus
             ArgoCompany.CreateMutex(projectName);
 
             // Add event to close FormStartup when FormMainMenu is closed
-            Form FormMainMenu = new MainMenu_Form();
+            MainMenu_Form FormMainMenu = new();
             FormMainMenu.FormClosed += (s, args) => Startup_Form.Instance.Close();
 
-            FormMainMenu.Text = $"Argo Sales Tracker - {Directories.CompanyName}";
+            FormMainMenu.UpdateMainMenuFormText(FormMainMenu);
             FormMainMenu.Show();
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)

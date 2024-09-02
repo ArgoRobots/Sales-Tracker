@@ -10,6 +10,7 @@ namespace Sales_Tracker.Passwords
             InitializeComponent();
             LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
+            Modify_RadioButton.Checked = true;
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -112,8 +113,8 @@ namespace Sales_Tracker.Passwords
                 {
                     Controls.Add(item);
                 }
-                Height = 500;
-                Update_Button.Top = 413;
+                Height = 820;
+                Update_Button.Top = 685;
                 ValidateButton();
             }
             else
@@ -124,8 +125,8 @@ namespace Sales_Tracker.Passwords
                 {
                     Controls.Remove(item);
                 }
-                Height = 280;
-                Update_Button.Top = 170;
+                Height = 420;
+                Update_Button.Top = 285;
                 Update_Button.Enabled = true;
             }
         }

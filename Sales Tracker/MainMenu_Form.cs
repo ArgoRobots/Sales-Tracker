@@ -1008,8 +1008,7 @@ namespace Sales_Tracker
             MoveEditButton();
             ResizeControls();
 
-            Text = $"Argo Sales Tracker - {Directories.CompanyName}";
-
+            UpdateMainMenuFormText(this);
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
         }
         private void SetCompanyLabel()
@@ -2635,6 +2634,10 @@ namespace Sales_Tracker
         }
 
         // Misc.
+        public void UpdateMainMenuFormText(Form instance)
+        {
+            instance.Text = $"Argo Sales Tracker - {Directories.CompanyName}";
+        }
         public bool IsPurchasesSelected()
         {
             return selectedDataGridView == Purchases_DataGridView;

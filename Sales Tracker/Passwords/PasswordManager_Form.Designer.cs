@@ -89,7 +89,7 @@
             // 
             // Update_Button
             // 
-            Update_Button.Anchor = AnchorStyles.Bottom;
+            Update_Button.Anchor = AnchorStyles.Top;
             Update_Button.BackColor = Color.Transparent;
             Update_Button.BorderColor = Color.LightGray;
             Update_Button.BorderRadius = 2;
@@ -97,9 +97,9 @@
             Update_Button.CustomizableEdges = customizableEdges3;
             Update_Button.Enabled = false;
             Update_Button.FillColor = Color.White;
-            Update_Button.Font = new Font("Segoe UI", 10);
+            Update_Button.Font = new Font("Segoe UI", 10F);
             Update_Button.ForeColor = Color.Black;
-            Update_Button.Location = new Point(214, 684);
+            Update_Button.Location = new Point(214, 685);
             Update_Button.Name = "Update_Button";
             Update_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Update_Button.Size = new Size(250, 50);
@@ -191,6 +191,7 @@
             // 
             // Modify_RadioButton
             // 
+            Modify_RadioButton.Anchor = AnchorStyles.Top;
             Modify_RadioButton.Animated = true;
             Modify_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Modify_RadioButton.CheckedState.BorderThickness = 0;
@@ -222,6 +223,7 @@
             // 
             // Remove_RadioButton
             // 
+            Remove_RadioButton.Anchor = AnchorStyles.Top;
             Remove_RadioButton.Animated = true;
             Remove_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Remove_RadioButton.CheckedState.BorderThickness = 0;
