@@ -278,7 +278,7 @@ namespace Sales_Tracker
             {
                 (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
 
-                if (saved)
+                if (!saved)
                 {
                     return false;
                 }
@@ -437,7 +437,7 @@ namespace Sales_Tracker
             {
                 (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
 
-                if (saved)
+                if (!saved)
                 {
                     return false;
                 }

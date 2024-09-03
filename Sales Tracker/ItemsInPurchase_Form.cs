@@ -18,6 +18,7 @@ namespace Sales_Tracker
             MainMenu_Form.Column.PricePerUnit,
             MainMenu_Form.Column.Total
         ];
+        private bool hasChanges = false;
 
         // Init.
         public ItemsInPurchase_Form(DataGridViewRow row)
@@ -44,6 +45,11 @@ namespace Sales_Tracker
             }
 
             Theme.SetThemeForForm(this);
+
+            // Attach event handlers to detect changes in DataGridView
+            Items_DataGridView.CellValueChanged += (s, e) => hasChanges = true;
+            Items_DataGridView.RowsAdded += (s, e) => hasChanges = true;
+            Items_DataGridView.RowsRemoved += (s, e) => hasChanges = true;
         }
 
         // Form event handlers
@@ -51,17 +57,20 @@ namespace Sales_Tracker
         {
             Reset();
 
-            if (Items_DataGridView.Rows.Count == 0)
+            if (hasChanges)
             {
-                MainMenu_Form.Instance.selectedDataGridView.Rows.Remove(MainMenu_Form.Instance.selectedRowInMainMenu);
-            }
-            else
-            {
-                UpdateRowTag();
-                MainMenu_Form.Instance.UpdateRow();
-            }
+                if (Items_DataGridView.Rows.Count == 0)
+                {
+                    MainMenu_Form.Instance.selectedDataGridView.Rows.Remove(MainMenu_Form.Instance.selectedRowInMainMenu);
+                }
+                else
+                {
+                    UpdateRowTag();
+                    MainMenu_Form.Instance.UpdateRow();
+                }
 
-            MainMenu_Form.Instance.DataGridViewRowChanged();
+                MainMenu_Form.Instance.DataGridViewRowChanged();
+            }
         }
         private void ItemsInPurchase_Form_Shown(object sender, EventArgs e)
         {
@@ -139,7 +148,6 @@ namespace Sales_Tracker
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
-
         }
         public void Reset()
         {

@@ -27,7 +27,9 @@
         public static readonly Color
             accent_blue = Color.FromArgb(25, 117, 197),
             accent_red = Color.FromArgb(238, 89, 81),
-            accent_green = Color.FromArgb(168, 233, 203);
+            accent_green = Color.FromArgb(168, 233, 203),
+            pastelBlue = Color.FromArgb(102, 153, 204),
+            pastelGreen = Color.FromArgb(153, 204, 102);
 
         public static Guna.UI2.WinForms.Enums.DataGridViewPresetThemes dataGridViewTheme;
 

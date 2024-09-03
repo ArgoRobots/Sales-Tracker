@@ -211,27 +211,41 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void LoadCharts()
+        public void LoadCharts(bool onlyLoadForLineCharts = false)
         {
             double total;
+            bool isLine = LineGraph_ToggleSwitch.Checked;
+
             if (Selected == SelectedOption.Sales)
             {
-                total = LoadChart.LoadTotalsIntoChart(Sales_DataGridView, Totals_Chart, LineGraph_ToggleSwitch.Checked);
+                total = LoadChart.LoadTotalsIntoChart(Sales_DataGridView, Totals_Chart, isLine);
                 Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{total:N2}";
 
-                LoadChart.LoadDistributionIntoChart(Sales_DataGridView, Distribution_Chart);
-                Distribution_Chart.Title.Text = "Distribution of revenue";
+                if (!onlyLoadForLineCharts)
+                {
+                    LoadChart.LoadDistributionIntoChart(Sales_DataGridView, Distribution_Chart);
+                    Distribution_Chart.Title.Text = "Distribution of revenue";
+                }
             }
             else
             {
-                total = LoadChart.LoadTotalsIntoChart(Purchases_DataGridView, Totals_Chart, LineGraph_ToggleSwitch.Checked);
+                total = LoadChart.LoadTotalsIntoChart(Purchases_DataGridView, Totals_Chart, isLine);
                 Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{total:N2}";
 
-                LoadChart.LoadDistributionIntoChart(Purchases_DataGridView, Distribution_Chart);
-                Distribution_Chart.Title.Text = "Distribution of expenses";
+                if (!onlyLoadForLineCharts)
+                {
+                    LoadChart.LoadDistributionIntoChart(Purchases_DataGridView, Distribution_Chart);
+                    Distribution_Chart.Title.Text = "Distribution of expenses";
+                }
             }
-            total = LoadChart.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Profits_Chart, LineGraph_ToggleSwitch.Checked);
+            total = LoadChart.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Profits_Chart, isLine);
             Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
+
+            if (onlyLoadForLineCharts)
+            {
+                LoadChart.LoadSalesVsExpensesChart(Purchases_DataGridView, Sales_DataGridView, salesVsExpenses_Chart, isLine);
+                LoadChart.LoadAverageOrderValueChart(Sales_DataGridView, averageOrderValue_Chart, isLine);
+            }
         }
         public void UpdateTheme()
         {
@@ -534,6 +548,7 @@ namespace Sales_Tracker
 
         // Resize controls
         private bool wasControlsDropDownAdded;
+        private readonly byte spaceBetweenCharts = 20, chartWidthOffset = 35;
         private void ResizeControls()
         {
             if (isProgramLoading) { return; }
@@ -551,20 +566,20 @@ namespace Sales_Tracker
                 Totals_Chart.Height = 300;
             }
 
-            int chartWidth = Width / 3 - 35;
+            int chartWidth = Width / 3 - chartWidthOffset;
             int chartHeight = Totals_Chart.Height;
 
             // Set chart on the left
             Totals_Chart.Width = chartWidth;
-            Totals_Chart.Left = (Width - 3 * chartWidth - 40) / 2 - UI.spaceToOffsetFormNotCenter;
+            Totals_Chart.Left = (Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2 - UI.spaceToOffsetFormNotCenter;
 
             // Set chart in the middle
             Distribution_Chart.Size = new Size(chartWidth, chartHeight);
-            Distribution_Chart.Left = Totals_Chart.Right + 20;
+            Distribution_Chart.Left = Totals_Chart.Right + spaceBetweenCharts;
 
             // Set chart on the right
             Profits_Chart.Size = new Size(chartWidth, chartHeight);
-            Profits_Chart.Left = Distribution_Chart.Right + 20;
+            Profits_Chart.Left = Distribution_Chart.Right + spaceBetweenCharts;
 
             // Set chart on the left
             selectedDataGridView.Size = new Size(Width - 65, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
@@ -586,38 +601,45 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Statistics)
             {
-                int statChartWidth = Width / 3 - 30;
-                int statchartHeight = Height / 3 - 30;
+                int availableHeight = Height - Purchases_Button.Bottom;
 
-                // Set chart on the left
-                countriesOfOrigin_Chart.Size = new Size(statChartWidth, statchartHeight);
-                countriesOfOrigin_Chart.Left = 20;
+                int statChartWidth = Width / 3 - chartWidthOffset;
+                int statChartHeight = availableHeight / 2 - chartWidthOffset * 3;
+                Size chartSize = new(statChartWidth, statChartHeight);
 
-                // Set chart in the middle
-                companiesOfOrigin_Chart.Size = new Size(statChartWidth, statchartHeight);
-                companiesOfOrigin_Chart.Left = (Width / 2) - (Distribution_Chart.Width / 2) - UI.spaceToOffsetFormNotCenter;
+                // Calculate the space between the charts
+                int totalChartHeight = statChartHeight * 2;
+                int spaceBetweenRows = (availableHeight - totalChartHeight) / 4;
 
-                // Set chart on the right
-                countriesOfDestination_Chart.Size = new Size(statChartWidth, statchartHeight);
-                countriesOfDestination_Chart.Left = Width - Totals_Chart.Width - 35;
+                // Calculate Y positions
+                int topRowY = Purchases_Button.Bottom + spaceBetweenRows;
+                int bottomRowY = topRowY + statChartHeight + spaceBetweenRows;
 
-                // Set chart on the left
-                accountants_Chart.Size = new Size(statChartWidth, statchartHeight);
-                accountants_Chart.Left = 20;
+                // Calculate X positions
+                int leftX = (Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2 - UI.spaceToOffsetFormNotCenter;
+                int middleX = leftX + statChartWidth + spaceBetweenCharts;
+                int rightX = middleX + statChartWidth + spaceBetweenCharts;
 
-                // Calculate the available space between the top row and the bottom of the form
-                int topRowBottom = Math.Max(countriesOfOrigin_Chart.Bottom, Math.Max(companiesOfOrigin_Chart.Bottom, countriesOfDestination_Chart.Bottom));
-                int availableHeight = Height - topRowBottom - 30;
+                // Set positions for top row charts
+                SetChartPosition(countriesOfOrigin_Chart, chartSize, leftX, topRowY);
+                SetChartPosition(companiesOfOrigin_Chart, chartSize, middleX, topRowY);
+                SetChartPosition(countriesOfDestination_Chart, chartSize, rightX, topRowY);
 
-                // Center the accountants_Chart in the remaining space
-                accountants_Chart.Left = 20;
-                accountants_Chart.Top = topRowBottom + (availableHeight - chartHeight) / 2;
+                // Set positions for bottom row charts
+                SetChartPosition(accountants_Chart, chartSize, leftX, bottomRowY);
+                SetChartPosition(salesVsExpenses_Chart, chartSize, middleX, bottomRowY);
+                SetChartPosition(averageOrderValue_Chart, chartSize, rightX, bottomRowY);
             }
 
             if (Controls.Contains(messagePanel))
             {
                 messagePanel.Location = new Point((Width - messagePanel.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - messagePanel.Height - 80);
             }
+        }
+        private static void SetChartPosition(GunaChart chart, Size size, int left, int top)
+        {
+            chart.Size = size;
+            chart.Location = new Point(left, top);
         }
         private void AddControlsDropDown()
         {
@@ -829,7 +851,7 @@ namespace Sales_Tracker
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            LoadCharts();
+            LoadCharts(true);
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -1561,11 +1583,11 @@ namespace Sales_Tracker
 
                 if (removedRow.Tag is (List<string> tagList, TagData))
                 {
-                    tagValue = tagList[^1];
+                    tagValue = tagList[^1].Replace(receipt_text, "").Replace(companyName_text, Directories.CompanyName);
                 }
                 else if (removedRow.Tag is (string tagString, TagData))
                 {
-                    tagValue = tagString;
+                    tagValue = tagString.Replace(receipt_text, "").Replace(companyName_text, Directories.CompanyName);
                 }
                 Directories.DeleteFile(tagValue);
 
@@ -2028,23 +2050,6 @@ namespace Sales_Tracker
             }
             return false;
         }
-        public static bool DoDataGridViewsHaveVisibleRows(params DataGridView[] dataGridViews)
-        {
-            foreach (DataGridView dataGrid in dataGridViews)
-            {
-                if (dataGrid.Rows.Count > 0)
-                {
-                    foreach (DataGridViewRow row in dataGrid.Rows)
-                    {
-                        if (row.Visible)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
         private void SortTheDataGridViewByDate()
         {
             string dateColumnHeader = SalesColumnHeaders[Column.Date];
@@ -2053,7 +2058,7 @@ namespace Sales_Tracker
             dateColumnHeader = PurchaseColumnHeaders[Column.Date];
             Purchases_DataGridView.Sort(Purchases_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
         }
-        public static void SortTheDataGridViewByFirstColumn(params DataGridView[] dataGridViews)
+        public static void SortTheDataGridViewByFirstColumn(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGrid in dataGridViews)
             {
@@ -2142,7 +2147,7 @@ namespace Sales_Tracker
         {
             cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, FontStyle.Underline);
         }
-        public static bool DoesDataGridViewHaveVisibleRows(IEnumerable<DataGridView> dataGridViews)
+        public static bool DoDataGridViewsHaveVisibleRows(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGridView in dataGridViews)
             {
@@ -2467,7 +2472,8 @@ namespace Sales_Tracker
             ResizeControls();
         }
         private List<Control> statisticsControls;
-        public GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart, accountants_Chart;
+        public GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart,
+            accountants_Chart, salesVsExpenses_Chart, averageOrderValue_Chart;
         private void ConstructControlsForStatistics()
         {
             if (countriesOfOrigin_Chart != null)
@@ -2479,13 +2485,17 @@ namespace Sales_Tracker
             companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products");
             countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products");
             accountants_Chart = ConstructStatisticsChart(800, "Transactions managed by accountants");
+            salesVsExpenses_Chart = ConstructStatisticsChart(800, "Total sales vs. total expenses");
+            averageOrderValue_Chart = ConstructStatisticsChart(800, "Average order value");
 
             statisticsControls =
             [
                 countriesOfOrigin_Chart,
                 companiesOfOrigin_Chart,
                 countriesOfDestination_Chart,
-                accountants_Chart
+                accountants_Chart,
+                salesVsExpenses_Chart,
+                averageOrderValue_Chart
             ];
         }
         private static GunaChart ConstructStatisticsChart(int top, string title)
@@ -2504,6 +2514,8 @@ namespace Sales_Tracker
             gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
             gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
             gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
+            gunaChart.XAxes.Ticks.Font = new("Segoe UI", 18);
+            gunaChart.YAxes.Ticks.Font = new("Segoe UI", 18);
 
             return gunaChart;
         }
@@ -2529,10 +2541,14 @@ namespace Sales_Tracker
         }
         private void UpdateStatisticsCharts()
         {
+            bool isLineChart = LineGraph_ToggleSwitch.Checked;
+
             LoadChart.LoadCountriesOfOriginForProductsIntoChart(Purchases_DataGridView, countriesOfOrigin_Chart);
             LoadChart.LoadCompaniesOfOriginForProductsIntoChart(Purchases_DataGridView, companiesOfOrigin_Chart);
             LoadChart.LoadCountriesOfDestinationForProductsIntoChart(Sales_DataGridView, countriesOfDestination_Chart);
             LoadChart.LoadAccountantsIntoChart([Purchases_DataGridView, Sales_DataGridView], accountants_Chart);
+            LoadChart.LoadSalesVsExpensesChart(Purchases_DataGridView, Sales_DataGridView, salesVsExpenses_Chart, isLineChart);
+            LoadChart.LoadAverageOrderValueChart(Sales_DataGridView, averageOrderValue_Chart, isLineChart);
         }
 
         // Message panel
