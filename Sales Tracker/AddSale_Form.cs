@@ -196,7 +196,7 @@ namespace Sales_Tracker
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                receiptFilePath = dialog.FileName;
+                receiptFilePath = MainMenu_Form.receipt_text + dialog.FileName;
                 ShowReceiptLabel(dialog.SafeFileName);
             }
         }
@@ -274,6 +274,10 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             string newFilePath = "";
+            if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
+            {
+                return false;
+            }
             if (Controls.Contains(SelectedReceipt_Label))
             {
                 (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
@@ -282,10 +286,6 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
-            }
-            if (MainMenu_Form.CheckIfReceiptExists(newFilePath))
-            {
-                return false;
             }
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
@@ -433,6 +433,10 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             string newFilePath = "";
+            if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
+            {
+                return false;
+            }
             if (Controls.Contains(SelectedReceipt_Label))
             {
                 (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
@@ -441,10 +445,6 @@ namespace Sales_Tracker
                 {
                     return false;
                 }
-            }
-            if (MainMenu_Form.CheckIfReceiptExists(newFilePath))
-            {
-                return false;
             }
 
             string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
