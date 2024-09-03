@@ -150,7 +150,7 @@ namespace Sales_Tracker.Startup.Menus
             MainMenu_Form FormMainMenu = new();
             FormMainMenu.FormClosed += (s, args) => Startup_Form.Instance.Close();
 
-            FormMainMenu.UpdateMainMenuFormText(FormMainMenu);
+            MainMenu_Form.UpdateMainMenuFormText(FormMainMenu);
             FormMainMenu.Show();
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)

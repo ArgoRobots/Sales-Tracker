@@ -61,7 +61,8 @@ namespace Sales_Tracker.Charts
         // Main charts
         public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart)
         {
-            if (!CheckForAnyData(dataGridView.Rows.Count, chart))
+            bool hasData = MainMenu_Form.DoesDataGridViewHaveVisibleRows([dataGridView]);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
             {
                 ClearChart(chart);
                 return 0;
@@ -125,7 +126,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
         {
-            if (!CheckForAnyData(dataGridView.Rows.Count, chart))
+            bool hasData = MainMenu_Form.DoesDataGridViewHaveVisibleRows([dataGridView]);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
             {
                 ClearChart(chart);
                 return;
@@ -252,7 +254,8 @@ namespace Sales_Tracker.Charts
         }
         public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
         {
-            if (!CheckForAnyData(salesDataGridView.Rows.Count, chart))
+            bool hasData = MainMenu_Form.DoesDataGridViewHaveVisibleRows([salesDataGridView]);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
             {
                 ClearChart(chart);
                 return 0;
@@ -347,7 +350,8 @@ namespace Sales_Tracker.Charts
         // Statistics charts
         public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
-            if (!CheckForAnyData(purchasesDataGridView.Rows.Count, chart)) { return; }
+            bool hasData = MainMenu_Form.DoesDataGridViewHaveVisibleRows([purchasesDataGridView]);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -418,7 +422,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
-            if (!CheckForAnyData(purchasesDataGridView.Rows.Count, chart)) { return; }
+            bool hasData = MainMenu_Form.DoesDataGridViewHaveVisibleRows([purchasesDataGridView]);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -490,7 +495,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart)
         {
-            if (!CheckForAnyData(salesDataGridView.Rows.Count, chart)) { return; }
+            bool hasData = MainMenu_Form.DoesDataGridViewHaveVisibleRows([salesDataGridView]);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -561,8 +567,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadAccountantsIntoChart(List<Guna2DataGridView> purchasesDataGridViews, GunaChart chart)
         {
-            int totalRowCount = purchasesDataGridViews.Sum(grid => grid.Rows.Count);
-            if (!CheckForAnyData(totalRowCount, chart)) { return; }
+            bool hasData = MainMenu_Form.DoesDataGridViewHaveVisibleRows(purchasesDataGridViews);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -620,54 +626,6 @@ namespace Sales_Tracker.Charts
         }
 
         // Methods
-        /// <summary>
-        /// If there is no data, then it adds a Label to the chart that says "No data".
-        /// </summary>
-        /// <returns>True if there is any data, False if there is no data.</returns>
-        private static bool CheckForAnyData(int dataGridViewRowCount, GunaChart gunaChart)
-        {
-            Label existingLabel = gunaChart.Controls.OfType<Label>().FirstOrDefault(label => label.Text == "No data");
-
-            if (dataGridViewRowCount == 0)
-            {
-                // If there's no data and the label doesn't exist, create and add it
-                if (existingLabel == null)
-                {
-                    Label label = new()
-                    {
-                        Font = new Font("Segoe UI", 12),
-                        ForeColor = CustomColors.text,
-                        Text = "No data",
-                        AutoSize = true
-                    };
-
-                    gunaChart.Controls.Add(label);
-                    CenterLabelInControl(label, gunaChart);
-
-                    gunaChart.Resize += (sender, e) => CenterLabelInControl(label, gunaChart);
-
-                    label.BringToFront();
-                }
-                return false;
-            }
-            else
-            {
-                // If there's data and the label exists, remove it
-                if (existingLabel != null)
-                {
-                    gunaChart.Controls.Remove(existingLabel);
-                    existingLabel.Dispose();
-                }
-                return true;
-            }
-        }
-        private static void CenterLabelInControl(Label label, Control parent)
-        {
-            if (label != null && parent != null)
-            {
-                label.Location = new Point((parent.Width - label.Width) / 2, (parent.Height - label.Height) / 2);
-            }
-        }
         private static void ApplyStyleToBarOrLineDataSet(IGunaDataset dataset, bool isLineChart)
         {
             if (isLineChart)

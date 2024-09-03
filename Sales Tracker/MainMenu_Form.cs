@@ -18,7 +18,8 @@ namespace Sales_Tracker
         private static List<string> _thingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
-        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show", companyName_text = "CompanyName";
+        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:",
+            show_text = "show", companyName_text = "CompanyName", noData_text = "No data", noResults_text = "No results";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
         private static string _currencySymbol;
@@ -921,6 +922,8 @@ namespace Sales_Tracker
                 !string.IsNullOrEmpty(Search_TextBox.Text) ||
                 !comboBoxEnabled;
 
+            bool hasVisibleRows = false;
+
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
                 DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
@@ -934,6 +937,11 @@ namespace Sales_Tracker
 
                 // Row is visible only if it matches both the date filter and the search filter
                 row.Visible = isVisibleByDate && isVisibleBySearch;
+
+                if (row.Visible)
+                {
+                    hasVisibleRows = true;
+                }
             }
 
             if (filterExists)
@@ -944,6 +952,8 @@ namespace Sales_Tracker
             {
                 HideShowingResultsForLabel();
             }
+
+            ManageNoDataLabelOnControl(hasVisibleRows, selectedDataGridView, noResults_text);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)
         {
@@ -952,6 +962,56 @@ namespace Sales_Tracker
                 DateTime rowDate = DateTime.Parse(row.Cells[PurchaseColumnHeaders[Column.Date]].Value.ToString());
                 bool isVisible = rowDate >= fromDate && rowDate <= toDate;
                 row.Visible = isVisible;
+            }
+        }
+
+        /// <summary>
+        /// If there is no data, then it adds a Label to the control.
+        /// </summary>
+        /// <returns>True if there is any data, False if there is no data.</returns>
+        public static bool ManageNoDataLabelOnControl(bool hasData, Control control, string text)
+        {
+            Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label => label.Text == text);
+
+            if (!hasData)
+            {
+                // If there's no data and the label doesn't exist, create and add it
+                if (existingLabel == null)
+                {
+                    Label label = new()
+                    {
+                        Font = new Font("Segoe UI", 12),
+                        ForeColor = CustomColors.text,
+                        Text = text,
+                        AutoSize = true,
+                        BackColor = Color.Transparent
+                    };
+
+                    control.Controls.Add(label);
+                    CenterLabelInControl(label, control);
+
+                    control.Resize += (sender, e) => CenterLabelInControl(label, control);
+
+                    label.BringToFront();
+                }
+                return false;
+            }
+            else
+            {
+                // If there's data and the label exists, remove it
+                if (existingLabel != null)
+                {
+                    control.Controls.Remove(existingLabel);
+                    existingLabel.Dispose();
+                }
+                return true;
+            }
+        }
+        private static void CenterLabelInControl(Label label, Control parent)
+        {
+            if (label != null && parent != null)
+            {
+                label.Location = new Point((parent.Width - label.Width) / 2, (parent.Height - label.Height) / 2);
             }
         }
 
@@ -2082,6 +2142,21 @@ namespace Sales_Tracker
         {
             cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, FontStyle.Underline);
         }
+        public static bool DoesDataGridViewHaveVisibleRows(IEnumerable<DataGridView> dataGridViews)
+        {
+            foreach (DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (row.Visible)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
 
         // Save to file for DataGridView
         public void SaveDataGridViewToFileAsJson()
@@ -2634,7 +2709,7 @@ namespace Sales_Tracker
         }
 
         // Misc.
-        public void UpdateMainMenuFormText(Form instance)
+        public static void UpdateMainMenuFormText(Form instance)
         {
             instance.Text = $"Argo Sales Tracker - {Directories.CompanyName}";
         }
