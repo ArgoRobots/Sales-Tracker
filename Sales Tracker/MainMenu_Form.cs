@@ -548,7 +548,6 @@ namespace Sales_Tracker
 
         // Resize controls
         private bool wasControlsDropDownAdded;
-        private readonly byte spaceBetweenCharts = 20, chartWidthOffset = 35;
         private void ResizeControls()
         {
             if (isProgramLoading) { return; }
@@ -566,22 +565,26 @@ namespace Sales_Tracker
                 Totals_Chart.Height = 300;
             }
 
+            byte spaceBetweenCharts = 20, chartWidthOffset = 35;
+
             int chartWidth = Width / 3 - chartWidthOffset;
             int chartHeight = Totals_Chart.Height;
 
-            // Set chart on the left
+            // Calculate X positions for charts
+            int leftX = (Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2 - UI.spaceToOffsetFormNotCenter;
+            int middleX = leftX + chartWidth + spaceBetweenCharts;
+            int rightX = middleX + chartWidth + spaceBetweenCharts;
+
+            // Set positions
             Totals_Chart.Width = chartWidth;
-            Totals_Chart.Left = (Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2 - UI.spaceToOffsetFormNotCenter;
+            Totals_Chart.Left = leftX;
 
-            // Set chart in the middle
             Distribution_Chart.Size = new Size(chartWidth, chartHeight);
-            Distribution_Chart.Left = Totals_Chart.Right + spaceBetweenCharts;
+            Distribution_Chart.Left = middleX;
 
-            // Set chart on the right
             Profits_Chart.Size = new Size(chartWidth, chartHeight);
-            Profits_Chart.Left = Distribution_Chart.Right + spaceBetweenCharts;
+            Profits_Chart.Left = rightX;
 
-            // Set chart on the left
             selectedDataGridView.Size = new Size(Width - 65, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
             selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
 
@@ -603,9 +606,8 @@ namespace Sales_Tracker
             {
                 int availableHeight = Height - Purchases_Button.Bottom;
 
-                int statChartWidth = Width / 3 - chartWidthOffset;
                 int statChartHeight = availableHeight / 2 - chartWidthOffset * 3;
-                Size chartSize = new(statChartWidth, statChartHeight);
+                Size chartSize = new(chartWidth, statChartHeight);
 
                 // Calculate the space between the charts
                 int totalChartHeight = statChartHeight * 2;
@@ -614,11 +616,6 @@ namespace Sales_Tracker
                 // Calculate Y positions
                 int topRowY = Purchases_Button.Bottom + spaceBetweenRows;
                 int bottomRowY = topRowY + statChartHeight + spaceBetweenRows;
-
-                // Calculate X positions
-                int leftX = (Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2 - UI.spaceToOffsetFormNotCenter;
-                int middleX = leftX + statChartWidth + spaceBetweenCharts;
-                int rightX = middleX + statChartWidth + spaceBetweenCharts;
 
                 // Set positions for top row charts
                 SetChartPosition(countriesOfOrigin_Chart, chartSize, leftX, topRowY);
@@ -2425,10 +2422,16 @@ namespace Sales_Tracker
         }
         private static string ProcessDirectoryFromString(string path)
         {
-            path = path.Replace(companyName_text, Directories.CompanyName)
-                       .Replace(receipt_text, "");
+            string[] pathParts = path.Split(Path.DirectorySeparatorChar);
+            if (pathParts[7] == companyName_text)
+            {
+                pathParts[7] = Directories.CompanyName;
+            }
+            string newPath = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
 
-            return File.Exists(path) ? path : "";
+            newPath = newPath.Replace(receipt_text, "");
+
+            return File.Exists(newPath) ? newPath : "";
         }
         private void ShowShowItemsBtn(FlowLayoutPanel flowPanel, int index)
         {
@@ -2663,7 +2666,14 @@ namespace Sales_Tracker
         // Receipts
         public static (string, bool) SaveReceiptInFile(string receiptFilePath)
         {
-            string newReceiptsDir = Directories.Receipts_dir.Replace(companyName_text, Directories.CompanyName);
+            // Replace the company name with companyName_text
+            string[] pathParts = Directories.Receipts_dir.Split(Path.DirectorySeparatorChar);
+            if (pathParts[7] == companyName_text)
+            {
+                pathParts[7] = Directories.CompanyName;
+            }
+            string newReceiptsDir = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
+
             string newFilePath = newReceiptsDir + Path.GetFileName(receiptFilePath);
 
             if (File.Exists(newFilePath))
@@ -2689,7 +2699,15 @@ namespace Sales_Tracker
 
             // Save receipt
             bool saved = Directories.CopyFile(receiptFilePath.Replace(receipt_text, ""), newFilePath);
-            string newPath = receipt_text + newFilePath.Replace(Directories.CompanyName, companyName_text);
+
+            // Replace the companyName_text with companyName_textcompany name
+            pathParts = newFilePath.Split(Path.DirectorySeparatorChar);
+            if (pathParts[7] == Directories.CompanyName)
+            {
+                pathParts[7] = companyName_text;
+            }
+            string newPath = receipt_text + string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
+
             return (newPath, saved);
         }
         public static void RemoveReceiptFromFile(DataGridViewRow row)

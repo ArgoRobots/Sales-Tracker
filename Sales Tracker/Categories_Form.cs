@@ -225,7 +225,7 @@ namespace Sales_Tracker
                 categories = MainMenu_Form.Instance.categoryPurchaseList;
             }
 
-            bool exists = categories.Any(category => category.Name == Category_TextBox.Text);
+            bool exists = categories.Any(category => string.Equals(category.Name, Category_TextBox.Text, StringComparison.OrdinalIgnoreCase));
             if (exists)
             {
                 AddCategory_Button.Enabled = false;

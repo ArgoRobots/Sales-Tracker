@@ -152,7 +152,8 @@ namespace Sales_Tracker
         // Validate accountant name
         public void VaidateAccountantTextBox()
         {
-            if (MainMenu_Form.Instance.accountantList.Any(a => a == Accountant_TextBox.Text))
+            bool exists = MainMenu_Form.Instance.accountantList.Any(a => string.Equals(a, Accountant_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+            if (exists)
             {
                 AddAccountant_Button.Enabled = false;
                 UI.SetGTextBoxToInvalid(Accountant_TextBox);

@@ -148,7 +148,8 @@ namespace Sales_Tracker
         // Validate company name
         public void VaidateCompanyTextBox()
         {
-            if (MainMenu_Form.Instance.companyList.Any(a => a == Company_TextBox.Text))
+            bool exists = MainMenu_Form.Instance.companyList.Any(a => string.Equals(a, Company_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+            if (exists)
             {
                 AddCompany_Button.Enabled = false;
                 UI.SetGTextBoxToInvalid(Company_TextBox);

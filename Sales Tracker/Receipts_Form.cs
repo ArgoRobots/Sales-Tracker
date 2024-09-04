@@ -85,7 +85,7 @@ namespace Sales_Tracker
                 {
                     if (row.Tag is (string dir, TagData))
                     {
-                        string sourceFilePath = dir.Replace(MainMenu_Form.companyName_text, Directories.CompanyName);
+                        string sourceFilePath = dir.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
                         string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(sourceFilePath));
                         destinationFilePath = Directories.GetNewFileNameIfItAlreadyExists(destinationFilePath);
                         Directories.CopyFile(sourceFilePath, destinationFilePath);

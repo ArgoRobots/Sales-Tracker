@@ -76,7 +76,7 @@ namespace Sales_Tracker
             if (selectedTag == MainMenu_Form.DataGridViewTag.Accountant.ToString())
             {
                 ConstructControlsForAccountant();
-                left = controlWidth;
+                left = controlWidth + 10;
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Category.ToString())
             {
@@ -163,8 +163,10 @@ namespace Sales_Tracker
                 SetControlForTextBoxEmpty(textBox);
                 return;
             }
+            bool containsAccountant = MainMenu_Form.Instance.accountantList.Contains(textBox.Text, StringComparer.OrdinalIgnoreCase);
+            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text, StringComparison.OrdinalIgnoreCase);
 
-            if (MainMenu_Form.Instance.accountantList.Contains(textBox.Text) && listOfOldValues[0] != textBox.Text)
+            if (containsAccountant && isOldValueDifferent)
             {
                 DisableSaveButton();
                 UI.SetGTextBoxToInvalid(textBox);
@@ -215,9 +217,11 @@ namespace Sales_Tracker
             {
                 categoriesList = MainMenu_Form.Instance.categorySaleList;
             }
-            bool containsCategory = categoriesList.Any(category => category.Name.Contains(textBox.Text));
 
-            if (containsCategory && listOfOldValues[0] != textBox.Text)
+            bool containsCategory = categoriesList.Any(category => category.Name.Equals(textBox.Text, StringComparison.OrdinalIgnoreCase));
+            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text, StringComparison.OrdinalIgnoreCase);
+
+            if (containsCategory && isOldValueDifferent)
             {
                 DisableSaveButton();
                 UI.SetGTextBoxToInvalid(textBox);
@@ -258,11 +262,14 @@ namespace Sales_Tracker
                 return;
             }
 
-            if (MainMenu_Form.Instance.companyList.Contains(textBox.Text) && listOfOldValues[0] != textBox.Text)
+            bool containsCompany = MainMenu_Form.Instance.companyList.Contains(textBox.Text, StringComparer.OrdinalIgnoreCase);
+            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text, StringComparison.OrdinalIgnoreCase);
+
+            if (containsCompany && isOldValueDifferent)
             {
                 DisableSaveButton();
                 UI.SetGTextBoxToInvalid(textBox);
-                ShowWarning(textBox, "Category already exists");
+                ShowWarning(textBox, "Company already exists");
             }
             else
             {
@@ -900,11 +907,11 @@ namespace Sales_Tracker
 
             if (MainMenu_Form.Instance.IsPurchasesSelected())
             {
-                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.Purchases);
+                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
             }
             else
             {
-                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.Sales);
+                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
             }
         }
         private static DataGridViewRowCollection GetRows()
