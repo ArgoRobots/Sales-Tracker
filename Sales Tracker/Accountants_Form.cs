@@ -27,19 +27,24 @@ namespace Sales_Tracker
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
-            AddEventHandlersToTextBoxes();
             ConstructDataGridViews();
             CenterSelectedDataGridView();
+            ConstructTotalLabel();
             LoadAccountants();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
             MainMenu_Form.SortTheDataGridViewByFirstColumn(Accountants_DataGridView);
+            AddEventHandlersToTextBoxes();
+            SetTotalLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
             Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             Accountant_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             Accountant_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Accountants_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
+            Accountants_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
         }
         private void LoadAccountants()
         {
@@ -125,7 +130,7 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 115);
             MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, topForDataGridView);
         }
         private void ConstructDataGridViews()
@@ -141,6 +146,25 @@ namespace Sales_Tracker
             Controls.Add(Accountants_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Accountants_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
+        }
+
+        // Label
+        private Label totalLabel;
+        private void ConstructTotalLabel()
+        {
+            totalLabel = new Label
+            {
+                Font = new Font("Segoe UI", 11),
+                AutoSize = true,
+                ForeColor = CustomColors.text,
+                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            Controls.Add(totalLabel);
+        }
+        private void SetTotalLabel()
+        {
+            totalLabel.Text = $"Total: {Accountants_DataGridView.Rows.Count}";
+            totalLabel.Location = new Point(Accountants_DataGridView.Right - totalLabel.Width, Accountants_DataGridView.Bottom + 10);
         }
 
         // Validate accountant name

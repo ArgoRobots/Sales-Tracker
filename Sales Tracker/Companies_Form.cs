@@ -27,18 +27,23 @@ namespace Sales_Tracker
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
-            AddEventHandlersToTextBoxes();
             ConstructDataGridViews();
             CenterSelectedDataGridView();
+            ConstructTotalLabel();
             LoadCompanies();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
             MainMenu_Form.SortTheDataGridViewByFirstColumn(Company_DataGridView);
+            AddEventHandlersToTextBoxes();
+            SetTotalLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
             Company_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             Company_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Company_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
+            Company_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
         }
         private void LoadCompanies()
         {
@@ -127,7 +132,7 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 115);
             MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, topForDataGridView);
         }
         private void ConstructDataGridViews()
@@ -143,6 +148,25 @@ namespace Sales_Tracker
             Controls.Add(Company_DataGridView);
             MainMenu_Form.Instance.selectedDataGridView = Company_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
+        }
+
+        // Label
+        private Label totalLabel;
+        private void ConstructTotalLabel()
+        {
+            totalLabel = new Label
+            {
+                Font = new Font("Segoe UI", 11),
+                AutoSize = true,
+                ForeColor = CustomColors.text,
+                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            Controls.Add(totalLabel);
+        }
+        private void SetTotalLabel()
+        {
+            totalLabel.Text = $"Total: {MainMenu_Form.Instance.selectedDataGridView.Rows.Count}";
+            totalLabel.Location = new Point(MainMenu_Form.Instance.selectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.selectedDataGridView.Bottom + 10);
         }
 
         // Validate company name

@@ -90,7 +90,7 @@ namespace Sales_Tracker
             AddCategory_Button.CustomizableEdges = customizableEdges3;
             AddCategory_Button.Enabled = false;
             AddCategory_Button.FillColor = Color.White;
-            AddCategory_Button.Font = new Font("Segoe UI", 10);
+            AddCategory_Button.Font = new Font("Segoe UI", 10F);
             AddCategory_Button.ForeColor = Color.Black;
             AddCategory_Button.Location = new Point(482, 150);
             AddCategory_Button.Name = "AddCategory_Button";
@@ -142,7 +142,7 @@ namespace Sales_Tracker
             // 
             WarningCategoryName_Label.Anchor = AnchorStyles.Top;
             WarningCategoryName_Label.AutoSize = true;
-            WarningCategoryName_Label.Font = new Font("Segoe UI", 10);
+            WarningCategoryName_Label.Font = new Font("Segoe UI", 10F);
             WarningCategoryName_Label.Location = new Point(225, 208);
             WarningCategoryName_Label.Name = "WarningCategoryName_Label";
             WarningCategoryName_Label.Size = new Size(213, 28);
@@ -253,7 +253,7 @@ namespace Sales_Tracker
             // Categories_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
-            ClientSize = new Size(1178, 704);
+            ClientSize = new Size(1178, 724);
             Controls.Add(Sale_RadioButton);
             Controls.Add(Purchase_RadioButton);
             Controls.Add(ForSale_Label);
@@ -268,7 +268,7 @@ namespace Sales_Tracker
             Controls.Add(AddCategory_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            MinimumSize = new Size(1200, 760);
+            MinimumSize = new Size(1200, 780);
             Name = "Categories_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

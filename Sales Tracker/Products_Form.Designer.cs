@@ -495,7 +495,7 @@ namespace Sales_Tracker
             // Products_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
-            ClientSize = new Size(1626, 782);
+            ClientSize = new Size(1626, 794);
             Controls.Add(Sale_RadioButton);
             Controls.Add(Purchase_RadioButton);
             Controls.Add(ForSale_Label);
@@ -523,7 +523,7 @@ namespace Sales_Tracker
             Controls.Add(ProductName_TextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
-            MinimumSize = new Size(1639, 812);
+            MinimumSize = new Size(1648, 850);
             Name = "Products_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

@@ -30,14 +30,16 @@ namespace Sales_Tracker
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
-            AddEventHandlersToTextBoxes();
             AddSearchBoxEvents();
             ConstructDataGridViews();
+            ConstructTotalLabel();
             LoadProducts();
             CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
+            AddEventHandlersToTextBoxes();
+            SetTotalLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -61,6 +63,12 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             CompanyOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             CompanyOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Purchases_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
+            Purchases_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
+
+            Sales_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
+            Sales_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
         }
         private void AddSearchBoxEvents()
         {
@@ -440,8 +448,27 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 115);
             MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, topForDataGridView);
+        }
+
+        // Label
+        private Label totalLabel;
+        private void ConstructTotalLabel()
+        {
+            totalLabel = new Label
+            {
+                Font = new Font("Segoe UI", 11),
+                AutoSize = true,
+                ForeColor = CustomColors.text,
+                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            Controls.Add(totalLabel);
+        }
+        private void SetTotalLabel()
+        {
+            totalLabel.Text = $"Total: {MainMenu_Form.Instance.selectedDataGridView.Rows.Count}";
+            totalLabel.Location = new Point(MainMenu_Form.Instance.selectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.selectedDataGridView.Bottom + 10);
         }
 
         // Methods

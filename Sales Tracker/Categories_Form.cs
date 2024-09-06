@@ -30,21 +30,29 @@ namespace Sales_Tracker
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
-            AddEventHandlersToTextBoxes();
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
             ConstructDataGridViews();
+            ConstructTotalLabel();
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
             CenterSelectedDataGridView();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
             MainMenu_Form.SortTheDataGridViewByFirstColumn(Purchases_DataGridView, Sales_DataGridView);
+            AddEventHandlersToTextBoxes();
+            SetTotalLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
             Category_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
             Category_TextBox.KeyDown += UI.TextBox_KeyDown;
+
+            Purchases_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
+            Purchases_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
+
+            Sales_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
+            Sales_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
         }
 
         // Methods
@@ -191,7 +199,7 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 85);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 115);
             MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, topForDataGridView);
         }
         private void ConstructDataGridViews()
@@ -209,6 +217,25 @@ namespace Sales_Tracker
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             Sales_DataGridView.Location = new Point((Width - Sales_DataGridView.Width) / 2, topForDataGridView);
             Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
+        }
+
+        // Label
+        private Label totalLabel;
+        private void ConstructTotalLabel()
+        {
+            totalLabel = new Label
+            {
+                Font = new Font("Segoe UI", 11),
+                AutoSize = true,
+                ForeColor = CustomColors.text,
+                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            Controls.Add(totalLabel);
+        }
+        private void SetTotalLabel()
+        {
+            totalLabel.Text = $"Total: {MainMenu_Form.Instance.selectedDataGridView.Rows.Count}";
+            totalLabel.Location = new Point(MainMenu_Form.Instance.selectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.selectedDataGridView.Bottom + 10);
         }
 
         // Validate category name
