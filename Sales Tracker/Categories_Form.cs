@@ -154,14 +154,14 @@ namespace Sales_Tracker
         }
         private void Category_TextBox_TextChanged(object sender, EventArgs e)
         {
-            VaidateCategoryTextBox();
             ValidateInputs();
+            VaidateCategoryTextBox();
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                ShowShowingResultsForLabel(Search_TextBox.Text);
+                ShowShowingResultsForLabel(Search_TextBox.Text.Trim());
             }
             else
             {
@@ -225,7 +225,7 @@ namespace Sales_Tracker
                 categories = MainMenu_Form.Instance.categoryPurchaseList;
             }
 
-            bool exists = categories.Any(category => string.Equals(category.Name, Category_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+            bool exists = categories.Any(category => string.Equals(category.Name, Category_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
             if (exists)
             {
                 AddCategory_Button.Enabled = false;

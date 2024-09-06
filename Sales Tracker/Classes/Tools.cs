@@ -162,10 +162,10 @@ namespace Sales_Tracker.Classes
             foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
             {
                 bool isVisible = row.Cells.Cast<DataGridViewCell>()
-                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
                 row.Visible = isVisible;
             }
-            return !string.IsNullOrEmpty(search_TextBox.Text);
+            return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
         }
         public static void ScrollToTopOfDataGridView(Guna2DataGridView dataGridView)
         {

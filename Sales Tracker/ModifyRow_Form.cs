@@ -163,8 +163,8 @@ namespace Sales_Tracker
                 SetControlForTextBoxEmpty(textBox);
                 return;
             }
-            bool containsAccountant = MainMenu_Form.Instance.accountantList.Contains(textBox.Text, StringComparer.OrdinalIgnoreCase);
-            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text, StringComparison.OrdinalIgnoreCase);
+            bool containsAccountant = MainMenu_Form.Instance.accountantList.Contains(textBox.Text.Trim(), StringComparer.OrdinalIgnoreCase);
+            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text.Trim(), StringComparison.OrdinalIgnoreCase);
 
             if (containsAccountant && isOldValueDifferent)
             {
@@ -218,8 +218,8 @@ namespace Sales_Tracker
                 categoriesList = MainMenu_Form.Instance.categorySaleList;
             }
 
-            bool containsCategory = categoriesList.Any(category => category.Name.Equals(textBox.Text, StringComparison.OrdinalIgnoreCase));
-            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text, StringComparison.OrdinalIgnoreCase);
+            bool containsCategory = categoriesList.Any(category => category.Name.Equals(textBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text.Trim(), StringComparison.OrdinalIgnoreCase);
 
             if (containsCategory && isOldValueDifferent)
             {
@@ -262,8 +262,8 @@ namespace Sales_Tracker
                 return;
             }
 
-            bool containsCompany = MainMenu_Form.Instance.companyList.Contains(textBox.Text, StringComparer.OrdinalIgnoreCase);
-            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text, StringComparison.OrdinalIgnoreCase);
+            bool containsCompany = MainMenu_Form.Instance.companyList.Contains(textBox.Text.Trim(), StringComparer.OrdinalIgnoreCase);
+            bool isOldValueDifferent = !string.Equals(listOfOldValues[0], textBox.Text.Trim(), StringComparison.OrdinalIgnoreCase);
 
             if (containsCompany && isOldValueDifferent)
             {

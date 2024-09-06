@@ -101,15 +101,9 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
+            if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                bool isVisible = row.Cells.Cast<DataGridViewCell>()
-                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
-                row.Visible = isVisible;
-            }
-            if (Search_TextBox.Text != "")
-            {
-                ShowShowingResultsForLabel(Search_TextBox.Text);
+                ShowShowingResultsForLabel(Search_TextBox.Text.Trim());
             }
             else
             {
@@ -152,7 +146,7 @@ namespace Sales_Tracker
         // Validate accountant name
         public void VaidateAccountantTextBox()
         {
-            bool exists = MainMenu_Form.Instance.accountantList.Any(a => string.Equals(a, Accountant_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+            bool exists = MainMenu_Form.Instance.accountantList.Any(a => string.Equals(a, Accountant_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
             if (exists)
             {
                 AddAccountant_Button.Enabled = false;

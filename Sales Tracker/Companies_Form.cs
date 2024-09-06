@@ -105,7 +105,7 @@ namespace Sales_Tracker
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                ShowShowingResultsForLabel(Search_TextBox.Text);
+                ShowShowingResultsForLabel(Search_TextBox.Text.Trim());
             }
             else
             {
@@ -148,7 +148,7 @@ namespace Sales_Tracker
         // Validate company name
         public void VaidateCompanyTextBox()
         {
-            bool exists = MainMenu_Form.Instance.companyList.Any(a => string.Equals(a, Company_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+            bool exists = MainMenu_Form.Instance.companyList.Any(a => string.Equals(a, Company_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
             if (exists)
             {
                 AddCompany_Button.Enabled = false;

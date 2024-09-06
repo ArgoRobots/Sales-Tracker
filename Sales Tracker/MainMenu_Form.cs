@@ -938,7 +938,7 @@ namespace Sales_Tracker
             }
 
             bool filterExists = interval != TimeInterval.AllTime ||
-                !string.IsNullOrEmpty(Search_TextBox.Text) ||
+                !string.IsNullOrEmpty(Search_TextBox.Text.Trim()) ||
                 !comboBoxEnabled;
 
             bool hasVisibleRows = false;
@@ -1104,17 +1104,18 @@ namespace Sales_Tracker
         public void ShowShowingResultsForLabel()
         {
             string text = "Showing results for";
+            string searchText = Search_TextBox.Text.Trim();
 
             // Append search text if available
-            if (!string.IsNullOrEmpty(Search_TextBox.Text))
+            if (!string.IsNullOrEmpty(searchText))
             {
-                text += $" '{Search_TextBox.Text}'";
+                text += $" '{searchText}'";
             }
 
             // Handle ComboBox case
             if (Filter_ComboBox.Enabled && !string.IsNullOrEmpty(Filter_ComboBox.Text) && Filter_ComboBox.Text != timeIntervals[0].displayString)
             {
-                if (!string.IsNullOrEmpty(Search_TextBox.Text))
+                if (!string.IsNullOrEmpty(searchText))
                 {
                     text += $"\nin the last {Filter_ComboBox.Text}";
                 }
@@ -1127,7 +1128,7 @@ namespace Sales_Tracker
             // Handle DateRange case
             if (!Filter_ComboBox.Enabled)
             {
-                if (!string.IsNullOrEmpty(Search_TextBox.Text))
+                if (!string.IsNullOrEmpty(searchText))
                 {
                     text += $"\nfrom {Tools.FormatDate(fromDate)} to {Tools.FormatDate(toDate)}";
                 }
