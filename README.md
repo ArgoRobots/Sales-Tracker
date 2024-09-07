@@ -33,16 +33,13 @@ To import your existing sales, purchase, or product data from a spreadsheet into
 - **Visual Studio 2022 or later**: This project is developed using Visual Studio.
 
 ## Installation
-1. Clone the repository to your local machine using the following command:
-   ```bash
-   git clone <repository-url>
-2.	Open the solution file "Sales Tracker.sln" in Visual Studio.
-3.	Restore the NuGet packages by going to Tools > NuGet Package Manager > Restore NuGet Packages.
-4.	Build the project by pressing Ctrl + Shift + B.
+1. Clone the repository to your local machine.
+2.	Open [Visual Studio Developer Command Prompt](https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022) as administrator. It should have been installed on your system when you installed Visual Studio.
+3.	Run the command:  ```devenv``` to open Visual Studio as administrator.
+4. Build the project by pressing Ctrl + Shift + B.
 
 ## Running the application
 After building the solution, press F5 to run the application in Debug mode, or Ctrl + F5 to run it in Release mode.
-Initial Setup
 
 To use the program effectively, follow these steps:
 1.	**Add an accountant**: The first step is to add an accountant that will be associated with the sales and purchases.
@@ -50,3 +47,10 @@ To use the program effectively, follow these steps:
 3.	**Add categories**: Organize your products by creating categories, making it easier to manage inventory and track sales. For example, if your company buys many different types of robotic components, you can add the categories "Bolts, nuts, screws, ball bearings, motors, etc.
 4.	**Add products**: Once categories are set, you can create products within those categories.
 5.	**Add sales and purchases**: After setting up accountants, companies, categories, and products, you can start adding sales and purchases into the system.
+
+## Publishing
+1. Go to "Build > Clean Solution", then "Build > Build Solution".
+2. In the [Solution Explorer](https://learn.microsoft.com/en-us/visualstudio/ide/use-solution-explorer?view=vs-2022), right click "Argo Sales Tracker Setup" then click "Rebuild".
+3. The "Argo Sales Tracker V.1.0.0 Setup.msi" file will be generated in "Sales Tracker\Setup\Release".
+
+Note that the .exe file simply links to the .msi file, so it's useless.
