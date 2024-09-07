@@ -10,16 +10,20 @@
     
     <TargetFramework>net8.0-windows10.0.26100.1</TargetFramework>
     <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
+    <Platforms>AnyCPU;x86;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <WindowsSdkSupportedTargetPlatformVersion Include="10.0.26100.1" WindowsSdkPackageVersion="10.0.26100.1" MinimumNETVersion="6.0" />
 		<SdkSupportedTargetPlatformVersion Include="10.0.26100.1" />
     
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.5.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.5.2" />
   </ItemGroup>
 
   <ItemGroup>

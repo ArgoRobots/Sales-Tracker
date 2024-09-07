@@ -370,6 +370,22 @@
           }
         }
       },
+      "SharpCompress/0.38.0": {
+        "type": "package",
+        "dependencies": {
+          "ZstdSharp.Port": "0.8.1"
+        },
+        "compile": {
+          "lib/net8.0/SharpCompress.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/SharpCompress.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
       "SixLabors.Fonts/1.0.0": {
         "type": "package",
         "compile": {
@@ -1497,6 +1513,15 @@
         "runtime": {
           "lib/netstandard1.6/XLParser.dll": {}
         }
+      },
+      "ZstdSharp.Port/0.8.1": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/ZstdSharp.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/ZstdSharp.dll": {}
+        }
       }
     }
   },
@@ -1938,6 +1963,28 @@
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.nuspec",
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
+      ]
+    },
+    "SharpCompress/0.38.0": {
+      "sha512": "8i6KqjAFI3mvya8W8rnQrf5h4vz6ilw4zqk2AzInVqqqZ25TD6fmVeYBnlisjTWwP26eltZc0buSmJ8a3YIGxg==",
+      "type": "package",
+      "path": "sharpcompress/0.38.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net462/SharpCompress.dll",
+        "lib/net462/SharpCompress.pdb",
+        "lib/net6.0/SharpCompress.dll",
+        "lib/net6.0/SharpCompress.pdb",
+        "lib/net8.0/SharpCompress.dll",
+        "lib/net8.0/SharpCompress.pdb",
+        "lib/netstandard2.0/SharpCompress.dll",
+        "lib/netstandard2.0/SharpCompress.pdb",
+        "lib/netstandard2.1/SharpCompress.dll",
+        "lib/netstandard2.1/SharpCompress.pdb",
+        "sharpcompress.0.38.0.nupkg.sha512",
+        "sharpcompress.nuspec"
       ]
     },
     "SixLabors.Fonts/1.0.0": {
@@ -4997,6 +5044,25 @@
         "xlparser.1.5.2.nupkg.sha512",
         "xlparser.nuspec"
       ]
+    },
+    "ZstdSharp.Port/0.8.1": {
+      "sha512": "19tNz33kn2EkyViFXuxfVn338UJaRmkwBphVqP2dVJIYQUQgFrgG5h061mxkRRg1Ax6r+6WOj1FxaFZ5qaWqqg==",
+      "type": "package",
+      "path": "zstdsharp.port/0.8.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/ZstdSharp.dll",
+        "lib/net5.0/ZstdSharp.dll",
+        "lib/net6.0/ZstdSharp.dll",
+        "lib/net7.0/ZstdSharp.dll",
+        "lib/net8.0/ZstdSharp.dll",
+        "lib/netcoreapp3.1/ZstdSharp.dll",
+        "lib/netstandard2.0/ZstdSharp.dll",
+        "lib/netstandard2.1/ZstdSharp.dll",
+        "zstdsharp.port.0.8.1.nupkg.sha512",
+        "zstdsharp.port.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -5004,7 +5070,8 @@
       "ClosedXML >= 0.102.3",
       "Guna.Charts.WinForms >= 1.0.8",
       "Guna.UI2.WinForms >= 2.0.4.6",
-      "Ookii.Dialogs.WinForms >= 4.0.0"
+      "Ookii.Dialogs.WinForms >= 4.0.0",
+      "SharpCompress >= 0.38.0"
     ]
   },
   "packageFolders": {
@@ -5072,6 +5139,10 @@
           "Ookii.Dialogs.WinForms": {
             "target": "Package",
             "version": "[4.0.0, )"
+          },
+          "SharpCompress": {
+            "target": "Package",
+            "version": "[0.38.0, )"
           }
         },
         "imports": [

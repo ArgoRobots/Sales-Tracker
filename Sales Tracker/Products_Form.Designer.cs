@@ -446,6 +446,7 @@ namespace Sales_Tracker
             // 
             // Sale_RadioButton
             // 
+            Sale_RadioButton.Anchor = AnchorStyles.Top;
             Sale_RadioButton.Animated = true;
             Sale_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Sale_RadioButton.CheckedState.BorderThickness = 0;
@@ -476,6 +477,7 @@ namespace Sales_Tracker
             // 
             // Purchase_RadioButton
             // 
+            Purchase_RadioButton.Anchor = AnchorStyles.Top;
             Purchase_RadioButton.Animated = true;
             Purchase_RadioButton.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             Purchase_RadioButton.CheckedState.BorderThickness = 0;

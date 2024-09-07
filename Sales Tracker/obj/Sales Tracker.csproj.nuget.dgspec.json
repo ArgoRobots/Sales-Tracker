@@ -65,6 +65,10 @@
             "Ookii.Dialogs.WinForms": {
               "target": "Package",
               "version": "[4.0.0, )"
+            },
+            "SharpCompress": {
+              "target": "Package",
+              "version": "[0.38.0, )"
             }
           },
           "imports": [
