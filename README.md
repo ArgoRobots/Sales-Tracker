@@ -49,7 +49,7 @@ To use the program effectively, follow these steps:
 5.	**Add sales and purchases**: After setting up accountants, companies, categories, and products, you can start adding sales and purchases into the system.
 
 ## Publishing Argo Sales Tracker to a .msi file
-1. In Windows Explorer, navigate to ```Sales Tracker\Setup``` then delete the ```"Debug``` and ```Release``` folders, being careful not to delete ```Setup.vdproj```.
+1. In Windows Explorer, navigate to ```Sales Tracker\Setup``` then delete the ```Debug``` and ```Release``` folders, being careful not to delete ```Setup.vdproj```. You can also navigate to ```Sales Tracker\Sales Tracker``` and delete the ```bin``` and ```obj``` folders if you are having trouble getting it to work.
 2. Go to ```Build > Clean Solution```, then ```Build > Build Solution```.
 4. The ```Argo Sales Tracker V.1.0.0 Setup.msi``` file will be generated in ```Sales Tracker\Setup\Release```.
 
