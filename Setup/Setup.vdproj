@@ -21,7 +21,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5F965B01D7B141CFAFD40D1E73C9FDF0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8C04236B62374F8B9D55A2D39CB1AD3F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D193324C87034E6EA0D8DECC831C657F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -79,26 +91,11 @@
             {
             "Enabled" = "11:TRUE"
             "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
+            "PrerequisitesLocation" = "2:2"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
-                    {
-                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
-                    }
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.8.0.x64"
-                    {
-                    "Name" = "8:.NET Desktop Runtime 8.0.8 (x64)"
-                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.8.0.x64"
-                    }
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.8.0.x86"
-                    {
-                    "Name" = "8:.NET Desktop Runtime 8.0.8 (x86)"
-                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.8.0.x86"
-                    }
                 }
             }
         }
@@ -107,6 +104,34 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_ABDA5680B8204DE0ABFE43205261FC80"
+            {
+            "Name" = "8:windowsdesktop-runtime-8.0.8-win-x64.exe"
+            "Condition" = "8:"
+            "Object" = "8:_5F965B01D7B141CFAFD40D1E73C9FDF0"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:/Install"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_0107A723_7DBF_43C3_A0AC_F917CADCA97B"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_C5A9B341A28B46A2ABE12B62EF461F6F"
+            {
+            "Name" = "8:windowsdesktop-runtime-8.0.8-win-x86.exe"
+            "Condition" = "8:"
+            "Object" = "8:_D193324C87034E6EA0D8DECC831C657F"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:/Install"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_4FA9AA3F_2A17_4321_9D75_AC7BE52D8FB0"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -136,6 +161,46 @@
             {
             "SourcePath" = "8:..\\..\\Argo things\\Argo Images\\Argo Robotics\\New\\Argo - color.ico"
             "TargetName" = "8:Argo - color.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_090A49AC32E74F81A5ECE6D68CE13D17"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5F965B01D7B141CFAFD40D1E73C9FDF0"
+            {
+            "SourcePath" = "8:..\\Dependencies\\Runtime\\windowsdesktop-runtime-8.0.8-win-x64.exe"
+            "TargetName" = "8:windowsdesktop-runtime-8.0.8-win-x64.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_090A49AC32E74F81A5ECE6D68CE13D17"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D193324C87034E6EA0D8DECC831C657F"
+            {
+            "SourcePath" = "8:..\\Dependencies\\Runtime\\windowsdesktop-runtime-8.0.8-win-x86.exe"
+            "TargetName" = "8:windowsdesktop-runtime-8.0.8-win-x86.exe"
             "Tag" = "8:"
             "Folder" = "8:_090A49AC32E74F81A5ECE6D68CE13D17"
             "Condition" = "8:"
@@ -209,7 +274,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Argo Sales Tracker"
         "ProductCode" = "8:{12C61A1F-62C2-4419-8FF4-F005576C5DF9}"
-        "PackageCode" = "8:{26689FD1-5DB8-4CFF-8432-BFC2C93D7082}"
+        "PackageCode" = "8:{FBB080A0-2BFE-450B-92C1-AE3AFCA8B540}"
         "UpgradeCode" = "8:{4DFE3BB3-4CC3-47F9-BF6A-70F3C61A1D55}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
