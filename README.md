@@ -54,13 +54,13 @@ To use the program effectively, follow these steps:
 4. The ```Argo Sales Tracker V.1.0.0 Setup.msi``` file will be generated in ```Sales Tracker\Setup\Release```.
 
 If it still fails to build, you can try temporarily disabling Windows Real-Time Protection:
-1. Open Start and search for Windows Security.
-2. Click on the Windows Security app from the search results.
-3. Go to Virus & threat protection.
-4. Under Virus & threat protection settings, click on Manage settings.
-5. Turn off the Real-time protection toggle switch.
-6. Try cleaning then rebuilding the project again. Remember to enable the Real-Time Protection again.
+1. Open Start and search for ```Windows Security```.
+2. Click on the ```Windows Security``` app from the search results.
+3. Go to ```Virus & threat protection```.
+4. Under ```Virus & threat protection settings```, click on ```Manage settings```.
+5. Turn off the ```Real-time protection``` toggle switch.
+6. Try cleaning then rebuilding the project again. Remember to enable the Real-Time Protection after you are done.
 
-Note that the .exe file simply links to the .msi file, so it's useless.
+If a .exe file is generated, it simply links to the .msi file, so you can ignore it. Also, the .msi file generation depends on the current build configuration in Visual Studio, whether it's set to ```Release``` or ```Debug``` mode. ```Release``` mode is recommended for this purpose.
 
 By default, it will support both x64 and x86 architextures. If you want to create a .msi file that only supports one (saving file space), then in the Visual Studio Solution Explorer, right click ```Argo Sales Tracker Setup``` and click ```View > Custom Actions``` then remove the coresponding .exe file by right clicking on it then clicking ```Delete```. It can be added back by right clicking the ```Install``` folder, then clicking ```Add Custom Action...```, then double click on ```Application Folder```, then select the missing .exe, then click ```OK```. Restart Visual Studio (making sure it's run as admin), then Clean and rebuild the project.
