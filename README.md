@@ -54,3 +54,5 @@ To use the program effectively, follow these steps:
 4. The ```Argo Sales Tracker V.1.0.0 Setup.msi``` file will be generated in ```Sales Tracker\Setup\Release```.
 
 Note that the .exe file simply links to the .msi file, so it's useless.
+
+By default, it will support both x64 and x86 architextures. If you want to create a .msi file that only supports one (saving file space), then in the Visual Studio Solution Explorer, right click ```Argo Sales Tracker Setup``` and click ```View > Custom Actions``` then remove the coresponding .exe file by right clicking on it then clicking ```Delete```. It can be added back by right clicking the ```Install``` folder, then clicking ```Add Custom Action...```, then double click on ```Application Folder```, then select the missing .exe, then click ```OK```. Then Clean and rebuild the project.
