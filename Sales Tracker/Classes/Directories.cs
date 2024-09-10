@@ -521,8 +521,7 @@ namespace Sales_Tracker.Classes
                         result = CustomMessageBox.Show(
                             $"Rename {importType}",
                             $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {importType} with the same name.",
-                            CustomMessageBoxIcon.Question,
-                            CustomMessageBoxButtons.YesNo);
+                            CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
                     }
                     if (result == CustomMessageBoxResult.Yes || !askUserToRename)
                     {

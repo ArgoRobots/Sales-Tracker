@@ -9,7 +9,7 @@ namespace Sales_Tracker.Classes
         public static readonly string ArgoCompanyFileExtension = ".ArgoSales",
                                       TxtFileExtension = ".txt",
                                       JsonFileExtension = ".json",
-                                      ExcelFileExtension = ".xlsx";
+                                      XlsxFileExtension = ".xlsx";
 
         // Refresh Explorer to show changes in the file icons
         [LibraryImport("shell32.dll", SetLastError = true)]

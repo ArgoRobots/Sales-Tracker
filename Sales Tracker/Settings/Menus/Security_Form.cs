@@ -45,8 +45,7 @@ namespace Sales_Tracker.Settings.Menus
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     "Argo Sales Tracker",
                     "Disabling this feature will make your data vulnerable to unauthorized access. Are you sure you want to disable this feature?",
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.YesNo);
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {

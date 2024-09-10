@@ -1,5 +1,7 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.ImportSpreadSheets;
 using Sales_Tracker.Properties;
+using Sales_Tracker.ImportSpreadsheets;
 using Sales_Tracker.Startup.Menus;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
@@ -159,7 +161,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(panelWidth, 6 * panelButtonHeight + spaceForSeperator + spaceForPanel));
+            fileMenu = ConstructPanelForMenu(new Size(panelWidth, 7 * panelButtonHeight + spaceForSeperator + spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", panelBtnWidth, true, flowPanel);
@@ -203,6 +205,24 @@ namespace Sales_Tracker.Classes
             {
                 new Receipts_Form().ShowDialog();
             };
+
+            menuBtn = ConstructBtnForMenu("Import spreadsheet", panelBtnWidth, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                if (ShouldShowTutorial())
+                {
+                    new Setup_Form().ShowDialog();
+                }
+                else
+                {
+                    new ImportSpreadSheets_Form().ShowDialog();
+                }
+            };
+        }
+        public static bool ShouldShowTutorial()
+        {
+            string value = DataFileManager.GetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial);
+            return bool.TryParse(value, out bool boolResult) && boolResult;
         }
         public static void SaveAll()
         {

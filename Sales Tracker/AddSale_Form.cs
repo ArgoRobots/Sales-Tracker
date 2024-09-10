@@ -212,9 +212,6 @@ namespace Sales_Tracker
         {
             RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
         }
-        private void ImportExcel_Button_Click(object sender, EventArgs e)
-        {
-        }
         private void MultipleItems_Label_Click(object sender, EventArgs e)
         {
             MultipleItems_CheckBox.Checked = !MultipleItems_CheckBox.Checked;
@@ -228,7 +225,9 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -263,8 +262,9 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -422,8 +422,9 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {

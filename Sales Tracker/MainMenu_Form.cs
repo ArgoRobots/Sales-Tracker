@@ -676,7 +676,9 @@ namespace Sales_Tracker
         /// <returns>Returns true if the user cancels. Returns false if the user saves.</returns>
         private static bool AskUserToSaveBeforeClosing()
         {
-            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Save changes to the following items?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                "Save changes to the following items?",
+                CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
             switch (result)
             {
@@ -1058,8 +1060,7 @@ namespace Sales_Tracker
 
                 string suggestedCompanyName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
 
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Rename company",
+                CustomMessageBoxResult result = CustomMessageBox.Show($"Rename company",
                     $"Do you want to rename '{name}' to '{suggestedCompanyName}'? There is already a company with the same name.",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.OkCancel);
@@ -1543,7 +1544,9 @@ namespace Sales_Tracker
 
                     if (tagList.Count == index)
                     {
-                        CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"Deleting the last item will also delete the {selected}.", CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
+                        CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                            $"Deleting the last item will also delete the {selected}.",
+                            CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
 
                         if (result != CustomMessageBoxResult.Ok)
                         {
@@ -2685,11 +2688,9 @@ namespace Sales_Tracker
 
                 string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
 
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Rename receipt",
+                CustomMessageBoxResult result = CustomMessageBox.Show($"Rename receipt",
                     $"Do you want to rename '{name}' to '{suggestedThingName}'? There is already a receipt with the same name.",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.OkCancel);
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
 
                 if (result == CustomMessageBoxResult.Ok)
                 {
@@ -2736,8 +2737,7 @@ namespace Sales_Tracker
         {
             if (!File.Exists(receiptFilePath.Replace(receipt_text, "")))
             {
-                string message = $"The receipt you selected no longer exists";
-                CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Argo Sales Tracker", $"The receipt you selected no longer exists", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return false;
             }
             return true;

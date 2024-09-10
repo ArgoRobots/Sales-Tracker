@@ -7,7 +7,7 @@
         // Enums for categorizing settings
         public enum GlobalAppDataSettings
         {
-            RPTutorial,  // bool
+            ImportSpreadsheetTutorial,  // bool
             RecentProjects  // string[]
         }
         public enum AppDataSettings

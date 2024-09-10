@@ -137,7 +137,9 @@
 
                 if (imgBounds.Contains(clickLocation))
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", MessageBoxText, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker",
+                        MessageBoxText,
+                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             }
         }

@@ -22,7 +22,7 @@ namespace Sales_Tracker.Classes
             {
                 Directories.CreateFile(Directories.AppDataConfig_file);
 
-                DataFileManager.SetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RPTutorial, bool.TrueString);
+                DataFileManager.SetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.TrueString);
                 DataFileManager.Save(Directories.AppDataConfig_file);
             }
         }
@@ -155,7 +155,9 @@ namespace Sales_Tracker.Classes
                 // Save current project
                 if (AreAnyChangesMade())
                 {
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "Would you like to save your changes before opening a new project?", CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                        "Would you like to save your changes before opening a new project?",
+                        CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
                     switch (result)
                     {
@@ -188,7 +190,9 @@ namespace Sales_Tracker.Classes
         {
             if (!CreateMutex(projectFilePath))
             {
-                CustomMessageBox.Show("Argo Sales Tracker", "This project is already open in another instance of Argo Studio", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Argo Sales Tracker",
+                    "This project is already open in another instance of Argo Studio",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 applicationMutex?.Dispose();  // Reset
                 return false;
             }
@@ -239,10 +243,15 @@ namespace Sales_Tracker.Classes
                     return;
                 }
 
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(project)}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                    $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(project)}",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+
                 if (result == CustomMessageBoxResult.Yes)
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", $"You will be promted to select a folder to save the unsaved work.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker",
+                        $"You will be promted to select a folder to save the unsaved work.",
+                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
 
                     // Select folder
                     Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();

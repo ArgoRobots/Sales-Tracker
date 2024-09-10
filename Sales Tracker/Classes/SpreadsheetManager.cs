@@ -2,9 +2,183 @@
 
 namespace Sales_Tracker.Classes
 {
-    internal class ExcelManager
+    internal class SpreadsheetManager
     {
-        public static void ExportToExcel(string filePath)
+        public static void ImportSpreadsheet()
+        {
+            // File selection dialog
+            OpenFileDialog dialog = new()
+            {
+                Filter = $"Spreadsheet (*{ArgoFiles.XlsxFileExtension})|*{ArgoFiles.XlsxFileExtension}",
+                Title = "Select spreadsheet to import"
+            };
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = dialog.FileName;
+
+                // Validate file before processing
+                if (!ValidateSpreadsheet(filePath))
+                {
+                    CustomMessageBox.Show("Invalid file",
+                        "The selected file is invalid or corrupted. Please choose a valid spreadsheet.",
+                         CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                    return;
+                }
+
+                // Read and import the spreadsheet data
+                try
+                {
+                    using XLWorkbook workbook = new(filePath);
+
+                    // Import Accountants
+                    if (workbook.Worksheets.Contains("Accountants"))
+                    {
+                        IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
+                        ImportAccountantsData(accountantsWorksheet);
+                    }
+
+                    // Import Companies
+                    else if (workbook.Worksheets.Contains("Companies"))
+                    {
+                        IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
+                        ImportCompaniesData(companiesWorksheet);
+
+                    }
+
+                    // Import Products
+                    else if (workbook.Worksheets.Contains("Products"))
+                    {
+                        IXLWorksheet productsWorksheet = workbook.Worksheet("Products");
+                        ImportProductsData(productsWorksheet);
+                    }
+
+                    // Import Purchase Data
+                    else if (workbook.Worksheets.Contains("Purchases"))
+                    {
+                        IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
+                        ImportPurchaseData(purchaseWorksheet);
+                    }
+
+                    // Import Sales Data
+                    else if (workbook.Worksheets.Contains("Sales"))
+                    {
+                        IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
+                        ImportSalesData(salesWorksheet);
+                    }
+
+                    else if (workbook.Worksheets.Count == 0)
+                    {
+                        CustomMessageBox.Show("Success", "The spreadsheet does not contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                        return;
+                    }
+
+                    CustomMessageBox.Show("Success", "Spreadsheet imported successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                }
+                catch (Exception ex)
+                {
+                    CustomMessageBox.Show("Argo Sales Tracker",
+                        $"An error occurred while importing the spreadsheet: {ex.Message}",
+                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                }
+            }
+        }
+        private static bool ValidateSpreadsheet(string filePath)
+        {
+            try
+            {
+                using XLWorkbook workbook = new(filePath);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private static void ImportAccountantsData(IXLWorksheet worksheet)
+        {
+
+            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            {
+                string accountantName = row.Cell(1).GetValue<string>();
+                MainMenu_Form.Instance.accountantList.Add(accountantName);
+            }
+        }
+        private static void ImportCompaniesData(IXLWorksheet worksheet)
+        {
+            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            {
+                string companyName = row.Cell(1).GetValue<string>();
+                MainMenu_Form.Instance.companyList.Add(companyName);
+            }
+        }
+        private static void ImportPurchaseData(IXLWorksheet worksheet)
+        {
+            MainMenu_Form.Instance.Purchases_DataGridView.Rows.Clear();
+
+            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            {
+                DataGridViewRow newRow = new();
+                for (int i = 0; i < row.Cells().Count(); i++)
+                {
+                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
+                }
+                MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+            }
+        }
+        private static void ImportSalesData(IXLWorksheet worksheet)
+        {
+            MainMenu_Form.Instance.Sales_DataGridView.Rows.Clear();
+
+            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))
+            {
+                DataGridViewRow newRow = new();
+                for (int i = 0; i < row.Cells().Count(); i++)
+                {
+                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
+                }
+                MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
+            }
+        }
+        private static void ImportProductsData(IXLWorksheet worksheet)
+        {
+            // Clear the existing category purchase list
+            MainMenu_Form.Instance.categoryPurchaseList.Clear();
+
+            // Read product data from the worksheet and add it to the category purchase list
+            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip the header row
+            {
+                string productId = row.Cell(1).GetValue<string>();
+                string productName = row.Cell(2).GetValue<string>();
+                string categoryName = row.Cell(3).GetValue<string>();
+                string countryOfOrigin = row.Cell(4).GetValue<string>();
+                string companyOfOrigin = row.Cell(5).GetValue<string>();
+
+                // Find or create the category in the categoryPurchaseList
+                Category category = MainMenu_Form.Instance.categoryPurchaseList
+                    .FirstOrDefault(c => c.Name == categoryName);
+
+                if (category == null)
+                {
+                    // If the category doesn't exist, create a new one and add it to the list
+                    category = new Category { Name = categoryName };
+                    MainMenu_Form.Instance.categoryPurchaseList.Add(category);
+                }
+
+                // Create the product and add it to the category's product list
+                Product product = new()
+                {
+                    ProductID = productId,
+                    Name = productName,
+                    CountryOfOrigin = countryOfOrigin,
+                    CompanyOfOrigin = companyOfOrigin
+                };
+
+                category.ProductList.Add(product);
+            }
+        }
+
+        public static void ExportSpreadsheet(string filePath)
         {
             filePath = Directories.GetNewFileNameIfItAlreadyExists(filePath);
 

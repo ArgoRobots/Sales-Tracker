@@ -82,11 +82,9 @@ namespace Sales_Tracker.Passwords
                     return;
                 }
 
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                   "Argo Sales Tracker",
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                    "Removing your password will make your data vulnerable to unauthorized access. Are you sure you want to continue?",
-                   CustomMessageBoxIcon.Exclamation,
-                   CustomMessageBoxButtons.YesNo);
+                   CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
