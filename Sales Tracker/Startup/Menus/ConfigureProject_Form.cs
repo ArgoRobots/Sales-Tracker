@@ -120,6 +120,7 @@ namespace Sales_Tracker.Startup.Menus
             }
 
             projectName = ProjectName_TextBox.Text;
+
             // Hide current form. Don't close it or both forms will close
             Parent.Hide();
 

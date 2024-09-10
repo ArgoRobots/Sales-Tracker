@@ -126,7 +126,7 @@ namespace Sales_Tracker.Classes
             CategorySales_file = TempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
             Accountants_file = TempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
             Companies_file = TempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
-            Receipts_dir = AppData_dir + MainMenu_Form.companyName_text + @"\receipts\";
+            Receipts_dir = AppData_dir + project_name + @"\receipts\";
 
             // Logs
             Logs_dir = TempCompany_dir + @"logs\";
