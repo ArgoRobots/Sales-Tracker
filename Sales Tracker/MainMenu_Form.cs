@@ -2059,13 +2059,17 @@ namespace Sales_Tracker
             dateColumnHeader = PurchaseColumnHeaders[Column.Date];
             Purchases_DataGridView.Sort(Purchases_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
         }
-        public static void SortTheDataGridViewByFirstColumn(params Guna2DataGridView[] dataGridViews)
+        public static void SortTheDataGridViewByFirstColumnAndSelectFirstRow(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGrid in dataGridViews)
             {
                 if (dataGrid.Columns.Count > 0)
                 {
                     dataGrid.Sort(dataGrid.Columns[0], ListSortDirection.Ascending);
+
+                    // Select the first row
+                    dataGrid.ClearSelection();
+                    dataGrid.Rows[0].Selected = true;
                 }
             }
         }

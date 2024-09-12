@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 
 namespace Sales_Tracker.ImportSpreadSheets
@@ -12,8 +13,8 @@ namespace Sales_Tracker.ImportSpreadSheets
         public ImportSpreadSheets_Form()
         {
             InitializeComponent();
-
             LoadingPanel.ShowBlankLoadingPanel(this);
+            InitLoadingComponents();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
         }
@@ -25,7 +26,7 @@ namespace Sales_Tracker.ImportSpreadSheets
         }
 
         // Event handlers
-        private void SelectFile_Button_Click(object sender, EventArgs e)
+        private async void SelectFile_Button_Click(object sender, EventArgs e)
         {
             // File selection dialog
             OpenFileDialog dialog = new()
@@ -37,100 +38,78 @@ namespace Sales_Tracker.ImportSpreadSheets
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 spreadsheetFilePath = dialog.FileName;
-                Import_Button.Enabled = false;
-
-                // Validate file before processing
                 if (!ValidateSpreadsheet()) { return; }
 
+                Import_Button.Enabled = false;
+                RemoveAllFlowLayoutPanels();
+
                 ShowReceiptLabel(dialog.SafeFileName);
+                ShowLoadingIndicator("Loading spreadsheet data");
 
-                // Open the file in read-only and shared mode
-                using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using XLWorkbook workbook = new(stream);
-                List<FlowLayoutPanel> panels = new();
+                List<FlowLayoutPanel> panels = await LoadSpreadsheetDataAsync();
 
-                if (workbook.Worksheets.Count == 0)
-                {
-                    CustomMessageBox.Show("Argo Sales Tracker", "The file doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                    return;
-                }
-                if (workbook.Worksheets.Contains("Accountants"))
-                {
-                    IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
-                    SpreadsheetManager.ImportAccountantsData(accountantsWorksheet);
-                    panels.Add(CreateFlowLayoutPanel(MainMenu_Form.Instance.accountantList, "Accountants"));
-                }
-                if (workbook.Worksheets.Contains("Companies"))
-                {
-                    IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
-                    SpreadsheetManager.ImportCompaniesData(companiesWorksheet);
-                    panels.Add(CreateFlowLayoutPanel(MainMenu_Form.Instance.companyList, "Companies"));
-                }
-                if (workbook.Worksheets.Contains("Products"))
-                {
-                    IXLWorksheet productsWorksheet = workbook.Worksheet("Products");
-                    SpreadsheetManager.ImportProductsData(productsWorksheet);
-                }
-                if (workbook.Worksheets.Contains("Purchases"))
-                {
-                    IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
-                    SpreadsheetManager.ImportPurchaseData(purchaseWorksheet);
-                }
-                if (workbook.Worksheets.Contains("Sales"))
-                {
-                    IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
-                    SpreadsheetManager.ImportSalesData(salesWorksheet);
-                }
-
-                Import_Button.Enabled = true;
                 ArrangePanels(panels);
+                Import_Button.Enabled = true;
+                HideLoadingIndicator();
             }
         }
-        private void Import_Button_Click(object sender, EventArgs e)
+        private async void Import_Button_Click(object sender, EventArgs e)
         {
-            // Validate file before processing
             if (!ValidateSpreadsheet()) { return; }
 
-            // Read and import the spreadsheet data
+            ShowLoadingIndicator("Importing spreadsheet");
+            Application.DoEvents();
+
             try
             {
-                using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using XLWorkbook workbook = new(stream);
-                List<FlowLayoutPanel> panels = new();
+                await Task.Run(() =>
+                {
+                    using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using XLWorkbook workbook = new(stream);
+                    List<FlowLayoutPanel> panels = new();
 
-                if (workbook.Worksheets.Contains("Accountants"))
-                {
-                    IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
-                    SpreadsheetManager.ImportAccountantsData(accountantsWorksheet);
-                }
-                else if (workbook.Worksheets.Contains("Companies"))
-                {
-                    IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
-                    SpreadsheetManager.ImportCompaniesData(companiesWorksheet);
-                }
-                else if (workbook.Worksheets.Contains("Products"))
-                {
-                    IXLWorksheet productsWorksheet = workbook.Worksheet("Products");
-                    SpreadsheetManager.ImportProductsData(productsWorksheet);
-                }
-                else if (workbook.Worksheets.Contains("Purchases"))
-                {
-                    IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
-                    SpreadsheetManager.ImportPurchaseData(purchaseWorksheet);
-                }
-                else if (workbook.Worksheets.Contains("Sales"))
-                {
-                    IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
-                    SpreadsheetManager.ImportSalesData(salesWorksheet);
-                }
+                    // Importing each worksheet data
+                    if (workbook.Worksheets.Contains("Accountants"))
+                    {
+                        IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
+                        SpreadsheetManager.ImportAccountantsData(accountantsWorksheet);
+                    }
+                    if (workbook.Worksheets.Contains("Companies"))
+                    {
+                        IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
+                        SpreadsheetManager.ImportCompaniesData(companiesWorksheet);
+                    }
+                    if (workbook.Worksheets.Contains("Products"))
+                    {
+                        IXLWorksheet productsWorksheet = workbook.Worksheet("Products");
+                        SpreadsheetManager.ImportProductsData(productsWorksheet);
+                    }
+                    if (workbook.Worksheets.Contains("Purchases"))
+                    {
+                        IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
+                        SpreadsheetManager.ImportPurchaseData(purchaseWorksheet);
+                    }
+                    if (workbook.Worksheets.Contains("Sales"))
+                    {
+                        IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
+                        SpreadsheetManager.ImportSalesData(salesWorksheet);
+                    }
+                });
 
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported {Path.GetFileName(spreadsheetFilePath)}");
                 CustomMessageBox.Show("Argo Sales Tracker", "Spreadsheet imported successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
             catch (Exception ex)
             {
                 CustomMessageBox.Show("Argo Sales Tracker", $"An error occurred while importing the spreadsheet: {ex.Message}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
-            RemoveReceiptLabel();
+            finally
+            {
+                HideLoadingIndicator();
+                RemoveReceiptLabel();
+                RemoveAllFlowLayoutPanels();
+                Import_Button.Enabled = false;
+            }
         }
         private bool ValidateSpreadsheet()
         {
@@ -142,8 +121,8 @@ namespace Sales_Tracker.ImportSpreadSheets
             }
             catch
             {
-                CustomMessageBox.Show("Invalid file",
-                    "The selected file is invalid or corrupted. Please choose a valid spreadsheet.",
+                CustomMessageBox.Show("Argo Sales Tracker",
+                    "This spreadsheet is invalid or corrupted. Please choose a valid spreadsheet.",
                      CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
 
                 return false;
@@ -153,6 +132,7 @@ namespace Sales_Tracker.ImportSpreadSheets
         {
             RemoveReceiptLabel();
             RemoveAllFlowLayoutPanels();
+            Import_Button.Enabled = false;
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
@@ -266,7 +246,92 @@ namespace Sales_Tracker.ImportSpreadSheets
             }
         }
 
+        // Loading controls
+        private Guna2WinProgressIndicator progressIndicator;
+        private Label loadingLabel;
+        private void InitLoadingComponents()
+        {
+            // Create and configure the loading label
+            loadingLabel = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 12),
+                ForeColor = CustomColors.text,
+                Anchor = AnchorStyles.Top
+            };
+
+            // Create and configure the Guna2WinProgressIndicator
+            progressIndicator = new Guna2WinProgressIndicator
+            {
+                AutoStart = true,
+                ProgressColor = CustomColors.accent_blue,
+                Anchor = AnchorStyles.Top
+            };
+        }
+        private void ShowLoadingIndicator(string text)
+        {
+            loadingLabel.Text = text;
+            Controls.Add(progressIndicator);
+            Controls.Add(loadingLabel);
+
+            // Position the label and progress indicator in the center of the form
+            progressIndicator.Location = new Point((ClientSize.Width - progressIndicator.Width) / 2, 270);
+            loadingLabel.Location = new Point((ClientSize.Width - loadingLabel.Width) / 2, progressIndicator.Bottom + 30);
+        }
+        private void HideLoadingIndicator()
+        {
+            Controls.Remove(progressIndicator);
+            Controls.Remove(loadingLabel);
+        }
+
         // Methods
+
+        private Task<List<FlowLayoutPanel>> LoadSpreadsheetDataAsync()
+        {
+            return Task.Run(() =>
+            {
+                List<FlowLayoutPanel> panels = new();
+
+                // Open the file in read-only and shared mode
+                using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using XLWorkbook workbook = new(stream);
+
+                if (workbook.Worksheets.Count == 0)
+                {
+                    // Safely call the message box from the UI thread
+                    Invoke(() => CustomMessageBox.Show("Argo Sales Tracker", "This spreadsheet doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok));
+                    return panels;
+                }
+
+                if (workbook.Worksheets.Contains("Accountants"))
+                {
+                    IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
+                    List<string> accountants = ExtractFirstCells(accountantsWorksheet);
+                    panels.Add(CreateFlowLayoutPanel(accountants, "Accountants"));
+                }
+                if (workbook.Worksheets.Contains("Companies"))
+                {
+                    IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
+                    List<string> companies = ExtractFirstCells(companiesWorksheet);
+                    panels.Add(CreateFlowLayoutPanel(companies, "Companies"));
+                }
+                // Additional worksheet processing can be added similarly
+
+                return panels;
+            });
+        }
+        private static List<string> ExtractFirstCells(IXLWorksheet worksheet)
+        {
+            List<string> firstCells = new();
+
+            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            {
+                string firstCellValue = row.Cell(1).GetValue<string>();
+                firstCells.Add(firstCellValue);
+            }
+
+            return firstCells;
+        }
         private void ShowReceiptLabel(string text)
         {
             SelectedReceipt_Label.Text = text;

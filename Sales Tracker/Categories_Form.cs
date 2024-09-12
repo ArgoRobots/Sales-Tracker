@@ -39,7 +39,7 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
-            MainMenu_Form.SortTheDataGridViewByFirstColumn(Purchases_DataGridView, Sales_DataGridView);
+            MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Purchases_DataGridView, Sales_DataGridView);
             AddEventHandlersToTextBoxes();
             SetTotalLabel();
         }

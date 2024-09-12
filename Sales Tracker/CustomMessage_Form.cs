@@ -73,10 +73,11 @@ namespace Sales_Tracker
             }
 
             // Set buttons
+            byte buttonSpace = 35;
             switch (buttons)
             {
                 case CustomMessageBoxButtons.YesNo:
-                    No_Button.Left = Width - No_Button.Width - 35;
+                    No_Button.Left = Width - No_Button.Width - buttonSpace;
                     Yes_Button.Left = No_Button.Left - Yes_Button.Width - UI.spaceBetweenControls;
                     Controls.Add(Yes_Button);
                     Controls.Add(No_Button);
@@ -87,7 +88,7 @@ namespace Sales_Tracker
                     Yes_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.Ok:
-                    Ok_Button.Left = Width - Ok_Button.Width - 35;
+                    Ok_Button.Left = Width - Ok_Button.Width - buttonSpace;
                     Controls.Add(Ok_Button);
                     Controls.Remove(Yes_Button);
                     Controls.Remove(No_Button);
@@ -97,7 +98,7 @@ namespace Sales_Tracker
                     Ok_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.OkCancel:
-                    Cancel_Button.Left = Width - Cancel_Button.Width - 35;
+                    Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
                     Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - UI.spaceBetweenControls;
                     Controls.Add(Ok_Button);
                     Controls.Add(Cancel_Button);
@@ -108,7 +109,7 @@ namespace Sales_Tracker
                     Ok_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.SaveDontSaveCancel:
-                    Cancel_Button.Left = Width - Cancel_Button.Width - 35;
+                    Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
                     DontSave_Button.Left = Cancel_Button.Left - DontSave_Button.Width - UI.spaceBetweenControls;
                     Save_Button.Left = DontSave_Button.Left - Save_Button.Width - UI.spaceBetweenControls;
                     Controls.Add(Save_Button);
@@ -129,10 +130,10 @@ namespace Sales_Tracker
         {
             int requiredHeight = Math.Min(contentHeight, MaximumSize.Height);
 
-            if (contentHeight > MaximumSize.Height - 190)
+            if (contentHeight > MaximumSize.Height - 150)
             {
                 Height = MaximumSize.Height;
-                ChangedBackground_Panel.Height = ClientSize.Height - 190;
+                ChangedBackground_Panel.Height = ClientSize.Height - 150;
                 Changed_Panel.Height = ClientSize.Height - 10;
                 FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Changed_Panel.AutoScroll = true;
@@ -140,8 +141,8 @@ namespace Sales_Tracker
             else
             {
                 Height = requiredHeight + 200;
-                ChangedBackground_Panel.Height = ClientSize.Height - 190;
-                Changed_Panel.Height = ClientSize.Height - 190;
+                ChangedBackground_Panel.Height = ClientSize.Height - 150;
+                Changed_Panel.Height = ClientSize.Height - 150;
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
                 Changed_Panel.AutoScroll = false;
             }
@@ -337,10 +338,29 @@ namespace Sales_Tracker
 
     public static class CustomMessageBoxVariables
     {
-        public static string Link { get; set; }
-        public static int LinkStart { get; set; }
-        public static int LinkLength { get; set; }
+        // Properties
+        private static string _link;
+        private static int _linkStart;
+        private static int _linkLength;
 
+        // Getters and setters
+        public static string Link
+        {
+            get => _link;
+            set => _link = value;
+        }
+        public static int LinkStart
+        {
+            get => _linkStart;
+            set => _linkStart = value;
+        }
+        public static int LinkLength
+        {
+            get => _linkLength;
+            set => _linkLength = value;
+        }
+
+        // Methods
         public static void Reset()
         {
             LinkStart = 0;

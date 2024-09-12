@@ -33,7 +33,7 @@ namespace Sales_Tracker
             LoadCompanies();
             Theme.SetThemeForForm(this);
             HideShowingResultsForLabel();
-            MainMenu_Form.SortTheDataGridViewByFirstColumn(Company_DataGridView);
+            MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Company_DataGridView);
             AddEventHandlersToTextBoxes();
             SetTotalLabel();
         }
