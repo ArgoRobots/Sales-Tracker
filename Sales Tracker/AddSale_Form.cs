@@ -31,10 +31,6 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
             AmountCredited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({Properties.Settings.Default.Currency})";
-
-            // Despite this being the default, it's still needed for some reason
-            RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(20, 20);
-            RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(20, 20);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -530,11 +526,11 @@ namespace Sales_Tracker
         private void SetControlsForSingleProduct()
         {
             // Center controls
-            SaleNumber_TextBox.Left = (Width - SaleNumber_TextBox.Width - UI.spaceBetweenControls -
+            SaleNumber_TextBox.Left = ((ClientSize.Width - SaleNumber_TextBox.Width - UI.spaceBetweenControls -
                 AccountantName_TextBox.Width - UI.spaceBetweenControls -
                 ProductName_TextBox.Width - UI.spaceBetweenControls -
                 CountryOfDestinaion_TextBox.Width - UI.spaceBetweenControls -
-                Receipt_Button.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+                Receipt_Button.Width) / 2);
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
             AccountantName_TextBox.Left = SaleNumber_TextBox.Right + UI.spaceBetweenControls;
@@ -545,14 +541,14 @@ namespace Sales_Tracker
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
             Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + UI.spaceBetweenControls;
 
-            Date_DateTimePicker.Left = (Width - Date_DateTimePicker.Width - UI.spaceBetweenControls -
+            Date_DateTimePicker.Left = (ClientSize.Width - Date_DateTimePicker.Width - UI.spaceBetweenControls -
                 Quantity_TextBox.Width - UI.spaceBetweenControls -
                 PricePerUnit_TextBox.Width - UI.spaceBetweenControls -
                 Shipping_TextBox.Width - UI.spaceBetweenControls -
                 Tax_TextBox.Width - UI.spaceBetweenControls -
                 PaymentFee_TextBox.Width - UI.spaceBetweenControls -
                 Discount_TextBox.Width - UI.spaceBetweenControls -
-                AmountCredited_TextBox.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+                AmountCredited_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Quantity_TextBox.Left = Date_DateTimePicker.Right + UI.spaceBetweenControls;
@@ -592,10 +588,10 @@ namespace Sales_Tracker
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            SaleNumber_TextBox.Left = (Width - SaleNumber_TextBox.Width - UI.spaceBetweenControls -
+            SaleNumber_TextBox.Left = (ClientSize.Width - SaleNumber_TextBox.Width - UI.spaceBetweenControls -
                 AccountantName_TextBox.Width - UI.spaceBetweenControls -
                 CountryOfDestinaion_TextBox.Width - UI.spaceBetweenControls -
-                Receipt_Button.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+                Receipt_Button.Width) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
             AccountantName_TextBox.Left = SaleNumber_TextBox.Right + UI.spaceBetweenControls;
@@ -604,13 +600,13 @@ namespace Sales_Tracker
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
             Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + UI.spaceBetweenControls;
 
-            Date_DateTimePicker.Left = (Width -
+            Date_DateTimePicker.Left = (ClientSize.Width -
                 Date_DateTimePicker.Width - UI.spaceBetweenControls -
                 Shipping_TextBox.Width - UI.spaceBetweenControls -
                 Tax_TextBox.Width - UI.spaceBetweenControls -
                 PaymentFee_TextBox.Width - UI.spaceBetweenControls -
                 Discount_TextBox.Width - UI.spaceBetweenControls -
-                AmountCredited_TextBox.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+                AmountCredited_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
             Shipping_TextBox.Left = Date_DateTimePicker.Right + UI.spaceBetweenControls;
@@ -820,7 +816,7 @@ namespace Sales_Tracker
             {
                 Anchor = AnchorStyles.Top,
                 AutoScroll = false,
-                Location = new Point((Width - width) / 2, 570),
+                Location = new Point((ClientSize.Width - width) / 2, 570),
                 Size = new Size(width, 20 + UI.spaceBetweenControls + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),

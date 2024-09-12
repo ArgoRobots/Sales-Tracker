@@ -32,6 +32,7 @@
     <FileVersion>1.0.0</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

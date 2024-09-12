@@ -74,11 +74,11 @@
             Next_Button.FillColor = Color.White;
             Next_Button.Font = new Font("Segoe UI", 10F);
             Next_Button.ForeColor = Color.Black;
-            Next_Button.Location = new Point(905, 586);
+            Next_Button.Location = new Point(905, 591);
             Next_Button.Margin = new Padding(6, 5, 6, 5);
             Next_Button.Name = "Next_Button";
             Next_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Next_Button.Size = new Size(180, 50);
+            Next_Button.Size = new Size(180, 45);
             Next_Button.TabIndex = 557;
             Next_Button.Text = "Next";
             Next_Button.Click += Next_Button_Click;

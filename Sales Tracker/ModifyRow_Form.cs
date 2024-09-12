@@ -122,10 +122,10 @@ namespace Sales_Tracker
         }
         private void CenterControls()
         {
-            Panel.Left = (Width - Panel.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+            Panel.Left = (ClientSize.Width - Panel.Width) / 2;
             if (secondRow)
             {
-                SecondPanel.Left = (Width - SecondPanel.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+                SecondPanel.Left = (ClientSize.Width - SecondPanel.Width) / 2;
             }
 
             if (selectedRow.Tag != null && SelectedReceipt_Label != null)

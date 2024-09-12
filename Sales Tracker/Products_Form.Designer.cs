@@ -437,9 +437,10 @@ namespace Sales_Tracker
             ForSale_Label.Anchor = AnchorStyles.Top;
             ForSale_Label.AutoSize = true;
             ForSale_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForSale_Label.Location = new Point(255, 42);
+            ForSale_Label.Location = new Point(255, 37);
             ForSale_Label.Name = "ForSale_Label";
-            ForSale_Label.Size = new Size(92, 31);
+            ForSale_Label.Padding = new Padding(5);
+            ForSale_Label.Size = new Size(102, 41);
             ForSale_Label.TabIndex = 0;
             ForSale_Label.Text = "For sale";
             ForSale_Label.Click += ForSale_Label_Click;
@@ -468,9 +469,10 @@ namespace Sales_Tracker
             ForPurchase_Label.Anchor = AnchorStyles.Top;
             ForPurchase_Label.AutoSize = true;
             ForPurchase_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForPurchase_Label.Location = new Point(63, 42);
+            ForPurchase_Label.Location = new Point(63, 37);
             ForPurchase_Label.Name = "ForPurchase_Label";
-            ForPurchase_Label.Size = new Size(145, 31);
+            ForPurchase_Label.Padding = new Padding(5);
+            ForPurchase_Label.Size = new Size(155, 41);
             ForPurchase_Label.TabIndex = 0;
             ForPurchase_Label.Text = "For purchase";
             ForPurchase_Label.Click += ForPurchase_Label_Click;

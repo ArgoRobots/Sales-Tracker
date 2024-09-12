@@ -440,7 +440,7 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel.AutoSize = true;
             WarningProduct_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningProduct_LinkLabel.LinkArea = new LinkArea(19, 15);
-            WarningProduct_LinkLabel.Location = new Point(933, 210);
+            WarningProduct_LinkLabel.Location = new Point(930, 212);
             WarningProduct_LinkLabel.Name = "WarningProduct_LinkLabel";
             WarningProduct_LinkLabel.Size = new Size(181, 59);
             WarningProduct_LinkLabel.TabIndex = 7;
@@ -536,7 +536,7 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.AutoSize = true;
             WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10F);
             WarningBuyer_LinkLabel.LinkArea = new LinkArea(22, 15);
-            WarningBuyer_LinkLabel.Location = new Point(625, 208);
+            WarningBuyer_LinkLabel.Location = new Point(622, 209);
             WarningBuyer_LinkLabel.Name = "WarningBuyer_LinkLabel";
             WarningBuyer_LinkLabel.Size = new Size(210, 59);
             WarningBuyer_LinkLabel.TabIndex = 6;
@@ -549,7 +549,7 @@ namespace Sales_Tracker
             // 
             WarningBuyer_PictureBox.Anchor = AnchorStyles.Top;
             WarningBuyer_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningBuyer_PictureBox.Location = new Point(588, 208);
+            WarningBuyer_PictureBox.Location = new Point(588, 212);
             WarningBuyer_PictureBox.Name = "WarningBuyer_PictureBox";
             WarningBuyer_PictureBox.Size = new Size(28, 28);
             WarningBuyer_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -628,12 +628,14 @@ namespace Sales_Tracker
             // RemoveReceipt_ImageButton
             // 
             RemoveReceipt_ImageButton.CheckedState.ImageSize = new Size(64, 64);
+            RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(30, 30);
             RemoveReceipt_ImageButton.Image = Properties.Resources.CloseGray;
             RemoveReceipt_ImageButton.ImageOffset = new Point(0, 0);
             RemoveReceipt_ImageButton.ImageRotate = 0F;
             RemoveReceipt_ImageButton.ImageSize = new Size(30, 30);
             RemoveReceipt_ImageButton.Location = new Point(1363, 208);
             RemoveReceipt_ImageButton.Name = "RemoveReceipt_ImageButton";
+            RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
             RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges27;
             RemoveReceipt_ImageButton.Size = new Size(38, 38);
             RemoveReceipt_ImageButton.TabIndex = 8;

@@ -132,16 +132,16 @@ namespace Sales_Tracker
             if (contentHeight > MaximumSize.Height - 190)
             {
                 Height = MaximumSize.Height;
-                ChangedBackground_Panel.Height = Height - 190;
-                Changed_Panel.Height = Height - 10;
+                ChangedBackground_Panel.Height = ClientSize.Height - 190;
+                Changed_Panel.Height = ClientSize.Height - 10;
                 FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Changed_Panel.AutoScroll = true;
             }
             else
             {
                 Height = requiredHeight + 200;
-                ChangedBackground_Panel.Height = Height - 190;
-                Changed_Panel.Height = Height - 190;
+                ChangedBackground_Panel.Height = ClientSize.Height - 190;
+                Changed_Panel.Height = ClientSize.Height - 190;
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
                 Changed_Panel.AutoScroll = false;
             }
@@ -169,7 +169,7 @@ namespace Sales_Tracker
                 AutoScroll = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             };
-            ChangedBackground_Panel.Left = (Width - Changed_Panel.Width) / 2;  // Center
+            ChangedBackground_Panel.Left = (ClientSize.Width - Changed_Panel.Width) / 2;  // Center
             ChangedBackground_Panel.Controls.Add(Changed_Panel);
             Controls.Add(ChangedBackground_Panel);
             Controls.Remove(Icon_PictureBox);
@@ -186,7 +186,7 @@ namespace Sales_Tracker
                 AutoSize = true
             };
             Controls.Add(label);
-            label.Left = (Width - label.Width) / 2;
+            label.Left = (ClientSize.Width - label.Width) / 2;
 
             // Add list of things that has changed to panel
             int top = 5;
@@ -214,7 +214,7 @@ namespace Sales_Tracker
         {
             if (list.Count == 0) { return top; }
 
-            Message_Label.Location = new Point((Width - Message_Label.Width) / 2, 0);
+            Message_Label.Location = new Point((ClientSize.Width - Message_Label.Width) / 2, 0);
 
             Label label = new()
             {

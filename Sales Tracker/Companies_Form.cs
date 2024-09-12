@@ -132,8 +132,8 @@ namespace Sales_Tracker
         private void CenterSelectedDataGridView()
         {
             if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(Width - 80, Height - topForDataGridView - 115);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, topForDataGridView);
+            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
+            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {
@@ -142,7 +142,7 @@ namespace Sales_Tracker
             Company_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Company_DataGridView, size, ColumnHeaders);
             Company_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            Company_DataGridView.Location = new Point((Width - Company_DataGridView.Width) / 2, topForDataGridView);
+            Company_DataGridView.Location = new Point((ClientSize.Width - Company_DataGridView.Width) / 2, topForDataGridView);
             Company_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Company;
 
             Controls.Add(Company_DataGridView);
@@ -205,7 +205,7 @@ namespace Sales_Tracker
         private void ShowShowingResultsForLabel(string text)
         {
             ShowingResultsFor_Label.Text = $"Showing results for: {text}";
-            ShowingResultsFor_Label.Left = (Width - ShowingResultsFor_Label.Width) / 2 - 8;
+            ShowingResultsFor_Label.Left = (ClientSize.Width - ShowingResultsFor_Label.Width) / 2 - 8;
             Controls.Add(ShowingResultsFor_Label);
         }
         private void HideShowingResultsForLabel()

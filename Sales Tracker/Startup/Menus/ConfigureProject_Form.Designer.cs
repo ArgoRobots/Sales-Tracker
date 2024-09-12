@@ -63,7 +63,7 @@ namespace Sales_Tracker.Startup.Menus
             Back_Button.BorderThickness = 1;
             Back_Button.CustomizableEdges = customizableEdges1;
             Back_Button.FillColor = Color.White;
-            Back_Button.Font = new Font("Segoe UI", 10);
+            Back_Button.Font = new Font("Segoe UI", 10F);
             Back_Button.ForeColor = Color.Black;
             Back_Button.Location = new Point(844, 735);
             Back_Button.Name = "Back_Button";
@@ -81,7 +81,7 @@ namespace Sales_Tracker.Startup.Menus
             Create_Button.BorderThickness = 1;
             Create_Button.CustomizableEdges = customizableEdges3;
             Create_Button.FillColor = Color.White;
-            Create_Button.Font = new Font("Segoe UI", 10);
+            Create_Button.Font = new Font("Segoe UI", 10F);
             Create_Button.ForeColor = Color.Black;
             Create_Button.Location = new Point(1056, 735);
             Create_Button.Name = "Create_Button";
@@ -174,8 +174,8 @@ namespace Sales_Tracker.Startup.Menus
             // WarningName_Label
             // 
             WarningName_Label.AutoSize = true;
-            WarningName_Label.Font = new Font("Segoe UI", 10);
-            WarningName_Label.Location = new Point(99, 219);
+            WarningName_Label.Font = new Font("Segoe UI", 10F);
+            WarningName_Label.Location = new Point(94, 218);
             WarningName_Label.Name = "WarningName_Label";
             WarningName_Label.Size = new Size(607, 28);
             WarningName_Label.TabIndex = 0;
@@ -185,8 +185,8 @@ namespace Sales_Tracker.Startup.Menus
             // WarningDir_Label
             // 
             WarningDir_Label.AutoSize = true;
-            WarningDir_Label.Font = new Font("Segoe UI", 10);
-            WarningDir_Label.Location = new Point(99, 399);
+            WarningDir_Label.Font = new Font("Segoe UI", 10F);
+            WarningDir_Label.Location = new Point(94, 398);
             WarningDir_Label.Name = "WarningDir_Label";
             WarningDir_Label.Size = new Size(239, 28);
             WarningDir_Label.TabIndex = 0;
@@ -196,9 +196,9 @@ namespace Sales_Tracker.Startup.Menus
             // WarningDir_PictureBox
             // 
             WarningDir_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningDir_PictureBox.Location = new Point(60, 400);
+            WarningDir_PictureBox.Location = new Point(60, 398);
             WarningDir_PictureBox.Name = "WarningDir_PictureBox";
-            WarningDir_PictureBox.Size = new Size(27, 27);
+            WarningDir_PictureBox.Size = new Size(28, 28);
             WarningDir_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningDir_PictureBox.TabIndex = 35;
             WarningDir_PictureBox.TabStop = false;
@@ -207,9 +207,9 @@ namespace Sales_Tracker.Startup.Menus
             // WarningName_PictureBox
             // 
             WarningName_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningName_PictureBox.Location = new Point(60, 220);
+            WarningName_PictureBox.Location = new Point(60, 218);
             WarningName_PictureBox.Name = "WarningName_PictureBox";
-            WarningName_PictureBox.Size = new Size(27, 27);
+            WarningName_PictureBox.Size = new Size(28, 28);
             WarningName_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningName_PictureBox.TabIndex = 33;
             WarningName_PictureBox.TabStop = false;

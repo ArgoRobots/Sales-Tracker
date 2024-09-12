@@ -816,7 +816,7 @@ namespace Sales_Tracker.Charts
 
             Dictionary<string, double> averageOrderValueByDate = new();
 
-            foreach (var date in totalByDate.Keys)
+            foreach (string date in totalByDate.Keys)
             {
                 averageOrderValueByDate[date] = totalByDate[date] / ordersByDate[date];
             }

@@ -8,9 +8,9 @@ namespace Sales_Tracker.ImportSpreadsheets
         public Tutorial_Form()
         {
             InitializeComponent();
-            Theme.SetThemeForForm(this);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
+            Theme.SetThemeForForm(this);
 
             LoadVideo();
         }

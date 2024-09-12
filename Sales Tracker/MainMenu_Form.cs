@@ -571,7 +571,7 @@ namespace Sales_Tracker
             int chartHeight = Totals_Chart.Height;
 
             // Calculate X positions for charts
-            int leftX = (Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2 - UI.spaceToOffsetFormNotCenter;
+            int leftX = (ClientSize.Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2;
             int middleX = leftX + chartWidth + spaceBetweenCharts;
             int rightX = middleX + chartWidth + spaceBetweenCharts;
 
@@ -585,13 +585,13 @@ namespace Sales_Tracker
             Profits_Chart.Size = new Size(chartWidth, chartHeight);
             Profits_Chart.Left = rightX;
 
-            selectedDataGridView.Size = new Size(Width - 65, Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
-            selectedDataGridView.Location = new Point((Width - selectedDataGridView.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
+            selectedDataGridView.Size = new Size(ClientSize.Width - 65, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
+            selectedDataGridView.Location = new Point((ClientSize.Width - selectedDataGridView.Width) / 2, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
 
             Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
             Total_Panel.Width = selectedDataGridView.Width;
 
-            if (Width < 1500 + Edit_Button.Left + Edit_Button.Width)
+            if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
                 wasControlsDropDownAdded = true;
@@ -630,7 +630,7 @@ namespace Sales_Tracker
 
             if (Controls.Contains(messagePanel))
             {
-                messagePanel.Location = new Point((Width - messagePanel.Width) / 2 - UI.spaceToOffsetFormNotCenter, Height - messagePanel.Height - 80);
+                messagePanel.Location = new Point((ClientSize.Width - messagePanel.Width) / 2, ClientSize.Height - messagePanel.Height - 80);
             }
         }
         private static void SetChartPosition(GunaChart chart, Size size, int left, int top)
@@ -1142,7 +1142,7 @@ namespace Sales_Tracker
             // Update label text and location
             ShowingResultsFor_Label.Text = text;
             ShowingResultsFor_Label.Location = new Point(
-                (Width - ShowingResultsFor_Label.Width) / 2 - UI.spaceToOffsetFormNotCenter,
+                (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
                 MainTop_Panel.Bottom + (Distribution_Chart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
 
             Controls.Add(ShowingResultsFor_Label);
@@ -2585,7 +2585,7 @@ namespace Sales_Tracker
             {
                 if (messageLabel.Text != "")
                 {
-                    messagePanel.Location = new Point((Width - messagePanel.Width) / 2, Height - messagePanel.Height - 80);
+                    messagePanel.Location = new Point((ClientSize.Width - messagePanel.Width) / 2, ClientSize.Height - messagePanel.Height - 80);
                     Controls.Add(messagePanel);
                     messagePanel.BringToFront();
                     // Restart timer

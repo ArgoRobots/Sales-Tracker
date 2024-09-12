@@ -61,7 +61,7 @@ namespace Sales_Tracker.Passwords
                 Size = new Size(215, 50),
                 Text = "Windows Hello"
             };
-            WindowsHello_Button.Left = (Width - WindowsHello_Button.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+            WindowsHello_Button.Left = (ClientSize.Width - WindowsHello_Button.Width) / 2;
             WindowsHello_Button.Click += WindowsHello_Button_Click;
             Controls.Add(WindowsHello_Button);
             Theme.SetThemeForControl([WindowsHello_Button]);
@@ -120,7 +120,7 @@ namespace Sales_Tracker.Passwords
         {
             Message_LinkLabel.Text = text;
             Controls.Add(Message_LinkLabel);
-            Message_LinkLabel.Left = (Width - Message_LinkLabel.Width) / 2 - UI.spaceToOffsetFormNotCenter;
+            Message_LinkLabel.Left = (ClientSize.Width - Message_LinkLabel.Width) / 2;
         }
 
         // Methods

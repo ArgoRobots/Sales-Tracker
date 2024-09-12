@@ -23,9 +23,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Properties
-        public static readonly byte panelButtonHeight = 35, spaceForSeperator = 10, spaceForPanel = 10, spaceBetweenControls = 8,
-
-            spaceToOffsetFormNotCenter = 12;  // This is just a weird thing with WinForms
+        public static readonly byte panelButtonHeight = 35, spaceForSeperator = 10, spaceForPanel = 10, spaceBetweenControls = 8;
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
