@@ -4,56 +4,34 @@ namespace Sales_Tracker.Classes
 {
     internal class SpreadsheetManager
     {
-        public static void ImportAccountantsData(IXLWorksheet worksheet)
+        // Import spreadsheet methods
+        public static void ImportAccountantsData(IXLWorksheet worksheet, bool skipHeader)
         {
-            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+
+            foreach (IXLRow row in rowsToProcess)
             {
                 string accountantName = row.Cell(1).GetValue<string>();
                 MainMenu_Form.Instance.accountantList.Add(accountantName);
             }
         }
-        public static void ImportCompaniesData(IXLWorksheet worksheet)
+        public static void ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
         {
-            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+
+            foreach (IXLRow row in rowsToProcess)
             {
                 string companyName = row.Cell(1).GetValue<string>();
                 MainMenu_Form.Instance.companyList.Add(companyName);
             }
         }
-        public static void ImportPurchaseData(IXLWorksheet worksheet)
+        public static void ImportProductsData(IXLWorksheet worksheet, bool skipHeader)
         {
-            MainMenu_Form.Instance.Purchases_DataGridView.Rows.Clear();
-
-            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
-            {
-                DataGridViewRow newRow = new();
-                for (int i = 0; i < row.Cells().Count(); i++)
-                {
-                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
-                }
-                MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
-            }
-        }
-        public static void ImportSalesData(IXLWorksheet worksheet)
-        {
-            MainMenu_Form.Instance.Sales_DataGridView.Rows.Clear();
-
-            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
-            {
-                DataGridViewRow newRow = new();
-                for (int i = 0; i < row.Cells().Count(); i++)
-                {
-                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
-                }
-                MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
-            }
-        }
-        public static void ImportProductsData(IXLWorksheet worksheet)
-        {
+            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
             MainMenu_Form.Instance.categoryPurchaseList.Clear();
 
             // Read product data from the worksheet and add it to the category purchase list
-            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            foreach (IXLRow row in rowsToProcess)
             {
                 string productId = row.Cell(1).GetValue<string>();
                 string productName = row.Cell(2).GetValue<string>();
@@ -84,7 +62,38 @@ namespace Sales_Tracker.Classes
                 category.ProductList.Add(product);
             }
         }
+        public static void ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
+        {
+            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            MainMenu_Form.Instance.Purchases_DataGridView.Rows.Clear();
 
+            foreach (IXLRow row in rowsToProcess)
+            {
+                DataGridViewRow newRow = new();
+                for (int i = 0; i < row.Cells().Count(); i++)
+                {
+                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
+                }
+                MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+            }
+        }
+        public static void ImportSalesData(IXLWorksheet worksheet, bool skipHeader)
+        {
+            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            MainMenu_Form.Instance.Sales_DataGridView.Rows.Clear();
+
+            foreach (IXLRow row in rowsToProcess)
+            {
+                DataGridViewRow newRow = new();
+                for (int i = 0; i < row.Cells().Count(); i++)
+                {
+                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
+                }
+                MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
+            }
+        }
+
+        // Export spreadsheet methods
         public static void ExportSpreadsheet(string filePath)
         {
             filePath = Directories.GetNewFileNameIfItAlreadyExists(filePath);

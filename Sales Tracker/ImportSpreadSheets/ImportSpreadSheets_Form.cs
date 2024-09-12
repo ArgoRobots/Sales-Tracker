@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ImportSpreadSheets
 {
@@ -17,6 +18,16 @@ namespace Sales_Tracker.ImportSpreadSheets
             InitLoadingComponents();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
+            AlignControls();
+        }
+        private void AlignControls()
+        {
+            int spaceAvailable = ClientSize.Width - Import_Button.Right;
+            int newLeftPosition = Import_Button.Right + (spaceAvailable - SkipHeaderRow_CheckBox.Width - SkipHeaderRow_Label.Width) / 2;
+            int initialSpacing = SkipHeaderRow_Label.Left - SkipHeaderRow_CheckBox.Right;
+
+            SkipHeaderRow_CheckBox.Left = newLeftPosition;
+            SkipHeaderRow_Label.Left = SkipHeaderRow_CheckBox.Right + initialSpacing;
         }
 
         // Form event handlers
@@ -41,12 +52,12 @@ namespace Sales_Tracker.ImportSpreadSheets
                 if (!ValidateSpreadsheet()) { return; }
 
                 Import_Button.Enabled = false;
-                RemoveAllFlowLayoutPanels();
+                Controls.Remove(containerPanel);
 
                 ShowReceiptLabel(dialog.SafeFileName);
                 ShowLoadingIndicator("Loading spreadsheet data");
 
-                List<FlowLayoutPanel> panels = await LoadSpreadsheetDataAsync();
+                List<Panel> panels = await LoadSpreadsheetData();
 
                 ArrangePanels(panels);
                 Import_Button.Enabled = true;
@@ -67,32 +78,33 @@ namespace Sales_Tracker.ImportSpreadSheets
                     using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     using XLWorkbook workbook = new(stream);
                     List<FlowLayoutPanel> panels = new();
+                    bool skipheader = SkipHeaderRow_CheckBox.Checked;
 
                     // Importing each worksheet data
                     if (workbook.Worksheets.Contains("Accountants"))
                     {
                         IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
-                        SpreadsheetManager.ImportAccountantsData(accountantsWorksheet);
+                        SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader);
                     }
                     if (workbook.Worksheets.Contains("Companies"))
                     {
                         IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
-                        SpreadsheetManager.ImportCompaniesData(companiesWorksheet);
+                        SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader);
                     }
                     if (workbook.Worksheets.Contains("Products"))
                     {
                         IXLWorksheet productsWorksheet = workbook.Worksheet("Products");
-                        SpreadsheetManager.ImportProductsData(productsWorksheet);
+                        SpreadsheetManager.ImportProductsData(productsWorksheet, skipheader);
                     }
                     if (workbook.Worksheets.Contains("Purchases"))
                     {
                         IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
-                        SpreadsheetManager.ImportPurchaseData(purchaseWorksheet);
+                        SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader);
                     }
                     if (workbook.Worksheets.Contains("Sales"))
                     {
                         IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
-                        SpreadsheetManager.ImportSalesData(salesWorksheet);
+                        SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader);
                     }
                 });
 
@@ -107,7 +119,7 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 HideLoadingIndicator();
                 RemoveReceiptLabel();
-                RemoveAllFlowLayoutPanels();
+                Controls.Remove(containerPanel);
                 Import_Button.Enabled = false;
             }
         }
@@ -131,7 +143,7 @@ namespace Sales_Tracker.ImportSpreadSheets
         private void RemoveReceipt_ImageButton_Click(object sender, EventArgs e)
         {
             RemoveReceiptLabel();
-            RemoveAllFlowLayoutPanels();
+            Controls.Remove(containerPanel);
             Import_Button.Enabled = false;
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
@@ -146,17 +158,32 @@ namespace Sales_Tracker.ImportSpreadSheets
         {
             Tools.OpenLink("");
         }
+        private async void SkipHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Import_Button.Enabled = false;
+            Controls.Remove(containerPanel);
+
+            ShowLoadingIndicator("Reloading spreadsheet data");
+
+            List<Panel> panels = await LoadSpreadsheetData();
+
+            ArrangePanels(panels);
+            Import_Button.Enabled = true;
+            HideLoadingIndicator();
+        }
+        private void SkipHeaderRow_Label_Click(object sender, EventArgs e)
+        {
+            SkipHeaderRow_CheckBox.Checked = !SkipHeaderRow_CheckBox.Checked;
+        }
 
         // Show things to import
-        private static FlowLayoutPanel CreateFlowLayoutPanel(List<string> items, string title)
+        private Panel CreateFlowLayoutPanel(List<string> items, string title)
         {
-            FlowLayoutPanel panel = new()
+            Panel outerPanel = new()
             {
+                Padding = new Padding(15),
                 AutoSize = true,
-                FlowDirection = FlowDirection.TopDown,
-                WrapContents = false,
-                Padding = new Padding(10),
-                BorderStyle = BorderStyle.FixedSingle
+                BackColor = CustomColors.mainBackground
             };
 
             // Title for the section
@@ -166,9 +193,22 @@ namespace Sales_Tracker.ImportSpreadSheets
                 AutoSize = true,
                 Font = new Font("Segoe UI", 12, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleCenter,
+                Location = new Point(outerPanel.Padding.Left, outerPanel.Padding.Top),
                 ForeColor = CustomColors.text
             };
-            panel.Controls.Add(titleLabel);
+            outerPanel.Controls.Add(titleLabel);
+
+            int flowPanelY = titleLabel.Height + titleLabel.Location.Y + UI.spaceBetweenControls;
+
+            FlowLayoutPanel flowPanel = new()
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                Padding = new Padding(10),
+                BorderStyle = BorderStyle.FixedSingle,
+                Location = new Point(outerPanel.Padding.Left, flowPanelY)
+            };
 
             // Display the first five items
             for (int i = 0; i < Math.Min(items.Count, 5); i++)
@@ -180,29 +220,35 @@ namespace Sales_Tracker.ImportSpreadSheets
                     AutoSize = true,
                     ForeColor = CustomColors.text
                 };
-                panel.Controls.Add(itemLabel);
+                flowPanel.Controls.Add(itemLabel);
             }
+            outerPanel.Controls.Add(flowPanel);
 
             // If there are more than 5 items, show a "plus (x) more" label
-            if (items.Count >= 5)
+            int moreLabelY = flowPanel.Location.Y + flowPanel.Height + UI.spaceBetweenControls;
+            int remaining = items.Count - (SkipHeaderRow_CheckBox.Checked ? 5 : 6);
+
+            if (items.Count > 5)
             {
                 Label moreLabel = new()
                 {
-                    Text = $"...plus {items.Count - 5} more",
+                    Text = $"...plus {remaining} more",
                     Font = new Font("Segoe UI", 11),
                     AutoSize = true,
+                    Location = new Point(outerPanel.Padding.Left, moreLabelY),
                     ForeColor = CustomColors.text
                 };
-                panel.Controls.Add(moreLabel);
+                outerPanel.Controls.Add(moreLabel);
             }
 
-            return panel;
+            return outerPanel;
         }
-        private void ArrangePanels(List<FlowLayoutPanel> panels)
+        private FlowLayoutPanel containerPanel;
+        private void ArrangePanels(List<Panel> panels)
         {
-            RemoveAllFlowLayoutPanels();
+            Controls.Remove(containerPanel);
 
-            FlowLayoutPanel containerPanel = new()
+            containerPanel = new()
             {
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = true,
@@ -211,8 +257,8 @@ namespace Sales_Tracker.ImportSpreadSheets
                 Anchor = AnchorStyles.None
             };
 
-            // Add each FlowLayoutPanel to the container
-            foreach (FlowLayoutPanel panel in panels)
+            // Add each Panel to the container
+            foreach (Panel panel in panels)
             {
                 containerPanel.Controls.Add(panel);
             }
@@ -229,68 +275,72 @@ namespace Sales_Tracker.ImportSpreadSheets
             }
 
             // Set the container panel in the center of the form
-            containerPanel.Location = new Point((ClientSize.Width - containerPanel.PreferredSize.Width) / 2, 250);
-
-            // Add the container to the form
-            Controls.Add(containerPanel);
-            containerPanel.BringToFront();
-        }
-        private void RemoveAllFlowLayoutPanels()
-        {
-            foreach (Control control in Controls)
-            {
-                if (control is FlowLayoutPanel)
-                {
-                    Controls.Remove(control);
-                }
-            }
+            containerPanel.Location = new Point((ClientSize.Width - containerPanel.PreferredSize.Width) / 2, 240);
         }
 
         // Loading controls
-        private Guna2WinProgressIndicator progressIndicator;
+        private Guna2WinProgressIndicator loadingIndicator;
         private Label loadingLabel;
+        private Timer loadingTimer;
+        private bool canRemoveLoader;
         private void InitLoadingComponents()
         {
-            // Create and configure the loading label
             loadingLabel = new Label
             {
                 AutoSize = true,
-                Font = new Font("Segoe UI", 12),
+                Font = new Font("Segoe UI", 11),
                 ForeColor = CustomColors.text,
                 Anchor = AnchorStyles.Top
             };
 
-            // Create and configure the Guna2WinProgressIndicator
-            progressIndicator = new Guna2WinProgressIndicator
+            loadingIndicator = new Guna2WinProgressIndicator
             {
                 AutoStart = true,
                 ProgressColor = CustomColors.accent_blue,
                 Anchor = AnchorStyles.Top
             };
+
+            loadingTimer = new Timer()
+            {
+                Interval = 300
+            };
+            loadingTimer.Tick += (sender, args) =>
+            {
+                canRemoveLoader = true;
+                loadingTimer.Stop();
+            };
         }
         private void ShowLoadingIndicator(string text)
         {
+            loadingTimer.Start();
+            canRemoveLoader = false;
+
             loadingLabel.Text = text;
-            Controls.Add(progressIndicator);
+            Controls.Add(loadingIndicator);
             Controls.Add(loadingLabel);
 
-            // Position the label and progress indicator in the center of the form
-            progressIndicator.Location = new Point((ClientSize.Width - progressIndicator.Width) / 2, 270);
-            loadingLabel.Location = new Point((ClientSize.Width - loadingLabel.Width) / 2, progressIndicator.Bottom + 30);
+            // Center controls
+            loadingIndicator.Location = new Point((ClientSize.Width - loadingIndicator.Width) / 2, 270);
+            loadingLabel.Location = new Point((ClientSize.Width - loadingLabel.Width) / 2, loadingIndicator.Bottom + 30);
         }
-        private void HideLoadingIndicator()
+        private async void HideLoadingIndicator()
         {
-            Controls.Remove(progressIndicator);
+            while (!canRemoveLoader)
+            {
+                await Task.Delay(10);
+            }
+
+            Controls.Remove(loadingIndicator);
             Controls.Remove(loadingLabel);
+            Controls.Add(containerPanel);
         }
 
         // Methods
-
-        private Task<List<FlowLayoutPanel>> LoadSpreadsheetDataAsync()
+        private Task<List<Panel>> LoadSpreadsheetData()
         {
             return Task.Run(() =>
             {
-                List<FlowLayoutPanel> panels = new();
+                List<Panel> panels = new();
 
                 // Open the file in read-only and shared mode
                 using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -315,16 +365,17 @@ namespace Sales_Tracker.ImportSpreadSheets
                     List<string> companies = ExtractFirstCells(companiesWorksheet);
                     panels.Add(CreateFlowLayoutPanel(companies, "Companies"));
                 }
-                // Additional worksheet processing can be added similarly
 
                 return panels;
             });
         }
-        private static List<string> ExtractFirstCells(IXLWorksheet worksheet)
+        private List<string> ExtractFirstCells(IXLWorksheet worksheet)
         {
             List<string> firstCells = new();
 
-            foreach (IXLRow row in worksheet.RowsUsed().Skip(1))  // Skip header row
+            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+
+            foreach (IXLRow row in rows)
             {
                 string firstCellValue = row.Cell(1).GetValue<string>();
                 firstCells.Add(firstCellValue);
