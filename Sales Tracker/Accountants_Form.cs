@@ -171,6 +171,7 @@ namespace Sales_Tracker
         public void VaidateAccountantTextBox()
         {
             bool exists = MainMenu_Form.Instance.accountantList.Any(a => string.Equals(a, Accountant_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+
             if (exists)
             {
                 AddAccountant_Button.Enabled = false;
@@ -179,7 +180,10 @@ namespace Sales_Tracker
             }
             else
             {
-                AddAccountant_Button.Enabled = true;
+                if (Accountant_TextBox.Text != "")
+                {
+                    AddAccountant_Button.Enabled = true;
+                }
                 UI.SetGTextBoxToValid(Accountant_TextBox);
                 HideAccountantWarning();
             }
@@ -195,8 +199,12 @@ namespace Sales_Tracker
         {
             WarningAccountantName_PictureBox.Visible = false;
             WarningAccountantName_Label.Visible = false;
-            AddAccountant_Button.Enabled = true;
-            AddAccountant_Button.Tag = true;
+
+            if (Accountant_TextBox.Text != "")
+            {
+                AddAccountant_Button.Enabled = true;
+                AddAccountant_Button.Tag = true;
+            }
         }
 
         // SearchingFor_Label

@@ -173,6 +173,7 @@ namespace Sales_Tracker
         public void VaidateCompanyTextBox()
         {
             bool exists = MainMenu_Form.Instance.companyList.Any(a => string.Equals(a, Company_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+
             if (exists)
             {
                 AddCompany_Button.Enabled = false;
@@ -181,7 +182,10 @@ namespace Sales_Tracker
             }
             else
             {
-                AddCompany_Button.Enabled = true;
+                if (Company_TextBox.Text != "")
+                {
+                    AddCompany_Button.Enabled = true;
+                }
                 UI.SetGTextBoxToValid(Company_TextBox);
                 HideCompanyWarning();
             }
@@ -197,8 +201,12 @@ namespace Sales_Tracker
         {
             WarningCompanyName_PictureBox.Visible = false;
             WarningCompanyName_Label.Visible = false;
-            AddCompany_Button.Enabled = true;
-            AddCompany_Button.Tag = true;
+
+            if (Company_TextBox.Text != "")
+            {
+                AddCompany_Button.Enabled = true;
+                AddCompany_Button.Tag = true;
+            }
         }
 
         // SearchingFor_Label

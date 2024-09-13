@@ -281,6 +281,7 @@ namespace Sales_Tracker
         {
             WarningCategoryName_PictureBox.Visible = false;
             WarningCategoryName_Label.Visible = false;
+
             if (Category_TextBox.Text != "")
             {
                 AddCategory_Button.Enabled = true;

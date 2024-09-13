@@ -281,9 +281,10 @@ namespace Sales_Tracker.Classes
             Guna2VScrollBar vScrollBar = new()
             {
                 FillColor = CustomColors.mainBackground,
-                ThumbColor = Color.Gray,
+                ThumbColor = CustomColors.panelBtnHover,
                 BorderColor = CustomColors.controlPanelBorder
             };
+            vScrollBar.HoverState.ThumbColor = Color.Gray;
             control.Controls.Add(vScrollBar);
             vScrollBar.BringToFront();
             vScrollBar.BindingContainer = control;
