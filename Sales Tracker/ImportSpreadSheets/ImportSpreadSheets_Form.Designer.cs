@@ -164,6 +164,7 @@
             // 
             SkipHeaderRow_CheckBox.Anchor = AnchorStyles.Top;
             SkipHeaderRow_CheckBox.Animated = true;
+            SkipHeaderRow_CheckBox.Checked = true;
             SkipHeaderRow_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             SkipHeaderRow_CheckBox.CheckedState.BorderRadius = 2;
             SkipHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
@@ -212,6 +213,7 @@
             Name = "ImportSpreadSheets_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += ImportSpreadSheets_Form_FormClosed;
             Shown += ImportSpreadSheets_Form_Shown;
             ResumeLayout(false);
             PerformLayout();

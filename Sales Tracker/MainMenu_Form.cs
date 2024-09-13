@@ -2068,8 +2068,11 @@ namespace Sales_Tracker
                     dataGrid.Sort(dataGrid.Columns[0], ListSortDirection.Ascending);
 
                     // Select the first row
-                    dataGrid.ClearSelection();
-                    dataGrid.Rows[0].Selected = true;
+                    if (dataGrid.Rows.Count > 0)
+                    {
+                        dataGrid.ClearSelection();
+                        dataGrid.Rows[0].Selected = true;
+                    }
                 }
             }
         }
@@ -2167,8 +2170,7 @@ namespace Sales_Tracker
             return false;
         }
 
-
-        // Save to file for DataGridView
+        // Save to file
         public void SaveDataGridViewToFileAsJson()
         {
             string filePath = GetFilePathForDataGridView(Selected);
@@ -2245,31 +2247,25 @@ namespace Sales_Tracker
         private void SaveDataGridViewToFile()
         {
             string filePath = GetFilePathForDataGridView(Selected);
-            List<string> linesInDataGridView = [];
+            List<string> linesInDataGridView = new();
 
-            // Write all the rows in the DataGridView to file
-            for (int i = 0; i < selectedDataGridView.Rows.Count; i++)
+            foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
-                DataGridViewRow row = selectedDataGridView.Rows[i];
-                List<string> cellValues = [];
-
-                foreach (DataGridViewCell cell in row.Cells)
+                if (row.Cells[0].Value != null)
                 {
-                    cellValues.Add(cell.Value?.ToString());
+                    string cellValue = row.Cells[0].Value.ToString();
+                    linesInDataGridView.Add(cellValue);
                 }
-
-                // Add the row tag
-                if (row.Tag != null)
-                {
-                    cellValues.Add(row.Tag?.ToString());
-                }
-
-                string line = string.Join(",", cellValues);
-                linesInDataGridView.Add(line);
             }
 
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
+        }
+        public void SaveListToFile(List<string> list)
+        {
+            string filePath = GetFilePathForDataGridView(Selected);
 
+            Directories.WriteLinesToFile(filePath, list);
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
 

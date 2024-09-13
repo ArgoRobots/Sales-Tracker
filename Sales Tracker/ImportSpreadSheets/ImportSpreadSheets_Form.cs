@@ -9,12 +9,16 @@ namespace Sales_Tracker.ImportSpreadSheets
     {
         // Properties
         private string spreadsheetFilePath;
+        private readonly MainMenu_Form.SelectedOption oldOption;
 
         // Init.
         public ImportSpreadSheets_Form()
         {
             InitializeComponent();
+
             LoadingPanel.ShowBlankLoadingPanel(this);
+
+            oldOption = MainMenu_Form.Instance.Selected;
             InitLoadingComponents();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
@@ -34,6 +38,10 @@ namespace Sales_Tracker.ImportSpreadSheets
         private void ImportSpreadSheets_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
+        }
+        private void ImportSpreadSheets_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            MainMenu_Form.Instance.Selected = oldOption;
         }
 
         // Event handlers
@@ -55,7 +63,7 @@ namespace Sales_Tracker.ImportSpreadSheets
                 Controls.Remove(containerPanel);
 
                 ShowReceiptLabel(dialog.SafeFileName);
-                ShowLoadingIndicator("Loading spreadsheet data");
+                ShowLoadingIndicator();
 
                 List<Panel> panels = await LoadSpreadsheetData();
 
@@ -68,7 +76,7 @@ namespace Sales_Tracker.ImportSpreadSheets
         {
             if (!ValidateSpreadsheet()) { return; }
 
-            ShowLoadingIndicator("Importing spreadsheet");
+            ShowLoadingIndicator();
             Application.DoEvents();
 
             try
@@ -81,27 +89,36 @@ namespace Sales_Tracker.ImportSpreadSheets
                     bool skipheader = SkipHeaderRow_CheckBox.Checked;
 
                     // Importing each worksheet data
-                    if (workbook.Worksheets.Contains("Accountants"))
+                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("accountants", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
+                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
                         SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader);
                     }
-                    if (workbook.Worksheets.Contains("Companies"))
+                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
+                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
                         SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader);
                     }
-                    if (workbook.Worksheets.Contains("Products"))
+                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
                     {
-                        IXLWorksheet productsWorksheet = workbook.Worksheet("Products");
-                        SpreadsheetManager.ImportProductsData(productsWorksheet, skipheader);
+                        IXLWorksheet productsWorksheet = workbook.Worksheet("Purchase products");
+                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
+                        SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader);
                     }
-                    if (workbook.Worksheets.Contains("Purchases"))
+                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("sale products", StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        IXLWorksheet productsWorksheet = workbook.Worksheet("Sale products");
+                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
+                        SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader);
+                    }
+                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
                         SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader);
                     }
-                    if (workbook.Worksheets.Contains("Sales"))
+                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
                         SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader);
@@ -163,7 +180,7 @@ namespace Sales_Tracker.ImportSpreadSheets
             Import_Button.Enabled = false;
             Controls.Remove(containerPanel);
 
-            ShowLoadingIndicator("Reloading spreadsheet data");
+            ShowLoadingIndicator();
 
             List<Panel> panels = await LoadSpreadsheetData();
 
@@ -177,8 +194,13 @@ namespace Sales_Tracker.ImportSpreadSheets
         }
 
         // Show things to import
-        private Panel CreateFlowLayoutPanel(List<string> items, string title)
+        private Panel? CreateFlowLayoutPanel(List<string> items, string title)
         {
+            if (items.Count == 0)
+            {
+                return null;
+            }
+
             Panel outerPanel = new()
             {
                 Padding = new Padding(15),
@@ -280,19 +302,10 @@ namespace Sales_Tracker.ImportSpreadSheets
 
         // Loading controls
         private Guna2WinProgressIndicator loadingIndicator;
-        private Label loadingLabel;
         private Timer loadingTimer;
         private bool canRemoveLoader;
         private void InitLoadingComponents()
         {
-            loadingLabel = new Label
-            {
-                AutoSize = true,
-                Font = new Font("Segoe UI", 11),
-                ForeColor = CustomColors.text,
-                Anchor = AnchorStyles.Top
-            };
-
             loadingIndicator = new Guna2WinProgressIndicator
             {
                 AutoStart = true,
@@ -310,18 +323,13 @@ namespace Sales_Tracker.ImportSpreadSheets
                 loadingTimer.Stop();
             };
         }
-        private void ShowLoadingIndicator(string text)
+        private void ShowLoadingIndicator()
         {
             loadingTimer.Start();
             canRemoveLoader = false;
 
-            loadingLabel.Text = text;
             Controls.Add(loadingIndicator);
-            Controls.Add(loadingLabel);
-
-            // Center controls
             loadingIndicator.Location = new Point((ClientSize.Width - loadingIndicator.Width) / 2, 270);
-            loadingLabel.Location = new Point((ClientSize.Width - loadingLabel.Width) / 2, loadingIndicator.Bottom + 30);
         }
         private async void HideLoadingIndicator()
         {
@@ -331,11 +339,10 @@ namespace Sales_Tracker.ImportSpreadSheets
             }
 
             Controls.Remove(loadingIndicator);
-            Controls.Remove(loadingLabel);
             Controls.Add(containerPanel);
         }
 
-        // Methods
+        // Load spreadsheets
         private Task<List<Panel>> LoadSpreadsheetData()
         {
             return Task.Run(() =>
@@ -353,17 +360,43 @@ namespace Sales_Tracker.ImportSpreadSheets
                     return panels;
                 }
 
-                if (workbook.Worksheets.Contains("Accountants"))
+                if (workbook.Worksheets.Any(ws => ws.Name.Equals("accountants", StringComparison.CurrentCultureIgnoreCase)))
                 {
                     IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
                     List<string> accountants = ExtractFirstCells(accountantsWorksheet);
-                    panels.Add(CreateFlowLayoutPanel(accountants, "Accountants"));
+                    Panel panel = CreateFlowLayoutPanel(accountants, "Accountants");
+                    if (panel != null) { panels.Add(panel); }
                 }
-                if (workbook.Worksheets.Contains("Companies"))
+                if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
                 {
                     IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
                     List<string> companies = ExtractFirstCells(companiesWorksheet);
-                    panels.Add(CreateFlowLayoutPanel(companies, "Companies"));
+                    Panel panel = CreateFlowLayoutPanel(companies, "Companies");
+                    if (panel != null) { panels.Add(panel); }
+                }
+                if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    IXLWorksheet productsWorksheet = workbook.Worksheet("purchase products");
+                    List<string> products = ExtractProducts(productsWorksheet);
+                    Panel panel = CreateFlowLayoutPanel(products, "Purchase products");
+                    if (panel != null) { panels.Add(panel); }
+                }
+                if (workbook.Worksheets.Any(ws => ws.Name.Equals("Sale products", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    IXLWorksheet productsWorksheet = workbook.Worksheet("sale products");
+                    List<string> products = ExtractProducts(productsWorksheet);
+                    Panel panel = CreateFlowLayoutPanel(products, "Sale products");
+                    if (panel != null) { panels.Add(panel); }
+                }
+                if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
+
+                }
+                if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
+
                 }
 
                 return panels;
@@ -383,6 +416,27 @@ namespace Sales_Tracker.ImportSpreadSheets
 
             return firstCells;
         }
+        private List<string> ExtractProducts(IXLWorksheet productsWorksheet)
+        {
+            List<string> products = new();
+            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? productsWorksheet.RowsUsed().Skip(1) : productsWorksheet.RowsUsed();
+
+            foreach (IXLRow row in rows)
+            {
+                // Ensure the cells have values before attempting to read
+                string productName = row.Cell(2).GetValue<string>();
+                string categoryName = row.Cell(3).GetValue<string>();
+
+                if (!string.IsNullOrEmpty(productName) && !string.IsNullOrEmpty(categoryName))
+                {
+                    products.Add($"{categoryName} > {productName}");
+                }
+            }
+
+            return products;
+        }
+
+        // Methods
         private void ShowReceiptLabel(string text)
         {
             SelectedReceipt_Label.Text = text;

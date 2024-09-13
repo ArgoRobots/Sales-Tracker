@@ -56,6 +56,10 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
+        private void Accountants_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideBlankLoadingPanel(this);
+        }
         private void Accountants_Form_Resize(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
@@ -65,10 +69,6 @@ namespace Sales_Tracker
         {
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
-        }
-        private void Accountants_Form_Shown(object sender, EventArgs e)
-        {
-            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

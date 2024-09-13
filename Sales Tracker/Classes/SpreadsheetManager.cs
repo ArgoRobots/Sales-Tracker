@@ -14,6 +14,7 @@ namespace Sales_Tracker.Classes
                 string accountantName = row.Cell(1).GetValue<string>();
                 MainMenu_Form.Instance.accountantList.Add(accountantName);
             }
+            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.accountantList);
         }
         public static void ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
         {
@@ -24,11 +25,21 @@ namespace Sales_Tracker.Classes
                 string companyName = row.Cell(1).GetValue<string>();
                 MainMenu_Form.Instance.companyList.Add(companyName);
             }
+            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.companyList);
         }
-        public static void ImportProductsData(IXLWorksheet worksheet, bool skipHeader)
+        public static void ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
-            MainMenu_Form.Instance.categoryPurchaseList.Clear();
+
+            List<Category> list;
+            if (purchase)
+            {
+                list = MainMenu_Form.Instance.categoryPurchaseList;
+            }
+            else
+            {
+                list = MainMenu_Form.Instance.categorySaleList;
+            }
 
             // Read product data from the worksheet and add it to the category purchase list
             foreach (IXLRow row in rowsToProcess)
@@ -39,18 +50,38 @@ namespace Sales_Tracker.Classes
                 string countryOfOrigin = row.Cell(4).GetValue<string>();
                 string companyOfOrigin = row.Cell(5).GetValue<string>();
 
-                // Find or create the category in the categoryPurchaseList
-                Category category = MainMenu_Form.Instance.categoryPurchaseList
+                // Check if the country exists
+                bool countryExists = Country.countries.Any(c => c.Name == countryOfOrigin);
+                if (!countryExists)
+                {
+                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                        $"Country '{countryOfOrigin}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+
+                    if (result == CustomMessageBoxResult.Yes)
+                    {
+                        continue;
+                    }
+                }
+
+                // Check if the company exists in companyList
+                bool companyExists = MainMenu_Form.Instance.companyList.Contains(companyOfOrigin);
+                if (!companyExists)
+                {
+                    MainMenu_Form.Instance.companyList.Add(companyOfOrigin);
+                }
+
+                // Find or create the category
+                Category category = list
                     .FirstOrDefault(c => c.Name == categoryName);
 
                 if (category == null)
                 {
-                    // If the category doesn't exist, create a new one and add it to the list
                     category = new Category { Name = categoryName };
-                    MainMenu_Form.Instance.categoryPurchaseList.Add(category);
+                    list.Add(category);
                 }
 
-                // Create the product and add it to the category's product list
+                // Create the product and add it to the category's ProductList
                 Product product = new()
                 {
                     ProductID = productId,
@@ -60,6 +91,15 @@ namespace Sales_Tracker.Classes
                 };
 
                 category.ProductList.Add(product);
+
+                if (purchase)
+                {
+                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
+                }
+                else
+                {
+                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
+                }
             }
         }
         public static void ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
@@ -100,23 +140,21 @@ namespace Sales_Tracker.Classes
 
             using XLWorkbook workbook = new();
 
-            // Create purchase data worksheet
             IXLWorksheet purchaseWorksheet = workbook.Worksheets.Add("Purchases");
             AddDataToWorksheet(purchaseWorksheet, MainMenu_Form.Instance.Purchases_DataGridView);
 
-            // Create sales data worksheet
             IXLWorksheet salesWorksheet = workbook.Worksheets.Add("Sales");
             AddDataToWorksheet(salesWorksheet, MainMenu_Form.Instance.Sales_DataGridView);
 
-            // Create products worksheet
-            IXLWorksheet productsWorksheet = workbook.Worksheets.Add("Products");
-            AddProductsToWorksheet(productsWorksheet);
+            IXLWorksheet purchaseProductsWorksheet = workbook.Worksheets.Add("Purchase products");
+            AddProductsToWorksheet(purchaseProductsWorksheet, MainMenu_Form.Instance.categoryPurchaseList);
 
-            // Create accountants worksheet
+            IXLWorksheet saleProductsWorksheet = workbook.Worksheets.Add("Sale products");
+            AddProductsToWorksheet(saleProductsWorksheet, MainMenu_Form.Instance.categorySaleList);
+
             IXLWorksheet accountantsWorksheet = workbook.Worksheets.Add("Accountants");
             AddAccountantsToWorksheet(accountantsWorksheet);
 
-            // Create companies worksheet
             IXLWorksheet companiesWorksheet = workbook.Worksheets.Add("Companies");
             AddCompaniesToWorksheet(companiesWorksheet);
 
@@ -238,7 +276,7 @@ namespace Sales_Tracker.Classes
 
             worksheet.Columns().AdjustToContents();
         }
-        private static void AddProductsToWorksheet(IXLWorksheet worksheet)
+        private static void AddProductsToWorksheet(IXLWorksheet worksheet, List<Category> list)
         {
             worksheet.Cell(1, 1).Value = "Product ID";
             worksheet.Cell(1, 2).Value = "Product name";
@@ -254,7 +292,7 @@ namespace Sales_Tracker.Classes
             }
 
             int currentRow = 2;
-            foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
+            foreach (Category category in list)
             {
                 foreach (Product product in category.ProductList)
                 {
