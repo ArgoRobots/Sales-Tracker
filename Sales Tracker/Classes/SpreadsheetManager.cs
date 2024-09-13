@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using System.Linq;
 
 namespace Sales_Tracker.Classes
 {
@@ -12,7 +13,16 @@ namespace Sales_Tracker.Classes
             foreach (IXLRow row in rowsToProcess)
             {
                 string accountantName = row.Cell(1).GetValue<string>();
-                MainMenu_Form.Instance.accountantList.Add(accountantName);
+                if (MainMenu_Form.Instance.accountantList.Any(name => name.Equals(accountantName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    CustomMessageBox.Show("Argo Sales Tracker",
+                        $"The accountant {accountantName} already exists and will not be imported",
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    MainMenu_Form.Instance.accountantList.Add(accountantName);
+                }
             }
             MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.accountantList);
         }
@@ -23,7 +33,16 @@ namespace Sales_Tracker.Classes
             foreach (IXLRow row in rowsToProcess)
             {
                 string companyName = row.Cell(1).GetValue<string>();
-                MainMenu_Form.Instance.companyList.Add(companyName);
+                if (MainMenu_Form.Instance.companyList.Any(name => name.Equals(companyName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    CustomMessageBox.Show("Argo Sales Tracker",
+                        $"The company {companyName} already exists and will not be imported",
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    MainMenu_Form.Instance.companyList.Add(companyName);
+                }
             }
             MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.companyList);
         }
@@ -50,17 +69,31 @@ namespace Sales_Tracker.Classes
                 string countryOfOrigin = row.Cell(4).GetValue<string>();
                 string companyOfOrigin = row.Cell(5).GetValue<string>();
 
-                // Check if the country exists
-                bool countryExists = Country.countries.Any(c => c.Name == countryOfOrigin);
-                if (!countryExists)
+                List<string> unitedStatesVariants = new()
                 {
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                        $"Country '{countryOfOrigin}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
-                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+                    "US", "USA", "U.S.", "U.S.A.", "United States of America", "America", "U.S. of A.", "The States"
+                };
 
-                    if (result == CustomMessageBoxResult.Yes)
+                // Check if the country exists or if it's a variant of "United States"
+                if (unitedStatesVariants.Any(variant => variant.Equals(countryOfOrigin, StringComparison.OrdinalIgnoreCase)))
+                {
+                    // Convert any variant to "United States"
+                    countryOfOrigin = "United States";
+                }
+                else
+                {
+                    bool countryExists = Country.countries.Any(c => c.Name.Equals(countryOfOrigin, StringComparison.OrdinalIgnoreCase));
+
+                    if (!countryExists)
                     {
-                        continue;
+                        CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                            $"Country '{countryOfOrigin}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
+                            CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+
+                        if (result == CustomMessageBoxResult.Yes)
+                        {
+                            continue;
+                        }
                     }
                 }
 
@@ -89,8 +122,16 @@ namespace Sales_Tracker.Classes
                     CountryOfOrigin = countryOfOrigin,
                     CompanyOfOrigin = companyOfOrigin
                 };
-
-                category.ProductList.Add(product);
+                if (category.ProductList.Any(p => p.Name.Equals(productName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    CustomMessageBox.Show("Argo Sales Tracker",
+                        $"The product {productName} already exists and will not be imported",
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    category.ProductList.Add(product);
+                }
 
                 if (purchase)
                 {

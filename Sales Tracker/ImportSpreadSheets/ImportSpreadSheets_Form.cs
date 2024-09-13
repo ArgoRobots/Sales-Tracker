@@ -81,7 +81,6 @@ namespace Sales_Tracker.ImportSpreadSheets
             if (!ValidateSpreadsheet()) { return; }
 
             ShowLoadingIndicator();
-            Application.DoEvents();
 
             try
             {
@@ -97,35 +96,35 @@ namespace Sales_Tracker.ImportSpreadSheets
                     {
                         IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
                         MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
-                        SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader);
+                        Invoke(() => SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
                         MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
-                        SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader);
+                        Invoke(() => SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet productsWorksheet = workbook.Worksheet("Purchase products");
                         MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
-                        SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader);
+                        Invoke(() => SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("sale products", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet productsWorksheet = workbook.Worksheet("Sale products");
                         MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
-                        SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader);
+                        Invoke(() => SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
-                        SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader);
+                        Invoke(() => SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
-                        SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader);
+                        Invoke(() => SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader));
                     }
                 });
 
@@ -141,6 +140,7 @@ namespace Sales_Tracker.ImportSpreadSheets
                 HideLoadingIndicator();
                 RemoveReceiptLabel();
                 Import_Button.Enabled = false;
+                Controls.Remove(centeredFlowPanel);
             }
         }
         private bool ValidateSpreadsheet()
@@ -362,7 +362,6 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                 if (workbook.Worksheets.Count == 0)
                 {
-                    // Safely call the message box from the UI thread
                     Invoke(() => CustomMessageBox.Show("Argo Sales Tracker", "This spreadsheet doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok));
                     return panels;
                 }
