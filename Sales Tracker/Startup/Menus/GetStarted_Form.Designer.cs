@@ -54,14 +54,16 @@ namespace Sales_Tracker.Startup.Menus
             // OpenRecent_FlowLayoutPanel
             // 
             OpenRecent_FlowLayoutPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            OpenRecent_FlowLayoutPanel.AutoSize = true;
+            OpenRecent_FlowLayoutPanel.AutoScroll = true;
             OpenRecent_FlowLayoutPanel.BorderStyle = BorderStyle.FixedSingle;
             OpenRecent_FlowLayoutPanel.FlowDirection = FlowDirection.TopDown;
             OpenRecent_FlowLayoutPanel.Location = new Point(45, 150);
             OpenRecent_FlowLayoutPanel.Name = "OpenRecent_FlowLayoutPanel";
             OpenRecent_FlowLayoutPanel.Size = new Size(390, 570);
-            OpenRecent_FlowLayoutPanel.TabIndex = 1;
+            OpenRecent_FlowLayoutPanel.TabIndex = 0;
+            OpenRecent_FlowLayoutPanel.WrapContents = false;
             OpenRecent_FlowLayoutPanel.Click += CloseAllPanels;
+            OpenRecent_FlowLayoutPanel.Resize += OpenRecent_FlowLayoutPanel_Resize;
             // 
             // CreateCompany_Button
             // 
@@ -78,7 +80,7 @@ namespace Sales_Tracker.Startup.Menus
             CreateCompany_Button.Name = "CreateCompany_Button";
             CreateCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CreateCompany_Button.Size = new Size(420, 105);
-            CreateCompany_Button.TabIndex = 2;
+            CreateCompany_Button.TabIndex = 1;
             CreateCompany_Button.Text = "Create new company";
             CreateCompany_Button.TextAlign = HorizontalAlignment.Left;
             CreateCompany_Button.TextOffset = new Point(10, 0);
@@ -110,7 +112,7 @@ namespace Sales_Tracker.Startup.Menus
             OpenCompany_Button.Name = "OpenCompany_Button";
             OpenCompany_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             OpenCompany_Button.Size = new Size(420, 105);
-            OpenCompany_Button.TabIndex = 3;
+            OpenCompany_Button.TabIndex = 2;
             OpenCompany_Button.Text = "Open company";
             OpenCompany_Button.TextAlign = HorizontalAlignment.Left;
             OpenCompany_Button.TextOffset = new Point(10, 0);

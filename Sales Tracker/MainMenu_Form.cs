@@ -82,7 +82,6 @@ namespace Sales_Tracker
                 Purchases_DataGridView = new Guna2DataGridView();
                 InitializeDataGridView(Purchases_DataGridView, size, PurchaseColumnHeaders);
                 Purchases_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
-                Theme.CustomizeScrollBar(Purchases_DataGridView);
 
                 Sales_DataGridView = new Guna2DataGridView();
                 InitializeDataGridView(Sales_DataGridView, size, SalesColumnHeaders);

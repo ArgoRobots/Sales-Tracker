@@ -172,6 +172,8 @@ namespace Sales_Tracker
             };
             ChangedBackground_Panel.Left = (ClientSize.Width - Changed_Panel.Width) / 2;  // Center
             ChangedBackground_Panel.Controls.Add(Changed_Panel);
+            Theme.CustomizeScrollBar(Changed_Panel);
+
             Controls.Add(ChangedBackground_Panel);
             Controls.Remove(Icon_PictureBox);
             Controls.Remove(Message_Label);
