@@ -282,13 +282,7 @@ namespace Sales_Tracker.Classes
             {
                 FillColor = CustomColors.mainBackground,
                 ThumbColor = Color.Gray,
-                BorderColor = CustomColors.controlPanelBorder,
-                ThumbSize = 40
-            };
-            vScrollBar.Scroll += (sender, e) =>
-            {
-                Guna2VScrollBar bar = (Guna2VScrollBar)sender;
-                bar.ThumbSize = 40;
+                BorderColor = CustomColors.controlPanelBorder
             };
             control.Controls.Add(vScrollBar);
             vScrollBar.BringToFront();

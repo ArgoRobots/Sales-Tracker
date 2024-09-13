@@ -53,7 +53,7 @@
             ImportSpreadsheet_Label.Anchor = AnchorStyles.Top;
             ImportSpreadsheet_Label.AutoSize = true;
             ImportSpreadsheet_Label.Font = new Font("Segoe UI", 16F);
-            ImportSpreadsheet_Label.Location = new Point(390, 30);
+            ImportSpreadsheet_Label.Location = new Point(415, 30);
             ImportSpreadsheet_Label.Margin = new Padding(6, 0, 6, 0);
             ImportSpreadsheet_Label.Name = "ImportSpreadsheet_Label";
             ImportSpreadsheet_Label.Size = new Size(299, 45);
@@ -74,7 +74,7 @@
             SelectFile_Button.FillColor = Color.White;
             SelectFile_Button.Font = new Font("Segoe UI", 10F);
             SelectFile_Button.ForeColor = Color.Black;
-            SelectFile_Button.Location = new Point(429, 110);
+            SelectFile_Button.Location = new Point(454, 110);
             SelectFile_Button.Margin = new Padding(6, 5, 6, 5);
             SelectFile_Button.Name = "SelectFile_Button";
             SelectFile_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -98,7 +98,7 @@
             Import_Button.FillColor = Color.White;
             Import_Button.Font = new Font("Segoe UI", 10F);
             Import_Button.ForeColor = Color.Black;
-            Import_Button.Location = new Point(429, 585);
+            Import_Button.Location = new Point(454, 485);
             Import_Button.Margin = new Padding(6, 5, 6, 5);
             Import_Button.Name = "Import_Button";
             Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -116,7 +116,7 @@
             RemoveReceipt_ImageButton.ImageOffset = new Point(0, 0);
             RemoveReceipt_ImageButton.ImageRotate = 0F;
             RemoveReceipt_ImageButton.ImageSize = new Size(30, 30);
-            RemoveReceipt_ImageButton.Location = new Point(525, 163);
+            RemoveReceipt_ImageButton.Location = new Point(550, 163);
             RemoveReceipt_ImageButton.Name = "RemoveReceipt_ImageButton";
             RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
             RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges5;
@@ -131,7 +131,7 @@
             SelectedReceipt_Label.Anchor = AnchorStyles.Top;
             SelectedReceipt_Label.AutoSize = true;
             SelectedReceipt_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceipt_Label.Location = new Point(431, 168);
+            SelectedReceipt_Label.Location = new Point(456, 168);
             SelectedReceipt_Label.Name = "SelectedReceipt_Label";
             SelectedReceipt_Label.Size = new Size(86, 28);
             SelectedReceipt_Label.TabIndex = 560;
@@ -151,7 +151,7 @@
             OpenTutorial_Button.FillColor = Color.White;
             OpenTutorial_Button.Font = new Font("Segoe UI", 10F);
             OpenTutorial_Button.ForeColor = Color.Black;
-            OpenTutorial_Button.Location = new Point(843, 585);
+            OpenTutorial_Button.Location = new Point(893, 485);
             OpenTutorial_Button.Margin = new Padding(6, 5, 6, 5);
             OpenTutorial_Button.Name = "OpenTutorial_Button";
             OpenTutorial_Button.ShadowDecoration.CustomizableEdges = customizableEdges7;
@@ -170,7 +170,7 @@
             SkipHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
             SkipHeaderRow_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             SkipHeaderRow_CheckBox.CustomizableEdges = customizableEdges8;
-            SkipHeaderRow_CheckBox.Location = new Point(746, 122);
+            SkipHeaderRow_CheckBox.Location = new Point(812, 122);
             SkipHeaderRow_CheckBox.Name = "SkipHeaderRow_CheckBox";
             SkipHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
             SkipHeaderRow_CheckBox.Size = new Size(20, 20);
@@ -186,7 +186,7 @@
             SkipHeaderRow_Label.Anchor = AnchorStyles.Top;
             SkipHeaderRow_Label.AutoSize = true;
             SkipHeaderRow_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SkipHeaderRow_Label.Location = new Point(764, 112);
+            SkipHeaderRow_Label.Location = new Point(830, 112);
             SkipHeaderRow_Label.Name = "SkipHeaderRow_Label";
             SkipHeaderRow_Label.Padding = new Padding(5);
             SkipHeaderRow_Label.Size = new Size(181, 40);
@@ -198,7 +198,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1078, 644);
+            ClientSize = new Size(1128, 544);
             Controls.Add(SkipHeaderRow_CheckBox);
             Controls.Add(SkipHeaderRow_Label);
             Controls.Add(OpenTutorial_Button);
@@ -209,7 +209,7 @@
             Controls.Add(ImportSpreadsheet_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(1100, 700);
+            MinimumSize = new Size(1150, 600);
             Name = "ImportSpreadSheets_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

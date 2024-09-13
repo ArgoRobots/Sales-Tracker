@@ -47,6 +47,7 @@
             // 
             // DateRange_Label
             // 
+            DateRange_Label.Anchor = AnchorStyles.Top;
             DateRange_Label.AutoSize = true;
             DateRange_Label.Font = new Font("Segoe UI", 16F);
             DateRange_Label.Location = new Point(199, 21);
@@ -113,7 +114,7 @@
             // 
             // Apply_Button
             // 
-            Apply_Button.Anchor = AnchorStyles.Bottom;
+            Apply_Button.Anchor = AnchorStyles.Top;
             Apply_Button.BackColor = Color.Transparent;
             Apply_Button.BorderColor = Color.LightGray;
             Apply_Button.BorderRadius = 2;
@@ -133,7 +134,7 @@
             // 
             // Reset_Button
             // 
-            Reset_Button.Anchor = AnchorStyles.Bottom;
+            Reset_Button.Anchor = AnchorStyles.Top;
             Reset_Button.BackColor = Color.Transparent;
             Reset_Button.BorderColor = Color.LightGray;
             Reset_Button.BorderRadius = 2;
@@ -162,7 +163,7 @@
             Controls.Add(From_DateTimePicker);
             Controls.Add(From_Label);
             Controls.Add(DateRange_Label);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Name = "DateRange_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

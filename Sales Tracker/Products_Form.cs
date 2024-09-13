@@ -434,6 +434,7 @@ namespace Sales_Tracker
             Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             Purchases_DataGridView.Location = new Point((ClientSize.Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
             Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+            Theme.CustomizeScrollBar(Purchases_DataGridView);
 
             Sales_DataGridView = new Guna2DataGridView();
             MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size, ColumnHeaders);
@@ -442,6 +443,7 @@ namespace Sales_Tracker
             Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             Sales_DataGridView.Location = new Point((ClientSize.Width - Sales_DataGridView.Width) / 2, topForDataGridView);
             Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
+            Theme.CustomizeScrollBar(Sales_DataGridView);
         }
         void Sales_DataGridView_RowsChanged(object sender, EventArgs e)
         {

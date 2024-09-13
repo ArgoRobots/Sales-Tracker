@@ -20,6 +20,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
             oldOption = MainMenu_Form.Instance.Selected;
             InitLoadingComponents();
+            InitContainerPanel();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
             AlignControls();
@@ -60,16 +61,19 @@ namespace Sales_Tracker.ImportSpreadSheets
                 if (!ValidateSpreadsheet()) { return; }
 
                 Import_Button.Enabled = false;
-                Controls.Remove(containerPanel);
+                Controls.Remove(centeredFlowPanel);
 
                 ShowReceiptLabel(dialog.SafeFileName);
                 ShowLoadingIndicator();
 
                 List<Panel> panels = await LoadSpreadsheetData();
 
-                ArrangePanels(panels);
-                Import_Button.Enabled = true;
-                HideLoadingIndicator();
+                if (panels.Count > 0)
+                {
+                    Import_Button.Enabled = true;
+                    HideLoadingIndicator();
+                    AddPanels(panels);
+                }
             }
         }
         private async void Import_Button_Click(object sender, EventArgs e)
@@ -136,7 +140,6 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 HideLoadingIndicator();
                 RemoveReceiptLabel();
-                Controls.Remove(containerPanel);
                 Import_Button.Enabled = false;
             }
         }
@@ -160,8 +163,9 @@ namespace Sales_Tracker.ImportSpreadSheets
         private void RemoveReceipt_ImageButton_Click(object sender, EventArgs e)
         {
             RemoveReceiptLabel();
-            Controls.Remove(containerPanel);
+            Controls.Remove(centeredFlowPanel);
             Import_Button.Enabled = false;
+            Height = MinimumSize.Height;
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
@@ -177,16 +181,24 @@ namespace Sales_Tracker.ImportSpreadSheets
         }
         private async void SkipHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(spreadsheetFilePath))
+            {
+                return;
+            }
+
             Import_Button.Enabled = false;
-            Controls.Remove(containerPanel);
+            Controls.Remove(centeredFlowPanel);
 
             ShowLoadingIndicator();
 
             List<Panel> panels = await LoadSpreadsheetData();
 
-            ArrangePanels(panels);
-            Import_Button.Enabled = true;
-            HideLoadingIndicator();
+            if (panels.Count > 0)
+            {
+                Import_Button.Enabled = true;
+                HideLoadingIndicator();
+                AddPanels(panels);
+            }
         }
         private void SkipHeaderRow_Label_Click(object sender, EventArgs e)
         {
@@ -194,17 +206,16 @@ namespace Sales_Tracker.ImportSpreadSheets
         }
 
         // Show things to import
-        private Panel? CreateFlowLayoutPanel(List<string> items, string title)
+        private readonly byte panelPadding = 10, panelHeight = 200;
+        private readonly int panelWidth = 300;
+        private CenteredFlowLayoutPanel centeredFlowPanel;
+        private List<Panel> panels = new();
+        private Panel CreateFlowLayoutPanel(List<string> items, string title)
         {
-            if (items.Count == 0)
-            {
-                return null;
-            }
-
             Panel outerPanel = new()
             {
-                Padding = new Padding(15),
-                AutoSize = true,
+                Size = new Size(panelWidth, panelHeight),
+                Margin = new Padding(panelPadding),
                 BackColor = CustomColors.mainBackground
             };
 
@@ -224,10 +235,10 @@ namespace Sales_Tracker.ImportSpreadSheets
 
             FlowLayoutPanel flowPanel = new()
             {
-                AutoSize = true,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
-                Padding = new Padding(10),
+                Size = new Size(outerPanel.Width, outerPanel.Height - flowPanelY),
+                Padding = new Padding(panelPadding),
                 BorderStyle = BorderStyle.FixedSingle,
                 Location = new Point(outerPanel.Padding.Left, flowPanelY)
             };
@@ -265,39 +276,29 @@ namespace Sales_Tracker.ImportSpreadSheets
 
             return outerPanel;
         }
-        private FlowLayoutPanel containerPanel;
-        private void ArrangePanels(List<Panel> panels)
+        private void InitContainerPanel()
         {
-            Controls.Remove(containerPanel);
-
-            containerPanel = new()
+            centeredFlowPanel = new()
             {
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true,
-                AutoSize = true,
-                Padding = new Padding(20),
-                Anchor = AnchorStyles.None
+                Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
+                Size = new Size(panelPadding * 6 + panelWidth * 3 + 50, panelHeight + panelPadding * 2),
+                Top = 240
             };
+        }
+        private void AddPanels(List<Panel> panelsToAdd)
+        {
+            panels = panelsToAdd;
 
-            // Add each Panel to the container
+            List<Panel> panelsToRemove = centeredFlowPanel.Controls.OfType<Panel>().ToList();
+            foreach (Panel? panel in panelsToRemove)
+            {
+                centeredFlowPanel.Controls.Remove(panel);
+            }
+
             foreach (Panel panel in panels)
             {
-                containerPanel.Controls.Add(panel);
+                centeredFlowPanel.Controls.Add(panel);
             }
-
-            // Calculate if the container exceeds the form width
-            int containerWidth = containerPanel.PreferredSize.Width;
-            int formWidth = ClientSize.Width;
-
-            // If the container width is larger than the form, make the form taller and add rows
-            if (containerWidth > formWidth)
-            {
-                Height += (containerWidth / formWidth) * 50;
-                containerPanel.FlowDirection = FlowDirection.TopDown;
-            }
-
-            // Set the container panel in the center of the form
-            containerPanel.Location = new Point((ClientSize.Width - containerPanel.PreferredSize.Width) / 2, 240);
         }
 
         // Loading controls
@@ -339,12 +340,18 @@ namespace Sales_Tracker.ImportSpreadSheets
             }
 
             Controls.Remove(loadingIndicator);
-            Controls.Add(containerPanel);
+            Controls.Add(centeredFlowPanel);
+            centeredFlowPanel.Left = (ClientSize.Width - centeredFlowPanel.Width) / 2;
         }
 
         // Load spreadsheets
         private Task<List<Panel>> LoadSpreadsheetData()
         {
+            if (string.IsNullOrEmpty(spreadsheetFilePath))
+            {
+                return Task.FromResult(new List<Panel>());
+            }
+
             return Task.Run(() =>
             {
                 List<Panel> panels = new();
@@ -364,29 +371,45 @@ namespace Sales_Tracker.ImportSpreadSheets
                 {
                     IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
                     List<string> accountants = ExtractFirstCells(accountantsWorksheet);
-                    Panel panel = CreateFlowLayoutPanel(accountants, "Accountants");
-                    if (panel != null) { panels.Add(panel); }
+
+                    if (accountants.Count > 0)
+                    {
+                        Panel panel = CreateFlowLayoutPanel(accountants, "Accountants");
+                        panels.Add(panel);
+                    }
                 }
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
                 {
                     IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
                     List<string> companies = ExtractFirstCells(companiesWorksheet);
-                    Panel panel = CreateFlowLayoutPanel(companies, "Companies");
-                    if (panel != null) { panels.Add(panel); }
+
+                    if (companies.Count > 0)
+                    {
+                        Panel panel = CreateFlowLayoutPanel(companies, "Companies");
+                        panels.Add(panel);
+                    }
                 }
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
                 {
                     IXLWorksheet productsWorksheet = workbook.Worksheet("purchase products");
                     List<string> products = ExtractProducts(productsWorksheet);
-                    Panel panel = CreateFlowLayoutPanel(products, "Purchase products");
-                    if (panel != null) { panels.Add(panel); }
+
+                    if (products.Count > 0)
+                    {
+                        Panel panel = CreateFlowLayoutPanel(products, "Purchase products");
+                        panels.Add(panel);
+                    }
                 }
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals("Sale products", StringComparison.CurrentCultureIgnoreCase)))
                 {
                     IXLWorksheet productsWorksheet = workbook.Worksheet("sale products");
                     List<string> products = ExtractProducts(productsWorksheet);
-                    Panel panel = CreateFlowLayoutPanel(products, "Sale products");
-                    if (panel != null) { panels.Add(panel); }
+
+                    if (products.Count > 0)
+                    {
+                        Panel panel = CreateFlowLayoutPanel(products, "Sale products");
+                        panels.Add(panel);
+                    }
                 }
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
                 {
@@ -464,6 +487,7 @@ namespace Sales_Tracker.ImportSpreadSheets
         {
             Controls.Remove(SelectedReceipt_Label);
             Controls.Remove(RemoveReceipt_ImageButton);
+            spreadsheetFilePath = "";
         }
     }
 }
