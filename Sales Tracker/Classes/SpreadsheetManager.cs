@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using System.Linq;
 
 namespace Sales_Tracker.Classes
 {
@@ -146,32 +145,65 @@ namespace Sales_Tracker.Classes
         public static void ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
-            MainMenu_Form.Instance.Purchases_DataGridView.Rows.Clear();
+            int newRowIndex = 0;
 
             foreach (IXLRow row in rowsToProcess)
             {
+                string purchaseNumber = row.Cell(1).GetValue<string>();
+                if (purchaseNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+                {
+                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                      $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
+                      CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                    if (result != CustomMessageBoxResult.Yes)
+                    {
+                        continue;
+                    }
+                }
+
                 DataGridViewRow newRow = new();
-                for (int i = 0; i < row.Cells().Count(); i++)
+                newRow.CreateCells(MainMenu_Form.Instance.Purchases_DataGridView);
+
+                for (int i = 0; i < row.Cells().Count() - 1; i++)
                 {
                     newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
                 }
-                MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+                newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
             }
+
+            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
         }
         public static void ImportSalesData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
-            MainMenu_Form.Instance.Sales_DataGridView.Rows.Clear();
+            int newRowIndex = 0;
 
             foreach (IXLRow row in rowsToProcess)
             {
+                string saleNumber = row.Cell(1).GetValue<string>();
+                if (saleNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+                {
+                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                      $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
+                      CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                    if (result != CustomMessageBoxResult.Yes)
+                    {
+                        continue;
+                    }
+                }
+
                 DataGridViewRow newRow = new();
-                for (int i = 0; i < row.Cells().Count(); i++)
+                newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
+                for (int i = 0; i < row.Cells().Count() - 1; i++)
                 {
                     newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
                 }
-                MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
+                newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
             }
+
+            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
         }
 
         // Export spreadsheet methods

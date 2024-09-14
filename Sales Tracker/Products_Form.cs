@@ -180,13 +180,13 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categorySaleList, category, product);
                 int newRowIndex = Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             else
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categoryPurchaseList, category, product);
                 int newRowIndex = Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);

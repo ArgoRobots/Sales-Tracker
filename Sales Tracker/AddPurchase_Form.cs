@@ -123,13 +123,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
 
-            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
-            {
-                MainMenu_Form.Instance.Purchases_Button.PerformClick();
-            }
-            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
-
-            if (panelsForMultipleProducts_List.Count == 0)
+            if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
                 if (!AddSinglePurchase()) { return; }
             }
@@ -148,6 +142,12 @@ namespace Sales_Tracker
             {
                 return;
             }
+
+            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
+            {
+                MainMenu_Form.Instance.Purchases_Button.PerformClick();
+            }
+            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
 
             // Reset
             RemoveReceiptLabel();
@@ -338,7 +338,7 @@ namespace Sales_Tracker
             // Store the receipt and USD values in the row's Tag
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = Tuple.Create(newFilePath, purchaseData);
 
-            MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, itemName);
             Log.Write(3, $"Added purchase '{itemName}'");
@@ -545,7 +545,7 @@ namespace Sales_Tracker
             // Set the combined tag
             MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = combinedTag;
 
-            MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, purchaseNumber);
             Log.Write(3, $"Added purchase '{purchaseNumber}' with '{totalQuantity}' items");

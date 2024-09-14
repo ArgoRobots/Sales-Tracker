@@ -1608,7 +1608,7 @@ namespace Sales_Tracker
             {
                 UpdateTotals();
                 LoadCharts();
-                SaveDataGridViewToFileAsJson();
+                SaveDataGridViewToFileAsJson(selectedDataGridView, Selected);
             }
             else if (Selected == SelectedOption.CategoryPurchases || Selected == SelectedOption.CategorySales ||
                 Selected == SelectedOption.ProductPurchases || Selected == SelectedOption.ProductSales)
@@ -1872,14 +1872,14 @@ namespace Sales_Tracker
         }
 
         // Methods for DataGridView
-        public void DataGridViewRowsAdded(DataGridViewRowsAddedEventArgs e)
+        public void DataGridViewRowsAdded(Guna2DataGridView dataGridView, DataGridViewRowsAddedEventArgs e)
         {
             DataGridViewRowChanged();
             DataGridViewRow row;
 
-            if (e.RowIndex >= 0 && e.RowIndex < selectedDataGridView.RowCount)
+            if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
             {
-                row = selectedDataGridView.Rows[e.RowIndex];
+                row = dataGridView.Rows[e.RowIndex];
             }
             else
             {
@@ -1888,13 +1888,13 @@ namespace Sales_Tracker
             }
 
             // Perform sorting based on the current sorted column and direction
-            if (selectedDataGridView.SortedColumn != null)
+            if (dataGridView.SortedColumn != null)
             {
-                SortOrder sortOrder = selectedDataGridView.SortOrder;
-                DataGridViewColumn sortedColumn = selectedDataGridView.SortedColumn;
+                SortOrder sortOrder = dataGridView.SortOrder;
+                DataGridViewColumn sortedColumn = dataGridView.SortedColumn;
                 ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
                                               ListSortDirection.Ascending : ListSortDirection.Descending;
-                selectedDataGridView.Sort(sortedColumn, direction);
+                dataGridView.Sort(sortedColumn, direction);
             }
 
             if (Selected is SelectedOption.Purchases or SelectedOption.Sales)
@@ -1903,18 +1903,18 @@ namespace Sales_Tracker
             }
 
             // Calculate the middle index
-            int visibleRowCount = selectedDataGridView.DisplayedRowCount(true);
+            int visibleRowCount = dataGridView.DisplayedRowCount(true);
             int middleIndex = Math.Max(0, row.Index - (visibleRowCount / 2) + 1);
 
             // Ensure the row at middleIndex is visible
-            if (middleIndex >= 0 && middleIndex < selectedDataGridView.RowCount && selectedDataGridView.Rows[middleIndex].Visible)
+            if (middleIndex >= 0 && middleIndex < dataGridView.RowCount && dataGridView.Rows[middleIndex].Visible)
             {
-                selectedDataGridView.FirstDisplayedScrollingRowIndex = middleIndex;
+                dataGridView.FirstDisplayedScrollingRowIndex = middleIndex;
             }
 
             // Select the added row
             UnselectAllRowsInCurrentDataGridView();
-            selectedDataGridView.Rows[row.Index].Selected = true;
+            dataGridView.Rows[row.Index].Selected = true;
         }
         public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
@@ -2172,13 +2172,13 @@ namespace Sales_Tracker
         }
 
         // Save to file
-        public void SaveDataGridViewToFileAsJson()
+        public void SaveDataGridViewToFileAsJson(Guna2DataGridView dataGridView, SelectedOption selected)
         {
-            string filePath = GetFilePathForDataGridView(Selected);
+            string filePath = GetFilePathForDataGridView(selected);
             List<Dictionary<string, object>> rowsData = new();
 
             // Collect data from the DataGridView
-            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 Dictionary<string, object> rowData = new();
 

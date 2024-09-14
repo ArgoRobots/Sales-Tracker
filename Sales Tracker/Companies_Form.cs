@@ -80,7 +80,7 @@ namespace Sales_Tracker
             string name = Company_TextBox.Text.Trim();
             MainMenu_Form.Instance.companyList.Add(name);
             int newRowIndex = Company_DataGridView.Rows.Add(name);
-            MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added company '{name}'");

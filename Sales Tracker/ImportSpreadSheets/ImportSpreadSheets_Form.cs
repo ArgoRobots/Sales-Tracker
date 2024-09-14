@@ -120,11 +120,15 @@ namespace Sales_Tracker.ImportSpreadSheets
                     {
                         IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
                         Invoke(() => SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader));
+                        MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+                        Invoke(() => MainMenu_Form.Instance.LoadCharts());
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
                         Invoke(() => SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader));
+                        MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
+                        Invoke(() => MainMenu_Form.Instance.LoadCharts());
                     }
                 });
 
@@ -135,13 +139,12 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 CustomMessageBox.Show("Argo Sales Tracker", $"An error occurred while importing the spreadsheet: {ex.Message}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
-            finally
-            {
-                HideLoadingIndicator();
-                RemoveReceiptLabel();
-                Import_Button.Enabled = false;
-                Controls.Remove(centeredFlowPanel);
-            }
+
+            HideLoadingIndicator();
+            RemoveReceiptLabel();
+            Import_Button.Enabled = false;
+            Controls.Remove(centeredFlowPanel);
+            Close();
         }
         private bool ValidateSpreadsheet()
         {
@@ -412,13 +415,25 @@ namespace Sales_Tracker.ImportSpreadSheets
                 }
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
                 {
-                    IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
+                    IXLWorksheet purchaseWorksheet = workbook.Worksheet("purchases");
+                    List<string> products = ExtractTransaction(purchaseWorksheet);
 
+                    if (products.Count > 0)
+                    {
+                        Panel panel = CreateFlowLayoutPanel(products, "Purchases");
+                        panels.Add(panel);
+                    }
                 }
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
                 {
-                    IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
+                    IXLWorksheet salesWorksheet = workbook.Worksheet("sales");
+                    List<string> products = ExtractTransaction(salesWorksheet);
 
+                    if (products.Count > 0)
+                    {
+                        Panel panel = CreateFlowLayoutPanel(products, "Sales");
+                        panels.Add(panel);
+                    }
                 }
 
                 return panels;
@@ -452,6 +467,25 @@ namespace Sales_Tracker.ImportSpreadSheets
                 if (!string.IsNullOrEmpty(productName) && !string.IsNullOrEmpty(categoryName))
                 {
                     products.Add($"{categoryName} > {productName}");
+                }
+            }
+
+            return products;
+        }
+        private List<string> ExtractTransaction(IXLWorksheet productsWorksheet)
+        {
+            List<string> products = new();
+            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? productsWorksheet.RowsUsed().Skip(1) : productsWorksheet.RowsUsed();
+
+            foreach (IXLRow row in rows)
+            {
+                // Ensure the cells have values before attempting to read
+                string productName = row.Cell(3).GetValue<string>();
+                string date = row.Cell(7).GetValue<string>();
+
+                if (!string.IsNullOrEmpty(productName) && !string.IsNullOrEmpty(date))
+                {
+                    products.Add($"{productName} - {date}");
                 }
             }
 

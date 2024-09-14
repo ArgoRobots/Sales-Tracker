@@ -101,8 +101,6 @@ namespace Sales_Tracker
             string fileType = FileType_ComboBox.Text;
 
             await Task.Run(() => { Export(fileType); });
-
-            Close();
         }
 
         // Methods

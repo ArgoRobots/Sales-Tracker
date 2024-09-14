@@ -108,13 +108,13 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.Instance.categoryPurchaseList.Add(new Category(name));
                 int newRowIndex = Purchases_DataGridView.Rows.Add(name);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             else
             {
                 MainMenu_Form.Instance.categorySaleList.Add(new Category(name));
                 int newRowIndex = Sales_DataGridView.Rows.Add(name);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
