@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.Classes
+﻿using Guna.UI2.WinForms;
+
+namespace Sales_Tracker.Classes
 {
     public class CenteredFlowLayoutPanel : Panel
     {
@@ -30,14 +32,19 @@
                 ControlStyles.ResizeRedraw, true);
             UpdateStyles();
 
+            SetFlowLayoutPanel();
+        }
+        private void SetFlowLayoutPanel()
+        {
+            HorizontalScroll.Maximum = 0;
+            HorizontalScroll.Enabled = false;
+            HorizontalScroll.Visible = false;
             AutoScroll = true;
         }
 
         // Methods
-        protected override void OnLayout(LayoutEventArgs e)
+        private void CenterControls()
         {
-            base.OnLayout(e);  // Call base method to handle scrollbars
-
             if (Controls.Count == 0) { return; }
 
             int y = AutoScrollPosition.Y;
@@ -73,7 +80,7 @@
                 }
 
                 // Center the row
-                int x = Math.Max(0, (clientWidth - (currentRowWidth - _spacing)) / 2) + AutoScrollPosition.X;
+                int x = Math.Max(0, (clientWidth - (currentRowWidth - _spacing)) / 2);
 
                 // Layout the controls in the current row
                 for (int i = startIndex; i < endIndex; i++)
@@ -90,30 +97,23 @@
                 startIndex = endIndex;
             }
 
-            // Set AutoScrollMinSize to enable scrolling
-            int contentHeight = y - AutoScrollPosition.Y;
-            AutoScrollMinSize = new Size(0, contentHeight);
+            // Prevents the horizontal scrollbar from flashing in some cases
+            SetFlowLayoutPanel();
         }
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            PerformLayout();
+            CenterControls();
         }
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-            PerformLayout();
+            CenterControls();
         }
         protected override void OnControlRemoved(ControlEventArgs e)
         {
             base.OnControlRemoved(e);
-            PerformLayout();
-        }
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            // Do not call base.OnPaintBackground(e);
-            // Fill background with desired color to prevent flickering
-            e.Graphics.Clear(BackColor);
+            CenterControls();
         }
     }
 }

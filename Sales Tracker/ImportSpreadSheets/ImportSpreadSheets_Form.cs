@@ -95,25 +95,21 @@ namespace Sales_Tracker.ImportSpreadSheets
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("accountants", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
-                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
                         Invoke(() => SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
-                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
                         Invoke(() => SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet productsWorksheet = workbook.Worksheet("Purchase products");
-                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
                         Invoke(() => SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("sale products", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         IXLWorksheet productsWorksheet = workbook.Worksheet("Sale products");
-                        MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
                         Invoke(() => SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader));
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
@@ -122,6 +118,7 @@ namespace Sales_Tracker.ImportSpreadSheets
                         Invoke(() => SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader));
                         MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
                         Invoke(() => MainMenu_Form.Instance.LoadCharts());
+                        MainMenu_Form.Instance.Purchases_DataGridView.ClearSelection();
                     }
                     if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
                     {
@@ -129,6 +126,7 @@ namespace Sales_Tracker.ImportSpreadSheets
                         Invoke(() => SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader));
                         MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
                         Invoke(() => MainMenu_Form.Instance.LoadCharts());
+                        MainMenu_Form.Instance.Sales_DataGridView.ClearSelection();
                     }
                 });
 
@@ -284,7 +282,7 @@ namespace Sales_Tracker.ImportSpreadSheets
             centeredFlowPanel = new()
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
-                Size = new Size(panelPadding * 6 + panelWidth * 3 + 50, panelHeight + panelPadding * 2),
+                Size = new Size(panelPadding * 6 + panelWidth * 3 + 50, panelHeight * 2 + panelPadding * 4),
                 Top = 240
             };
         }
@@ -333,7 +331,7 @@ namespace Sales_Tracker.ImportSpreadSheets
             canRemoveLoader = false;
 
             Controls.Add(loadingIndicator);
-            loadingIndicator.Location = new Point((ClientSize.Width - loadingIndicator.Width) / 2, 270);
+            loadingIndicator.Location = new Point((ClientSize.Width - loadingIndicator.Width) / 2, 350);
         }
         private async void HideLoadingIndicator()
         {
@@ -342,8 +340,15 @@ namespace Sales_Tracker.ImportSpreadSheets
                 await Task.Delay(10);
             }
 
+            centeredFlowPanel.SuspendLayout();  // This prevenets the horizontal scroll bar from flashing
+
             Controls.Remove(loadingIndicator);
             Controls.Add(centeredFlowPanel);
+
+            Theme.CustomizeScrollBar(centeredFlowPanel);
+
+            centeredFlowPanel.ResumeLayout();
+
             centeredFlowPanel.Left = (ClientSize.Width - centeredFlowPanel.Width) / 2;
         }
 

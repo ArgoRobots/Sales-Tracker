@@ -98,7 +98,7 @@
             Import_Button.FillColor = Color.White;
             Import_Button.Font = new Font("Segoe UI", 10F);
             Import_Button.ForeColor = Color.Black;
-            Import_Button.Location = new Point(454, 485);
+            Import_Button.Location = new Point(454, 735);
             Import_Button.Margin = new Padding(6, 5, 6, 5);
             Import_Button.Name = "Import_Button";
             Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -151,7 +151,7 @@
             OpenTutorial_Button.FillColor = Color.White;
             OpenTutorial_Button.Font = new Font("Segoe UI", 10F);
             OpenTutorial_Button.ForeColor = Color.Black;
-            OpenTutorial_Button.Location = new Point(893, 485);
+            OpenTutorial_Button.Location = new Point(893, 735);
             OpenTutorial_Button.Margin = new Padding(6, 5, 6, 5);
             OpenTutorial_Button.Name = "OpenTutorial_Button";
             OpenTutorial_Button.ShadowDecoration.CustomizableEdges = customizableEdges7;
@@ -198,7 +198,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1128, 544);
+            ClientSize = new Size(1128, 794);
             Controls.Add(SkipHeaderRow_CheckBox);
             Controls.Add(SkipHeaderRow_Label);
             Controls.Add(OpenTutorial_Button);
