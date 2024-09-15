@@ -23,7 +23,7 @@ namespace Sales_Tracker.Classes
                     MainMenu_Form.Instance.accountantList.Add(accountantName);
                 }
             }
-            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.accountantList);
+            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.accountantList, MainMenu_Form.SelectedOption.Accountants);
         }
         public static void ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
         {
@@ -43,7 +43,7 @@ namespace Sales_Tracker.Classes
                     MainMenu_Form.Instance.companyList.Add(companyName);
                 }
             }
-            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.companyList);
+            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.companyList, MainMenu_Form.SelectedOption.Companies);
         }
         public static void ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
         {

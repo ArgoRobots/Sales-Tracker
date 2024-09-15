@@ -346,9 +346,7 @@ namespace Sales_Tracker.ImportSpreadSheets
             Controls.Add(centeredFlowPanel);
 
             Theme.CustomizeScrollBar(centeredFlowPanel);
-
             centeredFlowPanel.ResumeLayout();
-
             centeredFlowPanel.Left = (ClientSize.Width - centeredFlowPanel.Width) / 2;
         }
 
@@ -364,7 +362,7 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 List<Panel> panels = new();
 
-                // Open the file in read-only and shared mode
+                // Open the file in read-only and shared mode in case the file is being used by another program
                 using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 using XLWorkbook workbook = new(stream);
 

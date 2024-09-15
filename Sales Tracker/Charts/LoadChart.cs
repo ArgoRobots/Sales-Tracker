@@ -840,7 +840,6 @@ namespace Sales_Tracker.Charts
             }
             else
             {
-                ((GunaBarDataset)dataset).BarPercentage = 0.6f;
                 ((GunaBarDataset)dataset).FillColors = [color];
             }
         }
@@ -896,7 +895,14 @@ namespace Sales_Tracker.Charts
             // Set BarPercentage for bar charts
             if (!isLineChart)
             {
-                ((GunaBarDataset)dataset).BarPercentage = 0.4f;
+                if (dataset.DataPointCount < 3)
+                {
+                    ((GunaBarDataset)dataset).BarPercentage = 0.2f;
+                }
+                else
+                {
+                    ((GunaBarDataset)dataset).BarPercentage = 0.4f;
+                }
             }
         }
         private static bool TryGetValue<T>(DataGridViewCell cell, out T value)

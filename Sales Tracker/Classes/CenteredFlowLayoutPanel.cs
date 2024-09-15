@@ -1,6 +1,4 @@
-﻿using Guna.UI2.WinForms;
-
-namespace Sales_Tracker.Classes
+﻿namespace Sales_Tracker.Classes
 {
     public class CenteredFlowLayoutPanel : Panel
     {
@@ -21,7 +19,7 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        // Initialization
+        // Init.
         public CenteredFlowLayoutPanel()
         {
             // Enable double buffering to reduce flicker

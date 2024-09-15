@@ -104,11 +104,11 @@ namespace Sales_Tracker
         {
             if (Sale_RadioButton.Checked)
             {
-                return MainMenu_Form.Instance.GetProductCategorySaleNames();
+                return MainMenu_Form.Instance.GetCategorySaleNames();
             }
             else
             {
-                return MainMenu_Form.Instance.GetProductCategoryPurchaseNames();
+                return MainMenu_Form.Instance.GetCategoryPurchaseNames();
             }
         }
         private void LoadProducts()

@@ -101,9 +101,9 @@ namespace Sales_Tracker
             AccountantName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             AccountantName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(AccountantName_TextBox, this, AddSale_Label, e); };
 
-            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), searchBoxMaxHeight); };
-            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), searchBoxMaxHeight); };
-            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, searchBoxMaxHeight); };
+            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames()), searchBoxMaxHeight); };
+            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames()), searchBoxMaxHeight); };
+            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames()), this, searchBoxMaxHeight); };
             ProductName_TextBox.TextChanged += ValidateInputs;
             ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddSale_Label, e); };
@@ -676,17 +676,17 @@ namespace Sales_Tracker
             textBox.Click += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), smallSearchBoxMaxHeight);
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames()), smallSearchBoxMaxHeight);
             };
             textBox.GotFocus += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), smallSearchBoxMaxHeight);
+                ShowSearchBox(searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames()), smallSearchBoxMaxHeight);
             };
             textBox.TextChanged += (sender, e) =>
             {
                 Guna2TextBox searchTextBox = (Guna2TextBox)sender;
-                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames()), this, smallSearchBoxMaxHeight);
+                SearchBox.SearchTextBoxChanged(this, searchTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames()), this, smallSearchBoxMaxHeight);
             };
             textBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             textBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(textBox, this, AddSale_Label, e); };
@@ -865,7 +865,7 @@ namespace Sales_Tracker
         // Warning labels
         private void CheckIfProductsExist()
         {
-            if (MainMenu_Form.Instance.GetProductSaleNames().Count == 0)
+            if (MainMenu_Form.Instance.GetCategoryAndProductSaleNames().Count == 0)
             {
                 ShowProductWarning();
             }

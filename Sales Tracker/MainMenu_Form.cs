@@ -553,11 +553,11 @@ namespace Sales_Tracker
         {
             if (isProgramLoading) { return; }
 
-            if (Height > 1400)
+            if (ClientSize.Height > 1400)
             {
                 Totals_Chart.Height = 500;
             }
-            else if (Height > 1000)
+            else if (ClientSize.Height > 1000)
             {
                 Totals_Chart.Height = 400;
             }
@@ -568,7 +568,7 @@ namespace Sales_Tracker
 
             byte spaceBetweenCharts = 20, chartWidthOffset = 35;
 
-            int chartWidth = Width / 3 - chartWidthOffset;
+            int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
             int chartHeight = Totals_Chart.Height;
 
             // Calculate X positions for charts
@@ -605,7 +605,7 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Statistics)
             {
-                int availableHeight = Height - Purchases_Button.Bottom;
+                int availableHeight = ClientSize.Height - Purchases_Button.Bottom;
 
                 int statChartHeight = availableHeight / 2 - chartWidthOffset * 3;
                 Size chartSize = new(chartWidth, statChartHeight);
@@ -1198,39 +1198,39 @@ namespace Sales_Tracker
         public List<Category> categoryPurchaseList = [];
         public List<string> accountantList = [];
         public List<string> companyList = [];
-        public List<string> GetProductCategorySaleNames()
+        public List<string> GetCategorySaleNames()
         {
             return categorySaleList.Select(s => s.Name).ToList();
         }
-        public List<string> GetProductCategoryPurchaseNames()
+        public List<string> GetCategoryPurchaseNames()
         {
             return categoryPurchaseList.Select(p => p.Name).ToList();
         }
-        public List<string> GetProductSaleNames()
+        public List<string> GetCategoryAndProductSaleNames()
         {
-            List<string> productNames = [];
+            List<string> names = [];
 
             foreach (Category category in categorySaleList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    productNames.Add(product.Name);
+                    names.Add($"{category.Name} > {product.Name}");
                 }
             }
-            return productNames;
+            return names;
         }
-        public List<string> GetProductPurchaseNames()
+        public List<string> GetCategoryAndProductPurchaseNames()
         {
-            List<string> productNames = [];
+            List<string> names = [];
 
             foreach (Category category in categoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    productNames.Add(product.Name);
+                    names.Add($"{category.Name} > {product.Name}");
                 }
             }
-            return productNames;
+            return names;
         }
         public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
         {
@@ -1617,7 +1617,7 @@ namespace Sales_Tracker
             }
             else if (Selected == SelectedOption.Accountants || Selected == SelectedOption.Companies)
             {
-                SaveDataGridViewToFile();
+                SaveDataGridViewToFile(selectedDataGridView, Selected);
             }
         }
         public void DataGridView_MouseDown(object sender, MouseEventArgs e)
@@ -2245,12 +2245,12 @@ namespace Sales_Tracker
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
-        private void SaveDataGridViewToFile()
+        public void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
-            string filePath = GetFilePathForDataGridView(Selected);
+            string filePath = GetFilePathForDataGridView(selected);
             List<string> linesInDataGridView = new();
 
-            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (row.Cells[0].Value != null)
                 {
@@ -2262,9 +2262,9 @@ namespace Sales_Tracker
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
-        public void SaveListToFile(List<string> list)
+        public void SaveListToFile(List<string> list, SelectedOption selected)
         {
-            string filePath = GetFilePathForDataGridView(Selected);
+            string filePath = GetFilePathForDataGridView(selected);
 
             Directories.WriteLinesToFile(filePath, list);
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
