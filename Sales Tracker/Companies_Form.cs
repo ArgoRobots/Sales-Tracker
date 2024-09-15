@@ -39,8 +39,8 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
-            Company_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Company_TextBox.KeyDown += UI.TextBox_KeyDown;
+            Company_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            TextBoxManager.Attach(Company_TextBox);
 
             Company_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
             Company_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
@@ -80,7 +80,7 @@ namespace Sales_Tracker
             string name = Company_TextBox.Text.Trim();
             MainMenu_Form.Instance.companyList.Add(name);
             int newRowIndex = Company_DataGridView.Rows.Add(name);
-            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added company '{name}'");

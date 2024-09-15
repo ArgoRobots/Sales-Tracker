@@ -40,11 +40,11 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void AddEventHandlersToTextBoxes()
         {
-            ProjectName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProjectName_TextBox.KeyDown += UI.TextBox_KeyDown;
+            ProjectName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            TextBoxManager.Attach(ProjectName_TextBox);
 
-            Directory_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Directory_TextBox.KeyDown += UI.TextBox_KeyDown;
+            Directory_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            TextBoxManager.Attach(Directory_TextBox);
         }
 
         // Form event handlers

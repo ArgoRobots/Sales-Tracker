@@ -15,11 +15,11 @@ namespace Sales_Tracker.Passwords
         }
         private void AddEventHandlersToTextBoxes()
         {
-            CurrentPassword_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            CurrentPassword_TextBox.KeyDown += UI.TextBox_KeyDown;
+            CurrentPassword_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            TextBoxManager.Attach(CurrentPassword_TextBox);
 
-            NewPassword_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            NewPassword_TextBox.KeyDown += UI.TextBox_KeyDown;
+            NewPassword_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            TextBoxManager.Attach(NewPassword_TextBox);
         }
 
         // Form event handlers

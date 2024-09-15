@@ -35,60 +35,48 @@ namespace Sales_Tracker
         private void AddEventHandlersToTextBoxes()
         {
             SaleNumber_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            SaleNumber_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            SaleNumber_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(SaleNumber_TextBox);
 
             AccountantName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             AccountantName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            AccountantName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            AccountantName_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(AccountantName_TextBox);
 
             ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(ProductName_TextBox);
 
             CountryOfDestinaion_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            CountryOfDestinaion_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            CountryOfDestinaion_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(CountryOfDestinaion_TextBox);
 
             Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
             Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Quantity_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Quantity_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(Quantity_TextBox);
 
             PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             PricePerUnit_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            PricePerUnit_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            PricePerUnit_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(PricePerUnit_TextBox);
 
             Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             Shipping_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Shipping_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Shipping_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(Shipping_TextBox);
 
             Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Tax_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Tax_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(Tax_TextBox);
 
             PaymentFee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            PaymentFee_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            PaymentFee_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(PaymentFee_TextBox);
 
             Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             Discount_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Discount_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Discount_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(Discount_TextBox);
 
             AmountCredited_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             AmountCredited_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            AmountCredited_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            AmountCredited_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(AmountCredited_TextBox);
 
             Notes_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            Notes_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Notes_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(Notes_TextBox);
         }
         private void AddSearchBoxEvents()
         {
@@ -767,8 +755,7 @@ namespace Sales_Tracker
             textBox.Click += CloseAllPanels;
             textBox.TextChanged += ValidateInputs;
             textBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            textBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            textBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(textBox);
 
             parent.Controls.Add(textBox);
             return textBox;

@@ -44,25 +44,20 @@ namespace Sales_Tracker
         private void AddEventHandlersToTextBoxes()
         {
             ProductID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductID_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductID_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(ProductID_TextBox);
 
             ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductName_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductName_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(ProductName_TextBox);
 
             ProductCategory_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            ProductCategory_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            ProductCategory_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(ProductCategory_TextBox);
 
             CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             CountryOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            CountryOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            CountryOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(CountryOfOrigin_TextBox);
 
             CompanyOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
-            CompanyOfOrigin_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            CompanyOfOrigin_TextBox.KeyDown += UI.TextBox_KeyDown;
+            TextBoxManager.Attach(CompanyOfOrigin_TextBox);
 
             Purchases_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
             Purchases_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
@@ -180,13 +175,13 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categorySaleList, category, product);
                 int newRowIndex = Sales_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             else
             {
                 MainMenu_Form.AddProductToCategoryByName(MainMenu_Form.Instance.categoryPurchaseList, category, product);
                 int newRowIndex = Purchases_DataGridView.Rows.Add(product.ProductID, product.Name, category, product.CountryOfOrigin, product.CompanyOfOrigin);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView,new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);

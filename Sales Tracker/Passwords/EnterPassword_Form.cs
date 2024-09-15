@@ -16,8 +16,8 @@ namespace Sales_Tracker.Passwords
         }
         private void AddEventHandlersToTextBoxes()
         {
-            Password_TextBox.PreviewKeyDown += UI.TextBox_PreviewKeyDown;
-            Password_TextBox.KeyDown += UI.TextBox_KeyDown;
+            Password_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            TextBoxManager.Attach(Password_TextBox);
         }
 
         // Form event handlers

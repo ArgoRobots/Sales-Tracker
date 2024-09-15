@@ -441,8 +441,8 @@ namespace Sales_Tracker.Classes
         private static Guna2TextBox _rename_TextBox;
         public static Guna2TextBox Rename_TextBox
         {
-            get { return _rename_TextBox; }
-            set { _rename_TextBox = value; }
+            get => _rename_TextBox;
+            set => _rename_TextBox = value;
         }
         public static void ConstructRightClickRename()
         {
@@ -479,8 +479,7 @@ namespace Sales_Tracker.Classes
                     Rename();
                 }
             };
-            _rename_TextBox.PreviewKeyDown += TextBox_PreviewKeyDown;
-            _rename_TextBox.KeyDown += TextBox_KeyDown;
+            TextBoxManager.Attach(_rename_TextBox);
         }
 
         // Validity
@@ -493,58 +492,6 @@ namespace Sales_Tracker.Classes
         {
             textBox.BorderColor = Color.Red;
             textBox.FocusedState.BorderColor = Color.Red;
-        }
-
-        // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X in Guna2TextBox
-        public static void TextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            if (e.Control && e.KeyCode is Keys.A or Keys.C or Keys.X or Keys.V)
-            {
-                e.IsInputKey = true;
-            }
-        }
-        public static void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            Guna2TextBox textBox = (Guna2TextBox)sender;
-
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                // Select all
-                textBox.SelectionStart = 0;
-                textBox.SelectionLength = textBox.Text.Length;
-                e.SuppressKeyPress = true;
-            }
-            else if (e.Control && e.KeyCode == Keys.C)
-            {
-                // Copy
-                if (!string.IsNullOrEmpty(textBox.SelectedText))
-                {
-                    Clipboard.SetText(textBox.SelectedText);
-                }
-                e.SuppressKeyPress = true;
-            }
-            else if (e.Control && e.KeyCode == Keys.X)
-            {
-                // Cut
-                if (!string.IsNullOrEmpty(textBox.SelectedText))
-                {
-                    Clipboard.SetText(textBox.SelectedText);
-                    textBox.SelectedText = "";
-                }
-                e.SuppressKeyPress = true;
-            }
-            else if (e.Control && e.KeyCode == Keys.V)
-            {
-                // Paste
-                if (Clipboard.ContainsText())
-                {
-                    int selectionStart = textBox.SelectionStart;
-                    textBox.Text = textBox.Text.Remove(selectionStart, textBox.SelectionLength)
-                                    .Insert(selectionStart, Clipboard.GetText());
-                    textBox.SelectionStart = selectionStart + Clipboard.GetText().Length;
-                }
-                e.SuppressKeyPress = true;
-            }
         }
 
         // Close all panels
