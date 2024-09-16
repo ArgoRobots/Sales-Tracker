@@ -46,7 +46,7 @@ namespace Sales_Tracker.Classes
                     decimal shipping = tagData.ShippingUSD * exchangeRate;
                     decimal tax = tagData.TaxUSD * exchangeRate;
                     decimal fee = tagData.FeeUSD * exchangeRate;
-                    decimal totalPrice = tagData.TotalPriceUSD * exchangeRate;
+                    decimal totalPrice = tagData.DiscountUSD * exchangeRate;
 
                     // Update the row values with the converted amounts using enum-based column access
                     row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = pricePerUnit.ToString("N2");

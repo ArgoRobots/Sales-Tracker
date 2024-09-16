@@ -60,10 +60,28 @@ namespace Sales_Tracker
 
             isProgramLoading = true;
             LoadData();
+            LoadColumnHeader();
             UpdateTheme();
             isProgramLoading = false;
 
             HideShowingResultsForLabel();
+        }
+        public void ResetData()
+        {
+            categoryPurchaseList.Clear();
+            categorySaleList.Clear();
+
+            accountantList.Clear();
+            companyList.Clear();
+
+            Purchases_DataGridView.Rows.Clear();
+            Sales_DataGridView.Rows.Clear();
+
+            Search_TextBox.Text = "";
+            Filter_ComboBox.SelectedIndex = 0;
+            Filter_ComboBox.Enabled = true;
+            fromDate = default;
+            toDate = default;
         }
         public void LoadData()
         {
@@ -89,7 +107,10 @@ namespace Sales_Tracker
             AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
 
-            // Load images into column headers
+            AddTimeRangesIntoComboBox();
+        }
+        private void LoadColumnHeader()
+        {
             DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
             string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax variations across countries.";
@@ -99,8 +120,6 @@ namespace Sales_Tracker
             existingHeaderText = totalColumn.HeaderText;
             messageBoxText = "The revenue excludes shipping, taxes, and fees.";
             totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
-
-            AddTimeRangesIntoComboBox();
         }
         private static void LoadCategoriesFromFile(string filePath, List<Category> categoryList)
         {
@@ -162,7 +181,9 @@ namespace Sales_Tracker
                     if (tagObject != null)
                     {
                         // If the tagObject is a list of items and TagData
-                        if (tagObject.TryGetValue(itemsKey, out object? itemsElement) && itemsElement is JsonElement itemsJsonElement && itemsJsonElement.ValueKind == JsonValueKind.Array)
+                        if (tagObject.TryGetValue(itemsKey, out object? itemsElement) &&
+                            itemsElement is JsonElement itemsJsonElement &&
+                            itemsJsonElement.ValueKind == JsonValueKind.Array)
                         {
                             List<string?> itemList = itemsJsonElement.EnumerateArray().Select(e => e.GetString()).ToList();
 
@@ -177,7 +198,8 @@ namespace Sales_Tracker
                             }
                         }
                         // If the tagObject is a string and TagData
-                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement) && tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
+                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement) &&
+                            tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
                         {
                             string? tagString = tagStringElement?.ToString();
                             TagData? purchaseData1 = JsonSerializer.Deserialize<TagData>(purchaseData1Element?.ToString());
@@ -187,13 +209,17 @@ namespace Sales_Tracker
                                 dataGridView.Rows[rowIndex].Tag = (tagString, purchaseData1);
                             }
                         }
-                        // If the tagObject is a string
-                        else if (value is JsonElement stringElement && stringElement.ValueKind == JsonValueKind.Object)
+                        // If the tagObject is a TagData
+                        else if (rowData.TryGetValue(rowTagKey, out object value1) &&
+                          value1 is JsonElement jsonElement1 &&
+                          jsonElement1.ValueKind == JsonValueKind.Object)
                         {
-                            if (stringElement.TryGetProperty(tagKey, out JsonElement tagProperty) && tagProperty.ValueKind == JsonValueKind.String)
+                            // Try to deserialize the JsonElement directly into a TagData object
+                            TagData? tagData = JsonSerializer.Deserialize<TagData>(jsonElement1.GetRawText());
+
+                            if (tagData != null)
                             {
-                                string singleTag = tagProperty.GetString();
-                                dataGridView.Rows[rowIndex].Tag = singleTag;
+                                dataGridView.Rows[rowIndex].Tag = tagData;
                             }
                         }
                     }
@@ -860,6 +886,8 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
+            if (isProgramLoading) { return; }
+
             if (!timerRunning)
             {
                 timerRunning = true;
@@ -1083,7 +1111,7 @@ namespace Sales_Tracker
             UpdateMainMenuFormText(this);
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
         }
-        private void SetCompanyLabel()
+        public void SetCompanyLabel()
         {
             CompanyName_Label.Text = Directories.CompanyName;
             MoveEditButton();
@@ -1417,6 +1445,8 @@ namespace Sales_Tracker
         }
         public void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
+            if (isProgramLoading) { return; }
+
             if (doNotDeleteRows)
             {
                 e.Cancel = true;
@@ -1567,6 +1597,8 @@ namespace Sales_Tracker
         }
         public void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
+            if (isProgramLoading) { return; }
+
             DataGridViewRowChanged();
 
             // Remove receipt from file
@@ -1582,7 +1614,11 @@ namespace Sales_Tracker
                 {
                     tagValue = tagString.Replace(receipt_text, "").Replace(companyName_text, Directories.CompanyName);
                 }
-                Directories.DeleteFile(tagValue);
+
+                if (tagValue != "")
+                {
+                    Directories.DeleteFile(tagValue);
+                }
 
                 removedRow = null;
             }
@@ -1590,6 +1626,7 @@ namespace Sales_Tracker
         private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (isProgramLoading) { return; }
+
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
             DataGridViewRowChanged();
         }
@@ -1930,7 +1967,7 @@ namespace Sales_Tracker
 
             rightClickDataGridView_MoveBtn.Text = buttonText;
         }
-        private void UpdateTotals()
+        public void UpdateTotals()
         {
             if (isProgramLoading || Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales)
             {
@@ -2074,7 +2111,6 @@ namespace Sales_Tracker
 
             List<string> items = null;
 
-            // Check if Tag is a ValueTuple
             if (selectedRowInMainMenu.Tag is (List<string> itemList, TagData))
             {
                 items = itemList;
@@ -2082,12 +2118,6 @@ namespace Sales_Tracker
             else if (selectedRowInMainMenu.Tag is List<string> list)
             {
                 items = list;
-            }
-
-            if (items == null)
-            {
-                // Handle case where items are null (Optional)
-                throw new InvalidOperationException("Tag does not contain a valid list of items.");
             }
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
@@ -2200,6 +2230,13 @@ namespace Sales_Tracker
                     {
                         Tag = tagString,
                         PurchaseData = purchaseData1
+                    };
+                }
+                else if (row.Tag is TagData purchaseData2)
+                {
+                    rowData[rowTagKey] = new
+                    {
+                        PurchaseData = purchaseData2
                     };
                 }
 
@@ -2738,7 +2775,7 @@ namespace Sales_Tracker
         // Misc.
         public static void UpdateMainMenuFormText(Form instance)
         {
-            instance.Text = $"Argo Sales Tracker - {Directories.CompanyName}";
+            instance.Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
         }
         public bool IsPurchasesSelected()
         {

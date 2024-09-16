@@ -135,37 +135,41 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
-                    Guna2Button gBtn;
+                    Guna2Button btn;
                     if (controlIndex < searchResultControls.Count && searchResultControls[controlIndex] is Guna2Button existingButton)
                     {
-                        gBtn = existingButton;
+                        btn = existingButton;
                     }
                     else
                     {
-                        gBtn = new Guna2Button();
-                        gBtn.Click += (sender, e) =>
+                        btn = new Guna2Button
+                        {
+                            Font = new Font("Segoe UI", 10),
+                            FillColor = CustomColors.controlBack,
+                            ForeColor = CustomColors.text,
+                            BorderColor = CustomColors.accent_blue,
+                            ImageAlign = HorizontalAlignment.Left,
+                            ImageSize = new Size(25, 13),  // Flags have different ratios. This is just a good size
+                            TextAlign = HorizontalAlignment.Left
+                        };
+                        btn.Click += (sender, e) =>
                         {
                             Guna2Button? button = sender as Guna2Button;
-                            textBox.Text = button.Text;
+                            Guna2TextBox selectedTextBox = (Guna2TextBox)button.Tag;
+                            selectedTextBox.Text = button.Text;
                             CloseSearchBox(controlToAddSearchBox);
                             deselectControl.Focus();
                             debounceTimer.Stop();
                         };
-                        SearchResultBox.Controls.Add(gBtn);
-                        searchResultControls.Add(gBtn);
+                        SearchResultBox.Controls.Add(btn);
+                        searchResultControls.Add(btn);
                     }
-                    gBtn.Text = meta.Name;
-                    gBtn.Size = new Size(CalculateControlWidth(metaList.Count), buttonHeight);
-                    gBtn.Location = new Point(1, yOffset);
-                    gBtn.Font = new Font("Segoe UI", 10);
-                    gBtn.FillColor = CustomColors.controlBack;
-                    gBtn.ForeColor = CustomColors.text;
-                    gBtn.BorderColor = CustomColors.accent_blue;
-                    gBtn.Image = meta.Flag;
-                    gBtn.ImageAlign = HorizontalAlignment.Left;
-                    gBtn.ImageSize = new Size(25, 13);
-                    gBtn.TextAlign = HorizontalAlignment.Left;
-                    gBtn.Visible = true;
+                    btn.Size = new Size(CalculateControlWidth(metaList.Count), buttonHeight);
+                    btn.Text = meta.Name;
+                    btn.Location = new Point(1, yOffset);
+                    btn.Image = meta.Flag;
+                    btn.Visible = true;
+                    btn.Tag = textBox;
                 }
                 yOffset += buttonHeight;
                 controlIndex++;

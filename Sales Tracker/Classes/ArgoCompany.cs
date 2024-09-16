@@ -181,7 +181,16 @@ namespace Sales_Tracker.Classes
                     return;
                 }
 
+                MainMenu_Form.Instance.isProgramLoading = true;
+                MainMenu_Form.Instance.ResetData();
                 MainMenu_Form.Instance.LoadData();
+                MainMenu_Form.Instance.isProgramLoading = false;
+
+                MainMenu_Form.UpdateMainMenuFormText(MainMenu_Form.Instance);
+                MainMenu_Form.Instance.SetCompanyLabel();
+
+                MainMenu_Form.Instance.UpdateTotals();
+                MainMenu_Form.Instance.LoadCharts();
             }
         }
 

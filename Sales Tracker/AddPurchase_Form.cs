@@ -101,6 +101,12 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
 
+            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
+            {
+                MainMenu_Form.Instance.Purchases_Button.PerformClick();
+            }
+            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
+
             if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
                 if (!AddSinglePurchase()) { return; }
@@ -120,12 +126,6 @@ namespace Sales_Tracker
             {
                 return;
             }
-
-            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Purchases)
-            {
-                MainMenu_Form.Instance.Purchases_Button.PerformClick();
-            }
-            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
 
             // Reset
             RemoveReceiptLabel();
@@ -192,7 +192,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
@@ -205,10 +205,13 @@ namespace Sales_Tracker
             }
 
             string buyerName = BuyerName_TextBox.Text;
-            string itemName = ProductName_TextBox.Text.Trim();
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+
+            string[] items = ProductName_TextBox.Text.Split('>');
+            string categoryName = items[0].Trim();
+            string productName = items[1].Trim();
+
+            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
+            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
@@ -223,39 +226,6 @@ namespace Sales_Tracker
             {
                 noteLabel = MainMenu_Form.show_text;
             }
-
-            // Convert to USD
-            decimal exchangeRateToUSD = 1;
-            if (Currency_ComboBox.Text != "USD")
-            {
-                exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
-                if (exchangeRateToUSD == -1) { return false; }
-            }
-            decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
-            decimal shippingUSD = shipping * exchangeRateToUSD;
-            decimal taxUSD = tax * exchangeRateToUSD;
-            decimal feeUSD = fee * exchangeRateToUSD;
-            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
-
-            // Store the USD value in the Tag property
-            TagData purchaseData = new()
-            {
-                PricePerUnitUSD = pricePerUnitUSD,
-                ShippingUSD = shippingUSD,
-                TaxUSD = taxUSD,
-                FeeUSD = feeUSD,
-                TotalPriceUSD = totalPriceUSD
-            };
-
-            // Convert back to default currency for display
-            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
-            if (exchangeRateToDefault == -1) { return false; }
-
-            pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
-            shipping = shippingUSD * exchangeRateToDefault;
-            tax = taxUSD * exchangeRateToDefault;
-            fee = feeUSD * exchangeRateToDefault;
-            totalPrice = totalPriceUSD * exchangeRateToDefault;
 
             // Round to 2 decimal places
             decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
@@ -275,6 +245,45 @@ namespace Sales_Tracker
             }
             totalPrice += chargedDifference;
 
+            // Convert to USD
+            decimal exchangeRateToUSD = 1;
+            if (Currency_ComboBox.Text != "USD")
+            {
+                exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+                if (exchangeRateToUSD == -1) { return false; }
+            }
+            decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
+            decimal shippingUSD = shipping * exchangeRateToUSD;
+            decimal taxUSD = tax * exchangeRateToUSD;
+            decimal feeUSD = fee * exchangeRateToUSD;
+            decimal discountUSD = discount * exchangeRateToUSD;
+            decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
+            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+
+            // Store the USD value in the Tag property
+            TagData purchaseData = new()
+            {
+                PricePerUnitUSD = pricePerUnitUSD,
+                ShippingUSD = shippingUSD,
+                TaxUSD = taxUSD,
+                FeeUSD = feeUSD,
+                DiscountUSD = discountUSD,
+                ChargedDifferenceUSD = chargedDifferenceUSD,
+                TotalUSD = totalPriceUSD
+            };
+
+            // Convert back to default currency for display
+            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
+            if (exchangeRateToDefault == -1) { return false; }
+
+            pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
+            shipping = shippingUSD * exchangeRateToDefault;
+            tax = taxUSD * exchangeRateToDefault;
+            fee = feeUSD * exchangeRateToDefault;
+            discount = discountUSD * exchangeRateToDefault;
+            chargedDifference = chargedDifferenceUSD * exchangeRateToDefault;
+            totalPrice = totalPriceUSD * exchangeRateToDefault;
+
             string newFilePath = "";
             if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
             {
@@ -292,7 +301,7 @@ namespace Sales_Tracker
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseNumber,
                 buyerName,
-                itemName,
+                productName,
                 categoryName,
                 country,
                 company,
@@ -318,8 +327,8 @@ namespace Sales_Tracker
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, itemName);
-            Log.Write(3, $"Added purchase '{itemName}'");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, categoryName);
+            Log.Write(3, $"Added purchase '{categoryName}'");
 
             return true;
         }
@@ -330,7 +339,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
@@ -514,7 +523,7 @@ namespace Sales_Tracker
                 ShippingUSD = shippingUSD,
                 TaxUSD = taxUSD,
                 FeeUSD = feeUSD,
-                TotalPriceUSD = totalPriceUSD
+                DiscountUSD = totalPriceUSD
             };
 
             // Combine existing items and USD data in a tuple

@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Sales_Tracker.Classes
 {
@@ -43,6 +44,10 @@ namespace Sales_Tracker.Classes
         public static bool IsFormOpen(Type formType)
         {
             return Application.OpenForms.OfType<Form>().Any(f => f.GetType() == formType);
+        }
+        public static string GetVersionNumber()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
         /// <summary>

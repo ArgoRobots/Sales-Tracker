@@ -147,7 +147,7 @@ namespace Sales_Tracker
         {
             // Check if product ID already exists
             string productID = ProductID_TextBox.Text.Trim();
-            if (productID != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.selectedDataGridView, Column.ProductID.ToString(), productID))
+            if (productID != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.selectedDataGridView, Column.ProductID.ToString(), productID))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The product #{productID} already exists. Would you like to add this product anyways?",

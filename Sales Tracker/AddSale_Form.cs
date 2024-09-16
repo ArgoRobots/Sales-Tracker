@@ -85,6 +85,7 @@ namespace Sales_Tracker
             ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, AddSale_Label, e); };
 
             CountryOfDestinaion_TextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, CountryOfDestinaion_TextBox, Country.countries, this, searchBoxMaxHeight); };
+            CountryOfDestinaion_TextBox.GotFocus += (sender, e) => { SearchBox.ShowSearchBox(this, CountryOfDestinaion_TextBox, Country.countries, this, searchBoxMaxHeight); };
             CountryOfDestinaion_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, CountryOfDestinaion_TextBox, Country.countries, this, searchBoxMaxHeight); };
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
             CountryOfDestinaion_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
@@ -106,6 +107,12 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
 
+            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Sales)
+            {
+                MainMenu_Form.Instance.Sales_Button.PerformClick();
+            }
+            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Sales_DataGridView;
+
             if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
                 if (!AddSingleSale()) { return; }
@@ -125,12 +132,6 @@ namespace Sales_Tracker
             {
                 return;
             }
-
-            if (MainMenu_Form.Instance.Selected != MainMenu_Form.SelectedOption.Sales)
-            {
-                MainMenu_Form.Instance.Sales_Button.PerformClick();
-            }
-            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Sales_DataGridView;
 
             // Reset
             RemoveReceiptLabel();
@@ -197,7 +198,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
@@ -210,7 +211,11 @@ namespace Sales_Tracker
             }
 
             string buyerName = AccountantName_TextBox.Text;
-            string itemName = ProductName_TextBox.Text;
+
+            string[] items = ProductName_TextBox.Text.Split('>');
+            string categoryName = items[0].Trim();
+            string productName = items[1].Trim();
+
             string country = CountryOfDestinaion_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
@@ -219,8 +224,7 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            string categoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categorySaleList, itemName);
-            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, itemName);
+            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
             decimal totalPrice = quantity * pricePerUnit - discount;
             string noteLabel = MainMenu_Form.emptyCell;
             string note = Notes_TextBox.Text.Trim();
@@ -247,6 +251,45 @@ namespace Sales_Tracker
             }
             totalPrice += chargedDifference;
 
+            // Convert to USD
+            decimal exchangeRateToUSD = 1;
+            if (Properties.Settings.Default.Currency != "USD")
+            {
+                exchangeRateToUSD = Currency.GetExchangeRate(Properties.Settings.Default.Currency, "USD", date);
+                if (exchangeRateToUSD == -1) { return false; }
+            }
+            decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
+            decimal shippingUSD = shipping * exchangeRateToUSD;
+            decimal taxUSD = tax * exchangeRateToUSD;
+            decimal feeUSD = fee * exchangeRateToUSD;
+            decimal discountUSD = discount * exchangeRateToUSD;
+            decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
+            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+
+            // Store the USD value in the Tag property
+            TagData purchaseData = new()
+            {
+                PricePerUnitUSD = pricePerUnitUSD,
+                ShippingUSD = shippingUSD,
+                TaxUSD = taxUSD,
+                FeeUSD = feeUSD,
+                DiscountUSD = discountUSD,
+                ChargedDifferenceUSD = chargedDifferenceUSD,
+                TotalUSD = totalPriceUSD
+            };
+
+            // Convert back to default currency for display
+            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
+            if (exchangeRateToDefault == -1) { return false; }
+
+            pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
+            shipping = shippingUSD * exchangeRateToDefault;
+            tax = taxUSD * exchangeRateToDefault;
+            fee = feeUSD * exchangeRateToDefault;
+            discount = discountUSD * exchangeRateToDefault;
+            chargedDifference = chargedDifferenceUSD * exchangeRateToDefault;
+            totalPrice = totalPriceUSD * exchangeRateToDefault;
+
             string newFilePath = "";
             if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
             {
@@ -265,7 +308,7 @@ namespace Sales_Tracker
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 saleNumber,
                 buyerName,
-                itemName,
+                productName,
                 categoryName,
                 country,
                 company,
@@ -286,13 +329,14 @@ namespace Sales_Tracker
             }
             if (newFilePath != "")
             {
-                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = newFilePath;
+                // Store the receipt and USD values in the row's Tag
+                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = Tuple.Create(newFilePath, purchaseData);
             }
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, itemName);
-            Log.Write(3, $"Added Sale '{itemName}'");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, productName);
+            Log.Write(3, $"Added Sale '{productName}'");
 
             return true;
         }
@@ -303,7 +347,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 

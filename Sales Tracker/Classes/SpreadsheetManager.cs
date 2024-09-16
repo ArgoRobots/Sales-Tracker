@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Sales_Tracker.Classes
 {
@@ -150,7 +151,8 @@ namespace Sales_Tracker.Classes
             foreach (IXLRow row in rowsToProcess)
             {
                 string purchaseNumber = row.Cell(1).GetValue<string>();
-                if (purchaseNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+
+                if (purchaseNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                       $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
@@ -164,11 +166,10 @@ namespace Sales_Tracker.Classes
 
                 DataGridViewRow newRow = new();
                 newRow.CreateCells(MainMenu_Form.Instance.Purchases_DataGridView);
+                TagData tagData = new();
 
-                for (int i = 0; i < row.Cells().Count() - 1; i++)
-                {
-                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
-                }
+                ImportCells(row, tagData, newRow);
+
                 newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
             }
 
@@ -182,7 +183,8 @@ namespace Sales_Tracker.Classes
             foreach (IXLRow row in rowsToProcess)
             {
                 string saleNumber = row.Cell(1).GetValue<string>();
-                if (saleNumber != "-" && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+
+                if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                       $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
@@ -196,14 +198,62 @@ namespace Sales_Tracker.Classes
 
                 DataGridViewRow newRow = new();
                 newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
-                for (int i = 0; i < row.Cells().Count() - 1; i++)
-                {
-                    newRow.Cells[i].Value = row.Cell(i + 1).GetValue<string>();
-                }
+                TagData tagData = new();
+
+                ImportCells(row, tagData, newRow);
+
                 newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
             }
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+        }
+        private static void ImportCells(IXLRow row, TagData tagData, DataGridViewRow newRow)
+        {
+            for (int i = 0; i < row.Cells().Count() - 1; i++)
+            {
+                string value = row.Cell(i + 1).GetValue<string>();
+
+                if (i >= 8 && i <= 14)
+                {
+                    decimal decimalValue = ConvertStringToDecimal(value);
+
+                    switch (i)
+                    {
+                        case 8:
+                            tagData.PricePerUnitUSD = decimalValue;
+                            break;
+                        case 9:
+                            tagData.ShippingUSD = decimalValue;
+                            break;
+                        case 10:
+                            tagData.TaxUSD = decimalValue;
+                            break;
+                        case 11:
+                            tagData.FeeUSD = decimalValue;
+                            break;
+                        case 12:
+                            tagData.DiscountUSD = decimalValue;
+                            break;
+                        case 13:
+                            tagData.ChargedDifferenceUSD = decimalValue;
+                            break;
+                        case 14:
+                            tagData.TotalUSD = decimalValue;
+                            break;
+                    }
+
+                    string date = row.Cell(7).GetValue<string>();
+                    decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
+                    if (exchangeRateToDefault == -1) { return; }
+
+                    newRow.Cells[i].Value = (ConvertStringToDecimal(value) * exchangeRateToDefault).ToString("N2");
+                }
+                else
+                {
+                    newRow.Cells[i].Value = value;
+                }
+            }
+            newRow.Tag = tagData;
         }
 
         // Export spreadsheet methods
@@ -245,47 +295,41 @@ namespace Sales_Tracker.Classes
                 cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
             }
 
-            int lastCellIndex = dataGridView.Columns.Count + 1;
+            int receiptCellIndex = dataGridView.Columns.Count + 1;
 
             // Add header for the receipt column
-            worksheet.Cell(1, lastCellIndex).Value = "Receipt";
-            worksheet.Cell(1, lastCellIndex).Style.Font.Bold = true;
-            worksheet.Cell(1, lastCellIndex).Style.Fill.BackgroundColor = XLColor.LightBlue;
+            worksheet.Cell(1, receiptCellIndex).Value = "Receipt";
+            worksheet.Cell(1, receiptCellIndex).Style.Font.Bold = true;
+            worksheet.Cell(1, receiptCellIndex).Style.Fill.BackgroundColor = XLColor.LightBlue;
+
+            // Add message
+            int messageCellIndex = receiptCellIndex + 2;
+            worksheet.Cell(1, messageCellIndex).Value = "All prices in USD";
+            worksheet.Cell(1, messageCellIndex).Style.Font.Bold = true;
+
+            // Extract TagData and receipt information
+            TagData? tagData = null;
+            string receiptFileName = MainMenu_Form.emptyCell;
 
             int currentRow = 2;
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                // Iterate over the cells in the row to fill the data
-                for (int i = 0; i < row.Cells.Count; i++)
-                {
-                    string? cellValue = row.Cells[i].Value?.ToString();
-                    IXLCell excelCell = worksheet.Cell(currentRow, i + 1);
-
-                    // Check if the last cell has "show"
-                    if (cellValue == MainMenu_Form.show_text && row.Cells[i].Tag != null)
-                    {
-                        excelCell.Value = row.Cells[i].Tag.ToString();
-                    }
-                    else
-                    {
-                        excelCell.Value = cellValue;
-                    }
-                }
-
                 // Handle receipts and adding new rows
-                if (row.Tag is (List<string> tagList, TagData) && tagList.Count > 0)
+                if (row.Tag is (List<string> tagList, TagData tagData1) && tagList.Count > 0)
                 {
+                    tagData = tagData1;
+
                     // Is there a receipt
                     byte receiptOffset = 0;
-                    string lastItem = tagList[^1];
-                    if (lastItem.StartsWith(MainMenu_Form.receipt_text))
+                    string receipt = tagList[^1];
+                    if (receipt.StartsWith(MainMenu_Form.receipt_text))
                     {
                         receiptOffset = 1;
-                        worksheet.Cell(currentRow, lastCellIndex).Value = lastItem;
+                        receiptFileName = receipt;
                     }
                     else
                     {
-                        worksheet.Cell(currentRow, lastCellIndex).Value = MainMenu_Form.emptyCell;
+                        worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
                     }
 
                     // Add additional rows if they exist in the tagList
@@ -299,25 +343,76 @@ namespace Sales_Tracker.Classes
                         }
                     }
                 }
-                else if (row.Tag is (string tagString, TagData))
+                else if (row.Tag is (string tagString, TagData tagData2))
                 {
-                    string fileName = Path.GetFileName(tagString);
-                    worksheet.Cell(currentRow, lastCellIndex).Value = fileName;
-                }
-                else if (row.Tag is string)
-                {
-                    string fileName = Path.GetFileName(row.Tag.ToString());
-                    worksheet.Cell(currentRow, lastCellIndex).Value = fileName;
+                    tagData = tagData2;
+                    receiptFileName = Path.GetFileName(tagString);
                 }
                 else
                 {
-                    worksheet.Cell(currentRow, lastCellIndex).Value = MainMenu_Form.emptyCell;
+                    worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
                 }
+
+                AddRowToWorksheet(worksheet, row, currentRow, tagData);
+
+                // Add receipt to the last cell
+                worksheet.Cell(currentRow, receiptCellIndex).Value = receiptFileName;
 
                 currentRow++;
             }
 
             worksheet.Columns().AdjustToContents();
+        }
+        private static void AddRowToWorksheet(IXLWorksheet worksheet, DataGridViewRow row, int currentRow, TagData tagData)
+        {
+            for (int i = 0; i < row.Cells.Count; i++)
+            {
+                IXLCell excelCell = worksheet.Cell(currentRow, i + 1);
+
+                if (tagData != null && i >= 8 && i <= 14)
+                {
+                    decimal usdValue = 0;
+                    switch (i)
+                    {
+                        case 8:
+                            usdValue = tagData.PricePerUnitUSD;
+                            break;
+                        case 9:
+                            usdValue = tagData.ShippingUSD;
+                            break;
+                        case 10:
+                            usdValue = tagData.TaxUSD;
+                            break;
+                        case 11:
+                            usdValue = tagData.FeeUSD;
+                            break;
+                        case 12:
+                            usdValue = tagData.DiscountUSD;
+                            break;
+                        case 13:
+                            usdValue = tagData.ChargedDifferenceUSD;
+                            break;
+                        case 14:
+                            usdValue = tagData.TotalUSD;
+                            break;
+                    }
+                    excelCell.Value = usdValue.ToString();
+                }
+                else
+                {
+                    string? cellValue = row.Cells[i].Value?.ToString();
+
+                    // Check if the last cell has "show"
+                    if (cellValue == MainMenu_Form.show_text && row.Cells[i].Tag != null)
+                    {
+                        excelCell.Value = row.Cells[i].Tag.ToString();
+                    }
+                    else
+                    {
+                        excelCell.Value = cellValue;
+                    }
+                }
+            }
         }
         private static void AddAccountantsToWorksheet(IXLWorksheet worksheet)
         {
@@ -379,6 +474,20 @@ namespace Sales_Tracker.Classes
             }
 
             worksheet.Columns().AdjustToContents();
+        }
+
+        // Other methods
+        public static decimal ConvertStringToDecimal(string value)
+        {
+            try
+            {
+                return Convert.ToDecimal(value);
+            }
+            catch
+            {
+                CustomMessageBox.Show("Argo Sales Tracker", $"Cannot import because a money value is not in the correct format: {value}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                return -1;
+            }
         }
     }
 }

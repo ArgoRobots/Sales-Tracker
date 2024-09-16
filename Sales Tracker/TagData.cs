@@ -6,7 +6,9 @@
         private decimal shippingUSD;
         private decimal taxUSD;
         private decimal feeUSD;
-        private decimal totalPriceUSD;
+        private decimal discountUSD;
+        private decimal chargedDifferenceUSD;
+        private decimal totalUSD;
 
         public decimal PricePerUnitUSD
         {
@@ -28,10 +30,20 @@
             get => feeUSD;
             set => feeUSD = value;
         }
-        public decimal TotalPriceUSD
+        public decimal DiscountUSD
         {
-            get => totalPriceUSD;
-            set => totalPriceUSD = value;
+            get => discountUSD;
+            set => discountUSD = value;
+        }
+        public decimal ChargedDifferenceUSD
+        {
+            get => chargedDifferenceUSD;
+            set => chargedDifferenceUSD = value;
+        }
+        public decimal TotalUSD
+        {
+            get => totalUSD;
+            set => totalUSD = value;
         }
     }
 }
