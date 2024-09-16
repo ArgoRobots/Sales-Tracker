@@ -238,12 +238,6 @@ namespace Sales_Tracker
             }
             total = LoadChart.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Profits_Chart, isLine);
             Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
-
-            if (onlyLoadForLineCharts)
-            {
-                LoadChart.LoadSalesVsExpensesChart(Purchases_DataGridView, Sales_DataGridView, salesVsExpenses_Chart, isLine);
-                LoadChart.LoadAverageOrderValueChart(Sales_DataGridView, averageOrderValue_Chart, isLine);
-            }
         }
         public void UpdateTheme()
         {

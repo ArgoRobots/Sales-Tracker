@@ -742,6 +742,17 @@ namespace Sales_Tracker.Charts
                 {
                     ((GunaBarDataset)expensesDataset).DataPoints.Add(date, expensesValue);
                     ((GunaBarDataset)salesDataset).DataPoints.Add(date, salesValue);
+
+                    if (salesDataset.DataPointCount + expensesDataset.DataPointCount == 1)
+                    {
+                        ((GunaBarDataset)expensesDataset).BarPercentage = 0.2f;
+                        ((GunaBarDataset)salesDataset).BarPercentage = 0.2f;
+                    }
+                    else
+                    {
+                        ((GunaBarDataset)expensesDataset).BarPercentage = 0.4f;
+                        ((GunaBarDataset)salesDataset).BarPercentage = 0.4f;
+                    }
                 }
             }
 
@@ -895,7 +906,7 @@ namespace Sales_Tracker.Charts
             // Set BarPercentage for bar charts
             if (!isLineChart)
             {
-                if (dataset.DataPointCount < 3)
+                if (dataset.DataPointCount == 1)
                 {
                     ((GunaBarDataset)dataset).BarPercentage = 0.2f;
                 }
