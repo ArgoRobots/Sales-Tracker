@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using SharpCompress.Common;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -48,6 +49,10 @@ namespace Sales_Tracker.Classes
         public static string GetVersionNumber()
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        }
+        public static void ShowFileInFolder(string filePath)
+        {
+            Process.Start("explorer.exe", $"/select,\"{filePath}\"");
         }
 
         /// <summary>

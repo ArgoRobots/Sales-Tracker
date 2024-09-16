@@ -266,10 +266,10 @@ namespace Sales_Tracker.Startup.Menus
 
             if (OpenRecent_FlowLayoutPanel.Controls.OfType<Guna2Button>().FirstOrDefault() is Guna2Button btn)
             {
-                string projectDir = Path.GetDirectoryName(btn.Tag.ToString());
-                if (Directory.Exists(projectDir))
+                string projectFile = btn.Tag.ToString();
+                if (File.Exists(projectFile))
                 {
-                    System.Diagnostics.Process.Start("explorer.exe", projectDir);
+                    Tools.ShowFileInFolder(projectFile);
                 }
             }
         }

@@ -159,7 +159,7 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(panelWidth, 7 * panelButtonHeight + spaceForSeperator + spaceForPanel));
+            fileMenu = ConstructPanelForMenu(new Size(panelWidth, 8 * panelButtonHeight + spaceForSeperator * 2 + spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", panelBtnWidth, true, flowPanel);
@@ -215,6 +215,14 @@ namespace Sales_Tracker.Classes
                 {
                     new ImportSpreadSheets_Form().ShowDialog();
                 }
+            };
+
+            ConstructSeperator(panelBtnWidth, flowPanel);
+
+            menuBtn = ConstructBtnForMenu("Show company in folder", panelBtnWidth, true, flowPanel);
+            menuBtn.Click += (sender, e) =>
+            {
+                Tools.ShowFileInFolder(Directories.ArgoCompany_file);
             };
         }
         public static bool ShouldShowTutorial()
