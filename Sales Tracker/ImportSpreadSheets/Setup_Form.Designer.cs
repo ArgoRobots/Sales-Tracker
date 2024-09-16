@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Setup_Form));
             FormBack_Panel = new Guna.UI2.WinForms.Guna2Panel();
             SuspendLayout();
@@ -38,25 +38,25 @@
             // 
             FormBack_Panel.BackColor = SystemColors.ButtonFace;
             FormBack_Panel.BorderColor = Color.Black;
-            FormBack_Panel.CustomizableEdges = customizableEdges3;
+            FormBack_Panel.CustomizableEdges = customizableEdges1;
             FormBack_Panel.Dock = DockStyle.Fill;
             FormBack_Panel.Location = new Point(0, 0);
             FormBack_Panel.Margin = new Padding(0);
             FormBack_Panel.Name = "FormBack_Panel";
-            FormBack_Panel.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            FormBack_Panel.Size = new Size(1078, 594);
+            FormBack_Panel.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            FormBack_Panel.Size = new Size(1128, 794);
             FormBack_Panel.TabIndex = 177;
             // 
-            // ImportSpreadsheet_Form
+            // Setup_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
-            ClientSize = new Size(1078, 594);
+            ClientSize = new Size(1128, 794);
             Controls.Add(FormBack_Panel);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(6, 5, 6, 5);
             MinimumSize = new Size(1100, 650);
-            Name = "ImportSpreadsheet_Form";
+            Name = "Setup_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Import spreadsheet";

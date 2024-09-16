@@ -9,22 +9,10 @@ namespace Sales_Tracker.ImportSpreadsheets
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
+            VideoPlayer.LoadVideo(WebBrowser, "https://www.youtube.com/watch?v=5aCbWqKl-wU");
 
-            LoadVideo();
-        }
-        private void LoadVideo()
-        {
-            // https://stackoverflow.com/questions/73795000/how-do-i-display-a-youtube-video-in-webviewer#73795057
-
-            string url = "https://www.youtube.com/watch?v=5aCbWqKl-wU";
-            string html = "<html style='width: 100%; height: 100%; margin: 0; padding: 0;'><head>";
-            html += "<meta content='IE=Edge' http-equiv='X-UA-Compatible'/>";
-            html += "</head><body style='width: 100%; height: 100%; margin: 0; padding: 0;'>";
-            html += "<iframe id='video' src='https://www.youtube.com/embed/{0}' style=\"padding: 0px; width: 100%; height: 100%; border: none; display: block;\"></iframe>";
-            html += "</body></html>";
-            WebBrowser.DocumentText = string.Format(html, url.Split('=')[1]);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
 
         // Form event handlers
