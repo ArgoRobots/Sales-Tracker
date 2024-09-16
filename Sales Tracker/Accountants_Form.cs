@@ -37,7 +37,6 @@ namespace Sales_Tracker
         private void AddEventHandlersToTextBoxes()
         {
             Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
-            Accountant_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Accountant_TextBox);
 
             Accountants_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };

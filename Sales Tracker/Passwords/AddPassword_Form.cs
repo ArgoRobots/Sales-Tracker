@@ -8,13 +8,13 @@ namespace Sales_Tracker.Passwords
         public AddPassword_Form()
         {
             InitializeComponent();
+
             LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
         {
-            Password_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Password_TextBox);
         }
 

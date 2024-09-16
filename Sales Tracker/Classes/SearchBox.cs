@@ -15,6 +15,9 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
         public static Guna2Panel SearchResultBox => _searchResultBox;
 
+        // List to store and reuse controls
+        private readonly static List<Control> searchResultControls = [];
+
         // Init.
         public static void ConstructSearchBox()
         {
@@ -62,6 +65,9 @@ namespace Sales_Tracker.Classes
         // Main methods
         public static void ShowSearchBox(Control controlToAddBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
         {
+            // Start timing
+            long startTime = DateTime.Now.Ticks;
+
             controlToAddSearchBox = controlToAddBox;
             UI.CloseAllPanels(null, null);
 
@@ -72,7 +78,10 @@ namespace Sales_Tracker.Classes
             }
 
             SearchResultBox.SuspendLayout();
-            SearchResultBox.Controls.Clear();
+            foreach (Control control in searchResultControls)
+            {
+                control.Visible = false;
+            }
 
             List<SearchResult> metaList = [];
             string searchText = textBox.Text;
@@ -104,40 +113,68 @@ namespace Sales_Tracker.Classes
             // Add results to SearchResultBox
             int yOffset = 1;
             int buttonHeight = 35;
+            int controlIndex = 0;
 
             foreach (SearchResult meta in metaList)
             {
                 if (meta.Name == addLine)
                 {
-                    Guna2Separator separator = UI.ConstructSeperator(CalculateControlWidth(metaList.Count), SearchResultBox);
+                    Guna2Separator separator;
+                    if (controlIndex < searchResultControls.Count && searchResultControls[controlIndex] is Guna2Separator existingSeparator)
+                    {
+                        separator = existingSeparator;
+                    }
+                    else
+                    {
+                        separator = UI.ConstructSeperator(CalculateControlWidth(metaList.Count), SearchResultBox);
+                        SearchResultBox.Controls.Add(separator);
+                        searchResultControls.Add(separator);
+                    }
+                    separator.Visible = true;
                     separator.Location = new Point(10, yOffset + 12);
                 }
                 else
                 {
-                    Guna2Button gBtn = new()
+                    Guna2Button gBtn;
+                    if (controlIndex < searchResultControls.Count && searchResultControls[controlIndex] is Guna2Button existingButton)
                     {
-                        Text = meta.Name,
-                        Size = new Size(CalculateControlWidth(metaList.Count), buttonHeight),
-                        Location = new Point(1, yOffset),
-                        Font = new Font("Segoe UI", 10),
-                        FillColor = CustomColors.controlBack,
-                        ForeColor = CustomColors.text,
-                        BorderColor = CustomColors.accent_blue,
-                        Image = meta.Flag,
-                        ImageAlign = HorizontalAlignment.Left,
-                        ImageSize = new Size(25, 13),
-                        TextAlign = HorizontalAlignment.Left
-                    };
-                    gBtn.Click += (sender, e) =>
+                        gBtn = existingButton;
+                    }
+                    else
                     {
-                        textBox.Text = gBtn.Text;
-                        CloseSearchBox(controlToAddSearchBox);
-                        deselectControl.Focus();
-                        debounceTimer.Stop();
-                    };
-                    SearchResultBox.Controls.Add(gBtn);
+                        gBtn = new Guna2Button();
+                        gBtn.Click += (sender, e) =>
+                        {
+                            Guna2Button? button = sender as Guna2Button;
+                            textBox.Text = button.Text;
+                            CloseSearchBox(controlToAddSearchBox);
+                            deselectControl.Focus();
+                            debounceTimer.Stop();
+                        };
+                        SearchResultBox.Controls.Add(gBtn);
+                        searchResultControls.Add(gBtn);
+                    }
+                    gBtn.Text = meta.Name;
+                    gBtn.Size = new Size(CalculateControlWidth(metaList.Count), buttonHeight);
+                    gBtn.Location = new Point(1, yOffset);
+                    gBtn.Font = new Font("Segoe UI", 10);
+                    gBtn.FillColor = CustomColors.controlBack;
+                    gBtn.ForeColor = CustomColors.text;
+                    gBtn.BorderColor = CustomColors.accent_blue;
+                    gBtn.Image = meta.Flag;
+                    gBtn.ImageAlign = HorizontalAlignment.Left;
+                    gBtn.ImageSize = new Size(25, 13);
+                    gBtn.TextAlign = HorizontalAlignment.Left;
+                    gBtn.Visible = true;
                 }
                 yOffset += buttonHeight;
+                controlIndex++;
+            }
+
+            // Hide any remaining controls
+            for (int i = controlIndex; i < searchResultControls.Count; i++)
+            {
+                searchResultControls[i].Visible = false;
             }
 
             int totalHeight = yOffset + 1;
@@ -148,7 +185,7 @@ namespace Sales_Tracker.Classes
                 SearchResultBox.AutoScroll = true;
                 Theme.CustomizeScrollBar(SearchResultBox);
             }
-            else if (SearchResultBox.Controls.Count == 0)
+            else if (controlIndex == 0)
             {
                 CloseSearchBox(controlToAddSearchBox);
                 debounceTimer.Stop();
@@ -163,9 +200,19 @@ namespace Sales_Tracker.Classes
 
             // Show search box
             SetSearchBoxLocation(textBox);
-            controlToAddSearchBox.Controls.Add(SearchResultBoxContainer);
+            if (!controlToAddSearchBox.Controls.Contains(SearchResultBoxContainer))
+            {
+                controlToAddSearchBox.Controls.Add(SearchResultBoxContainer);
+            }
             SearchResultBox.ResumeLayout();
             SearchResultBoxContainer.BringToFront();
+
+            // End timing
+            long endTime = DateTime.Now.Ticks;
+
+            // Calculate elapsed time in milliseconds
+            double elapsedTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
+            Log.Write(1, "Elapsed time for updating the SearchBox: " + elapsedTime + " ms");
         }
         private static int CalculateControlWidth(int count)
         {
@@ -191,7 +238,7 @@ namespace Sales_Tracker.Classes
             SearchBox.deselectControl = deselectControl;
             SearchBox.maxHeight = maxHeight;
 
-            List<string> names = resultList.Select(result => result.Name).ToList();
+            HashSet<string> names = new(resultList.Select(result => result.Name));
             CheckValidity(searchTextBox, names);
 
             debounceTimer.Stop();
@@ -199,9 +246,9 @@ namespace Sales_Tracker.Classes
         }
 
         // Methods
-        public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list)
+        private static void CheckValidity(Guna2TextBox textBox, HashSet<string> resultNames_set)
         {
-            if (resultNames_list.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text))
+            if (resultNames_set.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text))
             {
                 SetTextBoxToValid(textBox);
             }
@@ -212,22 +259,69 @@ namespace Sales_Tracker.Classes
         }
         public static void SearchBoxTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
         {
-            List<Guna2Button> results = SearchResultBox.Controls.OfType<Guna2Button>().ToList();
+            List<Guna2Button> results = SearchResultBox.Controls.OfType<Guna2Button>().Where(btn => btn.Visible).ToList();
             if (results.Count == 0) { return; }
 
             bool isResultSelected = false;
 
             if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Tab)
             {
-                SelectNextResult(results, ref isResultSelected);
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (results[i].BorderThickness == 1)
+                    {
+                        results[i].BorderThickness = 0;
+                        if (i < results.Count - 1)
+                        {
+                            results[i + 1].BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(results[i + 1]);
+                            isResultSelected = true;
+                        }
+                        else
+                        {
+                            results[0].BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(results[0]);
+                        }
+                        break;
+                    }
+                }
             }
             else if (e.KeyCode == Keys.Up)
             {
-                SelectPreviousResult(results, ref isResultSelected);
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (results[i].BorderThickness == 1)
+                    {
+                        results[i].BorderThickness = 0;
+                        if (i > 0)
+                        {
+                            results[i - 1].BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(results[i - 1]);
+                            isResultSelected = true;
+                        }
+                        else
+                        {
+                            results[^1].BorderThickness = 1;
+                            SearchResultBox.ScrollControlIntoView(results[^1]);
+                        }
+                        break;
+                    }
+                }
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                SelectResultByEnterKey(textBox, results, controlToRemoveSearchBox, deselectControl, ref isResultSelected);
+                foreach (Guna2Button btn in results)
+                {
+                    if (btn.BorderThickness == 1)
+                    {
+                        textBox.Text = btn.Text;
+                        CloseSearchBox(controlToRemoveSearchBox);
+                        deselectControl.Focus();
+                        debounceTimer.Stop();
+                        isResultSelected = true;
+                        break;
+                    }
+                }
             }
 
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
@@ -237,72 +331,9 @@ namespace Sales_Tracker.Classes
 
             if (!isResultSelected)
             {
-                SelectFirstResult(results);
+                results[0].BorderThickness = 1;
+                SearchResultBox.ScrollControlIntoView(results[0]);
             }
-        }
-        private static void SelectNextResult(List<Guna2Button> results, ref bool isResultSelected)
-        {
-            for (int i = 0; i < results.Count; i++)
-            {
-                if (results[i].BorderThickness == 1)
-                {
-                    results[i].BorderThickness = 0;
-                    if (i < results.Count - 1)
-                    {
-                        results[i + 1].BorderThickness = 1;
-                        SearchResultBox.ScrollControlIntoView(results[i + 1]);
-                        isResultSelected = true;
-                    }
-                    else
-                    {
-                        results[0].BorderThickness = 1;
-                        SearchResultBox.ScrollControlIntoView(results[0]);
-                    }
-                    break;
-                }
-            }
-        }
-        private static void SelectPreviousResult(List<Guna2Button> results, ref bool isResultSelected)
-        {
-            for (int i = 0; i < results.Count; i++)
-            {
-                if (results[i].BorderThickness == 1)
-                {
-                    results[i].BorderThickness = 0;
-                    if (i > 0)
-                    {
-                        results[i - 1].BorderThickness = 1;
-                        SearchResultBox.ScrollControlIntoView(results[i - 1]);
-                        isResultSelected = true;
-                    }
-                    else
-                    {
-                        results[^1].BorderThickness = 1;
-                        SearchResultBox.ScrollControlIntoView(results[^1]);
-                    }
-                    break;
-                }
-            }
-        }
-        private static void SelectResultByEnterKey(Guna2TextBox textBox, List<Guna2Button> results, Control controlToRemoveSearchBox, Control deselectControl, ref bool isResultSelected)
-        {
-            foreach (Guna2Button btn in results)
-            {
-                if (btn.BorderThickness == 1)
-                {
-                    textBox.Text = btn.Text;
-                    CloseSearchBox(controlToRemoveSearchBox);
-                    deselectControl.Focus();
-                    isResultSelected = true;
-                    debounceTimer.Stop();
-                    break;
-                }
-            }
-        }
-        private static void SelectFirstResult(List<Guna2Button> results)
-        {
-            results[0].BorderThickness = 1;
-            SearchResultBox.ScrollControlIntoView(results[0]);
         }
         private static void SetTextBoxToInvalid(Guna2TextBox gTextBox)
         {
@@ -321,7 +352,6 @@ namespace Sales_Tracker.Classes
         public static void CloseSearchBox(Control controlToRemoveSearchBox)
         {
             controlToRemoveSearchBox.Controls.Remove(SearchResultBoxContainer);
-            SearchResultBox.Controls.Clear();
         }
         public static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {

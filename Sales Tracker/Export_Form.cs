@@ -9,7 +9,9 @@ namespace Sales_Tracker
         public Export_Form()
         {
             InitializeComponent();
+
             LoadingPanel.ShowBlankLoadingPanel(this);
+            AddEventHandlersToTextBoxes();
             UpdateTheme();
         }
         public void UpdateTheme()
@@ -23,6 +25,11 @@ namespace Sales_Tracker
             {
                 ThreeDots_Button.Image = Resources.ThreeDotsBlack;
             }
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            TextBoxManager.Attach(Name_TextBox);
+            TextBoxManager.Attach(Directory_TextBox);
         }
 
         // Form event handlers

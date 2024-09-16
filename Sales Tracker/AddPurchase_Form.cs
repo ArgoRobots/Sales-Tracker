@@ -36,45 +36,34 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
-            OrderNumber_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(OrderNumber_TextBox);
 
             BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
-            BuyerName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(BuyerName_TextBox);
 
-            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(ProductName_TextBox);
 
             Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
-            Quantity_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Quantity_TextBox);
 
             PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            PricePerUnit_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(PricePerUnit_TextBox);
 
             Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            Shipping_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Shipping_TextBox);
 
             Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            Tax_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Tax_TextBox);
 
             PaymentFee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            PaymentFee_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(PaymentFee_TextBox);
 
             Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            Discount_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Discount_TextBox);
 
             AmountCharged_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            AmountCharged_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(AmountCharged_TextBox);
 
-            Notes_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Notes_TextBox);
         }
         private void AddSearchBoxEvents()
@@ -827,7 +816,6 @@ namespace Sales_Tracker
 
             textBox.Click += CloseAllPanels;
             textBox.TextChanged += ValidateInputs;
-            textBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(textBox);
 
             parent.Controls.Add(textBox);

@@ -40,20 +40,15 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
-            ProductID_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(ProductID_TextBox);
 
-            ProductName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(ProductName_TextBox);
 
-            ProductCategory_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(ProductCategory_TextBox);
 
             CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
-            CountryOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(CountryOfOrigin_TextBox);
 
-            CompanyOfOrigin_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(CompanyOfOrigin_TextBox);
 
             Purchases_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };

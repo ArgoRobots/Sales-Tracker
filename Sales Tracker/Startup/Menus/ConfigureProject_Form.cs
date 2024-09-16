@@ -20,7 +20,6 @@ namespace Sales_Tracker.Startup.Menus
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
-            AddEventHandlersToTextBoxes();
             UpdateTheme();
         }
         public void UpdateTheme()
@@ -37,10 +36,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void AddEventHandlersToTextBoxes()
         {
-            ProjectName_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(ProjectName_TextBox);
-
-            Directory_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Directory_TextBox);
         }
 
@@ -85,6 +81,8 @@ namespace Sales_Tracker.Startup.Menus
             ProjectName_TextBox.Focus();
             ProjectName_TextBox.SelectionStart = ProjectName_TextBox.Text.Length;
             ProjectName_TextBox.SelectionLength = 0;
+
+            AddEventHandlersToTextBoxes();
 
             LoadingPanel.HideBlankLoadingPanel(this);
         }
@@ -184,8 +182,6 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void Directory_textBox_TextChanged(object sender, EventArgs e)
         {
-            // TEMP NOTE: the backround color of WarningDir_pictureBox is always white even in dark mode because the backround is not transparent. It needs to be a .png
-
             if ("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'))
             {
                 Create_Button.Enabled = false;

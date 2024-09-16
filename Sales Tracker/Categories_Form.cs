@@ -42,7 +42,6 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
-            Category_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(Category_TextBox);
 
             Purchases_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };

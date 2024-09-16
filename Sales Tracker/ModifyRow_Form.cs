@@ -1034,7 +1034,6 @@ namespace Sales_Tracker
                 }
             };
             textBox.Click += CloseAllPanels;
-            textBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             textBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(textBox);
             control.Controls.Add(textBox);

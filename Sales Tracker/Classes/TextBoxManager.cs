@@ -24,6 +24,7 @@ namespace Sales_Tracker.Classes
             textBox.TextChanged += TextBox_TextChanged;
             textBox.KeyDown += TextBox_KeyDown;
             textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
+            textBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
         }
         private static void TextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {

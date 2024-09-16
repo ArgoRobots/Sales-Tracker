@@ -8,6 +8,7 @@ namespace Sales_Tracker.Passwords
         public PasswordManager_Form()
         {
             InitializeComponent();
+
             LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Modify_RadioButton.Checked = true;
@@ -15,10 +16,7 @@ namespace Sales_Tracker.Passwords
         }
         private void AddEventHandlersToTextBoxes()
         {
-            CurrentPassword_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(CurrentPassword_TextBox);
-
-            NewPassword_TextBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
             TextBoxManager.Attach(NewPassword_TextBox);
         }
 
