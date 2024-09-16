@@ -12,11 +12,8 @@ namespace Sales_Tracker.Startup.Menus
         private static GetStarted_Form _instance;
         private readonly Dictionary<string, FileSystemWatcher> fileWatchers;
 
-        // Getters and setters
-        public static GetStarted_Form Instance
-        {
-            get => _instance;
-        }
+        // Getters
+        public static GetStarted_Form Instance => _instance;
 
         // Init.
         public GetStarted_Form()

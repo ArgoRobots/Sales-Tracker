@@ -10,10 +10,7 @@ namespace Sales_Tracker
         private static List<string> _thingsThatHaveChangedInFile = [];
 
         // Getters and setters
-        public static Categories_Form Instance
-        {
-            get => _instance;
-        }
+        public static Categories_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile
         {
             get => _thingsThatHaveChangedInFile;

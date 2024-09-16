@@ -9,11 +9,8 @@ namespace Sales_Tracker.Startup.Menus
         private static ConfigureProject_Form _instance;
         public string selectedDirectory, projectName;
 
-        // Getters and setters
-        public static ConfigureProject_Form Instance
-        {
-            get => _instance;
-        }
+        // Getters
+        public static ConfigureProject_Form Instance => _instance;
 
         // Init.
         public ConfigureProject_Form()

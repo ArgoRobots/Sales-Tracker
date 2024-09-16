@@ -11,11 +11,8 @@ namespace Sales_Tracker
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
-        // Getters and setters
-        public static Accountants_Form Instance
-        {
-            get => _instance;
-        }
+        // Getters
+        public static Accountants_Form Instance => _instance;
 
         // Init.
         public Accountants_Form()

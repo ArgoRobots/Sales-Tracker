@@ -6,18 +6,16 @@ namespace Sales_Tracker.Classes
 {
     public class SearchBox
     {
+        // Properties
         private static Guna2Panel _searchResultBox;
-        public static Guna2Panel SearchResultBox
-        {
-            get { return _searchResultBox; }
-        }
         private static Guna2Panel _searchResultBoxContainer;
-        public static Guna2Panel SearchResultBoxContainer
-        {
-            get { return _searchResultBoxContainer; }
-        }
         private static Timer debounceTimer;
 
+        // Getters
+        public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
+        public static Guna2Panel SearchResultBox => _searchResultBox;
+
+        // Init.
         public static void ConstructSearchBox()
         {
             _searchResultBoxContainer = new Guna2Panel
@@ -54,12 +52,14 @@ namespace Sales_Tracker.Classes
         private static Control deselectControl;
         private static int maxHeight;
 
+        // Event handlers
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
             ShowSearchBox(controlToAddSearchBox, searchTextBox, resultList, deselectControl, maxHeight);
         }
 
+        // Main methods
         public static void ShowSearchBox(Control controlToAddBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
         {
             controlToAddSearchBox = controlToAddBox;
@@ -198,6 +198,7 @@ namespace Sales_Tracker.Classes
             debounceTimer.Start();
         }
 
+        // Methods
         public static void CheckValidity(Guna2TextBox textBox, List<string> resultNames_list)
         {
             if (resultNames_list.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text))

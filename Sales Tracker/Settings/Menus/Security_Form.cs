@@ -8,11 +8,8 @@ namespace Sales_Tracker.Settings.Menus
         // Properties
         private static Security_Form _instance;
 
-        // Getters and setters
-        public static Security_Form Instance
-        {
-            get => _instance;
-        }
+        // Getters
+        public static Security_Form Instance => _instance;
 
         // Init.
         public Security_Form()

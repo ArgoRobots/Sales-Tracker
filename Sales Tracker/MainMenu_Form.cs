@@ -26,10 +26,7 @@ namespace Sales_Tracker
         private static bool _isFullVersion = true;
 
         // Getters and setters
-        public static MainMenu_Form Instance
-        {
-            get => _instance;
-        }
+        public static MainMenu_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile
         {
             get => _thingsThatHaveChangedInFile;

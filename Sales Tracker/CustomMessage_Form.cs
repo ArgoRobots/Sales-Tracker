@@ -11,10 +11,7 @@ namespace Sales_Tracker
         public CustomMessageBoxResult result;
 
         // Getters and setters
-        public static CustomMessage_Form Instance
-        {
-            get => _instance;
-        }
+        public static CustomMessage_Form Instance => _instance;
 
         // Init.
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)

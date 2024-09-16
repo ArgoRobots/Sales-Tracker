@@ -8,11 +8,8 @@ namespace Sales_Tracker.Startup
         // Properties
         private static Startup_Form _instance;
 
-        // Getters and setters
-        public static Startup_Form Instance
-        {
-            get => _instance;
-        }
+        // Getters
+        public static Startup_Form Instance => _instance;
 
         // Init.
         public Startup_Form(string[] args)

@@ -15,10 +15,7 @@ namespace Sales_Tracker
             get => _thingsThatHaveChangedInFile;
             private set => _thingsThatHaveChangedInFile = value;
         }
-        public static Products_Form Instance
-        {
-            get => _instance;
-        }
+        public static Products_Form Instance => _instance;
 
         // Init.
         private readonly MainMenu_Form.SelectedOption oldOption;

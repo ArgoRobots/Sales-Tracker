@@ -9,11 +9,8 @@ namespace Sales_Tracker.ImportSpreadsheets
         private static Setup_Form _instance;
         public readonly Form FormTutorial, FormImport;
 
-        // Getters and setters
-        public static Setup_Form Instance
-        {
-            get => _instance;
-        }
+        // Getters
+        public static Setup_Form Instance => _instance;
 
         // Init.
         public Setup_Form()

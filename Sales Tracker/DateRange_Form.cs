@@ -4,6 +4,7 @@ namespace Sales_Tracker
 {
     public partial class DateRange_Form : Form
     {
+        // Init.
         public DateRange_Form()
         {
             InitializeComponent();

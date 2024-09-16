@@ -12,10 +12,7 @@ namespace Sales_Tracker
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Getters and setters
-        public static Companies_Form Instance
-        {
-            get => _instance;
-        }
+        public static Companies_Form Instance => _instance;
 
         // Init.
         public Companies_Form()

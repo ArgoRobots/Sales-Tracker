@@ -10,7 +10,7 @@ namespace Sales_Tracker
         private readonly DataGridViewRow selectedRow;
         private string receiptFilePath;
 
-        // Init
+        // Init.
         public ModifyRow_Form(DataGridViewRow row)
         {
             InitializeComponent();
