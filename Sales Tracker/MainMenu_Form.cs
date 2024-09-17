@@ -940,7 +940,7 @@ namespace Sales_Tracker
             LoadCharts();
             UpdateTotals();
         }
-        private void ApplyFilters()
+        public void ApplyFilters()
         {
             bool comboBoxEnabled = Filter_ComboBox.Enabled;
             TimeInterval interval = TimeInterval.AllTime;

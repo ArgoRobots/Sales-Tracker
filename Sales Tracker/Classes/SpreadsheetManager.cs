@@ -1,14 +1,14 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Sales_Tracker.Classes
 {
     internal class SpreadsheetManager
     {
         // Import spreadsheet methods
-        public static void ImportAccountantsData(IXLWorksheet worksheet, bool skipHeader)
+        public static bool ImportAccountantsData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            bool wasSomethingImported = false;
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -22,13 +22,16 @@ namespace Sales_Tracker.Classes
                 else
                 {
                     MainMenu_Form.Instance.accountantList.Add(accountantName);
+                    wasSomethingImported = true;
                 }
             }
             MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.accountantList, MainMenu_Form.SelectedOption.Accountants);
+            return wasSomethingImported;
         }
-        public static void ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
+        public static bool ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            bool wasSomethingImported = false;
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -42,13 +45,16 @@ namespace Sales_Tracker.Classes
                 else
                 {
                     MainMenu_Form.Instance.companyList.Add(companyName);
+                    wasSomethingImported = true;
                 }
             }
             MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.companyList, MainMenu_Form.SelectedOption.Companies);
+            return wasSomethingImported;
         }
-        public static void ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
+        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            bool wasSomethingImported = false;
 
             List<Category> list;
             if (purchase)
@@ -131,6 +137,7 @@ namespace Sales_Tracker.Classes
                 else
                 {
                     category.ProductList.Add(product);
+                    wasSomethingImported = true;
                 }
 
                 if (purchase)
@@ -142,10 +149,12 @@ namespace Sales_Tracker.Classes
                     MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
                 }
             }
+            return wasSomethingImported;
         }
-        public static void ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
+        public static (bool, bool) ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            bool wasSomethingImported = false;
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -167,15 +176,18 @@ namespace Sales_Tracker.Classes
                 newRow.CreateCells(MainMenu_Form.Instance.Purchases_DataGridView);
                 TagData tagData = new();
 
-                ImportCells(row, tagData, newRow);
+                if (!ImportCells(row, tagData, newRow)) { return (false, wasSomethingImported); }
 
+                wasSomethingImported = true;
                 int newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
                 MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
+            return (true, wasSomethingImported);
         }
-        public static void ImportSalesData(IXLWorksheet worksheet, bool skipHeader)
+        public static (bool, bool) ImportSalesData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            bool wasSomethingImported = false;
             int newRowIndex = -1;
 
             foreach (IXLRow row in rowsToProcess)
@@ -198,7 +210,7 @@ namespace Sales_Tracker.Classes
                 newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
                 TagData tagData = new();
 
-                ImportCells(row, tagData, newRow);
+                if (!ImportCells(row, tagData, newRow)) { return (false, wasSomethingImported); ; }
 
                 if (MainMenu_Form.Instance.Sales_DataGridView.InvokeRequired)
                 {
@@ -212,10 +224,16 @@ namespace Sales_Tracker.Classes
                     newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
                 }
 
+                wasSomethingImported = true;
                 MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
+            return (true, wasSomethingImported);
         }
-        private static void ImportCells(IXLRow row, TagData tagData, DataGridViewRow newRow)
+        /// <summary>
+        /// Imports data into a DataGridViewRow.
+        /// </summary>
+        /// <returns>True if the cells are imported successfully. False if the exchange rate was not retrieved.</returns>
+        private static bool ImportCells(IXLRow row, TagData tagData, DataGridViewRow newRow)
         {
             for (int i = 0; i < row.Cells().Count() - 1; i++)
             {
@@ -251,8 +269,8 @@ namespace Sales_Tracker.Classes
                     }
 
                     string date = row.Cell(7).GetValue<string>();
-                    decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
-                    if (exchangeRateToDefault == -1) { return; }
+                    decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date, false);
+                    if (exchangeRateToDefault == -1) { return false; }
 
                     newRow.Cells[i].Value = (ConvertStringToDecimal(value) * exchangeRateToDefault).ToString("N2");
                 }
@@ -262,6 +280,7 @@ namespace Sales_Tracker.Classes
                 }
             }
             newRow.Tag = tagData;
+            return true;
         }
 
         // Export spreadsheet methods

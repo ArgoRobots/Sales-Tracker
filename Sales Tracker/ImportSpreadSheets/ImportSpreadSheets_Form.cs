@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
-using System.Threading;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ImportSpreadSheets
@@ -86,10 +85,19 @@ namespace Sales_Tracker.ImportSpreadSheets
 
             try
             {
-                await Task.Run(ImportSpreadsheet);
+                if (await Task.Run(ImportSpreadsheet))
+                {
+                    MainMenu_Form.Instance.ApplyFilters();
+                    MainMenu_Form.Instance.LoadCharts();
+                    MainMenu_Form.Instance.UpdateTotals();
 
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported {Path.GetFileName(spreadsheetFilePath)}");
-                CustomMessageBox.Show("Argo Sales Tracker", "Spreadsheet imported successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported {Path.GetFileName(spreadsheetFilePath)}");
+                    CustomMessageBox.Show("Argo Sales Tracker", "Spreadsheet imported successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                }
+                else
+                {
+                    CustomMessageBox.Show("Argo Sales Tracker", "Nothing was imported", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                }
             }
             catch (Exception ex)
             {
@@ -99,8 +107,6 @@ namespace Sales_Tracker.ImportSpreadSheets
             HideLoadingIndicator();
             RemoveReceiptLabel();
             Import_Button.Enabled = false;
-
-            MainMenu_Form.Instance.LoadCharts();
             Close();
         }
         private bool ValidateSpreadsheet()
@@ -327,7 +333,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                 if (workbook.Worksheets.Count == 0)
                 {
-                    Invoke(() => CustomMessageBox.Show("Argo Sales Tracker", "This spreadsheet doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok));
+                    CustomMessageBox.Show("Argo Sales Tracker", "This spreadsheet doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return panels;
                 }
 
@@ -455,51 +461,74 @@ namespace Sales_Tracker.ImportSpreadSheets
         }
 
         // Import
-        private void ImportSpreadsheet()
+        private bool ImportSpreadsheet()
         {
+            bool wasSomethingImported = false;
+
             MainMenu_Form.Instance.isProgramLoading = true;
 
             using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
             bool skipheader = SkipHeaderRow_CheckBox.Checked;
+            bool purchaseImportFailed = false;
+            bool salesImportFailed = false;
 
             // Importing each worksheet data
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("accountants", StringComparison.CurrentCultureIgnoreCase)))
             {
                 IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
-                SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader);
+                wasSomethingImported |= SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader);
             }
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
             {
                 IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
-                SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader);
+                wasSomethingImported |= SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader);
             }
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
             {
                 IXLWorksheet productsWorksheet = workbook.Worksheet("Purchase products");
-                SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader);
+                wasSomethingImported |= SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader);
             }
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("sale products", StringComparison.CurrentCultureIgnoreCase)))
             {
                 IXLWorksheet productsWorksheet = workbook.Worksheet("Sale products");
-                SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader);
+                wasSomethingImported |= SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader);
             }
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
             {
                 IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
-                SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader);
+                (bool connection, bool somethingImported) = SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader);
+                if (!connection) { purchaseImportFailed = true; }
+                wasSomethingImported |= somethingImported;
+
                 MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
                 MainMenu_Form.Instance.Purchases_DataGridView.ClearSelection();
             }
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
             {
                 IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
-                SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader);
+                (bool connection, bool somethingImported) = SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader);
+                if (!connection) { salesImportFailed = true; }
+                wasSomethingImported |= somethingImported;
+
                 MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
                 MainMenu_Form.Instance.Sales_DataGridView.ClearSelection();
             }
 
+            if (purchaseImportFailed || salesImportFailed)
+            {
+                string message = "Failed to import ";
+                if (purchaseImportFailed) message += "'Purchases'";
+                if (salesImportFailed) message += " and 'Sales' because it looks like you are not connected to the internet. Please check your connection and try again";
+
+                CustomMessageBox.Show("Argo Sales Tracker",
+                    message,
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.Ok);
+            }
+
             MainMenu_Form.Instance.isProgramLoading = false;
+            return wasSomethingImported;
         }
 
         // Methods

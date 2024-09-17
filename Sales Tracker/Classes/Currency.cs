@@ -36,7 +36,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// The date must be in yyyy-mm-dd format.
         /// </summary>
-        public static decimal GetExchangeRate(string sourceCurrency, string targetCurrency, string date)
+        public static decimal GetExchangeRate(string sourceCurrency, string targetCurrency, string date, bool showErrorMessage = true)
         {
             // Your API key
             string appId = "beb7bee9c266473297d93c2132da637f";
@@ -85,11 +85,13 @@ namespace Sales_Tracker.Classes
             }
             catch (HttpRequestException)
             {
-                CustomMessageBox.Show("Argo Sales Tracker",
-                    "It looks like you're not connected to the internet. Please check your connection and try again. A connection is needed to get the currency exchange rates",
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.Ok);
-
+                if (showErrorMessage)
+                {
+                    CustomMessageBox.Show("Argo Sales Tracker",
+                        "It looks like you're not connected to the internet. Please check your connection and try again. A connection is needed to get the currency exchange rates",
+                        CustomMessageBoxIcon.Exclamation,
+                        CustomMessageBoxButtons.Ok);
+                }
                 return -1;
             }
             catch (Exception ex)

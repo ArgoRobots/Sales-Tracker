@@ -103,7 +103,7 @@ namespace Sales_Tracker.Classes
             failureTimer.Tick += (s, e) =>
             {
                 StopFailureTimer();
-                SetLabelText("Failed to load video. Please check your internet connection");
+                SetLabelText("Video failed to load. Please check your internet connection");
             };
             failureTimer.Start();
         }
