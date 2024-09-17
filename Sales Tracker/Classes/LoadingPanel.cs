@@ -22,9 +22,21 @@ namespace Sales_Tracker.Classes
         }
         public static void ShowBlankLoadingPanel(Control control)
         {
-            blankLoadingPanel.Size = control.Size;
-            control.Controls.Add(blankLoadingPanel);
-            blankLoadingPanel.BringToFront();
+            if (blankLoadingPanel.InvokeRequired)
+            {
+                blankLoadingPanel.Invoke(new Action(show));
+            }
+            else
+            {
+                show();
+            }
+
+            void show()
+            {
+                blankLoadingPanel.Size = control.Size;
+                control.Controls.Add(blankLoadingPanel);
+                blankLoadingPanel.BringToFront();
+            }
         }
         public static void HideBlankLoadingPanel(Control control)
         {

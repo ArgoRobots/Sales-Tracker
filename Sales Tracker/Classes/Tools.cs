@@ -23,6 +23,10 @@ namespace Sales_Tracker.Classes
             return dateTime.ToString("yyyy-MM-dd");
         }
 
+        // General
+        /// <summary>
+        /// Opens the specified URL in the default web browser.
+        /// </summary>
         public static void OpenLink(string URL)
         {
             if (string.IsNullOrEmpty(URL))
@@ -46,15 +50,44 @@ namespace Sales_Tracker.Classes
         {
             return Application.OpenForms.OfType<Form>().Any(f => f.GetType() == formType);
         }
+        /// <summary>
+        /// Retrieves the version number of the currently executing assembly.
+        /// </summary>
         public static string GetVersionNumber()
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
+        /// <summary>
+        /// Opens Windows File Explorer and selects the specified file in its folder.
+        /// </summary>
         public static void ShowFileInFolder(string filePath)
         {
             Process.Start("explorer.exe", $"/select,\"{filePath}\"");
         }
 
+        /// <summary>
+        /// Searches a DataGridView for the text in the search_TextBox.
+        /// </summary>
+        /// <returns>True if the searching label should be shown, or false if it should not be shown.</returns>
+        public static bool SearchSelectedDataGridView(Guna2TextBox search_TextBox)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
+            {
+                bool isVisible = row.Cells.Cast<DataGridViewCell>()
+                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+                row.Visible = isVisible;
+            }
+            return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
+        }
+        public static void ScrollToTopOfDataGridView(Guna2DataGridView dataGridView)
+        {
+            if (dataGridView.Rows.Count > 0)
+            {
+                dataGridView.FirstDisplayedScrollingRowIndex = 0;
+            }
+        }
+
+        // TextBoxes
         /// <summary>
         /// Returns the first focused Guna2TextBox found, or null if none are found.
         /// </summary>
@@ -118,6 +151,8 @@ namespace Sales_Tracker.Classes
             senderTextBox.SelectionStart = senderTextBox.Text.Length;
             senderTextBox.SelectionLength = 0;
         }
+
+        // Strings
         public static string AddNumberForAStringThatAlreadyExists(string name, List<string> list)
         {
             name = RemoveNumAfterString(name);
@@ -162,27 +197,6 @@ namespace Sales_Tracker.Classes
                 }
             }
             return name;
-        }
-        /// <summary>
-        /// Searches a DataGridView for the text in the search_TextBox.
-        /// </summary>
-        /// <returns>True if the searching label should be shown, or false if it should not be shown.</returns>
-        public static bool SearchSelectedDataGridView(Guna2TextBox search_TextBox)
-        {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
-            {
-                bool isVisible = row.Cells.Cast<DataGridViewCell>()
-                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
-                row.Visible = isVisible;
-            }
-            return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
-        }
-        public static void ScrollToTopOfDataGridView(Guna2DataGridView dataGridView)
-        {
-            if (dataGridView.Rows.Count > 0)
-            {
-                dataGridView.FirstDisplayedScrollingRowIndex = 0;
-            }
         }
     }
 }

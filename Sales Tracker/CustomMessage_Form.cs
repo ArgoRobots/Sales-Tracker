@@ -330,8 +330,19 @@ namespace Sales_Tracker
         public static CustomMessageBoxResult Show(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             // Construct a new form to free resources when it closes
-            new CustomMessage_Form(title, message, icon, buttons).ShowDialog();
-            return CustomMessage_Form.Instance.result;
+            if (Application.OpenForms[0].InvokeRequired)
+            {
+                return Application.OpenForms[0].Invoke(new Func<CustomMessageBoxResult>(() =>
+                {
+                    new CustomMessage_Form(title, message, icon, buttons).ShowDialog();
+                    return CustomMessage_Form.Instance.result;
+                }));
+            }
+            else
+            {
+                new CustomMessage_Form(title, message, icon, buttons).ShowDialog();
+                return CustomMessage_Form.Instance.result;
+            }
         }
     }
 

@@ -9,15 +9,14 @@ namespace Sales_Tracker.ImportSpreadsheets
         {
             InitializeComponent();
 
-            Theme.SetThemeForForm(this);
-            VideoPlayer.LoadVideo(WebBrowser, "https://www.youtube.com/watch?v=5aCbWqKl-wU");
-
             LoadingPanel.ShowBlankLoadingPanel(this);
+            Theme.SetThemeForForm(this);
         }
 
         // Form event handlers
         private void Tutorial_Form_Shown(object sender, EventArgs e)
         {
+            VideoPlayer.LoadVideo(WebBrowser, "https://www.youtube.com/watch?v=5aCbWqKl-wU");
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 

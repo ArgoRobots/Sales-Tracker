@@ -10,6 +10,9 @@ namespace Sales_Tracker.Classes
         private static readonly Dictionary<Guna2TextBox, Stack<string>> redoStacks = new();
         private static readonly Dictionary<Guna2TextBox, bool> isTextChangedByUserFlags = new();
 
+        /// <summary>
+        /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
+        /// </summary>
         public static void Attach(Guna2TextBox textBox)
         {
             // Initialize stacks and flags for this TextBox

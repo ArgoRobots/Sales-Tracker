@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using System.Threading;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ImportSpreadSheets
@@ -66,7 +67,7 @@ namespace Sales_Tracker.ImportSpreadSheets
                 ShowReceiptLabel(dialog.SafeFileName);
                 ShowLoadingIndicator();
 
-                List<Panel> panels = await LoadSpreadsheetData();
+                List<Panel> panels = await Task.Run(LoadSpreadsheetData);
 
                 if (panels.Count > 0)
                 {
@@ -80,55 +81,12 @@ namespace Sales_Tracker.ImportSpreadSheets
         {
             if (!ValidateSpreadsheet()) { return; }
 
+            Controls.Remove(centeredFlowPanel);
             ShowLoadingIndicator();
 
             try
             {
-                await Task.Run(() =>
-                {
-                    using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    using XLWorkbook workbook = new(stream);
-                    List<FlowLayoutPanel> panels = new();
-                    bool skipheader = SkipHeaderRow_CheckBox.Checked;
-
-                    // Importing each worksheet data
-                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("accountants", StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
-                        Invoke(() => SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader));
-                    }
-                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
-                        Invoke(() => SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader));
-                    }
-                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        IXLWorksheet productsWorksheet = workbook.Worksheet("Purchase products");
-                        Invoke(() => SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader));
-                    }
-                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("sale products", StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        IXLWorksheet productsWorksheet = workbook.Worksheet("Sale products");
-                        Invoke(() => SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader));
-                    }
-                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
-                        Invoke(() => SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader));
-                        MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-                        Invoke(() => MainMenu_Form.Instance.LoadCharts());
-                        MainMenu_Form.Instance.Purchases_DataGridView.ClearSelection();
-                    }
-                    if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
-                        Invoke(() => SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader));
-                        MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
-                        Invoke(() => MainMenu_Form.Instance.LoadCharts());
-                        MainMenu_Form.Instance.Sales_DataGridView.ClearSelection();
-                    }
-                });
+                await Task.Run(ImportSpreadsheet);
 
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported {Path.GetFileName(spreadsheetFilePath)}");
                 CustomMessageBox.Show("Argo Sales Tracker", "Spreadsheet imported successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
@@ -141,7 +99,8 @@ namespace Sales_Tracker.ImportSpreadSheets
             HideLoadingIndicator();
             RemoveReceiptLabel();
             Import_Button.Enabled = false;
-            Controls.Remove(centeredFlowPanel);
+
+            MainMenu_Form.Instance.LoadCharts();
             Close();
         }
         private bool ValidateSpreadsheet()
@@ -493,6 +452,54 @@ namespace Sales_Tracker.ImportSpreadSheets
             }
 
             return products;
+        }
+
+        // Import
+        private void ImportSpreadsheet()
+        {
+            MainMenu_Form.Instance.isProgramLoading = true;
+
+            using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using XLWorkbook workbook = new(stream);
+            bool skipheader = SkipHeaderRow_CheckBox.Checked;
+
+            // Importing each worksheet data
+            if (workbook.Worksheets.Any(ws => ws.Name.Equals("accountants", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                IXLWorksheet accountantsWorksheet = workbook.Worksheet("Accountants");
+                SpreadsheetManager.ImportAccountantsData(accountantsWorksheet, skipheader);
+            }
+            if (workbook.Worksheets.Any(ws => ws.Name.Equals("companies", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                IXLWorksheet companiesWorksheet = workbook.Worksheet("Companies");
+                SpreadsheetManager.ImportCompaniesData(companiesWorksheet, skipheader);
+            }
+            if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchase products", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                IXLWorksheet productsWorksheet = workbook.Worksheet("Purchase products");
+                SpreadsheetManager.ImportProductsData(productsWorksheet, true, skipheader);
+            }
+            if (workbook.Worksheets.Any(ws => ws.Name.Equals("sale products", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                IXLWorksheet productsWorksheet = workbook.Worksheet("Sale products");
+                SpreadsheetManager.ImportProductsData(productsWorksheet, false, skipheader);
+            }
+            if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
+                SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader);
+                MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+                MainMenu_Form.Instance.Purchases_DataGridView.ClearSelection();
+            }
+            if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
+            {
+                IXLWorksheet salesWorksheet = workbook.Worksheet("Sales");
+                SpreadsheetManager.ImportSalesData(salesWorksheet, skipheader);
+                MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
+                MainMenu_Form.Instance.Sales_DataGridView.ClearSelection();
+            }
+
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
 
         // Methods

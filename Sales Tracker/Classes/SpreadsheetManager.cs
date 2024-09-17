@@ -146,7 +146,6 @@ namespace Sales_Tracker.Classes
         public static void ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
-            int newRowIndex = 0;
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -170,15 +169,14 @@ namespace Sales_Tracker.Classes
 
                 ImportCells(row, tagData, newRow);
 
-                newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+                int newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
-
-            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
         }
         public static void ImportSalesData(IXLWorksheet worksheet, bool skipHeader)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
-            int newRowIndex = 0;
+            int newRowIndex = -1;
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -202,10 +200,20 @@ namespace Sales_Tracker.Classes
 
                 ImportCells(row, tagData, newRow);
 
-                newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
-            }
+                if (MainMenu_Form.Instance.Sales_DataGridView.InvokeRequired)
+                {
+                    MainMenu_Form.Instance.Sales_DataGridView.Invoke(new Action(() =>
+                    {
+                        newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
+                    }));
+                }
+                else
+                {
+                    newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
+                }
 
-            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            }
         }
         private static void ImportCells(IXLRow row, TagData tagData, DataGridViewRow newRow)
         {

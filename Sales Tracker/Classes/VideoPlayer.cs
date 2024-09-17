@@ -1,13 +1,32 @@
-﻿namespace Sales_Tracker.Classes
+﻿using Timer = System.Windows.Forms.Timer;
+
+namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Loads a YouTube video into the specified WebBrowser control and a loading message while the video is loading.
+    /// </summary>
     internal class VideoPlayer
     {
+        // Properties
+        private static Label loadingLabel;
+        private static Panel loadingPanel;
+        private static Timer failureTimer;
+
+        // Loading panel
         /// <summary>
-        /// Loads a YouTube video into the specified WebBrowser control and a loading message while the video is loading.
+        /// Loads a YouTube video into the specified WebBrowser control and shows a loading message while the video is loading.
         /// </summary>
-        public static void LoadVideo(WebBrowser webViewer, string url)
+        public static void LoadVideo(WebBrowser webBrowser, string url)
         {
             // https://stackoverflow.com/questions/73795000/how-do-i-display-a-youtube-video-in-webviewer#73795057
+
+            // Create and display the loading panel
+            Panel loadingPanel = CreateLoadingPanel(webBrowser);
+            webBrowser.Parent.Controls.Add(loadingPanel);
+            loadingPanel.BringToFront();
+
+            SetLabelText("Loading video...");
+            StartFailureTimer();
 
             // Split the URL to get the video ID
             string videoId;
@@ -20,41 +39,82 @@
                 throw new ArgumentException("Invalid YouTube URL format");
             }
 
-            // Convert CustomColors.mainBackground to a valid HTML color string
-            string backgroundColor = $"#{CustomColors.mainBackground.R:X2}{CustomColors.mainBackground.G:X2}{CustomColors.mainBackground.B:X2}";
-
-            // Start building the HTML string
-            string html = "<html style='width: 100%; height: 100%; margin: 0; padding: 0;'>";
-            html += "<head>";
+            string html = "<html style='width: 100%; height: 100%; margin: 0; padding: 0;'><head>";
             html += "<meta content='IE=Edge' http-equiv='X-UA-Compatible'/>";
-            html += "</head>";
-
-            // Begin body with the custom background color
-            html += $"<body style='width: 100%; height: 100%; margin: 0; padding: 0; background-color: {backgroundColor};'>";
-
-            // Placeholder with custom font for the loading message
-            html += "<div id='placeholder' style='width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;'>";
-            html += "<p style='color: white; font-family: \"Segoe UI\"; font-size: 11pt;'>Loading Video...</p>";
-            html += "</div>";
-
-            // Iframe (hidden initially)
-            html += $"<iframe id='video' src='https://www.youtube.com/embed/{videoId}' ";
-            html += "style='padding: 0px; width: 100%; height: 100%; border: none; display: none;'></iframe>";
-
-            // JavaScript to show iframe after loading
-            html += "<script>";
-            html += "var iframe = document.getElementById('video');";
-            html += "iframe.onload = function() {";
-            html += "document.getElementById('placeholder').style.display = 'none';";
-            html += "iframe.style.display = 'block';";
-            html += "};";
-            html += "</script>";
-
-            // Close body and html
+            html += "</head><body style='width: 100%; height: 100%; margin: 0; padding: 0;'>";
+            html += $"<iframe id='video' src='https://www.youtube.com/embed/{videoId}' style=\"padding: 0px; width: 100%; height: 100%; border: none; display: block;\"></iframe>";
             html += "</body></html>";
 
-            // Set the HTML content of the WebBrowser control
-            webViewer.DocumentText = html;
+            // Set the HTML content to the webBrowser
+            webBrowser.DocumentText = html;
+
+            webBrowser.DocumentCompleted += (sender, e) =>
+            {
+                StopFailureTimer();
+                webBrowser.Parent.Controls.Remove(loadingPanel);
+            };
+
+            //  SetLabelText("Failed to load video. Please check your internet connection");
+        }
+        /// <summary>
+        /// Creates a loading panel with a loading label centered inside.
+        /// </summary>
+        private static Panel CreateLoadingPanel(WebBrowser webBrowser)
+        {
+            if (loadingPanel != null) { return loadingPanel; }
+
+            // Create the loading panel
+            loadingPanel = new()
+            {
+                Size = webBrowser.Size,
+                Location = webBrowser.Location,
+                BackColor = CustomColors.mainBackground,
+                Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom
+            };
+
+            // Create the loading label
+            loadingLabel = new()
+            {
+                ForeColor = CustomColors.text,
+                Font = new Font("Segoe UI", 11),
+                AutoSize = true,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Anchor = AnchorStyles.None
+            };
+            loadingPanel.Controls.Add(loadingLabel);
+
+            return loadingPanel;
+        }
+        private static void SetLabelText(string text)
+        {
+            loadingLabel.Text = text;
+
+            // Center the label in the panel
+            loadingLabel.Location = new Point(
+                (loadingPanel.Width - loadingLabel.Width) / 2,
+                (loadingPanel.Height - loadingLabel.Height) / 2
+            );
+        }
+
+        // Time out
+        private static void StartFailureTimer()
+        {
+            failureTimer = new Timer { Interval = 5000 };  // 5 second timeout for failure
+            failureTimer.Tick += (s, e) =>
+            {
+                StopFailureTimer();
+                SetLabelText("Failed to load video. Please check your internet connection");
+            };
+            failureTimer.Start();
+        }
+        private static void StopFailureTimer()
+        {
+            if (failureTimer != null)
+            {
+                failureTimer.Stop();
+                failureTimer.Dispose();
+                failureTimer = null;
+            }
         }
     }
 }

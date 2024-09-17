@@ -191,6 +191,7 @@ namespace Sales_Tracker.Classes
 
                 MainMenu_Form.Instance.UpdateTotals();
                 MainMenu_Form.Instance.LoadCharts();
+                MainMenu_Form.Instance.HideShowingResultsForLabel();
             }
         }
 

@@ -1167,7 +1167,7 @@ namespace Sales_Tracker
 
             Controls.Add(ShowingResultsFor_Label);
         }
-        private void HideShowingResultsForLabel()
+        public void HideShowingResultsForLabel()
         {
             Controls.Remove(ShowingResultsFor_Label);
         }
@@ -1902,6 +1902,8 @@ namespace Sales_Tracker
         // Methods for DataGridView
         public void DataGridViewRowsAdded(Guna2DataGridView dataGridView, DataGridViewRowsAddedEventArgs e)
         {
+            if (isProgramLoading) { return; }
+
             DataGridViewRowChanged();
             DataGridViewRow row;
 
