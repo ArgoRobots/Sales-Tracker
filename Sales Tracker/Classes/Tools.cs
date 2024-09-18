@@ -153,6 +153,22 @@ namespace Sales_Tracker.Classes
         }
 
         // Strings
+        public static string ShortenTextWithEllipsis(Label label, string text)
+        {
+            Size size = TextRenderer.MeasureText(text, label.Font);
+            const string ellipsis = "...";
+            string originalText = text;
+
+            // Shorten the text until it fits within the label's width
+            while (size.Width > label.Width && text.Length > 0)
+            {
+                text = text.Substring(0, text.Length - 1);
+                size = TextRenderer.MeasureText(text + ellipsis, label.Font);
+            }
+
+            // Only add ellipsis if the text was shortened
+            return text.Length < originalText.Length ? text + ellipsis : originalText;
+        }
         public static string AddNumberForAStringThatAlreadyExists(string name, List<string> list)
         {
             name = RemoveNumAfterString(name);

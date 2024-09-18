@@ -129,7 +129,6 @@ namespace Sales_Tracker.ImportSpreadSheets
             RemoveReceiptLabel();
             Controls.Remove(centeredFlowPanel);
             Import_Button.Enabled = false;
-            Height = MinimumSize.Height;
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
@@ -160,9 +159,9 @@ namespace Sales_Tracker.ImportSpreadSheets
             if (panels.Count > 0)
             {
                 Import_Button.Enabled = true;
-                HideLoadingIndicator();
                 AddPanels(panels);
             }
+            HideLoadingIndicator();
         }
         private void SkipHeaderRow_Label_Click(object sender, EventArgs e)
         {
@@ -170,17 +169,16 @@ namespace Sales_Tracker.ImportSpreadSheets
         }
 
         // Show things to import
-        private readonly byte panelPadding = 10, panelHeight = 200;
+        private readonly byte panelPadding = 25, panelHeight = 240;
         private readonly int panelWidth = 300;
         private CenteredFlowLayoutPanel centeredFlowPanel;
-        private List<Panel> panels = new();
         private Panel CreateFlowLayoutPanel(List<string> items, string title)
         {
             Panel outerPanel = new()
             {
                 Size = new Size(panelWidth, panelHeight),
-                Margin = new Padding(panelPadding),
-                BackColor = CustomColors.mainBackground
+                BackColor = CustomColors.background4,
+                BorderStyle = BorderStyle.FixedSingle
             };
 
             // Title for the section
@@ -188,8 +186,7 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 Text = title,
                 AutoSize = true,
-                Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 Location = new Point(outerPanel.Padding.Left, outerPanel.Padding.Top),
                 ForeColor = CustomColors.text
             };
@@ -201,9 +198,8 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
-                Size = new Size(outerPanel.Width, outerPanel.Height - flowPanelY),
-                Padding = new Padding(panelPadding),
-                BorderStyle = BorderStyle.FixedSingle,
+                Size = new Size(outerPanel.Width, outerPanel.Height - flowPanelY - 50),
+                Padding = new Padding(15, 0, 0, 0),
                 Location = new Point(outerPanel.Padding.Left, flowPanelY)
             };
 
@@ -212,11 +208,13 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 Label itemLabel = new()
                 {
-                    Text = items[i],
                     Font = new Font("Segoe UI", 11),
-                    AutoSize = true,
-                    ForeColor = CustomColors.text
+                    ForeColor = CustomColors.text,
+                    AutoSize = false,
+                    Size = new Size(flowPanel.Width - flowPanel.Padding.Left - 5, 30)  // Fixed height for single line
                 };
+
+                itemLabel.Text = Tools.ShortenTextWithEllipsis(itemLabel, items[i]);
                 flowPanel.Controls.Add(itemLabel);
             }
             outerPanel.Controls.Add(flowPanel);
@@ -245,21 +243,20 @@ namespace Sales_Tracker.ImportSpreadSheets
             centeredFlowPanel = new()
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
-                Size = new Size(panelPadding * 6 + panelWidth * 3 + 50, panelHeight * 2 + panelPadding * 4),
-                Top = 240
+                Size = new Size(panelPadding * 6 + panelWidth * 3 + 50, panelHeight * 2 + panelPadding),
+                Top = 240,
+                Spacing = panelPadding
             };
         }
         private void AddPanels(List<Panel> panelsToAdd)
         {
-            panels = panelsToAdd;
-
             List<Panel> panelsToRemove = centeredFlowPanel.Controls.OfType<Panel>().ToList();
             foreach (Panel? panel in panelsToRemove)
             {
                 centeredFlowPanel.Controls.Remove(panel);
             }
 
-            foreach (Panel panel in panels)
+            foreach (Panel panel in panelsToAdd)
             {
                 centeredFlowPanel.Controls.Add(panel);
             }
