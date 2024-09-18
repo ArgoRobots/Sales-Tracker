@@ -66,6 +66,7 @@ namespace Sales_Tracker
         }
         private void Companies_Form_Shown(object sender, EventArgs e)
         {
+            Company_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 

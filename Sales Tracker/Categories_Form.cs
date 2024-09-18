@@ -91,6 +91,7 @@ namespace Sales_Tracker
         }
         private void Categories_Form_Shown(object sender, EventArgs e)
         {
+            Purchases_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
@@ -126,6 +127,7 @@ namespace Sales_Tracker
                 CloseAllPanels(null, null);
                 Controls.Add(Purchases_DataGridView);
                 Controls.Remove(Sales_DataGridView);
+                Purchases_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
                 CenterSelectedDataGridView();
@@ -139,6 +141,7 @@ namespace Sales_Tracker
                 CloseAllPanels(null, null);
                 Controls.Add(Sales_DataGridView);
                 Controls.Remove(Purchases_DataGridView);
+                Sales_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
                 CenterSelectedDataGridView();

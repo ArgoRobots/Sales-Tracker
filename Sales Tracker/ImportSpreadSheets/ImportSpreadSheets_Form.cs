@@ -87,12 +87,10 @@ namespace Sales_Tracker.ImportSpreadSheets
             {
                 if (await Task.Run(ImportSpreadsheet))
                 {
-                    MainMenu_Form.Instance.ApplyFilters();
-                    MainMenu_Form.Instance.LoadCharts();
-                    MainMenu_Form.Instance.UpdateTotals();
+                    MainMenu_Form.Instance.RefreshDataGridView();
 
                     CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported {Path.GetFileName(spreadsheetFilePath)}");
-                    CustomMessageBox.Show("Argo Sales Tracker", "Spreadsheet imported successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker", "Finished importing spreadsheet", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
                 else
                 {
@@ -496,13 +494,12 @@ namespace Sales_Tracker.ImportSpreadSheets
             }
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("purchases", StringComparison.CurrentCultureIgnoreCase)))
             {
-                IXLWorksheet purchaseWorksheet = workbook.Worksheet("Purchases");
-                (bool connection, bool somethingImported) = SpreadsheetManager.ImportPurchaseData(purchaseWorksheet, skipheader);
+                IXLWorksheet purchasesWorksheet = workbook.Worksheet("Purchases");
+                (bool connection, bool somethingImported) = SpreadsheetManager.ImportPurchaseData(purchasesWorksheet, skipheader);
                 if (!connection) { purchaseImportFailed = true; }
                 wasSomethingImported |= somethingImported;
 
                 MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-                MainMenu_Form.Instance.Purchases_DataGridView.ClearSelection();
             }
             if (workbook.Worksheets.Any(ws => ws.Name.Equals("sales", StringComparison.CurrentCultureIgnoreCase)))
             {
@@ -512,14 +509,15 @@ namespace Sales_Tracker.ImportSpreadSheets
                 wasSomethingImported |= somethingImported;
 
                 MainMenu_Form.Instance.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
-                MainMenu_Form.Instance.Sales_DataGridView.ClearSelection();
             }
 
             if (purchaseImportFailed || salesImportFailed)
             {
                 string message = "Failed to import ";
-                if (purchaseImportFailed) message += "'Purchases'";
-                if (salesImportFailed) message += " and 'Sales' because it looks like you are not connected to the internet. Please check your connection and try again";
+                if (purchaseImportFailed) { message += "'Purchases'"; }
+                if (purchaseImportFailed && salesImportFailed) { message += " and "; }
+                if (salesImportFailed) { message += "'Sales'"; }
+                message += " because it looks like you are not connected to the internet. A connection is needed to get the exchange rates. Please check your connection and try again";
 
                 CustomMessageBox.Show("Argo Sales Tracker",
                     message,

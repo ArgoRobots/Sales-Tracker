@@ -54,6 +54,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Accountants_Form_Shown(object sender, EventArgs e)
         {
+            Accountants_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
         private void Accountants_Form_Resize(object sender, EventArgs e)

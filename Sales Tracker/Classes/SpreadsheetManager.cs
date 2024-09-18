@@ -229,6 +229,7 @@ namespace Sales_Tracker.Classes
             }
             return (true, wasSomethingImported);
         }
+
         /// <summary>
         /// Imports data into a DataGridViewRow.
         /// </summary>

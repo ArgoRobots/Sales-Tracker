@@ -188,7 +188,7 @@
             ManageCompanies_Button.FillColor = Color.White;
             ManageCompanies_Button.Font = new Font("Segoe UI", 10F);
             ManageCompanies_Button.ForeColor = Color.Black;
-            ManageCompanies_Button.Location = new Point(1698, 21);
+            ManageCompanies_Button.Location = new Point(1929, 21);
             ManageCompanies_Button.Name = "ManageCompanies_Button";
             ManageCompanies_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             ManageCompanies_Button.Size = new Size(225, 50);
@@ -226,7 +226,7 @@
             ManageCategories_Button.FillColor = Color.White;
             ManageCategories_Button.Font = new Font("Segoe UI", 10F);
             ManageCategories_Button.ForeColor = Color.Black;
-            ManageCategories_Button.Location = new Point(1929, 21);
+            ManageCategories_Button.Location = new Point(1698, 21);
             ManageCategories_Button.Name = "ManageCategories_Button";
             ManageCategories_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ManageCategories_Button.Size = new Size(225, 50);
@@ -636,7 +636,6 @@
             chartFont8.FontName = "Arial";
             tick3.Font = chartFont8;
             Totals_Chart.ZAxes.Ticks = tick3;
-            Totals_Chart.Click += CloseAllPanels;
             // 
             // Distribution_Chart
             // 
@@ -673,7 +672,6 @@
             chartFont16.FontName = "Arial";
             tick6.Font = chartFont16;
             Distribution_Chart.ZAxes.Ticks = tick6;
-            Distribution_Chart.Click += CloseAllPanels;
             // 
             // Profits_Chart
             // 
@@ -710,7 +708,6 @@
             chartFont24.FontName = "Arial";
             tick9.Font = chartFont24;
             Profits_Chart.ZAxes.Ticks = tick9;
-            Profits_Chart.Click += CloseAllPanels;
             // 
             // Filter_ComboBox
             // 
@@ -880,7 +877,6 @@
             Text = "Argo Sales Tracker";
             WindowState = FormWindowState.Maximized;
             FormClosing += MainMenu_form_FormClosing;
-            Load += MainMenu_Form_Load;
             Shown += MainMenu_form_Shown;
             Click += CloseAllPanels;
             KeyDown += MainMenu_form_KeyDown;

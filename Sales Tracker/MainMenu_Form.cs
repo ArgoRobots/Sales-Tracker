@@ -64,6 +64,8 @@ namespace Sales_Tracker
             UpdateTheme();
             isProgramLoading = false;
 
+            Sales_Button.PerformClick();
+            SortTheDataGridViewByDate();
             HideShowingResultsForLabel();
         }
         public void ResetData()
@@ -318,13 +320,9 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
-        private void MainMenu_Form_Load(object sender, EventArgs e)
-        {
-            Sales_Button.PerformClick();
-            SortTheDataGridViewByDate();
-        }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
+            Sales_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
 
             // Ensure the charts are rendered
@@ -790,11 +788,9 @@ namespace Sales_Tracker
             Selected = SelectedOption.Purchases;
             selectedDataGridView = Purchases_DataGridView;
             Controls.Add(Purchases_DataGridView);
-            ResizeControls();
             Controls.Remove(Sales_DataGridView);
-            ApplyFilters();
-            LoadCharts();
-            UpdateTotals();
+            ResizeControls();
+            RefreshDataGridView();
 
             UnselectButtons();
             SelectButton(Purchases_Button);
@@ -812,11 +808,9 @@ namespace Sales_Tracker
             Selected = SelectedOption.Sales;
             selectedDataGridView = Sales_DataGridView;
             Controls.Add(Sales_DataGridView);
-            ResizeControls();
             Controls.Remove(Purchases_DataGridView);
-            ApplyFilters();
-            LoadCharts();
-            UpdateTotals();
+            ResizeControls();
+            RefreshDataGridView();
 
             UnselectButtons();
             SelectButton(Sales_Button);
@@ -2775,6 +2769,13 @@ namespace Sales_Tracker
         }
 
         // Misc.
+        public void RefreshDataGridView()
+        {
+            ApplyFilters();
+            LoadCharts();
+            UpdateTotals();
+            selectedDataGridView.ClearSelection();
+        }
         public static void UpdateMainMenuFormText(Form instance)
         {
             instance.Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
