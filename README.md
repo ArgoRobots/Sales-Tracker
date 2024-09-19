@@ -3,18 +3,8 @@
 ## Introduction
 **Argo Sales Tracker** is a simple, powerful, and effective C# WinForms application designed to track the sales and purchases of products. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, overpriced, and overcomplicated. Argo Sales Tracker offers advanced features while remaining easy to use, filling the gap between basic spreadsheets (e.g., Excel or Google Sheets) and enterprise-level software.
 
-## Importing data from spreadsheets
-NOT IMPLEMENTED YET
-
-To import your existing sales, purchase, or product data from a spreadsheet into the Argo Sales Tracker:
-
-1. **Prepare Your Spreadsheet**: Ensure your data is organized in a structured manner. The columns should match the fields in the application (e.g., Product Name, Category, Date, Amount, etc.).
-2. **Open the Import Tool**: From the main menu, navigate to "File > Import".
-3. **Select Your Spreadsheet**: Choose the spreadsheet file that contains your existing data.
-4. **Map Columns**: The application will prompt you to map the columns in your spreadsheet to the corresponding fields in Argo Sales Tracker.
-5. **Complete Import**: After verifying the data mapping, click Import. Your data will now be added to the application, and you can begin tracking from where you left off.
-
 ## Features
+- **Importing data from spreadsheets**: import your existing sales, purchases, products, or other data from a spreadsheet.
 - **Track Sales and Purchases**: Add and manage sales and purchases.
 - **Accountants Integration**: Keep track of accountants working with the sales data.
 - **Product Management**: Add, edit, and organize your products with ease.
@@ -49,18 +39,4 @@ To use the program effectively, follow these steps:
 5.	**Add sales and purchases**: After setting up accountants, companies, categories, and products, you can start adding sales and purchases into the system.
 
 ## Publishing Argo Sales Tracker to a .msi file
-1. In Windows Explorer, navigate to ```Sales Tracker\Setup``` then delete the ```Debug``` and ```Release``` folders, being careful not to delete ```Setup.vdproj```. You can also navigate to ```Sales Tracker\Sales Tracker``` and delete the ```bin``` and ```obj``` folders if you are having trouble getting it to work.
-2. Go to ```Build > Clean Solution```, then ```Build > Build Solution```.
-4. The ```Argo Sales Tracker V.1.0.0 Setup.msi``` file will be generated in ```Sales Tracker\Setup\Release```.
-
-If it still fails to build, you can try temporarily disabling Windows Real-Time Protection:
-1. Open Start and search for ```Windows Security```.
-2. Click on the ```Windows Security``` app from the search results.
-3. Go to ```Virus & threat protection```.
-4. Under ```Virus & threat protection settings```, click on ```Manage settings```.
-5. Turn off the ```Real-time protection``` toggle switch.
-6. Try cleaning then rebuilding the project again. Remember to enable the Real-Time Protection after you are done.
-
-If a .exe file is generated, it simply links to the .msi file, so you can ignore it. Also, the .msi file generation depends on the current build configuration in Visual Studio, whether it's set to ```Release``` or ```Debug``` mode. ```Release``` mode is recommended for this purpose.
-
-By default, it will support both x64 and x86 architextures. If you want to create a .msi file that only supports one (saving file space), then in the Visual Studio Solution Explorer, right click ```Argo Sales Tracker Setup``` and click ```View > Custom Actions``` then remove the coresponding .exe file by right clicking on it then clicking ```Delete```. It can be added back by right clicking the ```Install``` folder, then clicking ```Add Custom Action...```, then double click on ```Application Folder```, then select the missing .exe, then click ```OK```. Restart Visual Studio (making sure it's run as admin), then Clean and rebuild the project.
+... work in progress
