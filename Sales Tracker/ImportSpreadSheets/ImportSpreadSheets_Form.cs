@@ -97,7 +97,7 @@ namespace Sales_Tracker.ImportSpreadSheets
                 {
                     MainMenu_Form.Instance.RefreshDataGridView();
 
-                    CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported {Path.GetFileName(spreadsheetFilePath)}");
+                    CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported '{Path.GetFileName(spreadsheetFilePath)}'");
                     CustomMessageBox.Show("Argo Sales Tracker", "Finished importing spreadsheet", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
                 else
@@ -479,15 +479,12 @@ namespace Sales_Tracker.ImportSpreadSheets
         // Import
         private bool ImportSpreadsheet()
         {
-            bool wasSomethingImported = false;
-
             MainMenu_Form.Instance.isProgramLoading = true;
 
             using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
             bool skipheader = SkipHeaderRow_CheckBox.Checked;
-            bool purchaseImportFailed = false;
-            bool salesImportFailed = false;
+            bool wasSomethingImported = false, purchaseImportFailed = false, salesImportFailed = false;
 
             foreach (Panel panel in centeredFlowPanel.Controls.OfType<Panel>())
             {

@@ -2189,7 +2189,7 @@ namespace Sales_Tracker
         }
 
         // Save to file
-        public void SaveDataGridViewToFileAsJson(Guna2DataGridView dataGridView, SelectedOption selected)
+        public static void SaveDataGridViewToFileAsJson(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = GetFilePathForDataGridView(selected);
             List<Dictionary<string, object>> rowsData = new();
@@ -2243,7 +2243,7 @@ namespace Sales_Tracker
             string json = JsonSerializer.Serialize(rowsData, jsonOptions);
             Directories.WriteTextToFile(filePath, json);
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
         }
         public void SaveCategoriesToFile(SelectedOption option)
         {
@@ -2269,7 +2269,7 @@ namespace Sales_Tracker
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
-        public void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
+        public static void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = GetFilePathForDataGridView(selected);
             List<string> linesInDataGridView = new();
@@ -2284,14 +2284,14 @@ namespace Sales_Tracker
             }
 
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
         }
-        public void SaveListToFile(List<string> list, SelectedOption selected)
+        public static void SaveListToFile(List<string> list, SelectedOption selected)
         {
             string filePath = GetFilePathForDataGridView(selected);
 
             Directories.WriteLinesToFile(filePath, list);
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
         }
 
         // Right click DataGridView row

@@ -25,7 +25,7 @@ namespace Sales_Tracker.Classes
                     wasSomethingImported = true;
                 }
             }
-            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.accountantList, MainMenu_Form.SelectedOption.Accountants);
+            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.accountantList, MainMenu_Form.SelectedOption.Accountants);
             return wasSomethingImported;
         }
         public static bool ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
@@ -48,7 +48,7 @@ namespace Sales_Tracker.Classes
                     wasSomethingImported = true;
                 }
             }
-            MainMenu_Form.Instance.SaveListToFile(MainMenu_Form.Instance.companyList, MainMenu_Form.SelectedOption.Companies);
+            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.companyList, MainMenu_Form.SelectedOption.Companies);
             return wasSomethingImported;
         }
         public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
@@ -111,8 +111,7 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Find or create the category
-                Category category = list
-                    .FirstOrDefault(c => c.Name == categoryName);
+                Category category = list.FirstOrDefault(c => c.Name == categoryName);
 
                 if (category == null)
                 {
@@ -130,9 +129,11 @@ namespace Sales_Tracker.Classes
                 };
                 if (category.ProductList.Any(p => p.Name.Equals(productName, StringComparison.OrdinalIgnoreCase)))
                 {
+                    string type = purchase ? "purchase" : "sale";
+
                     CustomMessageBox.Show("Argo Sales Tracker",
-                        $"The product {productName} already exists and will not be imported",
-                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                    $"The product for {type} '{productName}' already exists and will not be imported",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
                 }
                 else
                 {
@@ -140,14 +141,9 @@ namespace Sales_Tracker.Classes
                     wasSomethingImported = true;
                 }
 
-                if (purchase)
-                {
-                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
-                }
-                else
-                {
-                    MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
-                }
+                MainMenu_Form.Instance.SaveCategoriesToFile(purchase
+                    ? MainMenu_Form.SelectedOption.CategoryPurchases
+                    : MainMenu_Form.SelectedOption.CategorySales);
             }
             return wasSomethingImported;
         }
@@ -164,7 +160,7 @@ namespace Sales_Tracker.Classes
                 if (purchaseNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                      $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
+                      $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
                       CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                     if (result != CustomMessageBoxResult.Yes)
@@ -304,10 +300,10 @@ namespace Sales_Tracker.Classes
             using XLWorkbook workbook = new();
 
             IXLWorksheet purchaseWorksheet = workbook.Worksheets.Add("Purchases");
-            AddDataToWorksheet(purchaseWorksheet, MainMenu_Form.Instance.Purchases_DataGridView);
+            AddTransactionToWorksheet(purchaseWorksheet, MainMenu_Form.Instance.Purchases_DataGridView);
 
             IXLWorksheet salesWorksheet = workbook.Worksheets.Add("Sales");
-            AddDataToWorksheet(salesWorksheet, MainMenu_Form.Instance.Sales_DataGridView);
+            AddTransactionToWorksheet(salesWorksheet, MainMenu_Form.Instance.Sales_DataGridView);
 
             IXLWorksheet purchaseProductsWorksheet = workbook.Worksheets.Add("Purchase products");
             AddProductsToWorksheet(purchaseProductsWorksheet, MainMenu_Form.Instance.categoryPurchaseList);
@@ -324,7 +320,7 @@ namespace Sales_Tracker.Classes
             // Save the file
             workbook.SaveAs(filePath);
         }
-        private static void AddDataToWorksheet(IXLWorksheet worksheet, DataGridView dataGridView)
+        private static void AddTransactionToWorksheet(IXLWorksheet worksheet, DataGridView dataGridView)
         {
             // Add headers and format them
             for (int i = 0; i < dataGridView.Columns.Count; i++)
