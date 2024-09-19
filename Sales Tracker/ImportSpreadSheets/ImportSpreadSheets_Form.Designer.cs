@@ -57,7 +57,7 @@
             ImportSpreadsheet_Label.Margin = new Padding(6, 0, 6, 0);
             ImportSpreadsheet_Label.Name = "ImportSpreadsheet_Label";
             ImportSpreadsheet_Label.Size = new Size(299, 45);
-            ImportSpreadsheet_Label.TabIndex = 543;
+            ImportSpreadsheet_Label.TabIndex = 0;
             ImportSpreadsheet_Label.Text = "Import spreadsheet";
             // 
             // SelectFile_Button
@@ -79,7 +79,7 @@
             SelectFile_Button.Name = "SelectFile_Button";
             SelectFile_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             SelectFile_Button.Size = new Size(220, 45);
-            SelectFile_Button.TabIndex = 558;
+            SelectFile_Button.TabIndex = 1;
             SelectFile_Button.Text = "Select file";
             SelectFile_Button.Click += SelectFile_Button_Click;
             // 
@@ -103,7 +103,7 @@
             Import_Button.Name = "Import_Button";
             Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Import_Button.Size = new Size(220, 45);
-            Import_Button.TabIndex = 559;
+            Import_Button.TabIndex = 4;
             Import_Button.Text = "Import";
             Import_Button.Click += Import_Button_Click;
             // 
@@ -121,7 +121,7 @@
             RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
             RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges5;
             RemoveReceipt_ImageButton.Size = new Size(38, 38);
-            RemoveReceipt_ImageButton.TabIndex = 561;
+            RemoveReceipt_ImageButton.TabIndex = 3;
             RemoveReceipt_ImageButton.Click += RemoveReceipt_ImageButton_Click;
             RemoveReceipt_ImageButton.MouseEnter += RemoveReceipt_ImageButton_MouseEnter;
             RemoveReceipt_ImageButton.MouseLeave += RemoveReceipt_ImageButton_MouseLeave;
@@ -134,7 +134,7 @@
             SelectedReceipt_Label.Location = new Point(456, 168);
             SelectedReceipt_Label.Name = "SelectedReceipt_Label";
             SelectedReceipt_Label.Size = new Size(86, 28);
-            SelectedReceipt_Label.TabIndex = 560;
+            SelectedReceipt_Label.TabIndex = 0;
             SelectedReceipt_Label.Text = "Selected";
             // 
             // OpenTutorial_Button
@@ -156,7 +156,7 @@
             OpenTutorial_Button.Name = "OpenTutorial_Button";
             OpenTutorial_Button.ShadowDecoration.CustomizableEdges = customizableEdges7;
             OpenTutorial_Button.Size = new Size(220, 45);
-            OpenTutorial_Button.TabIndex = 562;
+            OpenTutorial_Button.TabIndex = 5;
             OpenTutorial_Button.Text = "Open tutorial";
             OpenTutorial_Button.Click += OpenTutorial_Button_Click;
             // 
@@ -174,7 +174,7 @@
             SkipHeaderRow_CheckBox.Name = "SkipHeaderRow_CheckBox";
             SkipHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
             SkipHeaderRow_CheckBox.Size = new Size(20, 20);
-            SkipHeaderRow_CheckBox.TabIndex = 564;
+            SkipHeaderRow_CheckBox.TabIndex = 2;
             SkipHeaderRow_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             SkipHeaderRow_CheckBox.UncheckedState.BorderRadius = 2;
             SkipHeaderRow_CheckBox.UncheckedState.BorderThickness = 0;
@@ -190,7 +190,7 @@
             SkipHeaderRow_Label.Name = "SkipHeaderRow_Label";
             SkipHeaderRow_Label.Padding = new Padding(5);
             SkipHeaderRow_Label.Size = new Size(181, 40);
-            SkipHeaderRow_Label.TabIndex = 563;
+            SkipHeaderRow_Label.TabIndex = 0;
             SkipHeaderRow_Label.Text = "Skip header row";
             SkipHeaderRow_Label.Click += SkipHeaderRow_Label_Click;
             // 

@@ -155,6 +155,7 @@ namespace Sales_Tracker.Classes
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
             bool wasSomethingImported = false;
+            int newRowIndex = -1;
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -172,14 +173,25 @@ namespace Sales_Tracker.Classes
                     }
                 }
 
-                DataGridViewRow newRow = new();
+                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Purchases_DataGridView.RowTemplate.Clone();
                 newRow.CreateCells(MainMenu_Form.Instance.Purchases_DataGridView);
                 TagData tagData = new();
 
                 if (!ImportCells(row, tagData, newRow)) { return (false, wasSomethingImported); }
 
+                if (MainMenu_Form.Instance.Purchases_DataGridView.InvokeRequired)
+                {
+                    MainMenu_Form.Instance.Purchases_DataGridView.Invoke(new Action(() =>
+                    {
+                        newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+                    }));
+                }
+                else
+                {
+                    newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+                }
+
                 wasSomethingImported = true;
-                int newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
                 MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             return (true, wasSomethingImported);
@@ -206,7 +218,7 @@ namespace Sales_Tracker.Classes
                     }
                 }
 
-                DataGridViewRow newRow = new();
+                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Sales_DataGridView.RowTemplate.Clone();
                 newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
                 TagData tagData = new();
 
