@@ -182,7 +182,7 @@ namespace Sales_Tracker
 
                     if (tagObject != null)
                     {
-                        // If the tagObject is a list of items and TagData
+                        // If the tagObject is a list of strings and TagData
                         if (tagObject.TryGetValue(itemsKey, out object? itemsElement) &&
                             itemsElement is JsonElement itemsJsonElement &&
                             itemsJsonElement.ValueKind == JsonValueKind.Array)
