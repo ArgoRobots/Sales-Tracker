@@ -218,7 +218,7 @@ namespace Sales_Tracker.Classes
                 newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
                 TagData tagData = new();
 
-                if (!ImportCells(row, tagData, newRow)) { return (false, wasSomethingImported); ; }
+                if (!ImportCells(row, tagData, newRow)) { return (false, wasSomethingImported); }
 
                 if (MainMenu_Form.Instance.Sales_DataGridView.InvokeRequired)
                 {
@@ -344,10 +344,12 @@ namespace Sales_Tracker.Classes
             worksheet.Cell(1, messageCellIndex).Style.Font.Bold = true;
 
             // Extract TagData and receipt information
-            TagData? tagData = null;
+            TagData? tagData;
             string receiptFileName = MainMenu_Form.emptyCell;
 
             int currentRow = 2;
+            int rowForReceipt = 2;
+
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 // Handle receipts and adding new rows
@@ -361,27 +363,54 @@ namespace Sales_Tracker.Classes
                     if (receipt.StartsWith(MainMenu_Form.receipt_text))
                     {
                         receiptOffset = 1;
-                        receiptFileName = receipt;
+                        receiptFileName = Path.GetFileName(receipt);
                     }
                     else
                     {
                         worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
                     }
 
+                    AddRowToWorksheet(worksheet, row, currentRow, tagData);
+
                     // Add additional rows if they exist in the tagList
                     for (int j = 0; j < tagList.Count - receiptOffset; j++)
                     {
                         currentRow++;
                         string[] values = tagList[j].Split(',');
-                        for (int k = 0; k < values.Length; k++)
-                        {
-                            worksheet.Cell(currentRow, k + 3).Value = values[k];
-                        }
+
+                        AddItemRowToWorksheet(worksheet, values, currentRow, tagData);
+                    }
+                }
+                else if (row.Tag is List<string> tagList2)
+                {
+                    // Is there a receipt
+                    byte receiptOffset = 0;
+                    string receipt = tagList2[^1];
+                    if (receipt.StartsWith(MainMenu_Form.receipt_text))
+                    {
+                        receiptOffset = 1;
+                        receiptFileName = Path.GetFileName(receipt);
+                    }
+                    else
+                    {
+                        worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
+                    }
+
+                    AddRowToWorksheet(worksheet, row, currentRow, null);
+
+                    // Add additional rows if they exist in the tagList
+                    for (int j = 0; j < tagList2.Count - receiptOffset; j++)
+                    {
+                        currentRow++;
+                        string[] values = tagList2[j].Split(',');
+
+                        AddItemRowToWorksheet(worksheet, values, currentRow, null);
                     }
                 }
                 else if (row.Tag is (string tagString, TagData tagData2))
                 {
                     tagData = tagData2;
+                    AddRowToWorksheet(worksheet, row, currentRow, tagData);
                     receiptFileName = Path.GetFileName(tagString);
                 }
                 else
@@ -389,12 +418,11 @@ namespace Sales_Tracker.Classes
                     worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
                 }
 
-                AddRowToWorksheet(worksheet, row, currentRow, tagData);
-
                 // Add receipt to the last cell
-                worksheet.Cell(currentRow, receiptCellIndex).Value = receiptFileName;
+                worksheet.Cell(rowForReceipt, receiptCellIndex).Value = receiptFileName;
 
                 currentRow++;
+                rowForReceipt = currentRow;  // This ensures that the receipt is not added to the bottom of a purchase with multiple items
             }
 
             worksheet.Columns().AdjustToContents();
@@ -407,6 +435,7 @@ namespace Sales_Tracker.Classes
 
                 if (tagData != null && i >= 8 && i <= 14)
                 {
+                    bool empty = false;
                     decimal usdValue = 0;
                     switch (i)
                     {
@@ -431,8 +460,11 @@ namespace Sales_Tracker.Classes
                         case 14:
                             usdValue = tagData.TotalUSD;
                             break;
+                        default:
+                            empty = true;
+                            break;
                     }
-                    excelCell.Value = usdValue.ToString();
+                    excelCell.Value = empty ? MainMenu_Form.emptyCell : usdValue.ToString();
                 }
                 else
                 {
@@ -447,6 +479,55 @@ namespace Sales_Tracker.Classes
                     {
                         excelCell.Value = cellValue;
                     }
+                }
+            }
+        }
+        private static void AddItemRowToWorksheet(IXLWorksheet worksheet, string[] row, int currentRow, TagData tagData)
+        {
+            int dateColumnIndex = 4;
+
+            for (int i = 0; i < row.Length; i++)
+            {
+                // Shift the data one column to the right after the date column
+                int columnIndex = i < dateColumnIndex ? i : i + 1;
+
+                IXLCell excelCell = worksheet.Cell(currentRow, columnIndex + 3);
+
+                if (tagData != null && i >= 5 && i <= 11)
+                {
+                    bool empty = false;
+                    decimal usdValue = 0;
+
+                    switch (i)
+                    {
+                        case 5:
+                            usdValue = tagData.PricePerUnitUSD;
+                            break;
+                        case 6:
+                            usdValue = tagData.ShippingUSD;
+                            break;
+                        case 7:
+                            usdValue = tagData.TaxUSD;
+                            break;
+                        case 8:
+                            usdValue = tagData.FeeUSD;
+                            break;
+                        case 9:
+                            usdValue = tagData.DiscountUSD;
+                            break;
+                        case 10:
+                            usdValue = tagData.ChargedDifferenceUSD;
+                            break;
+                        case 11:
+                            usdValue = tagData.TotalUSD;
+                            break;
+                    }
+                    excelCell.Value = empty ? MainMenu_Form.emptyCell : usdValue.ToString();
+                }
+                else
+                {
+                    string? cellValue = row[i]?.ToString();
+                    excelCell.Value = cellValue;
                 }
             }
         }

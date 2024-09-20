@@ -380,17 +380,18 @@ namespace Sales_Tracker
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
-                string itemName = nameTextBox.Text.Trim();
+                string[] itemsInName = nameTextBox.Text.Split('>');
+                string categoryName = itemsInName[0].Trim();
+                string productName = itemsInName[1].Trim();
 
-                string currentCategoryName = MainMenu_Form.GetCategoryNameByProductName(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-                string currentCountry = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
-                string currentCompany = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, itemName);
+                string currentCountry = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
+                string currentCompany = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
 
                 if (firstCategoryName == null)
                 {
-                    firstCategoryName = currentCategoryName;
+                    firstCategoryName = categoryName;
                 }
-                else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName)
+                else if (isCategoryNameConsistent && firstCategoryName != categoryName)
                 {
                     isCategoryNameConsistent = false;
                 }
@@ -421,8 +422,8 @@ namespace Sales_Tracker
                 totalQuantity += quantity;
 
                 string item = string.Join(",",
-                    itemName,
-                    currentCategoryName,
+                    productName,
+                    categoryName,
                     currentCountry,
                     currentCompany,
                     quantity.ToString(),

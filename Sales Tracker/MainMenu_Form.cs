@@ -1727,6 +1727,22 @@ namespace Sales_Tracker
                         }
                     }
                 }
+                else if (grid.SelectedRows[0].Tag is List<string> tagList1)
+                {
+                    ShowShowItemsBtn(flowPanel, 1);
+
+                    // Check if the last item starts with "receipt:"
+                    string lastItem = tagList1[^1];
+                    if (lastItem.StartsWith(receipt_text))
+                    {
+                        lastItem = lastItem.Substring(8).Replace(companyName_text, Directories.CompanyName);
+
+                        if (File.Exists(lastItem))
+                        {
+                            ShowExportReceiptBtn(flowPanel, 2);
+                        }
+                    }
+                }
                 else if (grid.SelectedRows[0].Tag is (string, TagData))
                 {
                     ShowExportReceiptBtn(flowPanel, 1);

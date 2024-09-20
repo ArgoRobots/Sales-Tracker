@@ -489,46 +489,51 @@ namespace Sales_Tracker.ImportSpreadSheets
             foreach (Panel panel in centeredFlowPanel.Controls.OfType<Panel>())
             {
                 Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
+                string worksheetName = panel.Tag.ToString();
 
-                if (checkBox != null && checkBox.Checked)
+                // If the CheckBox is not checked
+                if (checkBox == null || !checkBox.Checked)
                 {
-                    string worksheetName = panel.Tag.ToString();
+                    continue;
+                }
 
-                    if (workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        IXLWorksheet worksheet = workbook.Worksheet(worksheetName);
+                // If the sheet no longer not exists. The user may have deleted a sheet after selecting the spreadsheet file
+                if (workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    continue;
+                }
 
-                        switch (worksheetName)
-                        {
-                            case accountantsName:
-                                wasSomethingImported |= SpreadsheetManager.ImportAccountantsData(worksheet, skipheader);
-                                break;
+                IXLWorksheet worksheet = workbook.Worksheet(worksheetName);
 
-                            case companiesName:
-                                wasSomethingImported |= SpreadsheetManager.ImportCompaniesData(worksheet, skipheader);
-                                break;
+                switch (worksheetName)
+                {
+                    case accountantsName:
+                        wasSomethingImported |= SpreadsheetManager.ImportAccountantsData(worksheet, skipheader);
+                        break;
 
-                            case purchaseProductsName:
-                                wasSomethingImported |= SpreadsheetManager.ImportProductsData(worksheet, true, skipheader);
-                                break;
+                    case companiesName:
+                        wasSomethingImported |= SpreadsheetManager.ImportCompaniesData(worksheet, skipheader);
+                        break;
 
-                            case saleProductsName:
-                                wasSomethingImported |= SpreadsheetManager.ImportProductsData(worksheet, false, skipheader);
-                                break;
+                    case purchaseProductsName:
+                        wasSomethingImported |= SpreadsheetManager.ImportProductsData(worksheet, true, skipheader);
+                        break;
 
-                            case purchasesName:
-                                (bool connection, bool somethingImported) = SpreadsheetManager.ImportPurchaseData(worksheet, skipheader);
-                                if (!connection) { purchaseImportFailed = true; }
-                                wasSomethingImported |= somethingImported;
-                                break;
+                    case saleProductsName:
+                        wasSomethingImported |= SpreadsheetManager.ImportProductsData(worksheet, false, skipheader);
+                        break;
 
-                            case salesName:
-                                (bool connection1, bool somethingImported2) = SpreadsheetManager.ImportSalesData(worksheet, skipheader);
-                                if (!connection1) { salesImportFailed = true; }
-                                wasSomethingImported |= somethingImported2;
-                                break;
-                        }
-                    }
+                    case purchasesName:
+                        (bool connection, bool somethingImported) = SpreadsheetManager.ImportPurchaseData(worksheet, skipheader);
+                        if (!connection) { purchaseImportFailed = true; }
+                        wasSomethingImported |= somethingImported;
+                        break;
+
+                    case salesName:
+                        (bool connection1, bool somethingImported2) = SpreadsheetManager.ImportSalesData(worksheet, skipheader);
+                        if (!connection1) { salesImportFailed = true; }
+                        wasSomethingImported |= somethingImported2;
+                        break;
                 }
             }
 
