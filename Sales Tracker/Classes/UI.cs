@@ -184,14 +184,14 @@ namespace Sales_Tracker.Classes
             };
             ConstructKeyShortcut("Ctrl+S", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Save as", panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Save as...", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 ArgoCompany.SaveAs();
             };
             ConstructKeyShortcut("Ctrl+Shift+S", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Export / make backup", panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Export as...", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
                 new Export_Form().ShowDialog();

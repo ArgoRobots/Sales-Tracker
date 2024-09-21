@@ -171,9 +171,8 @@ namespace Sales_Tracker.Classes
 
                 DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Purchases_DataGridView.RowTemplate.Clone();
                 newRow.CreateCells(MainMenu_Form.Instance.Purchases_DataGridView);
-                TagData tagData = new();
 
-                if (!ImportCells(row, tagData, newRow)) { return (false, wasSomethingImported); }
+                if (!ImportCells(row, newRow)) { return (false, wasSomethingImported); }
 
                 if (MainMenu_Form.Instance.Purchases_DataGridView.InvokeRequired)
                 {
@@ -216,9 +215,8 @@ namespace Sales_Tracker.Classes
 
                 DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Sales_DataGridView.RowTemplate.Clone();
                 newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
-                TagData tagData = new();
 
-                if (!ImportCells(row, tagData, newRow)) { return (false, wasSomethingImported); }
+                if (!ImportCells(row, newRow)) { return (false, wasSomethingImported); }
 
                 if (MainMenu_Form.Instance.Sales_DataGridView.InvokeRequired)
                 {
@@ -242,8 +240,10 @@ namespace Sales_Tracker.Classes
         /// Imports data into a DataGridViewRow.
         /// </summary>
         /// <returns>True if the cells are imported successfully. False if the exchange rate was not retrieved.</returns>
-        private static bool ImportCells(IXLRow row, TagData tagData, DataGridViewRow newRow)
+        private static bool ImportCells(IXLRow row, DataGridViewRow newRow)
         {
+            TagData tagData = new();
+
             for (int i = 0; i < row.Cells().Count() - 1; i++)
             {
                 string value = row.Cell(i + 1).GetValue<string>();
@@ -281,7 +281,7 @@ namespace Sales_Tracker.Classes
                     decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date, false);
                     if (exchangeRateToDefault == -1) { return false; }
 
-                    newRow.Cells[i].Value = (ConvertStringToDecimal(value) * exchangeRateToDefault).ToString("N2");
+                    newRow.Cells[i].Value = (decimalValue * exchangeRateToDefault).ToString("N2");
                 }
                 else
                 {
@@ -344,7 +344,6 @@ namespace Sales_Tracker.Classes
             worksheet.Cell(1, messageCellIndex).Style.Font.Bold = true;
 
             // Extract TagData and receipt information
-            TagData? tagData;
             string receiptFileName = MainMenu_Form.emptyCell;
 
             int currentRow = 2;
@@ -355,8 +354,6 @@ namespace Sales_Tracker.Classes
                 // Handle receipts and adding new rows
                 if (row.Tag is (List<string> tagList, TagData tagData1) && tagList.Count > 0)
                 {
-                    tagData = tagData1;
-
                     // Is there a receipt
                     byte receiptOffset = 0;
                     string receipt = tagList[^1];
@@ -370,7 +367,7 @@ namespace Sales_Tracker.Classes
                         worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
                     }
 
-                    AddRowToWorksheet(worksheet, row, currentRow, tagData);
+                    AddRowToWorksheet(worksheet, row, currentRow, tagData1);
 
                     // Add additional rows if they exist in the tagList
                     for (int j = 0; j < tagList.Count - receiptOffset; j++)
@@ -378,64 +375,32 @@ namespace Sales_Tracker.Classes
                         currentRow++;
                         string[] values = tagList[j].Split(',');
 
-                        AddItemRowToWorksheet(worksheet, values, currentRow, tagData);
-                    }
-                }
-                else if (row.Tag is List<string> tagList2)
-                {
-                    // Is there a receipt
-                    byte receiptOffset = 0;
-                    string receipt = tagList2[^1];
-                    if (receipt.StartsWith(MainMenu_Form.receipt_text))
-                    {
-                        receiptOffset = 1;
-                        receiptFileName = Path.GetFileName(receipt);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
-                    }
-
-                    AddRowToWorksheet(worksheet, row, currentRow, null);
-
-                    // Add additional rows if they exist in the tagList
-                    for (int j = 0; j < tagList2.Count - receiptOffset; j++)
-                    {
-                        currentRow++;
-                        string[] values = tagList2[j].Split(',');
-
-                        AddItemRowToWorksheet(worksheet, values, currentRow, null);
+                        AddItemRowToWorksheet(worksheet, values, currentRow);
                     }
                 }
                 else if (row.Tag is (string tagString, TagData tagData2))
                 {
-                    tagData = tagData2;
-                    AddRowToWorksheet(worksheet, row, currentRow, tagData);
+                    AddRowToWorksheet(worksheet, row, currentRow, tagData2);
                     receiptFileName = Path.GetFileName(tagString);
-                }
-                else
-                {
-                    worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
                 }
 
                 // Add receipt to the last cell
                 worksheet.Cell(rowForReceipt, receiptCellIndex).Value = receiptFileName;
 
                 currentRow++;
-                rowForReceipt = currentRow;  // This ensures that the receipt is not added to the bottom of a purchase with multiple items
+                rowForReceipt = currentRow;  // This ensures that the receipt is not added to the bottom of a transaction with multiple items
             }
 
             worksheet.Columns().AdjustToContents();
         }
         private static void AddRowToWorksheet(IXLWorksheet worksheet, DataGridViewRow row, int currentRow, TagData tagData)
         {
-            for (int i = 0; i < row.Cells.Count; i++)
+            for (int i = 0; i < row.Cells.Count - 1; i++)  // Do not add the note in the last cell here
             {
                 IXLCell excelCell = worksheet.Cell(currentRow, i + 1);
 
                 if (tagData != null && i >= 8 && i <= 14)
                 {
-                    bool empty = false;
                     decimal usdValue = 0;
                     switch (i)
                     {
@@ -460,75 +425,39 @@ namespace Sales_Tracker.Classes
                         case 14:
                             usdValue = tagData.TotalUSD;
                             break;
-                        default:
-                            empty = true;
-                            break;
                     }
-                    excelCell.Value = empty ? MainMenu_Form.emptyCell : usdValue.ToString();
+                    excelCell.Value = usdValue.ToString();
                 }
                 else
                 {
                     string? cellValue = row.Cells[i].Value?.ToString();
-
-                    // Check if the last cell has "show"
-                    if (cellValue == MainMenu_Form.show_text && row.Cells[i].Tag != null)
-                    {
-                        excelCell.Value = row.Cells[i].Tag.ToString();
-                    }
-                    else
-                    {
-                        excelCell.Value = cellValue;
-                    }
+                    excelCell.Value = cellValue;
                 }
+
+                string? cellValue1 = row.Cells[i].Value?.ToString();
+                excelCell.Value = cellValue1;
+            }
+
+            // Set the note in the last cell
+            DataGridViewCell lastCell = row.Cells[^1];
+            if (lastCell.Value.ToString() == MainMenu_Form.show_text && lastCell.Tag != null)
+            {
+                lastCell.Value = lastCell.Tag.ToString();
             }
         }
-        private static void AddItemRowToWorksheet(IXLWorksheet worksheet, string[] row, int currentRow, TagData tagData)
+        private static void AddItemRowToWorksheet(IXLWorksheet worksheet, string[] row, int currentRow)
         {
             int dateColumnIndex = 4;
 
-            for (int i = 0; i < row.Length; i++)
+            for (int i = 0; i < row.Length - 1; i++) // Skip the total value with - 1
             {
                 // Shift the data one column to the right after the date column
                 int columnIndex = i < dateColumnIndex ? i : i + 1;
 
                 IXLCell excelCell = worksheet.Cell(currentRow, columnIndex + 3);
 
-                if (tagData != null && i >= 5 && i <= 11)
-                {
-                    bool empty = false;
-                    decimal usdValue = 0;
-
-                    switch (i)
-                    {
-                        case 5:
-                            usdValue = tagData.PricePerUnitUSD;
-                            break;
-                        case 6:
-                            usdValue = tagData.ShippingUSD;
-                            break;
-                        case 7:
-                            usdValue = tagData.TaxUSD;
-                            break;
-                        case 8:
-                            usdValue = tagData.FeeUSD;
-                            break;
-                        case 9:
-                            usdValue = tagData.DiscountUSD;
-                            break;
-                        case 10:
-                            usdValue = tagData.ChargedDifferenceUSD;
-                            break;
-                        case 11:
-                            usdValue = tagData.TotalUSD;
-                            break;
-                    }
-                    excelCell.Value = empty ? MainMenu_Form.emptyCell : usdValue.ToString();
-                }
-                else
-                {
-                    string? cellValue = row[i]?.ToString();
-                    excelCell.Value = cellValue;
-                }
+                string? cellValue = row[i]?.ToString();
+                excelCell.Value = cellValue;
             }
         }
         private static void AddAccountantsToWorksheet(IXLWorksheet worksheet)

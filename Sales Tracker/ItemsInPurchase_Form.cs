@@ -39,10 +39,6 @@ namespace Sales_Tracker
             {
                 SetDataGridView(list);
             }
-            else
-            {
-                throw new InvalidCastException("Unexpected Tag type. Expected List<string> or ValueTuple<List<string>, TagData>.");
-            }
 
             Theme.SetThemeForForm(this);
 
@@ -55,7 +51,8 @@ namespace Sales_Tracker
         // Form event handlers
         private void ItemsInPurchase_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Reset();
+            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
 
             if (hasChanges)
             {
@@ -65,7 +62,7 @@ namespace Sales_Tracker
                 }
                 else
                 {
-                    UpdateRowTag();
+                    UpdateMainMenuRowTag();
                     MainMenu_Form.Instance.UpdateRow();
                 }
 
@@ -78,15 +75,12 @@ namespace Sales_Tracker
         }
 
         // Methods
-        private void UpdateRowTag()
+        private void UpdateMainMenuRowTag()
         {
             List<string> items = new();
 
-            // Check if the current Tag is a ValueTuple
             if (oldSelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, TagData tagData))
             {
-                // Handle the case where Tag is a ValueTuple
-
                 string lastItem = null;
                 if (existingItems.Last().StartsWith(MainMenu_Form.receipt_text))
                 {
@@ -112,10 +106,6 @@ namespace Sales_Tracker
 
                 oldSelectedDataGridView.SelectedRows[0].Tag = (items, tagData);
             }
-            else
-            {
-                throw new InvalidCastException("Unexpected Tag type. Expected ValueTuple<List<string>, TagData>.");
-            }
         }
         private void SetDataGridView(List<string> tag)
         {
@@ -139,20 +129,29 @@ namespace Sales_Tracker
             if (tag.Count > 0 && tag[^1].StartsWith(MainMenu_Form.receipt_text))
             {
                 receiptFilePath = tag[^1];
-                startIndex = 1; // Skip the check in the loop for the last item
+                startIndex = 1;
             }
 
+            // Get date for exchange rate
+            string date = oldSelectedDataGridView.SelectedRows[0].Cells[MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Date]].Value.ToString();
+
+            // Get exchange rate
+            decimal exchangeRateToUSD = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
+            if (exchangeRateToUSD == -1) { return; }
+
+            // Add values to DataGridView, and convert money values
             for (int i = 0; i < tag.Count - startIndex; i++)
             {
                 string[] values = tag[i].Split(',');
+                decimal quantity = decimal.Parse(values[4]);
+                decimal pricePerUnit = decimal.Parse(values[5]);
+
+                values[5] = (pricePerUnit * exchangeRateToUSD).ToString("N2");
+                values[6] = (quantity * pricePerUnit * exchangeRateToUSD).ToString("N2");
+
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
-        }
-        public void Reset()
-        {
-            MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
         }
     }
 }

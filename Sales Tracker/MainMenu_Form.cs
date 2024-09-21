@@ -708,7 +708,8 @@ namespace Sales_Tracker
                     // Cancel close
                     return true;
                 default:  // If the CustomMessageBox was closed
-                    return true;  // Cancel the closing
+                    // Cancel close
+                    return true;
             }
 
             return false;
@@ -1715,37 +1716,17 @@ namespace Sales_Tracker
                 {
                     ShowShowItemsBtn(flowPanel, 1);
 
-                    // Check if the last item starts with "receipt:"
-                    string lastItem = tagList[^1];
-                    if (lastItem.StartsWith(receipt_text))
+                    if (IsLastItemAReceipt(tagList[^1]))
                     {
-                        lastItem = lastItem.Substring(8).Replace(companyName_text, Directories.CompanyName);
-
-                        if (File.Exists(lastItem))
-                        {
-                            ShowExportReceiptBtn(flowPanel, 2);
-                        }
+                        ShowExportReceiptBtn(flowPanel, 2);
                     }
                 }
-                else if (grid.SelectedRows[0].Tag is List<string> tagList1)
+                else if (grid.SelectedRows[0].Tag is (string item, TagData))
                 {
-                    ShowShowItemsBtn(flowPanel, 1);
-
-                    // Check if the last item starts with "receipt:"
-                    string lastItem = tagList1[^1];
-                    if (lastItem.StartsWith(receipt_text))
+                    if (IsLastItemAReceipt(item))
                     {
-                        lastItem = lastItem.Substring(8).Replace(companyName_text, Directories.CompanyName);
-
-                        if (File.Exists(lastItem))
-                        {
-                            ShowExportReceiptBtn(flowPanel, 2);
-                        }
+                        ShowExportReceiptBtn(flowPanel, 1);
                     }
-                }
-                else if (grid.SelectedRows[0].Tag is (string, TagData))
-                {
-                    ShowExportReceiptBtn(flowPanel, 1);
                 }
 
                 // Adjust the panel height based on the number of controls
@@ -1910,6 +1891,17 @@ namespace Sales_Tracker
         }
 
         // Methods for DataGridView
+        private static bool IsLastItemAReceipt(string lastItem)
+        {
+            // Check if the last item starts with "receipt:"
+            if (lastItem.StartsWith(receipt_text))
+            {
+                lastItem = lastItem.Substring(8).Replace(companyName_text, Directories.CompanyName);
+
+                return File.Exists(lastItem);
+            }
+            return false;
+        }
         public void DataGridViewRowsAdded(Guna2DataGridView dataGridView, DataGridViewRowsAddedEventArgs e)
         {
             if (isProgramLoading) { return; }

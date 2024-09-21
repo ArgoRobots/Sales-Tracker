@@ -83,14 +83,16 @@ namespace Sales_Tracker
                 // Iterate through selected rows and copy files
                 foreach (DataGridViewRow row in Receipts_DataGridView.SelectedRows)
                 {
-                    if (row.Tag is (string dir, TagData))
-                    {
-                        string sourceFilePath = dir.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
-                        string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(sourceFilePath));
-                        destinationFilePath = Directories.GetNewFileNameIfItAlreadyExists(destinationFilePath);
-                        Directories.CopyFile(sourceFilePath, destinationFilePath);
-                    }
+                    string receipt = row.Tag.ToString();
+                    receipt = receipt.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
+                    string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
+                    destinationFilePath = Directories.GetNewFileNameIfItAlreadyExists(destinationFilePath);
+                    Directories.CopyFile(receipt, destinationFilePath);
                 }
+
+                CustomMessageBox.Show("Argo Sales Tracker",
+                   "Receipts exported successfully",
+                   CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
         }
         private void FilterByDate_Label_Click(object sender, EventArgs e)
@@ -129,7 +131,17 @@ namespace Sales_Tracker
                     row.Cells[MainMenu_Form.Column.Total.ToString()].Value.ToString());
 
                 // Add receipt filepath to row tag
-                Receipts_DataGridView.Rows[^1].Tag = row.Tag;
+                string receipt = "";
+                if (row.Tag is (string dir, TagData))
+                {
+                    receipt = dir.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
+                }
+                else if (row.Tag is (List<string> items, TagData))
+                {
+                    receipt = items[^1];
+                    receipt = receipt.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
+                }
+                Receipts_DataGridView.Rows[^1].Tag = receipt;
 
                 // Get oldest date
                 DateTime currentDate = DateTime.Parse(row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString());

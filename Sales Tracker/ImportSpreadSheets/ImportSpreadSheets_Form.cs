@@ -179,7 +179,7 @@ namespace Sales_Tracker.ImportSpreadSheets
         private readonly byte panelPadding = 25, panelHeight = 240;
         private readonly int panelWidth = 300;
         private CenteredFlowLayoutPanel centeredFlowPanel;
-        private Panel CreateFlowLayoutPanel(List<string> items, string worksheetName)
+        private Panel CreatePanel(List<string> items, string worksheetName)
         {
             Panel outerPanel = new()
             {
@@ -360,7 +360,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                     if (accountants.Count > 0)
                     {
-                        Panel panel = CreateFlowLayoutPanel(accountants, accountantsWorksheet.Name);
+                        Panel panel = CreatePanel(accountants, accountantsWorksheet.Name);
                         panels.Add(panel);
                     }
                 }
@@ -371,7 +371,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                     if (companies.Count > 0)
                     {
-                        Panel panel = CreateFlowLayoutPanel(companies, companiesWorksheet.Name);
+                        Panel panel = CreatePanel(companies, companiesWorksheet.Name);
                         panels.Add(panel);
                     }
                 }
@@ -382,7 +382,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                     if (products.Count > 0)
                     {
-                        Panel panel = CreateFlowLayoutPanel(products, productsWorksheet.Name);
+                        Panel panel = CreatePanel(products, productsWorksheet.Name);
                         panels.Add(panel);
                     }
                 }
@@ -393,7 +393,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                     if (products.Count > 0)
                     {
-                        Panel panel = CreateFlowLayoutPanel(products, productsWorksheet.Name);
+                        Panel panel = CreatePanel(products, productsWorksheet.Name);
                         panels.Add(panel);
                     }
                 }
@@ -404,7 +404,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                     if (products.Count > 0)
                     {
-                        Panel panel = CreateFlowLayoutPanel(products, purchaseWorksheet.Name);
+                        Panel panel = CreatePanel(products, purchaseWorksheet.Name);
                         panels.Add(panel);
                     }
                 }
@@ -415,7 +415,7 @@ namespace Sales_Tracker.ImportSpreadSheets
 
                     if (products.Count > 0)
                     {
-                        Panel panel = CreateFlowLayoutPanel(products, salesWorksheet.Name);
+                        Panel panel = CreatePanel(products, salesWorksheet.Name);
                         panels.Add(panel);
                     }
                 }
@@ -498,7 +498,7 @@ namespace Sales_Tracker.ImportSpreadSheets
                 }
 
                 // If the sheet no longer not exists. The user may have deleted a sheet after selecting the spreadsheet file
-                if (workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
+                if (!workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     continue;
                 }
