@@ -1329,7 +1329,8 @@ namespace Sales_Tracker
             Receipts,
             Companies,
             Statistics,
-            ItemsInPurchase
+            ItemsInPurchase,
+            ItemsInSale
         }
         public enum Column
         {

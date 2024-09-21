@@ -65,12 +65,12 @@ namespace Sales_Tracker
 
             ProductCategory_TextBox.Click += (sender, e) =>
             {
-                List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
+                List<SearchResult> searchResults = GetListForSearchBox();
                 SearchBox.ShowSearchBox(this, ProductCategory_TextBox, searchResults, this, maxHeight);
             };
             ProductCategory_TextBox.TextChanged += (sender, e) =>
             {
-                List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(GetListForSearchBox());
+                List<SearchResult> searchResults = GetListForSearchBox();
                 SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, maxHeight);
             };
             ProductCategory_TextBox.TextChanged += ValidateInputs;
@@ -89,15 +89,15 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             CompanyOfOrigin_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(CompanyOfOrigin_TextBox, this, AddProduct_Label, e); };
         }
-        private List<string> GetListForSearchBox()
+        private List<SearchResult> GetListForSearchBox()
         {
             if (Sale_RadioButton.Checked)
             {
-                return MainMenu_Form.Instance.GetCategorySaleNames();
+                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategorySaleNames());
             }
             else
             {
-                return MainMenu_Form.Instance.GetCategoryPurchaseNames();
+                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryPurchaseNames());
             }
         }
         private void LoadProducts()

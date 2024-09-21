@@ -118,7 +118,14 @@ namespace Sales_Tracker
             LoadAllItemsInDataGridView(tag);
 
             MainMenu_Form.Instance.selectedDataGridView = Items_DataGridView;
-            MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInPurchase;
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
+            {
+                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInSale;
+            }
+            else
+            {
+                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInPurchase;
+            }
         }
         private void LoadAllItemsInDataGridView(List<string> tag)
         {

@@ -237,10 +237,10 @@
             ClearFilters_Button.FillColor = Color.White;
             ClearFilters_Button.Font = new Font("Segoe UI", 9F);
             ClearFilters_Button.ForeColor = Color.Black;
-            ClearFilters_Button.Location = new Point(1118, 154);
+            ClearFilters_Button.Location = new Point(994, 25);
             ClearFilters_Button.Name = "ClearFilters_Button";
             ClearFilters_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            ClearFilters_Button.Size = new Size(225, 50);
+            ClearFilters_Button.Size = new Size(200, 50);
             ClearFilters_Button.TabIndex = 6;
             ClearFilters_Button.Text = "Clear filters";
             ClearFilters_Button.Click += ClearFilters_Button_Click;
@@ -277,7 +277,7 @@
             Sort_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Sort_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             Sort_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Sort_ComboBox.Font = new Font("Segoe UI", 10);
+            Sort_ComboBox.Font = new Font("Segoe UI", 10F);
             Sort_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             Sort_ComboBox.ItemHeight = 44;
             Sort_ComboBox.Items.AddRange(new object[] { "Most recent", "Least recent", "Most expensive", "Least expensive" });
@@ -315,10 +315,10 @@
             ExportSelected_Button.FillColor = Color.White;
             ExportSelected_Button.Font = new Font("Segoe UI", 9F);
             ExportSelected_Button.ForeColor = Color.Black;
-            ExportSelected_Button.Location = new Point(1118, 210);
+            ExportSelected_Button.Location = new Point(1200, 25);
             ExportSelected_Button.Name = "ExportSelected_Button";
             ExportSelected_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ExportSelected_Button.Size = new Size(225, 50);
+            ExportSelected_Button.Size = new Size(200, 50);
             ExportSelected_Button.TabIndex = 7;
             ExportSelected_Button.Text = "Export selected";
             ExportSelected_Button.Click += ExportSelected_Button_Click;
