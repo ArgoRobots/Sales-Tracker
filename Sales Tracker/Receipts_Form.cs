@@ -31,7 +31,6 @@ namespace Sales_Tracker
             {
                 From_DateTimePicker.Value = oldestDate;
                 To_DateTimePicker.Value = DateTime.Now;
-                Sort_ComboBox.SelectedIndex = 0;
             }
 
             Theme.SetThemeForForm(this);
@@ -60,7 +59,6 @@ namespace Sales_Tracker
             Product_TextBox.Text = "";
             From_DateTimePicker.Value = oldestDate;
             To_DateTimePicker.Value = DateTime.Now;
-            Sort_ComboBox.SelectedIndex = 0;
         }
         private void ExportSelected_Button_Click(object sender, EventArgs e)
         {
@@ -136,6 +134,14 @@ namespace Sales_Tracker
         // Methods
         private void AddAllReceiptsAndGetOldestDate()
         {
+            // Save the current sort order
+            DataGridViewColumn sortedColumn = Receipts_DataGridView.SortedColumn;
+            ListSortDirection sortDirection = ListSortDirection.Ascending;
+            if (Receipts_DataGridView.SortOrder == SortOrder.Descending)
+            {
+                sortDirection = ListSortDirection.Descending;
+            }
+
             Receipts_DataGridView.Rows.Clear();
             oldestDate = default;
 
@@ -150,6 +156,12 @@ namespace Sales_Tracker
             }
 
             Tools.ScrollToTopOfDataGridView(Receipts_DataGridView);
+
+            // Restore the previous sort order
+            if (sortedColumn != null)
+            {
+                Receipts_DataGridView.Sort(sortedColumn, sortDirection);
+            }
         }
         private void AddReceiptsFromDataGridView(Guna2DataGridView sourceDataGridView, string type)
         {
@@ -216,24 +228,6 @@ namespace Sales_Tracker
                 }
 
                 row.Visible = visible;
-            }
-        }
-        private void SortReceipts(object sender, EventArgs e)
-        {
-            switch (Sort_ComboBox.Text)
-            {
-                case "Most recent":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Date.ToString()], ListSortDirection.Descending);
-                    break;
-                case "Least recent":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Date.ToString()], ListSortDirection.Ascending);
-                    break;
-                case "Most expensive":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Total.ToString()], ListSortDirection.Descending);
-                    break;
-                case "Least expensive":
-                    Receipts_DataGridView.Sort(Receipts_DataGridView.Columns[Column.Total.ToString()], ListSortDirection.Ascending);
-                    break;
             }
         }
     }
