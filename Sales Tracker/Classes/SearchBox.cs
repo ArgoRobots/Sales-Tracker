@@ -15,6 +15,18 @@ namespace Sales_Tracker.Classes
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
         public static Guna2Panel SearchResultBox => _searchResultBox;
 
+        /// <summary>
+        /// Attaches events to a Guna2TextBox to add a SearchBox.
+        /// </summary>
+        public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results, int maxHeight)
+        {
+            textBox.Click += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight); };
+            textBox.GotFocus += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight); };
+            textBox.TextChanged += SearchTextBoxChanged;
+            textBox.PreviewKeyDown += AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
+            textBox.KeyDown += (sender, e) => { SearchBoxTextBox_KeyDown(e); };
+        }
+
         // List to store and reuse controls
         private readonly static List<Control> searchResultControls = [];
 
@@ -47,31 +59,37 @@ namespace Sales_Tracker.Classes
         }
 
         public const string addLine = "ADD LINE CONTROL";
-        private static Control controlToAddSearchBox;
+        private static Control _searchBoxParent;
         private static Guna2TextBox searchTextBox;
         private static List<SearchResult> resultList;
-        private static Control deselectControl;
         private static int maxHeight;
 
         // Event handlers
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
-            ShowSearchBox(controlToAddSearchBox, searchTextBox, resultList, deselectControl, maxHeight);
+            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, maxHeight);
         }
 
         // Main methods
-        public static void ShowSearchBox(Control controlToAddBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
+        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight)
         {
+            List<SearchResult> results = resultsFunc();
+
+            _searchBoxParent = searchBoxParent;
+            searchTextBox = textBox;
+            resultList = results;
+            SearchBox.maxHeight = maxHeight;
+
             // Start timing
             long startTime = DateTime.Now.Ticks;
 
-            controlToAddSearchBox = controlToAddBox;
+            _searchBoxParent = searchBoxParent;
             UI.CloseAllPanels(null, null);
 
-            if (result_list.Count == 0)
+            if (results.Count == 0)
             {
-                CloseSearchBox(controlToAddSearchBox);
+                CloseSearchBox();
                 return;
             }
 
@@ -86,14 +104,14 @@ namespace Sales_Tracker.Classes
 
             if (string.IsNullOrEmpty(searchText))
             {
-                foreach (SearchResult result in result_list)
+                foreach (SearchResult result in results)
                 {
                     metaList.Add(new SearchResult(result.Name, result.Flag, 0));
                 }
             }
             else
             {
-                foreach (SearchResult result in result_list)
+                foreach (SearchResult result in results)
                 {
                     if (result.Name == addLine) { continue; }
 
@@ -147,16 +165,15 @@ namespace Sales_Tracker.Classes
                             ForeColor = CustomColors.text,
                             BorderColor = CustomColors.accent_blue,
                             ImageAlign = HorizontalAlignment.Left,
-                            ImageSize = new Size(25, 13),  // Flags have different ratios. This is just a good size
+                            ImageSize = new Size(25, 13),  // Country flags have different ratios. This is just a good size
                             TextAlign = HorizontalAlignment.Left
                         };
                         btn.Click += (sender, e) =>
                         {
-                            Guna2Button? button = sender as Guna2Button;
-                            Guna2TextBox selectedTextBox = (Guna2TextBox)button.Tag;
-                            selectedTextBox.Text = button.Text;
-                            CloseSearchBox(controlToAddSearchBox);
-                            deselectControl.Focus();
+                            Guna2Button button = (Guna2Button)sender;
+                            searchTextBox.Text = button.Text;
+                            CloseSearchBox();
+                            DeselectTextBox();
                             debounceTimer.Stop();
                         };
                         _searchResultBox.Controls.Add(btn);
@@ -167,7 +184,7 @@ namespace Sales_Tracker.Classes
                     btn.Location = new Point(1, yOffset);
                     btn.Image = meta.Flag;
                     btn.Visible = true;
-                    btn.Tag = textBox;
+                    btn.BorderThickness = 0;
                 }
                 yOffset += buttonHeight;
                 controlIndex++;
@@ -189,7 +206,7 @@ namespace Sales_Tracker.Classes
             }
             else if (controlIndex == 0)
             {
-                CloseSearchBox(controlToAddSearchBox);
+                CloseSearchBox();
                 debounceTimer.Stop();
                 return;
             }
@@ -206,9 +223,9 @@ namespace Sales_Tracker.Classes
 
             // Show search box
             SetSearchBoxLocation(textBox);
-            if (!controlToAddSearchBox.Controls.Contains(_searchResultBoxContainer))
+            if (!_searchBoxParent.Controls.Contains(_searchResultBoxContainer))
             {
-                controlToAddSearchBox.Controls.Add(_searchResultBoxContainer);
+                _searchBoxParent.Controls.Add(_searchResultBoxContainer);
             }
             _searchResultBox.ResumeLayout();
             _searchResultBoxContainer.BringToFront();
@@ -235,15 +252,8 @@ namespace Sales_Tracker.Classes
         {
             return names.Select(name => new SearchResult(name, null, 0)).ToList();
         }
-        public static void SearchTextBoxChanged(Control controlToAddSearchBox, Guna2TextBox textBox, List<SearchResult> result_list, Control deselectControl, int maxHeight)
+        private static void SearchTextBoxChanged(object sender, EventArgs e)
         {
-            // Save parameters for debounce mechanism
-            SearchBox.controlToAddSearchBox = controlToAddSearchBox;
-            searchTextBox = textBox;
-            resultList = result_list;
-            SearchBox.deselectControl = deselectControl;
-            SearchBox.maxHeight = maxHeight;
-
             HashSet<string> names = new(resultList.Select(result => result.Name));
             CheckValidity(searchTextBox, names);
 
@@ -263,7 +273,7 @@ namespace Sales_Tracker.Classes
                 SetTextBoxToInvalid(textBox);
             }
         }
-        public static void SearchBoxTextBox_KeyDown(Guna2TextBox textBox, Control controlToRemoveSearchBox, Control deselectControl, KeyEventArgs e)
+        private static void SearchBoxTextBox_KeyDown(KeyEventArgs e)
         {
             List<Guna2Button> results = _searchResultBox.Controls.OfType<Guna2Button>().Where(btn => btn.Visible).ToList();
             if (results.Count == 0) { return; }
@@ -279,14 +289,12 @@ namespace Sales_Tracker.Classes
                         results[i].BorderThickness = 0;
                         if (i < results.Count - 1)
                         {
-                            results[i + 1].BorderThickness = 1;
-                            _searchResultBox.ScrollControlIntoView(results[i + 1]);
+                            SelectResult(results[i + 1]);
                             isResultSelected = true;
                         }
                         else
                         {
-                            results[0].BorderThickness = 1;
-                            _searchResultBox.ScrollControlIntoView(results[0]);
+                            SelectResult(results[0]);
                         }
                         break;
                     }
@@ -301,14 +309,12 @@ namespace Sales_Tracker.Classes
                         results[i].BorderThickness = 0;
                         if (i > 0)
                         {
-                            results[i - 1].BorderThickness = 1;
-                            _searchResultBox.ScrollControlIntoView(results[i - 1]);
+                            SelectResult(results[i - 1]);
                             isResultSelected = true;
                         }
                         else
                         {
-                            results[^1].BorderThickness = 1;
-                            _searchResultBox.ScrollControlIntoView(results[^1]);
+                            SelectResult(results[^1]);
                         }
                         break;
                     }
@@ -320,11 +326,17 @@ namespace Sales_Tracker.Classes
                 {
                     if (btn.BorderThickness == 1)
                     {
-                        textBox.Text = btn.Text;
-                        CloseSearchBox(controlToRemoveSearchBox);
-                        deselectControl.Focus();
+                        // Temporarily unsubscribe from the TextChanged event
+                        searchTextBox.TextChanged -= SearchTextBoxChanged;
+
+                        searchTextBox.Text = btn.Text;
+                        CloseSearchBox();
+                        DeselectTextBox();
                         debounceTimer.Stop();
                         isResultSelected = true;
+
+                        // Re-subscribe to the TextChanged event
+                        searchTextBox.TextChanged += SearchTextBoxChanged;
                         break;
                     }
                 }
@@ -335,11 +347,16 @@ namespace Sales_Tracker.Classes
                 e.SuppressKeyPress = true;
             }
 
+            // If nothing was selected, select the first result
             if (!isResultSelected)
             {
-                results[0].BorderThickness = 1;
-                _searchResultBox.ScrollControlIntoView(results[0]);
+                SelectResult(results[0]);
             }
+        }
+        private static void SelectResult(Guna2Button control)
+        {
+            control.BorderThickness = 1;
+            _searchResultBox.ScrollControlIntoView(control);
         }
         private static void SetTextBoxToInvalid(Guna2TextBox gTextBox)
         {
@@ -355,11 +372,7 @@ namespace Sales_Tracker.Classes
             gTextBox.FocusedState.BorderColor = CustomColors.accent_blue;
             gTextBox.Tag = "1";
         }
-        public static void CloseSearchBox(Control controlToRemoveSearchBox)
-        {
-            controlToRemoveSearchBox.Controls.Remove(_searchResultBoxContainer);
-        }
-        public static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        private static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyData == Keys.Tab || e.KeyData == Keys.Enter)
             {
@@ -371,16 +384,28 @@ namespace Sales_Tracker.Classes
             Point location = textBox.Location;
             Control parent = textBox.Parent;
 
-            while (parent != null && parent != controlToAddSearchBox)
+            while (parent != null && parent != _searchBoxParent)
             {
                 location.Offset(parent.Location);
                 parent = parent.Parent;
             }
 
-            if (parent == controlToAddSearchBox)
+            if (parent == _searchBoxParent)
             {
                 _searchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
             }
+        }
+        private static void DeselectTextBox()
+        {
+            // Set focus to another control to avoid reopening the search box
+            Control dummyControl = new();
+            _searchBoxParent.Controls.Add(dummyControl);
+            dummyControl.Focus();
+            _searchBoxParent.Controls.Remove(dummyControl);
+        }
+        public static void CloseSearchBox()
+        {
+            _searchBoxParent?.Controls.Remove(_searchResultBoxContainer);
         }
     }
 }

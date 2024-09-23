@@ -34,7 +34,7 @@
     <Compile Update="ImportSpreadSheets\ImportSpreadSheets_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ItemsInPurchase_Form.cs">
+    <Compile Update="ItemsInTransaction_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Log_Form.cs">

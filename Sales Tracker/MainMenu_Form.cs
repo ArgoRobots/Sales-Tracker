@@ -2110,20 +2110,18 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void UpdateRow()
+        public void UpdateRowWithMultipleItems()
         {
             isProgramLoading = true;
 
-            List<string> items = null;
+            List<string> items = [];
 
             if (selectedRowInMainMenu.Tag is (List<string> itemList, TagData))
             {
                 items = itemList;
             }
-            else if (selectedRowInMainMenu.Tag is List<string> list)
-            {
-                items = list;
-            }
+
+            if (items.Count == 1) { return; }
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
@@ -2160,14 +2158,11 @@ namespace Sales_Tracker
             selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value = items.Count - 1;
 
             // Update charged difference
-            if (Selected == SelectedOption.Purchases)
-            {
-                int quantity = int.Parse(selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value.ToString());
-                decimal shipping = decimal.Parse(selectedRowInMainMenu.Cells[Column.Shipping.ToString()].Value.ToString());
-                decimal tax = decimal.Parse(selectedRowInMainMenu.Cells[Column.Tax.ToString()].Value.ToString());
-                decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-                selectedRowInMainMenu.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRowInMainMenu.Cells[Column.Total.ToString()].Value) - totalPrice;
-            }
+            int quantity = int.Parse(selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value.ToString());
+            decimal shipping = decimal.Parse(selectedRowInMainMenu.Cells[Column.Shipping.ToString()].Value.ToString());
+            decimal tax = decimal.Parse(selectedRowInMainMenu.Cells[Column.Tax.ToString()].Value.ToString());
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+            selectedRowInMainMenu.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRowInMainMenu.Cells[Column.Total.ToString()].Value) - totalPrice;
 
             isProgramLoading = false;
         }
@@ -2410,11 +2405,11 @@ namespace Sales_Tracker
                 Directories.CopyFile(receiptFilePath, newFilepath);
             }
         }
-        private ItemsInPurchase_Form itemsInPurchase_Form;
+        private ItemsInTransaction_Form itemsInPurchase_Form;
         private void ShowItems(object sender, EventArgs e)
         {
             UI.CloseAllPanels(null, null);
-            itemsInPurchase_Form = new ItemsInPurchase_Form(selectedDataGridView.SelectedRows[0]);
+            itemsInPurchase_Form = new ItemsInTransaction_Form(selectedDataGridView.SelectedRows[0]);
             itemsInPurchase_Form.ShowDialog();
         }
         private void DeleteRow(object sender, EventArgs e)

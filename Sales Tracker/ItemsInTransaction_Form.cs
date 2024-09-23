@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sales_Tracker
 {
-    public partial class ItemsInPurchase_Form : Form
+    public partial class ItemsInTransaction_Form : Form
     {
         // Properties
         private readonly MainMenu_Form.SelectedOption oldOption;
@@ -21,7 +21,7 @@ namespace Sales_Tracker
         private bool hasChanges = false;
 
         // Init.
-        public ItemsInPurchase_Form(DataGridViewRow row)
+        public ItemsInTransaction_Form(DataGridViewRow row)
         {
             InitializeComponent();
 
@@ -49,7 +49,7 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
-        private void ItemsInPurchase_Form_FormClosed(object sender, FormClosedEventArgs e)
+        private void ItemsInTransaction_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
@@ -63,13 +63,13 @@ namespace Sales_Tracker
                 else
                 {
                     UpdateMainMenuRowTag();
-                    MainMenu_Form.Instance.UpdateRow();
+                    MainMenu_Form.Instance.UpdateRowWithMultipleItems();
                 }
 
                 MainMenu_Form.Instance.DataGridViewRowChanged();
             }
         }
-        private void ItemsInPurchase_Form_Shown(object sender, EventArgs e)
+        private void ItemsInTransaction_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }

@@ -1,6 +1,6 @@
 ﻿namespace Sales_Tracker
 {
-    partial class ItemsInPurchase_Form
+    partial class ItemsInTransaction_Form
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ItemsInPurchase_Form));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ItemsInTransaction_Form));
             Items_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
             ExportReceipts_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)Items_DataGridView).BeginInit();
@@ -113,8 +113,8 @@
             Name = "ItemsInPurchase_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            FormClosed += ItemsInPurchase_Form_FormClosed;
-            Shown += ItemsInPurchase_Form_Shown;
+            FormClosed += ItemsInTransaction_Form_FormClosed;
+            Shown += ItemsInTransaction_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)Items_DataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();

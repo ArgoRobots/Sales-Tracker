@@ -45,6 +45,8 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             SaveInRow();
+            UpdateChargedDifference();
+            MainMenu_Form.Instance.DataGridViewRowChanged();
             SaveInListsAndUpdateDataGridViews();
 
             // If the user selected a new receipt
@@ -148,8 +150,10 @@ namespace Sales_Tracker
                 {
                     case nameof(Accountants_Form.Columns.AccountantName):
                         ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Columns.AccountantName], 0, Panel);
+
                         controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, UI.KeyPressValidation.OnlyLetters, true, false, Panel);
                         controlToFocus.TextChanged += Accountant_TextBox_TextChanged;
+
                         ConstructWarningLabel();
                         break;
                 }
@@ -191,8 +195,10 @@ namespace Sales_Tracker
                 {
                     case nameof(Categories_Form.Columns.CategoryName):
                         ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Columns.CategoryName], 0, Panel);
+
                         controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, UI.KeyPressValidation.None, true, false, Panel);
                         controlToFocus.TextChanged += Category_TextBox_TextChanged;
+
                         ConstructWarningLabel();
                         break;
                 }
@@ -246,8 +252,10 @@ namespace Sales_Tracker
                 {
                     case nameof(Companies_Form.Columns.Company):
                         ConstructLabel(Companies_Form.Instance.ColumnHeaders[Companies_Form.Columns.Company], 0, Panel);
+
                         controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, UI.KeyPressValidation.None, true, false, Panel);
                         controlToFocus.TextChanged += Company_TextBox_TextChanged;
+
                         ConstructWarningLabel();
                         break;
                 }
@@ -302,54 +310,43 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(Products_Form.Column.ProductCategory):
-                        List<string> array;
-                        if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
-                        {
-                            array = MainMenu_Form.Instance.GetCategorySaleNames();
-                        }
-                        else { array = MainMenu_Form.Instance.GetCategoryPurchaseNames(); }
-
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
+
                         Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-
-                        ProductCategory_TextBox.Click += (sender, e) =>
-                        {
-                            List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(array);
-                            SearchBox.ShowSearchBox(this, ProductCategory_TextBox, searchResults, this, searchBoxMaxHeight);
-                        };
-                        ProductCategory_TextBox.TextChanged += (sender, e) =>
-                        {
-                            List<SearchResult> searchResults = SearchBox.ConvertToSearchResults(array);
-                            SearchBox.SearchTextBoxChanged(this, ProductCategory_TextBox, searchResults, this, searchBoxMaxHeight);
-                        };
-                        ProductCategory_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-                        ProductCategory_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductCategory_TextBox, this, ModifyRow_Label, e); };
-
+                        SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResults, searchBoxMaxHeight);
+                        ProductCategory_TextBox.TextChanged += ValidateInputs;
                         break;
 
                     case nameof(Products_Form.Column.CountryOfOrigin):
 
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
+
                         Guna2TextBox gTextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-                        gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, Country.countries, this, searchBoxMaxHeight); };
-                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, Country.countries, this, searchBoxMaxHeight); };
-                        gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-                        gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
+                        SearchBox.Attach(gTextBox, this, () => Country.countries, searchBoxMaxHeight);
+                        gTextBox.TextChanged += ValidateInputs;
                         break;
 
                     case nameof(Products_Form.Column.CompanyOfOrigin):
 
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CompanyOfOrigin], left, Panel);
+
                         gTextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-                        gTextBox.Click += (sender, e) => { SearchBox.ShowSearchBox(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, searchBoxMaxHeight); };
-                        gTextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, gTextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList), this, searchBoxMaxHeight); };
-                        gTextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-                        gTextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(gTextBox, this, ModifyRow_Label, e); };
+                        List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList);
+                        SearchBox.Attach(gTextBox, this, () => searchResult, searchBoxMaxHeight);
+                        gTextBox.TextChanged += ValidateInputs;
                         break;
                 }
                 left += controlWidth + UI.spaceBetweenControls;
             }
             return left - UI.spaceBetweenControls;
+        }
+        private List<SearchResult> GetSearchResults()
+        {
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
+            {
+                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategorySaleNames());
+            }
+            else { return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryPurchaseNames()); }
         }
         private Label SelectedReceipt_Label;
         private Guna2ImageButton RemoveReceipt_ImageButton;
@@ -367,6 +364,7 @@ namespace Sales_Tracker
                 string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
                 listOfOldValues.Add(cellValue);
                 string text;
+                List<SearchResult> searchResult;
 
                 switch (columnName)
                 {
@@ -378,7 +376,9 @@ namespace Sales_Tracker
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.OrderNumber]; }
 
                         ConstructLabel(text, left, Panel);
+
                         controlToFocus = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
+
                         left += controlWidth + UI.spaceBetweenControls;
                         break;
 
@@ -390,13 +390,12 @@ namespace Sales_Tracker
                         else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Name]; }
 
                         ConstructLabel(text, left, Panel);
+
                         Guna2TextBox BuyerName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-                        BuyerName_TextBox.Click += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
-                        BuyerName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), searchBoxMaxHeight); };
-                        BuyerName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, BuyerName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList), this, searchBoxMaxHeight); };
+                        searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList);
+                        SearchBox.Attach(BuyerName_TextBox, this, () => searchResult, searchBoxMaxHeight);
                         BuyerName_TextBox.TextChanged += ValidateInputs;
-                        BuyerName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-                        BuyerName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(BuyerName_TextBox, this, ModifyRow_Label, e); };
+
                         left += controlWidth + UI.spaceBetweenControls;
                         break;
 
@@ -404,13 +403,11 @@ namespace Sales_Tracker
                         if (cellValue != MainMenu_Form.multipleItems_text)
                         {
                             ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
+
                             Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-                            ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames()), searchBoxMaxHeight); };
-                            ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames()), searchBoxMaxHeight); };
-                            ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames()), this, searchBoxMaxHeight); };
+                            SearchBox.Attach(ProductName_TextBox, this, GetListForSearchBox, searchBoxMaxHeight);
                             ProductName_TextBox.TextChanged += ValidateInputs;
-                            ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-                            ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, ModifyRow_Label, e); };
+
                             left += controlWidth + UI.spaceBetweenControls;
                         }
 
@@ -490,6 +487,13 @@ namespace Sales_Tracker
                         secondRow = true;
                         if (cellValue == MainMenu_Form.emptyCell) { continue; }
 
+                        string productName = selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString();
+
+                        if (productName == MainMenu_Form.multipleItems_text)
+                        {
+                            continue;
+                        }
+
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbers, false, true, SecondPanel);
                         secondLeft += smallControlWidth + UI.spaceBetweenControls;
@@ -545,13 +549,11 @@ namespace Sales_Tracker
                 {
                     case nameof(MainMenu_Form.Column.Product):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], 0, Panel);
+
                         Guna2TextBox ProductName_TextBox = ConstructTextBox(0, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-                        ProductName_TextBox.Click += (sender, e) => { ShowSearchBox(ProductName_TextBox, GetListForSearchBox(), searchBoxMaxHeight); };
-                        ProductName_TextBox.GotFocus += (sender, e) => { ShowSearchBox(ProductName_TextBox, GetListForSearchBox(), searchBoxMaxHeight); };
-                        ProductName_TextBox.TextChanged += (sender, e) => { SearchBox.SearchTextBoxChanged(this, ProductName_TextBox, GetListForSearchBox(), this, searchBoxMaxHeight); };
+                        SearchBox.Attach(ProductName_TextBox, this, GetListForSearchBox, searchBoxMaxHeight);
                         ProductName_TextBox.TextChanged += ValidateInputs;
-                        ProductName_TextBox.PreviewKeyDown += SearchBox.AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-                        ProductName_TextBox.KeyDown += (sender, e) => { SearchBox.SearchBoxTextBox_KeyDown(ProductName_TextBox, this, ModifyRow_Label, e); };
+
                         left += controlWidth + UI.spaceBetweenControls;
                         break;
 
@@ -578,7 +580,7 @@ namespace Sales_Tracker
         }
         private static List<SearchResult> GetListForSearchBox()
         {
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
+            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInSale or MainMenu_Form.SelectedOption.Sales)
             {
                 return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames());
             }
@@ -654,10 +656,6 @@ namespace Sales_Tracker
         }
 
         // Methods
-        private void ShowSearchBox(Guna2TextBox gTextBox, List<SearchResult> results, int maxHeight)
-        {
-            SearchBox.ShowSearchBox(this, gTextBox, results, this, maxHeight);
-        }
         private void ValidateInputs(object sender, EventArgs e)
         {
             IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
@@ -671,7 +669,7 @@ namespace Sales_Tracker
             {
                 if (control is Guna2TextBox gunaTextBox)
                 {
-                    if (string.IsNullOrEmpty(gunaTextBox.Text))
+                    if (string.IsNullOrEmpty(gunaTextBox.Text) || gunaTextBox.Tag?.ToString() == "0")
                     {
                         Save_Button.Enabled = false;
                         return;
@@ -721,6 +719,16 @@ namespace Sales_Tracker
                             selectedRow.Cells[columnName].Value = string.Format("{0:N2}", number);
                         }
                     }
+                    else if (columnName == MainMenu_Form.Column.Product.ToString())
+                    {
+                        if (gTextBox.Text.Contains('>'))
+                        {
+                            string[] items = gTextBox.Text.Split('>');
+                            string productName = items[1].Trim();
+
+                            selectedRow.Cells[columnName].Value = productName;
+                        }
+                    }
                     else
                     {
                         selectedRow.Cells[columnName].Value = gTextBox.Text;
@@ -737,20 +745,28 @@ namespace Sales_Tracker
                     selectedRow.Cells[columnName].Value = Tools.FormatDate(gDatePicker.Value);
                 }
             }
-
-            // Update charged difference
+            Close();
+        }
+        private void UpdateChargedDifference()
+        {
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
-                int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value.ToString());
-                decimal pricePerUnit = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value.ToString());
-                decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
-                decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
-                decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-                selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
-            }
+                string productName = selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString();
 
-            MainMenu_Form.Instance.DataGridViewRowChanged();
-            Close();
+                if (productName == MainMenu_Form.multipleItems_text)
+                {
+                    MainMenu_Form.Instance.UpdateRowWithMultipleItems();
+                }
+                else
+                {
+                    int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value.ToString());
+                    decimal pricePerUnit = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value.ToString());
+                    decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
+                    decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
+                    decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+                    selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
+                }
+            }
         }
         private void SaveInListsAndUpdateDataGridViews()
         {
@@ -1090,7 +1106,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox(this);
+            SearchBox.CloseSearchBox();
         }
     }
 }
