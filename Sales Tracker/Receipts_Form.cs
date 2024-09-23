@@ -99,9 +99,26 @@ namespace Sales_Tracker
         {
             FilterByDate_CheckBox.Checked = !FilterByDate_CheckBox.Checked;
         }
+        private void IncludeSaleReceipts_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            AddAllReceiptsAndGetOldestDate();
+        }
+        private void IncludeSaleReceipts_Label_Click(object sender, EventArgs e)
+        {
+            IncludeSaleReceipts_CheckBox.Checked = !IncludeSaleReceipts_CheckBox.Checked;
+        }
+        private void IncludePurchaseReceipts_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            AddAllReceiptsAndGetOldestDate();
+        }
+        private void IncludePurchaseReceipts_Label_Click(object sender, EventArgs e)
+        {
+            IncludePurchaseReceipts_CheckBox.Checked = !IncludePurchaseReceipts_CheckBox.Checked;
+        }
 
         public enum Column
         {
+            Type,
             Product,
             Category,
             Date,
@@ -109,6 +126,7 @@ namespace Sales_Tracker
         }
         public readonly Dictionary<Column, string> ColumnHeaders = new()
         {
+            { Column.Type, "Type" },
             { Column.Product, "Product name" },
             { Column.Category, "Category" },
             { Column.Date, "Date" },
@@ -118,13 +136,32 @@ namespace Sales_Tracker
         // Methods
         private void AddAllReceiptsAndGetOldestDate()
         {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchases_DataGridView.Rows)
+            Receipts_DataGridView.Rows.Clear();
+            oldestDate = default;
+
+            if (IncludeSaleReceipts_CheckBox.Checked)
+            {
+                AddReceiptsFromDataGridView(MainMenu_Form.Instance.Sales_DataGridView, "Sale");
+            }
+
+            if (IncludePurchaseReceipts_CheckBox.Checked)
+            {
+                AddReceiptsFromDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, "Purchase");
+            }
+
+            Tools.ScrollToTopOfDataGridView(Receipts_DataGridView);
+        }
+        private void AddReceiptsFromDataGridView(Guna2DataGridView sourceDataGridView, string type)
+        {
+            foreach (DataGridViewRow row in sourceDataGridView.Rows)
             {
                 if (row.Tag == null)
                 {
                     continue;
                 }
+
                 Receipts_DataGridView.Rows.Add(
+                    type,
                     row.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString(),
@@ -150,7 +187,6 @@ namespace Sales_Tracker
                     oldestDate = currentDate;
                 }
             }
-            Tools.ScrollToTopOfDataGridView(Receipts_DataGridView);
         }
         private void FilterReceipts(object sender, EventArgs e)
         {
