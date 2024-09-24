@@ -135,6 +135,26 @@ namespace Sales_Tracker.Classes
             DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
             DataFileManager.Save(Directories.AppDataConfig_file);
         }
+        public static void ClearCache()
+        {
+            string filePath = Directories.AppDataConfig_file;
+
+            if (File.Exists(filePath))
+            {
+                long fileSizeInBytes = new FileInfo(filePath).Length;
+
+                Directories.DeleteFile(filePath);
+
+                string fileSizeReadable = Tools.ConvertBytesToReadableSize(fileSizeInBytes);
+
+                CustomMessageBox.Show("Argo Sales Tracker", $"Cleared {fileSizeReadable} of cached data", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+
+            }
+            else
+            {
+                CustomMessageBox.Show("Argo Sales Tracker", $"No cache to clear", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            }
+        }
         public static void OpenProjectWhenAProgramIsAlreadyOpen()
         {
             // Select file

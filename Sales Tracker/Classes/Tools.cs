@@ -214,5 +214,28 @@ namespace Sales_Tracker.Classes
             }
             return name;
         }
+
+        // Bytes
+        /// <summary>
+        /// Converts a size in bytes to a human-readable string with appropriate units (Bytes, KB, MB, GB, or TB).
+        /// </summary>
+        /// <returns>
+        /// A string representing the size converted to the largest possible unit that results in a value greater than or equal to 1,
+        /// formatted to two decimal places.
+        /// </returns>
+        public static string ConvertBytesToReadableSize(long bytes)
+        {
+            string[] sizes = { "Bytes", "KB", "MB", "GB", "TB" };
+            double len = bytes;
+            int order = 0;
+
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len = len / 1024;
+            }
+
+            return $"{len:0.##} {sizes[order]}";
+        }
     }
 }

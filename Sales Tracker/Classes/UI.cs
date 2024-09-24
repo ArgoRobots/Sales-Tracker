@@ -294,7 +294,7 @@ namespace Sales_Tracker.Classes
             menuBtn = ConstructBtnForMenu("Clear cache", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
-                Directories.DeleteFile(Directories.AppDataConfig_file);
+                ArgoCompany.ClearCache();
             };
 
             ConstructSeperator(panelBtnWidth, flowPanel);
