@@ -719,6 +719,7 @@ namespace Sales_Tracker
             AmountCredited_TextBox.ShortcutsEnabled = false;
             AmountCredited_TextBox.Size = new Size(150, 50);
             AmountCredited_TextBox.TabIndex = 16;
+            AmountCredited_TextBox.TextChanged += ValidateInputs;
             // 
             // MultipleItems_Label
             // 

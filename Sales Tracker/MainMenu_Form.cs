@@ -2177,6 +2177,19 @@ namespace Sales_Tracker
         {
             cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, FontStyle.Underline);
         }
+        public static void RemoveUnderlineFromCell(DataGridViewCell cell)
+        {
+            // Remove underline by resetting the font without FontStyle.Underline
+            if (cell.Style.Font != null)
+            {
+                cell.Style.Font = new Font(cell.Style.Font, cell.Style.Font.Style & ~FontStyle.Underline);
+            }
+            else
+            {
+                cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, cell.DataGridView.DefaultCellStyle.Font.Style & ~FontStyle.Underline);
+            }
+        }
+
         public static bool DoDataGridViewsHaveVisibleRows(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGridView in dataGridViews)

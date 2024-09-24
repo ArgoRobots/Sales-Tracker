@@ -121,6 +121,11 @@ namespace Sales_Tracker
                 Height += 100;
                 SecondPanel.Width = secondLeft;
             }
+
+            if (notes)
+            {
+                Height += 180;
+            }
         }
         private void CenterControls()
         {
@@ -136,7 +141,7 @@ namespace Sales_Tracker
                 ShowReceiptLabel(Path.GetFileName(receiptFilePath));
             }
         }
-        private bool secondRow = false;
+        private bool secondRow = false, notes = false;
         private readonly List<string> listOfOldValues = [];
         private void ConstructControlsForAccountant()
         {
@@ -526,9 +531,34 @@ namespace Sales_Tracker
                         break;
 
                     case nameof(MainMenu_Form.Column.Total):
-                        ConstructLabel("Charged amount", secondLeft, SecondPanel);
+                        if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
+                        {
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Total];
+                        }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Total]; }
+
+                        ConstructLabel(text, secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, UI.KeyPressValidation.OnlyNumbersAndDecimal, false, true, SecondPanel);
                         secondLeft += smallControlWidth;
+                        break;
+
+                    case nameof(MainMenu_Form.Column.Note):
+                        Label label = ConstructLabel("Notes", secondLeft, this);
+
+                        string note = selectedRow.Cells[column.Index].Tag?.ToString() ?? "";
+
+                        Guna2TextBox textBox = ConstructTextBox(0, columnName, note, 10, UI.KeyPressValidation.None, false, false, this);
+
+                        label.Location = new Point((ClientSize.Width - label.Width) / 2, SecondPanel.Bottom);
+                        label.Anchor = AnchorStyles.Top;
+
+                        textBox.Size = new Size(400, 100);
+                        textBox.Location = new Point((ClientSize.Width - textBox.Width) / 2, label.Bottom + UI.spaceBetweenControls);
+                        textBox.Anchor = AnchorStyles.Top;
+                        textBox.MaxLength = 1000;
+                        textBox.Multiline = true;
+
+                        notes = true;
                         break;
                 }
             }
@@ -700,6 +730,10 @@ namespace Sales_Tracker
             {
                 allControls = allControls.Concat(SecondPanel.Controls.Cast<Control>());
             }
+            if (notes)
+            {
+                allControls = allControls.Concat(Controls.OfType<Guna2TextBox>());
+            }
 
             foreach (Control control in allControls)
             {
@@ -728,6 +762,22 @@ namespace Sales_Tracker
 
                             selectedRow.Cells[columnName].Value = productName;
                         }
+                    }
+                    else if (columnName == MainMenu_Form.Column.Note.ToString())
+                    {
+                        DataGridViewCell cell = selectedRow.Cells[columnName];
+
+                        if (cell.Value.ToString() == MainMenu_Form.emptyCell)
+                        {
+                            cell.Value = MainMenu_Form.show_text;
+                            MainMenu_Form.AddUnderlineToCell(cell);
+                        }
+                        if (cell.Value.ToString() == MainMenu_Form.show_text && gTextBox.Text == "")
+                        {
+                            cell.Value = MainMenu_Form.emptyCell;
+                            MainMenu_Form.RemoveUnderlineFromCell(cell);
+                        }
+                        cell.Tag = gTextBox.Text;
                     }
                     else
                     {
@@ -976,7 +1026,7 @@ namespace Sales_Tracker
             SecondPanel.Click += CloseAllPanels;
             Controls.Add(SecondPanel);
         }
-        private Label ConstructLabel(string text, int left, Panel control)
+        private Label ConstructLabel(string text, int left, Control control)
         {
             Label label = new()
             {
@@ -992,7 +1042,7 @@ namespace Sales_Tracker
 
             return label;
         }
-        private Guna2TextBox ConstructTextBox(int left, string name, string text, int maxLength, UI.KeyPressValidation keyPressValidation, bool pressSaveButton, bool smallWidth, Panel control)
+        private Guna2TextBox ConstructTextBox(int left, string name, string text, int maxLength, UI.KeyPressValidation keyPressValidation, bool pressSaveButton, bool smallWidth, Control control)
         {
             Guna2TextBox textBox = new()
             {
@@ -1067,7 +1117,7 @@ namespace Sales_Tracker
 
             return textBox;
         }
-        private Guna2DateTimePicker ConstructDatePicker(int left, string name, DateTime value, Panel control)
+        private Guna2DateTimePicker ConstructDatePicker(int left, string name, DateTime value, Control control)
         {
             Guna2DateTimePicker gDatePicker = new()
             {
