@@ -157,6 +157,9 @@ namespace Sales_Tracker.Classes
             {
                 string purchaseNumber = row.Cell(1).GetValue<string>();
 
+                if (purchaseNumber == "") { continue; }
+
+                // Check if this row's purchase number already exists
                 if (purchaseNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
@@ -169,11 +172,15 @@ namespace Sales_Tracker.Classes
                     }
                 }
 
+                // Create a new row
                 DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Purchases_DataGridView.RowTemplate.Clone();
                 newRow.CreateCells(MainMenu_Form.Instance.Purchases_DataGridView);
 
-                if (!ImportCells(row, newRow)) { return (false, wasSomethingImported); }
+                if (!ImportTransaction(row, newRow)) { return (false, wasSomethingImported); }
 
+                ImportItemsInTransaction(row, newRow);
+
+                // Add the row to the DataGridView
                 if (MainMenu_Form.Instance.Purchases_DataGridView.InvokeRequired)
                 {
                     MainMenu_Form.Instance.Purchases_DataGridView.Invoke(new Action(() =>
@@ -185,6 +192,8 @@ namespace Sales_Tracker.Classes
                 {
                     newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
                 }
+
+                FormatNoteCell(newRow);
 
                 wasSomethingImported = true;
                 MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
@@ -201,6 +210,9 @@ namespace Sales_Tracker.Classes
             {
                 string saleNumber = row.Cell(1).GetValue<string>();
 
+                if (saleNumber == "") { continue; }
+
+                // Check if this row's sales number already exists
                 if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
@@ -213,11 +225,15 @@ namespace Sales_Tracker.Classes
                     }
                 }
 
+                // Create a new row
                 DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Sales_DataGridView.RowTemplate.Clone();
                 newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
 
-                if (!ImportCells(row, newRow)) { return (false, wasSomethingImported); }
+                if (!ImportTransaction(row, newRow)) { return (false, wasSomethingImported); }
 
+                ImportItemsInTransaction(row, newRow);
+
+                // Add the row to the DataGridView
                 if (MainMenu_Form.Instance.Sales_DataGridView.InvokeRequired)
                 {
                     MainMenu_Form.Instance.Sales_DataGridView.Invoke(new Action(() =>
@@ -230,32 +246,55 @@ namespace Sales_Tracker.Classes
                     newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
                 }
 
+                FormatNoteCell(newRow);
+
                 wasSomethingImported = true;
                 MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             return (true, wasSomethingImported);
+        }
+        /// <summary>
+        /// This needs to be done after the row has been added to a DataGridView.
+        /// </summary>
+        private static void FormatNoteCell(DataGridViewRow row)
+        {
+            DataGridViewCell lastCell = row.Cells[^1];
+            MainMenu_Form.AddUnderlineToCell(lastCell);
         }
 
         /// <summary>
         /// Imports data into a DataGridViewRow.
         /// </summary>
         /// <returns>True if the cells are imported successfully. False if the exchange rate was not retrieved.</returns>
-        private static bool ImportCells(IXLRow row, DataGridViewRow newRow)
+        private static bool ImportTransaction(IXLRow row, DataGridViewRow newRow)
         {
             TagData tagData = new();
 
-            for (int i = 0; i < row.Cells().Count() - 1; i++)
+            // Get exchange rate
+            string date = row.Cell(7).GetValue<string>();
+            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date, false);
+            if (exchangeRateToDefault == -1) { return false; }
+
+            for (int i = 0; i < row.Cells().Count() - 2; i++)  // Do not add the note in the last cell yet
             {
                 string value = row.Cell(i + 1).GetValue<string>();
 
                 if (i >= 8 && i <= 14)
                 {
                     decimal decimalValue = ConvertStringToDecimal(value);
+                    bool useEmpty = false;
 
                     switch (i)
                     {
                         case 8:
-                            tagData.PricePerUnitUSD = decimalValue;
+                            if (value == MainMenu_Form.emptyCell)
+                            {
+                                useEmpty = true;
+                            }
+                            else
+                            {
+                                tagData.PricePerUnitUSD = decimalValue;
+                            }
                             break;
                         case 9:
                             tagData.ShippingUSD = decimalValue;
@@ -277,19 +316,84 @@ namespace Sales_Tracker.Classes
                             break;
                     }
 
-                    string date = row.Cell(7).GetValue<string>();
-                    decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date, false);
-                    if (exchangeRateToDefault == -1) { return false; }
-
-                    newRow.Cells[i].Value = (decimalValue * exchangeRateToDefault).ToString("N2");
+                    newRow.Cells[i].Value = useEmpty
+                        ? MainMenu_Form.emptyCell
+                        : (decimalValue * exchangeRateToDefault).ToString("N2");
                 }
                 else
                 {
                     newRow.Cells[i].Value = value;
                 }
             }
+
+            // Set the note in the last cell
+            DataGridViewCell lastCell = newRow.Cells[^1];
+            IXLCell lastExcelCell = row.Cell(row.Cells().Count() - 1);
+            string lastExcelCellValue = lastExcelCell.Value.ToString();
+
+            if (lastExcelCellValue == MainMenu_Form.emptyCell)
+            {
+                lastCell.Value = MainMenu_Form.emptyCell;
+            }
+            else
+            {
+                lastCell.Value = MainMenu_Form.show_text;
+                lastCell.Tag = lastExcelCellValue;
+            }
+
+            // Save
             newRow.Tag = tagData;
             return true;
+        }
+        private static void ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction)
+        {
+            TagData tagData = (TagData)transaction.Tag;
+            List<string> items = [];
+
+            while (true)
+            {
+                IXLRow nextRow = row.RowBelow();
+
+                // Check if the row has any data
+                if (nextRow.IsEmpty())
+                {
+                    break;
+                }
+
+                // Get data from every item in the transaction
+                string number = nextRow.Cell(1).GetValue<string>();
+
+                // Check if the next row has no number, indicating multiple items
+                if (string.IsNullOrEmpty(number))
+                {
+                    string productName = nextRow.Cell(3).Value.ToString();
+                    string categoryName = nextRow.Cell(4).Value.ToString();
+                    string currentCountry = nextRow.Cell(5).Value.ToString();
+                    string currentCompany = nextRow.Cell(6).Value.ToString();
+                    decimal quantity = ConvertStringToDecimal(nextRow.Cell(8).Value.ToString());
+                    decimal pricePerUnit = ConvertStringToDecimal(nextRow.Cell(9).Value.ToString());
+
+                    string item = string.Join(",",
+                        productName,
+                        categoryName,
+                        currentCountry,
+                        currentCompany,
+                        quantity.ToString(),
+                        pricePerUnit.ToString("N2"),
+                        (quantity * pricePerUnit).ToString("N2")
+                    );
+
+                    items.Add(item);
+                    row = nextRow;  // Move to the next row
+                }
+                else { break; }
+            }
+
+            // Save
+            if (items.Count > 0)
+            {
+                transaction.Tag = (items, tagData);
+            }
         }
 
         // Export spreadsheet methods
@@ -395,17 +499,26 @@ namespace Sales_Tracker.Classes
         }
         private static void AddRowToWorksheet(IXLWorksheet worksheet, DataGridViewRow row, int currentRow, TagData tagData)
         {
-            for (int i = 0; i < row.Cells.Count - 1; i++)  // Do not add the note in the last cell here
+            for (int i = 0; i < row.Cells.Count - 1; i++)  // Do not add the note in the last cell yet
             {
                 IXLCell excelCell = worksheet.Cell(currentRow, i + 1);
 
                 if (tagData != null && i >= 8 && i <= 14)
                 {
                     decimal usdValue = 0;
+                    bool useEmpty = false;
+
                     switch (i)
                     {
                         case 8:
-                            usdValue = tagData.PricePerUnitUSD;
+                            if (tagData.PricePerUnitUSD == 0)
+                            {
+                                useEmpty = true;
+                            }
+                            else
+                            {
+                                usdValue = tagData.PricePerUnitUSD;
+                            }
                             break;
                         case 9:
                             usdValue = tagData.ShippingUSD;
@@ -426,30 +539,34 @@ namespace Sales_Tracker.Classes
                             usdValue = tagData.TotalUSD;
                             break;
                     }
-                    excelCell.Value = usdValue.ToString();
+                    excelCell.Value = useEmpty ? MainMenu_Form.emptyCell : usdValue.ToString("N5");
                 }
                 else
                 {
                     string? cellValue = row.Cells[i].Value?.ToString();
                     excelCell.Value = cellValue;
                 }
-
-                string? cellValue1 = row.Cells[i].Value?.ToString();
-                excelCell.Value = cellValue1;
             }
 
             // Set the note in the last cell
             DataGridViewCell lastCell = row.Cells[^1];
-            if (lastCell.Value.ToString() == MainMenu_Form.show_text && lastCell.Tag != null)
+            string lastCellValue = lastCell.Value?.ToString();
+            IXLCell lastExcelCell = worksheet.Cell(currentRow, row.Cells.Count);
+
+            if (lastCellValue == MainMenu_Form.emptyCell)
             {
-                lastCell.Value = lastCell.Tag.ToString();
+                lastExcelCell.Value = MainMenu_Form.emptyCell;
+            }
+            else if (lastCellValue == MainMenu_Form.show_text && lastCell.Tag != null)
+            {
+                lastExcelCell.Value = lastCell.Tag.ToString();
             }
         }
         private static void AddItemRowToWorksheet(IXLWorksheet worksheet, string[] row, int currentRow)
         {
             int dateColumnIndex = 4;
 
-            for (int i = 0; i < row.Length - 1; i++) // Skip the total value with - 1
+            for (int i = 0; i < row.Length - 1; i++)  // Skip the total value with - 1
             {
                 // Shift the data one column to the right after the date column
                 int columnIndex = i < dateColumnIndex ? i : i + 1;
@@ -525,6 +642,8 @@ namespace Sales_Tracker.Classes
         // Other methods
         public static decimal ConvertStringToDecimal(string value)
         {
+            if (value == MainMenu_Form.emptyCell) { return 0; }
+
             try
             {
                 return Convert.ToDecimal(value);

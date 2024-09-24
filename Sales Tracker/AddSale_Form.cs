@@ -238,12 +238,9 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             // Convert to USD
-            decimal exchangeRateToUSD = 1;
-            if (Properties.Settings.Default.Currency != "USD")
-            {
-                exchangeRateToUSD = Currency.GetExchangeRate(Properties.Settings.Default.Currency, "USD", date);
-                if (exchangeRateToUSD == -1) { return false; }
-            }
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(Properties.Settings.Default.Currency, "USD", date);
+            if (exchangeRateToUSD == -1) { return false; }
+
             decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
             decimal shippingUSD = shipping * exchangeRateToUSD;
             decimal taxUSD = tax * exchangeRateToUSD;
@@ -316,7 +313,7 @@ namespace Sales_Tracker
             if (newFilePath != "")
             {
                 // Store the receipt and USD values in the row's Tag
-                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = Tuple.Create(newFilePath, purchaseData);
+                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
             }
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
@@ -363,12 +360,8 @@ namespace Sales_Tracker
             int totalQuantity = 0;
 
             // Get exchange rate
-            decimal exchangeRateToUSD = 1;
-            if (Properties.Settings.Default.Currency != "USD")
-            {
-                exchangeRateToUSD = Currency.GetExchangeRate(Properties.Settings.Default.Currency, "USD", date);
-                if (exchangeRateToUSD == -1) { return false; }
-            }
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(Properties.Settings.Default.Currency, "USD", date);
+            if (exchangeRateToUSD == -1) { return false; }
 
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
@@ -493,24 +486,26 @@ namespace Sales_Tracker
             }
 
             // Calculate USD values
-            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
             decimal shippingUSD = shipping * exchangeRateToUSD;
             decimal taxUSD = tax * exchangeRateToUSD;
             decimal feeUSD = fee * exchangeRateToUSD;
+            decimal discountUSD = discount * exchangeRateToUSD;
+            decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
+            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
 
             // Store the money values in the tag
-            TagData purchaseData = new()
+            TagData tagData = new()
             {
-                PricePerUnitUSD = totalPriceUSD,
                 ShippingUSD = shippingUSD,
                 TaxUSD = taxUSD,
                 FeeUSD = feeUSD,
-                DiscountUSD = totalPriceUSD
+                DiscountUSD = discountUSD,
+                ChargedDifferenceUSD = chargedDifferenceUSD,
+                TotalUSD = totalPriceUSD
             };
 
             // Set the tag
-            (List<string> Items, TagData USDData) combinedTag = (Items: items, USDData: purchaseData);
-            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = combinedTag;
+            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = (items, tagData);
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 

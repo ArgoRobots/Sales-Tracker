@@ -162,6 +162,8 @@ namespace Sales_Tracker
             {
                 Receipts_DataGridView.Sort(sortedColumn, sortDirection);
             }
+
+            FilterReceipts(null, null);
         }
         private void AddReceiptsFromDataGridView(Guna2DataGridView sourceDataGridView, string type)
         {

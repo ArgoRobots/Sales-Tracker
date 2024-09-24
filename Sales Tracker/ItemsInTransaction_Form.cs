@@ -30,7 +30,8 @@ namespace Sales_Tracker
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
 
-            // Check if the Tag is a ValueTuple
+            SetTitle();
+
             if (row.Tag is (List<string> itemList, TagData))
             {
                 SetDataGridView(itemList);
@@ -46,6 +47,17 @@ namespace Sales_Tracker
             Items_DataGridView.CellValueChanged += (s, e) => hasChanges = true;
             Items_DataGridView.RowsAdded += (s, e) => hasChanges = true;
             Items_DataGridView.RowsRemoved += (s, e) => hasChanges = true;
+        }
+        private void SetTitle()
+        {
+            if (oldOption == MainMenu_Form.SelectedOption.Purchases)
+            {
+                Title_Label.Text = "Items in purchase";
+            }
+            else
+            {
+                Title_Label.Text = "Items in sale";
+            }
         }
 
         // Form event handlers
@@ -109,7 +121,12 @@ namespace Sales_Tracker
         }
         private void SetDataGridView(List<string> tag)
         {
-            MainMenu_Form.Instance.InitializeDataGridView(Items_DataGridView, Items_DataGridView.Size, MainMenu_Form.Instance.PurchaseColumnHeaders, columnsToLoad);
+            Dictionary<MainMenu_Form.Column, string> columnHeaders;
+            columnHeaders = (oldOption == MainMenu_Form.SelectedOption.Purchases)
+                ? MainMenu_Form.Instance.PurchaseColumnHeaders
+                : MainMenu_Form.Instance.SalesColumnHeaders;
+
+            MainMenu_Form.Instance.InitializeDataGridView(Items_DataGridView, Items_DataGridView.Size, columnHeaders, columnsToLoad);
             Items_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
             Items_DataGridView.RowsRemoved -= MainMenu_Form.Instance.DataGridView_RowsRemoved;
             Items_DataGridView.UserDeletingRow -= MainMenu_Form.Instance.DataGridView_UserDeletingRow;

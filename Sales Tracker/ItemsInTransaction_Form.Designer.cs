@@ -28,38 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ItemsInTransaction_Form));
             Items_DataGridView = new Guna.UI2.WinForms.Guna2DataGridView();
-            ExportReceipts_Label = new Label();
+            Title_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)Items_DataGridView).BeginInit();
             SuspendLayout();
             // 
             // Items_DataGridView
             // 
-            dataGridViewCellStyle1.BackColor = Color.White;
-            Items_DataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = Color.White;
+            Items_DataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             Items_DataGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(100, 88, 255);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            Items_DataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(100, 88, 255);
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle5.ForeColor = Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            Items_DataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             Items_DataGridView.ColumnHeadersHeight = 4;
             Items_DataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = Color.White;
-            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle3.ForeColor = Color.FromArgb(71, 69, 94);
-            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(231, 229, 255);
-            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(71, 69, 94);
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
-            Items_DataGridView.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = Color.White;
+            dataGridViewCellStyle6.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle6.ForeColor = Color.FromArgb(71, 69, 94);
+            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(231, 229, 255);
+            dataGridViewCellStyle6.SelectionForeColor = Color.FromArgb(71, 69, 94);
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
+            Items_DataGridView.DefaultCellStyle = dataGridViewCellStyle6;
             Items_DataGridView.GridColor = Color.FromArgb(231, 229, 255);
             Items_DataGridView.Location = new Point(18, 104);
             Items_DataGridView.Name = "Items_DataGridView";
@@ -90,27 +90,27 @@
             Items_DataGridView.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(231, 229, 255);
             Items_DataGridView.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
             // 
-            // ExportReceipts_Label
+            // Title_Label
             // 
-            ExportReceipts_Label.Anchor = AnchorStyles.Top;
-            ExportReceipts_Label.AutoSize = true;
-            ExportReceipts_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ExportReceipts_Label.Location = new Point(756, 30);
-            ExportReceipts_Label.Name = "ExportReceipts_Label";
-            ExportReceipts_Label.Size = new Size(271, 45);
-            ExportReceipts_Label.TabIndex = 12;
-            ExportReceipts_Label.Text = "Items in purchase";
+            Title_Label.Anchor = AnchorStyles.Top;
+            Title_Label.AutoSize = true;
+            Title_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Title_Label.Location = new Point(756, 30);
+            Title_Label.Name = "Title_Label";
+            Title_Label.Size = new Size(271, 45);
+            Title_Label.TabIndex = 12;
+            Title_Label.Text = "Items in purchase";
             // 
-            // ItemsInPurchase_Form
+            // ItemsInTransaction_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1776, 542);
-            Controls.Add(ExportReceipts_Label);
+            Controls.Add(Title_Label);
             Controls.Add(Items_DataGridView);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(1789, 497);
-            Name = "ItemsInPurchase_Form";
+            Name = "ItemsInTransaction_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += ItemsInTransaction_Form_FormClosed;
@@ -123,6 +123,6 @@
         #endregion
 
         private Guna.UI2.WinForms.Guna2DataGridView Items_DataGridView;
-        private Label ExportReceipts_Label;
+        private Label Title_Label;
     }
 }

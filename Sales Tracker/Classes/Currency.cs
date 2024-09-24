@@ -38,6 +38,8 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static decimal GetExchangeRate(string sourceCurrency, string targetCurrency, string date, bool showErrorMessage = true)
         {
+            if (sourceCurrency == targetCurrency) { return 1; }
+
             // Your API key
             string appId = "beb7bee9c266473297d93c2132da637f";
             string url = $"https://openexchangerates.org/api/historical/{date}.json?app_id={appId}";

@@ -1354,8 +1354,8 @@ namespace Sales_Tracker
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
             { Column.OrderNumber, "Order #" },
-            { Column.Name, "Buyer name" },
-            { Column.Product, "Product name" },
+            { Column.Name, "Accountant" },
+            { Column.Product, "Product" },
             { Column.Category, "Category" },
             { Column.Country, "Country of origin" },
             { Column.Company, "Company of origin" },
@@ -1373,8 +1373,8 @@ namespace Sales_Tracker
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
             { Column.OrderNumber, "Sale #" },
-            { Column.Name, "Customer name" },
-            { Column.Product, "Product name" },
+            { Column.Name, "Accountant" },
+            { Column.Product, "Product" },
             { Column.Category, "Category" },
             { Column.Country, "Country of destination" },
             { Column.Company, "Company of origin" },
@@ -2173,7 +2173,7 @@ namespace Sales_Tracker
             cell.Tag = note;
             AddUnderlineToCell(cell);
         }
-        private static void AddUnderlineToCell(DataGridViewCell cell)
+        public static void AddUnderlineToCell(DataGridViewCell cell)
         {
             cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, FontStyle.Underline);
         }
