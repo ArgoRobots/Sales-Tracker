@@ -13,14 +13,6 @@
 
         private string _defaultCurrencyType;
 
-        private decimal _pricePerUnitDefault;
-        private decimal _shippingDefault;
-        private decimal _taxDefault;
-        private decimal _feeDefault;
-        private decimal _discountDefault;
-        private decimal _chargedDifferenceDefault;
-        private decimal _totalDefault;
-
         // Getters and setters
         public decimal PricePerUnitUSD
         {
@@ -61,41 +53,6 @@
         {
             get => _defaultCurrencyType;
             set => _defaultCurrencyType = value;
-        }
-        public decimal PricePerUnitDefault
-        {
-            get => _pricePerUnitDefault;
-            set => _pricePerUnitDefault = value;
-        }
-        public decimal ShippingDefault
-        {
-            get => _shippingDefault;
-            set => _shippingDefault = value;
-        }
-        public decimal TaxDefault
-        {
-            get => _taxDefault;
-            set => _taxDefault = value;
-        }
-        public decimal FeeDefault
-        {
-            get => _feeDefault;
-            set => _feeDefault = value;
-        }
-        public decimal DiscountDefault
-        {
-            get => _discountDefault;
-            set => _discountDefault = value;
-        }
-        public decimal ChargedDifferenceDefault
-        {
-            get => _chargedDifferenceDefault;
-            set => _chargedDifferenceDefault = value;
-        }
-        public decimal TotalDefault
-        {
-            get => _totalDefault;
-            set => _totalDefault = value;
         }
     }
 }

@@ -249,7 +249,7 @@ namespace Sales_Tracker
             decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
             decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
 
-            // Store the USD value in the Tag property
+            // Store the money values in the tag
             TagData purchaseData = new()
             {
                 PricePerUnitUSD = pricePerUnitUSD,
@@ -258,20 +258,9 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                TotalUSD = totalPriceUSD,
+                DefaultCurrencyType = Properties.Settings.Default.Currency
             };
-
-            // Convert back to default currency for display
-            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
-            if (exchangeRateToDefault == -1) { return false; }
-
-            pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
-            shipping = shippingUSD * exchangeRateToDefault;
-            tax = taxUSD * exchangeRateToDefault;
-            fee = feeUSD * exchangeRateToDefault;
-            discount = discountUSD * exchangeRateToDefault;
-            chargedDifference = chargedDifferenceUSD * exchangeRateToDefault;
-            totalPrice = totalPriceUSD * exchangeRateToDefault;
 
             string newFilePath = "";
             if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
@@ -310,9 +299,10 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
             }
+
+            // Set the tag
             if (newFilePath != "")
             {
-                // Store the receipt and USD values in the row's Tag
                 MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
             }
 
@@ -332,7 +322,9 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -340,7 +332,7 @@ namespace Sales_Tracker
                 }
             }
 
-            string sellerName = AccountantName_TextBox.Text;
+            string accountant = AccountantName_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
@@ -460,7 +452,7 @@ namespace Sales_Tracker
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 saleNumber,
-                sellerName,
+                accountant,
                 MainMenu_Form.multipleItems_text,
                 finalCategoryName,
                 finalCountry,
@@ -501,7 +493,8 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                TotalUSD = totalPriceUSD,
+                DefaultCurrencyType = Properties.Settings.Default.Currency
             };
 
             // Set the tag

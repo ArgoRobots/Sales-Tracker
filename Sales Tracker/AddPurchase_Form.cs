@@ -38,8 +38,8 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(OrderNumber_TextBox);
 
-            BuyerName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
-            TextBoxManager.Attach(BuyerName_TextBox);
+            AccountantName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            TextBoxManager.Attach(AccountantName_TextBox);
 
             TextBoxManager.Attach(ProductName_TextBox);
 
@@ -71,8 +71,8 @@ namespace Sales_Tracker
             byte searchBoxMaxHeight = 255;
 
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList);
-            SearchBox.Attach(BuyerName_TextBox, this, () => searchResult, searchBoxMaxHeight);
-            BuyerName_TextBox.TextChanged += ValidateInputs;
+            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight);
+            AccountantName_TextBox.TextChanged += ValidateInputs;
 
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
             SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight);
@@ -194,7 +194,7 @@ namespace Sales_Tracker
                 }
             }
 
-            string buyerName = BuyerName_TextBox.Text;
+            string buyerName = AccountantName_TextBox.Text;
 
             string[] items = ProductName_TextBox.Text.Split('>');
             string categoryName = items[0].Trim();
@@ -247,7 +247,7 @@ namespace Sales_Tracker
             decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
             decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
 
-            // Store the USD value in the Tag property
+            // Store the money values in the tag
             TagData purchaseData = new()
             {
                 PricePerUnitUSD = pricePerUnitUSD,
@@ -256,20 +256,9 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                TotalUSD = totalPriceUSD,
+                DefaultCurrencyType = Currency_ComboBox.Text
             };
-
-            // Convert back to default currency for display
-            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
-            if (exchangeRateToDefault == -1) { return false; }
-
-            pricePerUnit = pricePerUnitUSD * exchangeRateToDefault;
-            shipping = shippingUSD * exchangeRateToDefault;
-            tax = taxUSD * exchangeRateToDefault;
-            fee = feeUSD * exchangeRateToDefault;
-            discount = discountUSD * exchangeRateToDefault;
-            chargedDifference = chargedDifferenceUSD * exchangeRateToDefault;
-            totalPrice = totalPriceUSD * exchangeRateToDefault;
 
             string newFilePath = "";
             if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
@@ -309,8 +298,11 @@ namespace Sales_Tracker
                 MainMenu_Form.AddNoteToCell(newRowIndex, note);
             }
 
-            // Store the receipt and USD values in the row's Tag
-            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
+            // Set the tag
+            if (newFilePath != "")
+            {
+                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
+            }
 
             MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
@@ -338,7 +330,7 @@ namespace Sales_Tracker
                 }
             }
 
-            string buyerName = BuyerName_TextBox.Text;
+            string accountant = AccountantName_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
@@ -404,7 +396,7 @@ namespace Sales_Tracker
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
                 int quantity = int.Parse(quantityTextBox.Text);
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
-                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text) * exchangeRateToUSD;
+                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text) * exchangeRate;
                 totalPrice += quantity * pricePerUnit;
                 totalQuantity += quantity;
 
@@ -414,8 +406,8 @@ namespace Sales_Tracker
                     currentCountry,
                     currentCompany,
                     quantity.ToString(),
-                    (pricePerUnit * exchangeRate).ToString("N2"),
-                    (quantity * pricePerUnit * exchangeRate).ToString("N2")
+                    pricePerUnit.ToString("N2"),
+                    (quantity * pricePerUnit).ToString("N2")
                 );
 
                 items.Add(item);
@@ -467,7 +459,7 @@ namespace Sales_Tracker
 
             int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
                 purchaseNumber,
-                buyerName,
+                accountant,
                 MainMenu_Form.multipleItems_text,
                 finalCategoryName,
                 finalCountry,
@@ -508,7 +500,8 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                TotalUSD = totalPriceUSD,
+                DefaultCurrencyType = Currency_ComboBox.Text
             };
 
             // Set the tag
@@ -568,16 +561,16 @@ namespace Sales_Tracker
             // Center controls
             Currency_ComboBox.Left = (ClientSize.Width - Currency_ComboBox.Width - UI.spaceBetweenControls -
                 OrderNumber_TextBox.Width - UI.spaceBetweenControls -
-                BuyerName_TextBox.Width - UI.spaceBetweenControls -
+                AccountantName_TextBox.Width - UI.spaceBetweenControls -
                 ProductName_TextBox.Width - UI.spaceBetweenControls -
                 Receipt_Button.Width) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + UI.spaceBetweenControls;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
-            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + UI.spaceBetweenControls;
-            BuyerName_Label.Left = BuyerName_TextBox.Left;
-            ProductName_TextBox.Left = BuyerName_TextBox.Right + UI.spaceBetweenControls;
+            AccountantName_TextBox.Left = OrderNumber_TextBox.Right + UI.spaceBetweenControls;
+            AccountantName_Label.Left = AccountantName_TextBox.Left;
+            ProductName_TextBox.Left = AccountantName_TextBox.Right + UI.spaceBetweenControls;
             ProductName_Label.Left = ProductName_TextBox.Left;
             Receipt_Button.Left = ProductName_TextBox.Right + UI.spaceBetweenControls;
 
@@ -632,15 +625,15 @@ namespace Sales_Tracker
             Currency_ComboBox.Left = (ClientSize.Width -
                 Currency_ComboBox.Width - UI.spaceBetweenControls -
                 OrderNumber_TextBox.Width - UI.spaceBetweenControls -
-                BuyerName_TextBox.Width - UI.spaceBetweenControls -
+                AccountantName_TextBox.Width - UI.spaceBetweenControls -
                 Receipt_Button.Width) / 2;
 
             Currency_Label.Left = Currency_ComboBox.Left;
             OrderNumber_TextBox.Left = Currency_ComboBox.Right + UI.spaceBetweenControls;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
-            BuyerName_TextBox.Left = OrderNumber_TextBox.Right + UI.spaceBetweenControls;
-            BuyerName_Label.Left = BuyerName_TextBox.Left;
-            Receipt_Button.Left = BuyerName_TextBox.Right + UI.spaceBetweenControls;
+            AccountantName_TextBox.Left = OrderNumber_TextBox.Right + UI.spaceBetweenControls;
+            AccountantName_Label.Left = AccountantName_TextBox.Left;
+            Receipt_Button.Left = AccountantName_TextBox.Right + UI.spaceBetweenControls;
 
             Date_DateTimePicker.Left = (ClientSize.Width -
                 Date_DateTimePicker.Width - UI.spaceBetweenControls -
@@ -687,7 +680,7 @@ namespace Sales_Tracker
         }
         private void RelocateBuyerWarning()
         {
-            WarningBuyer_PictureBox.Location = new Point(BuyerName_TextBox.Left, BuyerName_TextBox.Bottom + UI.spaceBetweenControls);
+            WarningBuyer_PictureBox.Location = new Point(AccountantName_TextBox.Left, AccountantName_TextBox.Bottom + UI.spaceBetweenControls);
             WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + UI.spaceBetweenControls, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
@@ -715,7 +708,7 @@ namespace Sales_Tracker
             textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), UI.KeyPressValidation.None, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
             SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight);
-            BuyerName_TextBox.TextChanged += ValidateInputs;
+            AccountantName_TextBox.TextChanged += ValidateInputs;
 
             CosntructLabel(ProductName_Label.Text, 0, panel);
 
@@ -938,7 +931,7 @@ namespace Sales_Tracker
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(OrderNumber_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(BuyerName_TextBox.Text) && BuyerName_TextBox.Tag.ToString() != "0" &&
+                                   !string.IsNullOrWhiteSpace(AccountantName_TextBox.Text) && AccountantName_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
