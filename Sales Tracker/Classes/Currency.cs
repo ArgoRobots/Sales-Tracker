@@ -48,10 +48,6 @@ namespace Sales_Tracker.Classes
             {
                 using HttpClient httpClient = new();
                 HttpResponseMessage response = httpClient.GetAsync(url).GetAwaiter().GetResult();
-                if (response.IsSuccessStatusCode)
-                {
-
-                }
 
                 string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 using JsonDocument jsonDocument = JsonDocument.Parse(responseBody);

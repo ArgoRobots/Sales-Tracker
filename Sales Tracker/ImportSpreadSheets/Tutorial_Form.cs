@@ -23,8 +23,7 @@ namespace Sales_Tracker.ImportSpreadsheets
         // Event handlers
         private void Next_Button_Click(object sender, EventArgs e)
         {
-            DataFileManager.SetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.FalseString);
-            DataFileManager.Save(Directories.AppDataConfig_file);
+            DataFileManager.SetValue(DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.FalseString);
 
             Setup_Form.Instance.FormImport.BringToFront();
         }

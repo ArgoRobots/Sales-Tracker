@@ -69,7 +69,7 @@ namespace Sales_Tracker.Startup.Menus
         // Recent projects
         private void LoadListOfRecentProjects()
         {
-            string? value = DataFileManager.GetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects);
+            string? value = DataFileManager.GetValue(DataFileManager.GlobalAppDataSettings.RecentProjects);
             if (value == null)
             {
                 return;
@@ -124,11 +124,11 @@ namespace Sales_Tracker.Startup.Menus
                         return;
                     }
 
-                    DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension);
+                    DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension);
 
                     List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
                     Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
-                    DataFileManager.SetValue(Directories.Info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+                    DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
 
                     ShowMainMenu();
                 };
@@ -297,12 +297,12 @@ namespace Sales_Tracker.Startup.Menus
                 string projectDir = btn.Tag.ToString();
 
                 // Remove from recent project in file
-                string? value = DataFileManager.GetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects);
+                string? value = DataFileManager.GetValue(DataFileManager.GlobalAppDataSettings.RecentProjects);
                 if (value != null)
                 {
                     List<string> projectDirs = value.Split(',').ToList();
                     projectDirs.RemoveAll(dir => dir == projectDir);
-                    DataFileManager.SetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, string.Join(",", projectDirs));
+                    DataFileManager.SetValue(DataFileManager.GlobalAppDataSettings.RecentProjects, string.Join(",", projectDirs));
                 }
 
                 // Remove the button from the FlowLayoutPanel

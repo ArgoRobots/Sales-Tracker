@@ -18,12 +18,11 @@ namespace Sales_Tracker.Classes
             {
                 Directories.CreateDirectory(Directories.AppData_dir, false);
             }
-            if (!File.Exists(Directories.AppDataConfig_file))
+            if (!File.Exists(Directories.GlobalAppDataSettings_file))
             {
-                Directories.CreateFile(Directories.AppDataConfig_file);
+                Directories.CreateFile(Directories.GlobalAppDataSettings_file);
 
-                DataFileManager.SetValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.TrueString);
-                DataFileManager.Save(Directories.AppDataConfig_file);
+                DataFileManager.SetValue(DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.TrueString);
             }
         }
 
@@ -111,12 +110,11 @@ namespace Sales_Tracker.Classes
             }
 
             // Save recently opened projects
-            DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
-            DataFileManager.Save(Directories.AppDataConfig_file);
+            DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
 
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
             Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
-            DataFileManager.SetValue(Directories.Info_file, DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
 
             return true;
         }
@@ -132,12 +130,11 @@ namespace Sales_Tracker.Classes
             Directories.SetDirectories(Directories.ArgoCompany_dir, name);
 
             // Update recently opened projects
-            DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
-            DataFileManager.Save(Directories.AppDataConfig_file);
+            DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
         }
         public static void ClearCache()
         {
-            string filePath = Directories.AppDataConfig_file;
+            string filePath = Directories.GlobalAppDataSettings_file;
 
             if (File.Exists(filePath))
             {
@@ -265,7 +262,7 @@ namespace Sales_Tracker.Classes
             foreach (string project in projects)
             {
                 // Check if there are any changes
-                string? value = DataFileManager.GetValue(project + @"\info" + ArgoFiles.TxtFileExtension, DataFileManager.AppDataSettings.ChangesMade);
+                string? value = DataFileManager.GetValue(DataFileManager.AppDataSettings.ChangesMade, project + @"\info" + ArgoFiles.TxtFileExtension);
                 if (bool.TryParse(value, out bool boolResult) && !boolResult)
                 {
                     // Delete the temp folder

@@ -259,8 +259,7 @@ namespace Sales_Tracker
         }
         public static void AddChangesMadeToInfoFile(bool changesMade)
         {
-            DataFileManager.SetValue(Directories.Info_file, DataFileManager.AppDataSettings.ChangesMade, changesMade.ToString());
-            DataFileManager.Save(Directories.AppDataConfig_file);
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, changesMade.ToString());
         }
 
         // Event handlers

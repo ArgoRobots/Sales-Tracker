@@ -133,12 +133,11 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.CategoryPurchases_file);
             Directories.CreateFile(Directories.Accountants_file);
             Directories.CreateFile(Directories.Companies_file);
-            Directories.CreateFile(Directories.Info_file);
+            Directories.CreateFile(Directories.AppDataSettings_file);
             ArgoCompany.SaveAll();
 
             // Save recently opened projects
-            DataFileManager.AppendValue(Directories.AppDataConfig_file, DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
-            DataFileManager.Save(Directories.AppDataConfig_file);
+            DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
 
             ArgoCompany.CreateMutex(projectName);
 

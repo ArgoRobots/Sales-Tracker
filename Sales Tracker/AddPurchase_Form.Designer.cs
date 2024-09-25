@@ -90,8 +90,8 @@ namespace Sales_Tracker
             Currency_Label = new Label();
             WarningBuyer_LinkLabel = new LinkLabel();
             WarningBuyer_PictureBox = new PictureBox();
-            AmountCharged_Label = new Label();
-            AmountCharged_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            Charged_Label = new Label();
+            Charged_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Receipt_Button = new Guna.UI2.WinForms.Guna2Button();
             SelectedReceipt_Label = new Label();
             RemoveReceipt_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
@@ -448,6 +448,7 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel.Text = "No products exist.\r\nCreate one here";
             WarningProduct_LinkLabel.UseCompatibleTextRendering = true;
             WarningProduct_LinkLabel.LinkClicked += WarningProduct_LinkLabel_LinkClicked;
+            WarningProduct_LinkLabel.Click += CloseAllPanels;
             // 
             // WarningProduct_PictureBox
             // 
@@ -459,6 +460,7 @@ namespace Sales_Tracker
             WarningProduct_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningProduct_PictureBox.TabIndex = 41;
             WarningProduct_PictureBox.TabStop = false;
+            WarningProduct_PictureBox.Click += CloseAllPanels;
             // 
             // Fee_Label
             // 
@@ -544,6 +546,7 @@ namespace Sales_Tracker
             WarningBuyer_LinkLabel.Text = "No accountants exist.\r\nCreate one here";
             WarningBuyer_LinkLabel.UseCompatibleTextRendering = true;
             WarningBuyer_LinkLabel.LinkClicked += WarningBuyer_LinkLabel_LinkClicked;
+            WarningBuyer_LinkLabel.Click += CloseAllPanels;
             // 
             // WarningBuyer_PictureBox
             // 
@@ -555,44 +558,45 @@ namespace Sales_Tracker
             WarningBuyer_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             WarningBuyer_PictureBox.TabIndex = 56;
             WarningBuyer_PictureBox.TabStop = false;
+            WarningBuyer_PictureBox.Click += CloseAllPanels;
             // 
-            // AmountCharged_Label
+            // Charged_Label
             // 
-            AmountCharged_Label.Anchor = AnchorStyles.Top;
-            AmountCharged_Label.AutoSize = true;
-            AmountCharged_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AmountCharged_Label.Location = new Point(1310, 291);
-            AmountCharged_Label.Name = "AmountCharged_Label";
-            AmountCharged_Label.Size = new Size(181, 31);
-            AmountCharged_Label.TabIndex = 0;
-            AmountCharged_Label.Text = "$ charged (CAD)";
-            AmountCharged_Label.Click += CloseAllPanels;
+            Charged_Label.Anchor = AnchorStyles.Top;
+            Charged_Label.AutoSize = true;
+            Charged_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Charged_Label.Location = new Point(1310, 291);
+            Charged_Label.Name = "Charged_Label";
+            Charged_Label.Size = new Size(181, 31);
+            Charged_Label.TabIndex = 0;
+            Charged_Label.Text = "$ charged (CAD)";
+            Charged_Label.Click += CloseAllPanels;
             // 
-            // AmountCharged_TextBox
+            // Charged_TextBox
             // 
-            AmountCharged_TextBox.Anchor = AnchorStyles.Top;
-            AmountCharged_TextBox.CustomizableEdges = customizableEdges56;
-            AmountCharged_TextBox.DefaultText = "";
-            AmountCharged_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            AmountCharged_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            AmountCharged_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            AmountCharged_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            AmountCharged_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            AmountCharged_TextBox.Font = new Font("Segoe UI", 9F);
-            AmountCharged_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            AmountCharged_TextBox.Location = new Point(1310, 327);
-            AmountCharged_TextBox.Margin = new Padding(4, 5, 4, 5);
-            AmountCharged_TextBox.MaxLength = 10;
-            AmountCharged_TextBox.Name = "AmountCharged_TextBox";
-            AmountCharged_TextBox.PasswordChar = '\0';
-            AmountCharged_TextBox.PlaceholderText = "";
-            AmountCharged_TextBox.SelectedText = "";
-            AmountCharged_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges57;
-            AmountCharged_TextBox.ShortcutsEnabled = false;
-            AmountCharged_TextBox.Size = new Size(150, 50);
-            AmountCharged_TextBox.TabIndex = 16;
-            AmountCharged_TextBox.TextChanged += ValidateInputs;
-            AmountCharged_TextBox.Click += CloseAllPanels;
+            Charged_TextBox.Anchor = AnchorStyles.Top;
+            Charged_TextBox.CustomizableEdges = customizableEdges56;
+            Charged_TextBox.DefaultText = "";
+            Charged_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Charged_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Charged_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Charged_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Charged_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Charged_TextBox.Font = new Font("Segoe UI", 9F);
+            Charged_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Charged_TextBox.Location = new Point(1310, 327);
+            Charged_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Charged_TextBox.MaxLength = 10;
+            Charged_TextBox.Name = "Charged_TextBox";
+            Charged_TextBox.PasswordChar = '\0';
+            Charged_TextBox.PlaceholderText = "";
+            Charged_TextBox.SelectedText = "";
+            Charged_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges57;
+            Charged_TextBox.ShortcutsEnabled = false;
+            Charged_TextBox.Size = new Size(150, 50);
+            Charged_TextBox.TabIndex = 16;
+            Charged_TextBox.TextChanged += ValidateInputs;
+            Charged_TextBox.Click += CloseAllPanels;
             // 
             // Receipt_Button
             // 
@@ -767,8 +771,8 @@ namespace Sales_Tracker
             Controls.Add(RemoveReceipt_ImageButton);
             Controls.Add(SelectedReceipt_Label);
             Controls.Add(Receipt_Button);
-            Controls.Add(AmountCharged_Label);
-            Controls.Add(AmountCharged_TextBox);
+            Controls.Add(Charged_Label);
+            Controls.Add(Charged_TextBox);
             Controls.Add(WarningBuyer_LinkLabel);
             Controls.Add(WarningBuyer_PictureBox);
             Controls.Add(Currency_Label);
@@ -839,8 +843,8 @@ namespace Sales_Tracker
         private Label Currency_Label;
         private LinkLabel WarningBuyer_LinkLabel;
         private PictureBox WarningBuyer_PictureBox;
-        private Label AmountCharged_Label;
-        private Guna.UI2.WinForms.Guna2TextBox AmountCharged_TextBox;
+        private Label Charged_Label;
+        private Guna.UI2.WinForms.Guna2TextBox Charged_TextBox;
         private Guna.UI2.WinForms.Guna2Button Receipt_Button;
         private Label SelectedReceipt_Label;
         private Guna.UI2.WinForms.Guna2ImageButton RemoveReceipt_ImageButton;

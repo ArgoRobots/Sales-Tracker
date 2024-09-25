@@ -8,21 +8,21 @@ namespace Sales_Tracker.Classes
     {
         // Directories
         private static string _companyName;
-        private static string _tempCompanyDir;
-        private static string _argoCompanyDir;
-        private static string _argoCompanyFile;
-        private static string _appDataDir;
-        private static string _appDataConfigFile;
-        private static string _purchasesFile;
-        private static string _salesFile;
-        private static string _categoryPurchasesFile;
-        private static string _categorySalesFile;
-        private static string _accountantsFile;
-        private static string _companiesFile;
-        private static string _receiptsDir;
-        private static string _logsDir;
-        private static string _infoFile;
-        private static string _desktopDir;
+        private static string _tempCompany_dir;
+        private static string _argoCompany_dir;
+        private static string _argoCompany_file;
+        private static string _appData_dir;
+        private static string _globalAppDataSettings_file;
+        private static string _appDataSettings_file;
+        private static string _purchases_file;
+        private static string _sales_file;
+        private static string _categoryPurchases_file;
+        private static string _categorySales_file;
+        private static string _accountants_file;
+        private static string _companies_file;
+        private static string _receipts_dir;
+        private static string _logs_dir;
+        private static string _desktop_dir;
 
         // Getters and setters
         public static string CompanyName
@@ -32,78 +32,78 @@ namespace Sales_Tracker.Classes
         }
         public static string TempCompany_dir
         {
-            get => _tempCompanyDir;
-            set => _tempCompanyDir = value;
+            get => _tempCompany_dir;
+            set => _tempCompany_dir = value;
         }
         public static string ArgoCompany_dir
         {
-            get => _argoCompanyDir;
-            set => _argoCompanyDir = value;
+            get => _argoCompany_dir;
+            set => _argoCompany_dir = value;
         }
         public static string ArgoCompany_file
         {
-            get => _argoCompanyFile;
-            set => _argoCompanyFile = value;
+            get => _argoCompany_file;
+            set => _argoCompany_file = value;
         }
         public static string AppData_dir
         {
-            get => _appDataDir;
-            set => _appDataDir = value;
+            get => _appData_dir;
+            set => _appData_dir = value;
         }
-        public static string AppDataConfig_file
+        public static string GlobalAppDataSettings_file
         {
-            get => _appDataConfigFile;
-            set => _appDataConfigFile = value;
+            get => _globalAppDataSettings_file;
+            set => _globalAppDataSettings_file = value;
+        }
+        public static string AppDataSettings_file
+        {
+            get => _appDataSettings_file;
+            set => _appDataSettings_file = value;
         }
         public static string Purchases_file
         {
-            get => _purchasesFile;
-            set => _purchasesFile = value;
+            get => _purchases_file;
+            set => _purchases_file = value;
         }
         public static string Sales_file
         {
-            get => _salesFile;
-            set => _salesFile = value;
+            get => _sales_file;
+            set => _sales_file = value;
         }
         public static string CategoryPurchases_file
         {
-            get => _categoryPurchasesFile;
-            set => _categoryPurchasesFile = value;
+            get => _categoryPurchases_file;
+            set => _categoryPurchases_file = value;
         }
         public static string CategorySales_file
         {
-            get => _categorySalesFile;
-            set => _categorySalesFile = value;
+            get => _categorySales_file;
+            set => _categorySales_file = value;
         }
         public static string Accountants_file
         {
-            get => _accountantsFile;
-            set => _accountantsFile = value;
+            get => _accountants_file;
+            set => _accountants_file = value;
         }
         public static string Companies_file
         {
-            get => _companiesFile;
-            set => _companiesFile = value;
+            get => _companies_file;
+            set => _companies_file = value;
         }
         public static string Receipts_dir
         {
-            get => _receiptsDir;
-            set => _receiptsDir = value;
+            get => _receipts_dir;
+            set => _receipts_dir = value;
         }
         public static string Logs_dir
         {
-            get => _logsDir;
-            set => _logsDir = value;
-        }
-        public static string Info_file
-        {
-            get => _infoFile;
-            set => _infoFile = value;
+            get => _logs_dir;
+            set => _logs_dir = value;
         }
         public static string Desktop_dir
         {
-            get => _desktopDir;
-            set => _desktopDir = value;
+            get => _desktop_dir;
+            set => _desktop_dir = value;
         }
 
         // Methods
@@ -131,13 +131,13 @@ namespace Sales_Tracker.Classes
             // Logs
             Logs_dir = TempCompany_dir + @"logs\";
 
-            Info_file = TempCompany_dir + "info" + ArgoFiles.TxtFileExtension;
+            AppDataSettings_file = TempCompany_dir + "info" + ArgoFiles.TxtFileExtension;
         }
         public static void SetUniversalDirectories()
         {
             // App data
             AppData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
-            AppDataConfig_file = AppData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
+            GlobalAppDataSettings_file = AppData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
 
             // Other
             Desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);

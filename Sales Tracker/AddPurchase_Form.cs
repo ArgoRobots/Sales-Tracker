@@ -32,7 +32,7 @@ namespace Sales_Tracker
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
-            AmountCharged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({Properties.Settings.Default.Currency})";
+            Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({Properties.Settings.Default.Currency})";
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -61,8 +61,8 @@ namespace Sales_Tracker
             Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             TextBoxManager.Attach(Discount_TextBox);
 
-            AmountCharged_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            TextBoxManager.Attach(AmountCharged_TextBox);
+            Charged_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxManager.Attach(Charged_TextBox);
 
             TextBoxManager.Attach(Notes_TextBox);
         }
@@ -151,6 +151,8 @@ namespace Sales_Tracker
         }
         private void Receipt_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             // Select file
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -218,7 +220,7 @@ namespace Sales_Tracker
             }
 
             // Round to 2 decimal places
-            decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
+            decimal amountCharged = decimal.Parse(Charged_TextBox.Text);
             totalPrice = Math.Round(totalPrice, 2);
             decimal chargedDifference = amountCharged - totalPrice;
 
@@ -423,7 +425,7 @@ namespace Sales_Tracker
             totalPrice += shipping + tax + fee - discount;
             totalPrice = Math.Round(totalPrice, 2);
 
-            decimal amountCharged = decimal.Parse(AmountCharged_TextBox.Text);
+            decimal amountCharged = decimal.Parse(Charged_TextBox.Text);
             decimal chargedDifference = amountCharged - totalPrice;
 
             if (totalPrice != amountCharged)
@@ -581,7 +583,7 @@ namespace Sales_Tracker
                 Shipping_TextBox.Width - UI.spaceBetweenControls -
                 Tax_TextBox.Width - UI.spaceBetweenControls -
                 PaymentFee_TextBox.Width - UI.spaceBetweenControls -
-                AmountCharged_TextBox.Width - UI.spaceBetweenControls -
+                Charged_TextBox.Width - UI.spaceBetweenControls -
                 Discount_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
@@ -597,8 +599,8 @@ namespace Sales_Tracker
             Fee_Label.Left = PaymentFee_TextBox.Left;
             Discount_TextBox.Left = PaymentFee_TextBox.Right + UI.spaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
-            AmountCharged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;
-            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
+            Charged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;
+            Charged_Label.Left = Charged_TextBox.Left;
 
             // Add controls
             foreach (Control control in GetControlsForMultipleProducts())
@@ -640,7 +642,7 @@ namespace Sales_Tracker
                 Shipping_TextBox.Width - UI.spaceBetweenControls -
                 Tax_TextBox.Width - UI.spaceBetweenControls -
                 PaymentFee_TextBox.Width - UI.spaceBetweenControls -
-                AmountCharged_TextBox.Width - UI.spaceBetweenControls -
+                Charged_TextBox.Width - UI.spaceBetweenControls -
                 Discount_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
@@ -652,8 +654,8 @@ namespace Sales_Tracker
             Fee_Label.Left = PaymentFee_TextBox.Left;
             Discount_TextBox.Left = PaymentFee_TextBox.Right + UI.spaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
-            AmountCharged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;
-            AmountCharged_Label.Left = AmountCharged_TextBox.Left;
+            Charged_TextBox.Left = Discount_TextBox.Right + UI.spaceBetweenControls;
+            Charged_Label.Left = Charged_TextBox.Left;
 
             // Remove controls
             foreach (Control control in GetControlsForMultipleProducts())
@@ -936,7 +938,7 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(AmountCharged_TextBox.Text);
+                                   !string.IsNullOrWhiteSpace(Charged_TextBox.Text);
 
             if (Properties.Settings.Default.PurchaseReceipts)
             {
@@ -959,7 +961,7 @@ namespace Sales_Tracker
             }
             AddPurchase_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
         }
-        public void CloseAllPanels(object sender, EventArgs? e)
+        private void CloseAllPanels(object sender, EventArgs e)
         {
             SearchBox.CloseSearchBox();
         }
