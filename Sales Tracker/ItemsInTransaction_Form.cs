@@ -32,13 +32,9 @@ namespace Sales_Tracker
 
             SetTitle();
 
-            if (row.Tag is (List<string> itemList, TagData))
+            if (row.Tag is (List<string> itemList, TagData tagData))
             {
-                SetDataGridView(itemList);
-            }
-            else if (row.Tag is List<string> list)
-            {
-                SetDataGridView(list);
+                SetDataGridView(itemList, tagData.DefaultCurrencyType);
             }
 
             Theme.SetThemeForForm(this);
@@ -75,7 +71,7 @@ namespace Sales_Tracker
                 else
                 {
                     UpdateMainMenuRowTag();
-                    MainMenu_Form.Instance.UpdateRowWithMultipleItems();
+                    MainMenu_Form.Instance.UpdateRowWithMultipleItems(MainMenu_Form.Instance.selectedRowInMainMenu);
                 }
 
                 MainMenu_Form.Instance.DataGridViewRowChanged();
@@ -119,7 +115,7 @@ namespace Sales_Tracker
                 oldSelectedDataGridView.SelectedRows[0].Tag = (items, tagData);
             }
         }
-        private void SetDataGridView(List<string> tag)
+        private void SetDataGridView(List<string> itemList, string defaultCurrencyType)
         {
             Dictionary<MainMenu_Form.Column, string> columnHeaders;
             columnHeaders = (oldOption == MainMenu_Form.SelectedOption.Purchases)
@@ -132,7 +128,7 @@ namespace Sales_Tracker
             Items_DataGridView.UserDeletingRow -= MainMenu_Form.Instance.DataGridView_UserDeletingRow;
             Items_DataGridView.Tag = MainMenu_Form.DataGridViewTag.ItemsInPurchase;
 
-            LoadAllItemsInDataGridView(tag);
+            LoadAllItemsInDataGridView(itemList, defaultCurrencyType);
 
             MainMenu_Form.Instance.selectedDataGridView = Items_DataGridView;
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
@@ -144,34 +140,35 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInPurchase;
             }
         }
-        private void LoadAllItemsInDataGridView(List<string> tag)
+        private void LoadAllItemsInDataGridView(List<string> itemList, string defaultCurrencyType)
         {
             string receiptFilePath = null;
             int startIndex = 0;
 
             // Check if the last item is the receipt file path
-            if (tag.Count > 0 && tag[^1].StartsWith(MainMenu_Form.receipt_text))
+            if (itemList.Count > 0 && itemList[^1].StartsWith(MainMenu_Form.receipt_text))
             {
-                receiptFilePath = tag[^1];
+                receiptFilePath = itemList[^1];
                 startIndex = 1;
             }
 
-            // Get date for exchange rate
-            string date = oldSelectedDataGridView.SelectedRows[0].Cells[MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Date]].Value.ToString();
-
-            // Get exchange rate
-            decimal exchangeRateToUSD = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date);
-            if (exchangeRateToUSD == -1) { return; }
-
-            // Add values to DataGridView, and convert money values
-            for (int i = 0; i < tag.Count - startIndex; i++)
+            // Add rows to DataGridView, and convert money values
+            for (int i = 0; i < itemList.Count - startIndex; i++)
             {
-                string[] values = tag[i].Split(',');
+                string[] values = itemList[i].Split(',');
                 decimal quantity = decimal.Parse(values[4]);
-                decimal pricePerUnit = decimal.Parse(values[5]);
 
-                values[5] = (pricePerUnit * exchangeRateToUSD).ToString("N2");
-                values[6] = (quantity * pricePerUnit * exchangeRateToUSD).ToString("N2");
+                if (defaultCurrencyType == "USD")
+                {
+                    decimal pricePerUnit = decimal.Parse(values[6]);
+                    values[5] = pricePerUnit.ToString("N2");
+                    values[6] = (quantity * pricePerUnit).ToString("N2");
+                }
+                else if (defaultCurrencyType == Properties.Settings.Default.Currency)
+                {
+                    decimal pricePerUnit = decimal.Parse(values[5]);
+                    values[6] = (quantity * pricePerUnit).ToString("N2");
+                }
 
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;

@@ -10,7 +10,6 @@
         private decimal _discountUSD;
         private decimal _chargedDifferenceUSD;
         private decimal _totalUSD;
-
         private string _defaultCurrencyType;
 
         // Getters and setters

@@ -805,16 +805,11 @@ namespace Sales_Tracker
 
                 if (productName == MainMenu_Form.multipleItems_text)
                 {
-                    MainMenu_Form.Instance.UpdateRowWithMultipleItems();
+                    MainMenu_Form.Instance.UpdateRowWithMultipleItems(selectedRow);
                 }
                 else
                 {
-                    int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value.ToString());
-                    decimal pricePerUnit = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value.ToString());
-                    decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
-                    decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
-                    decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-                    selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
+                    MainMenu_Form.Instance.UpdateRowWithNoItems(selectedRow);
                 }
             }
         }

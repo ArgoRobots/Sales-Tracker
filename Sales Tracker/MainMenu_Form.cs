@@ -7,6 +7,7 @@ using Sales_Tracker.Settings;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.Json;
+using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
@@ -1542,45 +1543,47 @@ namespace Sales_Tracker
                     string name1 = e.Row.Cells[columnName].Value?.ToString();
                     columnName = Column.Category.ToString();
                     string purchase = e.Row.Cells[columnName].Value?.ToString();
-                    List<string> tagList = (List<string>)selectedRowInMainMenu.Tag;
 
-                    byte index = 1;
-                    if (tagList.Last().StartsWith(receipt_text))
+                    if (selectedRowInMainMenu.Tag is (List<string> itemList, TagData))
                     {
-                        index = 2;
-                    }
-
-                    string selected;
-                    if (Selected == SelectedOption.Purchases)
-                    {
-                        selected = "purchase";
-                    }
-                    else
-                    {
-                        selected = "sale";
-                    }
-
-                    if (tagList.Count == index)
-                    {
-                        CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                            $"Deleting the last item will also delete the {selected}.",
-                            CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
-
-                        if (result != CustomMessageBoxResult.Ok)
+                        byte index = 1;
+                        if (itemList.Last().StartsWith(receipt_text))
                         {
+                            index = 2;
+                        }
+
+                        string selected;
+                        if (Selected == SelectedOption.Purchases)
+                        {
+                            selected = "purchase";
+                        }
+                        else
+                        {
+                            selected = "sale";
+                        }
+
+                        if (itemList.Count == index)
+                        {
+                            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                                $"Deleting the last item will also delete the {selected}.",
+                                CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
+
+                            if (result != CustomMessageBoxResult.Ok)
+                            {
+                                e.Cancel = true;
+                                return;
+                            }
+                            itemsInPurchase_Form.Close();
                             e.Cancel = true;
+                            Log.Write(2, $"Deleted item '{name1}' in {selected} '{purchase}'");
                             return;
                         }
-                        itemsInPurchase_Form.Close();
-                        e.Cancel = true;
+
+                        // Remove the row from the tag
+                        itemList.RemoveAt(e.Row.Index);
+
                         Log.Write(2, $"Deleted item '{name1}' in {selected} '{purchase}'");
-                        return;
                     }
-
-                    // Remove the row from the tag
-                    tagList.RemoveAt(e.Row.Index);
-
-                    Log.Write(2, $"Deleted item '{name1}' in {selected} '{purchase}'");
                     break;
             }
             string name = e.Row.Cells[columnName].Value?.ToString();
@@ -2110,18 +2113,13 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void UpdateRowWithMultipleItems()
+        public void UpdateRowWithMultipleItems(DataGridViewRow selectedRow)
         {
             isProgramLoading = true;
 
-            List<string> items = [];
+            List<string> items = selectedRow.Tag is (List<string> itemList, TagData) ? itemList : [];
 
-            if (selectedRowInMainMenu.Tag is (List<string> itemList, TagData))
-            {
-                items = itemList;
-            }
-
-            if (items.Count == 1) { return; }
+            if (items.Count <= 1) { return; }
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
@@ -2152,19 +2150,41 @@ namespace Sales_Tracker
             string country = isCountryConsistent ? firstCountry : emptyCell;
             string company = isCompanyConsistent ? firstCompany : emptyCell;
 
-            selectedRowInMainMenu.Cells[Column.Category.ToString()].Value = categoryName;
-            selectedRowInMainMenu.Cells[Column.Country.ToString()].Value = country;
-            selectedRowInMainMenu.Cells[Column.Company.ToString()].Value = company;
-            selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value = items.Count - 1;
+            selectedRow.Cells[Column.Category.ToString()].Value = categoryName;
+            selectedRow.Cells[Column.Country.ToString()].Value = country;
+            selectedRow.Cells[Column.Company.ToString()].Value = company;
+            selectedRow.Cells[Column.Quantity.ToString()].Value = items.Count - 1;
 
             // Update charged difference
-            int quantity = int.Parse(selectedRowInMainMenu.Cells[Column.Quantity.ToString()].Value.ToString());
-            decimal shipping = decimal.Parse(selectedRowInMainMenu.Cells[Column.Shipping.ToString()].Value.ToString());
-            decimal tax = decimal.Parse(selectedRowInMainMenu.Cells[Column.Tax.ToString()].Value.ToString());
+            int quantity = int.Parse(selectedRow.Cells[Column.Quantity.ToString()].Value.ToString());
+            decimal shipping = decimal.Parse(selectedRow.Cells[Column.Shipping.ToString()].Value.ToString());
+            decimal tax = decimal.Parse(selectedRow.Cells[Column.Tax.ToString()].Value.ToString());
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            selectedRowInMainMenu.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRowInMainMenu.Cells[Column.Total.ToString()].Value) - totalPrice;
+            selectedRow.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[Column.Total.ToString()].Value) - totalPrice;
+
+            selectedRow.Cells[Column.Total.ToString()].Value = totalPrice;
 
             isProgramLoading = false;
+        }
+        public void UpdateRowWithNoItems(DataGridViewRow selectedRow)
+        {
+            isProgramLoading = true;
+
+            int quantity = int.Parse(selectedRow.Cells[Column.Quantity.ToString()].Value.ToString());
+            decimal pricePerUnit = decimal.Parse(selectedRow.Cells[Column.PricePerUnit.ToString()].Value.ToString());
+            decimal shipping = decimal.Parse(selectedRow.Cells[Column.Shipping.ToString()].Value.ToString());
+            decimal tax = decimal.Parse(selectedRow.Cells[Column.Tax.ToString()].Value.ToString());
+            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
+            selectedRow.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[Column.Total.ToString()].Value) - totalPrice;
+
+            isProgramLoading = false;
+        }
+        public void UpdateAllRows(DataGridView dataGridView)
+        {
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                UpdateRowWithMultipleItems(row);
+            }
         }
         public static void AddNoteToCell(int newRowIndex, string note)
         {

@@ -456,11 +456,11 @@ namespace Sales_Tracker.Classes
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 // Handle receipts and adding new rows
-                if (row.Tag is (List<string> tagList, TagData tagData1) && tagList.Count > 0)
+                if (row.Tag is (List<string> itemList, TagData tagData1) && itemList.Count > 0)
                 {
                     // Is there a receipt
                     byte receiptOffset = 0;
-                    string receipt = tagList[^1];
+                    string receipt = itemList[^1];
                     if (receipt.StartsWith(MainMenu_Form.receipt_text))
                     {
                         receiptOffset = 1;
@@ -473,11 +473,11 @@ namespace Sales_Tracker.Classes
 
                     AddRowToWorksheet(worksheet, row, currentRow, tagData1);
 
-                    // Add additional rows if they exist in the tagList
-                    for (int j = 0; j < tagList.Count - receiptOffset; j++)
+                    // Add additional rows if they exist in itemList
+                    for (int j = 0; j < itemList.Count - receiptOffset; j++)
                     {
                         currentRow++;
-                        string[] values = tagList[j].Split(',');
+                        string[] values = itemList[j].Split(',');
 
                         AddItemRowToWorksheet(worksheet, values, currentRow);
                     }

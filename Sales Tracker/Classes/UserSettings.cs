@@ -25,41 +25,87 @@ namespace Sales_Tracker.Classes
             if (Properties.Settings.Default.EncryptFiles != Security_Form.Instance.EncryptFiles_CheckBox.Checked)
             {
                 Properties.Settings.Default.EncryptFiles = Security_Form.Instance.EncryptFiles_CheckBox.Checked;
-                ArgoCompany.SaveAll();
             }
 
             Properties.Settings.Default.Save();
+            ArgoCompany.SaveAll();
         }
         private static void UpdateCurrencyValuesInGridView(Guna2DataGridView dataGridView)
         {
+            MainMenu_Form.Instance.isProgramLoading = true;
+
             // Get the current exchange rate from USD to the default currency
             string currentCurrency = Properties.Settings.Default.Currency;
             string currentDate = Tools.FormatDate(DateTime.Now);
-            decimal exchangeRate = Currency.GetExchangeRate("USD", currentCurrency, currentDate);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", currentCurrency, currentDate);
+            if (exchangeRateToDefault == -1) { return ; }
+
+            decimal pricePerUnit, shipping, tax, fee, total;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (row.Tag is (List<string>, TagData tagData))
+                if (row.Tag is (string, TagData tagData))
                 {
                     // Convert the USD values to the current currency
-                    decimal pricePerUnit = tagData.PricePerUnitUSD * exchangeRate;
-                    decimal shipping = tagData.ShippingUSD * exchangeRate;
-                    decimal tax = tagData.TaxUSD * exchangeRate;
-                    decimal fee = tagData.FeeUSD * exchangeRate;
-                    decimal totalPrice = tagData.DiscountUSD * exchangeRate;
+                    pricePerUnit = tagData.PricePerUnitUSD * exchangeRateToDefault;
+                    shipping = tagData.ShippingUSD * exchangeRateToDefault;
+                    tax = tagData.TaxUSD * exchangeRateToDefault;
+                    fee = tagData.FeeUSD * exchangeRateToDefault;
+                    total = tagData.TotalUSD * exchangeRateToDefault;
 
-                    // Update the row values with the converted amounts using enum-based column access
+                    // Update the row values with the converted amounts
                     row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = pricePerUnit.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = shipping.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tax.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value = totalPrice.ToString("N2");
+                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value = total.ToString("N2");
+
+                    MainMenu_Form.Instance.UpdateRowWithNoItems(row);
                 }
-                else
+                else if (row.Tag is (List<string> itemList, TagData tagData1))
                 {
-                    Log.Write(0, "Row tag does not contain the expected data. Cannot convert the currency.");
+                    string lastItem = null;
+                    if (itemList.Last().StartsWith(MainMenu_Form.receipt_text))
+                    {
+                        lastItem = itemList.Last();
+                    }
+
+                    // Convert the USD values to the default currency
+                    shipping = tagData1.ShippingUSD * exchangeRateToDefault;
+                    tax = tagData1.TaxUSD * exchangeRateToDefault;
+                    fee = tagData1.FeeUSD * exchangeRateToDefault;
+
+                    row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = shipping.ToString("N2");
+                    row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tax.ToString("N2");
+                    row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
+
+                    // Set the default price per unit for items in the transaction
+                    List<string> valuesList = [];
+                    for (int i = 0; i < itemList.Count - 1; i++)
+                    {
+                        string[] values = itemList[i].Split(',');
+
+                        decimal itemQuantity = decimal.Parse(values[4]);
+                        decimal itemPricePerUnitUSD = decimal.Parse(values[6]);
+                        values[5] = (itemPricePerUnitUSD * exchangeRateToDefault).ToString("N2");
+                        valuesList.Add(string.Join(",", values));
+                    }
+
+                    // Add the receipt file path if it exists
+                    if (lastItem != null)
+                    {
+                        valuesList.Add(lastItem);
+                    }
+
+                    // Save
+                    tagData1.DefaultCurrencyType = currentCurrency;
+                    row.Tag = (valuesList, tagData1);
+                    MainMenu_Form.Instance.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
+                    MainMenu_Form.Instance.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
                 }
             }
+
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
         public static void ResetAllToDefault()
         {

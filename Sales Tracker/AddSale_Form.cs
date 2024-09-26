@@ -397,8 +397,9 @@ namespace Sales_Tracker
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
                 int quantity = int.Parse(quantityTextBox.Text);
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
-                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text) * exchangeRateToUSD;
-                totalPrice += quantity * pricePerUnit;
+                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
+                decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
+                totalPrice += quantity * pricePerUnitUSD;
                 totalQuantity += quantity;
 
                 string item = string.Join(",",
@@ -408,7 +409,7 @@ namespace Sales_Tracker
                     currentCompany,
                     quantity.ToString(),
                     pricePerUnit.ToString("N2"),
-                    (quantity * pricePerUnit).ToString("N2")
+                    pricePerUnitUSD.ToString("N2")
                 );
 
                 items.Add(item);

@@ -235,7 +235,6 @@ namespace Sales_Tracker
                     return false;
                 }
             }
-            totalPrice += chargedDifference;
 
             // Convert to USD
             decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
@@ -398,7 +397,8 @@ namespace Sales_Tracker
                 Guna2TextBox quantityTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault();
                 int quantity = int.Parse(quantityTextBox.Text);
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
-                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text) * exchangeRate;
+                decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
+                decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
                 totalPrice += quantity * pricePerUnit;
                 totalQuantity += quantity;
 
@@ -409,7 +409,7 @@ namespace Sales_Tracker
                     currentCompany,
                     quantity.ToString(),
                     pricePerUnit.ToString("N2"),
-                    (quantity * pricePerUnit).ToString("N2")
+                    pricePerUnitUSD.ToString("N2")
                 );
 
                 items.Add(item);
