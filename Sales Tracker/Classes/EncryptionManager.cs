@@ -19,7 +19,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error initializing EncryptionHelper: {ex.Message}");
+                Log.Error_InitEncryptionHelper(ex.Message);
                 throw;
             }
         }
@@ -47,7 +47,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error during encryption: {ex.Message}");
+                Log.Error_Encryption(ex.Message);
             }
 
             outputStream.Position = 0;
@@ -90,13 +90,13 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
-                    Log.Write(0, "Footer start index not found.");
+                    Log.Error_Decryption("Footer start index not found");
                 }
 
                 // Check if the length of the data is valid for decryption
                 if (fileContentBytes.Length % 16 != 0)
                 {
-                    Log.Write(0, $"The input data length {fileContentBytes.Length} is not a multiple of the AES block size (16 bytes).");
+                    Log.Error_Decryption($"The input data length {fileContentBytes.Length} is not a multiple of the AES block size (16 bytes)");
                     return (null, footerLines);
                 }
 
@@ -119,7 +119,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error during decryption: {ex.Message}");
+                Log.Error_Decryption(ex.Message);
                 return (null, []);
             }
         }
@@ -163,7 +163,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error during string decryption: {ex.Message}");
+                Log.Error_Decryption(ex.Message);
                 return null;
             }
         }

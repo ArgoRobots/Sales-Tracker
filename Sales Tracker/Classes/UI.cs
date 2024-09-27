@@ -333,6 +333,7 @@ namespace Sales_Tracker.Classes
             menuBtn = ConstructBtnForMenu("Share feedback", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
+                Tools.OpenLink("");
             };
 
             ConstructSeperator(panelBtnWidth, flowPanel);
@@ -340,6 +341,7 @@ namespace Sales_Tracker.Classes
             menuBtn = ConstructBtnForMenu("Sign out", panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
+                Tools.OpenLink("");
             };
         }
 

@@ -68,19 +68,19 @@ namespace Sales_Tracker.Classes
                     }
                     else
                     {
-                        Log.Write(0, $"{sourceCurrency} or {targetCurrency} rate not found.");
+                        Log.Error_GetExchangeRate($"{sourceCurrency} or {targetCurrency} rate not found");
                         return -1;
                     }
                 }
                 else
                 {
-                    Log.Write(0, "rates not found.");
+                    Log.Error_GetExchangeRate("rates not found");
                     return -1;
                 }
             }
             catch (OperationCanceledException)
             {
-                Log.Write(0, "The request timed out. Please try again later");
+                Log.Error_GetExchangeRate("The request timed out. Please try again later");
                 return -1;
             }
             catch (HttpRequestException)
@@ -96,7 +96,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Exception: {ex.Message}");
+                Log.Error_GetExchangeRate(ex.Message);
                 return -1;
             }
         }

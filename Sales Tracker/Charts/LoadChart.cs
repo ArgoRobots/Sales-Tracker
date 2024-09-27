@@ -922,7 +922,7 @@ namespace Sales_Tracker.Charts
 
             if (cell.Value == null)
             {
-                Log.Error_RowIsEmpty(MainMenu_Form.Instance.selectedDataGridView.Name);
+                Log.Error_DataGridViewCellIsEmpty(MainMenu_Form.Instance.selectedDataGridView.Name);
                 return false;
             }
 

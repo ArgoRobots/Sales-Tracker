@@ -58,9 +58,7 @@ namespace Sales_Tracker.Classes
             }
         }
         private static void Error(
-            string message,
-            string link,
-            bool showMessageBox,
+            string message, string link,
             [CallerLineNumber] int lineNumber = 0)
         {
             // Add link
@@ -86,11 +84,7 @@ namespace Sales_Tracker.Classes
                 message += debugInfo;
             }
 
-            // Show error
-            if (showMessageBox)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-            }
+            CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
         }
 
         // File errors
@@ -101,7 +95,6 @@ namespace Sales_Tracker.Classes
             Error("Error-3vknm9: File does not exist:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_DirectoryDoesNotExist(
@@ -111,7 +104,6 @@ namespace Sales_Tracker.Classes
             Error("Error-tq45ek: Directory does not exist:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_FileAlreadyExists(
@@ -121,7 +113,6 @@ namespace Sales_Tracker.Classes
             Error("Error-djrr3r: File already exists:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_DirectoryAlreadyExists(
@@ -131,7 +122,6 @@ namespace Sales_Tracker.Classes
             Error("Error-cmr45a: Directory already exists:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_DestinationFileAlreadyExists(
@@ -141,19 +131,16 @@ namespace Sales_Tracker.Classes
             Error("Error-8g8we7: The destination file already exists:" +
                 $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_TheSourceAndDestinationAreTheSame(
-            string source,
-            string destination,
+            string source, string destination,
             [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-h88tzd: The source and destination files are the same." +
-                $"\nSource:'{source}'." +
+                $"\nSource: '{source}'." +
                 $"\nDestination: '{destination}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_FailedToWriteToFile(
@@ -161,9 +148,8 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-h88tzd: Failed to write to file:" +
-                $"\nSource:'{filePath}'.",
+                $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_FailedToReadFile(
@@ -171,38 +157,70 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-h88tzd: Failed to read the file:" +
-                $"\nSource:'{filePath}'.",
+                $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_FailedToSave(
-            string filePath,
+            string info, string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-5knt54: Failed to save:" +
-                $"\nSource:'{filePath}'.",
+            Error($"Error-5knt54: Failed to save. {info}." +
+                $"\n'{filePath}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
 
         // DataGridView errors
-        public static void Error_RowIsEmpty(
-          string dataGridViewName,
-          [CallerLineNumber] int lineNumber = 0)
+        public static void Error_DataGridViewCellIsEmpty(
+            string dataGridViewName,
+            [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Row is empty in DataGridView:'{dataGridViewName}'.",
+            Error($"Error-5knt54: Cell is empty in DataGridView:'{dataGridViewName}'.",
                 "https://www.google.com",
-                false,
                 lineNumber);
         }
         public static void Error_RowIsOutOfRange(
-          [CallerLineNumber] int lineNumber = 0)
+            [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-5knt54: Row is out of range",
+            Error("Error-5knt54: Row is out of range.",
                 "https://www.google.com",
-                false,
+                lineNumber);
+        }
+
+        // Encryption errors
+        public static void Error_InitEncryptionHelper(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Error initializing EncryptionHelper. {info}.",
+                "https://www.google.com",
+                lineNumber);
+        }
+        public static void Error_Encryption(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Error during encryption. {info}.",
+                "https://www.google.com",
+                lineNumber);
+        }
+        public static void Error_Decryption(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Error during decryption. {info}.",
+                "https://www.google.com",
+                lineNumber);
+        }
+
+        // Misc. errors
+        public static void Error_GetExchangeRate(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Error getting exchange rates. {info}.",
+                "https://www.google.com",
                 lineNumber);
         }
     }

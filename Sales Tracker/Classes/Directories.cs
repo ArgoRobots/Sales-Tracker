@@ -469,8 +469,8 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error during tar creation or encryption: {ex.Message}");
-                Log.Error_FailedToSave(destinationFile);
+                string info = $"Error during tar creation or encryption: {ex.Message}";
+                Log.Error_FailedToSave(info, destinationFile);
             }
         }
         /// <summary>

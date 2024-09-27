@@ -755,13 +755,10 @@ namespace Sales_Tracker
                     }
                     else if (columnName == MainMenu_Form.Column.Product.ToString())
                     {
-                        if (gTextBox.Text.Contains('>'))
-                        {
-                            string[] items = gTextBox.Text.Split('>');
-                            string productName = items[1].Trim();
+                        string[] items = gTextBox.Text.Split('>');
+                        string productName = items[1].Trim();
 
-                            selectedRow.Cells[columnName].Value = productName;
-                        }
+                        selectedRow.Cells[columnName].Value = productName;
                     }
                     else if (columnName == MainMenu_Form.Column.Note.ToString())
                     {

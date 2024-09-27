@@ -1532,6 +1532,7 @@ namespace Sales_Tracker
                     break;
 
                 case SelectedOption.ItemsInPurchase:
+                case SelectedOption.ItemsInSale:
                     columnName = Column.Product.ToString();
                     string name1 = e.Row.Cells[columnName].Value?.ToString();
                     columnName = Column.Category.ToString();
@@ -1546,7 +1547,7 @@ namespace Sales_Tracker
                         }
 
                         string selected;
-                        if (Selected == SelectedOption.Purchases)
+                        if (Selected == SelectedOption.ItemsInPurchase)
                         {
                             selected = "purchase";
                         }
@@ -1559,7 +1560,7 @@ namespace Sales_Tracker
                         {
                             CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                                 $"Deleting the last item will also delete the {selected}.",
-                                CustomMessageBoxIcon.None, CustomMessageBoxButtons.OkCancel);
+                                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.OkCancel);
 
                             if (result != CustomMessageBoxResult.Ok)
                             {
