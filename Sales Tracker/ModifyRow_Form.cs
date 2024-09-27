@@ -739,30 +739,43 @@ namespace Sales_Tracker
             {
                 if (control is Guna2TextBox gTextBox)
                 {
-                    string columnName = gTextBox.Name;
+                    string column = gTextBox.Name;
 
-                    if (columnName == MainMenu_Form.Column.PricePerUnit.ToString() ||
-                        columnName == MainMenu_Form.Column.Shipping.ToString() ||
-                        columnName == MainMenu_Form.Column.Tax.ToString() ||
-                        columnName == MainMenu_Form.Column.Fee.ToString() ||
-                        columnName == MainMenu_Form.Column.Total.ToString())
+                    if (column == MainMenu_Form.Column.PricePerUnit.ToString() ||
+                        column == MainMenu_Form.Column.Shipping.ToString() ||
+                        column == MainMenu_Form.Column.Tax.ToString() ||
+                        column == MainMenu_Form.Column.Fee.ToString() ||
+                        column == MainMenu_Form.Column.Total.ToString())
                     {
                         // Format the number with two decimal places
                         if (decimal.TryParse(gTextBox.Text, out decimal number))
                         {
-                            selectedRow.Cells[columnName].Value = string.Format("{0:N2}", number);
+                            selectedRow.Cells[column].Value = string.Format("{0:N2}", number);
                         }
                     }
-                    else if (columnName == MainMenu_Form.Column.Product.ToString())
+                    else if (column == MainMenu_Form.Column.Product.ToString())
                     {
-                        string[] items = gTextBox.Text.Split('>');
-                        string productName = items[1].Trim();
+                        if (gTextBox.Text.Contains('>'))
+                        {
+                            string[] items = gTextBox.Text.Split('>');
+                            string productName = items[1].Trim();
 
-                        selectedRow.Cells[columnName].Value = productName;
+                            selectedRow.Cells[column].Value = productName;
+
+                            // Update the category and country cells
+                            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.ItemsInPurchase)
+                            {
+                                UpdateCategoryAndCountry(selectedRow, productName, MainMenu_Form.Instance.categoryPurchaseList);
+                            }
+                            else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Sales or MainMenu_Form.SelectedOption.ItemsInSale)
+                            {
+                                UpdateCategoryAndCountry(selectedRow, productName, MainMenu_Form.Instance.categorySaleList);
+                            }
+                        }
                     }
-                    else if (columnName == MainMenu_Form.Column.Note.ToString())
+                    else if (column == MainMenu_Form.Column.Note.ToString())
                     {
-                        DataGridViewCell cell = selectedRow.Cells[columnName];
+                        DataGridViewCell cell = selectedRow.Cells[column];
 
                         if (cell.Value.ToString() == MainMenu_Form.emptyCell)
                         {
@@ -778,7 +791,7 @@ namespace Sales_Tracker
                     }
                     else
                     {
-                        selectedRow.Cells[columnName].Value = gTextBox.Text;
+                        selectedRow.Cells[column].Value = gTextBox.Text;
                     }
                 }
                 else if (control is Guna2ComboBox gComboBox)
@@ -793,6 +806,16 @@ namespace Sales_Tracker
                 }
             }
             Close();
+        }
+        private static void UpdateCategoryAndCountry(DataGridViewRow row, string productName, List<Category> categoryList)
+        {
+            string categoryColumn = MainMenu_Form.Column.Category.ToString();
+            string category = MainMenu_Form.GetCategoryProductIsFrom(categoryList, productName);
+            row.Cells[categoryColumn].Value = category;
+
+            string countryColumn = MainMenu_Form.Column.Country.ToString();
+            string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName);
+            row.Cells[countryColumn].Value = country;
         }
         private void UpdateChargedDifference()
         {
@@ -986,16 +1009,20 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
             }
         }
-        private static DataGridViewRowCollection GetRows()
+        private static List<DataGridViewRow> GetRows()
         {
-            if (MainMenu_Form.Instance.IsPurchasesSelected())
+            List<DataGridViewRow> allRows = new();
+
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchases_DataGridView.Rows)
             {
-                return MainMenu_Form.Instance.Purchases_DataGridView.Rows;
+                allRows.Add(row);
             }
-            else
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sales_DataGridView.Rows)
             {
-                return MainMenu_Form.Instance.Sales_DataGridView.Rows;
+                allRows.Add(row);
             }
+
+            return allRows;
         }
         private static void UpdateDataGridViewRows(DataGridView dataGridView, string columnName, string oldValue, string newValue)
         {

@@ -213,7 +213,7 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
+            string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
             decimal totalPrice = quantity * pricePerUnit - discount;
             string noteLabel = MainMenu_Form.emptyCell;
             string note = Notes_TextBox.Text.Trim();
@@ -366,8 +366,8 @@ namespace Sales_Tracker
                 string categoryName = itemsInName[0].Trim();
                 string productName = itemsInName[1].Trim();
 
-                string currentCountry = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
-                string currentCompany = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
+                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
+                string currentCompany = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
 
                 if (firstCategoryName == null)
                 {

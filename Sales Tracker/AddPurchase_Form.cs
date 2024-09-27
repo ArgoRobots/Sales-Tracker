@@ -202,8 +202,8 @@ namespace Sales_Tracker
             string categoryName = items[0].Trim();
             string productName = items[1].Trim();
 
-            string country = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
-            string company = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
+            string country = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
+            string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             int quantity = int.Parse(Quantity_TextBox.Text);
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
@@ -363,8 +363,8 @@ namespace Sales_Tracker
                 string categoryName = itemsInName[0].Trim();
                 string productName = itemsInName[1].Trim();
 
-                string currentCountry = MainMenu_Form.GetCountryProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
-                string currentCompany = MainMenu_Form.GetCompanyProductNameIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
+                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
+                string currentCompany = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.categoryPurchaseList, productName);
 
                 if (firstCategoryName == null)
                 {
