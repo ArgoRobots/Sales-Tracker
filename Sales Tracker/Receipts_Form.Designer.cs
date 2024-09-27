@@ -327,6 +327,7 @@
             FilterByDate_CheckBox.UncheckedState.BorderRadius = 2;
             FilterByDate_CheckBox.UncheckedState.BorderThickness = 0;
             FilterByDate_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            FilterByDate_CheckBox.CheckedChanged += FilterReceipts;
             // 
             // IncludeSaleReceipts_Label
             // 

@@ -1124,7 +1124,7 @@ namespace Sales_Tracker
         }
 
         // Search DataGridView
-        public void ShowShowingResultsForLabel()
+        private void ShowShowingResultsForLabel()
         {
             string text = "Showing results for";
             string searchText = Search_TextBox.Text.Trim();
@@ -1163,11 +1163,14 @@ namespace Sales_Tracker
 
             // Update label text and location
             ShowingResultsFor_Label.Text = text;
+
+            // The control needs to be addded before the location is set, otherwise the control's size property is not calculated properly
+            Controls.Add(ShowingResultsFor_Label);
+
             ShowingResultsFor_Label.Location = new Point(
                 (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
                 MainTop_Panel.Bottom + (Distribution_Chart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
 
-            Controls.Add(ShowingResultsFor_Label);
         }
         public void HideShowingResultsForLabel()
         {

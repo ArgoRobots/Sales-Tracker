@@ -766,11 +766,11 @@ namespace Sales_Tracker
                             // Update the category and country cells
                             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.ItemsInPurchase)
                             {
-                                UpdateCategoryAndCountry(selectedRow, productName, MainMenu_Form.Instance.categoryPurchaseList);
+                                UpdateCategoryAndCountryAndCompany(selectedRow, productName, MainMenu_Form.Instance.categoryPurchaseList);
                             }
                             else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Sales or MainMenu_Form.SelectedOption.ItemsInSale)
                             {
-                                UpdateCategoryAndCountry(selectedRow, productName, MainMenu_Form.Instance.categorySaleList);
+                                UpdateCategoryAndCountryAndCompany(selectedRow, productName, MainMenu_Form.Instance.categorySaleList);
                             }
                         }
                     }
@@ -808,7 +808,7 @@ namespace Sales_Tracker
             }
             Close();
         }
-        private static void UpdateCategoryAndCountry(DataGridViewRow row, string productName, List<Category> categoryList)
+        private static void UpdateCategoryAndCountryAndCompany(DataGridViewRow row, string productName, List<Category> categoryList)
         {
             string categoryColumn = MainMenu_Form.Column.Category.ToString();
             string category = MainMenu_Form.GetCategoryProductIsFrom(categoryList, productName);
@@ -817,6 +817,10 @@ namespace Sales_Tracker
             string countryColumn = MainMenu_Form.Column.Country.ToString();
             string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName);
             row.Cells[countryColumn].Value = country;
+
+            string companyColumn = MainMenu_Form.Column.Country.ToString();
+            string company = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName);
+            row.Cells[companyColumn].Value = company;
         }
         private void UpdateChargedDifference()
         {

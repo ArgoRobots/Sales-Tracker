@@ -114,7 +114,7 @@
             // 
             // Apply_Button
             // 
-            Apply_Button.Anchor = AnchorStyles.Top;
+            Apply_Button.Anchor = AnchorStyles.Bottom;
             Apply_Button.BackColor = Color.Transparent;
             Apply_Button.BorderColor = Color.LightGray;
             Apply_Button.BorderRadius = 2;
@@ -134,7 +134,7 @@
             // 
             // Reset_Button
             // 
-            Reset_Button.Anchor = AnchorStyles.Top;
+            Reset_Button.Anchor = AnchorStyles.Bottom;
             Reset_Button.BackColor = Color.Transparent;
             Reset_Button.BorderColor = Color.LightGray;
             Reset_Button.BorderRadius = 2;

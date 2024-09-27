@@ -364,8 +364,8 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                // Check for additional data in Tag property first
-                if (row.Tag is List<string> items)
+                // Extarct countries from the Tag
+                if (row.Tag is (List<string> items, TagData))
                 {
                     foreach (string item in items)
                     {
@@ -436,8 +436,8 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                // Check for additional data in Tag property first
-                if (row.Tag is List<string> items)
+                // Extarct companies from the Tag
+                if (row.Tag is (List<string> items, TagData))
                 {
                     foreach (string item in items)
                     {
@@ -509,8 +509,8 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                // Check for additional data in Tag property first
-                if (row.Tag is List<string> items)
+                // Extarct countries from the Tag
+                if (row.Tag is (List<string> items, TagData))
                 {
                     foreach (string item in items)
                     {
