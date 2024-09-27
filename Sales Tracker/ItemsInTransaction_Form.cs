@@ -75,7 +75,7 @@ namespace Sales_Tracker
                     MainMenu_Form.UpdateRowWithMultipleItems(MainMenu_Form.Instance.selectedRowInMainMenu);
                 }
 
-                MainMenu_Form.Instance.DataGridViewRowChanged();
+                MainMenu_Form.Instance.DataGridViewRowChanged(MainMenu_Form.Instance.selectedDataGridView, MainMenu_Form.Instance.Selected);
             }
             MainMenu_Form.Instance.isProgramLoading = false;
         }

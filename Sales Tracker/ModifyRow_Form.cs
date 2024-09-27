@@ -46,7 +46,6 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             SaveInRow();
             UpdateChargedDifference();
-            MainMenu_Form.Instance.DataGridViewRowChanged();
             SaveInListsAndUpdateDataGridViews();
 
             // If the user selected a new receipt
@@ -63,7 +62,7 @@ namespace Sales_Tracker
                 }
             }
 
-            MainMenu_Form.Instance.DataGridViewRowChanged();
+            MainMenu_Form.Instance.DataGridViewRowChanged(MainMenu_Form.Instance.selectedDataGridView, MainMenu_Form.Instance.Selected);
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
@@ -108,7 +107,6 @@ namespace Sales_Tracker
         private void SizeControls(int left, int secondLeft)
         {
             Width = left + 80;
-            MinimumSize = new Size(500, 0);
             Panel.Width = left;
 
             if (secondRow)
@@ -126,6 +124,7 @@ namespace Sales_Tracker
             {
                 Height += 180;
             }
+            MinimumSize = new Size(Math.Max(500, Width), Height);
         }
         private void CenterControls()
         {
@@ -326,19 +325,19 @@ namespace Sales_Tracker
 
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
 
-                        Guna2TextBox gTextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
-                        SearchBox.Attach(gTextBox, this, () => Country.countries, searchBoxMaxHeight);
-                        gTextBox.TextChanged += ValidateInputs;
+                        Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
+                        SearchBox.Attach(textBox, this, () => Country.countries, searchBoxMaxHeight);
+                        textBox.TextChanged += ValidateInputs;
                         break;
 
                     case nameof(Products_Form.Column.CompanyOfOrigin):
 
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CompanyOfOrigin], left, Panel);
 
-                        gTextBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
+                        textBox = ConstructTextBox(left, columnName, cellValue, 50, UI.KeyPressValidation.None, false, false, Panel);
                         List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.companyList);
-                        SearchBox.Attach(gTextBox, this, () => searchResult, searchBoxMaxHeight);
-                        gTextBox.TextChanged += ValidateInputs;
+                        SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight);
+                        textBox.TextChanged += ValidateInputs;
                         break;
                 }
                 left += controlWidth + UI.spaceBetweenControls;
@@ -453,7 +452,8 @@ namespace Sales_Tracker
                         {
                             Size = new Size(38, 38),
                             ImageSize = new Size(30, 30),
-                            Image = Properties.Resources.CloseGray
+                            Image = Properties.Resources.CloseGray,
+                            Anchor = AnchorStyles.Top
                         };
                         RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(30, 30);
                         RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
@@ -477,7 +477,8 @@ namespace Sales_Tracker
                         {
                             ForeColor = CustomColors.text,
                             Font = new Font("Segoe UI", 10),
-                            AutoSize = true
+                            AutoSize = true,
+                            Anchor = AnchorStyles.Top
                         };
                         SelectedReceipt_Label.Click += CloseAllPanels;
                         break;
@@ -861,13 +862,15 @@ namespace Sales_Tracker
 
                 // Update all instances in DataGridViews
                 string categoryColumn = MainMenu_Form.Column.Category.ToString();
-                foreach (DataGridViewRow row in GetRows())
+                foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
                 {
                     if (row.Cells[categoryColumn].Value.ToString() == oldName)
                     {
                         row.Cells[categoryColumn].Value = category.Name;
                     }
                 }
+
+                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Product.ToString())
             {
@@ -903,7 +906,7 @@ namespace Sales_Tracker
 
                     // Update all instances in DataGridViews
                     string productColumn = MainMenu_Form.Column.Product.ToString();
-                    foreach (DataGridViewRow row in GetRows())
+                    foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
                     {
                         if (row.Cells[productColumn].Value.ToString() == oldName)
                         {
@@ -953,7 +956,7 @@ namespace Sales_Tracker
                     // Update all instances in DataGridViews
                     string categoryColumn = MainMenu_Form.Column.Category.ToString();
                     string nameColumn = MainMenu_Form.Column.Product.ToString();
-                    foreach (DataGridViewRow row in GetRows())
+                    foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
                     {
                         if (row.Cells[categoryColumn].Value.ToString() == category.Name
                             && row.Cells[nameColumn].Value.ToString() == product.Name)
@@ -962,6 +965,8 @@ namespace Sales_Tracker
                         }
                     }
                 }
+
+                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Company.ToString())
             {
@@ -1000,29 +1005,9 @@ namespace Sales_Tracker
                 UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.Name.ToString(), accountant, newValue);
             }
 
-            if (MainMenu_Form.Instance.IsPurchasesSelected())
-            {
-                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
-            }
-            else
-            {
-                MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
-            }
-        }
-        private static List<DataGridViewRow> GetRows()
-        {
-            List<DataGridViewRow> allRows = new();
-
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchases_DataGridView.Rows)
-            {
-                allRows.Add(row);
-            }
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sales_DataGridView.Rows)
-            {
-                allRows.Add(row);
-            }
-
-            return allRows;
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"{MainMenu_Form.Instance.Selected} list");
+            MainMenu_Form.Instance.DataGridViewRowChanged(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+            MainMenu_Form.Instance.DataGridViewRowChanged(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
         }
         private static void UpdateDataGridViewRows(DataGridView dataGridView, string columnName, string oldValue, string newValue)
         {
@@ -1044,6 +1029,7 @@ namespace Sales_Tracker
             {
                 Size = Panel.Size,
                 Location = new Point(Panel.Left, Panel.Bottom),
+                Anchor = AnchorStyles.Top
             };
             SecondPanel.Click += CloseAllPanels;
             Controls.Add(SecondPanel);

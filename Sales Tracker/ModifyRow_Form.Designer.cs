@@ -32,6 +32,7 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModifyRow_Form));
             ModifyRow_Label = new Label();
             Cancel_Button = new Guna.UI2.WinForms.Guna2Button();
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -98,6 +99,7 @@
             // 
             // Panel
             // 
+            Panel.Anchor = AnchorStyles.Top;
             Panel.Location = new Point(18, 81);
             Panel.Name = "Panel";
             Panel.Size = new Size(840, 150);
@@ -112,7 +114,8 @@
             Controls.Add(Save_Button);
             Controls.Add(Cancel_Button);
             Controls.Add(ModifyRow_Label);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ModifyRow_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

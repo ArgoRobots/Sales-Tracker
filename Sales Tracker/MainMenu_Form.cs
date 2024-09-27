@@ -7,7 +7,6 @@ using Sales_Tracker.Settings;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.Json;
-using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
@@ -1435,7 +1434,6 @@ namespace Sales_Tracker
 
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
-            dataGridView.CellValueChanged += DataGridView_CellValueChanged;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
             dataGridView.MouseDown += DataGridView_MouseDown;
             dataGridView.MouseUp += DataGridView_MouseUp;
@@ -1459,7 +1457,7 @@ namespace Sales_Tracker
 
             removedRow = e.Row;
 
-            string type = "", columnName = "";
+            string type = "", columnName = "", valueBeingRemoved;
             byte logIndex = 0;
 
             switch (Selected)
@@ -1480,9 +1478,16 @@ namespace Sales_Tracker
                     type = "product for purchase";
                     columnName = Products_Form.Column.ProductName.ToString();
                     logIndex = 3;
+                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
+
+                    if (IsThisBeingUsed(type, Column.Product.ToString(), valueBeingRemoved))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
                     // Remove product from list
-                    categoryPurchaseList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
+                    categoryPurchaseList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == valueBeingRemoved)));
 
                     // In case the product name that is being deleted is in the TextBox
                     Products_Form.Instance.ValidateProductNameTextBox();
@@ -1492,65 +1497,98 @@ namespace Sales_Tracker
                     type = "product for sale";
                     columnName = Products_Form.Column.ProductName.ToString();
                     logIndex = 3;
+                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
+
+                    if (IsThisBeingUsed(type, Column.Product.ToString(), valueBeingRemoved))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
                     // Remove product from list
-                    categorySaleList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == e.Row.Cells[columnName].Value?.ToString())));
+                    categorySaleList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == valueBeingRemoved)));
 
                     // In case the product name that is being deleted is in the TextBox
                     Products_Form.Instance.ValidateProductNameTextBox();
                     break;
 
                 case SelectedOption.CategoryPurchases:
-                    type = "Category for purchase";
+                    type = "category for purchase";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
+                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
+
+                    if (IsThisBeingUsed(type, Column.Category.ToString(), valueBeingRemoved))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
                     // Remove category from list
-                    categoryPurchaseList.Remove(categoryPurchaseList.FirstOrDefault(c => c.Name == e.Row.Cells[columnName].Value?.ToString()));
+                    categoryPurchaseList.Remove(categoryPurchaseList.FirstOrDefault(c => c.Name == valueBeingRemoved));
 
                     // In case the category name that is being deleted is in the TextBox
                     Categories_Form.Instance.VaidateCategoryTextBox();
                     break;
 
                 case SelectedOption.CategorySales:
-                    type = "Category for sale";
+                    type = "category for sale";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
+                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
+
+                    if (IsThisBeingUsed(type, Column.Category.ToString(), valueBeingRemoved))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
                     // Remove category from list
-                    categorySaleList.Remove(categorySaleList.FirstOrDefault(c => c.Name == e.Row.Cells[columnName].Value?.ToString()));
+                    categorySaleList.Remove(categorySaleList.FirstOrDefault(c => c.Name == valueBeingRemoved));
 
                     // In case the category name that is being deleted is in the TextBox
                     Categories_Form.Instance.VaidateCategoryTextBox();
                     break;
 
                 case SelectedOption.Accountants:
-                    type = "Accountant";
+                    type = "accountant";
                     columnName = Accountants_Form.Columns.AccountantName.ToString();
                     logIndex = 2;
+                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
+
+                    if (IsThisBeingUsed(type, Column.Name.ToString(), valueBeingRemoved))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
                     // Remove accountant from list
-                    accountantList.Remove(accountantList.FirstOrDefault(a => a == e.Row.Cells[columnName].Value?.ToString()));
+                    accountantList.Remove(accountantList.FirstOrDefault(a => a == valueBeingRemoved));
 
                     // In case the accountant name that is being deleted is in the TextBox
                     Accountants_Form.Instance.VaidateAccountantTextBox();
                     break;
 
                 case SelectedOption.Companies:
-                    type = "Companies";
+                    type = "company";
                     columnName = Companies_Form.Columns.Company.ToString();
                     logIndex = 2;
+                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
+
+                    if (IsThisBeingUsed(type, Column.Company.ToString(), valueBeingRemoved))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
                     // Remove accountant from list
-                    companyList.Remove(companyList.FirstOrDefault(a => a == e.Row.Cells[columnName].Value?.ToString()));
+                    companyList.Remove(companyList.FirstOrDefault(a => a == valueBeingRemoved));
                     break;
 
                 case SelectedOption.ItemsInPurchase:
                 case SelectedOption.ItemsInSale:
                     columnName = Column.Product.ToString();
-                    string name1 = e.Row.Cells[columnName].Value?.ToString();
-                    columnName = Column.Category.ToString();
-                    string purchase = e.Row.Cells[columnName].Value?.ToString();
+                    string productName = e.Row.Cells[columnName].Value?.ToString();
 
                     if (selectedRowInMainMenu.Tag is (List<string> itemList, TagData))
                     {
@@ -1582,15 +1620,15 @@ namespace Sales_Tracker
                                 return;
                             }
                             itemsInPurchase_Form.Close();
-                            e.Cancel = true;
-                            Log.Write(2, $"Deleted item '{name1}' in {selected} '{purchase}'");
+                            Log.Write(2, $"Deleted item '{productName}' in {selected}");
                             return;
                         }
 
                         // Remove the row from the tag
                         itemList.RemoveAt(e.Row.Index);
 
-                        Log.Write(2, $"Deleted item '{name1}' in {selected} '{purchase}'");
+                        Log.Write(2, $"Deleted item '{productName}' in {selected}");
+                        return;
                     }
                     break;
             }
@@ -1606,7 +1644,7 @@ namespace Sales_Tracker
         {
             if (isProgramLoading) { return; }
 
-            DataGridViewRowChanged();
+            DataGridViewRowChanged(selectedDataGridView, Selected);
 
             // Remove receipt from file
             if (Selected is SelectedOption.Purchases or SelectedOption.Sales && removedRow?.Tag != null)
@@ -1630,29 +1668,22 @@ namespace Sales_Tracker
                 removedRow = null;
             }
         }
-        private void DataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        public void DataGridViewRowChanged(Guna2DataGridView dataGridView, SelectedOption selected)
         {
-            if (isProgramLoading) { return; }
-
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
-            DataGridViewRowChanged();
-        }
-        public void DataGridViewRowChanged()
-        {
-            if (Selected == SelectedOption.Purchases || Selected == SelectedOption.Sales)
+            if (selected is SelectedOption.Purchases or SelectedOption.Sales)
             {
                 UpdateTotals();
                 LoadCharts();
-                SaveDataGridViewToFileAsJson(selectedDataGridView, Selected);
+                SaveDataGridViewToFileAsJson(dataGridView, selected);
             }
-            else if (Selected == SelectedOption.CategoryPurchases || Selected == SelectedOption.CategorySales ||
-                Selected == SelectedOption.ProductPurchases || Selected == SelectedOption.ProductSales)
+            else if (selected is SelectedOption.CategoryPurchases or SelectedOption.CategorySales or
+               SelectedOption.ProductPurchases or SelectedOption.ProductSales)
             {
-                SaveCategoriesToFile(Selected);
+                SaveCategoriesToFile(selected);
             }
-            else if (Selected == SelectedOption.Accountants || Selected == SelectedOption.Companies)
+            else if (selected is SelectedOption.Accountants or SelectedOption.Companies)
             {
-                SaveDataGridViewToFile(selectedDataGridView, Selected);
+                SaveDataGridViewToFile(dataGridView, selected);
             }
         }
         public void DataGridView_MouseDown(object sender, MouseEventArgs e)
@@ -1721,24 +1752,30 @@ namespace Sales_Tracker
                     flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
                 }
 
+                flowPanel.Controls.Remove(rightClickDataGridView_ModifyBtn);
                 flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
                 flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
 
                 if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
                 {
-                    ShowShowItemsBtn(flowPanel, 1);
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn, 1);
 
                     if (IsLastItemAReceipt(tagList[^1]))
                     {
-                        ShowExportReceiptBtn(flowPanel, 2);
+                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 2);
                     }
                 }
                 else if (grid.SelectedRows[0].Tag is (string item, TagData))
                 {
                     if (IsLastItemAReceipt(item))
                     {
-                        ShowExportReceiptBtn(flowPanel, 1);
+                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 1);
                     }
+                }
+
+                if (Selected is not SelectedOption.ItemsInPurchase or SelectedOption.ItemsInSale)
+                {
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn, 1);
                 }
 
                 // Adjust the panel height based on the number of controls
@@ -1903,6 +1940,22 @@ namespace Sales_Tracker
         }
 
         // Methods for DataGridView
+        /// <summary>
+        /// Shows a MessageBox if the row is being used by another row.
+        /// </summary>
+        /// <returns>True if it's being used by another row.</returns>
+        private bool IsThisBeingUsed(string type, string columnName, string valueBeingRemoved)
+        {
+            foreach (DataGridViewRow row in GetAllRows())
+            {
+                if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
+                {
+                    CustomMessageBox.Show("Argo Sales Tracker", $"This {type} is being used and cannot be deleted", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    return true;
+                }
+            }
+            return false;
+        }
         private static bool IsLastItemAReceipt(string lastItem)
         {
             // Check if the last item starts with "receipt:"
@@ -1918,7 +1971,7 @@ namespace Sales_Tracker
         {
             if (isProgramLoading) { return; }
 
-            DataGridViewRowChanged();
+            DataGridViewRowChanged(selectedDataGridView, Selected);
             DataGridViewRow row;
 
             if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
@@ -2209,7 +2262,6 @@ namespace Sales_Tracker
                 cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, cell.DataGridView.DefaultCellStyle.Font.Style & ~FontStyle.Underline);
             }
         }
-
         public static bool DoDataGridViewsHaveVisibleRows(params Guna2DataGridView[] dataGridViews)
         {
             foreach (DataGridView dataGridView in dataGridViews)
@@ -2223,6 +2275,13 @@ namespace Sales_Tracker
                 }
             }
             return false;
+        }
+        public List<DataGridViewRow> GetAllRows()
+        {
+            List<DataGridViewRow> allRows = new();
+            allRows.AddRange(Purchases_DataGridView.Rows.Cast<DataGridViewRow>());
+            allRows.AddRange(Sales_DataGridView.Rows.Cast<DataGridViewRow>());
+            return allRows;
         }
 
         // Save to file
@@ -2333,15 +2392,15 @@ namespace Sales_Tracker
 
         // Right click DataGridView row
         public Guna2Panel rightClickDataGridView_Panel;
-        private Guna2Button rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn, rightClickDataGridView_ShowItemsBtn;
+        private Guna2Button rightClickDataGridView_ModifyBtn, rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn, rightClickDataGridView_ShowItemsBtn;
         public Guna2Button rightClickDataGridView_DeleteBtn;
         public void ConstructRightClickDataGridViewRowMenu()
         {
             rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 5 * UI.panelButtonHeight + UI.spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
 
-            Guna2Button menuBtn = UI.ConstructBtnForMenu("Modify", UI.panelBtnWidth, false, flowPanel);
-            menuBtn.Click += ModifyRow;
+            rightClickDataGridView_ModifyBtn = UI.ConstructBtnForMenu("Modify", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ModifyBtn.Click += ModifyRow;
 
             rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", UI.panelBtnWidth, false, flowPanel);
             rightClickDataGridView_MoveBtn.Click += MoveRow;
@@ -2454,8 +2513,13 @@ namespace Sales_Tracker
             // Delete all selected rows
             foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
             {
-                DataGridView_UserDeletingRow(selectedDataGridView, new(item));
-                selectedDataGridView.Rows.Remove(item);
+                DataGridViewRowCancelEventArgs eventArgs = new(item);
+                DataGridView_UserDeletingRow(selectedDataGridView, eventArgs);
+
+                if (!eventArgs.Cancel)
+                {
+                    selectedDataGridView.Rows.Remove(item);
+                }
             }
 
             // Select the row under the row that was just deleted
@@ -2499,15 +2563,10 @@ namespace Sales_Tracker
 
             return File.Exists(newPath) ? newPath : "";
         }
-        private void ShowShowItemsBtn(FlowLayoutPanel flowPanel, int index)
+        private void AddButtonToFlowPanel(FlowLayoutPanel flowPanel, Guna2Button button, int index)
         {
-            flowPanel.Controls.Add(rightClickDataGridView_ShowItemsBtn);
-            flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, index);
-        }
-        private void ShowExportReceiptBtn(FlowLayoutPanel flowPanel, int index)
-        {
-            flowPanel.Controls.Add(rightClickDataGridView_ExportReceiptBtn);
-            flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, index);
+            flowPanel.Controls.Add(button);
+            flowPanel.Controls.SetChildIndex(button, index);
         }
 
         // Statistics menu
