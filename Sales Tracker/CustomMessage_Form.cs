@@ -192,6 +192,7 @@ namespace Sales_Tracker
             int top = 5;
 
             top = AddListForThingsChanged("General", MainMenu_Form.ThingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Settings", MainMenu_Form.SettingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Accountants", Accountants_Form.thingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Categories", Categories_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Companies", Companies_Form.thingsThatHaveChangedInFile, top);
@@ -255,11 +256,7 @@ namespace Sales_Tracker
                 isChanged = true;
             }
 
-            AddChangesMadeToInfoFile(isChanged);
-        }
-        public static void AddChangesMadeToInfoFile(bool changesMade)
-        {
-            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, changesMade.ToString());
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, isChanged.ToString());
         }
 
         // Event handlers

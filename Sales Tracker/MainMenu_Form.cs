@@ -17,6 +17,7 @@ namespace Sales_Tracker
         // Proprties
         private static MainMenu_Form _instance;
         private static List<string> _thingsThatHaveChangedInFile = [];
+        private static List<string> _settingsThatHaveChangedInFile = [];
         private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:",
@@ -32,6 +33,11 @@ namespace Sales_Tracker
         {
             get => _thingsThatHaveChangedInFile;
             private set => _thingsThatHaveChangedInFile = value;
+        }
+        public static List<string> SettingsThatHaveChangedInFile
+        {
+            get => _settingsThatHaveChangedInFile;
+            private set => _settingsThatHaveChangedInFile = value;
         }
         public static bool IsFullVersion
         {
@@ -55,7 +61,8 @@ namespace Sales_Tracker
             UI.ConstructControls();
             InitiateSearchTimer();
             SearchBox.ConstructSearchBox();
-            CurrencySymbol = Currency.GetSymbol(Properties.Settings.Default.Currency);
+
+            CurrencySymbol = Currency.GetSymbol();
 
             SetCompanyLabel();
 
@@ -1258,21 +1265,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        public static string GetCategoryNameByProductName(List<Category> categoryList, string productName)
-        {
-            foreach (Category category in categoryList)
-            {
-                foreach (Product product in category.ProductList)
-                {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return category.Name;
-                    }
-                }
-            }
-            return "null";
-        }
-        public static string GetCountryProductNameIsFrom(List<Category> categoryList, string productName)
+        public static string? GetCountryProductNameIsFrom(List<Category> categoryList, string productName)
         {
             foreach (Category category in categoryList)
             {
@@ -1284,9 +1277,9 @@ namespace Sales_Tracker
                     }
                 }
             }
-            return "null";
+            return null;
         }
-        public static string GetCompanyProductNameIsFrom(List<Category> categoryList, string productName)
+        public static string? GetCompanyProductNameIsFrom(List<Category> categoryList, string productName)
         {
             foreach (Category category in categoryList)
             {
@@ -1298,7 +1291,7 @@ namespace Sales_Tracker
                     }
                 }
             }
-            return "null";
+            return null;
         }
         public static bool DoesProductExist(string productName, List<Category> categories)
         {
@@ -1977,7 +1970,7 @@ namespace Sales_Tracker
         }
         public void UpdateTotals()
         {
-            if (isProgramLoading || Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales)
+            if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales)
             {
                 return;
             }
@@ -2113,10 +2106,8 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void UpdateRowWithMultipleItems(DataGridViewRow selectedRow)
+        public static void UpdateRowWithMultipleItems(DataGridViewRow selectedRow)
         {
-            isProgramLoading = true;
-
             List<string> items = selectedRow.Tag is (List<string> itemList, TagData) ? itemList : [];
 
             if (items.Count <= 1) { return; }
@@ -2163,23 +2154,17 @@ namespace Sales_Tracker
             selectedRow.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[Column.Total.ToString()].Value) - totalPrice;
 
             selectedRow.Cells[Column.Total.ToString()].Value = totalPrice;
-
-            isProgramLoading = false;
         }
-        public void UpdateRowWithNoItems(DataGridViewRow selectedRow)
+        public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
         {
-            isProgramLoading = true;
-
             int quantity = int.Parse(selectedRow.Cells[Column.Quantity.ToString()].Value.ToString());
             decimal pricePerUnit = decimal.Parse(selectedRow.Cells[Column.PricePerUnit.ToString()].Value.ToString());
             decimal shipping = decimal.Parse(selectedRow.Cells[Column.Shipping.ToString()].Value.ToString());
             decimal tax = decimal.Parse(selectedRow.Cells[Column.Tax.ToString()].Value.ToString());
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
             selectedRow.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[Column.Total.ToString()].Value) - totalPrice;
-
-            isProgramLoading = false;
         }
-        public void UpdateAllRows(DataGridView dataGridView)
+        public static void UpdateAllRows(DataGridView dataGridView)
         {
             foreach (DataGridViewRow row in dataGridView.Rows)
             {

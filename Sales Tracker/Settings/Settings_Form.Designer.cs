@@ -80,7 +80,7 @@ namespace Sales_Tracker.Settings
             Cancel_Button.BorderThickness = 1;
             Cancel_Button.CustomizableEdges = customizableEdges3;
             Cancel_Button.FillColor = Color.FromArgb(250, 250, 250);
-            Cancel_Button.Font = new Font("Segoe UI", 9.75F);
+            Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
             Cancel_Button.Location = new Point(1187, 909);
             Cancel_Button.Margin = new Padding(6, 5, 6, 5);
@@ -99,7 +99,7 @@ namespace Sales_Tracker.Settings
             Ok_Button.BorderThickness = 1;
             Ok_Button.CustomizableEdges = customizableEdges5;
             Ok_Button.FillColor = Color.FromArgb(250, 250, 250);
-            Ok_Button.Font = new Font("Segoe UI", 9.75F);
+            Ok_Button.Font = new Font("Segoe UI", 10F);
             Ok_Button.ForeColor = Color.Black;
             Ok_Button.Location = new Point(1025, 909);
             Ok_Button.Margin = new Padding(6, 5, 6, 5);
@@ -118,7 +118,7 @@ namespace Sales_Tracker.Settings
             ResetToDefault_Button.BorderThickness = 1;
             ResetToDefault_Button.CustomizableEdges = customizableEdges7;
             ResetToDefault_Button.FillColor = Color.FromArgb(250, 250, 250);
-            ResetToDefault_Button.Font = new Font("Segoe UI", 8.25F);
+            ResetToDefault_Button.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ResetToDefault_Button.ForeColor = Color.Black;
             ResetToDefault_Button.Location = new Point(15, 909);
             ResetToDefault_Button.Margin = new Padding(6, 5, 6, 5);
@@ -126,7 +126,7 @@ namespace Sales_Tracker.Settings
             ResetToDefault_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ResetToDefault_Button.Size = new Size(215, 50);
             ResetToDefault_Button.TabIndex = 181;
-            ResetToDefault_Button.Text = "Reset To Default";
+            ResetToDefault_Button.Text = "Reset to default";
             ResetToDefault_Button.Click += ResetToDefault_Button_Click;
             // 
             // FormBack_Panel
@@ -182,7 +182,7 @@ namespace Sales_Tracker.Settings
             Apply_Button.BorderThickness = 1;
             Apply_Button.CustomizableEdges = customizableEdges15;
             Apply_Button.FillColor = Color.FromArgb(250, 250, 250);
-            Apply_Button.Font = new Font("Segoe UI", 9.75F);
+            Apply_Button.Font = new Font("Segoe UI", 10F);
             Apply_Button.ForeColor = Color.Black;
             Apply_Button.Location = new Point(1349, 909);
             Apply_Button.Margin = new Padding(6, 5, 6, 5);

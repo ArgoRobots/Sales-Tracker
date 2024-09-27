@@ -272,7 +272,8 @@ namespace Sales_Tracker.Classes
 
             // Get exchange rate
             string date = row.Cell(7).GetValue<string>();
-            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", Properties.Settings.Default.Currency, date, false);
+            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", currency, date, false);
             if (exchangeRateToDefault == -1) { return false; }
 
             for (int i = 0; i < row.Cells().Count() - 2; i++)  // Do not add the note in the last cell yet

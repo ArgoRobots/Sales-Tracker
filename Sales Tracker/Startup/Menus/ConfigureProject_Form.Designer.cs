@@ -39,6 +39,8 @@ namespace Sales_Tracker.Startup.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Back_Button = new Guna.UI2.WinForms.Guna2Button();
             Create_Button = new Guna.UI2.WinForms.Guna2Button();
             ConfigureNewCompany_Label = new Label();
@@ -51,6 +53,8 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_PictureBox = new PictureBox();
             WarningName_PictureBox = new PictureBox();
             ThreeDots_Button = new Guna.UI2.WinForms.Guna2Button();
+            Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            Currency_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).BeginInit();
             SuspendLayout();
@@ -232,11 +236,42 @@ namespace Sales_Tracker.Startup.Menus
             ThreeDots_Button.TabIndex = 3;
             ThreeDots_Button.Click += ThreeDots_Button_Click;
             // 
+            // Currency_ComboBox
+            // 
+            Currency_ComboBox.Anchor = AnchorStyles.Top;
+            Currency_ComboBox.BackColor = Color.Transparent;
+            Currency_ComboBox.CustomizableEdges = customizableEdges11;
+            Currency_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+            Currency_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            Currency_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
+            Currency_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_ComboBox.Font = new Font("Segoe UI", 10F);
+            Currency_ComboBox.ForeColor = Color.Black;
+            Currency_ComboBox.ItemHeight = 39;
+            Currency_ComboBox.Location = new Point(48, 510);
+            Currency_ComboBox.Name = "Currency_ComboBox";
+            Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Currency_ComboBox.Size = new Size(255, 45);
+            Currency_ComboBox.TabIndex = 274;
+            // 
+            // Currency_Label
+            // 
+            Currency_Label.Anchor = AnchorStyles.Top;
+            Currency_Label.AutoSize = true;
+            Currency_Label.Font = new Font("Segoe UI", 12F);
+            Currency_Label.Location = new Point(48, 475);
+            Currency_Label.Name = "Currency_Label";
+            Currency_Label.Size = new Size(190, 32);
+            Currency_Label.TabIndex = 273;
+            Currency_Label.Text = "Default currency";
+            // 
             // ConfigureProject_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1320, 825);
+            Controls.Add(Currency_ComboBox);
+            Controls.Add(Currency_Label);
             Controls.Add(WarningDir_PictureBox);
             Controls.Add(WarningDir_Label);
             Controls.Add(WarningName_PictureBox);
@@ -275,5 +310,7 @@ namespace Sales_Tracker.Startup.Menus
         private System.Windows.Forms.PictureBox WarningDir_PictureBox;
         private System.Windows.Forms.Label WarningDir_Label;
         public Guna.UI2.WinForms.Guna2Button Back_Button;
+        public Guna.UI2.WinForms.Guna2ComboBox Currency_ComboBox;
+        private Label Currency_Label;
     }
 }

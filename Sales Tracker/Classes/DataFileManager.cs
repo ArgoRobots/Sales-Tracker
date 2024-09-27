@@ -11,7 +11,6 @@
             ImportSpreadsheetTutorial,  // bool
             RecentProjects  // string[]
         }
-
         public enum AppDataSettings
         {
             ChangesMade,  // bool

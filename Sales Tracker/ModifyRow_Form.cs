@@ -799,19 +799,22 @@ namespace Sales_Tracker
         }
         private void UpdateChargedDifference()
         {
+            MainMenu_Form.Instance.isProgramLoading = true;
+
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
                 string productName = selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString();
 
                 if (productName == MainMenu_Form.multipleItems_text)
                 {
-                    MainMenu_Form.Instance.UpdateRowWithMultipleItems(selectedRow);
+                    MainMenu_Form.UpdateRowWithMultipleItems(selectedRow);
                 }
                 else
                 {
-                    MainMenu_Form.Instance.UpdateRowWithNoItems(selectedRow);
+                    MainMenu_Form.UpdateRowWithNoItems(selectedRow);
                 }
             }
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
         private void SaveInListsAndUpdateDataGridViews()
         {

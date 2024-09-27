@@ -31,7 +31,9 @@ namespace Sales_Tracker.Classes
             Directories.CreateArgoTarFileFromDirectory(Directories.TempCompany_dir, Directories.ArgoCompany_file, true);
             Log.Write(2, $"Saved '{Directories.CompanyName}'");
             ResetChanges();
-            CustomMessage_Form.AddChangesMadeToInfoFile(false);
+
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+            Properties.Settings.Default.Save();
         }
         public static void SaveAs()
         {
@@ -50,6 +52,7 @@ namespace Sales_Tracker.Classes
         public static bool AreAnyChangesMade()
         {
             if (MainMenu_Form.ThingsThatHaveChangedInFile.Count > 0 ||
+                MainMenu_Form.SettingsThatHaveChangedInFile.Count > 0 ||
                 Accountants_Form.thingsThatHaveChangedInFile.Count > 0 ||
                 Categories_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 Companies_Form.thingsThatHaveChangedInFile.Count > 0 ||
@@ -64,6 +67,7 @@ namespace Sales_Tracker.Classes
         public static void ResetChanges()
         {
             MainMenu_Form.ThingsThatHaveChangedInFile.Clear();
+            MainMenu_Form.SettingsThatHaveChangedInFile.Clear();
             Accountants_Form.thingsThatHaveChangedInFile.Clear();
             Categories_Form.ThingsThatHaveChangedInFile.Clear();
             Companies_Form.thingsThatHaveChangedInFile.Clear();

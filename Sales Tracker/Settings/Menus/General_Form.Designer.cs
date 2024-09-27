@@ -79,7 +79,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             Language_Label.Anchor = AnchorStyles.Top;
             Language_Label.AutoSize = true;
-            Language_Label.Font = new Font("Segoe UI", 10);
+            Language_Label.Font = new Font("Segoe UI", 10F);
             Language_Label.Location = new Point(413, 15);
             Language_Label.Name = "Language_Label";
             Language_Label.Size = new Size(97, 28);
@@ -107,12 +107,12 @@ namespace Sales_Tracker.Settings.Menus
             // 
             Currency_Label.Anchor = AnchorStyles.Top;
             Currency_Label.AutoSize = true;
-            Currency_Label.Font = new Font("Segoe UI", 10);
-            Currency_Label.Location = new Point(421, 74);
+            Currency_Label.Font = new Font("Segoe UI", 10F);
+            Currency_Label.Location = new Point(356, 74);
             Currency_Label.Name = "Currency_Label";
-            Currency_Label.Size = new Size(89, 28);
+            Currency_Label.Size = new Size(154, 28);
             Currency_Label.TabIndex = 269;
-            Currency_Label.Text = "Currency";
+            Currency_Label.Text = "Default currency";
             // 
             // Currency_ComboBox
             // 
@@ -123,7 +123,7 @@ namespace Sales_Tracker.Settings.Menus
             Currency_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Currency_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             Currency_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.Font = new Font("Segoe UI", 10);
+            Currency_ComboBox.Font = new Font("Segoe UI", 10F);
             Currency_ComboBox.ForeColor = Color.Black;
             Currency_ComboBox.ItemHeight = 39;
             Currency_ComboBox.Location = new Point(510, 66);
@@ -141,7 +141,7 @@ namespace Sales_Tracker.Settings.Menus
             Language_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             Language_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             Language_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Language_ComboBox.Font = new Font("Segoe UI", 10);
+            Language_ComboBox.Font = new Font("Segoe UI", 10F);
             Language_ComboBox.ForeColor = Color.Black;
             Language_ComboBox.ItemHeight = 39;
             Language_ComboBox.Items.AddRange(new object[] { "English", "French" });
@@ -183,7 +183,7 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             ColorTheme_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             ColorTheme_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            ColorTheme_ComboBox.Font = new Font("Segoe UI", 10);
+            ColorTheme_ComboBox.Font = new Font("Segoe UI", 10F);
             ColorTheme_ComboBox.ForeColor = Color.Black;
             ColorTheme_ComboBox.ItemHeight = 39;
             ColorTheme_ComboBox.Location = new Point(510, 123);
@@ -196,7 +196,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             ShowDebugInfo_Label.Anchor = AnchorStyles.Top;
             ShowDebugInfo_Label.AutoSize = true;
-            ShowDebugInfo_Label.Font = new Font("Segoe UI", 10);
+            ShowDebugInfo_Label.Font = new Font("Segoe UI", 10F);
             ShowDebugInfo_Label.Location = new Point(182, 173);
             ShowDebugInfo_Label.Name = "ShowDebugInfo_Label";
             ShowDebugInfo_Label.Padding = new Padding(5);
@@ -210,7 +210,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             SendAnonymousInformation_Label.Anchor = AnchorStyles.Top;
             SendAnonymousInformation_Label.AutoSize = true;
-            SendAnonymousInformation_Label.Font = new Font("Segoe UI", 10);
+            SendAnonymousInformation_Label.Font = new Font("Segoe UI", 10F);
             SendAnonymousInformation_Label.Location = new Point(120, 219);
             SendAnonymousInformation_Label.Name = "SendAnonymousInformation_Label";
             SendAnonymousInformation_Label.Padding = new Padding(5);
@@ -224,7 +224,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             PurchaseReceipts_Label.Anchor = AnchorStyles.Top;
             PurchaseReceipts_Label.AutoSize = true;
-            PurchaseReceipts_Label.Font = new Font("Segoe UI", 10);
+            PurchaseReceipts_Label.Font = new Font("Segoe UI", 10F);
             PurchaseReceipts_Label.Location = new Point(183, 265);
             PurchaseReceipts_Label.Name = "PurchaseReceipts_Label";
             PurchaseReceipts_Label.Padding = new Padding(5);
@@ -238,7 +238,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             SalesReceipts_Label.Anchor = AnchorStyles.Top;
             SalesReceipts_Label.AutoSize = true;
-            SalesReceipts_Label.Font = new Font("Segoe UI", 10);
+            SalesReceipts_Label.Font = new Font("Segoe UI", 10F);
             SalesReceipts_Label.Location = new Point(220, 311);
             SalesReceipts_Label.Name = "SalesReceipts_Label";
             SalesReceipts_Label.Padding = new Padding(5);
@@ -252,7 +252,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             ColorTheme_Label.Anchor = AnchorStyles.Top;
             ColorTheme_Label.AutoSize = true;
-            ColorTheme_Label.Font = new Font("Segoe UI", 10);
+            ColorTheme_Label.Font = new Font("Segoe UI", 10F);
             ColorTheme_Label.Location = new Point(390, 131);
             ColorTheme_Label.Name = "ColorTheme_Label";
             ColorTheme_Label.Size = new Size(120, 28);

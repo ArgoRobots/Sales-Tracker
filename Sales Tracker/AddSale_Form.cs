@@ -30,7 +30,8 @@ namespace Sales_Tracker
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
-            Credited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({Properties.Settings.Default.Currency})";
+            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            Credited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({currency})";
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -240,7 +241,8 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             // Convert to USD
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(Properties.Settings.Default.Currency, "USD", date);
+            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(currency, "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
             decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
@@ -260,8 +262,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD,
-                DefaultCurrencyType = Properties.Settings.Default.Currency
+                TotalUSD = totalPriceUSD
             };
 
             string newFilePath = "";
@@ -354,7 +355,8 @@ namespace Sales_Tracker
             int totalQuantity = 0;
 
             // Get exchange rate
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(Properties.Settings.Default.Currency, "USD", date);
+            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(currency, "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
@@ -399,7 +401,7 @@ namespace Sales_Tracker
                 Guna2TextBox pricePerUnitTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault();
                 decimal pricePerUnit = decimal.Parse(pricePerUnitTextBox.Text);
                 decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
-                totalPrice += quantity * pricePerUnitUSD;
+                totalPrice += quantity * pricePerUnit;
                 totalQuantity += quantity;
 
                 string item = string.Join(",",
@@ -408,8 +410,8 @@ namespace Sales_Tracker
                     currentCountry,
                     currentCompany,
                     quantity.ToString(),
-                    pricePerUnit.ToString("N2"),
-                    pricePerUnitUSD.ToString("N2")
+                    pricePerUnit.ToString("F2"),
+                    pricePerUnitUSD.ToString("F2")
                 );
 
                 items.Add(item);
@@ -496,8 +498,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD,
-                DefaultCurrencyType = Properties.Settings.Default.Currency
+                TotalUSD = totalPriceUSD
             };
 
             // Set the tag

@@ -21,9 +21,11 @@ namespace Sales_Tracker.Classes
             { CurrencyTypes.CAD, "$" },
             { CurrencyTypes.AUD, "$" }
         };
-        public static string GetSymbol(string currencyTypeString)
+        public static string GetSymbol()
         {
-            if (Enum.TryParse(currencyTypeString, out CurrencyTypes currencyType))
+            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+
+            if (Enum.TryParse(currency, out CurrencyTypes currencyType))
             {
                 if (CurrencySymbols.TryGetValue(currencyType, out string symbol))
                 {

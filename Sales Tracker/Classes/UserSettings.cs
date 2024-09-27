@@ -7,38 +7,86 @@ namespace Sales_Tracker.Classes
     {
         public static void SaveUserSettings()
         {
-            Properties.Settings.Default.Language = General_Form.Instance.Language_ComboBox.Text;
-            Properties.Settings.Default.ShowDebugInfo = General_Form.Instance.ShowDebugInfo_CheckBox.Checked;
-            Properties.Settings.Default.SendAnonymousInformation = General_Form.Instance.SendAnonymousInformation_CheckBox.Checked;
-            Properties.Settings.Default.PurchaseReceipts = General_Form.Instance.PurchaseReceipts_CheckBox.Checked;
-            Properties.Settings.Default.SalesReceipts = General_Form.Instance.SalesReceipts_CheckBox.Checked;
-
-            if (Properties.Settings.Default.Currency != General_Form.Instance.Currency_ComboBox.Text)
+            // Check if language changed
+            if (Properties.Settings.Default.Language != General_Form.Instance.Language_ComboBox.Text)
             {
-                Properties.Settings.Default.Currency = General_Form.Instance.Currency_ComboBox.Text;
-                MainMenu_Form.CurrencySymbol = Currency.GetSymbol(Properties.Settings.Default.Currency);
+                Properties.Settings.Default.Language = General_Form.Instance.Language_ComboBox.Text;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the language to {Properties.Settings.Default.Language}");
+            }
+
+            // Check if debug info setting changed
+            if (Properties.Settings.Default.ShowDebugInfo != General_Form.Instance.ShowDebugInfo_CheckBox.Checked)
+            {
+                Properties.Settings.Default.ShowDebugInfo = General_Form.Instance.ShowDebugInfo_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the debug info setting");
+            }
+
+            // Check if anonymous information setting changed
+            if (Properties.Settings.Default.SendAnonymousInformation != General_Form.Instance.SendAnonymousInformation_CheckBox.Checked)
+            {
+                Properties.Settings.Default.SendAnonymousInformation = General_Form.Instance.SendAnonymousInformation_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the anonymous information setting");
+            }
+
+            // Check if purchase receipts setting changed
+            if (Properties.Settings.Default.PurchaseReceipts != General_Form.Instance.PurchaseReceipts_CheckBox.Checked)
+            {
+                Properties.Settings.Default.PurchaseReceipts = General_Form.Instance.PurchaseReceipts_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the purchase receipts setting");
+            }
+
+            // Check if sales receipts setting changed
+            if (Properties.Settings.Default.SalesReceipts != General_Form.Instance.SalesReceipts_CheckBox.Checked)
+            {
+                Properties.Settings.Default.SalesReceipts = General_Form.Instance.SalesReceipts_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the sales receipts setting");
+            }
+
+            // Check if currency changed
+            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            if (currency != General_Form.Instance.Currency_ComboBox.Text)
+            {
+                string oldCurrency = currency;
+                string newCurrency = General_Form.Instance.Currency_ComboBox.Text;
+                DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, newCurrency);
+                MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
+
+                MainMenu_Form.Instance.isProgramLoading = true;
 
                 UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchases_DataGridView);
                 UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sales_DataGridView);
+
+                MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
+                MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
+                MainMenu_Form.Instance.LoadCharts();
+                MainMenu_Form.Instance.UpdateTotals();
+
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
+
+                MainMenu_Form.Instance.isProgramLoading = false;
+
+                // Remove previous messages that mention currency changes
+                MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the currency from"));
+
+                // Add the new currency change message
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the currency from {oldCurrency} to {newCurrency}");
             }
 
+            // Check if file encryption setting changed
             if (Properties.Settings.Default.EncryptFiles != Security_Form.Instance.EncryptFiles_CheckBox.Checked)
             {
                 Properties.Settings.Default.EncryptFiles = Security_Form.Instance.EncryptFiles_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed file encryption setting");
             }
-
-            Properties.Settings.Default.Save();
-            ArgoCompany.SaveAll();
         }
         private static void UpdateCurrencyValuesInGridView(Guna2DataGridView dataGridView)
         {
-            MainMenu_Form.Instance.isProgramLoading = true;
-
             // Get the current exchange rate from USD to the default currency
-            string currentCurrency = Properties.Settings.Default.Currency;
+            string currentCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             string currentDate = Tools.FormatDate(DateTime.Now);
             decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", currentCurrency, currentDate);
-            if (exchangeRateToDefault == -1) { return ; }
+            if (exchangeRateToDefault == -1) { return; }
 
             decimal pricePerUnit, shipping, tax, fee, total;
 
@@ -60,7 +108,7 @@ namespace Sales_Tracker.Classes
                     row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Total.ToString()].Value = total.ToString("N2");
 
-                    MainMenu_Form.Instance.UpdateRowWithNoItems(row);
+                    MainMenu_Form.UpdateRowWithNoItems(row);
                 }
                 else if (row.Tag is (List<string> itemList, TagData tagData1))
                 {
@@ -98,14 +146,9 @@ namespace Sales_Tracker.Classes
                     }
 
                     // Save
-                    tagData1.DefaultCurrencyType = currentCurrency;
                     row.Tag = (valuesList, tagData1);
-                    MainMenu_Form.Instance.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
-                    MainMenu_Form.Instance.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
                 }
             }
-
-            MainMenu_Form.Instance.isProgramLoading = false;
         }
         public static void ResetAllToDefault()
         {

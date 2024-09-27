@@ -10,7 +10,6 @@
         private decimal _discountUSD;
         private decimal _chargedDifferenceUSD;
         private decimal _totalUSD;
-        private string _defaultCurrencyType;
 
         // Getters and setters
         public decimal PricePerUnitUSD
@@ -47,11 +46,6 @@
         {
             get => _totalUSD;
             set => _totalUSD = value;
-        }
-        public string DefaultCurrencyType
-        {
-            get => _defaultCurrencyType;
-            set => _defaultCurrencyType = value;
         }
     }
 }

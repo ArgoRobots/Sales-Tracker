@@ -18,6 +18,7 @@ namespace Sales_Tracker.Startup.Menus
             InitializeComponent();
             _instance = this;
 
+            Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             UpdateTheme();
@@ -136,8 +137,11 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.AppDataSettings_file);
             ArgoCompany.SaveAll();
 
-            // Save recently opened projects
+            // Set recently opened projects
             DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+
+            // Set default currency
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, Currency_ComboBox.Text);
 
             ArgoCompany.CreateMutex(projectName);
 

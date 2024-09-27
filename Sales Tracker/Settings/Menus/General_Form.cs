@@ -59,7 +59,8 @@ namespace Sales_Tracker.Settings.Menus
         public void UpdateControls()
         {
             Language_ComboBox.Text = Properties.Settings.Default.Language;
-            Currency_ComboBox.Text = Properties.Settings.Default.Currency;
+            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            Currency_ComboBox.Text = currency;
             ColorTheme_ComboBox.Text = Theme.CurrentTheme.ToString();
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;
             SendAnonymousInformation_CheckBox.Checked = Properties.Settings.Default.SendAnonymousInformation;

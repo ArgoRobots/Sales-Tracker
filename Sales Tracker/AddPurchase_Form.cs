@@ -27,12 +27,12 @@ namespace Sales_Tracker
             AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
-            Currency_ComboBox.Text = Properties.Settings.Default.Currency;
+            Currency_ComboBox.Text = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
             RemoveReceiptLabel();
-            Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({Properties.Settings.Default.Currency})";
+            Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType)})";
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -257,8 +257,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD,
-                DefaultCurrencyType = Currency_ComboBox.Text
+                TotalUSD = totalPriceUSD
             };
 
             string newFilePath = "";
@@ -344,8 +343,8 @@ namespace Sales_Tracker
                 noteLabel = MainMenu_Form.show_text;
             }
 
-            decimal exchangeRate = Currency.GetExchangeRate(Currency_ComboBox.Text, Properties.Settings.Default.Currency, date);
-            if (exchangeRate == -1) { return false; }
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_ComboBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
+            if (exchangeRateToDefault == -1) { return false; }
 
             List<string> items = [];
 
@@ -408,19 +407,19 @@ namespace Sales_Tracker
                     currentCountry,
                     currentCompany,
                     quantity.ToString(),
-                    pricePerUnit.ToString("N2"),
-                    pricePerUnitUSD.ToString("N2")
+                    (pricePerUnit * exchangeRateToDefault).ToString("F2"),
+                    pricePerUnitUSD.ToString("F2")
                 );
 
                 items.Add(item);
             }
 
             // Convert currency
-            shipping *= exchangeRate;
-            tax *= exchangeRate;
-            fee *= exchangeRate;
-            discount *= exchangeRate;
-            totalPrice *= exchangeRate;
+            shipping *= exchangeRateToDefault;
+            tax *= exchangeRateToDefault;
+            fee *= exchangeRateToDefault;
+            discount *= exchangeRateToDefault;
+            totalPrice *= exchangeRateToDefault;
 
             totalPrice += shipping + tax + fee - discount;
             totalPrice = Math.Round(totalPrice, 2);
@@ -430,8 +429,9 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
+                string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice}). The difference will be accounted for.",
+                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged} {currency}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice} {currency}). The difference will be accounted for.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -502,8 +502,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD,
-                DefaultCurrencyType = Currency_ComboBox.Text
+                TotalUSD = totalPriceUSD
             };
 
             // Set the tag

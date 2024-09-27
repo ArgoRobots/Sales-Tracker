@@ -32,9 +32,9 @@ namespace Sales_Tracker
 
             SetTitle();
 
-            if (row.Tag is (List<string> itemList, TagData tagData))
+            if (row.Tag is (List<string> itemList, TagData))
             {
-                SetDataGridView(itemList, tagData.DefaultCurrencyType);
+                SetDataGridView(itemList);
             }
 
             Theme.SetThemeForForm(this);
@@ -59,6 +59,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void ItemsInTransaction_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
+            MainMenu_Form.Instance.isProgramLoading = true;
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
 
@@ -71,11 +72,12 @@ namespace Sales_Tracker
                 else
                 {
                     UpdateMainMenuRowTag();
-                    MainMenu_Form.Instance.UpdateRowWithMultipleItems(MainMenu_Form.Instance.selectedRowInMainMenu);
+                    MainMenu_Form.UpdateRowWithMultipleItems(MainMenu_Form.Instance.selectedRowInMainMenu);
                 }
 
                 MainMenu_Form.Instance.DataGridViewRowChanged();
             }
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
         private void ItemsInTransaction_Form_Shown(object sender, EventArgs e)
         {
@@ -115,7 +117,7 @@ namespace Sales_Tracker
                 oldSelectedDataGridView.SelectedRows[0].Tag = (items, tagData);
             }
         }
-        private void SetDataGridView(List<string> itemList, string defaultCurrencyType)
+        private void SetDataGridView(List<string> itemList)
         {
             Dictionary<MainMenu_Form.Column, string> columnHeaders;
             columnHeaders = (oldOption == MainMenu_Form.SelectedOption.Purchases)
@@ -128,7 +130,7 @@ namespace Sales_Tracker
             Items_DataGridView.UserDeletingRow -= MainMenu_Form.Instance.DataGridView_UserDeletingRow;
             Items_DataGridView.Tag = MainMenu_Form.DataGridViewTag.ItemsInPurchase;
 
-            LoadAllItemsInDataGridView(itemList, defaultCurrencyType);
+            LoadAllItemsInDataGridView(itemList);
 
             MainMenu_Form.Instance.selectedDataGridView = Items_DataGridView;
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
@@ -140,8 +142,11 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInPurchase;
             }
         }
-        private void LoadAllItemsInDataGridView(List<string> itemList, string defaultCurrencyType)
+        private void LoadAllItemsInDataGridView(List<string> itemList)
         {
+            MainMenu_Form.Instance.isProgramLoading = true;
+
+            string defaultCurrencyType = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             string receiptFilePath = null;
             int startIndex = 0;
 
@@ -164,8 +169,9 @@ namespace Sales_Tracker
                     values[5] = pricePerUnit.ToString("N2");
                     values[6] = (quantity * pricePerUnit).ToString("N2");
                 }
-                else if (defaultCurrencyType == Properties.Settings.Default.Currency)
+                else
                 {
+                    values[5] = decimal.Parse(values[5]).ToString("N2");
                     decimal pricePerUnit = decimal.Parse(values[5]);
                     values[6] = (quantity * pricePerUnit).ToString("N2");
                 }
@@ -173,6 +179,8 @@ namespace Sales_Tracker
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
+
+            MainMenu_Form.Instance.isProgramLoading = false;
         }
     }
 }
