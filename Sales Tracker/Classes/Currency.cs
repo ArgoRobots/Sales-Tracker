@@ -7,19 +7,35 @@ namespace Sales_Tracker.Classes
         // Ordered by GDP
         public enum CurrencyTypes
         {
-            USD,
-            EUR,
-            GBP,
+            USD,    // United States Dollar (English - North America)
             CAD,
-            AUD
+            EUR,    // Euro
+            BRL,    // Brazilian Real (Brazil)
+            SEK,    // Swedish Krona (Sweden)
+            NOK,    // Norwegian Krone (Norway)
+            DKK,    // Danish Krone (Denmark)
+            RUB,    // Russian Ruble (Russia)
+            TRY,    // Turkish Lira (Turkey)
+            JPY,    // Japanese Yen (Japan)
+            KRW,    // South Korean Won (South Korea)
+            CNY,    // Chinese Yuan Renminbi (Chinese Simplified - China)
+            TWD     // Taiwan Dollar (Chinese Traditional - Taiwan)
         }
         private static readonly Dictionary<CurrencyTypes, string> CurrencySymbols = new()
         {
             { CurrencyTypes.USD, "$" },
-            { CurrencyTypes.EUR, "€" },
-            { CurrencyTypes.GBP, "£" },
             { CurrencyTypes.CAD, "$" },
-            { CurrencyTypes.AUD, "$" }
+            { CurrencyTypes.EUR, "€" },
+            { CurrencyTypes.BRL, "R$" },
+            { CurrencyTypes.SEK, "kr" },
+            { CurrencyTypes.NOK, "kr" },
+            { CurrencyTypes.DKK, "kr" },
+            { CurrencyTypes.RUB, "₽" },
+            { CurrencyTypes.TRY, "₺" },
+            { CurrencyTypes.JPY, "¥" },
+            { CurrencyTypes.KRW, "₩" },
+            { CurrencyTypes.CNY, "¥" },
+            { CurrencyTypes.TWD, "NT$" }
         };
         public static string GetSymbol()
         {

@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using SharpCompress.Common;
 using System.Diagnostics;
 using System.Reflection;
 

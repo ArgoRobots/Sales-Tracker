@@ -326,7 +326,7 @@ namespace Sales_Tracker
         public static CustomMessageBoxResult Show(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             // Construct a new form to free resources when it closes
-            if (Application.OpenForms[0].InvokeRequired)
+            if (Application.OpenForms.Count > 0 && Application.OpenForms[0].InvokeRequired)
             {
                 return Application.OpenForms[0].Invoke(new Func<CustomMessageBoxResult>(() =>
                 {

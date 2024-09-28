@@ -20,8 +20,16 @@ namespace Sales_Tracker.Settings.Menus
 
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(Theme.ThemeType));
+            InitLanguageComboBox();
             UpdateControls();
             UpdateTheme();
+        }
+        private void InitLanguageComboBox()
+        {
+            Language_ComboBox.DataSource = LanguageManager.GetLanguages();
+
+            Language_ComboBox.DisplayMember = "Key";   // Display language name
+            Language_ComboBox.ValueMember = "Value";   // Use language code as value
         }
         public void UpdateTheme()
         {

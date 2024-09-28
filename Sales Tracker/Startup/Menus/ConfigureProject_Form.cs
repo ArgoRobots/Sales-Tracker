@@ -22,6 +22,7 @@ namespace Sales_Tracker.Startup.Menus
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             UpdateTheme();
+            LanguageManager.UpdateLanguage(this);
         }
         public void UpdateTheme()
         {
@@ -134,14 +135,15 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.CategoryPurchases_file);
             Directories.CreateFile(Directories.Accountants_file);
             Directories.CreateFile(Directories.Companies_file);
-            Directories.CreateFile(Directories.AppDataSettings_file);
-            ArgoCompany.SaveAll();
+            ArgoCompany.InitCacheFiles();
 
             // Set recently opened projects
             DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
 
             // Set default currency
             DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, Currency_ComboBox.Text);
+
+            ArgoCompany.SaveAll();
 
             ArgoCompany.CreateMutex(projectName);
 

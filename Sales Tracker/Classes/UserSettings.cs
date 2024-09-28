@@ -10,8 +10,7 @@ namespace Sales_Tracker.Classes
             // Check if language changed
             if (Properties.Settings.Default.Language != General_Form.Instance.Language_ComboBox.Text)
             {
-                Properties.Settings.Default.Language = General_Form.Instance.Language_ComboBox.Text;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the language to {Properties.Settings.Default.Language}");
+                UpdateLanguage();
             }
 
             // Check if debug info setting changed
@@ -43,34 +42,10 @@ namespace Sales_Tracker.Classes
             }
 
             // Check if currency changed
-            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-            if (currency != General_Form.Instance.Currency_ComboBox.Text)
+            string oldCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            if (oldCurrency != General_Form.Instance.Currency_ComboBox.Text)
             {
-                string oldCurrency = currency;
-                string newCurrency = General_Form.Instance.Currency_ComboBox.Text;
-                DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, newCurrency);
-                MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
-
-                MainMenu_Form.Instance.isProgramLoading = true;
-
-                UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchases_DataGridView);
-                UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sales_DataGridView);
-
-                MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
-                MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
-                MainMenu_Form.Instance.LoadCharts();
-                MainMenu_Form.Instance.UpdateTotals();
-
-                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
-
-                MainMenu_Form.Instance.isProgramLoading = false;
-
-                // Remove previous messages that mention currency changes
-                MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the currency from"));
-
-                // Add the new currency change message
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the currency from {oldCurrency} to {newCurrency}");
+                UpdateCurrency(oldCurrency);
             }
 
             // Check if file encryption setting changed
@@ -79,6 +54,54 @@ namespace Sales_Tracker.Classes
                 Properties.Settings.Default.EncryptFiles = Security_Form.Instance.EncryptFiles_CheckBox.Checked;
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed file encryption setting");
             }
+        }
+        private static void UpdateLanguage()
+        {
+            Properties.Settings.Default.Language = General_Form.Instance.Language_ComboBox.Text;
+
+            if (General_Form.Instance.Language_ComboBox.SelectedItem is KeyValuePair<string, string> selectedItem)
+            {
+                string selectedLanguage = selectedItem.Value;
+
+                // Update the language in all open forms
+                foreach (Form openForm in Application.OpenForms.Cast<Form>().ToArray())
+                {
+                    LanguageManager.UpdateLanguage(openForm, selectedLanguage);
+                }
+            }
+
+            // Remove previous messages that mention language changes
+            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the language to"));
+
+            // Add the new language change message
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the language to {Properties.Settings.Default.Language}");
+        }
+        private static void UpdateCurrency(string oldCurrency)
+        {
+            string newCurrency = General_Form.Instance.Currency_ComboBox.Text;
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, newCurrency);
+            MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
+
+            MainMenu_Form.Instance.isProgramLoading = true;
+
+            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchases_DataGridView);
+            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sales_DataGridView);
+
+            MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
+            MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
+            MainMenu_Form.Instance.LoadCharts();
+            MainMenu_Form.Instance.UpdateTotals();
+
+            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
+
+            MainMenu_Form.Instance.isProgramLoading = false;
+
+            // Remove previous messages that mention currency changes
+            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the currency from"));
+
+            // Add the new currency change message
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the currency from {oldCurrency} to {newCurrency}");
         }
         private static void UpdateCurrencyValuesInGridView(Guna2DataGridView dataGridView)
         {

@@ -1,6 +1,7 @@
 ﻿using Sales_Tracker.Passwords;
 using System.Formats.Tar;
 using System.IO.Compression;
+using static Guna.UI2.Native.WinApi;
 
 namespace Sales_Tracker.Classes
 {
@@ -23,6 +24,8 @@ namespace Sales_Tracker.Classes
         private static string _receipts_dir;
         private static string _logs_dir;
         private static string _desktop_dir;
+        private static string _cache_dir;
+        private static string _translations_file;
 
         // Getters and setters
         public static string CompanyName
@@ -105,6 +108,16 @@ namespace Sales_Tracker.Classes
             get => _desktop_dir;
             set => _desktop_dir = value;
         }
+        public static string Cache_dir
+        {
+            get => _cache_dir;
+            set => _cache_dir = value;
+        }
+        public static string Translations_file
+        {
+            get => _translations_file;
+            set => _translations_file = value;
+        }
 
         // Methods
         public static void SetDirectories(string projectDir, string project_name)
@@ -114,39 +127,45 @@ namespace Sales_Tracker.Classes
                 projectDir += "\\";
             }
 
-            CompanyName = project_name;
-            TempCompany_dir = AppData_dir + project_name + @"\";
+            _companyName = project_name;
+            _tempCompany_dir = _appData_dir + project_name + @"\";
 
-            ArgoCompany_dir = projectDir;
-            ArgoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
+            _argoCompany_dir = projectDir;
+            _argoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
 
-            Purchases_file = TempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
-            Sales_file = TempCompany_dir + "sales" + ArgoFiles.TxtFileExtension;
-            CategoryPurchases_file = TempCompany_dir + "categoryPurchases" + ArgoFiles.JsonFileExtension;
-            CategorySales_file = TempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
-            Accountants_file = TempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
-            Companies_file = TempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
-            Receipts_dir = AppData_dir + project_name + @"\receipts\";
+            // Main files
+            _purchases_file = _tempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
+            _sales_file = _tempCompany_dir + "sales" + ArgoFiles.TxtFileExtension;
+            _categoryPurchases_file = _tempCompany_dir + "categoryPurchases" + ArgoFiles.JsonFileExtension;
+            _categorySales_file = _tempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
+            _accountants_file = _tempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
+            _companies_file = _tempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
+            _receipts_dir = _appData_dir + project_name + @"\receipts\";
 
             // Logs
-            Logs_dir = TempCompany_dir + @"logs\";
+            _logs_dir = _tempCompany_dir + @"logs\";
 
-            AppDataSettings_file = TempCompany_dir + "info" + ArgoFiles.TxtFileExtension;
+            // Misc.
+            _appDataSettings_file = _tempCompany_dir + "appSettings" + ArgoFiles.TxtFileExtension;
         }
         public static void SetUniversalDirectories()
         {
             // App data
-            AppData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
-            GlobalAppDataSettings_file = AppData_dir + "ArgoSalesTracker" + ArgoFiles.TxtFileExtension;
+            _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+
+            // Cache
+            _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueProjectIdentifier("Argo Sales Tracker") + @"\";
+            _translations_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
+            _globalAppDataSettings_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
 
             // Other
-            Desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            _desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
         public static void EnsureAppDataDirectoriesExist()
         {
-            if (!Directory.Exists(AppData_dir))
+            if (!Directory.Exists(_appData_dir))
             {
-                CreateDirectory(AppData_dir, false);
+                CreateDirectory(_appData_dir, false);
             }
         }
 

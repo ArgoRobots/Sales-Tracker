@@ -144,7 +144,6 @@ namespace Sales_Tracker.Settings.Menus
             Language_ComboBox.Font = new Font("Segoe UI", 10F);
             Language_ComboBox.ForeColor = Color.Black;
             Language_ComboBox.ItemHeight = 39;
-            Language_ComboBox.Items.AddRange(new object[] { "English", "French" });
             Language_ComboBox.Location = new Point(510, 7);
             Language_ComboBox.Name = "Language_ComboBox";
             Language_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges6;

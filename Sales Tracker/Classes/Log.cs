@@ -223,5 +223,13 @@ namespace Sales_Tracker.Classes
                 "https://www.google.com",
                 lineNumber);
         }
+        public static void Error_GetTranslation(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Error getting the translation. {info}.",
+                "https://www.google.com",
+                lineNumber);
+        }
     }
 }

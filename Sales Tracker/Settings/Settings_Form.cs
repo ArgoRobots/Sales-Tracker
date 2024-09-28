@@ -56,7 +56,6 @@ namespace Sales_Tracker.Settings
             if (result == CustomMessageBoxResult.Ok)
             {
                 UserSettings.ResetAllToDefault();
-                Theme.MakeSureThemeIsNotWindows();
                 ApplyChanges();
             }
         }
@@ -97,39 +96,13 @@ namespace Sales_Tracker.Settings
 
                 CustomColors.SetColors();
 
-                string totalsText = MainMenu_Form.Instance.Totals_Chart.Title.Text;
-                string distributionText = MainMenu_Form.Instance.Distribution_Chart.Title.Text;
-                string profitsText = MainMenu_Form.Instance.Profits_Chart.Title.Text;
-                string countriesOriginText = MainMenu_Form.Instance.countriesOfOrigin_Chart?.Title.Text;
-                string companiesOriginText = MainMenu_Form.Instance.companiesOfOrigin_Chart?.Title.Text;
-                string countriesDestinationText = MainMenu_Form.Instance.countriesOfDestination_Chart?.Title.Text;
-                string accountants = MainMenu_Form.Instance.accountants_Chart?.Title.Text;
-
                 General_Form.Instance.UpdateTheme();
                 Security_Form.Instance.UpdateTheme();
                 Updates_Form.Instance.UpdateTheme();
                 MainMenu_Form.Instance.UpdateTheme();
                 UpdateTheme();
 
-                MainMenu_Form.Instance.Totals_Chart.Title.Text = totalsText;
-                MainMenu_Form.Instance.Distribution_Chart.Title.Text = distributionText;
-                MainMenu_Form.Instance.Profits_Chart.Title.Text = profitsText;
-                if (MainMenu_Form.Instance.countriesOfOrigin_Chart != null)
-                {
-                    MainMenu_Form.Instance.countriesOfOrigin_Chart.Title.Text = countriesOriginText;
-                }
-                if (MainMenu_Form.Instance.companiesOfOrigin_Chart != null)
-                {
-                    MainMenu_Form.Instance.companiesOfOrigin_Chart.Title.Text = companiesOriginText;
-                }
-                if (MainMenu_Form.Instance.countriesOfDestination_Chart != null)
-                {
-                    MainMenu_Form.Instance.countriesOfDestination_Chart.Title.Text = countriesDestinationText;
-                }
-                if (MainMenu_Form.Instance.accountants_Chart != null)
-                {
-                    MainMenu_Form.Instance.accountants_Chart.Title.Text = accountants;
-                }
+                MainMenu_Form.Instance.LoadCharts();
 
                 List<Guna2Panel> listOfMenus = [
                     UI.fileMenu,

@@ -9,14 +9,14 @@ namespace Sales_Tracker.Classes
         public static void InitThings()
         {
             EncryptionManager.Initialize();
-            InitDataFile();
+            InitCacheFiles();
             PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
         }
-        public static void InitDataFile()
+        public static void InitCacheFiles()
         {
-            if (!Directory.Exists(Directories.AppData_dir))
+            if (!Directory.Exists(Directories.Cache_dir))
             {
-                Directories.CreateDirectory(Directories.AppData_dir, false);
+                Directories.CreateDirectory(Directories.Cache_dir, false);
             }
             if (!File.Exists(Directories.GlobalAppDataSettings_file))
             {
@@ -138,18 +138,25 @@ namespace Sales_Tracker.Classes
         }
         public static void ClearCache()
         {
-            string filePath = Directories.GlobalAppDataSettings_file;
+            string directoryPath = Directories.Cache_dir;
+            long totalSizeInBytes = 0;
 
-            if (File.Exists(filePath))
+            if (Directory.Exists(directoryPath))
             {
-                long fileSizeInBytes = new FileInfo(filePath).Length;
+                string[] files = Directory.GetFiles(directoryPath);
 
-                Directories.DeleteFile(filePath);
+                foreach (string file in files)
+                {
+                    totalSizeInBytes += new FileInfo(file).Length;
+                    Directories.DeleteFile(file);
+                }
+            }
 
-                string fileSizeReadable = Tools.ConvertBytesToReadableSize(fileSizeInBytes);
+            string totalSizeReadable = Tools.ConvertBytesToReadableSize(totalSizeInBytes);
 
-                CustomMessageBox.Show("Argo Sales Tracker", $"Cleared {fileSizeReadable} of cached data", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-
+            if (totalSizeInBytes > 0)
+            {
+                CustomMessageBox.Show("Argo Sales Tracker", $"Cleared {totalSizeReadable} of cached data", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
             else
             {
@@ -265,6 +272,8 @@ namespace Sales_Tracker.Classes
 
             foreach (string project in projects)
             {
+                if (project + @"\" == Directories.Cache_dir) { continue; }
+
                 // Check if there are any changes
                 string? value = DataFileManager.GetValue(DataFileManager.AppDataSettings.ChangesMade, project + @"\info" + ArgoFiles.TxtFileExtension);
                 if (bool.TryParse(value, out bool boolResult) && !boolResult)

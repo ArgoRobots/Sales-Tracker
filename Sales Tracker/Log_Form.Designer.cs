@@ -32,6 +32,7 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Log_Form));
             RichTextBox = new RichTextBox();
             AutoScroll_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             BtnClear = new Guna.UI2.WinForms.Guna2Button();
@@ -61,7 +62,7 @@
             AutoScroll_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             AutoScroll_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
             AutoScroll_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            AutoScroll_ComboBox.Font = new Font("Segoe UI", 10);
+            AutoScroll_ComboBox.Font = new Font("Segoe UI", 10F);
             AutoScroll_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             AutoScroll_ComboBox.ItemHeight = 39;
             AutoScroll_ComboBox.Items.AddRange(new object[] { "Enable autoscroll", "Disable autoscroll" });
@@ -81,7 +82,7 @@
             BtnClear.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             BtnClear.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             BtnClear.FillColor = Color.White;
-            BtnClear.Font = new Font("Segoe UI", 10);
+            BtnClear.Font = new Font("Segoe UI", 10F);
             BtnClear.ForeColor = Color.Black;
             BtnClear.Location = new Point(1186, 737);
             BtnClear.Name = "BtnClear";
@@ -100,6 +101,7 @@
             Controls.Add(AutoScroll_ComboBox);
             Controls.Add(RichTextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(800, 600);
             Name = "Log_Form";
             StartPosition = FormStartPosition.CenterScreen;

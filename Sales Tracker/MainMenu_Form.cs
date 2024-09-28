@@ -17,7 +17,7 @@ namespace Sales_Tracker
         private static MainMenu_Form _instance;
         private static List<string> _thingsThatHaveChangedInFile = [];
         private static List<string> _settingsThatHaveChangedInFile = [];
-        private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
+        public static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
         public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:",
             show_text = "show", companyName_text = "CompanyName", noData_text = "No data", noResults_text = "No results";
@@ -74,6 +74,7 @@ namespace Sales_Tracker
             Sales_Button.PerformClick();
             SortTheDataGridViewByDate();
             HideShowingResultsForLabel();
+            LanguageManager.UpdateLanguage(this);
         }
         public void ResetData()
         {
@@ -1014,7 +1015,7 @@ namespace Sales_Tracker
         /// <returns>True if there is any data, False if there is no data.</returns>
         public static bool ManageNoDataLabelOnControl(bool hasData, Control control, string text)
         {
-            Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label => label.Text == text);
+            Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == text);
 
             if (!hasData)
             {
@@ -1027,7 +1028,8 @@ namespace Sales_Tracker
                         ForeColor = CustomColors.text,
                         Text = text,
                         AutoSize = true,
-                        BackColor = Color.Transparent
+                        BackColor = Color.Transparent,
+                        Tag = text
                     };
 
                     control.Controls.Add(label);
@@ -2566,7 +2568,7 @@ namespace Sales_Tracker
 
             return File.Exists(newPath) ? newPath : "";
         }
-        private void AddButtonToFlowPanel(FlowLayoutPanel flowPanel, Guna2Button button, int index)
+        private static void AddButtonToFlowPanel(FlowLayoutPanel flowPanel, Guna2Button button, int index)
         {
             flowPanel.Controls.Add(button);
             flowPanel.Controls.SetChildIndex(button, index);

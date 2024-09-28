@@ -33,6 +33,9 @@ namespace Sales_Tracker.Startup.Menus
             LoadListOfRecentProjects();
             SetFlowLayoutPanel();
             SetTheme();
+
+            LanguageManager.InitLanguageManager();
+            LanguageManager.UpdateLanguage(this);
         }
         private void SetFlowLayoutPanel()
         {
