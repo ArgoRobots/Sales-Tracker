@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using System.ComponentModel;
 
 namespace Sales_Tracker
@@ -34,6 +35,7 @@ namespace Sales_Tracker
             }
 
             Theme.SetThemeForForm(this);
+            LanguageManager.UpdateLanguage(this);
             MainMenu_Form.Instance.isProgramLoading = false;
             MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Receipts_DataGridView);
         }

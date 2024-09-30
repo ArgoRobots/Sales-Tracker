@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sales Tracker", "Sales Trac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{25B54700-C008-4086-8AA5-104EF72DF9F8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,16 +61,6 @@ Global
 		{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}.Release|x64.Build.0 = Release|x64
 		{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}.Release|x86.ActiveCfg = Release|x86
 		{4E90BE2E-5BB5-41EC-BB0E-E4472C6BF2BE}.Release|x86.Build.0 = Release|x86
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Debug|Any CPU.ActiveCfg = Debug
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Debug|ARM.ActiveCfg = Debug
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Debug|ARM64.ActiveCfg = Debug
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Debug|x64.ActiveCfg = Debug
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Debug|x86.ActiveCfg = Debug
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Release|Any CPU.ActiveCfg = Release
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Release|ARM.ActiveCfg = Release
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Release|ARM64.ActiveCfg = Release
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Release|x64.ActiveCfg = Release
-		{25B54700-C008-4086-8AA5-104EF72DF9F8}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

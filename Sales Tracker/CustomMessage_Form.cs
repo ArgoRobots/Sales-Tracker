@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
@@ -23,6 +24,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             Theme.SetThemeForForm(this);
+            LanguageManager.UpdateLanguage(this);
 
             SetMessageBox(title, message, icon, buttons);
         }
@@ -75,7 +77,7 @@ namespace Sales_Tracker
             {
                 case CustomMessageBoxButtons.YesNo:
                     No_Button.Left = Width - No_Button.Width - buttonSpace;
-                    Yes_Button.Left = No_Button.Left - Yes_Button.Width - UI.spaceBetweenControls;
+                    Yes_Button.Left = No_Button.Left - Yes_Button.Width - CustomControls.spaceBetweenControls;
                     Controls.Add(Yes_Button);
                     Controls.Add(No_Button);
                     Controls.Remove(Cancel_Button);
@@ -96,7 +98,7 @@ namespace Sales_Tracker
                     break;
                 case CustomMessageBoxButtons.OkCancel:
                     Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
-                    Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - UI.spaceBetweenControls;
+                    Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - CustomControls.spaceBetweenControls;
                     Controls.Add(Ok_Button);
                     Controls.Add(Cancel_Button);
                     Controls.Remove(Yes_Button);
@@ -107,8 +109,8 @@ namespace Sales_Tracker
                     break;
                 case CustomMessageBoxButtons.SaveDontSaveCancel:
                     Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
-                    DontSave_Button.Left = Cancel_Button.Left - DontSave_Button.Width - UI.spaceBetweenControls;
-                    Save_Button.Left = DontSave_Button.Left - Save_Button.Width - UI.spaceBetweenControls;
+                    DontSave_Button.Left = Cancel_Button.Left - DontSave_Button.Width - CustomControls.spaceBetweenControls;
+                    Save_Button.Left = DontSave_Button.Left - Save_Button.Width - CustomControls.spaceBetweenControls;
                     Controls.Add(Save_Button);
                     Controls.Add(DontSave_Button);
                     Controls.Add(Cancel_Button);

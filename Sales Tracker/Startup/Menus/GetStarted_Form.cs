@@ -1,8 +1,10 @@
 ﻿using Guna.UI2.WinForms;
 using Microsoft.VisualBasic.FileIO;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Passwords;
 using Sales_Tracker.Properties;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup.Menus
 {
@@ -29,13 +31,16 @@ namespace Sales_Tracker.Startup.Menus
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
             Directories.EnsureAppDataDirectoriesExist();
-            UI.ConstructRightClickRename();
-            LoadListOfRecentProjects();
-            SetFlowLayoutPanel();
-            SetTheme();
+            CustomControls.ConstructRightClickRename();
 
+            SetDoNotTranslateControls();
             LanguageManager.InitLanguageManager();
             LanguageManager.UpdateLanguage(this);
+
+            LoadListOfRecentProjects();
+
+            SetFlowLayoutPanel();
+            SetTheme();
         }
         private void SetFlowLayoutPanel()
         {
@@ -60,6 +65,10 @@ namespace Sales_Tracker.Startup.Menus
                 CreateCompany_Button.Image = Resources.CreateFileBlack;
                 OpenCompany_Button.Image = Resources.OpenFolderBlack;
             }
+        }
+        private void SetDoNotTranslateControls()
+        {
+            ArgoSalesTracker_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
         }
 
         // Form event handlers
@@ -97,7 +106,8 @@ namespace Sales_Tracker.Startup.Menus
                     Size = new Size(CalculateButtonWidth(), 60),
                     Text = Path.GetFileNameWithoutExtension(projectDir),
                     Font = new Font("Segoe UI", 11),
-                    Tag = projectDir
+                    Tag = projectDir,
+                    AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
                 };
                 btn.MouseDown += (sender, e) =>
                 {
@@ -248,19 +258,19 @@ namespace Sales_Tracker.Startup.Menus
         private Guna2Button rightClickOpenRecent_DeleteBtn;
         private void ConstructRightClickOpenRecentMenu()
         {
-            rightClickOpenRecent_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 4 * UI.panelButtonHeight + UI.spaceForPanel));
+            rightClickOpenRecent_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 4 * CustomControls.panelButtonHeight + CustomControls.spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickOpenRecent_Panel.Controls[0];
 
-            Guna2Button menuBtn = UI.ConstructBtnForMenu("Show in folder", UI.panelBtnWidth, false, flowPanel);
+            Guna2Button menuBtn = CustomControls.ConstructBtnForMenu("Show in folder", CustomControls.PanelBtnWidth, false, flowPanel);
             menuBtn.Click += ShowInFolder;
 
-            menuBtn = UI.ConstructBtnForMenu("Rename company", UI.panelBtnWidth, false, flowPanel);
+            menuBtn = CustomControls.ConstructBtnForMenu("Rename company", CustomControls.PanelBtnWidth, false, flowPanel);
             menuBtn.Click += Rename;
 
-            menuBtn = UI.ConstructBtnForMenu("Hide", UI.panelBtnWidth, false, flowPanel);
+            menuBtn = CustomControls.ConstructBtnForMenu("Hide", CustomControls.PanelBtnWidth, false, flowPanel);
             menuBtn.Click += Hide;
 
-            rightClickOpenRecent_DeleteBtn = UI.ConstructBtnForMenu("Delete in folder", UI.panelBtnWidth, false, flowPanel);
+            rightClickOpenRecent_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete in folder", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickOpenRecent_DeleteBtn.Click += DeleteInFolder;
         }
         private void ShowInFolder(object sender, EventArgs e)
@@ -282,14 +292,14 @@ namespace Sales_Tracker.Startup.Menus
 
             Guna2Button button = (Guna2Button)rightClickOpenRecent_Panel.Tag;
 
-            UI.Rename_TextBox.Text = button.Text;
-            UI.Rename_TextBox.Location = new Point(OpenRecent_FlowLayoutPanel.Left + button.Left + 1, OpenRecent_FlowLayoutPanel.Top + button.Top);
-            UI.Rename_TextBox.Size = new Size(button.Width, button.Height);
-            UI.Rename_TextBox.Font = button.Font;
-            Controls.Add(UI.Rename_TextBox);
-            UI.Rename_TextBox.Focus();
-            UI.Rename_TextBox.SelectAll();
-            UI.Rename_TextBox.BringToFront();
+            CustomControls.Rename_TextBox.Text = button.Text;
+            CustomControls.Rename_TextBox.Location = new Point(OpenRecent_FlowLayoutPanel.Left + button.Left + 1, OpenRecent_FlowLayoutPanel.Top + button.Top);
+            CustomControls.Rename_TextBox.Size = new Size(button.Width, button.Height);
+            CustomControls.Rename_TextBox.Font = button.Font;
+            Controls.Add(CustomControls.Rename_TextBox);
+            CustomControls.Rename_TextBox.Focus();
+            CustomControls.Rename_TextBox.SelectAll();
+            CustomControls.Rename_TextBox.BringToFront();
         }
         private void Hide(object sender, EventArgs e)
         {
@@ -342,31 +352,31 @@ namespace Sales_Tracker.Startup.Menus
         // Methods
         public void RenameCompany()
         {
-            if (!Controls.Contains(UI.Rename_TextBox))
+            if (!Controls.Contains(CustomControls.Rename_TextBox))
             {
                 return;
             }
-            Controls.Remove(UI.Rename_TextBox);
+            Controls.Remove(CustomControls.Rename_TextBox);
 
             Guna2Button button = (Guna2Button)rightClickOpenRecent_Panel.Tag;
 
             // If the name did not change
-            if (UI.Rename_TextBox.Text == button.Text)
+            if (CustomControls.Rename_TextBox.Text == button.Text)
             {
                 return;
             }
 
-            button.Text = UI.Rename_TextBox.Text;
+            button.Text = CustomControls.Rename_TextBox.Text;
 
             string projectDir = button.Tag.ToString();
-            string newProjectDir = Path.Combine(Path.GetDirectoryName(projectDir), UI.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension);
+            string newProjectDir = Path.Combine(Path.GetDirectoryName(projectDir), CustomControls.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension);
 
             if (Directories.MoveFile(projectDir, newProjectDir))
             {
                 button.Tag = newProjectDir;
             }
 
-            UI.Rename_TextBox.Text = "";
+            CustomControls.Rename_TextBox.Text = "";
         }
         public void ShowMainMenu()
         {
@@ -383,7 +393,7 @@ namespace Sales_Tracker.Startup.Menus
         private void CloseAllPanels(object sender, EventArgs e)
         {
             Controls.Remove(rightClickOpenRecent_Panel);
-            UI.Rename();
+            CustomControls.Rename();
         }
     }
 }

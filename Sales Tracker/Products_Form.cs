@@ -1,5 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
@@ -36,6 +38,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
+            LanguageManager.UpdateLanguage(this);
             HideShowingResultsForLabel();
             AddEventHandlersToTextBoxes();
             SetTotalLabel();
@@ -295,13 +298,13 @@ namespace Sales_Tracker
             if (MainMenu_Form.DoesProductExist(ProductName_TextBox.Text, categories))
             {
                 AddProduct_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(ProductName_TextBox);
+                CustomControls.SetGTextBoxToInvalid(ProductName_TextBox);
                 ShowProductNameWarning();
             }
             else
             {
                 AddProduct_Button.Enabled = true;
-                UI.SetGTextBoxToValid(ProductName_TextBox);
+                CustomControls.SetGTextBoxToValid(ProductName_TextBox);
                 HideProductNameWarning();
             }
         }

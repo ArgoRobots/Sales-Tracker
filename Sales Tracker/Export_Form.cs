@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
@@ -13,6 +14,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             UpdateTheme();
+            LanguageManager.UpdateLanguage(this);
         }
         public void UpdateTheme()
         {
@@ -59,14 +61,14 @@ namespace Sales_Tracker
             if ("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "")
             {
                 Export_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(Name_TextBox);
+                CustomControls.SetGTextBoxToInvalid(Name_TextBox);
                 WarningName_Label.Visible = true;
                 WarningName_PictureBox.Visible = true;
             }
             else
             {
                 Export_Button.Enabled = true;
-                UI.SetGTextBoxToValid(Name_TextBox);
+                CustomControls.SetGTextBoxToValid(Name_TextBox);
                 WarningName_Label.Visible = false;
                 WarningName_PictureBox.Visible = false;
             }

@@ -22,6 +22,7 @@ namespace Sales_Tracker.Settings.Menus
             UpdateControls();
             SetPasswordButton();
             UpdateTheme();
+            LanguageManager.UpdateLanguage(this);
         }
         public void UpdateTheme()
         {

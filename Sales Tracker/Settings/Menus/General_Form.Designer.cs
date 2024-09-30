@@ -51,7 +51,6 @@ namespace Sales_Tracker.Settings.Menus
             Currency_Label = new Label();
             Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Language_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-            Back_Panel = new Panel();
             ColorTheme_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             ShowDebugInfo_Label = new Label();
             SendAnonymousInformation_Label = new Label();
@@ -62,7 +61,6 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             ShowDebugInfo_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             SendAnonymousInformation_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
-            Back_Panel.SuspendLayout();
             SuspendLayout();
             // 
             // General_Label
@@ -80,7 +78,7 @@ namespace Sales_Tracker.Settings.Menus
             Language_Label.Anchor = AnchorStyles.Top;
             Language_Label.AutoSize = true;
             Language_Label.Font = new Font("Segoe UI", 10F);
-            Language_Label.Location = new Point(413, 15);
+            Language_Label.Location = new Point(536, 269);
             Language_Label.Name = "Language_Label";
             Language_Label.Size = new Size(97, 28);
             Language_Label.TabIndex = 253;
@@ -96,10 +94,10 @@ namespace Sales_Tracker.Settings.Menus
             MoreInformation_Button.FillColor = Color.FromArgb(250, 250, 250);
             MoreInformation_Button.Font = new Font("Segoe UI", 9F);
             MoreInformation_Button.ForeColor = Color.Black;
-            MoreInformation_Button.Location = new Point(535, 216);
+            MoreInformation_Button.Location = new Point(663, 470);
             MoreInformation_Button.Name = "MoreInformation_Button";
             MoreInformation_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            MoreInformation_Button.Size = new Size(227, 45);
+            MoreInformation_Button.Size = new Size(225, 45);
             MoreInformation_Button.TabIndex = 8;
             MoreInformation_Button.Text = "More information";
             // 
@@ -108,7 +106,7 @@ namespace Sales_Tracker.Settings.Menus
             Currency_Label.Anchor = AnchorStyles.Top;
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 10F);
-            Currency_Label.Location = new Point(356, 74);
+            Currency_Label.Location = new Point(479, 328);
             Currency_Label.Name = "Currency_Label";
             Currency_Label.Size = new Size(154, 28);
             Currency_Label.TabIndex = 269;
@@ -126,7 +124,7 @@ namespace Sales_Tracker.Settings.Menus
             Currency_ComboBox.Font = new Font("Segoe UI", 10F);
             Currency_ComboBox.ForeColor = Color.Black;
             Currency_ComboBox.ItemHeight = 39;
-            Currency_ComboBox.Location = new Point(510, 66);
+            Currency_ComboBox.Location = new Point(633, 320);
             Currency_ComboBox.Name = "Currency_ComboBox";
             Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Currency_ComboBox.Size = new Size(255, 45);
@@ -144,34 +142,11 @@ namespace Sales_Tracker.Settings.Menus
             Language_ComboBox.Font = new Font("Segoe UI", 10F);
             Language_ComboBox.ForeColor = Color.Black;
             Language_ComboBox.ItemHeight = 39;
-            Language_ComboBox.Location = new Point(510, 7);
+            Language_ComboBox.Location = new Point(633, 261);
             Language_ComboBox.Name = "Language_ComboBox";
             Language_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Language_ComboBox.Size = new Size(255, 45);
             Language_ComboBox.TabIndex = 273;
-            // 
-            // Back_Panel
-            // 
-            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Back_Panel.Controls.Add(ColorTheme_ComboBox);
-            Back_Panel.Controls.Add(Language_ComboBox);
-            Back_Panel.Controls.Add(Currency_ComboBox);
-            Back_Panel.Controls.Add(ShowDebugInfo_Label);
-            Back_Panel.Controls.Add(SendAnonymousInformation_Label);
-            Back_Panel.Controls.Add(PurchaseReceipts_Label);
-            Back_Panel.Controls.Add(SalesReceipts_Label);
-            Back_Panel.Controls.Add(ColorTheme_Label);
-            Back_Panel.Controls.Add(Language_Label);
-            Back_Panel.Controls.Add(Currency_Label);
-            Back_Panel.Controls.Add(SalesReceipts_CheckBox);
-            Back_Panel.Controls.Add(PurchaseReceipts_CheckBox);
-            Back_Panel.Controls.Add(ShowDebugInfo_CheckBox);
-            Back_Panel.Controls.Add(SendAnonymousInformation_CheckBox);
-            Back_Panel.Controls.Add(MoreInformation_Button);
-            Back_Panel.Location = new Point(125, 252);
-            Back_Panel.Name = "Back_Panel";
-            Back_Panel.Size = new Size(1000, 360);
-            Back_Panel.TabIndex = 274;
             // 
             // ColorTheme_ComboBox
             // 
@@ -185,7 +160,7 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_ComboBox.Font = new Font("Segoe UI", 10F);
             ColorTheme_ComboBox.ForeColor = Color.Black;
             ColorTheme_ComboBox.ItemHeight = 39;
-            ColorTheme_ComboBox.Location = new Point(510, 123);
+            ColorTheme_ComboBox.Location = new Point(633, 377);
             ColorTheme_ComboBox.Name = "ColorTheme_ComboBox";
             ColorTheme_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ColorTheme_ComboBox.Size = new Size(255, 45);
@@ -196,7 +171,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_Label.Anchor = AnchorStyles.Top;
             ShowDebugInfo_Label.AutoSize = true;
             ShowDebugInfo_Label.Font = new Font("Segoe UI", 10F);
-            ShowDebugInfo_Label.Location = new Point(182, 173);
+            ShowDebugInfo_Label.Location = new Point(305, 427);
             ShowDebugInfo_Label.Name = "ShowDebugInfo_Label";
             ShowDebugInfo_Label.Padding = new Padding(5);
             ShowDebugInfo_Label.Size = new Size(328, 38);
@@ -210,7 +185,7 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_Label.Anchor = AnchorStyles.Top;
             SendAnonymousInformation_Label.AutoSize = true;
             SendAnonymousInformation_Label.Font = new Font("Segoe UI", 10F);
-            SendAnonymousInformation_Label.Location = new Point(120, 219);
+            SendAnonymousInformation_Label.Location = new Point(243, 473);
             SendAnonymousInformation_Label.Name = "SendAnonymousInformation_Label";
             SendAnonymousInformation_Label.Padding = new Padding(5);
             SendAnonymousInformation_Label.Size = new Size(390, 38);
@@ -224,7 +199,7 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_Label.Anchor = AnchorStyles.Top;
             PurchaseReceipts_Label.AutoSize = true;
             PurchaseReceipts_Label.Font = new Font("Segoe UI", 10F);
-            PurchaseReceipts_Label.Location = new Point(183, 265);
+            PurchaseReceipts_Label.Location = new Point(306, 519);
             PurchaseReceipts_Label.Name = "PurchaseReceipts_Label";
             PurchaseReceipts_Label.Padding = new Padding(5);
             PurchaseReceipts_Label.Size = new Size(327, 38);
@@ -238,7 +213,7 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_Label.Anchor = AnchorStyles.Top;
             SalesReceipts_Label.AutoSize = true;
             SalesReceipts_Label.Font = new Font("Segoe UI", 10F);
-            SalesReceipts_Label.Location = new Point(220, 311);
+            SalesReceipts_Label.Location = new Point(343, 565);
             SalesReceipts_Label.Name = "SalesReceipts_Label";
             SalesReceipts_Label.Padding = new Padding(5);
             SalesReceipts_Label.Size = new Size(290, 38);
@@ -252,7 +227,7 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_Label.Anchor = AnchorStyles.Top;
             ColorTheme_Label.AutoSize = true;
             ColorTheme_Label.Font = new Font("Segoe UI", 10F);
-            ColorTheme_Label.Location = new Point(390, 131);
+            ColorTheme_Label.Location = new Point(513, 385);
             ColorTheme_Label.Name = "ColorTheme_Label";
             ColorTheme_Label.Size = new Size(120, 28);
             ColorTheme_Label.TabIndex = 333;
@@ -267,7 +242,7 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_CheckBox.CheckedState.BorderThickness = 0;
             SalesReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             SalesReceipts_CheckBox.CustomizableEdges = customizableEdges9;
-            SalesReceipts_CheckBox.Location = new Point(508, 320);
+            SalesReceipts_CheckBox.Location = new Point(631, 574);
             SalesReceipts_CheckBox.Name = "SalesReceipts_CheckBox";
             SalesReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             SalesReceipts_CheckBox.Size = new Size(20, 20);
@@ -286,7 +261,7 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox.CheckedState.BorderThickness = 0;
             PurchaseReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             PurchaseReceipts_CheckBox.CustomizableEdges = customizableEdges11;
-            PurchaseReceipts_CheckBox.Location = new Point(508, 274);
+            PurchaseReceipts_CheckBox.Location = new Point(631, 528);
             PurchaseReceipts_CheckBox.Name = "PurchaseReceipts_CheckBox";
             PurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             PurchaseReceipts_CheckBox.Size = new Size(20, 20);
@@ -305,7 +280,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_CheckBox.CheckedState.BorderThickness = 0;
             ShowDebugInfo_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             ShowDebugInfo_CheckBox.CustomizableEdges = customizableEdges13;
-            ShowDebugInfo_CheckBox.Location = new Point(508, 182);
+            ShowDebugInfo_CheckBox.Location = new Point(631, 436);
             ShowDebugInfo_CheckBox.Name = "ShowDebugInfo_CheckBox";
             ShowDebugInfo_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ShowDebugInfo_CheckBox.Size = new Size(20, 20);
@@ -324,7 +299,7 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_CheckBox.CheckedState.BorderThickness = 0;
             SendAnonymousInformation_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             SendAnonymousInformation_CheckBox.CustomizableEdges = customizableEdges15;
-            SendAnonymousInformation_CheckBox.Location = new Point(508, 228);
+            SendAnonymousInformation_CheckBox.Location = new Point(631, 482);
             SendAnonymousInformation_CheckBox.Name = "SendAnonymousInformation_CheckBox";
             SendAnonymousInformation_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
             SendAnonymousInformation_CheckBox.Size = new Size(20, 20);
@@ -339,13 +314,25 @@ namespace Sales_Tracker.Settings.Menus
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
-            Controls.Add(Back_Panel);
+            Controls.Add(SendAnonymousInformation_CheckBox);
+            Controls.Add(ShowDebugInfo_CheckBox);
+            Controls.Add(PurchaseReceipts_CheckBox);
+            Controls.Add(SalesReceipts_CheckBox);
+            Controls.Add(ColorTheme_ComboBox);
+            Controls.Add(Language_ComboBox);
             Controls.Add(General_Label);
+            Controls.Add(Currency_ComboBox);
+            Controls.Add(Language_Label);
+            Controls.Add(ShowDebugInfo_Label);
+            Controls.Add(MoreInformation_Button);
+            Controls.Add(SendAnonymousInformation_Label);
+            Controls.Add(PurchaseReceipts_Label);
+            Controls.Add(SalesReceipts_Label);
+            Controls.Add(ColorTheme_Label);
+            Controls.Add(Currency_Label);
             FormBorderStyle = FormBorderStyle.None;
             Name = "General_Form";
             Shown += General_form_Shown;
-            Back_Panel.ResumeLayout(false);
-            Back_Panel.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -357,7 +344,6 @@ namespace Sales_Tracker.Settings.Menus
         private System.Windows.Forms.Label Currency_Label;
         public Guna.UI2.WinForms.Guna2ComboBox Currency_ComboBox;
         public Guna.UI2.WinForms.Guna2ComboBox Language_ComboBox;
-        private System.Windows.Forms.Panel Back_Panel;
         private Label ColorTheme_Label;
         public Guna.UI2.WinForms.Guna2ComboBox ColorTheme_ComboBox;
         private Label ShowDebugInfo_Label;

@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup.Menus
 {
@@ -173,14 +174,14 @@ namespace Sales_Tracker.Startup.Menus
             if (@"/\#%&*|;".Any(ProjectName_TextBox.Text.Contains) || ProjectName_TextBox.Text == "")
             {
                 Create_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(ProjectName_TextBox);
+                CustomControls.SetGTextBoxToInvalid(ProjectName_TextBox);
                 WarningName_PictureBox.Visible = true;
                 WarningName_Label.Visible = true;
             }
             else
             {
                 Create_Button.Enabled = true;
-                UI.SetGTextBoxToValid(ProjectName_TextBox);
+                CustomControls.SetGTextBoxToValid(ProjectName_TextBox);
                 WarningName_PictureBox.Visible = false;
                 WarningName_Label.Visible = false;
             }
@@ -190,14 +191,14 @@ namespace Sales_Tracker.Startup.Menus
             if ("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'))
             {
                 Create_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(Directory_TextBox);
+                CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
                 WarningDir_PictureBox.Visible = true;
                 WarningDir_Label.Visible = true;
             }
             else
             {
                 Create_Button.Enabled = true;
-                UI.SetGTextBoxToValid(Directory_TextBox);
+                CustomControls.SetGTextBoxToValid(Directory_TextBox);
                 WarningDir_PictureBox.Visible = false;
                 WarningDir_Label.Visible = false;
             }

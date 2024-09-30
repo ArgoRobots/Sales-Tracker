@@ -1,7 +1,6 @@
 ﻿using Sales_Tracker.Passwords;
 using System.Formats.Tar;
 using System.IO.Compression;
-using static Guna.UI2.Native.WinApi;
 
 namespace Sales_Tracker.Classes
 {
@@ -26,6 +25,7 @@ namespace Sales_Tracker.Classes
         private static string _desktop_dir;
         private static string _cache_dir;
         private static string _translations_file;
+        private static string _englishTexts_file;
 
         // Getters and setters
         public static string CompanyName
@@ -118,6 +118,11 @@ namespace Sales_Tracker.Classes
             get => _translations_file;
             set => _translations_file = value;
         }
+        public static string EnglishTexts_file
+        {
+            get => _englishTexts_file;
+            set => _englishTexts_file = value;
+        }
 
         // Methods
         public static void SetDirectories(string projectDir, string project_name)
@@ -152,6 +157,8 @@ namespace Sales_Tracker.Classes
         {
             // App data
             _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+
+            _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;
 
             // Cache
             _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueProjectIdentifier("Argo Sales Tracker") + @"\";

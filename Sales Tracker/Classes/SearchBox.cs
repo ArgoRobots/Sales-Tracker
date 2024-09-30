@@ -1,4 +1,6 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -85,7 +87,7 @@ namespace Sales_Tracker.Classes
             long startTime = DateTime.Now.Ticks;
 
             _searchBoxParent = searchBoxParent;
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
 
             if (results.Count == 0)
             {
@@ -142,7 +144,7 @@ namespace Sales_Tracker.Classes
                     }
                     else
                     {
-                        separator = UI.ConstructSeperator(CalculateControlWidth(metaList.Count), _searchResultBox);
+                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count), _searchResultBox);
                         _searchResultBox.Controls.Add(separator);
                         searchResultControls.Add(separator);
                     }

@@ -2,6 +2,8 @@
 using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 using System.Data;
 
 namespace Sales_Tracker.Charts

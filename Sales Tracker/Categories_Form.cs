@@ -1,5 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
@@ -35,6 +37,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             CenterSelectedDataGridView();
             Theme.SetThemeForForm(this);
+            LanguageManager.UpdateLanguage(this);
             HideShowingResultsForLabel();
             MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Purchases_DataGridView, Sales_DataGridView);
             AddEventHandlersToTextBoxes();
@@ -256,7 +259,7 @@ namespace Sales_Tracker
             if (exists)
             {
                 AddCategory_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(Category_TextBox);
+                CustomControls.SetGTextBoxToInvalid(Category_TextBox);
                 ShowCategoryWarning();
             }
             else
@@ -265,7 +268,7 @@ namespace Sales_Tracker
                 {
                     AddCategory_Button.Enabled = true;
                 }
-                UI.SetGTextBoxToValid(Category_TextBox);
+                CustomControls.SetGTextBoxToValid(Category_TextBox);
                 HideCategoryWarning();
             }
         }

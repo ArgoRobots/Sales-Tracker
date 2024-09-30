@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
 {
@@ -17,6 +18,7 @@ namespace Sales_Tracker.Settings.Menus
             _instance = this;
 
             UpdateTheme();
+            LanguageManager.UpdateLanguage(this);
         }
         public void UpdateTheme()
         {

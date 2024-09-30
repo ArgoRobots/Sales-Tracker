@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using Sales_Tracker.DataClasses;
 
 namespace Sales_Tracker.Classes
 {

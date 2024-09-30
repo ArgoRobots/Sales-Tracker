@@ -18,18 +18,19 @@ namespace Sales_Tracker.Settings.Menus
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
-            Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
-            ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(Theme.ThemeType));
-            InitLanguageComboBox();
-            UpdateControls();
+            InitComboBoxDataSources();
             UpdateTheme();
+            LanguageManager.UpdateLanguage(this);
+            UpdateControls();
         }
-        private void InitLanguageComboBox()
+        private void InitComboBoxDataSources()
         {
             Language_ComboBox.DataSource = LanguageManager.GetLanguages();
-
             Language_ComboBox.DisplayMember = "Key";   // Display language name
             Language_ComboBox.ValueMember = "Value";   // Use language code as value
+
+            Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
+            ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(Theme.ThemeType));
         }
         public void UpdateTheme()
         {
@@ -43,6 +44,7 @@ namespace Sales_Tracker.Settings.Menus
             General_Label.Focus();
 
             LoadingPanel.HideBlankLoadingPanel(this);
+
         }
 
         // Event handlers
@@ -66,7 +68,7 @@ namespace Sales_Tracker.Settings.Menus
         // Methods
         public void UpdateControls()
         {
-            Language_ComboBox.Text = Properties.Settings.Default.Language;
+            Language_ComboBox.SelectedValue = LanguageManager.GetDefaultLanguageAbbreviation();
             string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             Currency_ComboBox.Text = currency;
             ColorTheme_ComboBox.Text = Theme.CurrentTheme.ToString();

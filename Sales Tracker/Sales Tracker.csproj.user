@@ -16,7 +16,7 @@
     <Compile Update="Categories_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Classes\CenteredFlowLayoutPanel.cs">
+    <Compile Update="UI\CenteredFlowLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Companies_Form.cs">
@@ -31,7 +31,7 @@
     <Compile Update="Export_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ImportSpreadSheets\ImportSpreadSheets_Form.cs">
+    <Compile Update="ImportSpreadsheet\ImportSpreadsheet_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="ItemsInTransaction_Form.cs">
@@ -73,7 +73,7 @@
     <Compile Update="Settings\Settings_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ImportSpreadSheets\Setup_Form.cs">
+    <Compile Update="ImportSpreadsheet\Setup_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Startup\Menus\ConfigureProject_Form.cs">
@@ -85,7 +85,7 @@
     <Compile Update="Startup\Startup_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ImportSpreadSheets\Tutorial_Form.cs">
+    <Compile Update="ImportSpreadsheet\Tutorial_Form.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

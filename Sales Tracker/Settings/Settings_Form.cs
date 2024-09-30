@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.Startup.Menus;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings
 {
@@ -105,10 +106,10 @@ namespace Sales_Tracker.Settings
                 MainMenu_Form.Instance.LoadCharts();
 
                 List<Guna2Panel> listOfMenus = [
-                    UI.fileMenu,
-                    UI.helpMenu,
-                    UI.accountMenu,
-                    UI.ControlDropDown_Panel,
+                    CustomControls.fileMenu,
+                    CustomControls.helpMenu,
+                    CustomControls.accountMenu,
+                    CustomControls.ControlDropDown_Panel,
                     MainMenu_Form.Instance.rightClickDataGridView_Panel,
                     GetStarted_Form.Instance.rightClickOpenRecent_Panel];
 
@@ -118,15 +119,15 @@ namespace Sales_Tracker.Settings
 
                 if (Theme.CurrentTheme == Theme.ThemeType.Dark)
                 {
-                    UI.Rename_TextBox.HoverState.BorderColor = Color.White;
-                    UI.Rename_TextBox.FocusedState.BorderColor = Color.White;
-                    UI.Rename_TextBox.BorderColor = Color.White;
+                    CustomControls.Rename_TextBox.HoverState.BorderColor = Color.White;
+                    CustomControls.Rename_TextBox.FocusedState.BorderColor = Color.White;
+                    CustomControls.Rename_TextBox.BorderColor = Color.White;
                 }
                 else
                 {
-                    UI.Rename_TextBox.HoverState.BorderColor = Color.Black;
-                    UI.Rename_TextBox.FocusedState.BorderColor = Color.Black;
-                    UI.Rename_TextBox.BorderColor = Color.Black;
+                    CustomControls.Rename_TextBox.HoverState.BorderColor = Color.Black;
+                    CustomControls.Rename_TextBox.FocusedState.BorderColor = Color.Black;
+                    CustomControls.Rename_TextBox.BorderColor = Color.Black;
                 }
 
                 SearchBox.SearchResultBoxContainer.FillColor = CustomColors.controlBack;
@@ -137,7 +138,7 @@ namespace Sales_Tracker.Settings
         // Misc.
         private void SwitchForm(Form form, object btnSender)
         {
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
             Guna2Button btn = (Guna2Button)btnSender;
 
             // If btn is not already selected

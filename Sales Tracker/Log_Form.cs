@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -9,11 +10,8 @@ namespace Sales_Tracker
         // Properties
         private static Log_Form _instance;
 
-        // Getters and setters
-        public static Log_Form Instance
-        {
-            get => _instance;
-        }
+        // Getters
+        public static Log_Form Instance => _instance;
 
         // Init
         public Log_Form()
@@ -23,6 +21,7 @@ namespace Sales_Tracker
 
             LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
+            LanguageManager.UpdateLanguage(this);
 
             // Hide caret
             RichTextBox.MouseDown += (sender, e) =>

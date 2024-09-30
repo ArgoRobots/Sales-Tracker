@@ -2,8 +2,10 @@
 using Guna.UI2.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
+using Sales_Tracker.UI;
 using System.Collections;
 using System.ComponentModel;
 using System.Text.Json;
@@ -19,8 +21,8 @@ namespace Sales_Tracker
         private static List<string> _settingsThatHaveChangedInFile = [];
         public static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
-        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:",
-            show_text = "show", companyName_text = "CompanyName", noData_text = "No data", noResults_text = "No results";
+        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show",
+            companyName_text = "CompanyName", noData_text = "No data", noResults_text = "No results";
         private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
         private static string _currencySymbol;
@@ -57,7 +59,7 @@ namespace Sales_Tracker
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
-            UI.ConstructControls();
+            CustomControls.ConstructControls();
             InitiateSearchTimer();
             SearchBox.ConstructSearchBox();
 
@@ -74,6 +76,8 @@ namespace Sales_Tracker
             Sales_Button.PerformClick();
             SortTheDataGridViewByDate();
             HideShowingResultsForLabel();
+
+            SetDoNotTranslateControls();
             LanguageManager.UpdateLanguage(this);
         }
         public void ResetData()
@@ -326,6 +330,10 @@ namespace Sales_Tracker
                 Statistics_Button.BorderColor = CustomColors.accent_blue;
             }
         }
+        private void SetDoNotTranslateControls()
+        {
+            CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+        }
 
         // Form event handlers
         private void MainMenu_form_Shown(object sender, EventArgs e)
@@ -350,7 +358,7 @@ namespace Sales_Tracker
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
             if (_instance == null) { return; }
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
             ResizeControls();
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -358,10 +366,10 @@ namespace Sales_Tracker
             if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Enter)
             {
                 Guna2Panel[] panels = [
-                    UI.fileMenu,
-                    UI.helpMenu,
-                    UI.accountMenu,
-                    UI.ControlDropDown_Panel,
+                    CustomControls.fileMenu,
+                    CustomControls.helpMenu,
+                    CustomControls.accountMenu,
+                    CustomControls.ControlDropDown_Panel,
                     rightClickDataGridView_Panel
                 ];
 
@@ -503,7 +511,7 @@ namespace Sales_Tracker
                         }
                         else  // Save
                         {
-                            UI.SaveAll();
+                            CustomControls.SaveAll();
                         }
                         break;
 
@@ -528,7 +536,7 @@ namespace Sales_Tracker
         {
             Log.Write(2, "Closing Argo Studio");
 
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
 
             // Save logs in file
             if (Directory.Exists(Directories.Logs_dir))
@@ -664,8 +672,8 @@ namespace Sales_Tracker
         }
         private void AddControlsDropDown()
         {
-            UI.controlsDropDown_Button.Location = new Point(MainTop_Panel.Width - UI.controlsDropDown_Button.Width - 11, (MainTop_Panel.Height - UI.controlsDropDown_Button.Height) / 2);
-            MainTop_Panel.Controls.Add(UI.controlsDropDown_Button);
+            CustomControls.controlsDropDown_Button.Location = new Point(MainTop_Panel.Width - CustomControls.controlsDropDown_Button.Width - 11, (MainTop_Panel.Height - CustomControls.controlsDropDown_Button.Height) / 2);
+            MainTop_Panel.Controls.Add(CustomControls.controlsDropDown_Button);
             MainTop_Panel.Controls.Remove(ManageAccountants_Button);
             MainTop_Panel.Controls.Remove(ManageCategories_Button);
             MainTop_Panel.Controls.Remove(ManageCompanies_Button);
@@ -675,7 +683,7 @@ namespace Sales_Tracker
         }
         private void RemoveControlsDropDown()
         {
-            MainTop_Panel.Controls.Remove(UI.controlsDropDown_Button);
+            MainTop_Panel.Controls.Remove(CustomControls.controlsDropDown_Button);
 
             int buttonTop = (MainTop_Panel.Height - ManageAccountants_Button.Height) / 2;
             int buttonWidthPlusSpace = ManageAccountants_Button.Width + 8;
@@ -726,25 +734,25 @@ namespace Sales_Tracker
         // Event handlers - top bar
         private void File_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(UI.fileMenu))
+            if (Controls.Contains(CustomControls.fileMenu))
             {
-                Controls.Remove(UI.fileMenu);
+                Controls.Remove(CustomControls.fileMenu);
                 File_Button.Image = Resources.FileGray;
             }
             else
             {
-                UI.CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels(null, null);
                 File_Button.Image = Resources.FileWhite;
-                UI.fileMenu.Location = new Point(File_Button.Left, Top_Panel.Height);
-                Controls.Add(UI.fileMenu);
-                UI.fileMenu.BringToFront();
+                CustomControls.fileMenu.Location = new Point(File_Button.Left, Top_Panel.Height);
+                Controls.Add(CustomControls.fileMenu);
+                CustomControls.fileMenu.BringToFront();
                 Focus();
             }
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
-            UI.CloseAllPanels(null, null);
-            UI.SaveAll();
+            CustomControls.CloseAllPanels(null, null);
+            CustomControls.SaveAll();
         }
         private void Save_Button_MouseDown(object sender, MouseEventArgs e)
         {
@@ -756,34 +764,34 @@ namespace Sales_Tracker
         }
         private void Help_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(UI.helpMenu))
+            if (Controls.Contains(CustomControls.helpMenu))
             {
-                Controls.Remove(UI.helpMenu);
+                Controls.Remove(CustomControls.helpMenu);
                 Help_Button.Image = Resources.HelpGray;
             }
             else
             {
-                UI.CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels(null, null);
                 Help_Button.Image = Resources.HelpWhite;
-                UI.helpMenu.Location = new Point(Help_Button.Left - UI.helpMenu.Width + Help_Button.Width, Top_Panel.Height);
-                Controls.Add(UI.helpMenu);
-                UI.helpMenu.BringToFront();
+                CustomControls.helpMenu.Location = new Point(Help_Button.Left - CustomControls.helpMenu.Width + Help_Button.Width, Top_Panel.Height);
+                Controls.Add(CustomControls.helpMenu);
+                CustomControls.helpMenu.BringToFront();
             }
         }
         private void Account_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(UI.accountMenu))
+            if (Controls.Contains(CustomControls.accountMenu))
             {
-                Controls.Remove(UI.accountMenu);
+                Controls.Remove(CustomControls.accountMenu);
                 Account_Button.Image = Resources.ProfileGray;
             }
             else
             {
-                UI.CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels(null, null);
                 Account_Button.Image = Resources.ProfileWhite;
-                UI.accountMenu.Location = new Point(Account_Button.Left - UI.accountMenu.Width + Account_Button.Width, Top_Panel.Height);
-                Controls.Add(UI.accountMenu);
-                UI.accountMenu.BringToFront();
+                CustomControls.accountMenu.Location = new Point(Account_Button.Left - CustomControls.accountMenu.Width + Account_Button.Width, Top_Panel.Height);
+                Controls.Add(CustomControls.accountMenu);
+                CustomControls.accountMenu.BringToFront();
             }
         }
 
@@ -876,14 +884,14 @@ namespace Sales_Tracker
         private void Edit_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            UI.Rename_TextBox.Text = CompanyName_Label.Text;
-            UI.Rename_TextBox.Font = CompanyName_Label.Font;
-            Controls.Add(UI.Rename_TextBox);
-            UI.Rename_TextBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
-            UI.Rename_TextBox.Size = new Size(300, CompanyName_Label.Height + 2);
-            UI.Rename_TextBox.Focus();
-            UI.Rename_TextBox.SelectAll();
-            UI.Rename_TextBox.BringToFront();
+            CustomControls.Rename_TextBox.Text = CompanyName_Label.Text;
+            CustomControls.Rename_TextBox.Font = CompanyName_Label.Font;
+            Controls.Add(CustomControls.Rename_TextBox);
+            CustomControls.Rename_TextBox.Location = new Point(CompanyName_Label.Left, CompanyName_Label.Top + CompanyName_Label.Parent.Top - 1);
+            CustomControls.Rename_TextBox.Size = new Size(300, CompanyName_Label.Height + 2);
+            CustomControls.Rename_TextBox.Focus();
+            CustomControls.Rename_TextBox.SelectAll();
+            CustomControls.Rename_TextBox.BringToFront();
             MainTop_Panel.Controls.Remove(Edit_Button);
             MainTop_Panel.Controls.Remove(CompanyName_Label);
         }
@@ -1063,14 +1071,14 @@ namespace Sales_Tracker
         // Company label
         public void RenameCompany()
         {
-            if (!Controls.Contains(UI.Rename_TextBox))
+            if (!Controls.Contains(CustomControls.Rename_TextBox))
             {
                 return;
             }
 
             // If the company name already exists in this directory
             string parentDir = Directory.GetParent(Directories.ArgoCompany_file).FullName;
-            string filePath = parentDir + @"\" + UI.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension;
+            string filePath = parentDir + @"\" + CustomControls.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension;
             string fileName = Path.GetFileName(filePath);
             List<string> files = Directory.GetFiles(parentDir).ToList();
 
@@ -1091,24 +1099,24 @@ namespace Sales_Tracker
 
                 if (result == CustomMessageBoxResult.Ok)
                 {
-                    UI.Rename_TextBox.Text = suggestedCompanyName;
+                    CustomControls.Rename_TextBox.Text = suggestedCompanyName;
                 }
                 else { return; }
             }
 
-            Controls.Remove(UI.Rename_TextBox);
+            Controls.Remove(CustomControls.Rename_TextBox);
             MainTop_Panel.Controls.Add(Edit_Button);
             MainTop_Panel.Controls.Add(CompanyName_Label);
 
             // If the name did not change
-            if (UI.Rename_TextBox.Text == CompanyName_Label.Text)
+            if (CustomControls.Rename_TextBox.Text == CompanyName_Label.Text)
             {
                 return;
             }
 
-            CompanyName_Label.Text = UI.Rename_TextBox.Text;
-            ArgoCompany.Rename(UI.Rename_TextBox.Text);
-            UI.Rename_TextBox.Text = "";
+            CompanyName_Label.Text = CustomControls.Rename_TextBox.Text;
+            ArgoCompany.Rename(CustomControls.Rename_TextBox.Text);
+            CustomControls.Rename_TextBox.Text = "";
             MoveEditButton();
             ResizeControls();
 
@@ -1693,7 +1701,7 @@ namespace Sales_Tracker
         }
         public void DataGridView_MouseDown(object sender, MouseEventArgs e)
         {
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
 
             Guna2DataGridView grid = (Guna2DataGridView)sender;
             DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
@@ -1785,8 +1793,8 @@ namespace Sales_Tracker
 
                 // Adjust the panel height based on the number of controls
                 int controlCount = flowPanel.Controls.Count;
-                rightClickDataGridView_Panel.Height = controlCount * UI.panelButtonHeight + 10;
-                flowPanel.Height = controlCount * UI.panelButtonHeight;
+                rightClickDataGridView_Panel.Height = controlCount * CustomControls.panelButtonHeight + 10;
+                flowPanel.Height = controlCount * CustomControls.panelButtonHeight;
 
                 Control controlSender = (Control)sender;
                 controlRightClickPanelWasAddedTo = controlSender.Parent;
@@ -2401,26 +2409,26 @@ namespace Sales_Tracker
         public Guna2Button rightClickDataGridView_DeleteBtn;
         public void ConstructRightClickDataGridViewRowMenu()
         {
-            rightClickDataGridView_Panel = UI.ConstructPanelForMenu(new Size(UI.panelWidth, 5 * UI.panelButtonHeight + UI.spaceForPanel));
+            rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 5 * CustomControls.panelButtonHeight + CustomControls.spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
 
-            rightClickDataGridView_ModifyBtn = UI.ConstructBtnForMenu("Modify", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickDataGridView_ModifyBtn.Click += ModifyRow;
 
-            rightClickDataGridView_MoveBtn = UI.ConstructBtnForMenu("Move", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickDataGridView_MoveBtn.Click += MoveRow;
 
-            rightClickDataGridView_ExportReceiptBtn = UI.ConstructBtnForMenu("Export receipt", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
 
-            rightClickDataGridView_ShowItemsBtn = UI.ConstructBtnForMenu("Show items", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
 
-            rightClickDataGridView_DeleteBtn = UI.ConstructBtnForMenu("Delete", UI.panelBtnWidth, false, flowPanel);
+            rightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
             rightClickDataGridView_DeleteBtn.Click += DeleteRow;
 
-            UI.ConstructKeyShortcut("Del", rightClickDataGridView_DeleteBtn);
+            CustomControls.ConstructKeyShortcut("Del", rightClickDataGridView_DeleteBtn);
         }
         private void ModifyRow(object sender, EventArgs e)
         {
@@ -2505,7 +2513,7 @@ namespace Sales_Tracker
         private ItemsInTransaction_Form itemsInPurchase_Form;
         private void ShowItems(object sender, EventArgs e)
         {
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
             itemsInPurchase_Form = new ItemsInTransaction_Form(selectedDataGridView.SelectedRows[0]);
             itemsInPurchase_Form.ShowDialog();
         }
@@ -2892,7 +2900,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs? e)
         {
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
         }
     }
 }

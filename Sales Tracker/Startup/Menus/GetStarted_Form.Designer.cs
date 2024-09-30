@@ -42,6 +42,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // ArgoSalesTracker_Label
             // 
+            ArgoSalesTracker_Label.AccessibleDescription = "";
             ArgoSalesTracker_Label.AutoSize = true;
             ArgoSalesTracker_Label.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
             ArgoSalesTracker_Label.Location = new Point(30, 15);

@@ -238,7 +238,6 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // Currency_ComboBox
             // 
-            Currency_ComboBox.Anchor = AnchorStyles.Top;
             Currency_ComboBox.BackColor = Color.Transparent;
             Currency_ComboBox.CustomizableEdges = customizableEdges11;
             Currency_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
@@ -256,7 +255,6 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // Currency_Label
             // 
-            Currency_Label.Anchor = AnchorStyles.Top;
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 12F);
             Currency_Label.Location = new Point(48, 475);

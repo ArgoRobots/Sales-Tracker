@@ -35,8 +35,6 @@ namespace Sales_Tracker.Settings.Menus
             Updates_Label = new Label();
             LastCheck_Label = new Label();
             CheckForUpdates_Button = new Guna.UI2.WinForms.Guna2Button();
-            Back_Panel = new Panel();
-            Back_Panel.SuspendLayout();
             SuspendLayout();
             // 
             // UpToDate_Label
@@ -44,7 +42,7 @@ namespace Sales_Tracker.Settings.Menus
             UpToDate_Label.Anchor = AnchorStyles.Top;
             UpToDate_Label.AutoSize = true;
             UpToDate_Label.Font = new Font("Segoe UI", 15F);
-            UpToDate_Label.Location = new Point(284, 1);
+            UpToDate_Label.Location = new Point(409, 338);
             UpToDate_Label.Name = "UpToDate_Label";
             UpToDate_Label.Size = new Size(433, 41);
             UpToDate_Label.TabIndex = 0;
@@ -65,7 +63,7 @@ namespace Sales_Tracker.Settings.Menus
             LastCheck_Label.Anchor = AnchorStyles.Top;
             LastCheck_Label.AutoSize = true;
             LastCheck_Label.Font = new Font("Segoe UI", 10F);
-            LastCheck_Label.Location = new Point(363, 46);
+            LastCheck_Label.Location = new Point(488, 383);
             LastCheck_Label.Name = "LastCheck_Label";
             LastCheck_Label.Size = new Size(274, 28);
             LastCheck_Label.TabIndex = 0;
@@ -83,7 +81,7 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.FillColor = Color.FromArgb(0, 103, 192);
             CheckForUpdates_Button.Font = new Font("Segoe UI", 9.75F);
             CheckForUpdates_Button.ForeColor = Color.White;
-            CheckForUpdates_Button.Location = new Point(400, 140);
+            CheckForUpdates_Button.Location = new Point(525, 477);
             CheckForUpdates_Button.Name = "CheckForUpdates_Button";
             CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CheckForUpdates_Button.Size = new Size(200, 50);
@@ -91,29 +89,18 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.Text = "Check for updates";
             CheckForUpdates_Button.Click += CheckForUpdates_Button_Click;
             // 
-            // Back_Panel
-            // 
-            Back_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Back_Panel.Controls.Add(CheckForUpdates_Button);
-            Back_Panel.Controls.Add(UpToDate_Label);
-            Back_Panel.Controls.Add(LastCheck_Label);
-            Back_Panel.Location = new Point(125, 332);
-            Back_Panel.Name = "Back_Panel";
-            Back_Panel.Size = new Size(1000, 200);
-            Back_Panel.TabIndex = 0;
-            // 
             // Updates_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
-            Controls.Add(Back_Panel);
+            Controls.Add(CheckForUpdates_Button);
+            Controls.Add(UpToDate_Label);
+            Controls.Add(LastCheck_Label);
             Controls.Add(Updates_Label);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Updates_Form";
             Shown += Updates_Form_Shown;
-            Back_Panel.ResumeLayout(false);
-            Back_Panel.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -123,6 +110,5 @@ namespace Sales_Tracker.Settings.Menus
         private System.Windows.Forms.Label Updates_Label;
         private System.Windows.Forms.Label LastCheck_Label;
         private Guna.UI2.WinForms.Guna2Button CheckForUpdates_Button;
-        private System.Windows.Forms.Panel Back_Panel;
     }
 }

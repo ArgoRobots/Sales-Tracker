@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
@@ -29,6 +30,7 @@ namespace Sales_Tracker
             ConstructTotalLabel();
             LoadAccountants();
             Theme.SetThemeForForm(this);
+            LanguageManager.UpdateLanguage(this);
             HideShowingResultsForLabel();
             MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Accountants_DataGridView);
             AddEventHandlersToTextBoxes();
@@ -81,7 +83,7 @@ namespace Sales_Tracker
             Log.Write(3, $"Added accountant '{name}'");
 
             Accountant_TextBox.Text = "";
-            UI.SetGTextBoxToValid(Accountant_TextBox);
+            CustomControls.SetGTextBoxToValid(Accountant_TextBox);
             HideAccountantWarning();
             Accountant_TextBox.Focus();
         }
@@ -172,7 +174,7 @@ namespace Sales_Tracker
             if (exists)
             {
                 AddAccountant_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(Accountant_TextBox);
+                CustomControls.SetGTextBoxToInvalid(Accountant_TextBox);
                 ShowAccountantWarning();
             }
             else
@@ -181,7 +183,7 @@ namespace Sales_Tracker
                 {
                     AddAccountant_Button.Enabled = true;
                 }
-                UI.SetGTextBoxToValid(Accountant_TextBox);
+                CustomControls.SetGTextBoxToValid(Accountant_TextBox);
                 HideAccountantWarning();
             }
         }
@@ -226,7 +228,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object sender, EventArgs? e)
         {
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
         }
     }
 }

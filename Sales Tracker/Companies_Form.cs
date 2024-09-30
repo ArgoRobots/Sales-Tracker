@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
@@ -29,6 +30,7 @@ namespace Sales_Tracker
             ConstructTotalLabel();
             LoadCompanies();
             Theme.SetThemeForForm(this);
+            LanguageManager.UpdateLanguage(this);
             HideShowingResultsForLabel();
             MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Company_DataGridView);
             AddEventHandlersToTextBoxes();
@@ -83,7 +85,7 @@ namespace Sales_Tracker
             Log.Write(3, $"Added company '{name}'");
 
             Company_TextBox.Text = "";
-            UI.SetGTextBoxToValid(Company_TextBox);
+            CustomControls.SetGTextBoxToValid(Company_TextBox);
             HideCompanyWarning();
             Company_TextBox.Focus();
         }
@@ -174,7 +176,7 @@ namespace Sales_Tracker
             if (exists)
             {
                 AddCompany_Button.Enabled = false;
-                UI.SetGTextBoxToInvalid(Company_TextBox);
+                CustomControls.SetGTextBoxToInvalid(Company_TextBox);
                 ShowCompanyWarning();
             }
             else
@@ -183,7 +185,7 @@ namespace Sales_Tracker
                 {
                     AddCompany_Button.Enabled = true;
                 }
-                UI.SetGTextBoxToValid(Company_TextBox);
+                CustomControls.SetGTextBoxToValid(Company_TextBox);
                 HideCompanyWarning();
             }
         }
@@ -225,7 +227,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object sender, EventArgs? e)
         {
-            UI.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels(null, null);
         }
     }
 }
