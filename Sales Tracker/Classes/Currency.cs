@@ -4,22 +4,34 @@ namespace Sales_Tracker.Classes
 {
     internal static class Currency
     {
-        // Ordered by GDP
+        // Ordered by how western the country is
         public enum CurrencyTypes
         {
-            USD,    // United States Dollar (English - North America)
-            CAD,
+            USD,    // United States Dollar
+            CAD,    // Canadian Dollar
             EUR,    // Euro
-            BRL,    // Brazilian Real (Brazil)
-            SEK,    // Swedish Krona (Sweden)
-            NOK,    // Norwegian Krone (Norway)
-            DKK,    // Danish Krone (Denmark)
-            RUB,    // Russian Ruble (Russia)
-            TRY,    // Turkish Lira (Turkey)
-            JPY,    // Japanese Yen (Japan)
-            KRW,    // South Korean Won (South Korea)
-            CNY,    // Chinese Yuan Renminbi (Chinese Simplified - China)
-            TWD     // Taiwan Dollar (Chinese Traditional - Taiwan)
+            BRL,    // Brazilian Real
+            DKK,    // Danish Krone
+            NOK,    // Norwegian Krone
+            SEK,    // Swedish Krona
+            ISK,    // Icelandic Króna
+            PLN,    // Polish Złoty
+            CZK,    // Czech Koruna
+            HUF,    // Hungarian Forint
+            ALL,    // Albanian Lek
+            RON,    // Romanian Leu
+            BGN,    // Bulgarian Lev
+            RSD,    // Serbian Dinar
+            MKD,    // Macedonian Denar
+            BAM,    // Bosnia and Herzegovina Convertible Mark
+            UAH,    // Ukrainian Hryvnia
+            BYN,    // Belarusian Ruble
+            RUB,    // Russian Ruble
+            TRY,    // Turkish Lira
+            JPY,    // Japanese Yen
+            KRW,    // South Korean Won
+            CNY,    // Chinese Yuan Renminbi
+            TWD     // Taiwan Dollar
         }
         private static readonly Dictionary<CurrencyTypes, string> CurrencySymbols = new()
         {
@@ -27,9 +39,21 @@ namespace Sales_Tracker.Classes
             { CurrencyTypes.CAD, "$" },
             { CurrencyTypes.EUR, "€" },
             { CurrencyTypes.BRL, "R$" },
-            { CurrencyTypes.SEK, "kr" },
-            { CurrencyTypes.NOK, "kr" },
             { CurrencyTypes.DKK, "kr" },
+            { CurrencyTypes.NOK, "kr" },
+            { CurrencyTypes.SEK, "kr" },
+            { CurrencyTypes.ISK, "kr" },
+            { CurrencyTypes.PLN, "zł" },
+            { CurrencyTypes.CZK, "Kč" },
+            { CurrencyTypes.HUF, "Ft" },
+            { CurrencyTypes.ALL, "L" },
+            { CurrencyTypes.RON, "lei" },
+            { CurrencyTypes.BGN, "лв" },
+            { CurrencyTypes.RSD, "дин" },
+            { CurrencyTypes.MKD, "ден" },
+            { CurrencyTypes.BAM, "KM" },
+            { CurrencyTypes.UAH, "₴" },
+            { CurrencyTypes.BYN, "Br" },
             { CurrencyTypes.RUB, "₽" },
             { CurrencyTypes.TRY, "₺" },
             { CurrencyTypes.JPY, "¥" },
@@ -37,6 +61,10 @@ namespace Sales_Tracker.Classes
             { CurrencyTypes.CNY, "¥" },
             { CurrencyTypes.TWD, "NT$" }
         };
+        public static List<string> GetCurrencyTypesList()
+        {
+            return Enum.GetNames(typeof(CurrencyTypes)).ToList();
+        }
         public static string GetSymbol()
         {
             string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);

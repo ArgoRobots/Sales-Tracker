@@ -493,7 +493,6 @@ namespace Sales_Tracker.UI
             {
                 if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
                 {
-                    e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
                     Rename();
                 }
             };
@@ -527,6 +526,9 @@ namespace Sales_Tracker.UI
         public static void CloseAllPanels(object sender, EventArgs? e)
         {
             Rename();
+
+            if (MainMenu_Form.Instance == null) { return; }
+
             MainMenu_Form.Instance.Controls.Remove(fileMenu);
             MainMenu_Form.Instance.Controls.Remove(helpMenu);
             MainMenu_Form.Instance.Controls.Remove(accountMenu);

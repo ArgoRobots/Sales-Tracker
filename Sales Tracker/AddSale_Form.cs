@@ -26,7 +26,6 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             AddEventHandlersToTextBoxes();
-            AddSearchBoxEvents();
             Date_DateTimePicker.Value = DateTime.Now;
             CheckIfProductsExist();
             CheckIfBuyersExist();
@@ -38,14 +37,24 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
+            byte searchBoxMaxHeight = 255;
+
             TextBoxManager.Attach(SaleNumber_TextBox);
 
             AccountantName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             TextBoxManager.Attach(AccountantName_TextBox);
+            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
+            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight);
+            AccountantName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(ProductName_TextBox);
+            List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames());
+            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight);
+            ProductName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(CountryOfDestinaion_TextBox);
+            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight);
+            CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
 
             Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
             TextBoxManager.Attach(Quantity_TextBox);
@@ -69,21 +78,6 @@ namespace Sales_Tracker
             TextBoxManager.Attach(Credited_TextBox);
 
             TextBoxManager.Attach(Notes_TextBox);
-        }
-        private void AddSearchBoxEvents()
-        {
-            byte searchBoxMaxHeight = 255;
-
-            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
-            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight);
-            AccountantName_TextBox.TextChanged += ValidateInputs;
-
-            List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames());
-            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight);
-            ProductName_TextBox.TextChanged += ValidateInputs;
-
-            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight);
-            CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
         }
 
         // Form event handlers

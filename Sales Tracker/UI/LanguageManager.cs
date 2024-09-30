@@ -1,9 +1,10 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using System.Text.Json;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.UI
 {
     public class LanguageManager
     {
@@ -64,9 +65,6 @@ namespace Sales_Tracker.Classes
         {
             targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
 
-            // Restore original English texts to prevent back-translation errors
-            RestoreEnglishTexts(control);
-
             // Process the control
             UpdateLanguageForControl(control, targetLanguageAbbreviation);
 
@@ -82,6 +80,7 @@ namespace Sales_Tracker.Classes
         {
             // Ensure English texts have been cached before translation
             CacheEnglishTexts(control);
+            SaveEnglishCacheToFile();
             CacheControlBounds(control);
 
             targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
@@ -143,14 +142,6 @@ namespace Sales_Tracker.Classes
                         column.HeaderText = TranslateText(column.HeaderText, targetLanguageAbbreviation, columnKey, CanControlCache(control));
                     }
                     break;
-
-                default:
-                    // For other controls that have a Text property
-                    if (!string.IsNullOrEmpty(control.Text))
-                    {
-                        control.Text = TranslateText(control.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
-                    }
-                    break;
             }
         }
         private static void AdjustLabelSizeAndPosition(Label label)
@@ -162,14 +153,6 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            // Measure the new size of the text
-            Size textSize = TextRenderer.MeasureText(label.Text, label.Font);
-
-            // Set the label's size
-            label.Width = textSize.Width;
-            label.Height = textSize.Height;
-
-            // Adjust position
             AdjustLabelPosition(label, originalBounds);
         }
         private static void AdjustLabelPosition(Label label, Rectangle originalBounds)
@@ -184,11 +167,7 @@ namespace Sales_Tracker.Classes
                 {
                     label.Left = originalBounds.Right - label.Width;
                 }
-                else if (label.AccessibleDescription == AccessibleDescriptionStrings.AlignLeftCenter)
-                {
-                    label.Left = originalBounds.Left;
-                }
-                else  // The control should be centered
+                else if (label.AccessibleDescription != AccessibleDescriptionStrings.AlignLeftCenter)
                 {
                     int originalCenterX = originalBounds.Left + originalBounds.Width / 2;
                     label.Left = originalCenterX - label.Width / 2;
@@ -297,8 +276,6 @@ namespace Sales_Tracker.Classes
 
             if (!englishCache.ContainsKey(controlKey))
             {
-                englishCache[controlKey] = control.Text;
-
                 switch (control)
                 {
                     case Label label:
@@ -310,6 +287,7 @@ namespace Sales_Tracker.Classes
                         break;
 
                     case Guna2TextBox guna2TextBox:
+                        englishCache[controlKey] = guna2TextBox.Text;
                         string placeholderKey = $"{controlKey}_Placeholder";
                         englishCache[placeholderKey] = guna2TextBox.PlaceholderText;
                         break;
@@ -338,15 +316,6 @@ namespace Sales_Tracker.Classes
                         break;
                 }
             }
-
-            // Recursively cache English texts for child controls
-            foreach (Control childControl in control.Controls)
-            {
-                CacheEnglishTexts(childControl);
-            }
-
-            // Save the English texts to file
-            SaveEnglishCacheToFile();
         }
         private static void CacheControlBounds(Control control)
         {
@@ -369,42 +338,6 @@ namespace Sales_Tracker.Classes
         }
 
         // Misc. methods
-        private static void RestoreEnglishTexts(Control control)
-        {
-            // TO DO:
-            // this needs to support all the controls like the switch statements
-
-
-
-
-            foreach (Control ctrl in control.Controls)
-            {
-                string controlKey = GetControlKey(ctrl);
-
-                if (englishCache.TryGetValue(controlKey, out string originalText))
-                {
-                    try
-                    {
-                        ctrl.Text = originalText;
-                    }
-                    catch { }
-                }
-
-                if (ctrl is Guna2TextBox guna2TextBox)
-                {
-                    string placeholderKey = $"{controlKey}_Placeholder";
-                    if (englishCache.TryGetValue(placeholderKey, out string originalPlaceholder))
-                    {
-                        guna2TextBox.PlaceholderText = originalPlaceholder;
-                    }
-                }
-
-                if (ctrl.HasChildren)
-                {
-                    RestoreEnglishTexts(ctrl);
-                }
-            }
-        }
         private static string GetControlKey(Control control)
         {
             string formName = control.FindForm()?.Name ?? "UnknownForm";
@@ -413,27 +346,58 @@ namespace Sales_Tracker.Classes
         }
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
+            // Ordered by how western the country is
+
             return new List<KeyValuePair<string, string>>()
             {
-                new("English", "en"),        // North America, UK, Australia
-                new("French", "fr"),         // France, Canada, Belgium
-                new("German", "de"),         // Germany, Austria
-                new("Italian", "it"),        // Italy
-                new("Spanish", "es"),        // Spain, Latin America
-                new("Portuguese", "pt"),     // Portugal, Brazil
-                new("Dutch", "nl"),          // Netherlands, Belgium
-                new("Swedish", "sv"),        // Sweden
-                new("Norwegian", "no"),      // Norway
-                new("Danish", "da"),         // Denmark
-                new("Finnish", "fi"),        // Finland
-                new("Greek", "el"),          // Greece
-                new("Russian", "ru"),        // Russia, Eastern Europe
-                new("Turkish", "tr"),        // Turkey
-                new("Japanese", "ja"),       // Japan
-                new("Korean", "ko"),         // South Korea
+                new("English", "en"),           // North America, UK, Australia
+                new("Irish", "ga"),             // Ireland
+                new("French", "fr"),            // France, Canada, Belgium
+                new("Spanish", "es"),           // Spain, Latin America
+                new("Portuguese", "pt"),        // Portugal, Brazil
+                new("Catalan", "ca"),           // Catalonia
+                new("Basque", "eu"),            // Basque Country
+                new("Galician", "gl"),          // Galicia
+                new("Dutch", "nl"),             // Netherlands, Belgium
+                new("German", "de"),            // Germany, Austria
+                new("Luxembourgish", "lb"),     // Luxembourg
+                new("Danish", "da"),            // Denmark
+                new("Norwegian", "no"),         // Norway
+                new("Swedish", "sv"),           // Sweden
+                new("Icelandic", "is"),         // Iceland
+                new("Finnish", "fi"),           // Finland
+                new("Italian", "it"),           // Italy
+                new("Maltese", "mt"),           // Malta
+                new("Polish", "pl"),            // Poland
+                new("Czech", "cs"),             // Czech Republic
+                new("Slovak", "sk"),            // Slovakia
+                new("Hungarian", "hu"),         // Hungary
+                new("Slovenian", "sl"),         // Slovenia
+                new("Croatian", "hr"),          // Croatia
+                new("Greek", "el"),             // Greece
+                new("Albanian", "sq"),          // Albania
+                new("Romanian", "ro"),          // Romania
+                new("Bulgarian", "bg"),         // Bulgaria
+                new("Serbian", "sr"),           // Serbia
+                new("Macedonian", "mk"),        // North Macedonia
+                new("Bosnian", "bs"),           // Bosnia and Herzegovina
+                new("Estonian", "et"),          // Estonia
+                new("Latvian", "lv"),           // Latvia
+                new("Lithuanian", "lt"),        // Lithuania
+                new("Ukrainian", "uk"),         // Ukraine
+                new("Belarusian", "be"),        // Belarus
+                new("Russian", "ru"),           // Russia, Eastern Europe
+                new("Turkish", "tr"),           // Turkey
+                new("Japanese", "ja"),          // Japan
+                new("Korean", "ko"),            // South Korea
                 new("Chinese (Simplified)", "zh-Hans"),  // Mainland China
                 new("Chinese (Traditional)", "zh-Hant")  // Taiwan, Hong Kong
             };
+        }
+        public static List<string> GetLanguageNames()
+        {
+            List<KeyValuePair<string, string>> languages = GetLanguages();
+            return languages.Select(kvp => kvp.Key).ToList();
         }
         public static string? GetDefaultLanguageAbbreviation()
         {

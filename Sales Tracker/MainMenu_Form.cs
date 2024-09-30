@@ -57,7 +57,6 @@ namespace Sales_Tracker
 
             CustomControls.ConstructControls();
             InitiateSearchTimer();
-            SearchBox.ConstructSearchBox();
 
             CurrencySymbol = Currency.GetSymbol();
 

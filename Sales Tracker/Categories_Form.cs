@@ -155,7 +155,6 @@ namespace Sales_Tracker
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
                 if (AddCategory_Button.Enabled)
                 {
                     AddCategory_Button.PerformClick();

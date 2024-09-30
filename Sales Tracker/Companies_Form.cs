@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -27,21 +28,14 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
             CenterSelectedDataGridView();
-            ConstructTotalLabel();
             LoadCompanies();
             Theme.SetThemeForForm(this);
+            SetDoNotTranslateControls();
             LanguageManager.UpdateLanguageForForm(this);
-            HideShowingResultsForLabel();
+            LabelManager.SetTotalLabel(Total_Label, Company_DataGridView);
+            Controls.Remove(ShowingResultsFor_Label);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Company_DataGridView);
             AddEventHandlersToTextBoxes();
-            SetTotalLabel();
-        }
-        private void AddEventHandlersToTextBoxes()
-        {
-            TextBoxManager.Attach(Company_TextBox);
-
-            Company_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
-            Company_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
         }
         private void LoadCompanies()
         {
@@ -53,6 +47,19 @@ namespace Sales_Tracker
             }
             Tools.ScrollToTopOfDataGridView(Company_DataGridView);
             MainMenu_Form.Instance.isProgramLoading = false;
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            TextBoxManager.Attach(Company_TextBox);
+
+            Company_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, Company_DataGridView); };
+            Company_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, Company_DataGridView); };
+        }
+        private void SetDoNotTranslateControls()
+        {
+            CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCacheText;
+            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCacheText;
         }
 
         // Form event handlers
@@ -93,7 +100,6 @@ namespace Sales_Tracker
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
                 if (AddCompany_Button.Enabled)
                 {
                     AddCompany_Button.PerformClick();
@@ -109,11 +115,11 @@ namespace Sales_Tracker
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                ShowShowingResultsForLabel(Search_TextBox.Text.Trim());
+                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }
             else
             {
-                HideShowingResultsForLabel();
+                Controls.Remove(ShowingResultsFor_Label);
             }
         }
 
@@ -147,25 +153,6 @@ namespace Sales_Tracker
             Controls.Add(Company_DataGridView);
             MainMenu_Form.Instance.SelectedDataGridView = Company_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
-        }
-
-        // Label
-        private Label totalLabel;
-        private void ConstructTotalLabel()
-        {
-            totalLabel = new Label
-            {
-                Font = new Font("Segoe UI", 11),
-                AutoSize = true,
-                ForeColor = CustomColors.text,
-                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
-            };
-            Controls.Add(totalLabel);
-        }
-        private void SetTotalLabel()
-        {
-            totalLabel.Text = $"Total: {MainMenu_Form.Instance.SelectedDataGridView.Rows.Count}";
-            totalLabel.Location = new Point(MainMenu_Form.Instance.SelectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.SelectedDataGridView.Bottom + 10);
         }
 
         // Validate company name
@@ -206,18 +193,6 @@ namespace Sales_Tracker
                 AddCompany_Button.Enabled = true;
                 AddCompany_Button.Tag = true;
             }
-        }
-
-        // SearchingFor_Label
-        private void ShowShowingResultsForLabel(string text)
-        {
-            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
-            ShowingResultsFor_Label.Left = (ClientSize.Width - ShowingResultsFor_Label.Width) / 2 - 8;
-            Controls.Add(ShowingResultsFor_Label);
-        }
-        private void HideShowingResultsForLabel()
-        {
-            Controls.Remove(ShowingResultsFor_Label);
         }
 
         // Methods

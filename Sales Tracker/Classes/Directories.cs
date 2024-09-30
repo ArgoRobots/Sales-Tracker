@@ -127,6 +127,9 @@ namespace Sales_Tracker.Classes
         // Methods
         public static void SetDirectories(string projectDir, string project_name)
         {
+            Properties.Settings.Default.ProjectDirectory = projectDir;
+            Properties.Settings.Default.Save();
+
             if (!projectDir.EndsWith('\\'))
             {
                 projectDir += "\\";

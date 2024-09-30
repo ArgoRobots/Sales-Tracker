@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.UI
 {
     internal class TextBoxManager
     {
@@ -40,6 +41,11 @@ namespace Sales_Tracker.Classes
         private static void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)sender;
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
+            }
 
             if (e.Control)
             {

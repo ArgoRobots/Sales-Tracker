@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
 
@@ -19,11 +20,14 @@ namespace Sales_Tracker.Startup.Menus
             InitializeComponent();
             _instance = this;
 
-            Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             LoadingPanel.ShowBlankLoadingPanel(this);
+            SearchBox.ConstructSearchBox();
 
             UpdateTheme();
             LanguageManager.UpdateLanguageForForm(this);
+
+            SetDefaultTextInTextBoxes();
+            AddEventHandlersToTextBoxes();
         }
         public void UpdateTheme()
         {
@@ -39,12 +43,20 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void AddEventHandlersToTextBoxes()
         {
-            TextBoxManager.Attach(ProjectName_TextBox);
-            TextBoxManager.Attach(Directory_TextBox);
-        }
+            byte searchBoxMaxHeight = 200;
 
-        // Form event handlers
-        private void ConfigureProject_form_Load(object sender, EventArgs e)
+            TextBoxManager.Attach(ProjectName_TextBox);
+            ProjectName_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+
+            TextBoxManager.Attach(Directory_TextBox);
+            Directory_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+
+            TextBoxManager.Attach(Currency_TextBox);
+            List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
+            SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight);
+            Currency_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+        }
+        private void SetDefaultTextInTextBoxes()
         {
             // Set default name. Choose a name that doesn't already exist in the directory
             if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName") &&
@@ -67,7 +79,7 @@ namespace Sales_Tracker.Startup.Menus
                 }
             }
 
-            // Set default file location
+            // Set default directory
             if (Properties.Settings.Default.ProjectDirectory == "")
             {
                 Properties.Settings.Default.ProjectDirectory = Directories.Desktop_dir;
@@ -78,38 +90,36 @@ namespace Sales_Tracker.Startup.Menus
             {
                 Directory_TextBox.Text = Properties.Settings.Default.ProjectDirectory;
             }
+
+            // Set default currency
+            Currency_TextBox.Text = "CAD";
         }
+
+        // Form event handlers
         private void ConfigureProject_Form_Shown(object sender, EventArgs e)
         {
             ProjectName_TextBox.Focus();
-            ProjectName_TextBox.SelectionStart = ProjectName_TextBox.Text.Length;
-            ProjectName_TextBox.SelectionLength = 0;
-
-            AddEventHandlersToTextBoxes();
 
             LoadingPanel.HideBlankLoadingPanel(this);
         }
         private void ConfigureProject_form_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
         }
 
         // Event handlers
         private void Back_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.formGetStarted);
         }
         private void Create_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             // Set main directory
             selectedDirectory = Directory_TextBox.Text;
-
-            if (Directory_TextBox.Text == "")
-            {
-                Directory_TextBox.Focus();
-                CustomMessageBox.Show("Argo Sales Tracker", "Select a directory to create the project", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-                return;
-            }
 
             if (File.Exists(selectedDirectory + @"\" + ProjectName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
@@ -142,7 +152,7 @@ namespace Sales_Tracker.Startup.Menus
             DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
 
             // Set default currency
-            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, Currency_ComboBox.Text);
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
 
             ArgoCompany.SaveAll();
 
@@ -157,6 +167,8 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             // Select folder
             Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
 
@@ -165,46 +177,90 @@ namespace Sales_Tracker.Startup.Menus
                 Directory_TextBox.Text = dialog.SelectedPath + @"\";
                 selectedDirectory = Directory_TextBox.Text;
             }
-            // Save
-            Properties.Settings.Default.ProjectDirectory = selectedDirectory;
-            Properties.Settings.Default.Save();
         }
         private void TextBoxProjectName_TextChanged(object sender, EventArgs e)
         {
-            if (@"/\#%&*|;".Any(ProjectName_TextBox.Text.Contains) || ProjectName_TextBox.Text == "")
+            string invalidChars = "/\\#%&*|;";
+
+            if (string.IsNullOrEmpty(ProjectName_TextBox.Text))
             {
-                Create_Button.Enabled = false;
                 CustomControls.SetGTextBoxToInvalid(ProjectName_TextBox);
-                WarningName_PictureBox.Visible = true;
-                WarningName_Label.Visible = true;
+                ShowWarningForProjectName();
+                WarningName_Label.Text = "Project name cannot be empty";
+            }
+            else if (invalidChars.Any(ProjectName_TextBox.Text.Contains))
+            {
+                CustomControls.SetGTextBoxToInvalid(ProjectName_TextBox);
+                ShowWarningForProjectName();
+                WarningName_Label.Text = "Project name contains invalid characters";
             }
             else
             {
-                Create_Button.Enabled = true;
                 CustomControls.SetGTextBoxToValid(ProjectName_TextBox);
-                WarningName_PictureBox.Visible = false;
-                WarningName_Label.Visible = false;
+                HideWarningForProjectName();
             }
         }
         private void Directory_textBox_TextChanged(object sender, EventArgs e)
         {
-            if ("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'))
+            string invalidChars = "/#%&*|;";
+
+            if (string.IsNullOrEmpty(Directory_TextBox.Text))
             {
-                Create_Button.Enabled = false;
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                WarningDir_PictureBox.Visible = true;
-                WarningDir_Label.Visible = true;
+                ShowWarningForDirectory();
+                WarningDir_Label.Text = "Directory cannot be empty";
+            }
+            else if (invalidChars.Any(Directory_TextBox.Text.Contains))
+            {
+                CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
+                ShowWarningForDirectory();
+                WarningDir_Label.Text = "Directory contains invalid characters";
+            }
+            else if (!Directory_TextBox.Text.Contains('\\'))
+            {
+                CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
+                ShowWarningForDirectory();
+                WarningDir_Label.Text = "Directory must contain a backslash (\\)";
             }
             else
             {
-                Create_Button.Enabled = true;
                 CustomControls.SetGTextBoxToValid(Directory_TextBox);
-                WarningDir_PictureBox.Visible = false;
-                WarningDir_Label.Visible = false;
+                HideWarningForDirectory();
             }
-            // Save
-            Properties.Settings.Default.ProjectDirectory = Directory_TextBox.Text;
-            Properties.Settings.Default.Save();
+        }
+
+        // Warning labels
+        private void ShowWarningForDirectory()
+        {
+            WarningDir_PictureBox.Visible = true;
+            WarningDir_Label.Visible = true;
+        }
+        private void HideWarningForDirectory()
+        {
+            WarningDir_PictureBox.Visible = false;
+            WarningDir_Label.Visible = false;
+        }
+        private void ShowWarningForProjectName()
+        {
+            WarningName_PictureBox.Visible = true;
+            WarningName_Label.Visible = true;
+        }
+        private void HideWarningForProjectName()
+        {
+            WarningName_PictureBox.Visible = false;
+            WarningName_Label.Visible = false;
+        }
+
+        // Methods
+        private void ValidateInputs()
+        {
+            Create_Button.Enabled = ProjectName_TextBox.BorderColor != Color.Red &&
+                Directory_TextBox.BorderColor != Color.Red &&
+                Currency_TextBox.BorderColor != Color.Red;
+        }
+        private void CloseAllPanels(object sender, EventArgs e)
+        {
+            SearchBox.CloseSearchBox();
         }
     }
 }

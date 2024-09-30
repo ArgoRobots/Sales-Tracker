@@ -29,29 +29,26 @@ namespace Sales_Tracker.Settings.Menus
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             General_Label = new Label();
             Language_Label = new Label();
             MoreInformation_Button = new Guna.UI2.WinForms.Guna2Button();
             Currency_Label = new Label();
-            Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-            Language_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-            ColorTheme_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             ShowDebugInfo_Label = new Label();
             SendAnonymousInformation_Label = new Label();
             PurchaseReceipts_Label = new Label();
@@ -61,6 +58,9 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             ShowDebugInfo_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             SendAnonymousInformation_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
+            Language_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            ColorTheme_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             SuspendLayout();
             // 
             // General_Label
@@ -83,6 +83,7 @@ namespace Sales_Tracker.Settings.Menus
             Language_Label.Size = new Size(97, 28);
             Language_Label.TabIndex = 253;
             Language_Label.Text = "Language";
+            Language_Label.Click += CloseAllPanels;
             // 
             // MoreInformation_Button
             // 
@@ -90,16 +91,17 @@ namespace Sales_Tracker.Settings.Menus
             MoreInformation_Button.BorderColor = Color.LightGray;
             MoreInformation_Button.BorderRadius = 2;
             MoreInformation_Button.BorderThickness = 1;
-            MoreInformation_Button.CustomizableEdges = customizableEdges1;
+            MoreInformation_Button.CustomizableEdges = customizableEdges17;
             MoreInformation_Button.FillColor = Color.FromArgb(250, 250, 250);
             MoreInformation_Button.Font = new Font("Segoe UI", 9F);
             MoreInformation_Button.ForeColor = Color.Black;
             MoreInformation_Button.Location = new Point(663, 470);
             MoreInformation_Button.Name = "MoreInformation_Button";
-            MoreInformation_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            MoreInformation_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
             MoreInformation_Button.Size = new Size(225, 45);
             MoreInformation_Button.TabIndex = 8;
             MoreInformation_Button.Text = "More information";
+            MoreInformation_Button.Click += MoreInformation_Button_Click;
             // 
             // Currency_Label
             // 
@@ -111,60 +113,7 @@ namespace Sales_Tracker.Settings.Menus
             Currency_Label.Size = new Size(154, 28);
             Currency_Label.TabIndex = 269;
             Currency_Label.Text = "Default currency";
-            // 
-            // Currency_ComboBox
-            // 
-            Currency_ComboBox.Anchor = AnchorStyles.Top;
-            Currency_ComboBox.BackColor = Color.Transparent;
-            Currency_ComboBox.CustomizableEdges = customizableEdges3;
-            Currency_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            Currency_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            Currency_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.Font = new Font("Segoe UI", 10F);
-            Currency_ComboBox.ForeColor = Color.Black;
-            Currency_ComboBox.ItemHeight = 39;
-            Currency_ComboBox.Location = new Point(633, 320);
-            Currency_ComboBox.Name = "Currency_ComboBox";
-            Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            Currency_ComboBox.Size = new Size(255, 45);
-            Currency_ComboBox.TabIndex = 272;
-            // 
-            // Language_ComboBox
-            // 
-            Language_ComboBox.Anchor = AnchorStyles.Top;
-            Language_ComboBox.BackColor = Color.Transparent;
-            Language_ComboBox.CustomizableEdges = customizableEdges5;
-            Language_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            Language_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            Language_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
-            Language_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Language_ComboBox.Font = new Font("Segoe UI", 10F);
-            Language_ComboBox.ForeColor = Color.Black;
-            Language_ComboBox.ItemHeight = 39;
-            Language_ComboBox.Location = new Point(633, 261);
-            Language_ComboBox.Name = "Language_ComboBox";
-            Language_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Language_ComboBox.Size = new Size(255, 45);
-            Language_ComboBox.TabIndex = 273;
-            // 
-            // ColorTheme_ComboBox
-            // 
-            ColorTheme_ComboBox.Anchor = AnchorStyles.Top;
-            ColorTheme_ComboBox.BackColor = Color.Transparent;
-            ColorTheme_ComboBox.CustomizableEdges = customizableEdges7;
-            ColorTheme_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            ColorTheme_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            ColorTheme_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
-            ColorTheme_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            ColorTheme_ComboBox.Font = new Font("Segoe UI", 10F);
-            ColorTheme_ComboBox.ForeColor = Color.Black;
-            ColorTheme_ComboBox.ItemHeight = 39;
-            ColorTheme_ComboBox.Location = new Point(633, 377);
-            ColorTheme_ComboBox.Name = "ColorTheme_ComboBox";
-            ColorTheme_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            ColorTheme_ComboBox.Size = new Size(255, 45);
-            ColorTheme_ComboBox.TabIndex = 334;
+            Currency_Label.Click += CloseAllPanels;
             // 
             // ShowDebugInfo_Label
             // 
@@ -232,6 +181,7 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_Label.Size = new Size(120, 28);
             ColorTheme_Label.TabIndex = 333;
             ColorTheme_Label.Text = "Color theme";
+            ColorTheme_Label.Click += CloseAllPanels;
             // 
             // SalesReceipts_CheckBox
             // 
@@ -241,16 +191,17 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_CheckBox.CheckedState.BorderRadius = 2;
             SalesReceipts_CheckBox.CheckedState.BorderThickness = 0;
             SalesReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            SalesReceipts_CheckBox.CustomizableEdges = customizableEdges9;
+            SalesReceipts_CheckBox.CustomizableEdges = customizableEdges19;
             SalesReceipts_CheckBox.Location = new Point(631, 574);
             SalesReceipts_CheckBox.Name = "SalesReceipts_CheckBox";
-            SalesReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            SalesReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             SalesReceipts_CheckBox.Size = new Size(20, 20);
             SalesReceipts_CheckBox.TabIndex = 342;
             SalesReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             SalesReceipts_CheckBox.UncheckedState.BorderRadius = 2;
             SalesReceipts_CheckBox.UncheckedState.BorderThickness = 0;
             SalesReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            SalesReceipts_CheckBox.Click += CloseAllPanels;
             // 
             // PurchaseReceipts_CheckBox
             // 
@@ -260,16 +211,17 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox.CheckedState.BorderRadius = 2;
             PurchaseReceipts_CheckBox.CheckedState.BorderThickness = 0;
             PurchaseReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            PurchaseReceipts_CheckBox.CustomizableEdges = customizableEdges11;
+            PurchaseReceipts_CheckBox.CustomizableEdges = customizableEdges21;
             PurchaseReceipts_CheckBox.Location = new Point(631, 528);
             PurchaseReceipts_CheckBox.Name = "PurchaseReceipts_CheckBox";
-            PurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            PurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
             PurchaseReceipts_CheckBox.Size = new Size(20, 20);
             PurchaseReceipts_CheckBox.TabIndex = 340;
             PurchaseReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             PurchaseReceipts_CheckBox.UncheckedState.BorderRadius = 2;
             PurchaseReceipts_CheckBox.UncheckedState.BorderThickness = 0;
             PurchaseReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            PurchaseReceipts_CheckBox.Click += CloseAllPanels;
             // 
             // ShowDebugInfo_CheckBox
             // 
@@ -279,16 +231,17 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_CheckBox.CheckedState.BorderRadius = 2;
             ShowDebugInfo_CheckBox.CheckedState.BorderThickness = 0;
             ShowDebugInfo_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            ShowDebugInfo_CheckBox.CustomizableEdges = customizableEdges13;
+            ShowDebugInfo_CheckBox.CustomizableEdges = customizableEdges23;
             ShowDebugInfo_CheckBox.Location = new Point(631, 436);
             ShowDebugInfo_CheckBox.Name = "ShowDebugInfo_CheckBox";
-            ShowDebugInfo_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            ShowDebugInfo_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
             ShowDebugInfo_CheckBox.Size = new Size(20, 20);
             ShowDebugInfo_CheckBox.TabIndex = 331;
             ShowDebugInfo_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             ShowDebugInfo_CheckBox.UncheckedState.BorderRadius = 2;
             ShowDebugInfo_CheckBox.UncheckedState.BorderThickness = 0;
             ShowDebugInfo_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            ShowDebugInfo_CheckBox.Click += CloseAllPanels;
             // 
             // SendAnonymousInformation_CheckBox
             // 
@@ -298,30 +251,99 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_CheckBox.CheckedState.BorderRadius = 2;
             SendAnonymousInformation_CheckBox.CheckedState.BorderThickness = 0;
             SendAnonymousInformation_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            SendAnonymousInformation_CheckBox.CustomizableEdges = customizableEdges15;
+            SendAnonymousInformation_CheckBox.CustomizableEdges = customizableEdges25;
             SendAnonymousInformation_CheckBox.Location = new Point(631, 482);
             SendAnonymousInformation_CheckBox.Name = "SendAnonymousInformation_CheckBox";
-            SendAnonymousInformation_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            SendAnonymousInformation_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
             SendAnonymousInformation_CheckBox.Size = new Size(20, 20);
             SendAnonymousInformation_CheckBox.TabIndex = 338;
             SendAnonymousInformation_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             SendAnonymousInformation_CheckBox.UncheckedState.BorderRadius = 2;
             SendAnonymousInformation_CheckBox.UncheckedState.BorderThickness = 0;
             SendAnonymousInformation_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            SendAnonymousInformation_CheckBox.Click += CloseAllPanels;
+            // 
+            // Language_TextBox
+            // 
+            Language_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Language_TextBox.CustomizableEdges = customizableEdges27;
+            Language_TextBox.DefaultText = "";
+            Language_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Language_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Language_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Language_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Language_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Language_TextBox.Font = new Font("Segoe UI", 11F);
+            Language_TextBox.ForeColor = SystemColors.ControlText;
+            Language_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Language_TextBox.Location = new Point(633, 267);
+            Language_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Language_TextBox.Name = "Language_TextBox";
+            Language_TextBox.PasswordChar = '\0';
+            Language_TextBox.PlaceholderText = "";
+            Language_TextBox.SelectedText = "";
+            Language_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            Language_TextBox.ShortcutsEnabled = false;
+            Language_TextBox.Size = new Size(255, 45);
+            Language_TextBox.TabIndex = 343;
+            Language_TextBox.Click += CloseAllPanels;
+            // 
+            // ColorTheme_ComboBox
+            // 
+            ColorTheme_ComboBox.Anchor = AnchorStyles.Top;
+            ColorTheme_ComboBox.BackColor = Color.Transparent;
+            ColorTheme_ComboBox.CustomizableEdges = customizableEdges29;
+            ColorTheme_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
+            ColorTheme_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            ColorTheme_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
+            ColorTheme_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            ColorTheme_ComboBox.Font = new Font("Segoe UI", 10F);
+            ColorTheme_ComboBox.ForeColor = Color.Black;
+            ColorTheme_ComboBox.ItemHeight = 39;
+            ColorTheme_ComboBox.Location = new Point(633, 377);
+            ColorTheme_ComboBox.Name = "ColorTheme_ComboBox";
+            ColorTheme_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            ColorTheme_ComboBox.Size = new Size(255, 45);
+            ColorTheme_ComboBox.TabIndex = 334;
+            ColorTheme_ComboBox.Click += CloseAllPanels;
+            // 
+            // Currency_TextBox
+            // 
+            Currency_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Currency_TextBox.CustomizableEdges = customizableEdges31;
+            Currency_TextBox.DefaultText = "";
+            Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Currency_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Currency_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Font = new Font("Segoe UI", 11F);
+            Currency_TextBox.ForeColor = SystemColors.ControlText;
+            Currency_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Location = new Point(633, 322);
+            Currency_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Currency_TextBox.Name = "Currency_TextBox";
+            Currency_TextBox.PasswordChar = '\0';
+            Currency_TextBox.PlaceholderText = "";
+            Currency_TextBox.SelectedText = "";
+            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            Currency_TextBox.ShortcutsEnabled = false;
+            Currency_TextBox.Size = new Size(255, 45);
+            Currency_TextBox.TabIndex = 344;
             // 
             // General_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
+            Controls.Add(Currency_TextBox);
+            Controls.Add(Language_TextBox);
             Controls.Add(SendAnonymousInformation_CheckBox);
             Controls.Add(ShowDebugInfo_CheckBox);
             Controls.Add(PurchaseReceipts_CheckBox);
             Controls.Add(SalesReceipts_CheckBox);
             Controls.Add(ColorTheme_ComboBox);
-            Controls.Add(Language_ComboBox);
             Controls.Add(General_Label);
-            Controls.Add(Currency_ComboBox);
             Controls.Add(Language_Label);
             Controls.Add(ShowDebugInfo_Label);
             Controls.Add(MoreInformation_Button);
@@ -333,6 +355,7 @@ namespace Sales_Tracker.Settings.Menus
             FormBorderStyle = FormBorderStyle.None;
             Name = "General_Form";
             Shown += General_form_Shown;
+            Click += CloseAllPanels;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -342,10 +365,7 @@ namespace Sales_Tracker.Settings.Menus
         private System.Windows.Forms.Label Language_Label;
         private Guna.UI2.WinForms.Guna2Button MoreInformation_Button;
         private System.Windows.Forms.Label Currency_Label;
-        public Guna.UI2.WinForms.Guna2ComboBox Currency_ComboBox;
-        public Guna.UI2.WinForms.Guna2ComboBox Language_ComboBox;
         private Label ColorTheme_Label;
-        public Guna.UI2.WinForms.Guna2ComboBox ColorTheme_ComboBox;
         private Label ShowDebugInfo_Label;
         private Label SendAnonymousInformation_Label;
         private Label PurchaseReceipts_Label;
@@ -354,5 +374,8 @@ namespace Sales_Tracker.Settings.Menus
         public Guna.UI2.WinForms.Guna2CustomCheckBox SalesReceipts_CheckBox;
         public Guna.UI2.WinForms.Guna2CustomCheckBox PurchaseReceipts_CheckBox;
         public Guna.UI2.WinForms.Guna2CustomCheckBox SendAnonymousInformation_CheckBox;
+        public Guna.UI2.WinForms.Guna2TextBox Language_TextBox;
+        public Guna.UI2.WinForms.Guna2ComboBox ColorTheme_ComboBox;
+        public Guna.UI2.WinForms.Guna2TextBox Currency_TextBox;
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Passwords;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
 {
@@ -22,11 +24,16 @@ namespace Sales_Tracker.Settings.Menus
             UpdateControls();
             SetPasswordButton();
             UpdateTheme();
+            SetDoNotTranslateControls();
             LanguageManager.UpdateLanguageForForm(this);
         }
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
+        }
+        private void SetDoNotTranslateControls()
+        {
+            EncryptFiles_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
         }
 
         // Form event handlers

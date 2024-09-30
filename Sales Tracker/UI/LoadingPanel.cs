@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.UI;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.UI
 {
     /// <summary>
     /// This prevents the screen from flashing white while the Form is loading.

@@ -53,8 +53,8 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_PictureBox = new PictureBox();
             WarningName_PictureBox = new PictureBox();
             ThreeDots_Button = new Guna.UI2.WinForms.Guna2Button();
-            Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Currency_Label = new Label();
+            Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).BeginInit();
             SuspendLayout();
@@ -104,6 +104,7 @@ namespace Sales_Tracker.Startup.Menus
             ConfigureNewCompany_Label.Size = new Size(450, 45);
             ConfigureNewCompany_Label.TabIndex = 0;
             ConfigureNewCompany_Label.Text = "Configure your new company";
+            ConfigureNewCompany_Label.Click += CloseAllPanels;
             // 
             // CompanyName_Label
             // 
@@ -114,6 +115,7 @@ namespace Sales_Tracker.Startup.Menus
             CompanyName_Label.Size = new Size(183, 32);
             CompanyName_Label.TabIndex = 0;
             CompanyName_Label.Text = "Company name";
+            CompanyName_Label.Click += CloseAllPanels;
             // 
             // ProjectName_TextBox
             // 
@@ -139,6 +141,7 @@ namespace Sales_Tracker.Startup.Menus
             ProjectName_TextBox.Size = new Size(1135, 60);
             ProjectName_TextBox.TabIndex = 1;
             ProjectName_TextBox.TextChanged += TextBoxProjectName_TextChanged;
+            ProjectName_TextBox.Click += CloseAllPanels;
             // 
             // Directory_TextBox
             // 
@@ -164,6 +167,7 @@ namespace Sales_Tracker.Startup.Menus
             Directory_TextBox.Size = new Size(1135, 60);
             Directory_TextBox.TabIndex = 2;
             Directory_TextBox.TextChanged += Directory_textBox_TextChanged;
+            Directory_TextBox.Click += CloseAllPanels;
             // 
             // Directory_Label
             // 
@@ -174,6 +178,7 @@ namespace Sales_Tracker.Startup.Menus
             Directory_Label.Size = new Size(111, 32);
             Directory_Label.TabIndex = 0;
             Directory_Label.Text = "Directory";
+            Directory_Label.Click += CloseAllPanels;
             // 
             // WarningName_Label
             // 
@@ -181,10 +186,11 @@ namespace Sales_Tracker.Startup.Menus
             WarningName_Label.Font = new Font("Segoe UI", 10F);
             WarningName_Label.Location = new Point(94, 218);
             WarningName_Label.Name = "WarningName_Label";
-            WarningName_Label.Size = new Size(607, 28);
+            WarningName_Label.Size = new Size(86, 28);
             WarningName_Label.TabIndex = 0;
-            WarningName_Label.Text = "Emtpy or invalid company name. It cannot contain special characters";
+            WarningName_Label.Text = "Warning";
             WarningName_Label.Visible = false;
+            WarningName_Label.Click += CloseAllPanels;
             // 
             // WarningDir_Label
             // 
@@ -192,10 +198,11 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_Label.Font = new Font("Segoe UI", 10F);
             WarningDir_Label.Location = new Point(94, 398);
             WarningDir_Label.Name = "WarningDir_Label";
-            WarningDir_Label.Size = new Size(239, 28);
+            WarningDir_Label.Size = new Size(86, 28);
             WarningDir_Label.TabIndex = 0;
-            WarningDir_Label.Text = "Emtpy or invalid directory";
+            WarningDir_Label.Text = "Warning";
             WarningDir_Label.Visible = false;
+            WarningDir_Label.Click += CloseAllPanels;
             // 
             // WarningDir_PictureBox
             // 
@@ -236,23 +243,6 @@ namespace Sales_Tracker.Startup.Menus
             ThreeDots_Button.TabIndex = 3;
             ThreeDots_Button.Click += ThreeDots_Button_Click;
             // 
-            // Currency_ComboBox
-            // 
-            Currency_ComboBox.BackColor = Color.Transparent;
-            Currency_ComboBox.CustomizableEdges = customizableEdges11;
-            Currency_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            Currency_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            Currency_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.Font = new Font("Segoe UI", 10F);
-            Currency_ComboBox.ForeColor = Color.Black;
-            Currency_ComboBox.ItemHeight = 39;
-            Currency_ComboBox.Location = new Point(48, 510);
-            Currency_ComboBox.Name = "Currency_ComboBox";
-            Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            Currency_ComboBox.Size = new Size(255, 45);
-            Currency_ComboBox.TabIndex = 274;
-            // 
             // Currency_Label
             // 
             Currency_Label.AutoSize = true;
@@ -263,12 +253,37 @@ namespace Sales_Tracker.Startup.Menus
             Currency_Label.TabIndex = 273;
             Currency_Label.Text = "Default currency";
             // 
+            // Currency_TextBox
+            // 
+            Currency_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Currency_TextBox.CustomizableEdges = customizableEdges11;
+            Currency_TextBox.DefaultText = "";
+            Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Currency_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Currency_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Font = new Font("Segoe UI", 11F);
+            Currency_TextBox.ForeColor = SystemColors.ControlText;
+            Currency_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Location = new Point(48, 512);
+            Currency_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Currency_TextBox.Name = "Currency_TextBox";
+            Currency_TextBox.PasswordChar = '\0';
+            Currency_TextBox.PlaceholderText = "";
+            Currency_TextBox.SelectedText = "";
+            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Currency_TextBox.ShortcutsEnabled = false;
+            Currency_TextBox.Size = new Size(255, 45);
+            Currency_TextBox.TabIndex = 275;
+            Currency_TextBox.Click += CloseAllPanels;
+            // 
             // ConfigureProject_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1320, 825);
-            Controls.Add(Currency_ComboBox);
+            Controls.Add(Currency_TextBox);
             Controls.Add(Currency_Label);
             Controls.Add(WarningDir_PictureBox);
             Controls.Add(WarningDir_Label);
@@ -286,7 +301,6 @@ namespace Sales_Tracker.Startup.Menus
             KeyPreview = true;
             Name = "ConfigureProject_Form";
             StartPosition = FormStartPosition.CenterScreen;
-            Load += ConfigureProject_form_Load;
             Shown += ConfigureProject_Form_Shown;
             Click += ConfigureProject_form_Click;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
@@ -308,7 +322,7 @@ namespace Sales_Tracker.Startup.Menus
         private System.Windows.Forms.PictureBox WarningDir_PictureBox;
         private System.Windows.Forms.Label WarningDir_Label;
         public Guna.UI2.WinForms.Guna2Button Back_Button;
-        public Guna.UI2.WinForms.Guna2ComboBox Currency_ComboBox;
         private Label Currency_Label;
+        private Guna.UI2.WinForms.Guna2TextBox Currency_TextBox;
     }
 }

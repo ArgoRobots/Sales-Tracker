@@ -32,8 +32,8 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             SetDoNotTranslateControls();
             LanguageManager.UpdateLanguageForForm(this);
-            SetTotalLabel();
-            HideShowingResultsForLabel();
+            LabelManager.SetTotalLabel(Total_Label, Accountants_DataGridView);
+            Controls.Remove(ShowingResultsFor_Label);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Accountants_DataGridView);
             AddEventHandlersToTextBoxes();
         }
@@ -50,8 +50,8 @@ namespace Sales_Tracker
             Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             TextBoxManager.Attach(Accountant_TextBox);
 
-            Accountants_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
-            Accountants_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
+            Accountants_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, Accountants_DataGridView); };
+            Accountants_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, Accountants_DataGridView); };
         }
         private void SetDoNotTranslateControls()
         {
@@ -98,7 +98,6 @@ namespace Sales_Tracker
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
                 if (AddAccountant_Button.Enabled)
                 {
                     AddAccountant_Button.PerformClick();
@@ -114,11 +113,11 @@ namespace Sales_Tracker
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                ShowShowingResultsForLabel(Search_TextBox.Text.Trim());
+                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }
             else
             {
-                HideShowingResultsForLabel();
+                Controls.Remove(ShowingResultsFor_Label);
             }
         }
 
@@ -192,30 +191,6 @@ namespace Sales_Tracker
                 AddAccountant_Button.Enabled = true;
                 AddAccountant_Button.Tag = true;
             }
-        }
-
-        // Set labels
-        private void ShowShowingResultsForLabel(string text)
-        {
-            // Keep the "Showing results for" the same if it's been translated
-            string[] parts = ShowingResultsFor_Label.Text.Split(':');
-            string baseText = parts[0].Trim();
-            ShowingResultsFor_Label.Text = $"{baseText}: {text}";
-
-            ShowingResultsFor_Label.Left = (ClientSize.Width - ShowingResultsFor_Label.Width) / 2;
-            Controls.Add(ShowingResultsFor_Label);
-        }
-        private void HideShowingResultsForLabel()
-        {
-            Controls.Remove(ShowingResultsFor_Label);
-        }
-        private void SetTotalLabel()
-        {
-            // Keep the "Total" the same if it's been translated
-            string[] parts = Total_Label.Text.Split(':');
-            string baseText = parts[0].Trim();
-            Total_Label.Text = $"{baseText}: {Accountants_DataGridView.Rows.Count}";
-            Total_Label.Location = new Point(Accountants_DataGridView.Right - Total_Label.Width, Accountants_DataGridView.Bottom + 10);
         }
 
         // Methods

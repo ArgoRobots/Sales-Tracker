@@ -9,14 +9,19 @@ namespace Sales_Tracker.Settings
     public partial class Settings_Form : Form
     {
         // Properties
+        private static Settings_Form _instance;
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
+
+        // Getters
+        public static Settings_Form Instance => _instance;
 
         // Init.
         public Settings_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
@@ -53,30 +58,36 @@ namespace Sales_Tracker.Settings
         // Bottom buttons
         private void ResetToDefault_Button_Click(object sender, EventArgs e)
         {
+            SearchBox.CloseSearchBox();
+
             CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "All user settings will be reset to default.", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
             if (result == CustomMessageBoxResult.Ok)
             {
                 UserSettings.ResetAllToDefault();
-                ApplyChanges();
+                ApplyChanges(true);
             }
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            ApplyChanges();
+            SearchBox.CloseSearchBox();
+            ApplyChanges(false);
             Close();
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
+            SearchBox.CloseSearchBox();
             Close();
         }
         private void Apply_Button_Click(object sender, EventArgs e)
         {
-            ApplyChanges();
+            SearchBox.CloseSearchBox();
+            ApplyChanges(true);
         }
-        private void ApplyChanges()
+        private void ApplyChanges(bool includeGeneralForm)
         {
+            SearchBox.CloseSearchBox();
             UpdateColorTheme();
-            UserSettings.SaveUserSettings();
+            UserSettings.SaveUserSettings(includeGeneralForm);
         }
         private void UpdateColorTheme()
         {
@@ -138,7 +149,8 @@ namespace Sales_Tracker.Settings
         // Misc.
         private void SwitchForm(Form form, object btnSender)
         {
-            CustomControls.CloseAllPanels(null, null);
+            SearchBox.CloseSearchBox();
+
             Guna2Button btn = (Guna2Button)btnSender;
 
             // If btn is not already selected

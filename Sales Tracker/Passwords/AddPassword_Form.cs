@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Passwords
 {
@@ -40,7 +41,6 @@ namespace Sales_Tracker.Passwords
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true;  // Remove Windows "ding" noise when user presses enter
                 SetPassword();
             }
         }

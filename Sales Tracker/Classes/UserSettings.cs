@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
 
@@ -7,12 +8,12 @@ namespace Sales_Tracker.Classes
 {
     internal class UserSettings
     {
-        public static void SaveUserSettings()
+        public static void SaveUserSettings(bool includeGeneralForm)
         {
             // Check if language changed
-            if (Properties.Settings.Default.Language != General_Form.Instance.Language_ComboBox.Text)
+            if (Properties.Settings.Default.Language != General_Form.Instance.Language_TextBox.Text)
             {
-                UpdateLanguage();
+                UpdateLanguage(includeGeneralForm);
             }
 
             // Check if debug info setting changed
@@ -45,9 +46,9 @@ namespace Sales_Tracker.Classes
 
             // Check if currency changed
             string oldCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-            if (oldCurrency != General_Form.Instance.Currency_ComboBox.Text)
+            if (oldCurrency != General_Form.Instance.Currency_TextBox.Text)
             {
-                UpdateCurrency(oldCurrency);
+                //     UpdateCurrency(oldCurrency);
             }
 
             // Check if file encryption setting changed
@@ -57,19 +58,31 @@ namespace Sales_Tracker.Classes
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed file encryption setting");
             }
         }
-        private static void UpdateLanguage()
+        private static void UpdateLanguage(bool includeGeneralForm)
         {
-            Properties.Settings.Default.Language = General_Form.Instance.Language_ComboBox.Text;
+            Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
 
-            if (General_Form.Instance.Language_ComboBox.SelectedItem is KeyValuePair<string, string> selectedItem)
+            // Update the language in all open forms
+            List<Form> forms = [MainMenu_Form.Instance];
+
+            if (includeGeneralForm)
             {
-                string selectedLanguage = selectedItem.Value;
+                forms.AddRange(
+                [
+                    Settings_Form.Instance,
+                    General_Form.Instance,
+                    Security_Form.Instance,
+                    Updates_Form.Instance
+                ]);
+            }
+            if (Tools.IsFormOpen(typeof(Log_Form)))
+            {
+                forms.Add(Log_Form.Instance);
+            }
 
-                // Update the language in all open forms
-                foreach (Form openForm in Application.OpenForms.Cast<Form>().ToArray())
-                {
-                    LanguageManager.UpdateLanguageForForm(openForm, selectedLanguage);
-                }
+            foreach (Form form in forms)
+            {
+                LanguageManager.UpdateLanguageForForm(form, LanguageManager.GetDefaultLanguageAbbreviation());
             }
 
             // Remove previous messages that mention language changes
@@ -80,7 +93,7 @@ namespace Sales_Tracker.Classes
         }
         private static void UpdateCurrency(string oldCurrency)
         {
-            string newCurrency = General_Form.Instance.Currency_ComboBox.Text;
+            string newCurrency = General_Form.Instance.Currency_TextBox.Text;
             DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, newCurrency);
             MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
 

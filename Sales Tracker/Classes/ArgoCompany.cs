@@ -100,11 +100,7 @@ namespace Sales_Tracker.Classes
         }
         private static bool Open(string filePath, string name)
         {
-            // Save new ProjectDirectory
-            Properties.Settings.Default.ProjectDirectory = filePath;
-            Properties.Settings.Default.Save();
-
-            Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(name));
+            Directories.SetDirectories(filePath, Path.GetFileNameWithoutExtension(name));
             InitThings();
 
             if (!PasswordManager.EnterPassword())
@@ -298,11 +294,7 @@ namespace Sales_Tracker.Classes
 
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        // Save new ProjectDirectory
-                        Properties.Settings.Default.ProjectDirectory = dialog.SelectedPath;
-                        Properties.Settings.Default.Save();
-
-                        Directories.SetDirectories(Properties.Settings.Default.ProjectDirectory, Path.GetFileNameWithoutExtension(project));
+                        Directories.SetDirectories(dialog.SelectedPath, Path.GetFileNameWithoutExtension(project));
 
                         InitThings();
                         SaveAll();

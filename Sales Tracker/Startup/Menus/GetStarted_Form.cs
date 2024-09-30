@@ -125,8 +125,6 @@ namespace Sales_Tracker.Startup.Menus
 
                     // Save new ProjectDirectory
                     string newDir = Directory.GetParent(button.Tag.ToString()).FullName;
-                    Properties.Settings.Default.ProjectDirectory = newDir;
-                    Properties.Settings.Default.Save();
 
                     Directories.SetDirectories(newDir, projectName);
                     ArgoCompany.InitThings();

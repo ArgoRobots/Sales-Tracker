@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.Classes;
+﻿using Sales_Tracker.UI;
 using System.Windows.Forms;
 
 namespace Tests
