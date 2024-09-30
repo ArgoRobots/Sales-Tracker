@@ -30,7 +30,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
             ConstructTotalLabel();
             LoadCategories();
@@ -39,7 +39,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguage(this);
             HideShowingResultsForLabel();
-            MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Purchases_DataGridView, Sales_DataGridView);
+            DataGridViewManager.SortFirstColumnAndSelectFirstRow(Purchases_DataGridView, Sales_DataGridView);
             AddEventHandlersToTextBoxes();
             SetTotalLabel();
         }
@@ -57,13 +57,13 @@ namespace Sales_Tracker
         // Methods
         private void LoadCategories()
         {
-            foreach (Category category in MainMenu_Form.Instance.categoryPurchaseList)
+            foreach (Category category in MainMenu_Form.Instance.CategoryPurchaseList)
             {
                 Purchases_DataGridView.Rows.Add(category.Name);
             }
             Tools.ScrollToTopOfDataGridView(Purchases_DataGridView);
 
-            foreach (Category category in MainMenu_Form.Instance.categorySaleList)
+            foreach (Category category in MainMenu_Form.Instance.CategorySaleList)
             {
                 Sales_DataGridView.Rows.Add(category.Name);
             }
@@ -90,7 +90,7 @@ namespace Sales_Tracker
         private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
         }
         private void Categories_Form_Shown(object sender, EventArgs e)
         {
@@ -106,15 +106,15 @@ namespace Sales_Tracker
 
             if (Purchase_RadioButton.Checked)
             {
-                MainMenu_Form.Instance.categoryPurchaseList.Add(new Category(name));
+                MainMenu_Form.Instance.CategoryPurchaseList.Add(new Category(name));
                 int newRowIndex = Purchases_DataGridView.Rows.Add(name);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             else
             {
-                MainMenu_Form.Instance.categorySaleList.Add(new Category(name));
+                MainMenu_Form.Instance.CategorySaleList.Add(new Category(name));
                 int newRowIndex = Sales_DataGridView.Rows.Add(name);
-                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
@@ -131,7 +131,7 @@ namespace Sales_Tracker
                 Controls.Add(Purchases_DataGridView);
                 Controls.Remove(Sales_DataGridView);
                 Purchases_DataGridView.ClearSelection();
-                MainMenu_Form.Instance.selectedDataGridView = Purchases_DataGridView;
+                MainMenu_Form.Instance.SelectedDataGridView = Purchases_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
                 CenterSelectedDataGridView();
                 VaidateCategoryTextBox();
@@ -145,7 +145,7 @@ namespace Sales_Tracker
                 Controls.Add(Sales_DataGridView);
                 Controls.Remove(Purchases_DataGridView);
                 Sales_DataGridView.ClearSelection();
-                MainMenu_Form.Instance.selectedDataGridView = Sales_DataGridView;
+                MainMenu_Form.Instance.SelectedDataGridView = Sales_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
                 CenterSelectedDataGridView();
                 VaidateCategoryTextBox();
@@ -200,23 +200,23 @@ namespace Sales_Tracker
         private const byte topForDataGridView = 250;
         private void CenterSelectedDataGridView()
         {
-            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2, topForDataGridView);
+            if (MainMenu_Form.Instance.SelectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.SelectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
+            MainMenu_Form.Instance.SelectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.SelectedDataGridView.Width) / 2, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {
             Size size = new(740, 280);
 
             Purchases_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Purchases_DataGridView, size, ColumnHeaders);
-            Purchases_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            DataGridViewManager.InitializeDataGridView(Purchases_DataGridView, size, ColumnHeaders);
+            Purchases_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Purchases_DataGridView.Location = new Point((ClientSize.Width - Purchases_DataGridView.Width) / 2, topForDataGridView);
             Purchases_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
 
             Sales_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Sales_DataGridView, size, ColumnHeaders);
-            Sales_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            DataGridViewManager.InitializeDataGridView(Sales_DataGridView, size, ColumnHeaders);
+            Sales_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Sales_DataGridView.Location = new Point((ClientSize.Width - Sales_DataGridView.Width) / 2, topForDataGridView);
             Sales_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
             Theme.CustomizeScrollBar(Sales_DataGridView);
@@ -237,8 +237,8 @@ namespace Sales_Tracker
         }
         private void SetTotalLabel()
         {
-            totalLabel.Text = $"Total: {MainMenu_Form.Instance.selectedDataGridView.Rows.Count}";
-            totalLabel.Location = new Point(MainMenu_Form.Instance.selectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.selectedDataGridView.Bottom + 10);
+            totalLabel.Text = $"Total: {MainMenu_Form.Instance.SelectedDataGridView.Rows.Count}";
+            totalLabel.Location = new Point(MainMenu_Form.Instance.SelectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.SelectedDataGridView.Bottom + 10);
         }
 
         // Validate category name
@@ -248,11 +248,11 @@ namespace Sales_Tracker
             List<Category> categories;
             if (Sale_RadioButton.Checked)
             {
-                categories = MainMenu_Form.Instance.categorySaleList;
+                categories = MainMenu_Form.Instance.CategorySaleList;
             }
             else
             {
-                categories = MainMenu_Form.Instance.categoryPurchaseList;
+                categories = MainMenu_Form.Instance.CategoryPurchaseList;
             }
 
             bool exists = categories.Any(category => string.Equals(category.Name, Category_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
@@ -313,7 +313,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object sender, EventArgs? e)
         {
-            MainMenu_Form.Instance.CloseRightClickPanels();
+            MainMenu_Form.CloseRightClickPanels();
         }
     }
 }

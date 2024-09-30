@@ -202,7 +202,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             };
             outerPanel.Controls.Add(titleLabel);
 
-            int flowPanelY = titleLabel.Height + titleLabel.Location.Y + CustomControls.spaceBetweenControls;
+            int flowPanelY = titleLabel.Height + titleLabel.Location.Y + CustomControls.SpaceBetweenControls;
 
             // Checkbox to disable importing certain data
             Guna2CustomCheckBox customCheckBox = new()
@@ -241,7 +241,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             outerPanel.Controls.Add(flowPanel);
 
             // If there are more than 5 items, show a "plus (x) more" label
-            int moreLabelY = flowPanel.Location.Y + flowPanel.Height + CustomControls.spaceBetweenControls;
+            int moreLabelY = flowPanel.Location.Y + flowPanel.Height + CustomControls.SpaceBetweenControls;
             int remaining = items.Count - 5;
 
             if (items.Count > 5)
@@ -578,8 +578,8 @@ namespace Sales_Tracker.ImportSpreadsheet
                 RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
 
             RemoveReceipt_ImageButton.Location = new Point(
-                SelectedReceipt_Label.Right + CustomControls.spaceBetweenControls,
-                SelectFile_Button.Bottom + CustomControls.spaceBetweenControls);
+                SelectedReceipt_Label.Right + CustomControls.SpaceBetweenControls,
+                SelectFile_Button.Bottom + CustomControls.SpaceBetweenControls);
         }
         private void RemoveReceiptLabel()
         {

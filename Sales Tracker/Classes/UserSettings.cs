@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Settings.Menus;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
@@ -88,8 +89,8 @@ namespace Sales_Tracker.Classes
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchases_DataGridView);
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sales_DataGridView);
 
-            MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
-            MainMenu_Form.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
+            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
+            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
             MainMenu_Form.Instance.LoadCharts();
             MainMenu_Form.Instance.UpdateTotals();
 
@@ -132,12 +133,12 @@ namespace Sales_Tracker.Classes
                     row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Total.ToString()].Value = total.ToString("N2");
 
-                    MainMenu_Form.UpdateRowWithNoItems(row);
+                    DataGridViewManager.UpdateRowWithNoItems(row);
                 }
                 else if (row.Tag is (List<string> itemList, TagData tagData1))
                 {
                     string lastItem = null;
-                    if (itemList.Last().StartsWith(MainMenu_Form.receipt_text))
+                    if (itemList.Last().StartsWith(ReadOnlyVariables.Receipt_text))
                     {
                         lastItem = itemList.Last();
                     }

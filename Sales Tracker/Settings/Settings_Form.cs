@@ -110,12 +110,12 @@ namespace Sales_Tracker.Settings
                     CustomControls.helpMenu,
                     CustomControls.accountMenu,
                     CustomControls.ControlDropDown_Panel,
-                    MainMenu_Form.Instance.rightClickDataGridView_Panel,
+                    DataGridViewManager.RightClickDataGridView_Panel,
                     GetStarted_Form.Instance.rightClickOpenRecent_Panel];
 
                 Theme.UpdateThemeForPanel(listOfMenus);
 
-                MainMenu_Form.Instance.rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
+                DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
 
                 if (Theme.CurrentTheme == Theme.ThemeType.Dark)
                 {

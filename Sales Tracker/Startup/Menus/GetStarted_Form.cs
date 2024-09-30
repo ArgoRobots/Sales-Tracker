@@ -258,7 +258,7 @@ namespace Sales_Tracker.Startup.Menus
         private Guna2Button rightClickOpenRecent_DeleteBtn;
         private void ConstructRightClickOpenRecentMenu()
         {
-            rightClickOpenRecent_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 4 * CustomControls.panelButtonHeight + CustomControls.spaceForPanel));
+            rightClickOpenRecent_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickOpenRecent_Panel.Controls[0];
 
             Guna2Button menuBtn = CustomControls.ConstructBtnForMenu("Show in folder", CustomControls.PanelBtnWidth, false, flowPanel);

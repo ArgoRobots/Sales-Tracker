@@ -77,7 +77,7 @@ namespace Sales_Tracker
             {
                 case CustomMessageBoxButtons.YesNo:
                     No_Button.Left = Width - No_Button.Width - buttonSpace;
-                    Yes_Button.Left = No_Button.Left - Yes_Button.Width - CustomControls.spaceBetweenControls;
+                    Yes_Button.Left = No_Button.Left - Yes_Button.Width - CustomControls.SpaceBetweenControls;
                     Controls.Add(Yes_Button);
                     Controls.Add(No_Button);
                     Controls.Remove(Cancel_Button);
@@ -98,7 +98,7 @@ namespace Sales_Tracker
                     break;
                 case CustomMessageBoxButtons.OkCancel:
                     Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
-                    Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - CustomControls.spaceBetweenControls;
+                    Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - CustomControls.SpaceBetweenControls;
                     Controls.Add(Ok_Button);
                     Controls.Add(Cancel_Button);
                     Controls.Remove(Yes_Button);
@@ -109,8 +109,8 @@ namespace Sales_Tracker
                     break;
                 case CustomMessageBoxButtons.SaveDontSaveCancel:
                     Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
-                    DontSave_Button.Left = Cancel_Button.Left - DontSave_Button.Width - CustomControls.spaceBetweenControls;
-                    Save_Button.Left = DontSave_Button.Left - Save_Button.Width - CustomControls.spaceBetweenControls;
+                    DontSave_Button.Left = Cancel_Button.Left - DontSave_Button.Width - CustomControls.SpaceBetweenControls;
+                    Save_Button.Left = DontSave_Button.Left - Save_Button.Width - CustomControls.SpaceBetweenControls;
                     Controls.Add(Save_Button);
                     Controls.Add(DontSave_Button);
                     Controls.Add(Cancel_Button);

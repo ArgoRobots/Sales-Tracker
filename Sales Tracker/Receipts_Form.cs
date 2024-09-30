@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 using System.ComponentModel;
 
 namespace Sales_Tracker
@@ -18,12 +19,12 @@ namespace Sales_Tracker
             InitializeComponent();
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
 
             MainMenu_Form.Instance.isProgramLoading = true;
-            MainMenu_Form.Instance.InitializeDataGridView(Receipts_DataGridView, Receipts_DataGridView.Size, ColumnHeaders);
-            Receipts_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            MainMenu_Form.Instance.selectedDataGridView = Receipts_DataGridView;
+            DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, Receipts_DataGridView.Size, ColumnHeaders);
+            Receipts_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            MainMenu_Form.Instance.SelectedDataGridView = Receipts_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Receipts;
             AddAllReceiptsAndGetOldestDate();
             Receipts_DataGridView.SelectionChanged += Receipts_DataGridView_SelectionChanged;
@@ -37,7 +38,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguage(this);
             MainMenu_Form.Instance.isProgramLoading = false;
-            MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Receipts_DataGridView);
+            DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {
@@ -51,7 +52,7 @@ namespace Sales_Tracker
         private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
         }
 
         // Event handlers
@@ -84,7 +85,7 @@ namespace Sales_Tracker
                 foreach (DataGridViewRow row in Receipts_DataGridView.SelectedRows)
                 {
                     string receipt = row.Tag.ToString();
-                    receipt = receipt.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
+                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName).Replace(ReadOnlyVariables.Receipt_text, "");
                     string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
                     destinationFilePath = Directories.GetNewFileNameIfItAlreadyExists(destinationFilePath);
                     Directories.CopyFile(receipt, destinationFilePath);
@@ -187,12 +188,12 @@ namespace Sales_Tracker
                 string receipt = "";
                 if (row.Tag is (string dir, TagData))
                 {
-                    receipt = dir.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
+                    receipt = dir.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName).Replace(ReadOnlyVariables.Receipt_text, "");
                 }
                 else if (row.Tag is (List<string> items, TagData))
                 {
                     receipt = items[^1];
-                    receipt = receipt.Replace(MainMenu_Form.companyName_text, Directories.CompanyName).Replace(MainMenu_Form.receipt_text, "");
+                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName).Replace(ReadOnlyVariables.Receipt_text, "");
                 }
                 Receipts_DataGridView.Rows[^1].Tag = receipt;
 

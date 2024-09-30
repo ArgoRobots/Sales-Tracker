@@ -63,8 +63,8 @@ namespace Sales_Tracker.Charts
         // Main charts
         public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(dataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
+            bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text))
             {
                 ClearChart(chart);
                 return 0;
@@ -128,8 +128,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(dataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
+            bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text))
             {
                 ClearChart(chart);
                 return;
@@ -165,7 +165,7 @@ namespace Sales_Tracker.Charts
                 totalShipping += shipping;
                 totalFee += fee;
 
-                if (category == MainMenu_Form.emptyCell)
+                if (category == ReadOnlyVariables.EmptyCell)
                 {
                     // Extract categories and costs from the Tag
                     if (row.Tag is (List<string> items, TagData))
@@ -256,8 +256,8 @@ namespace Sales_Tracker.Charts
         }
         public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
+            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text))
             {
                 ClearChart(chart);
                 return 0;
@@ -352,8 +352,8 @@ namespace Sales_Tracker.Charts
         // Statistics charts
         public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -424,8 +424,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -497,8 +497,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
+            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -569,8 +569,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadAccountantsIntoChart(IEnumerable<Guna2DataGridView> dataGridViews, GunaChart chart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(dataGridViews.ToArray());
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text)) { return; }
+            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews.ToArray());
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -580,7 +580,7 @@ namespace Sales_Tracker.Charts
 
             foreach (Guna2DataGridView purchasesDataGridView in dataGridViews)
             {
-                if (!MainMenu_Form.DoDataGridViewsHaveVisibleRows(purchasesDataGridView))
+                if (!DataGridViewManager.HasVisibleRows(purchasesDataGridView))
                 {
                     continue;
                 }
@@ -628,8 +628,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadSalesVsExpensesChart(Guna2DataGridView purchasesDataGridView, Guna2DataGridView salesDataGridView, GunaChart chart, bool isLineChart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView, purchasesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
+            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text))
             {
                 ClearChart(chart);
                 return;
@@ -770,8 +770,8 @@ namespace Sales_Tracker.Charts
         }
         public static void LoadAverageOrderValueChart(Guna2DataGridView salesDataGridView, GunaChart chart, bool isLineChart)
         {
-            bool hasData = MainMenu_Form.DoDataGridViewsHaveVisibleRows(salesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, MainMenu_Form.noData_text))
+            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
+            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart, ReadOnlyVariables.NoData_text))
             {
                 ClearChart(chart);
                 return;
@@ -924,11 +924,11 @@ namespace Sales_Tracker.Charts
 
             if (cell.Value == null)
             {
-                Log.Error_DataGridViewCellIsEmpty(MainMenu_Form.Instance.selectedDataGridView.Name);
+                Log.Error_DataGridViewCellIsEmpty(MainMenu_Form.Instance.SelectedDataGridView.Name);
                 return false;
             }
 
-            if (cell.Value.ToString() == MainMenu_Form.emptyCell)
+            if (cell.Value.ToString() == ReadOnlyVariables.EmptyCell)
             {
                 return false;
             }

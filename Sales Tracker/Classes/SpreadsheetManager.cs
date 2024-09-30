@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
@@ -14,7 +15,7 @@ namespace Sales_Tracker.Classes
             foreach (IXLRow row in rowsToProcess)
             {
                 string accountantName = row.Cell(1).GetValue<string>();
-                if (MainMenu_Form.Instance.accountantList.Any(name => name.Equals(accountantName, StringComparison.OrdinalIgnoreCase)))
+                if (MainMenu_Form.Instance.AccountantList.Any(name => name.Equals(accountantName, StringComparison.OrdinalIgnoreCase)))
                 {
                     CustomMessageBox.Show("Argo Sales Tracker",
                         $"The accountant {accountantName} already exists and will not be imported",
@@ -22,11 +23,11 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
-                    MainMenu_Form.Instance.accountantList.Add(accountantName);
+                    MainMenu_Form.Instance.AccountantList.Add(accountantName);
                     wasSomethingImported = true;
                 }
             }
-            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.accountantList, MainMenu_Form.SelectedOption.Accountants);
+            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.AccountantList, MainMenu_Form.SelectedOption.Accountants);
             return wasSomethingImported;
         }
         public static bool ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
@@ -37,7 +38,7 @@ namespace Sales_Tracker.Classes
             foreach (IXLRow row in rowsToProcess)
             {
                 string companyName = row.Cell(1).GetValue<string>();
-                if (MainMenu_Form.Instance.companyList.Any(name => name.Equals(companyName, StringComparison.OrdinalIgnoreCase)))
+                if (MainMenu_Form.Instance.CompanyList.Any(name => name.Equals(companyName, StringComparison.OrdinalIgnoreCase)))
                 {
                     CustomMessageBox.Show("Argo Sales Tracker",
                         $"The company {companyName} already exists and will not be imported",
@@ -45,11 +46,11 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
-                    MainMenu_Form.Instance.companyList.Add(companyName);
+                    MainMenu_Form.Instance.CompanyList.Add(companyName);
                     wasSomethingImported = true;
                 }
             }
-            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.companyList, MainMenu_Form.SelectedOption.Companies);
+            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.CompanyList, MainMenu_Form.SelectedOption.Companies);
             return wasSomethingImported;
         }
         public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
@@ -60,11 +61,11 @@ namespace Sales_Tracker.Classes
             List<Category> list;
             if (purchase)
             {
-                list = MainMenu_Form.Instance.categoryPurchaseList;
+                list = MainMenu_Form.Instance.CategoryPurchaseList;
             }
             else
             {
-                list = MainMenu_Form.Instance.categorySaleList;
+                list = MainMenu_Form.Instance.CategorySaleList;
             }
 
             // Read product data from the worksheet and add it to the category purchase list
@@ -105,10 +106,10 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Check if the company exists in companyList
-                bool companyExists = MainMenu_Form.Instance.companyList.Contains(companyOfOrigin);
+                bool companyExists = MainMenu_Form.Instance.CompanyList.Contains(companyOfOrigin);
                 if (!companyExists)
                 {
-                    MainMenu_Form.Instance.companyList.Add(companyOfOrigin);
+                    MainMenu_Form.Instance.CompanyList.Add(companyOfOrigin);
                 }
 
                 // Find or create the category
@@ -161,7 +162,7 @@ namespace Sales_Tracker.Classes
                 if (purchaseNumber == "") { continue; }
 
                 // Check if this row's purchase number already exists
-                if (purchaseNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+                if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                       $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
@@ -197,7 +198,7 @@ namespace Sales_Tracker.Classes
                 FormatNoteCell(newRow);
 
                 wasSomethingImported = true;
-                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             return (true, wasSomethingImported);
         }
@@ -214,7 +215,7 @@ namespace Sales_Tracker.Classes
                 if (saleNumber == "") { continue; }
 
                 // Check if this row's sales number already exists
-                if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+                if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                       $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
@@ -250,7 +251,7 @@ namespace Sales_Tracker.Classes
                 FormatNoteCell(newRow);
 
                 wasSomethingImported = true;
-                MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             return (true, wasSomethingImported);
         }
@@ -260,7 +261,7 @@ namespace Sales_Tracker.Classes
         private static void FormatNoteCell(DataGridViewRow row)
         {
             DataGridViewCell lastCell = row.Cells[^1];
-            MainMenu_Form.AddUnderlineToCell(lastCell);
+            DataGridViewManager.AddUnderlineToCell(lastCell);
         }
 
         /// <summary>
@@ -289,7 +290,7 @@ namespace Sales_Tracker.Classes
                     switch (i)
                     {
                         case 8:
-                            if (value == MainMenu_Form.emptyCell)
+                            if (value == ReadOnlyVariables.EmptyCell)
                             {
                                 useEmpty = true;
                             }
@@ -319,7 +320,7 @@ namespace Sales_Tracker.Classes
                     }
 
                     newRow.Cells[i].Value = useEmpty
-                        ? MainMenu_Form.emptyCell
+                        ? ReadOnlyVariables.EmptyCell
                         : (decimalValue * exchangeRateToDefault).ToString("N2");
                 }
                 else
@@ -333,13 +334,13 @@ namespace Sales_Tracker.Classes
             IXLCell lastExcelCell = row.Cell(row.Cells().Count() - 1);
             string lastExcelCellValue = lastExcelCell.Value.ToString();
 
-            if (lastExcelCellValue == MainMenu_Form.emptyCell)
+            if (lastExcelCellValue == ReadOnlyVariables.EmptyCell)
             {
-                lastCell.Value = MainMenu_Form.emptyCell;
+                lastCell.Value = ReadOnlyVariables.EmptyCell;
             }
             else
             {
-                lastCell.Value = MainMenu_Form.show_text;
+                lastCell.Value = ReadOnlyVariables.Show_text;
                 lastCell.Tag = lastExcelCellValue;
             }
 
@@ -412,10 +413,10 @@ namespace Sales_Tracker.Classes
             AddTransactionToWorksheet(salesWorksheet, MainMenu_Form.Instance.Sales_DataGridView);
 
             IXLWorksheet purchaseProductsWorksheet = workbook.Worksheets.Add("Purchase products");
-            AddProductsToWorksheet(purchaseProductsWorksheet, MainMenu_Form.Instance.categoryPurchaseList);
+            AddProductsToWorksheet(purchaseProductsWorksheet, MainMenu_Form.Instance.CategoryPurchaseList);
 
             IXLWorksheet saleProductsWorksheet = workbook.Worksheets.Add("Sale products");
-            AddProductsToWorksheet(saleProductsWorksheet, MainMenu_Form.Instance.categorySaleList);
+            AddProductsToWorksheet(saleProductsWorksheet, MainMenu_Form.Instance.CategorySaleList);
 
             IXLWorksheet accountantsWorksheet = workbook.Worksheets.Add("Accountants");
             AddAccountantsToWorksheet(accountantsWorksheet);
@@ -450,7 +451,7 @@ namespace Sales_Tracker.Classes
             worksheet.Cell(1, messageCellIndex).Style.Font.Bold = true;
 
             // Extract TagData and receipt information
-            string receiptFileName = MainMenu_Form.emptyCell;
+            string receiptFileName = ReadOnlyVariables.EmptyCell;
 
             int currentRow = 2;
             int rowForReceipt = 2;
@@ -463,14 +464,14 @@ namespace Sales_Tracker.Classes
                     // Is there a receipt
                     byte receiptOffset = 0;
                     string receipt = itemList[^1];
-                    if (receipt.StartsWith(MainMenu_Form.receipt_text))
+                    if (receipt.StartsWith(ReadOnlyVariables.Receipt_text))
                     {
                         receiptOffset = 1;
                         receiptFileName = Path.GetFileName(receipt);
                     }
                     else
                     {
-                        worksheet.Cell(currentRow, receiptCellIndex).Value = MainMenu_Form.emptyCell;
+                        worksheet.Cell(currentRow, receiptCellIndex).Value = ReadOnlyVariables.EmptyCell;
                     }
 
                     AddRowToWorksheet(worksheet, row, currentRow, tagData1);
@@ -541,7 +542,7 @@ namespace Sales_Tracker.Classes
                             usdValue = tagData.TotalUSD;
                             break;
                     }
-                    excelCell.Value = useEmpty ? MainMenu_Form.emptyCell : usdValue.ToString("N5");
+                    excelCell.Value = useEmpty ? ReadOnlyVariables.EmptyCell : usdValue.ToString("N5");
                 }
                 else
                 {
@@ -555,11 +556,11 @@ namespace Sales_Tracker.Classes
             string lastCellValue = lastCell.Value?.ToString();
             IXLCell lastExcelCell = worksheet.Cell(currentRow, row.Cells.Count);
 
-            if (lastCellValue == MainMenu_Form.emptyCell)
+            if (lastCellValue == ReadOnlyVariables.EmptyCell)
             {
-                lastExcelCell.Value = MainMenu_Form.emptyCell;
+                lastExcelCell.Value = ReadOnlyVariables.EmptyCell;
             }
-            else if (lastCellValue == MainMenu_Form.show_text && lastCell.Tag != null)
+            else if (lastCellValue == ReadOnlyVariables.Show_text && lastCell.Tag != null)
             {
                 lastExcelCell.Value = lastCell.Tag.ToString();
             }
@@ -586,7 +587,7 @@ namespace Sales_Tracker.Classes
             worksheet.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.LightBlue;
 
             int currentRow = 2;
-            foreach (string accountant in MainMenu_Form.Instance.accountantList)
+            foreach (string accountant in MainMenu_Form.Instance.AccountantList)
             {
                 worksheet.Cell(currentRow, 1).Value = accountant;
                 currentRow++;
@@ -601,7 +602,7 @@ namespace Sales_Tracker.Classes
             worksheet.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.LightBlue;
 
             int currentRow = 2;
-            foreach (string company in MainMenu_Form.Instance.companyList)
+            foreach (string company in MainMenu_Form.Instance.CompanyList)
             {
                 worksheet.Cell(currentRow, 1).Value = company;
                 currentRow++;
@@ -644,7 +645,7 @@ namespace Sales_Tracker.Classes
         // Other methods
         public static decimal ConvertStringToDecimal(string value)
         {
-            if (value == MainMenu_Form.emptyCell) { return 0; }
+            if (value == ReadOnlyVariables.EmptyCell) { return 0; }
 
             try
             {

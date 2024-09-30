@@ -19,14 +19,10 @@ namespace Sales_Tracker
         private static MainMenu_Form _instance;
         private static List<string> _thingsThatHaveChangedInFile = [];
         private static List<string> _settingsThatHaveChangedInFile = [];
-        public static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-        private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
-        public static readonly string emptyCell = "-", multipleItems_text = "Multiple items", receipt_text = "receipt:", show_text = "show",
-            companyName_text = "CompanyName", noData_text = "No data", noResults_text = "No results";
-        private readonly byte spaceForRightClickPanel = 30;
         public DateTime fromDate, toDate;
         private static string _currencySymbol;
         private static bool _isFullVersion = true;
+        private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -82,14 +78,14 @@ namespace Sales_Tracker
         }
         public void ResetData()
         {
-            categoryPurchaseList.Clear();
-            categorySaleList.Clear();
+            _categoryPurchaseList.Clear();
+            _categorySaleList.Clear();
 
-            accountantList.Clear();
-            companyList.Clear();
+            _accountantList.Clear();
+            _companyList.Clear();
 
-            Purchases_DataGridView.Rows.Clear();
-            Sales_DataGridView.Rows.Clear();
+            _purchases_DataGridView.Rows.Clear();
+            _sales_DataGridView.Rows.Clear();
 
             Search_TextBox.Text = "";
             Filter_ComboBox.SelectedIndex = 0;
@@ -99,38 +95,38 @@ namespace Sales_Tracker
         }
         public void LoadData()
         {
-            LoadCategoriesFromFile(Directories.CategoryPurchases_file, categoryPurchaseList);
-            LoadCategoriesFromFile(Directories.CategorySales_file, categorySaleList);
+            LoadCategoriesFromFile(Directories.CategoryPurchases_file, _categoryPurchaseList);
+            LoadCategoriesFromFile(Directories.CategorySales_file, _categorySaleList);
 
-            accountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
-            companyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
+            _accountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
+            _companyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
-            if (Purchases_DataGridView == null)
+            if (_purchases_DataGridView == null)
             {
                 Size size = new(1300, 350);
-                Purchases_DataGridView = new Guna2DataGridView();
-                InitializeDataGridView(Purchases_DataGridView, size, PurchaseColumnHeaders);
-                Purchases_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+                _purchases_DataGridView = new Guna2DataGridView();
+                DataGridViewManager.InitializeDataGridView(_purchases_DataGridView, size, PurchaseColumnHeaders);
+                _purchases_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
-                Sales_DataGridView = new Guna2DataGridView();
-                InitializeDataGridView(Sales_DataGridView, size, SalesColumnHeaders);
-                Sales_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
-                Theme.CustomizeScrollBar(Sales_DataGridView);
+                _sales_DataGridView = new Guna2DataGridView();
+                DataGridViewManager.InitializeDataGridView(_sales_DataGridView, size, SalesColumnHeaders);
+                _sales_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+                Theme.CustomizeScrollBar(_sales_DataGridView);
             }
 
-            AddRowsFromFile(Purchases_DataGridView, SelectedOption.Purchases);
-            AddRowsFromFile(Sales_DataGridView, SelectedOption.Sales);
+            AddRowsFromFile(_purchases_DataGridView, SelectedOption.Purchases);
+            AddRowsFromFile(_sales_DataGridView, SelectedOption.Sales);
 
             AddTimeRangesIntoComboBox();
         }
         private void LoadColumnHeader()
         {
-            DataGridViewColumn chargedDifferenceColumn = Purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
+            DataGridViewColumn chargedDifferenceColumn = _purchases_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
             string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax variations across countries.";
             chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
-            DataGridViewColumn totalColumn = Sales_DataGridView.Columns[Column.Total.ToString()];
+            DataGridViewColumn totalColumn = _sales_DataGridView.Columns[Column.Total.ToString()];
             existingHeaderText = totalColumn.HeaderText;
             messageBoxText = "The revenue excludes shipping, taxes, and fees.";
             totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
@@ -154,7 +150,7 @@ namespace Sales_Tracker
         }
         private static void AddRowsFromFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
-            string filePath = GetFilePathForDataGridView(selected);
+            string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
 
             if (!File.Exists(filePath))
             {
@@ -243,9 +239,9 @@ namespace Sales_Tracker
                 if (rowData.TryGetValue(noteTextKey, out object noteValue))
                 {
                     DataGridViewCell lastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 1];
-                    lastCell.Value = show_text;
+                    lastCell.Value = ReadOnlyVariables.Show_text;
                     lastCell.Tag = noteValue;
-                    AddUnderlineToCell(lastCell);
+                    DataGridViewManager.AddUnderlineToCell(lastCell);
                 }
             }
         }
@@ -256,27 +252,27 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Sales)
             {
-                total = LoadChart.LoadTotalsIntoChart(Sales_DataGridView, Totals_Chart, isLine);
+                total = LoadChart.LoadTotalsIntoChart(_sales_DataGridView, Totals_Chart, isLine);
                 Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(Sales_DataGridView, Distribution_Chart);
+                    LoadChart.LoadDistributionIntoChart(_sales_DataGridView, Distribution_Chart);
                     Distribution_Chart.Title.Text = "Distribution of revenue";
                 }
             }
             else
             {
-                total = LoadChart.LoadTotalsIntoChart(Purchases_DataGridView, Totals_Chart, isLine);
+                total = LoadChart.LoadTotalsIntoChart(_purchases_DataGridView, Totals_Chart, isLine);
                 Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(Purchases_DataGridView, Distribution_Chart);
+                    LoadChart.LoadDistributionIntoChart(_purchases_DataGridView, Distribution_Chart);
                     Distribution_Chart.Title.Text = "Distribution of expenses";
                 }
             }
-            total = LoadChart.LoadProfitsIntoChart(Sales_DataGridView, Purchases_DataGridView, Profits_Chart, isLine);
+            total = LoadChart.LoadProfitsIntoChart(_sales_DataGridView, _purchases_DataGridView, Profits_Chart, isLine);
             Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
         }
         public void UpdateTheme()
@@ -303,8 +299,8 @@ namespace Sales_Tracker
             ReselectedButton();
 
             Theme.SetThemeForControl([
-                Sales_DataGridView,
-                Purchases_DataGridView,
+                _sales_DataGridView,
+                _purchases_DataGridView,
                 Totals_Chart,
                 Distribution_Chart,
                 Profits_Chart,
@@ -338,7 +334,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
-            Sales_DataGridView.ClearSelection();
+            _sales_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
 
             // Ensure the charts are rendered
@@ -370,7 +366,7 @@ namespace Sales_Tracker
                     CustomControls.helpMenu,
                     CustomControls.accountMenu,
                     CustomControls.ControlDropDown_Panel,
-                    rightClickDataGridView_Panel
+                    DataGridViewManager.RightClickDataGridView_Panel
                 ];
 
                 foreach (Guna2Panel panel in panels)
@@ -617,11 +613,11 @@ namespace Sales_Tracker
             Profits_Chart.Size = new Size(chartWidth, chartHeight);
             Profits_Chart.Left = rightX;
 
-            selectedDataGridView.Size = new Size(ClientSize.Width - 65, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
-            selectedDataGridView.Location = new Point((ClientSize.Width - selectedDataGridView.Width) / 2, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - selectedDataGridView.Height);
+            _selectedDataGridView.Size = new Size(ClientSize.Width - 65, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
+            _selectedDataGridView.Location = new Point((ClientSize.Width - _selectedDataGridView.Width) / 2, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - _selectedDataGridView.Height);
 
-            Total_Panel.Location = new Point(selectedDataGridView.Left, selectedDataGridView.Top + selectedDataGridView.Height);
-            Total_Panel.Width = selectedDataGridView.Width;
+            Total_Panel.Location = new Point(_selectedDataGridView.Left, _selectedDataGridView.Top + _selectedDataGridView.Height);
+            Total_Panel.Width = _selectedDataGridView.Width;
 
             if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
             {
@@ -658,11 +654,6 @@ namespace Sales_Tracker
                 SetChartPosition(accountants_Chart, chartSize, leftX, bottomRowY);
                 SetChartPosition(salesVsExpenses_Chart, chartSize, middleX, bottomRowY);
                 SetChartPosition(averageOrderValue_Chart, chartSize, rightX, bottomRowY);
-            }
-
-            if (Controls.Contains(messagePanel))
-            {
-                messagePanel.Location = new Point((ClientSize.Width - messagePanel.Width) / 2, ClientSize.Height - messagePanel.Height - 80);
             }
         }
         private static void SetChartPosition(GunaChart chart, Size size, int left, int top)
@@ -799,40 +790,40 @@ namespace Sales_Tracker
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Purchases_DataGridView.ColumnWidthChanged -= DataGridView_ColumnWidthChanged;
+            _purchases_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
             AddMainControls();
             Selected = SelectedOption.Purchases;
-            selectedDataGridView = Purchases_DataGridView;
-            Controls.Add(Purchases_DataGridView);
-            Controls.Remove(Sales_DataGridView);
+            _selectedDataGridView = _purchases_DataGridView;
+            Controls.Add(_purchases_DataGridView);
+            Controls.Remove(_sales_DataGridView);
             ResizeControls();
             RefreshDataGridView();
 
             UnselectButtons();
             SelectButton(Purchases_Button);
 
-            Purchases_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            _purchases_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             Search_TextBox.PlaceholderText = "Search for purchases";
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Sales_DataGridView.ColumnWidthChanged -= DataGridView_ColumnWidthChanged;
+            _sales_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
             AddMainControls();
             Selected = SelectedOption.Sales;
-            selectedDataGridView = Sales_DataGridView;
-            Controls.Add(Sales_DataGridView);
-            Controls.Remove(Purchases_DataGridView);
+            _selectedDataGridView = _sales_DataGridView;
+            Controls.Add(_sales_DataGridView);
+            Controls.Remove(_purchases_DataGridView);
             ResizeControls();
             RefreshDataGridView();
 
             UnselectButtons();
             SelectButton(Sales_Button);
 
-            Sales_DataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
+            _sales_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             Search_TextBox.PlaceholderText = "Search for sales";
         }
@@ -967,7 +958,7 @@ namespace Sales_Tracker
             }
             else
             {
-                FilterDataGridViewByDateRange(selectedDataGridView);
+                FilterDataGridViewByDateRange(_selectedDataGridView);
             }
 
             bool filterExists = interval != TimeInterval.AllTime ||
@@ -976,7 +967,7 @@ namespace Sales_Tracker
 
             bool hasVisibleRows = false;
 
-            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            foreach (DataGridViewRow row in _selectedDataGridView.Rows)
             {
                 DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
                 bool isVisibleByDate = comboBoxEnabled
@@ -1005,7 +996,7 @@ namespace Sales_Tracker
                 HideShowingResultsForLabel();
             }
 
-            ManageNoDataLabelOnControl(hasVisibleRows, selectedDataGridView, noResults_text);
+            ManageNoDataLabelOnControl(hasVisibleRows, _selectedDataGridView, ReadOnlyVariables.NoResults_text);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)
         {
@@ -1187,6 +1178,15 @@ namespace Sales_Tracker
             Controls.Remove(ShowingResultsFor_Label);
         }
 
+        private void SortTheDataGridViewByDate()
+        {
+            string dateColumnHeader = SalesColumnHeaders[Column.Date];
+            _sales_DataGridView.Sort(_sales_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
+
+            dateColumnHeader = PurchaseColumnHeaders[Column.Date];
+            _purchases_DataGridView.Sort(_purchases_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
+        }
+
         // Filter_ComboBox
         private enum TimeInterval
         {
@@ -1227,24 +1227,32 @@ namespace Sales_Tracker
             LoadCharts();
         }
 
-        // Lists
-        public List<Category> categorySaleList = [];
-        public List<Category> categoryPurchaseList = [];
-        public List<string> accountantList = [];
-        public List<string> companyList = [];
+        // List properties
+        private readonly List<Category> _categorySaleList = [];
+        private readonly List<Category> _categoryPurchaseList = [];
+        private List<string> _accountantList = [];
+        private List<string> _companyList = [];
+
+        // List getters
+        public List<Category> CategorySaleList => _categorySaleList;
+        public List<Category> CategoryPurchaseList => _categoryPurchaseList;
+        public List<string> AccountantList => _accountantList;
+        public List<string> CompanyList => _companyList;
+
+        // List methods
         public List<string> GetCategorySaleNames()
         {
-            return categorySaleList.Select(s => s.Name).ToList();
+            return _categorySaleList.Select(s => s.Name).ToList();
         }
         public List<string> GetCategoryPurchaseNames()
         {
-            return categoryPurchaseList.Select(p => p.Name).ToList();
+            return _categoryPurchaseList.Select(p => p.Name).ToList();
         }
         public List<string> GetCategoryAndProductSaleNames()
         {
             List<string> names = [];
 
-            foreach (Category category in categorySaleList)
+            foreach (Category category in _categorySaleList)
             {
                 foreach (Product product in category.ProductList)
                 {
@@ -1257,7 +1265,7 @@ namespace Sales_Tracker
         {
             List<string> names = [];
 
-            foreach (Category category in categoryPurchaseList)
+            foreach (Category category in _categoryPurchaseList)
             {
                 foreach (Product product in category.ProductList)
                 {
@@ -1334,9 +1342,10 @@ namespace Sales_Tracker
             return false;
         }
 
-        // DataGridView
+        // DataGridView properties
         public bool isProgramLoading;
         public SelectedOption Selected;
+        private Guna2DataGridView _purchases_DataGridView, _sales_DataGridView, _selectedDataGridView;
         public enum SelectedOption
         {
             Purchases,
@@ -1418,636 +1427,51 @@ namespace Sales_Tracker
             Accountant,
             ItemsInPurchase
         }
-        public Guna2DataGridView Purchases_DataGridView, Sales_DataGridView, selectedDataGridView;
-        private DataGridViewRow removedRow;
-        private Control controlRightClickPanelWasAddedTo;
-        private bool doNotDeleteRows;
-        public DataGridViewRow selectedRowInMainMenu;
-        private readonly byte rowHeight = 35, columnHeaderHeight = 60;
-        public void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
+
+        // DataGridView getters
+        public Guna2DataGridView Purchases_DataGridView => _purchases_DataGridView;
+        public Guna2DataGridView Sales_DataGridView => _sales_DataGridView;
+        public Guna2DataGridView SelectedDataGridView
         {
-            dataGridView.ReadOnly = true;
-            dataGridView.AllowUserToAddRows = false;
-            dataGridView.AllowUserToResizeRows = false;
-            dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridView.ColumnHeadersHeight = columnHeaderHeight;
-            dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView.RowTemplate.Height = rowHeight;
-            dataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
-            dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
-            dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
-            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = CustomColors.text;
-            dataGridView.Theme = CustomColors.dataGridViewTheme;
-            dataGridView.BackgroundColor = CustomColors.controlBack;
-            dataGridView.Size = size;
-            dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            dataGridView.ScrollBars = ScrollBars.Vertical;
-
-            dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
-            dataGridView.RowsRemoved += DataGridView_RowsRemoved;
-            dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
-            dataGridView.MouseDown += DataGridView_MouseDown;
-            dataGridView.MouseUp += DataGridView_MouseUp;
-            dataGridView.KeyDown += DataGridView_KeyDown;
-            dataGridView.CellMouseClick += DataGridView_CellMouseClick;
-            dataGridView.CellMouseMove += DataGridView_CellMouseMove;
-            dataGridView.CellMouseLeave += DataGridView_CellMouseLeave;
-
-            LoadColumnsInDataGridView(dataGridView, columnHeaders, columnsToLoad);
-            Theme.UpdateDataGridViewHeaderTheme(dataGridView);
+            get => _sales_DataGridView;
+            set => _sales_DataGridView = value;
         }
-        public void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+
+        // Total labels
+        public void AlignTotalLabels()
         {
-            if (isProgramLoading) { return; }
+            string quantityColumn = Column.Quantity.ToString();
+            string taxColumn = Column.Tax.ToString();
+            string shippingColumn = Column.Shipping.ToString();
+            string feeColumn = Column.Fee.ToString();
+            string chargedDifference = Column.ChargedDifference.ToString();
+            string totalPriceColumn = Column.Total.ToString();
 
-            if (doNotDeleteRows)
+            Quantity_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
+            Quantity_Label.Width = _selectedDataGridView.Columns[quantityColumn].Width;
+
+            Tax_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[taxColumn].Index, -1, true).Left;
+            Tax_Label.Width = _selectedDataGridView.Columns[taxColumn].Width;
+
+            Shipping_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[shippingColumn].Index, -1, true).Left;
+            Shipping_Label.Width = _selectedDataGridView.Columns[shippingColumn].Width;
+
+            PaymentFee_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[feeColumn].Index, -1, true).Left;
+            PaymentFee_Label.Width = _selectedDataGridView.Columns[feeColumn].Width;
+
+            if (_selectedDataGridView == _purchases_DataGridView)
             {
-                e.Cancel = true;
-                return;
-            }
-
-            removedRow = e.Row;
-
-            string type = "", columnName = "", valueBeingRemoved;
-            byte logIndex = 0;
-
-            switch (Selected)
-            {
-                case SelectedOption.Purchases:
-                    type = "purchase";
-                    columnName = Column.Product.ToString();
-                    logIndex = 2;
-                    break;
-
-                case SelectedOption.Sales:
-                    type = "sale";
-                    columnName = Column.Product.ToString();
-                    logIndex = 2;
-                    break;
-
-                case SelectedOption.ProductPurchases:
-                    type = "product for purchase";
-                    columnName = Products_Form.Column.ProductName.ToString();
-                    logIndex = 3;
-                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
-
-                    if (IsThisBeingUsed(type, Column.Product.ToString(), valueBeingRemoved))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-
-                    // Remove product from list
-                    categoryPurchaseList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == valueBeingRemoved)));
-
-                    // In case the product name that is being deleted is in the TextBox
-                    Products_Form.Instance.ValidateProductNameTextBox();
-                    break;
-
-                case SelectedOption.ProductSales:
-                    type = "product for sale";
-                    columnName = Products_Form.Column.ProductName.ToString();
-                    logIndex = 3;
-                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
-
-                    if (IsThisBeingUsed(type, Column.Product.ToString(), valueBeingRemoved))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-
-                    // Remove product from list
-                    categorySaleList.ForEach(c => c.ProductList.Remove(c.ProductList.FirstOrDefault(p => p.Name == valueBeingRemoved)));
-
-                    // In case the product name that is being deleted is in the TextBox
-                    Products_Form.Instance.ValidateProductNameTextBox();
-                    break;
-
-                case SelectedOption.CategoryPurchases:
-                    type = "category for purchase";
-                    columnName = Categories_Form.Columns.CategoryName.ToString();
-                    logIndex = 3;
-                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
-
-                    if (IsThisBeingUsed(type, Column.Category.ToString(), valueBeingRemoved))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-
-                    // Remove category from list
-                    categoryPurchaseList.Remove(categoryPurchaseList.FirstOrDefault(c => c.Name == valueBeingRemoved));
-
-                    // In case the category name that is being deleted is in the TextBox
-                    Categories_Form.Instance.VaidateCategoryTextBox();
-                    break;
-
-                case SelectedOption.CategorySales:
-                    type = "category for sale";
-                    columnName = Categories_Form.Columns.CategoryName.ToString();
-                    logIndex = 3;
-                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
-
-                    if (IsThisBeingUsed(type, Column.Category.ToString(), valueBeingRemoved))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-
-                    // Remove category from list
-                    categorySaleList.Remove(categorySaleList.FirstOrDefault(c => c.Name == valueBeingRemoved));
-
-                    // In case the category name that is being deleted is in the TextBox
-                    Categories_Form.Instance.VaidateCategoryTextBox();
-                    break;
-
-                case SelectedOption.Accountants:
-                    type = "accountant";
-                    columnName = Accountants_Form.Columns.AccountantName.ToString();
-                    logIndex = 2;
-                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
-
-                    if (IsThisBeingUsed(type, Column.Name.ToString(), valueBeingRemoved))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-
-                    // Remove accountant from list
-                    accountantList.Remove(accountantList.FirstOrDefault(a => a == valueBeingRemoved));
-
-                    // In case the accountant name that is being deleted is in the TextBox
-                    Accountants_Form.Instance.VaidateAccountantTextBox();
-                    break;
-
-                case SelectedOption.Companies:
-                    type = "company";
-                    columnName = Companies_Form.Columns.Company.ToString();
-                    logIndex = 2;
-                    valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
-
-                    if (IsThisBeingUsed(type, Column.Company.ToString(), valueBeingRemoved))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-
-                    // Remove accountant from list
-                    companyList.Remove(companyList.FirstOrDefault(a => a == valueBeingRemoved));
-                    break;
-
-                case SelectedOption.ItemsInPurchase:
-                case SelectedOption.ItemsInSale:
-                    columnName = Column.Product.ToString();
-                    string productName = e.Row.Cells[columnName].Value?.ToString();
-
-                    if (selectedRowInMainMenu.Tag is (List<string> itemList, TagData))
-                    {
-                        byte index = 1;
-                        if (itemList.Last().StartsWith(receipt_text))
-                        {
-                            index = 2;
-                        }
-
-                        string selected;
-                        if (Selected == SelectedOption.ItemsInPurchase)
-                        {
-                            selected = "purchase";
-                        }
-                        else
-                        {
-                            selected = "sale";
-                        }
-
-                        if (itemList.Count == index)
-                        {
-                            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                                $"Deleting the last item will also delete the {selected}.",
-                                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.OkCancel);
-
-                            if (result != CustomMessageBoxResult.Ok)
-                            {
-                                e.Cancel = true;
-                                return;
-                            }
-                            itemsInPurchase_Form.Close();
-                            Log.Write(2, $"Deleted item '{productName}' in {selected}");
-                            return;
-                        }
-
-                        // Remove the row from the tag
-                        itemList.RemoveAt(e.Row.Index);
-
-                        Log.Write(2, $"Deleted item '{productName}' in {selected}");
-                        return;
-                    }
-                    break;
-            }
-            string name = e.Row.Cells[columnName].Value?.ToString();
-
-            Log.Write(logIndex, $"Deleted {type} '{name}'");
-        }
-        public void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
-        {
-            AlignTotalLabels();
-        }
-        public void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            if (isProgramLoading) { return; }
-
-            DataGridViewRowChanged(selectedDataGridView, Selected);
-
-            // Remove receipt from file
-            if (Selected is SelectedOption.Purchases or SelectedOption.Sales && removedRow?.Tag != null)
-            {
-                string tagValue = "";
-
-                if (removedRow.Tag is (List<string> tagList, TagData))
-                {
-                    tagValue = tagList[^1].Replace(receipt_text, "").Replace(companyName_text, Directories.CompanyName);
-                }
-                else if (removedRow.Tag is (string tagString, TagData))
-                {
-                    tagValue = tagString.Replace(receipt_text, "").Replace(companyName_text, Directories.CompanyName);
-                }
-
-                if (tagValue != "")
-                {
-                    Directories.DeleteFile(tagValue);
-                }
-
-                removedRow = null;
-            }
-        }
-        public void DataGridViewRowChanged(Guna2DataGridView dataGridView, SelectedOption selected)
-        {
-            if (selected is SelectedOption.Purchases or SelectedOption.Sales)
-            {
-                UpdateTotals();
-                LoadCharts();
-                SaveDataGridViewToFileAsJson(dataGridView, selected);
-            }
-            else if (selected is SelectedOption.CategoryPurchases or SelectedOption.CategorySales or
-               SelectedOption.ProductPurchases or SelectedOption.ProductSales)
-            {
-                SaveCategoriesToFile(selected);
-            }
-            else if (selected is SelectedOption.Accountants or SelectedOption.Companies)
-            {
-                SaveDataGridViewToFile(dataGridView, selected);
-            }
-        }
-        public void DataGridView_MouseDown(object sender, MouseEventArgs e)
-        {
-            CustomControls.CloseAllPanels(null, null);
-
-            Guna2DataGridView grid = (Guna2DataGridView)sender;
-            DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
-
-            if (Selected is SelectedOption.Purchases or SelectedOption.Sales && info.RowIndex != -1)
-            {
-                selectedRowInMainMenu = grid.Rows[info.RowIndex];
-            }
-
-            if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
-            {
-                // The right click button does not select rows by default, so implement it here
-                // If it is not currently selected, unselect others
-                if (info.RowIndex == -1)
-                {
-                    return;
-                }
-                UnselectAllRowsInCurrentDataGridView();
-
-                // Select current row
-                grid.Rows[info.RowIndex].Selected = true;
-                grid.Focus();
-            }
-        }
-        public void DataGridView_MouseUp(object sender, MouseEventArgs e)
-        {
-            Guna2DataGridView grid = (Guna2DataGridView)sender;
-            if (grid.SelectedRows.Count == 0) { return; }
-
-            if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
-            {
-                DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
-
-                // If a row was not clicked
-                if (info.Type != DataGridViewHitTestType.Cell)
-                {
-                    return;
-                }
-
-                FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
-
-                // Add move button
-                if (Selected == SelectedOption.CategoryPurchases)
-                {
-                    ConfigureMoveButton("Move category to sales");
-                }
-                else if (Selected == SelectedOption.CategorySales)
-                {
-                    ConfigureMoveButton("Move category to purchases");
-                }
-                else if (Selected == SelectedOption.ProductPurchases)
-                {
-                    ConfigureMoveButton("Move product to sales");
-                }
-                else if (Selected == SelectedOption.ProductSales)
-                {
-                    ConfigureMoveButton("Move product to purchases");
-                }
-                else
-                {
-                    flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
-                }
-
-                flowPanel.Controls.Remove(rightClickDataGridView_ModifyBtn);
-                flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
-                flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
-
-                if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn, 1);
-
-                    if (IsLastItemAReceipt(tagList[^1]))
-                    {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 2);
-                    }
-                }
-                else if (grid.SelectedRows[0].Tag is (string item, TagData))
-                {
-                    if (IsLastItemAReceipt(item))
-                    {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 1);
-                    }
-                }
-
-                if (Selected is not SelectedOption.ItemsInPurchase or SelectedOption.ItemsInSale)
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn, 1);
-                }
-
-                // Adjust the panel height based on the number of controls
-                int controlCount = flowPanel.Controls.Count;
-                rightClickDataGridView_Panel.Height = controlCount * CustomControls.panelButtonHeight + 10;
-                flowPanel.Height = controlCount * CustomControls.panelButtonHeight;
-
-                Control controlSender = (Control)sender;
-                controlRightClickPanelWasAddedTo = controlSender.Parent;
-                Form parentForm = grid.FindForm();
-                int formHeight = parentForm.ClientSize.Height;
-                int formWidth = parentForm.ClientSize.Width;
-                byte padding = 5;
-
-                // Calculate the horizontal position
-                bool tooFarRight = false;
-                if (selectedDataGridView.Left + rightClickDataGridView_Panel.Width + e.X - spaceForRightClickPanel + padding > formWidth)
-                {
-                    rightClickDataGridView_Panel.Left = formWidth - rightClickDataGridView_Panel.Width - padding;
-                    tooFarRight = true;
-                }
-                else
-                {
-                    rightClickDataGridView_Panel.Left = selectedDataGridView.Left + e.X - spaceForRightClickPanel;
-                }
-
-                // Calculate the vertical position
-                int verticalOffset = grid.FirstDisplayedScrollingRowIndex * grid.Rows[0].Height;
-                int rowTop = (info.RowIndex + 1) * grid.Rows[0].Height - verticalOffset + selectedDataGridView.Top + columnHeaderHeight;
-
-                if (rowTop + rightClickDataGridView_Panel.Height > formHeight + padding)
-                {
-                    rightClickDataGridView_Panel.Top = formHeight - rightClickDataGridView_Panel.Height - padding;
-                    if (!tooFarRight)
-                    {
-                        rightClickDataGridView_Panel.Left += spaceForRightClickPanel;
-                    }
-                }
-                else
-                {
-                    rightClickDataGridView_Panel.Top = rowTop;
-                }
-
-                controlRightClickPanelWasAddedTo.Controls.Add(rightClickDataGridView_Panel);
-                rightClickDataGridView_Panel.BringToFront();
-            }
-        }
-        public void DataGridView_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                CloseRightClickPanels();
-
-                string message;
-                if (selectedDataGridView.SelectedRows.Count == 1)
-                {
-                    message = "Are you sure you want to delete this row?";
-                }
-                else
-                {
-                    message = "Are you sure you want to delete the selected rows?";
-                }
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
-
-                if (result != CustomMessageBoxResult.Ok)
-                {
-                    doNotDeleteRows = true;
-                    UnselectAllRowsInCurrentDataGridView();
-                }
-            }
-        }
-        private void DataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            DataGridView dataGridView = (DataGridView)sender;
-
-            if (IsLastCellClicked(e, dataGridView))
-            {
-                DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                if (IsClickOnText(cell, out Rectangle hitbox))
-                {
-                    Point mousePos = dataGridView.PointToClient(Cursor.Position);
-                    if (hitbox.Contains(mousePos))
-                    {
-                        CustomMessageBox.Show("Note for purchase", cell.Tag.ToString(), CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                    }
-                }
-            }
-        }
-        private void DataGridView_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            DataGridView dataGridView = (DataGridView)sender;
-
-            if (IsLastCellClicked(e, dataGridView))
-            {
-                DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                if (IsClickOnText(cell, out Rectangle hitbox))
-                {
-                    // Draw a rectangle around the hitbox for debugging
-                    //using (Graphics g = dataGridView.CreateGraphics())
-                    //{
-                    //    g.DrawRectangle(Pens.Red, hitbox);
-                    //}
-
-                    Point mousePos = dataGridView.PointToClient(Cursor.Position);
-                    UpdateCellStyleBasedOnMousePosition(cell, hitbox, mousePos);
-                }
-            }
-        }
-        private void DataGridView_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
-        {
-            DataGridView dataGridView = (DataGridView)sender;
-
-            if (e.RowIndex >= 0 && e.ColumnIndex == dataGridView.Columns.Count - 1)
-            {
-                DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                if (cell.Value != null && cell.Value.ToString() == show_text)
-                {
-                    ResetCellStyle(cell);
-                }
-            }
-        }
-        private static bool IsLastCellClicked(DataGridViewCellMouseEventArgs e, DataGridView dataGridView)
-        {
-            return e.RowIndex >= 0 && e.ColumnIndex == dataGridView.Columns.Count - 1;
-        }
-        private static bool IsClickOnText(DataGridViewCell cell, out Rectangle hitbox)
-        {
-            hitbox = Rectangle.Empty;
-
-            if (cell.Value != null && cell.Value.ToString() == show_text)
-            {
-                Size textSize = TextRenderer.MeasureText(cell.Value.ToString(), cell.DataGridView.Font);
-                byte padding = 3;
-                textSize.Width += 10 + padding + padding;
-                textSize.Height += padding + padding;
-
-                Rectangle cellRect = cell.DataGridView.GetCellDisplayRectangle(cell.ColumnIndex, cell.RowIndex, false);
-                int relativeX = cellRect.X + cell.InheritedStyle.Padding.Left - padding;
-                int relativeY = cellRect.Y + (cell.Size.Height - textSize.Height) / 2;
-                hitbox = new Rectangle(relativeX, relativeY, textSize.Width, textSize.Height);
-
-                return true;
-            }
-            return false;
-        }
-        private static void UpdateCellStyleBasedOnMousePosition(DataGridViewCell cell, Rectangle hitbox, Point mousePos)
-        {
-            if (hitbox.Contains(mousePos))
-            {
-                cell.Style.ForeColor = CustomColors.accent_blue;
-                cell.Style.SelectionForeColor = CustomColors.accent_blue;
+                Total_Panel.Controls.Add(ChargedDifference_Label);
+                ChargedDifference_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
+                ChargedDifference_Label.Width = _selectedDataGridView.Columns[chargedDifference].Width;
             }
             else
             {
-                ResetCellStyle(cell);
-            }
-        }
-        private static void ResetCellStyle(DataGridViewCell cell)
-        {
-            cell.Style.ForeColor = CustomColors.text;
-            cell.Style.SelectionForeColor = CustomColors.text;
-        }
-
-        // Methods for DataGridView
-        /// <summary>
-        /// Shows a MessageBox if the row is being used by another row.
-        /// </summary>
-        /// <returns>True if it's being used by another row.</returns>
-        private bool IsThisBeingUsed(string type, string columnName, string valueBeingRemoved)
-        {
-            foreach (DataGridViewRow row in GetAllRows())
-            {
-                if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
-                {
-                    CustomMessageBox.Show("Argo Sales Tracker", $"This {type} is being used and cannot be deleted", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                    return true;
-                }
-            }
-            return false;
-        }
-        private static bool IsLastItemAReceipt(string lastItem)
-        {
-            // Check if the last item starts with "receipt:"
-            if (lastItem.StartsWith(receipt_text))
-            {
-                lastItem = lastItem.Substring(8).Replace(companyName_text, Directories.CompanyName);
-
-                return File.Exists(lastItem);
-            }
-            return false;
-        }
-        public void DataGridViewRowsAdded(Guna2DataGridView dataGridView, DataGridViewRowsAddedEventArgs e)
-        {
-            if (isProgramLoading) { return; }
-
-            DataGridViewRowChanged(selectedDataGridView, Selected);
-            DataGridViewRow row;
-
-            if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
-            {
-                row = dataGridView.Rows[e.RowIndex];
-            }
-            else
-            {
-                Log.Error_RowIsOutOfRange();
-                return;
+                Total_Panel.Controls.Remove(ChargedDifference_Label);
             }
 
-            // Perform sorting based on the current sorted column and direction
-            if (dataGridView.SortedColumn != null)
-            {
-                SortOrder sortOrder = dataGridView.SortOrder;
-                DataGridViewColumn sortedColumn = dataGridView.SortedColumn;
-                ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
-                                              ListSortDirection.Ascending : ListSortDirection.Descending;
-                dataGridView.Sort(sortedColumn, direction);
-            }
-
-            if (Selected is SelectedOption.Purchases or SelectedOption.Sales)
-            {
-                SortDataGridView();
-            }
-
-            // Calculate the middle index
-            int visibleRowCount = dataGridView.DisplayedRowCount(true);
-            int middleIndex = Math.Max(0, row.Index - (visibleRowCount / 2) + 1);
-
-            // Ensure the row at middleIndex is visible
-            if (middleIndex >= 0 && middleIndex < dataGridView.RowCount && dataGridView.Rows[middleIndex].Visible)
-            {
-                dataGridView.FirstDisplayedScrollingRowIndex = middleIndex;
-            }
-
-            // Select the added row
-            UnselectAllRowsInCurrentDataGridView();
-            dataGridView.Rows[row.Index].Selected = true;
-        }
-        public static void LoadColumnsInDataGridView<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
-        {
-            columnsToLoad ??= Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
-
-            foreach (TEnum column in columnsToLoad)
-            {
-                if (columnHeaders.TryGetValue(column, out string? value))
-                {
-                    dataGridView.Columns.Add(column.ToString(), value);
-                }
-            }
-            Theme.UpdateDataGridViewHeaderTheme(dataGridView);
-        }
-        private void ConfigureMoveButton(string buttonText)
-        {
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
-
-            // Ensure the Move button is the second control
-            flowPanel.Controls.Add(rightClickDataGridView_MoveBtn);
-            flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, 1);
-
-            rightClickDataGridView_MoveBtn.Text = buttonText;
+            Price_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
+            Price_Label.Width = _selectedDataGridView.Columns[totalPriceColumn].Width;
         }
         public void UpdateTotals()
         {
@@ -2056,7 +1480,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            if (!DoDataGridViewsHaveVisibleRows(selectedDataGridView))
+            if (!DataGridViewManager.HasVisibleRows(_selectedDataGridView))
             {
                 Controls.Remove(Total_Panel);
             }
@@ -2072,7 +1496,7 @@ namespace Sales_Tracker
             decimal chargedDifference = 0;
             decimal totalPrice = 0;
 
-            foreach (DataGridViewRow row in selectedDataGridView.Rows)
+            foreach (DataGridViewRow row in _selectedDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
 
@@ -2094,213 +1518,11 @@ namespace Sales_Tracker
             ChargedDifference_Label.Text = chargedDifference.ToString("C");
             Price_Label.Text = totalPrice.ToString("C");
         }
-        private void AlignTotalLabels()
-        {
-            string quantityColumn = Column.Quantity.ToString();
-            string taxColumn = Column.Tax.ToString();
-            string shippingColumn = Column.Shipping.ToString();
-            string feeColumn = Column.Fee.ToString();
-            string chargedDifference = Column.ChargedDifference.ToString();
-            string totalPriceColumn = Column.Total.ToString();
-
-            Quantity_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
-            Quantity_Label.Width = selectedDataGridView.Columns[quantityColumn].Width;
-
-            Tax_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[taxColumn].Index, -1, true).Left;
-            Tax_Label.Width = selectedDataGridView.Columns[taxColumn].Width;
-
-            Shipping_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[shippingColumn].Index, -1, true).Left;
-            Shipping_Label.Width = selectedDataGridView.Columns[shippingColumn].Width;
-
-            PaymentFee_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[feeColumn].Index, -1, true).Left;
-            PaymentFee_Label.Width = selectedDataGridView.Columns[feeColumn].Width;
-
-            if (selectedDataGridView == Purchases_DataGridView)
-            {
-                Total_Panel.Controls.Add(ChargedDifference_Label);
-                ChargedDifference_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
-                ChargedDifference_Label.Width = selectedDataGridView.Columns[chargedDifference].Width;
-            }
-            else
-            {
-                Total_Panel.Controls.Remove(ChargedDifference_Label);
-            }
-
-            Price_Label.Left = selectedDataGridView.GetCellDisplayRectangle(selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
-            Price_Label.Width = selectedDataGridView.Columns[totalPriceColumn].Width;
-        }
-        private static string GetFilePathForDataGridView(SelectedOption selected)
-        {
-            return selected switch
-            {
-                SelectedOption.Purchases => Directories.Purchases_file,
-                SelectedOption.Sales => Directories.Sales_file,
-                SelectedOption.CategoryPurchases => Directories.CategoryPurchases_file,
-                SelectedOption.CategorySales => Directories.CategorySales_file,
-                SelectedOption.ProductPurchases => Directories.CategoryPurchases_file,
-                SelectedOption.ProductSales => Directories.CategorySales_file,
-                SelectedOption.Accountants => Directories.Accountants_file,
-                SelectedOption.Companies => Directories.Companies_file,
-                _ => ""
-            };
-        }
-        private void UnselectAllRowsInCurrentDataGridView()
-        {
-            foreach (DataGridViewRow row in selectedDataGridView.Rows)
-            {
-                row.Selected = false;
-            }
-        }
-        public static bool DoesValueExistInDataGridView(Guna2DataGridView dataGridView, string column, string purchaseID)
-        {
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                if (purchaseID == row.Cells[column].Value.ToString())
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        private void SortTheDataGridViewByDate()
-        {
-            string dateColumnHeader = SalesColumnHeaders[Column.Date];
-            Sales_DataGridView.Sort(Sales_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
-
-            dateColumnHeader = PurchaseColumnHeaders[Column.Date];
-            Purchases_DataGridView.Sort(Purchases_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
-        }
-        public static void SortTheDataGridViewByFirstColumnAndSelectFirstRow(params Guna2DataGridView[] dataGridViews)
-        {
-            foreach (DataGridView dataGrid in dataGridViews)
-            {
-                if (dataGrid.Columns.Count > 0)
-                {
-                    dataGrid.Sort(dataGrid.Columns[0], ListSortDirection.Ascending);
-
-                    // Select the first row
-                    if (dataGrid.Rows.Count > 0)
-                    {
-                        dataGrid.ClearSelection();
-                        dataGrid.Rows[0].Selected = true;
-                    }
-                }
-            }
-        }
-        public static void UpdateRowWithMultipleItems(DataGridViewRow selectedRow)
-        {
-            List<string> items = selectedRow.Tag is (List<string> itemList, TagData) ? itemList : [];
-
-            if (items.Count <= 1) { return; }
-
-            string firstCategoryName = null, firstCountry = null, firstCompany = null;
-            bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
-            decimal pricePerUnit = 0;
-
-            foreach (string item in items)
-            {
-                string[] itemDetails = item.Split(',');
-
-                if (itemDetails.Length < 7) { continue; }
-
-                string currentCategoryName = itemDetails[1];
-                string currentCountry = itemDetails[2];
-                string currentCompany = itemDetails[3];
-                pricePerUnit += decimal.Parse(itemDetails[5]);
-
-                if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
-                else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
-
-                if (firstCountry == null) { firstCountry = currentCountry; }
-                else if (isCountryConsistent && firstCountry != currentCountry) { isCountryConsistent = false; }
-
-                if (firstCompany == null) { firstCompany = currentCompany; }
-                else if (isCompanyConsistent && firstCompany != currentCompany) { isCompanyConsistent = false; }
-            }
-
-            string categoryName = isCategoryNameConsistent ? firstCategoryName : emptyCell;
-            string country = isCountryConsistent ? firstCountry : emptyCell;
-            string company = isCompanyConsistent ? firstCompany : emptyCell;
-
-            selectedRow.Cells[Column.Category.ToString()].Value = categoryName;
-            selectedRow.Cells[Column.Country.ToString()].Value = country;
-            selectedRow.Cells[Column.Company.ToString()].Value = company;
-            selectedRow.Cells[Column.Quantity.ToString()].Value = items.Count - 1;
-
-            // Update charged difference
-            int quantity = int.Parse(selectedRow.Cells[Column.Quantity.ToString()].Value.ToString());
-            decimal shipping = decimal.Parse(selectedRow.Cells[Column.Shipping.ToString()].Value.ToString());
-            decimal tax = decimal.Parse(selectedRow.Cells[Column.Tax.ToString()].Value.ToString());
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            selectedRow.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[Column.Total.ToString()].Value) - totalPrice;
-
-            selectedRow.Cells[Column.Total.ToString()].Value = totalPrice;
-        }
-        public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
-        {
-            int quantity = int.Parse(selectedRow.Cells[Column.Quantity.ToString()].Value.ToString());
-            decimal pricePerUnit = decimal.Parse(selectedRow.Cells[Column.PricePerUnit.ToString()].Value.ToString());
-            decimal shipping = decimal.Parse(selectedRow.Cells[Column.Shipping.ToString()].Value.ToString());
-            decimal tax = decimal.Parse(selectedRow.Cells[Column.Tax.ToString()].Value.ToString());
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            selectedRow.Cells[Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[Column.Total.ToString()].Value) - totalPrice;
-        }
-        public static void UpdateAllRows(DataGridView dataGridView)
-        {
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                UpdateRowWithMultipleItems(row);
-            }
-        }
-        public static void AddNoteToCell(int newRowIndex, string note)
-        {
-            Guna2DataGridView selectedDataGridView = Instance.selectedDataGridView;
-            DataGridViewCell cell = selectedDataGridView.Rows[newRowIndex].Cells[^1];
-            cell.Tag = note;
-            AddUnderlineToCell(cell);
-        }
-        public static void AddUnderlineToCell(DataGridViewCell cell)
-        {
-            cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, FontStyle.Underline);
-        }
-        public static void RemoveUnderlineFromCell(DataGridViewCell cell)
-        {
-            // Remove underline by resetting the font without FontStyle.Underline
-            if (cell.Style.Font != null)
-            {
-                cell.Style.Font = new Font(cell.Style.Font, cell.Style.Font.Style & ~FontStyle.Underline);
-            }
-            else
-            {
-                cell.Style.Font = new Font(cell.DataGridView.DefaultCellStyle.Font, cell.DataGridView.DefaultCellStyle.Font.Style & ~FontStyle.Underline);
-            }
-        }
-        public static bool DoDataGridViewsHaveVisibleRows(params Guna2DataGridView[] dataGridViews)
-        {
-            foreach (DataGridView dataGridView in dataGridViews)
-            {
-                foreach (DataGridViewRow row in dataGridView.Rows)
-                {
-                    if (row.Visible)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        public List<DataGridViewRow> GetAllRows()
-        {
-            List<DataGridViewRow> allRows = new();
-            allRows.AddRange(Purchases_DataGridView.Rows.Cast<DataGridViewRow>());
-            allRows.AddRange(Sales_DataGridView.Rows.Cast<DataGridViewRow>());
-            return allRows;
-        }
 
         // Save to file
         public static void SaveDataGridViewToFileAsJson(Guna2DataGridView dataGridView, SelectedOption selected)
         {
-            string filePath = GetFilePathForDataGridView(selected);
+            string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
             List<Dictionary<string, object>> rowsData = new();
 
             // Collect data from the DataGridView
@@ -2310,7 +1532,7 @@ namespace Sales_Tracker
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    if (cell.Value?.ToString() == show_text && cell.Tag != null)
+                    if (cell.Value?.ToString() == ReadOnlyVariables.Show_text && cell.Tag != null)
                     {
                         rowData[noteTextKey] = cell.Tag;
                     }
@@ -2349,7 +1571,7 @@ namespace Sales_Tracker
             }
 
             // Serialize to JSON and write to file
-            string json = JsonSerializer.Serialize(rowsData, jsonOptions);
+            string json = JsonSerializer.Serialize(rowsData, ReadOnlyVariables.JsonOptions);
             Directories.WriteTextToFile(filePath, json);
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
@@ -2361,26 +1583,26 @@ namespace Sales_Tracker
                 return;
             }
 
-            string filePath = GetFilePathForDataGridView(option);
+            string filePath = DataGridViewManager.GetFilePathForDataGridView(option);
 
             List<Category> categoryList;
             if (option == SelectedOption.CategoryPurchases || option == SelectedOption.ProductPurchases)
             {
-                categoryList = categoryPurchaseList;
+                categoryList = _categoryPurchaseList;
             }
             else
             {
-                categoryList = categorySaleList;
+                categoryList = _categorySaleList;
             }
 
-            string json = JsonSerializer.Serialize(categoryList, jsonOptions);
+            string json = JsonSerializer.Serialize(categoryList, ReadOnlyVariables.JsonOptions);
             Directories.WriteTextToFile(filePath, json);
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
         public static void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
-            string filePath = GetFilePathForDataGridView(selected);
+            string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
             List<string> linesInDataGridView = new();
 
             foreach (DataGridViewRow row in dataGridView.Rows)
@@ -2397,197 +1619,23 @@ namespace Sales_Tracker
         }
         public static void SaveListToFile(List<string> list, SelectedOption selected)
         {
-            string filePath = GetFilePathForDataGridView(selected);
+            string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
 
             Directories.WriteLinesToFile(filePath, list);
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
         }
 
-        // Right click DataGridView row
-        public Guna2Panel rightClickDataGridView_Panel;
-        private Guna2Button rightClickDataGridView_ModifyBtn, rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn, rightClickDataGridView_ShowItemsBtn;
-        public Guna2Button rightClickDataGridView_DeleteBtn;
-        public void ConstructRightClickDataGridViewRowMenu()
-        {
-            rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 5 * CustomControls.panelButtonHeight + CustomControls.spaceForPanel));
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickDataGridView_Panel.Controls[0];
+        // Statistics menu properties
+        private List<Control> statisticsControls;
+        private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart,
+            accountants_Chart, salesVsExpenses_Chart, averageOrderValue_Chart;
 
-            rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, false, flowPanel);
-            rightClickDataGridView_ModifyBtn.Click += ModifyRow;
-
-            rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, false, flowPanel);
-            rightClickDataGridView_MoveBtn.Click += MoveRow;
-
-            rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, false, flowPanel);
-            rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
-
-            rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, false, flowPanel);
-            rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
-
-            rightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, false, flowPanel);
-            rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
-            rightClickDataGridView_DeleteBtn.Click += DeleteRow;
-
-            CustomControls.ConstructKeyShortcut("Del", rightClickDataGridView_DeleteBtn);
-        }
-        private void ModifyRow(object sender, EventArgs e)
-        {
-            CloseRightClickPanels();
-            if (selectedDataGridView.SelectedRows.Count > 1)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
-
-            ModifyRow_Form modifyRow_Form = new(selectedDataGridView.SelectedRows[0]);
-            modifyRow_Form.ShowDialog();
-        }
-        private void MoveRow(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-
-            DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
-            int selectedIndex = selectedRow.Index;
-
-            // Save the current scroll position
-            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
-
-            if (Selected == SelectedOption.CategoryPurchases)
-            {
-                Categories_Form.Instance.Purchases_DataGridView.Rows.Remove(selectedRow);
-                Categories_Form.Instance.Sales_DataGridView.Rows.Add(selectedRow);
-            }
-            else if (Selected == SelectedOption.CategorySales)
-            {
-                Categories_Form.Instance.Sales_DataGridView.Rows.Remove(selectedRow);
-                Categories_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
-            }
-            else if (Selected == SelectedOption.ProductPurchases)
-            {
-                Products_Form.Instance.Purchases_DataGridView.Rows.Remove(selectedRow);
-                Products_Form.Instance.Sales_DataGridView.Rows.Add(selectedRow);
-            }
-            else if (Selected == SelectedOption.ProductSales)
-            {
-                Products_Form.Instance.Sales_DataGridView.Rows.Remove(selectedRow);
-                Products_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
-            }
-
-            // Select a new row
-            if (selectedIndex < selectedDataGridView.Rows.Count)
-            {
-                selectedDataGridView.Rows[selectedIndex].Selected = true;
-            }
-            else if (selectedDataGridView.Rows.Count > 0)
-            {
-                selectedDataGridView.Rows[^1].Selected = true;
-            }
-
-            // Restore the scroll position
-            selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
-        }
-        private void ExportReceipt(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-
-            DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
-            string receiptFilePath = GetFilePathFromRowTag(selectedRow.Tag);
-
-            if (!File.Exists(receiptFilePath))
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-                Log.Error_FileDoesNotExist(receiptFilePath);
-                return;
-            }
-
-            // Select directory
-            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                string newFilepath = dialog.SelectedPath + @"\" + Path.GetFileName(receiptFilePath);
-                newFilepath = Directories.GetNewFileNameIfItAlreadyExists(newFilepath);
-                Directories.CopyFile(receiptFilePath, newFilepath);
-            }
-        }
-        private ItemsInTransaction_Form itemsInPurchase_Form;
-        private void ShowItems(object sender, EventArgs e)
-        {
-            CustomControls.CloseAllPanels(null, null);
-            itemsInPurchase_Form = new ItemsInTransaction_Form(selectedDataGridView.SelectedRows[0]);
-            itemsInPurchase_Form.ShowDialog();
-        }
-        private void DeleteRow(object sender, EventArgs e)
-        {
-            CloseRightClickPanels();
-
-            int index = selectedDataGridView.SelectedRows[^1].Index;
-
-            // Delete all selected rows
-            foreach (DataGridViewRow item in selectedDataGridView.SelectedRows)
-            {
-                DataGridViewRowCancelEventArgs eventArgs = new(item);
-                DataGridView_UserDeletingRow(selectedDataGridView, eventArgs);
-
-                if (!eventArgs.Cancel)
-                {
-                    selectedDataGridView.Rows.Remove(item);
-                }
-            }
-
-            // Select the row under the row that was just deleted
-            if (selectedDataGridView.Rows.Count != 0)
-            {
-                // If the deleted row was not the last one, select the next row
-                if (index < selectedDataGridView.Rows.Count)
-                {
-                    selectedDataGridView.Rows[index].Selected = true;
-                }
-                else  // If the deleted row was the last one, select the new last row
-                {
-                    selectedDataGridView.Rows[^1].Selected = true;
-                }
-            }
-        }
-
-        // Methods for right click DataGridView row
-        public static string GetFilePathFromRowTag(object tag)
-        {
-            if (tag is (List<string> tagList, TagData) && tagList[^1].Contains('\\'))
-            {
-                return ProcessDirectoryFromString(tagList[^1]);
-            }
-            else if (tag is (string tagString, TagData))
-            {
-                return ProcessDirectoryFromString(tagString);
-            }
-            return "";
-        }
-        private static string ProcessDirectoryFromString(string path)
-        {
-            string[] pathParts = path.Split(Path.DirectorySeparatorChar);
-            if (pathParts[7] == companyName_text)
-            {
-                pathParts[7] = Directories.CompanyName;
-            }
-            string newPath = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
-
-            newPath = newPath.Replace(receipt_text, "");
-
-            return File.Exists(newPath) ? newPath : "";
-        }
-        private static void AddButtonToFlowPanel(FlowLayoutPanel flowPanel, Guna2Button button, int index)
-        {
-            flowPanel.Controls.Add(button);
-            flowPanel.Controls.SetChildIndex(button, index);
-        }
-
-        // Statistics menu
+        // Statistics menu methods
         private List<Control> GetMainControlsList()
         {
             return [
-                Sales_DataGridView,
-                Purchases_DataGridView,
+                _sales_DataGridView,
+                _purchases_DataGridView,
                 Totals_Chart,
                 Distribution_Chart,
                 Profits_Chart,
@@ -2612,9 +1660,6 @@ namespace Sales_Tracker
 
             ResizeControls();
         }
-        private List<Control> statisticsControls;
-        public GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart,
-            accountants_Chart, salesVsExpenses_Chart, averageOrderValue_Chart;
         private void ConstructControlsForStatistics()
         {
             if (countriesOfOrigin_Chart != null)
@@ -2684,94 +1729,12 @@ namespace Sales_Tracker
         {
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
-            LoadChart.LoadCountriesOfOriginForProductsIntoChart(Purchases_DataGridView, countriesOfOrigin_Chart);
-            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(Purchases_DataGridView, companiesOfOrigin_Chart);
-            LoadChart.LoadCountriesOfDestinationForProductsIntoChart(Sales_DataGridView, countriesOfDestination_Chart);
-            LoadChart.LoadAccountantsIntoChart([Purchases_DataGridView, Sales_DataGridView], accountants_Chart);
-            LoadChart.LoadSalesVsExpensesChart(Purchases_DataGridView, Sales_DataGridView, salesVsExpenses_Chart, isLineChart);
-            LoadChart.LoadAverageOrderValueChart(Sales_DataGridView, averageOrderValue_Chart, isLineChart);
-        }
-
-        // Message panel
-        public Guna2Panel messagePanel;
-        public void ConstructMessage_Panel()
-        {
-            messagePanel = new Guna2Panel
-            {
-                Size = new Size(500, 150),
-                FillColor = CustomColors.mainBackground,
-                BackColor = Color.Transparent,
-                BorderThickness = 1,
-                BorderRadius = 5,
-                BorderColor = CustomColors.controlPanelBorder
-            };
-
-            Label messageLabel = new()
-            {
-                Font = new Font("Segoe UI", 11),
-                Location = new Point(10, 10),
-                Size = new Size(480, 85),
-                Name = "label",
-                TextAlign = ContentAlignment.MiddleCenter,
-                ForeColor = CustomColors.text
-            };
-            messageLabel.TextChanged += (sender, e) =>
-            {
-                if (messageLabel.Text != "")
-                {
-                    messagePanel.Location = new Point((ClientSize.Width - messagePanel.Width) / 2, ClientSize.Height - messagePanel.Height - 80);
-                    Controls.Add(messagePanel);
-                    messagePanel.BringToFront();
-                    // Restart timer
-                    MessagePanel_timer.Enabled = false;
-                    MessagePanel_timer.Enabled = true;
-                }
-            };
-            messagePanel.Controls.Add(messageLabel);
-
-            Guna2Button gBtn = new()
-            {
-                Font = new Font("Segoe UI", 11),
-                Text = "Ok",
-                Size = new Size(120, 35),
-                Location = new Point(190, 100),
-                FillColor = Color.FromArgb(58, 153, 236),  // Blue
-                ForeColor = Color.White
-            };
-            gBtn.Click += MessagePanelClose;
-            messagePanel.Controls.Add(gBtn);
-
-            PictureBox picture = new()
-            {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(470, 10),
-                Size = new Size(15, 15),
-                BackColor = Color.White,
-                BorderStyle = BorderStyle.None,
-                Image = Resources.CloseGray,
-                SizeMode = PictureBoxSizeMode.StretchImage
-            };
-            picture.Click += MessagePanelClose;
-            messagePanel.Controls.Add(picture);
-        }
-        private void SetMessage(string text)
-        {
-            Label label = (Label)messagePanel.Controls.Find("label", false).FirstOrDefault();
-            label.Text = text;
-        }
-        private void MessagePanelClose(object sender, EventArgs e)
-        {
-            Controls.Remove(messagePanel);
-            MessagePanel_timer.Enabled = false;
-            // Reset in case the next message is the same
-            SetMessage("");
-        }
-        private void MessagePanelTimer_Tick(object sender, EventArgs e)
-        {
-            Controls.Remove(messagePanel);
-            MessagePanel_timer.Enabled = false;
-            // Reset in case the next message is the same
-            SetMessage("");
+            LoadChart.LoadCountriesOfOriginForProductsIntoChart(_purchases_DataGridView, countriesOfOrigin_Chart);
+            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_purchases_DataGridView, companiesOfOrigin_Chart);
+            LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_sales_DataGridView, countriesOfDestination_Chart);
+            LoadChart.LoadAccountantsIntoChart([_purchases_DataGridView, _sales_DataGridView], accountants_Chart);
+            LoadChart.LoadSalesVsExpensesChart(_purchases_DataGridView, _sales_DataGridView, salesVsExpenses_Chart, isLineChart);
+            LoadChart.LoadAverageOrderValueChart(_sales_DataGridView, averageOrderValue_Chart, isLineChart);
         }
 
         // Settings
@@ -2801,102 +1764,22 @@ namespace Sales_Tracker
             }
         }
 
-        // Receipts
-        public static (string, bool) SaveReceiptInFile(string receiptFilePath)
-        {
-            // Replace the company name with companyName_text
-            string[] pathParts = Directories.Receipts_dir.Split(Path.DirectorySeparatorChar);
-            if (pathParts[7] == companyName_text)
-            {
-                pathParts[7] = Directories.CompanyName;
-            }
-            string newReceiptsDir = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
-
-            string newFilePath = newReceiptsDir + Path.GetFileName(receiptFilePath);
-
-            if (File.Exists(newFilePath))
-            {
-                // Get a new name for the file
-                string name = Path.GetFileNameWithoutExtension(receiptFilePath);
-                List<string> fileNames = Directories.GetListOfAllFilesWithoutExtensionInDirectory(newReceiptsDir);
-
-                string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
-
-                CustomMessageBoxResult result = CustomMessageBox.Show($"Rename receipt",
-                    $"Do you want to rename '{name}' to '{suggestedThingName}'? There is already a receipt with the same name.",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
-
-                if (result == CustomMessageBoxResult.Ok)
-                {
-                    newFilePath = newReceiptsDir + suggestedThingName + Path.GetExtension(receiptFilePath);
-                }
-                else { return ("", false); }
-            }
-
-            // Save receipt
-            bool saved = Directories.CopyFile(receiptFilePath.Replace(receipt_text, ""), newFilePath);
-
-            // Replace the companyName_text with companyName_textcompany name
-            pathParts = newFilePath.Split(Path.DirectorySeparatorChar);
-            if (pathParts[7] == Directories.CompanyName)
-            {
-                pathParts[7] = companyName_text;
-            }
-            string newPath = receipt_text + string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
-
-            return (newPath, saved);
-        }
-        public static void RemoveReceiptFromFile(DataGridViewRow row)
-        {
-            string filePath = row.Tag.ToString();
-
-            if (File.Exists(filePath))
-            {
-                Directories.DeleteFile(filePath);
-            }
-            row.Tag = null;
-        }
-        public static void AddReceiptToTag(DataGridViewRow row, string filePath)
-        {
-            if (row.Tag is List<string> tagList)
-            {
-                tagList[^1] = filePath;
-            }
-            else
-            {
-                row.Tag = filePath;
-            }
-        }
-        public static bool CheckIfReceiptExists(string receiptFilePath)
-        {
-            if (!File.Exists(receiptFilePath.Replace(receipt_text, "")))
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", $"The receipt you selected no longer exists", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                return false;
-            }
-            return true;
-        }
-
         // Misc.
         public void RefreshDataGridView()
         {
             ApplyFilters();
             LoadCharts();
             UpdateTotals();
-            selectedDataGridView.ClearSelection();
+            _selectedDataGridView.ClearSelection();
         }
         public static void UpdateMainMenuFormText(Form instance)
         {
             instance.Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
         }
-        public bool IsPurchasesSelected()
+        public static void CloseRightClickPanels()
         {
-            return selectedDataGridView == Purchases_DataGridView;
-        }
-        public void CloseRightClickPanels()
-        {
-            controlRightClickPanelWasAddedTo?.Controls.Remove(rightClickDataGridView_Panel);
-            doNotDeleteRows = false;
+            DataGridViewManager.ControlRightClickPanelWasAddedTo?.Controls.Remove(DataGridViewManager.RightClickDataGridView_Panel);
+            DataGridViewManager.DoNotDeleteRows = false;
         }
         private void CloseAllPanels(object sender, EventArgs? e)
         {

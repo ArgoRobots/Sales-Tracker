@@ -74,7 +74,7 @@ namespace Sales_Tracker
         {
             byte searchBoxMaxHeight = 255;
 
-            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.accountantList);
+            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
             SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
@@ -101,7 +101,7 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.Instance.Sales_Button.PerformClick();
             }
-            MainMenu_Form.Instance.selectedDataGridView = MainMenu_Form.Instance.Sales_DataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Sales_DataGridView;
 
             if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
@@ -163,7 +163,7 @@ namespace Sales_Tracker
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                receiptFilePath = MainMenu_Form.receipt_text + dialog.FileName;
+                receiptFilePath = ReadOnlyVariables.Receipt_text + dialog.FileName;
                 ShowReceiptLabel(dialog.SafeFileName);
             }
         }
@@ -190,7 +190,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
@@ -216,13 +216,13 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
+            string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
             decimal totalPrice = quantity * pricePerUnit - discount;
-            string noteLabel = MainMenu_Form.emptyCell;
+            string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
             if (note != "")
             {
-                noteLabel = MainMenu_Form.show_text;
+                noteLabel = ReadOnlyVariables.Show_text;
             }
 
             // Round to 2 decimal places
@@ -269,13 +269,13 @@ namespace Sales_Tracker
             };
 
             string newFilePath = "";
-            if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
+            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
+                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
 
                 if (!saved)
                 {
@@ -283,7 +283,7 @@ namespace Sales_Tracker
                 }
             }
 
-            int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
+            int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
                 buyerName,
                 productName,
@@ -301,18 +301,18 @@ namespace Sales_Tracker
                 totalPrice.ToString("N"),
                 noteLabel
             );
-            if (noteLabel == MainMenu_Form.show_text)
+            if (noteLabel == ReadOnlyVariables.Show_text)
             {
-                MainMenu_Form.AddNoteToCell(newRowIndex, note);
+                DataGridViewManager.AddNoteToCell(newRowIndex, note);
             }
 
             // Set the tag
             if (newFilePath != "")
             {
-                MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
+                MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
             }
 
-            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, productName);
             Log.Write(3, $"Added Sale '{productName}'");
@@ -326,7 +326,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != MainMenu_Form.emptyCell && MainMenu_Form.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
@@ -344,11 +344,11 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            string noteLabel = MainMenu_Form.emptyCell;
+            string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
             if (note != "")
             {
-                noteLabel = MainMenu_Form.show_text;
+                noteLabel = ReadOnlyVariables.Show_text;
             }
 
             List<string> items = new();
@@ -369,8 +369,8 @@ namespace Sales_Tracker
                 string categoryName = itemsInName[0].Trim();
                 string productName = itemsInName[1].Trim();
 
-                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
-                string currentCompany = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.categorySaleList, productName);
+                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
+                string currentCompany = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
 
                 if (firstCategoryName == null)
                 {
@@ -440,13 +440,13 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             string newFilePath = "";
-            if (!MainMenu_Form.CheckIfReceiptExists(receiptFilePath))
+            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = MainMenu_Form.SaveReceiptInFile(receiptFilePath);
+                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
 
                 if (!saved)
                 {
@@ -454,20 +454,20 @@ namespace Sales_Tracker
                 }
             }
 
-            string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : MainMenu_Form.emptyCell;
-            string finalCountry = isCountryConsistent ? firstCountry : MainMenu_Form.emptyCell;
-            string finalCompany = isCompanyConsistent ? firstCompany : MainMenu_Form.emptyCell;
+            string finalCategoryName = isCategoryNameConsistent ? firstCategoryName : ReadOnlyVariables.EmptyCell;
+            string finalCountry = isCountryConsistent ? firstCountry : ReadOnlyVariables.EmptyCell;
+            string finalCompany = isCompanyConsistent ? firstCompany : ReadOnlyVariables.EmptyCell;
 
-            int newRowIndex = MainMenu_Form.Instance.selectedDataGridView.Rows.Add(
+            int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
                 accountant,
-                MainMenu_Form.multipleItems_text,
+                ReadOnlyVariables.MultipleItems_text,
                 finalCategoryName,
                 finalCountry,
                 finalCompany,
                 date,
                 totalQuantity.ToString(),
-                MainMenu_Form.emptyCell,
+                ReadOnlyVariables.EmptyCell,
                 shipping.ToString("N2"),
                 tax.ToString("N2"),
                 fee.ToString("N2"),
@@ -476,9 +476,9 @@ namespace Sales_Tracker
                 totalPrice.ToString("N2"),
                 noteLabel
             );
-            if (noteLabel == MainMenu_Form.show_text)
+            if (noteLabel == ReadOnlyVariables.Show_text)
             {
-                MainMenu_Form.AddNoteToCell(newRowIndex, note);
+                DataGridViewManager.AddNoteToCell(newRowIndex, note);
             }
             if (newFilePath != "")
             {
@@ -505,9 +505,9 @@ namespace Sales_Tracker
             };
 
             // Set the tag
-            MainMenu_Form.Instance.selectedDataGridView.Rows[newRowIndex].Tag = (items, tagData);
+            MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = (items, tagData);
 
-            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, saleNumber);
             Log.Write(3, $"Added sale '{saleNumber}' with '{totalQuantity}' items");
@@ -534,7 +534,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + CustomControls.spaceBetweenControls);
+            RemoveReceipt_ImageButton.Location = new Point(Receipt_Button.Right - RemoveReceipt_ImageButton.Width, Receipt_Button.Bottom + CustomControls.SpaceBetweenControls);
             SelectedReceipt_Label.Location = new Point(
                 RemoveReceipt_ImageButton.Left - SelectedReceipt_Label.Width,
                 RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
@@ -559,44 +559,44 @@ namespace Sales_Tracker
         private void SetControlsForSingleProduct()
         {
             // Center controls
-            SaleNumber_TextBox.Left = ((ClientSize.Width - SaleNumber_TextBox.Width - CustomControls.spaceBetweenControls -
-                AccountantName_TextBox.Width - CustomControls.spaceBetweenControls -
-                ProductName_TextBox.Width - CustomControls.spaceBetweenControls -
-                CountryOfDestinaion_TextBox.Width - CustomControls.spaceBetweenControls -
+            SaleNumber_TextBox.Left = ((ClientSize.Width - SaleNumber_TextBox.Width - CustomControls.SpaceBetweenControls -
+                AccountantName_TextBox.Width - CustomControls.SpaceBetweenControls -
+                ProductName_TextBox.Width - CustomControls.SpaceBetweenControls -
+                CountryOfDestinaion_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Receipt_Button.Width) / 2);
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
-            AccountantName_TextBox.Left = SaleNumber_TextBox.Right + CustomControls.spaceBetweenControls;
+            AccountantName_TextBox.Left = SaleNumber_TextBox.Right + CustomControls.SpaceBetweenControls;
             AccountantName_Label.Left = AccountantName_TextBox.Left;
-            ProductName_TextBox.Left = AccountantName_TextBox.Right + CustomControls.spaceBetweenControls;
+            ProductName_TextBox.Left = AccountantName_TextBox.Right + CustomControls.SpaceBetweenControls;
             ProductName_Label.Left = ProductName_TextBox.Left;
-            CountryOfDestinaion_TextBox.Left = ProductName_TextBox.Right + CustomControls.spaceBetweenControls;
+            CountryOfDestinaion_TextBox.Left = ProductName_TextBox.Right + CustomControls.SpaceBetweenControls;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
-            Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + CustomControls.spaceBetweenControls;
+            Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + CustomControls.SpaceBetweenControls;
 
-            Date_DateTimePicker.Left = (ClientSize.Width - Date_DateTimePicker.Width - CustomControls.spaceBetweenControls -
-                Quantity_TextBox.Width - CustomControls.spaceBetweenControls -
-                PricePerUnit_TextBox.Width - CustomControls.spaceBetweenControls -
-                Shipping_TextBox.Width - CustomControls.spaceBetweenControls -
-                Tax_TextBox.Width - CustomControls.spaceBetweenControls -
-                PaymentFee_TextBox.Width - CustomControls.spaceBetweenControls -
-                Discount_TextBox.Width - CustomControls.spaceBetweenControls -
+            Date_DateTimePicker.Left = (ClientSize.Width - Date_DateTimePicker.Width - CustomControls.SpaceBetweenControls -
+                Quantity_TextBox.Width - CustomControls.SpaceBetweenControls -
+                PricePerUnit_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Shipping_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Tax_TextBox.Width - CustomControls.SpaceBetweenControls -
+                PaymentFee_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Discount_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Credited_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
-            Quantity_TextBox.Left = Date_DateTimePicker.Right + CustomControls.spaceBetweenControls;
+            Quantity_TextBox.Left = Date_DateTimePicker.Right + CustomControls.SpaceBetweenControls;
             Quantity_Label.Left = Quantity_TextBox.Left;
-            PricePerUnit_TextBox.Left = Quantity_TextBox.Right + CustomControls.spaceBetweenControls;
+            PricePerUnit_TextBox.Left = Quantity_TextBox.Right + CustomControls.SpaceBetweenControls;
             PricePerUnit_Label.Left = PricePerUnit_TextBox.Left;
-            Shipping_TextBox.Left = PricePerUnit_TextBox.Right + CustomControls.spaceBetweenControls;
+            Shipping_TextBox.Left = PricePerUnit_TextBox.Right + CustomControls.SpaceBetweenControls;
             Shipping_Label.Left = Shipping_TextBox.Left;
-            Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.spaceBetweenControls;
+            Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.SpaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
-            PaymentFee_TextBox.Left = Tax_TextBox.Right + CustomControls.spaceBetweenControls;
+            PaymentFee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
             Fee_Label.Left = PaymentFee_TextBox.Left;
-            Discount_TextBox.Left = PaymentFee_TextBox.Right + CustomControls.spaceBetweenControls;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + CustomControls.SpaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
-            Credited_TextBox.Left = Discount_TextBox.Right + CustomControls.spaceBetweenControls;
+            Credited_TextBox.Left = Discount_TextBox.Right + CustomControls.SpaceBetweenControls;
             Credited_Label.Left = Credited_TextBox.Left;
 
             // Add controls
@@ -614,43 +614,43 @@ namespace Sales_Tracker
 
             if (Controls.Contains(WarningProduct_PictureBox))
             {
-                WarningProduct_PictureBox.Location = new Point(ProductName_TextBox.Left, ProductName_TextBox.Bottom + CustomControls.spaceBetweenControls);
-                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.spaceBetweenControls, WarningProduct_PictureBox.Top);
+                WarningProduct_PictureBox.Location = new Point(ProductName_TextBox.Left, ProductName_TextBox.Bottom + CustomControls.SpaceBetweenControls);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
             }
         }
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            SaleNumber_TextBox.Left = (ClientSize.Width - SaleNumber_TextBox.Width - CustomControls.spaceBetweenControls -
-                AccountantName_TextBox.Width - CustomControls.spaceBetweenControls -
-                CountryOfDestinaion_TextBox.Width - CustomControls.spaceBetweenControls -
+            SaleNumber_TextBox.Left = (ClientSize.Width - SaleNumber_TextBox.Width - CustomControls.SpaceBetweenControls -
+                AccountantName_TextBox.Width - CustomControls.SpaceBetweenControls -
+                CountryOfDestinaion_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Receipt_Button.Width) / 2;
 
             SaleNumber_Label.Left = SaleNumber_TextBox.Left;
-            AccountantName_TextBox.Left = SaleNumber_TextBox.Right + CustomControls.spaceBetweenControls;
+            AccountantName_TextBox.Left = SaleNumber_TextBox.Right + CustomControls.SpaceBetweenControls;
             AccountantName_Label.Left = AccountantName_TextBox.Left;
-            CountryOfDestinaion_TextBox.Left = AccountantName_TextBox.Right + CustomControls.spaceBetweenControls;
+            CountryOfDestinaion_TextBox.Left = AccountantName_TextBox.Right + CustomControls.SpaceBetweenControls;
             CountryOfDestination_Label.Left = CountryOfDestinaion_TextBox.Left;
-            Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + CustomControls.spaceBetweenControls;
+            Receipt_Button.Left = CountryOfDestinaion_TextBox.Right + CustomControls.SpaceBetweenControls;
 
             Date_DateTimePicker.Left = (ClientSize.Width -
-                Date_DateTimePicker.Width - CustomControls.spaceBetweenControls -
-                Shipping_TextBox.Width - CustomControls.spaceBetweenControls -
-                Tax_TextBox.Width - CustomControls.spaceBetweenControls -
-                PaymentFee_TextBox.Width - CustomControls.spaceBetweenControls -
-                Discount_TextBox.Width - CustomControls.spaceBetweenControls -
+                Date_DateTimePicker.Width - CustomControls.SpaceBetweenControls -
+                Shipping_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Tax_TextBox.Width - CustomControls.SpaceBetweenControls -
+                PaymentFee_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Discount_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Credited_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
-            Shipping_TextBox.Left = Date_DateTimePicker.Right + CustomControls.spaceBetweenControls;
+            Shipping_TextBox.Left = Date_DateTimePicker.Right + CustomControls.SpaceBetweenControls;
             Shipping_Label.Left = Shipping_TextBox.Left;
-            Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.spaceBetweenControls;
+            Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.SpaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
-            PaymentFee_TextBox.Left = Tax_TextBox.Right + CustomControls.spaceBetweenControls;
+            PaymentFee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
             Fee_Label.Left = PaymentFee_TextBox.Left;
-            Discount_TextBox.Left = PaymentFee_TextBox.Right + CustomControls.spaceBetweenControls;
+            Discount_TextBox.Left = PaymentFee_TextBox.Right + CustomControls.SpaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
-            Credited_TextBox.Left = Discount_TextBox.Right + CustomControls.spaceBetweenControls;
+            Credited_TextBox.Left = Discount_TextBox.Right + CustomControls.SpaceBetweenControls;
             Credited_Label.Left = Credited_TextBox.Left;
 
             // Remove controls
@@ -666,8 +666,8 @@ namespace Sales_Tracker
 
             if (Controls.Contains(WarningProduct_PictureBox))
             {
-                WarningProduct_PictureBox.Location = new Point(AddButton.Left + CustomControls.spaceBetweenControls, AddButton.Top - flowPanelMargin * 2);
-                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.spaceBetweenControls, WarningProduct_PictureBox.Top);
+                WarningProduct_PictureBox.Location = new Point(AddButton.Left + CustomControls.SpaceBetweenControls, AddButton.Top - flowPanelMargin * 2);
+                WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
                 Controls.Remove(AddButton);
             }
             else
@@ -677,8 +677,8 @@ namespace Sales_Tracker
         }
         private void RelocateBuyerWarning()
         {
-            WarningBuyer_PictureBox.Location = new Point(AccountantName_TextBox.Left, AccountantName_TextBox.Bottom + CustomControls.spaceBetweenControls);
-            WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + CustomControls.spaceBetweenControls, WarningBuyer_PictureBox.Top);
+            WarningBuyer_PictureBox.Location = new Point(AccountantName_TextBox.Left, AccountantName_TextBox.Bottom + CustomControls.SpaceBetweenControls);
+            WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + CustomControls.SpaceBetweenControls, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
         private enum TextBoxnames
@@ -709,20 +709,20 @@ namespace Sales_Tracker
             CosntructLabel(ProductName_Label.Text, 0, panel);
 
             // Quantity
-            left = textBox.Right + CustomControls.spaceBetweenControls;
+            left = textBox.Right + CustomControls.SpaceBetweenControls;
             textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, panel);
             CosntructLabel(Quantity_Label.Text, left, panel);
 
             // Price per unit
-            left = textBox.Right + CustomControls.spaceBetweenControls;
+            left = textBox.Right + CustomControls.SpaceBetweenControls;
             textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, panel);
             CosntructLabel(PricePerUnit_Label.Text, left, panel);
 
             // Add minus button unless this is the first panel
-            left = textBox.Right + CustomControls.spaceBetweenControls;
+            left = textBox.Right + CustomControls.SpaceBetweenControls;
             if (panelsForMultipleProducts_List.Count > 1)
             {
-                CosntructMinusButton(new Point(left + CustomControls.spaceBetweenControls, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
+                CosntructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
             }
 
             FlowPanel.SuspendLayout();
@@ -750,7 +750,7 @@ namespace Sales_Tracker
             {
                 Size = new Size(width, textBoxHeight),
                 Name = name,
-                Location = new Point(left, 28 + CustomControls.spaceBetweenControls),
+                Location = new Point(left, 28 + CustomControls.SpaceBetweenControls),
                 BorderColor = CustomColors.controlBorder,
                 FillColor = CustomColors.controlBack,
                 ForeColor = CustomColors.text,
@@ -833,7 +833,7 @@ namespace Sales_Tracker
                 Anchor = AnchorStyles.Top,
                 AutoScroll = false,
                 Location = new Point((ClientSize.Width - width) / 2, 570),
-                Size = new Size(width, 20 + CustomControls.spaceBetweenControls + textBoxHeight),
+                Size = new Size(width, 20 + CustomControls.SpaceBetweenControls + textBoxHeight),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
                 MaximumSize = new Size(width, maxFlowPanelHeight)
@@ -902,7 +902,7 @@ namespace Sales_Tracker
         }
         private void CheckIfBuyersExist()
         {
-            if (MainMenu_Form.Instance.accountantList.Count == 0)
+            if (MainMenu_Form.Instance.AccountantList.Count == 0)
             {
                 ShowBuyerWarning();
             }

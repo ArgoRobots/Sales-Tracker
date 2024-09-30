@@ -70,7 +70,7 @@ namespace Sales_Tracker.Classes
         /// <returns>True if the searching label should be shown, or false if it should not be shown.</returns>
         public static bool SearchSelectedDataGridView(Guna2TextBox search_TextBox)
         {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.selectedDataGridView.Rows)
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.SelectedDataGridView.Rows)
             {
                 bool isVisible = row.Cells.Cast<DataGridViewCell>()
                                           .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));

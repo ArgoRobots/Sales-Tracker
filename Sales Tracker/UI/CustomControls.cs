@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Properties;
-using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Startup.Menus;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
@@ -19,12 +18,11 @@ namespace Sales_Tracker.UI
             ConstructProfileMenu();
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
-            MainMenu_Form.Instance.ConstructRightClickDataGridViewRowMenu();
-            MainMenu_Form.Instance.ConstructMessage_Panel();
+            DataGridViewManager.ConstructRightRowMenu();
         }
 
         // Properties
-        public static readonly byte panelButtonHeight = 35, spaceForSeperator = 10, spaceForPanel = 10, spaceBetweenControls = 8;
+        private static readonly byte _panelButtonHeight = 35, _spaceForSeperator = 10, _spaceForPanel = 10, _spaceBetweenControls = 8;
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -39,6 +37,10 @@ namespace Sales_Tracker.UI
         // Getters
         public static int PanelWidth => _panelWidth;
         public static int PanelBtnWidth => _panelBtnWidth;
+        public static byte PanelButtonHeight => _panelButtonHeight;
+        public static byte SpaceForSeperator => _spaceForSeperator;
+        public static byte SpaceForPanel => _spaceForPanel;
+        public static byte SpaceBetweenControls => _spaceBetweenControls;
 
         // Construct things for menus
         public static Guna2Panel ConstructPanelForMenu(Size size)
@@ -52,11 +54,11 @@ namespace Sales_Tracker.UI
                 FillColor = CustomColors.panelBtn,
                 Size = size
             };
-            int half = spaceForPanel / 2;
+            int half = _spaceForPanel / 2;
             FlowLayoutPanel flowLayoutPanel = new()
             {
                 BackColor = CustomColors.panelBtn,
-                Size = new Size(size.Width - spaceForPanel, size.Height - spaceForPanel),
+                Size = new Size(size.Width - _spaceForPanel, size.Height - _spaceForPanel),
                 Location = new Point(half, half)
             };
             panel.Controls.Add(flowLayoutPanel);
@@ -78,7 +80,7 @@ namespace Sales_Tracker.UI
         {
             Guna2Button menuBtn = new()
             {
-                Size = new Size(width, panelButtonHeight),
+                Size = new Size(width, _panelButtonHeight),
                 FillColor = CustomColors.panelBtn,
                 ForeColor = CustomColors.text,
                 TextAlign = HorizontalAlignment.Left,
@@ -165,7 +167,7 @@ namespace Sales_Tracker.UI
         public static Guna2Panel fileMenu;
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * panelButtonHeight + spaceForSeperator * 2 + spaceForPanel));
+            fileMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", _panelBtnWidth, true, flowPanel);
@@ -269,7 +271,7 @@ namespace Sales_Tracker.UI
         public static Guna2Panel helpMenu;
         private static void ConstructHelpMenu()
         {
-            helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 7 * panelButtonHeight + spaceForSeperator * 2 + spaceForPanel));
+            helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 7 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)helpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Support", _panelBtnWidth, true, flowPanel);
@@ -321,7 +323,7 @@ namespace Sales_Tracker.UI
         public static Guna2Panel accountMenu;
         private static void ConstructProfileMenu()
         {
-            accountMenu = ConstructPanelForMenu(new Size(_panelWidth, 4 * panelButtonHeight + spaceForSeperator + spaceForPanel));
+            accountMenu = ConstructPanelForMenu(new Size(_panelWidth, 4 * _panelButtonHeight + _spaceForSeperator + _spaceForPanel));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)accountMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Argo account", _panelBtnWidth, true, flowPanel);
@@ -391,7 +393,7 @@ namespace Sales_Tracker.UI
         public static Guna2Panel ControlDropDown_Panel;
         private static void ConstructControlsDropDownMenu()
         {
-            ControlDropDown_Panel = ConstructPanelForMenu(new Size(300, 50 * 6 + 15 + spaceForSeperator * 5));
+            ControlDropDown_Panel = ConstructPanelForMenu(new Size(300, 50 * 6 + 15 + _spaceForSeperator * 5));
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
@@ -536,7 +538,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
             MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
-            MainMenu_Form.Instance.CloseRightClickPanels();
+            MainMenu_Form.CloseRightClickPanels();
         }
         private static void DeselectAllMenuButtons(Guna2Panel panel)
         {

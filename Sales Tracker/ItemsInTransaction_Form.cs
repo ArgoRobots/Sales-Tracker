@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 using System.Text;
 
 namespace Sales_Tracker
@@ -29,7 +30,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
 
             SetTitle();
 
@@ -63,21 +64,21 @@ namespace Sales_Tracker
         {
             MainMenu_Form.Instance.isProgramLoading = true;
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
 
             if (hasChanges)
             {
                 if (Items_DataGridView.Rows.Count == 0)
                 {
-                    MainMenu_Form.Instance.selectedDataGridView.Rows.Remove(MainMenu_Form.Instance.selectedRowInMainMenu);
+                    MainMenu_Form.Instance.SelectedDataGridView.Rows.Remove(DataGridViewManager.SelectedRowInMainMenu);
                 }
                 else
                 {
                     UpdateMainMenuRowTag();
-                    MainMenu_Form.UpdateRowWithMultipleItems(MainMenu_Form.Instance.selectedRowInMainMenu);
+                    DataGridViewManager.UpdateRowWithMultipleItems(DataGridViewManager.SelectedRowInMainMenu);
                 }
 
-                MainMenu_Form.Instance.DataGridViewRowChanged(MainMenu_Form.Instance.selectedDataGridView, MainMenu_Form.Instance.Selected);
+                DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.SelectedDataGridView, MainMenu_Form.Instance.Selected);
             }
             MainMenu_Form.Instance.isProgramLoading = false;
         }
@@ -94,7 +95,7 @@ namespace Sales_Tracker
             if (oldSelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, TagData tagData))
             {
                 string lastItem = null;
-                if (existingItems.Last().StartsWith(MainMenu_Form.receipt_text))
+                if (existingItems.Last().StartsWith(ReadOnlyVariables.Receipt_text))
                 {
                     lastItem = existingItems.Last();
                 }
@@ -126,15 +127,15 @@ namespace Sales_Tracker
                 ? MainMenu_Form.Instance.PurchaseColumnHeaders
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
-            MainMenu_Form.Instance.InitializeDataGridView(Items_DataGridView, Items_DataGridView.Size, columnHeaders, columnsToLoad);
-            Items_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
-            Items_DataGridView.RowsRemoved -= MainMenu_Form.Instance.DataGridView_RowsRemoved;
-            Items_DataGridView.UserDeletingRow -= MainMenu_Form.Instance.DataGridView_UserDeletingRow;
+            DataGridViewManager.InitializeDataGridView(Items_DataGridView, Items_DataGridView.Size, columnHeaders, columnsToLoad);
+            Items_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Items_DataGridView.RowsRemoved -= DataGridViewManager.DataGridView_RowsRemoved;
+            Items_DataGridView.UserDeletingRow -= DataGridViewManager.DataGridView_UserDeletingRow;
             Items_DataGridView.Tag = MainMenu_Form.DataGridViewTag.ItemsInPurchase;
 
             LoadAllItemsInDataGridView(itemList);
 
-            MainMenu_Form.Instance.selectedDataGridView = Items_DataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = Items_DataGridView;
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
             {
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInSale;
@@ -153,7 +154,7 @@ namespace Sales_Tracker
             int startIndex = 0;
 
             // Check if the last item is the receipt file path
-            if (itemList.Count > 0 && itemList[^1].StartsWith(MainMenu_Form.receipt_text))
+            if (itemList.Count > 0 && itemList[^1].StartsWith(ReadOnlyVariables.Receipt_text))
             {
                 receiptFilePath = itemList[^1];
                 startIndex = 1;

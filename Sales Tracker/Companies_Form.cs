@@ -24,7 +24,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldSelectedDataGridView = MainMenu_Form.Instance.selectedDataGridView;
+            oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
             CenterSelectedDataGridView();
             ConstructTotalLabel();
@@ -32,7 +32,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguage(this);
             HideShowingResultsForLabel();
-            MainMenu_Form.SortTheDataGridViewByFirstColumnAndSelectFirstRow(Company_DataGridView);
+            DataGridViewManager.SortFirstColumnAndSelectFirstRow(Company_DataGridView);
             AddEventHandlersToTextBoxes();
             SetTotalLabel();
         }
@@ -47,7 +47,7 @@ namespace Sales_Tracker
         {
             MainMenu_Form.Instance.isProgramLoading = true;
 
-            foreach (string accountant in MainMenu_Form.Instance.companyList)
+            foreach (string accountant in MainMenu_Form.Instance.CompanyList)
             {
                 Company_DataGridView.Rows.Add(accountant);
             }
@@ -64,7 +64,7 @@ namespace Sales_Tracker
         private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.selectedDataGridView = oldSelectedDataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
         }
         private void Companies_Form_Shown(object sender, EventArgs e)
         {
@@ -77,9 +77,9 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             string name = Company_TextBox.Text.Trim();
-            MainMenu_Form.Instance.companyList.Add(name);
+            MainMenu_Form.Instance.CompanyList.Add(name);
             int newRowIndex = Company_DataGridView.Rows.Add(name);
-            MainMenu_Form.Instance.DataGridViewRowsAdded(MainMenu_Form.Instance.selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added company '{name}'");
@@ -130,22 +130,22 @@ namespace Sales_Tracker
         private const byte topForDataGridView = 250;
         private void CenterSelectedDataGridView()
         {
-            if (MainMenu_Form.Instance.selectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
-            MainMenu_Form.Instance.selectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.selectedDataGridView.Width) / 2, topForDataGridView);
+            if (MainMenu_Form.Instance.SelectedDataGridView == null) { return; }
+            MainMenu_Form.Instance.SelectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
+            MainMenu_Form.Instance.SelectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.SelectedDataGridView.Width) / 2, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {
             Size size = new(740, 280);
 
             Company_DataGridView = new Guna2DataGridView();
-            MainMenu_Form.Instance.InitializeDataGridView(Company_DataGridView, size, ColumnHeaders);
-            Company_DataGridView.ColumnWidthChanged -= MainMenu_Form.Instance.DataGridView_ColumnWidthChanged;
+            DataGridViewManager.InitializeDataGridView(Company_DataGridView, size, ColumnHeaders);
+            Company_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Company_DataGridView.Location = new Point((ClientSize.Width - Company_DataGridView.Width) / 2, topForDataGridView);
             Company_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Company;
 
             Controls.Add(Company_DataGridView);
-            MainMenu_Form.Instance.selectedDataGridView = Company_DataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = Company_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
         }
 
@@ -164,14 +164,14 @@ namespace Sales_Tracker
         }
         private void SetTotalLabel()
         {
-            totalLabel.Text = $"Total: {MainMenu_Form.Instance.selectedDataGridView.Rows.Count}";
-            totalLabel.Location = new Point(MainMenu_Form.Instance.selectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.selectedDataGridView.Bottom + 10);
+            totalLabel.Text = $"Total: {MainMenu_Form.Instance.SelectedDataGridView.Rows.Count}";
+            totalLabel.Location = new Point(MainMenu_Form.Instance.SelectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.SelectedDataGridView.Bottom + 10);
         }
 
         // Validate company name
         public void VaidateCompanyTextBox()
         {
-            bool exists = MainMenu_Form.Instance.companyList.Any(a => string.Equals(a, Company_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+            bool exists = MainMenu_Form.Instance.CompanyList.Any(a => string.Equals(a, Company_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
 
             if (exists)
             {

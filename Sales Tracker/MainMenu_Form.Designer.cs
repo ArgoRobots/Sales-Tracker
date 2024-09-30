@@ -124,7 +124,6 @@
             Edit_Button = new Guna.UI2.WinForms.Guna2Button();
             ManageProducts_Button = new Guna.UI2.WinForms.Guna2Button();
             CompanyName_Label = new Label();
-            MessagePanel_timer = new System.Windows.Forms.Timer(components);
             Top_Panel = new Panel();
             Account_Button = new Guna.UI2.WinForms.Guna2Button();
             Saved_Label = new Label();
@@ -331,11 +330,6 @@
             CompanyName_Label.Size = new Size(248, 45);
             CompanyName_Label.TabIndex = 1;
             CompanyName_Label.Text = "Company name";
-            // 
-            // MessagePanel_timer
-            // 
-            MessagePanel_timer.Interval = 4500;
-            MessagePanel_timer.Tick += MessagePanelTimer_Tick;
             // 
             // Top_Panel
             // 
@@ -892,7 +886,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Timer MessagePanel_timer;
         public Guna.UI2.WinForms.Guna2Panel MainTop_Panel;
         public System.Windows.Forms.Panel Top_Panel;
         public Guna.UI2.WinForms.Guna2Button File_Button;
@@ -910,7 +903,6 @@
         public Label Price_Label;
         public Label Shipping_Label;
         public Label Tax_Label;
-        private Guna.UI2.WinForms.Guna2Panel Total_Panel;
         public Guna.UI2.WinForms.Guna2Button Sales_Button;
         public Guna.UI2.WinForms.Guna2Button Purchases_Button;
         private Label LineGraph_Label;
@@ -932,5 +924,6 @@
         public Guna.Charts.WinForms.GunaChart Totals_Chart;
         public Guna.Charts.WinForms.GunaChart Distribution_Chart;
         public Guna.Charts.WinForms.GunaChart Profits_Chart;
+        public Guna.UI2.WinForms.Guna2Panel Total_Panel;
     }
 }

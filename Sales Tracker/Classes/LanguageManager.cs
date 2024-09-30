@@ -242,7 +242,7 @@ namespace Sales_Tracker.Classes
         // Save cache to file
         private static void SaveCacheToFile()
         {
-            string jsonContent = JsonSerializer.Serialize(translationCache, MainMenu_Form.jsonOptions);
+            string jsonContent = JsonSerializer.Serialize(translationCache, ReadOnlyVariables.JsonOptions);
             if (!Directory.Exists(Directories.Cache_dir))
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
@@ -251,7 +251,7 @@ namespace Sales_Tracker.Classes
         }
         private static void SaveEnglishCacheToFile()
         {
-            string jsonContent = JsonSerializer.Serialize(englishCache, MainMenu_Form.jsonOptions);
+            string jsonContent = JsonSerializer.Serialize(englishCache, ReadOnlyVariables.JsonOptions);
             if (!Directory.Exists(Directories.Cache_dir))
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
