@@ -60,86 +60,98 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Update all controls' text with the translated language.
         /// </summary>
-        public static void UpdateLanguage(Control control, string targetLanguageAbbreviation = null)
+        public static void UpdateLanguageForForm(Control control, string targetLanguageAbbreviation = null)
         {
             targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
 
             // Restore original English texts to prevent back-translation errors
             RestoreEnglishTexts(control);
 
+            // Process the control
+            UpdateLanguageForControl(control, targetLanguageAbbreviation);
+
+            // Recursively update child controls
+            foreach (Control childControl in control.Controls)
+            {
+                UpdateLanguageForForm(childControl, targetLanguageAbbreviation);
+            }
+
+            SaveCacheToFile();
+        }
+        public static void UpdateLanguageForControl(Control control, string targetLanguageAbbreviation = null)
+        {
             // Ensure English texts have been cached before translation
             CacheEnglishTexts(control);
             CacheControlBounds(control);
 
-            foreach (Control ctrl in control.Controls)
+            targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
+
+            // Check if the control should be skipped
+            if (control.AccessibleDescription == AccessibleDescriptionStrings.DoNotTranslate)
             {
-                // Check if the control should be skipped
-                if (ctrl.AccessibleDescription == AccessibleDescriptionStrings.DoNotTranslate)
-                {
-                    continue;
-                }
-
-                string controlKey = GetControlKey(ctrl);
-
-                switch (ctrl)
-                {
-                    case Guna2Button guna2Button:
-                        guna2Button.Text = TranslateText(ctrl.Text, targetLanguageAbbreviation, controlKey);
-                        break;
-
-                    case Label label:
-                        label.Text = TranslateText(label.Text, targetLanguageAbbreviation, controlKey);
-                        AdjustLabelSizeAndPosition(label);
-                        break;
-
-                    case Guna2TextBox guna2TextBox:
-                        guna2TextBox.Text = TranslateText(guna2TextBox.Text, targetLanguageAbbreviation, controlKey);
-                        guna2TextBox.PlaceholderText = TranslateText(guna2TextBox.PlaceholderText, targetLanguageAbbreviation, controlKey + "_Placeholder");
-                        break;
-
-                    case Guna2ComboBox guna2ComboBox:
-                        if (guna2ComboBox.DataSource == null)
-                        {
-                            int selectedIndex = guna2ComboBox.SelectedIndex;
-
-                            List<object> translatedItems = new();
-                            for (int i = 0; i < guna2ComboBox.Items.Count; i++)
-                            {
-                                string itemKey = $"{controlKey}_Item_{i}";
-                                translatedItems.Add(TranslateText(guna2ComboBox.Items[i].ToString(), targetLanguageAbbreviation, itemKey));
-                            }
-
-                            guna2ComboBox.Items.Clear();
-                            guna2ComboBox.Items.AddRange(translatedItems.ToArray());
-
-                            if (selectedIndex >= 0 && selectedIndex < guna2ComboBox.Items.Count)
-                            {
-                                guna2ComboBox.SelectedIndex = selectedIndex;
-                            }
-                        }
-                        break;
-
-                    case GunaChart gunaChart:
-                        gunaChart.Title.Text = TranslateText(gunaChart.Title.Text, targetLanguageAbbreviation, controlKey + "_Title");
-                        break;
-
-                    case Guna2DataGridView gunaDataGridView:
-                        foreach (DataGridViewColumn column in gunaDataGridView.Columns)
-                        {
-                            string columnKey = $"{controlKey}_Column_{column.Name}";
-                            column.HeaderText = TranslateText(column.HeaderText, targetLanguageAbbreviation, columnKey);
-                        }
-                        break;
-                }
-
-                // Recursively update child controls
-                if (ctrl.HasChildren)
-                {
-                    UpdateLanguage(ctrl, targetLanguageAbbreviation);
-                }
+                return;
             }
 
-            SaveCacheToFile();
+            string controlKey = GetControlKey(control);
+
+            switch (control)
+            {
+                case Label label:
+                    label.Text = TranslateText(label.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
+                    AdjustLabelSizeAndPosition(label);
+                    break;
+
+                case Guna2Button guna2Button:
+                    guna2Button.Text = TranslateText(guna2Button.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
+                    break;
+
+                case Guna2TextBox guna2TextBox:
+                    guna2TextBox.Text = TranslateText(guna2TextBox.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
+                    guna2TextBox.PlaceholderText = TranslateText(guna2TextBox.PlaceholderText, targetLanguageAbbreviation, controlKey + "_Placeholder", CanControlCache(control));
+                    break;
+
+                case Guna2ComboBox guna2ComboBox:
+                    if (guna2ComboBox.DataSource == null)
+                    {
+                        int selectedIndex = guna2ComboBox.SelectedIndex;
+
+                        List<object> translatedItems = new();
+                        for (int i = 0; i < guna2ComboBox.Items.Count; i++)
+                        {
+                            string itemKey = $"{controlKey}_Item_{i}";
+                            translatedItems.Add(TranslateText(guna2ComboBox.Items[i].ToString(), targetLanguageAbbreviation, itemKey, CanControlCache(control)));
+                        }
+
+                        guna2ComboBox.Items.Clear();
+                        guna2ComboBox.Items.AddRange(translatedItems.ToArray());
+
+                        if (selectedIndex >= 0 && selectedIndex < guna2ComboBox.Items.Count)
+                        {
+                            guna2ComboBox.SelectedIndex = selectedIndex;
+                        }
+                    }
+                    break;
+
+                case GunaChart gunaChart:
+                    gunaChart.Title.Text = TranslateText(gunaChart.Title.Text, targetLanguageAbbreviation, controlKey + "_Title", CanControlCache(control));
+                    break;
+
+                case Guna2DataGridView gunaDataGridView:
+                    foreach (DataGridViewColumn column in gunaDataGridView.Columns)
+                    {
+                        string columnKey = $"{controlKey}_Column_{column.Name}";
+                        column.HeaderText = TranslateText(column.HeaderText, targetLanguageAbbreviation, columnKey, CanControlCache(control));
+                    }
+                    break;
+
+                default:
+                    // For other controls that have a Text property
+                    if (!string.IsNullOrEmpty(control.Text))
+                    {
+                        control.Text = TranslateText(control.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
+                    }
+                    break;
+            }
         }
         private static void AdjustLabelSizeAndPosition(Label label)
         {
@@ -160,7 +172,6 @@ namespace Sales_Tracker.Classes
             // Adjust position
             AdjustLabelPosition(label, originalBounds);
         }
-
         private static void AdjustLabelPosition(Label label, Rectangle originalBounds)
         {
             if (label.Anchor.HasFlag(AnchorStyles.Right))
@@ -169,26 +180,41 @@ namespace Sales_Tracker.Classes
             }
             else if (label.Anchor == AnchorStyles.Top)
             {
-                // If the control should be moved left
-
-
-                // If the controls should be centered
-
+                if (label.AccessibleDescription == AccessibleDescriptionStrings.AlignRightCenter)
+                {
+                    label.Left = originalBounds.Right - label.Width;
+                }
+                else if (label.AccessibleDescription == AccessibleDescriptionStrings.AlignLeftCenter)
+                {
+                    label.Left = originalBounds.Left;
+                }
+                else  // The control should be centered
+                {
+                    int originalCenterX = originalBounds.Left + originalBounds.Width / 2;
+                    label.Left = originalCenterX - label.Width / 2;
+                }
             }
+        }
+        private static bool CanControlCache(Control control)
+        {
+            return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotCacheText;
         }
 
         /// <summary>
         /// Translates text using cache or Microsoft Translator API.
         /// </summary>
-        private static string? TranslateText(string text, string targetLanguageAbbreviation, string controlKey)
+        private static string? TranslateText(string text, string targetLanguageAbbreviation, string controlKey, bool canCache)
         {
             if (string.IsNullOrEmpty(text)) { return text; }
 
             // Get the cached translation for this control if it exists
-            if (translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
-                controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
+            if (canCache)
             {
-                return cachedTranslation;
+                if (translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
+                controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
+                {
+                    return cachedTranslation;
+                }
             }
 
             try
@@ -216,18 +242,21 @@ namespace Sales_Tracker.Classes
                 string translatedText = result[0].translations[0].text;
 
                 // Cache the translation
-                if (!translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlDict))
+                if (canCache)
                 {
-                    controlDict = new();
-                    translationCache[targetLanguageAbbreviation] = controlDict;
-                }
+                    if (!translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlDict))
+                    {
+                        controlDict = new();
+                        translationCache[targetLanguageAbbreviation] = controlDict;
+                    }
 
-                if (!string.IsNullOrEmpty(translatedText))
-                {
-                    controlDict[controlKey] = translatedText;
-                }
+                    if (!string.IsNullOrEmpty(translatedText))
+                    {
+                        controlDict[controlKey] = translatedText;
+                    }
 
-                SaveCacheToFile();
+                    SaveCacheToFile();
+                }
 
                 return translatedText;
             }
@@ -262,59 +291,58 @@ namespace Sales_Tracker.Classes
         // Cache things
         private static void CacheEnglishTexts(Control control)
         {
-            foreach (Control ctrl in control.Controls)
+            if (!CanControlCache(control)) { return; }
+
+            string controlKey = GetControlKey(control);
+
+            if (!englishCache.ContainsKey(controlKey))
             {
-                string controlKey = GetControlKey(ctrl);
+                englishCache[controlKey] = control.Text;
 
-                if (!englishCache.ContainsKey(controlKey))
+                switch (control)
                 {
-                    englishCache[controlKey] = ctrl.Text;
+                    case Label label:
+                        englishCache[controlKey] = label.Text;
+                        break;
 
-                    switch (ctrl)
-                    {
-                        case Guna2Button guna2Button:
-                            englishCache[controlKey] = guna2Button.Text;
-                            break;
+                    case Guna2Button guna2Button:
+                        englishCache[controlKey] = guna2Button.Text;
+                        break;
 
-                        case Label label:
-                            englishCache[controlKey] = label.Text;
-                            break;
+                    case Guna2TextBox guna2TextBox:
+                        string placeholderKey = $"{controlKey}_Placeholder";
+                        englishCache[placeholderKey] = guna2TextBox.PlaceholderText;
+                        break;
 
-                        case Guna2TextBox guna2TextBox:
-                            englishCache[controlKey] = guna2TextBox.Text;
-                            string placeholderKey = $"{controlKey}_Placeholder";
-                            englishCache[placeholderKey] = guna2TextBox.PlaceholderText;
-                            break;
-
-                        case Guna2ComboBox guna2ComboBox:
-                            if (guna2ComboBox.DataSource == null)
+                    case Guna2ComboBox guna2ComboBox:
+                        if (guna2ComboBox.DataSource == null)
+                        {
+                            for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                             {
-                                for (int i = 0; i < guna2ComboBox.Items.Count; i++)
-                                {
-                                    string itemKey = $"{controlKey}_Item_{i}";
-                                    englishCache[controlKey] = guna2ComboBox.Items[i].ToString();
-                                }
+                                string itemKey = $"{controlKey}_Item_{i}";
+                                englishCache[itemKey] = guna2ComboBox.Items[i].ToString();
                             }
-                            break;
+                        }
+                        break;
 
-                        case GunaChart gunaChart:
-                            englishCache[controlKey] = gunaChart.Title.Text;
-                            break;
+                    case GunaChart gunaChart:
+                        englishCache[controlKey] = gunaChart.Title.Text;
+                        break;
 
-                        case Guna2DataGridView gunaDataGridView:
-                            foreach (DataGridViewColumn column in gunaDataGridView.Columns)
-                            {
-                                string columnKey = $"{controlKey}_Column_{column.Name}";
-                                englishCache[columnKey] = column.HeaderText;
-                            }
-                            break;
-                    }
+                    case Guna2DataGridView gunaDataGridView:
+                        foreach (DataGridViewColumn column in gunaDataGridView.Columns)
+                        {
+                            string columnKey = $"{controlKey}_Column_{column.Name}";
+                            englishCache[columnKey] = column.HeaderText;
+                        }
+                        break;
                 }
+            }
 
-                if (ctrl.HasChildren)
-                {
-                    CacheEnglishTexts(ctrl);
-                }
+            // Recursively cache English texts for child controls
+            foreach (Control childControl in control.Controls)
+            {
+                CacheEnglishTexts(childControl);
             }
 
             // Save the English texts to file
@@ -343,6 +371,12 @@ namespace Sales_Tracker.Classes
         // Misc. methods
         private static void RestoreEnglishTexts(Control control)
         {
+            // TO DO:
+            // this needs to support all the controls like the switch statements
+
+
+
+
             foreach (Control ctrl in control.Controls)
             {
                 string controlKey = GetControlKey(ctrl);
@@ -371,10 +405,10 @@ namespace Sales_Tracker.Classes
                 }
             }
         }
-        private static string GetControlKey(Control ctrl)
+        private static string GetControlKey(Control control)
         {
-            string formName = ctrl.FindForm()?.Name ?? "UnknownForm";
-            string controlName = ctrl.Name ?? ctrl.GetHashCode().ToString();
+            string formName = control.FindForm()?.Name ?? "UnknownForm";
+            string controlName = control.Name ?? control.GetHashCode().ToString();
             return $"{formName}.{controlName}";
         }
         public static List<KeyValuePair<string, string>> GetLanguages()

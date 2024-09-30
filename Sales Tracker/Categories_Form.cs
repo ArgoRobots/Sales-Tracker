@@ -37,7 +37,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             CenterSelectedDataGridView();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
             HideShowingResultsForLabel();
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Purchases_DataGridView, Sales_DataGridView);
             AddEventHandlersToTextBoxes();

@@ -31,7 +31,7 @@ namespace Sales_Tracker
 
             ConstructControls();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
 
         // Form event handlers

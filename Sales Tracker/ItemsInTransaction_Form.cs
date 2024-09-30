@@ -40,7 +40,7 @@ namespace Sales_Tracker
             }
 
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
 
             // Attach event handlers to detect changes in DataGridView
             Items_DataGridView.CellValueChanged += (s, e) => hasChanges = true;

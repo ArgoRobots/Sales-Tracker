@@ -12,7 +12,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
             InitializeDatePickers();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
 
         // Form event handlers

@@ -23,7 +23,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             InitLoadingComponents();
             InitContainerPanel();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
             RemoveReceiptLabel();
             AlignControls();
         }

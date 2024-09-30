@@ -38,7 +38,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
             HideShowingResultsForLabel();
             AddEventHandlersToTextBoxes();
             SetTotalLabel();

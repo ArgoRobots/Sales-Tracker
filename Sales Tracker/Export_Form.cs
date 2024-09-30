@@ -14,7 +14,7 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             UpdateTheme();
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
         public void UpdateTheme()
         {

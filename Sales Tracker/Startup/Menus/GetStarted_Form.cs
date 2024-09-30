@@ -35,7 +35,7 @@ namespace Sales_Tracker.Startup.Menus
 
             SetDoNotTranslateControls();
             LanguageManager.InitLanguageManager();
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
 
             LoadListOfRecentProjects();
 

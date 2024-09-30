@@ -36,7 +36,7 @@ namespace Sales_Tracker
             }
 
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
             MainMenu_Form.Instance.isProgramLoading = false;
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
         }

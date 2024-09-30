@@ -12,7 +12,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
 
         // Form event handlers

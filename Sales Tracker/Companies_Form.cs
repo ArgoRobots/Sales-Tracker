@@ -30,7 +30,7 @@ namespace Sales_Tracker
             ConstructTotalLabel();
             LoadCompanies();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
             HideShowingResultsForLabel();
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Company_DataGridView);
             AddEventHandlersToTextBoxes();

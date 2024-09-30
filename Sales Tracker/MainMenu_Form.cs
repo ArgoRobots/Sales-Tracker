@@ -74,7 +74,7 @@ namespace Sales_Tracker
             HideShowingResultsForLabel();
 
             SetDoNotTranslateControls();
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
         public void ResetData()
         {
@@ -1433,8 +1433,8 @@ namespace Sales_Tracker
         public Guna2DataGridView Sales_DataGridView => _sales_DataGridView;
         public Guna2DataGridView SelectedDataGridView
         {
-            get => _sales_DataGridView;
-            set => _sales_DataGridView = value;
+            get => _selectedDataGridView;
+            set => _selectedDataGridView = value;
         }
 
         // Total labels

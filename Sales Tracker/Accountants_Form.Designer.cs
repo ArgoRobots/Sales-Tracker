@@ -44,6 +44,7 @@ namespace Sales_Tracker
             AddCategory_Label = new Label();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
+            Total_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningAccountantName_PictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -184,10 +185,22 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Text = "Showing results for";
             ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
+            // Total_Label
+            // 
+            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Total_Label.AutoSize = true;
+            Total_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Total_Label.Location = new Point(946, 684);
+            Total_Label.Name = "Total_Label";
+            Total_Label.Size = new Size(68, 31);
+            Total_Label.TabIndex = 50;
+            Total_Label.Text = "Total:";
+            // 
             // Accountants_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1178, 724);
+            Controls.Add(Total_Label);
             Controls.Add(ShowingResultsFor_Label);
             Controls.Add(Search_TextBox);
             Controls.Add(WarningAccountantName_PictureBox);
@@ -221,5 +234,6 @@ namespace Sales_Tracker
         private Label AddCategory_Label;
         private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
+        private Label Total_Label;
     }
 }

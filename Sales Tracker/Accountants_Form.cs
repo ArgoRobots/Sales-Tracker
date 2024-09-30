@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -27,14 +28,22 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
             CenterSelectedDataGridView();
-            ConstructTotalLabel();
             LoadAccountants();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            SetDoNotTranslateControls();
+            LanguageManager.UpdateLanguageForForm(this);
+            SetTotalLabel();
             HideShowingResultsForLabel();
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Accountants_DataGridView);
             AddEventHandlersToTextBoxes();
-            SetTotalLabel();
+        }
+        private void LoadAccountants()
+        {
+            foreach (string accountant in MainMenu_Form.Instance.AccountantList)
+            {
+                Accountants_DataGridView.Rows.Add(accountant);
+            }
+            Tools.ScrollToTopOfDataGridView(Accountants_DataGridView);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -44,13 +53,11 @@ namespace Sales_Tracker
             Accountants_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
             Accountants_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
         }
-        private void LoadAccountants()
+        private void SetDoNotTranslateControls()
         {
-            foreach (string accountant in MainMenu_Form.Instance.AccountantList)
-            {
-                Accountants_DataGridView.Rows.Add(accountant);
-            }
-            Tools.ScrollToTopOfDataGridView(Accountants_DataGridView);
+            AccountantName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCacheText;
+            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCacheText;
         }
 
         // Form event handlers
@@ -147,25 +154,6 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
         }
 
-        // Label
-        private Label totalLabel;
-        private void ConstructTotalLabel()
-        {
-            totalLabel = new Label
-            {
-                Font = new Font("Segoe UI", 11),
-                AutoSize = true,
-                ForeColor = CustomColors.text,
-                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
-            };
-            Controls.Add(totalLabel);
-        }
-        private void SetTotalLabel()
-        {
-            totalLabel.Text = $"Total: {Accountants_DataGridView.Rows.Count}";
-            totalLabel.Location = new Point(Accountants_DataGridView.Right - totalLabel.Width, Accountants_DataGridView.Bottom + 10);
-        }
-
         // Validate accountant name
         public void VaidateAccountantTextBox()
         {
@@ -206,16 +194,28 @@ namespace Sales_Tracker
             }
         }
 
-        // SearchingFor_Label
+        // Set labels
         private void ShowShowingResultsForLabel(string text)
         {
-            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
+            // Keep the "Showing results for" the same if it's been translated
+            string[] parts = ShowingResultsFor_Label.Text.Split(':');
+            string baseText = parts[0].Trim();
+            ShowingResultsFor_Label.Text = $"{baseText}: {text}";
+
             ShowingResultsFor_Label.Left = (ClientSize.Width - ShowingResultsFor_Label.Width) / 2;
             Controls.Add(ShowingResultsFor_Label);
         }
         private void HideShowingResultsForLabel()
         {
             Controls.Remove(ShowingResultsFor_Label);
+        }
+        private void SetTotalLabel()
+        {
+            // Keep the "Total" the same if it's been translated
+            string[] parts = Total_Label.Text.Split(':');
+            string baseText = parts[0].Trim();
+            Total_Label.Text = $"{baseText}: {Accountants_DataGridView.Rows.Count}";
+            Total_Label.Location = new Point(Accountants_DataGridView.Right - Total_Label.Width, Accountants_DataGridView.Bottom + 10);
         }
 
         // Methods

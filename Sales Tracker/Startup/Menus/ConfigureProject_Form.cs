@@ -23,7 +23,7 @@ namespace Sales_Tracker.Startup.Menus
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             UpdateTheme();
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
         public void UpdateTheme()
         {

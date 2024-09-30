@@ -12,7 +12,7 @@ namespace Sales_Tracker.Passwords
             LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
         {

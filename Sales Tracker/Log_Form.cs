@@ -21,7 +21,7 @@ namespace Sales_Tracker
 
             LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
 
             // Hide caret
             RichTextBox.MouseDown += (sender, e) =>

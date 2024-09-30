@@ -13,7 +13,7 @@ namespace Sales_Tracker.Passwords
             AddEventHandlersToTextBoxes();
             Modify_RadioButton.Checked = true;
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguage(this);
+            LanguageManager.UpdateLanguageForForm(this);
         }
         private void AddEventHandlersToTextBoxes()
         {

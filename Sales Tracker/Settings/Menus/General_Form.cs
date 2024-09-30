@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 
 namespace Sales_Tracker.Settings.Menus
 {
@@ -20,7 +21,8 @@ namespace Sales_Tracker.Settings.Menus
 
             InitComboBoxDataSources();
             UpdateTheme();
-            LanguageManager.UpdateLanguage(this);
+            SetDoNotTranslateControls();
+            LanguageManager.UpdateLanguageForForm(this);
             UpdateControls();
         }
         private void InitComboBoxDataSources()
@@ -35,6 +37,16 @@ namespace Sales_Tracker.Settings.Menus
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
+        }
+        private void SetDoNotTranslateControls()
+        {
+            Language_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            Currency_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ColorTheme_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ShowDebugInfo_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
         }
 
         // Form event handlers

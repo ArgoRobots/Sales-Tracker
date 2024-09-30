@@ -65,15 +65,15 @@
                 // Calculate how many controls fit in the current row
                 while (endIndex < totalControls)
                 {
-                    Control ctrl = Controls[endIndex];
-                    int ctrlWidth = ctrl.Width + _spacing;
+                    Control control = Controls[endIndex];
+                    int controlWidth = control.Width + _spacing;
 
-                    if (currentRowWidth + ctrlWidth - _spacing > clientWidth && currentRowWidth > 0)
+                    if (currentRowWidth + controlWidth - _spacing > clientWidth && currentRowWidth > 0)
                     {
                         break;
                     }
 
-                    currentRowWidth += ctrlWidth;
+                    currentRowWidth += controlWidth;
                     endIndex++;
                 }
 
@@ -83,10 +83,10 @@
                 // Layout the controls in the current row
                 for (int i = startIndex; i < endIndex; i++)
                 {
-                    Control ctrl = Controls[i];
-                    ctrl.Location = new Point(x, y);
-                    x += ctrl.Width + _spacing;
-                    rowHeight = Math.Max(rowHeight, ctrl.Height);
+                    Control control = Controls[i];
+                    control.Location = new Point(x, y);
+                    x += control.Width + _spacing;
+                    rowHeight = Math.Max(rowHeight, control.Height);
                 }
 
                 // Move to the next row

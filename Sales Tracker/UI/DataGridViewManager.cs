@@ -177,7 +177,7 @@ namespace Sales_Tracker.UI
                     logIndex = 2;
                     valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Name.ToString(), valueBeingRemoved))
+                    if (IsThisBeingUsed(type, Accountants_Form.Columns.AccountantName.ToString(), valueBeingRemoved))
                     {
                         e.Cancel = true;
                         return;
@@ -810,7 +810,7 @@ namespace Sales_Tracker.UI
         }
         public static List<DataGridViewRow> GetAllRows()
         {
-            List<DataGridViewRow> allRows = new();
+            List<DataGridViewRow> allRows = [];
             allRows.AddRange(MainMenu_Form.Instance.Purchases_DataGridView.Rows.Cast<DataGridViewRow>());
             allRows.AddRange(MainMenu_Form.Instance.Sales_DataGridView.Rows.Cast<DataGridViewRow>());
             return allRows;

@@ -68,7 +68,7 @@ namespace Sales_Tracker.Classes
                 // Update the language in all open forms
                 foreach (Form openForm in Application.OpenForms.Cast<Form>().ToArray())
                 {
-                    LanguageManager.UpdateLanguage(openForm, selectedLanguage);
+                    LanguageManager.UpdateLanguageForForm(openForm, selectedLanguage);
                 }
             }
 
