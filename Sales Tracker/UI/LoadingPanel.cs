@@ -8,23 +8,27 @@ namespace Sales_Tracker.UI
     /// </summary>
     public class LoadingPanel
     {
-        private static Panel blankLoadingPanel;
-        public static Panel BlankLoadingPanelInstance
-        {
-            get { return blankLoadingPanel; }
-        }
+        // Properties
+        private static Panel _blankLoadingPanel;
+        private static Panel _loadingPanel;
+
+        // Getters
+        public static Panel BlankLoadingPanelInstance => _blankLoadingPanel;
+        public static Panel LoadingPanelInstance => _loadingPanel;
+
+        // blankLoadingPanel
         public static void InitBlankLoadingPanel()
         {
-            blankLoadingPanel = new Panel
+            _blankLoadingPanel = new Panel
             {
                 BackColor = CustomColors.mainBackground
             };
         }
         public static void ShowBlankLoadingPanel(Control control)
         {
-            if (blankLoadingPanel.InvokeRequired)
+            if (_blankLoadingPanel.InvokeRequired)
             {
-                blankLoadingPanel.Invoke(new Action(show));
+                _blankLoadingPanel.Invoke(new Action(show));
             }
             else
             {
@@ -33,26 +37,22 @@ namespace Sales_Tracker.UI
 
             void show()
             {
-                blankLoadingPanel.Size = control.Size;
-                control.Controls.Add(blankLoadingPanel);
-                blankLoadingPanel.BringToFront();
+                _blankLoadingPanel.Size = control.Size;
+                control.Controls.Add(_blankLoadingPanel);
+                _blankLoadingPanel.BringToFront();
             }
         }
         public static void HideBlankLoadingPanel(Control control)
         {
-            control.Controls.Remove(blankLoadingPanel);
+            control.Controls.Remove(_blankLoadingPanel);
         }
 
-        private static Panel loadingPanel;
-        public static Panel LoadingPanelInstance
-        {
-            get { return blankLoadingPanel; }
-        }
+        // loadingPanel
         public static void InitLoadingPanel()
         {
-            if (loadingPanel != null) { return; }
+            if (_loadingPanel != null) { return; }
 
-            loadingPanel = new Panel
+            _loadingPanel = new Panel
             {
                 BackColor = CustomColors.mainBackground
             };
@@ -62,21 +62,21 @@ namespace Sales_Tracker.UI
                 ProgressColor = CustomColors.accent_blue,
             };
 
-            loadingPanel.Controls.Add(progressIndicator);
+            _loadingPanel.Controls.Add(progressIndicator);
         }
         public static void ShowLoadingScreen(Control control)
         {
-            loadingPanel.Size = control.Size;
-            control.Controls.Add(loadingPanel);
+            _loadingPanel.Size = control.Size;
+            control.Controls.Add(_loadingPanel);
 
-            Guna2WinProgressIndicator progressIndicator = (Guna2WinProgressIndicator)loadingPanel.Controls[0];
-            progressIndicator.Location = new Point((loadingPanel.Width - progressIndicator.Width) / 2, (loadingPanel.Height - progressIndicator.Height) / 2);
+            Guna2WinProgressIndicator progressIndicator = (Guna2WinProgressIndicator)_loadingPanel.Controls[0];
+            progressIndicator.Location = new Point((_loadingPanel.Width - progressIndicator.Width) / 2, (_loadingPanel.Height - progressIndicator.Height) / 2);
 
-            loadingPanel.BringToFront();
+            _loadingPanel.BringToFront();
         }
         public static void HideLoadingScreen(Control control)
         {
-            control.Controls.Remove(loadingPanel);
+            control.Controls.Remove(_loadingPanel);
         }
     }
 }

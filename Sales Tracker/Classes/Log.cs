@@ -11,7 +11,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void Write(byte index, string text)
         {
-            if (Properties.Settings.Default.ShowDebugInfo && index == 1)
+            if (!Properties.Settings.Default.ShowDebugInfo && index == 1)
             {
                 return;
             }
@@ -50,12 +50,6 @@ namespace Sales_Tracker.Classes
                 }
                 else { Log_Form.Instance.RichTextBox.AppendText(newText); }
             }
-
-            // Show error
-            if (index == 0)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", text, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-            }
         }
         private static void Error(
             string message, string link,
@@ -77,12 +71,6 @@ namespace Sales_Tracker.Classes
 
             // Log error with debug info
             Write(0, message + debugInfo);
-
-            // Add debug info to message box
-            if (Properties.Settings.Default.ShowDebugInfo)
-            {
-                message += debugInfo;
-            }
 
             CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
         }
@@ -214,7 +202,7 @@ namespace Sales_Tracker.Classes
                 lineNumber);
         }
 
-        // Misc. errors
+        // API errors
         public static void Error_GetExchangeRate(
             string info,
             [CallerLineNumber] int lineNumber = 0)
@@ -228,6 +216,16 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error getting the translation. {info}.",
+                "https://www.google.com",
+                lineNumber);
+        }
+
+        // Language translation errors
+        public static void Error_EnglishCacheDoesNotExist(
+            string controlKey,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Error getting the English cache with the value: {controlKey}",
                 "https://www.google.com",
                 lineNumber);
         }

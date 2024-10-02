@@ -117,9 +117,9 @@ namespace Sales_Tracker.Settings
                 MainMenu_Form.Instance.LoadCharts();
 
                 List<Guna2Panel> listOfMenus = [
-                    CustomControls.fileMenu,
-                    CustomControls.helpMenu,
-                    CustomControls.accountMenu,
+                    CustomControls.FileMenu,
+                    CustomControls.HelpMenu,
+                    CustomControls.AccountMenu,
                     CustomControls.ControlDropDown_Panel,
                     DataGridViewManager.RightClickDataGridView_Panel,
                     GetStarted_Form.Instance.rightClickOpenRecent_Panel];

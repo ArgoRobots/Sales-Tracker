@@ -14,6 +14,7 @@ namespace Sales_Tracker.UI
         private static Dictionary<string, Dictionary<string, string>> translationCache;  // language -> controlKey -> translation
         private static Dictionary<string, string> englishCache;  // controlKey -> originalText
         private static readonly Dictionary<string, Rectangle> controlBoundsCache = new();
+        private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column";
 
         public static void InitLanguageManager()
         {
@@ -65,48 +66,37 @@ namespace Sales_Tracker.UI
         {
             targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
 
-            // Process the control
-            UpdateLanguageForControl(control, targetLanguageAbbreviation);
-
-            // Recursively update child controls
-            foreach (Control childControl in control.Controls)
+            // Ensure all the English text in this Form have been cached
+            if (CacheAllEnglishTextInForm(control))
             {
-                UpdateLanguageForForm(childControl, targetLanguageAbbreviation);
+                SaveEnglishCacheToFile();
             }
 
+            // Translate all the text in this Form
+            TranslateAllTextInForm(control, targetLanguageAbbreviation);
             SaveCacheToFile();
         }
-        public static void UpdateLanguageForControl(Control control, string targetLanguageAbbreviation = null)
+        public static void TranslateAllTextInForm(Control control, string targetLanguageAbbreviation)
         {
-            // Ensure English texts have been cached before translation
-            CacheEnglishTexts(control);
-            SaveEnglishCacheToFile();
             CacheControlBounds(control);
-
-            targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
-
-            // Check if the control should be skipped
-            if (control.AccessibleDescription == AccessibleDescriptionStrings.DoNotTranslate)
-            {
-                return;
-            }
 
             string controlKey = GetControlKey(control);
 
             switch (control)
             {
                 case Label label:
-                    label.Text = TranslateText(label.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
+                    label.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, label.Text);
                     AdjustLabelSizeAndPosition(label);
                     break;
 
                 case Guna2Button guna2Button:
-                    guna2Button.Text = TranslateText(guna2Button.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
+                    guna2Button.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2Button.Text);
                     break;
 
                 case Guna2TextBox guna2TextBox:
-                    guna2TextBox.Text = TranslateText(guna2TextBox.Text, targetLanguageAbbreviation, controlKey, CanControlCache(control));
-                    guna2TextBox.PlaceholderText = TranslateText(guna2TextBox.PlaceholderText, targetLanguageAbbreviation, controlKey + "_Placeholder", CanControlCache(control));
+                    guna2TextBox.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2TextBox.Text);
+                    string placeholderKey = $"{controlKey}_{placeholder_text}";
+                    guna2TextBox.PlaceholderText = TranslateAndCacheText(targetLanguageAbbreviation, placeholderKey, control, guna2TextBox.PlaceholderText);
                     break;
 
                 case Guna2ComboBox guna2ComboBox:
@@ -117,8 +107,8 @@ namespace Sales_Tracker.UI
                         List<object> translatedItems = new();
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
-                            string itemKey = $"{controlKey}_Item_{i}";
-                            translatedItems.Add(TranslateText(guna2ComboBox.Items[i].ToString(), targetLanguageAbbreviation, itemKey, CanControlCache(control)));
+                            string itemKey = $"{controlKey}_{item_text}_{i}";
+                            translatedItems.Add(TranslateAndCacheText(targetLanguageAbbreviation, itemKey, control, guna2ComboBox.Items.ToString()));
                         }
 
                         guna2ComboBox.Items.Clear();
@@ -132,18 +122,105 @@ namespace Sales_Tracker.UI
                     break;
 
                 case GunaChart gunaChart:
-                    gunaChart.Title.Text = TranslateText(gunaChart.Title.Text, targetLanguageAbbreviation, controlKey + "_Title", CanControlCache(control));
+                    gunaChart.Title.Text = TranslateAndCacheText(targetLanguageAbbreviation, $"{controlKey}_{title_text}", control, gunaChart.Title.Text);
                     break;
 
                 case Guna2DataGridView gunaDataGridView:
                     foreach (DataGridViewColumn column in gunaDataGridView.Columns)
                     {
-                        string columnKey = $"{controlKey}_Column_{column.Name}";
-                        column.HeaderText = TranslateText(column.HeaderText, targetLanguageAbbreviation, columnKey, CanControlCache(control));
+                        string columnKey = $"{controlKey}_{column_text}_{column.Name}";
+                        column.HeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, column.HeaderText);
                     }
                     break;
             }
+
+            // Recursively update child controls
+            foreach (Control childControl in control.Controls)
+            {
+                TranslateAllTextInForm(childControl, targetLanguageAbbreviation);
+            }
         }
+        /// <summary>
+        /// Translates text using cache or Microsoft Translator API.
+        /// </summary>
+        private static string? TranslateAndCacheText(string targetLanguageAbbreviation, string controlKey, Control control, string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return "";
+            }
+
+            bool canCache = CanControlCache(control);
+
+            // Get the cached translation for this control if it already exists
+            if (canCache && translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
+            controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
+            {
+                return cachedTranslation;
+            }
+
+            // Get the cached English for this control so it can be translated without back-translation errors
+            string englishText = englishCache.TryGetValue(controlKey, out string? value) ? value : null;
+            if (canCache && englishText == null)
+            {
+                Log.Error_EnglishCacheDoesNotExist(controlKey);
+                return null;
+            }
+            else
+            {
+                englishText = text;
+            }
+
+            // Call the API to translate the text
+            try
+            {
+                var body = new[] { new { Text = englishText } };
+                StringContent requestContent = new(
+                    Newtonsoft.Json.JsonConvert.SerializeObject(body),
+                    System.Text.Encoding.UTF8,
+                    "application/json");
+
+                HttpResponseMessage response = httpClient
+                    .PostAsync($"{translationEndpoint}&to={targetLanguageAbbreviation}", requestContent)
+                    .GetAwaiter()
+                    .GetResult();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Log.Error_GetTranslation($"{response.StatusCode}: {response.ReasonPhrase}.");
+                    return englishText;  // Return original text if translation fails
+                }
+
+                string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+                string translatedText = result[0].translations[0].text;
+
+                // Cache the translation
+                if (canCache)
+                {
+                    if (!translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlDict))
+                    {
+                        controlDict = new();
+                        translationCache[targetLanguageAbbreviation] = controlDict;
+                    }
+
+                    if (!string.IsNullOrEmpty(translatedText))
+                    {
+                        controlDict[controlKey] = translatedText;
+                    }
+                }
+
+                return translatedText;
+            }
+            catch (Exception ex)
+            {
+                Log.Error_GetTranslation(ex.Message);
+            }
+
+            return englishText;  // Return original text if translation fails
+        }
+
+        // Methods
         private static void AdjustLabelSizeAndPosition(Label label)
         {
             string controlKey = GetControlKey(label);
@@ -179,72 +256,99 @@ namespace Sales_Tracker.UI
             return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotCacheText;
         }
 
+        // Cache things
         /// <summary>
-        /// Translates text using cache or Microsoft Translator API.
+        /// Saves all the text in a Form to englishCache.
         /// </summary>
-        private static string? TranslateText(string text, string targetLanguageAbbreviation, string controlKey, bool canCache)
+        /// <returns>True if any text was caches, otherwise False.</returns>
+        private static bool CacheAllEnglishTextInForm(Control control)
         {
-            if (string.IsNullOrEmpty(text)) { return text; }
+            if (!CanControlCache(control)) { return false; }
 
-            // Get the cached translation for this control if it exists
-            if (canCache)
+            string controlKey = GetControlKey(control);
+
+            if (englishCache.ContainsKey(controlKey))
             {
-                if (translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
-                controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
-                {
-                    return cachedTranslation;
-                }
+                return false;  // This form has already been cached
             }
 
-            try
+            switch (control)
             {
-                // Translation not found, call the API
-                var body = new[] { new { Text = text } };
-                StringContent requestContent = new(
-                    Newtonsoft.Json.JsonConvert.SerializeObject(body),
-                    System.Text.Encoding.UTF8,
-                    "application/json");
-
-                HttpResponseMessage response = httpClient
-                    .PostAsync($"{translationEndpoint}&to={targetLanguageAbbreviation}", requestContent)
-                    .GetAwaiter()
-                    .GetResult();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    Log.Error_GetTranslation($"{response.StatusCode}: {response.ReasonPhrase}.");
-                    return text;  // Return original text if translation fails
-                }
-
-                string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
-                string translatedText = result[0].translations[0].text;
-
-                // Cache the translation
-                if (canCache)
-                {
-                    if (!translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlDict))
+                case Form form:
+                    if (!string.IsNullOrEmpty(form.Text))
                     {
-                        controlDict = new();
-                        translationCache[targetLanguageAbbreviation] = controlDict;
+                        englishCache[controlKey] = form.Text;
                     }
+                    break;
 
-                    if (!string.IsNullOrEmpty(translatedText))
+                case Label label:
+                    if (!string.IsNullOrEmpty(label.Text))
                     {
-                        controlDict[controlKey] = translatedText;
+                        englishCache[controlKey] = label.Text;
                     }
+                    break;
 
-                    SaveCacheToFile();
-                }
+                case Guna2Button guna2Button:
+                    if (!string.IsNullOrEmpty(guna2Button.Text))
+                    {
+                        englishCache[controlKey] = guna2Button.Text;
+                    }
+                    break;
 
-                return translatedText;
+                case Guna2TextBox guna2TextBox:
+                    if (!string.IsNullOrEmpty(guna2TextBox.Text))
+                    {
+                        englishCache[controlKey] = guna2TextBox.Text;
+                    }
+                    if (!string.IsNullOrEmpty(guna2TextBox.PlaceholderText))
+                    {
+                        string placeholderKey = $"{controlKey}_{placeholder_text}";
+                        englishCache[placeholderKey] = guna2TextBox.PlaceholderText;
+                    }
+                    break;
+
+                case Guna2ComboBox guna2ComboBox:
+                    if (guna2ComboBox.DataSource == null)
+                    {
+                        for (int i = 0; i < guna2ComboBox.Items.Count; i++)
+                        {
+                            string itemKey = $"{controlKey}_{item_text}_{i}";
+                            englishCache[itemKey] = guna2ComboBox.Items[i].ToString();
+                        }
+                    }
+                    break;
+
+                case GunaChart gunaChart:
+                    englishCache[$"{controlKey}_{title_text}"] = gunaChart.Title.Text;
+                    break;
+
+                case Guna2DataGridView gunaDataGridView:
+                    foreach (DataGridViewColumn column in gunaDataGridView.Columns)
+                    {
+                        string columnKey = $"{controlKey}_{column_text}_{column.Name}";
+                        englishCache[columnKey] = column.HeaderText;
+                    }
+                    break;
             }
-            catch
+
+            // Recursively update child controls
+            foreach (Control childControl in control.Controls)
             {
-                Log.Error_GetTranslation("");
+                CacheAllEnglishTextInForm(childControl);
             }
 
-            return text;  // Return original text if exception occurs
+            return true;
+        }
+        private static void CacheControlBounds(Control control)
+        {
+            if (control is Label)
+            {
+                string controlKey = GetControlKey(control);
+                if (!controlBoundsCache.ContainsKey(controlKey))
+                {
+                    controlBoundsCache[controlKey] = control.Bounds;
+                }
+            }
         }
 
         // Save cache to file
@@ -267,87 +371,16 @@ namespace Sales_Tracker.UI
             File.WriteAllText(Directories.EnglishTexts_file, jsonContent);
         }
 
-        // Cache things
-        private static void CacheEnglishTexts(Control control)
-        {
-            if (!CanControlCache(control)) { return; }
-
-            string controlKey = GetControlKey(control);
-
-            if (!englishCache.ContainsKey(controlKey))
-            {
-                switch (control)
-                {
-                    case Label label:
-                        englishCache[controlKey] = label.Text;
-                        break;
-
-                    case Guna2Button guna2Button:
-                        englishCache[controlKey] = guna2Button.Text;
-                        break;
-
-                    case Guna2TextBox guna2TextBox:
-                        englishCache[controlKey] = guna2TextBox.Text;
-                        string placeholderKey = $"{controlKey}_Placeholder";
-                        englishCache[placeholderKey] = guna2TextBox.PlaceholderText;
-                        break;
-
-                    case Guna2ComboBox guna2ComboBox:
-                        if (guna2ComboBox.DataSource == null)
-                        {
-                            for (int i = 0; i < guna2ComboBox.Items.Count; i++)
-                            {
-                                string itemKey = $"{controlKey}_Item_{i}";
-                                englishCache[itemKey] = guna2ComboBox.Items[i].ToString();
-                            }
-                        }
-                        break;
-
-                    case GunaChart gunaChart:
-                        englishCache[controlKey] = gunaChart.Title.Text;
-                        break;
-
-                    case Guna2DataGridView gunaDataGridView:
-                        foreach (DataGridViewColumn column in gunaDataGridView.Columns)
-                        {
-                            string columnKey = $"{controlKey}_Column_{column.Name}";
-                            englishCache[columnKey] = column.HeaderText;
-                        }
-                        break;
-                }
-            }
-        }
-        private static void CacheControlBounds(Control control)
-        {
-            foreach (Control ctrl in control.Controls)
-            {
-                if (ctrl is Label)
-                {
-                    string controlKey = GetControlKey(ctrl);
-                    if (!controlBoundsCache.ContainsKey(controlKey))
-                    {
-                        controlBoundsCache[controlKey] = ctrl.Bounds;
-                    }
-
-                    if (ctrl.HasChildren)
-                    {
-                        CacheControlBounds(ctrl);
-                    }
-                }
-            }
-        }
-
         // Misc. methods
         private static string GetControlKey(Control control)
         {
             string formName = control.FindForm()?.Name ?? "UnknownForm";
-            string controlName = control.Name ?? control.GetHashCode().ToString();
+            string controlName = control.Name;
             return $"{formName}.{controlName}";
         }
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
             // Ordered by how western the country is
-
             return new List<KeyValuePair<string, string>>()
             {
                 new("English", "en"),           // North America, UK, Australia

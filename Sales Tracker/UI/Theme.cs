@@ -38,171 +38,167 @@ namespace Sales_Tracker.Classes
         {
             foreach (Control control in list)
             {
-                if (control == null) { return; }
+                if (control == null) { continue; }
 
-                bool setCurrentControl = false;
+                switch (control)
+                {
+                    case LinkLabel linkLabel:
+                        linkLabel.LinkColor = CustomColors.accent_blue;
+                        linkLabel.VisitedLinkColor = CustomColors.accent_blue;
+                        linkLabel.ActiveLinkColor = CustomColors.accent_blue;
+                        linkLabel.ForeColor = CustomColors.text;
+                        linkLabel.LinkBehavior = LinkBehavior.HoverUnderline;
+                        break;
+
+                    case Label label:
+                        label.ForeColor = CustomColors.text;
+                        break;
+
+                    case PictureBox pictureBox:
+                        pictureBox.BackColor = CustomColors.mainBackground;
+                        break;
+
+                    case RichTextBox richTextBox:
+                        richTextBox.BackColor = CustomColors.mainBackground;
+                        richTextBox.ForeColor = CustomColors.text;
+                        break;
+
+                    case FlowLayoutPanel flowLayoutPanel:
+                        flowLayoutPanel.BackColor = CustomColors.mainBackground;
+                        CustomizeScrollBar(flowLayoutPanel);
+                        break;
+
+                    case Guna2Button guna2Button:
+                        guna2Button.FillColor = CustomColors.controlBack;
+                        guna2Button.ForeColor = CustomColors.text;
+                        guna2Button.BorderColor = CustomColors.controlBorder;
+                        guna2Button.DisabledState.FillColor = CustomColors.controlDisabledBack;
+                        guna2Button.HoverState.BorderColor = CustomColors.accent_blue;
+                        guna2Button.GotFocus += Guna2Button_GotFocus;
+                        guna2Button.LostFocus += Guna2Button_LostFocus;
+                        break;
+
+                    case Guna2TextBox guna2TextBox:
+                        guna2TextBox.FillColor = CustomColors.controlBack;
+                        guna2TextBox.HoverState.FillColor = CustomColors.controlBack;
+                        guna2TextBox.DisabledState.FillColor = CustomColors.controlDisabledBack;
+                        guna2TextBox.DisabledState.BorderColor = CustomColors.controlBorder;
+                        guna2TextBox.ForeColor = CustomColors.text;
+                        guna2TextBox.BorderColor = CustomColors.controlBorder;
+                        guna2TextBox.HoverState.BorderColor = CustomColors.accent_blue;
+                        guna2TextBox.FocusedState.BorderColor = CustomColors.accent_blue;
+                        guna2TextBox.FocusedState.FillColor = CustomColors.controlBack;
+                        break;
+
+                    case Guna2CustomCheckBox guna2CustomCheckBox:
+                        guna2CustomCheckBox.CheckedState.BorderColor = CustomColors.accent_blue;
+                        guna2CustomCheckBox.CheckedState.FillColor = CustomColors.accent_blue;
+                        guna2CustomCheckBox.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
+                        guna2CustomCheckBox.UncheckedState.FillColor = CustomColors.controlBack;
+                        break;
+
+                    case Guna2CustomRadioButton guna2CustomRadioButton:
+                        guna2CustomRadioButton.CheckedState.BorderColor = CustomColors.accent_blue;
+                        guna2CustomRadioButton.CheckedState.FillColor = CustomColors.accent_blue;
+                        guna2CustomRadioButton.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
+                        guna2CustomRadioButton.UncheckedState.FillColor = CustomColors.controlBack;
+                        break;
+
+                    case Guna2Panel guna2Panel:
+                        guna2Panel.FillColor = CustomColors.mainBackground;
+                        break;
+
+                    case Panel panel:
+                        panel.BackColor = CustomColors.mainBackground;
+                        break;
+
+                    case Guna2TrackBar guna2TrackBar:
+                        guna2TrackBar.ThumbColor = CustomColors.accent_blue;
+                        guna2TrackBar.BackColor = CustomColors.mainBackground;
+                        break;
+
+                    case Guna2NumericUpDown guna2NumericUpDown:
+                        guna2NumericUpDown.FillColor = CustomColors.controlBack;
+                        guna2NumericUpDown.ForeColor = CustomColors.text;
+                        guna2NumericUpDown.BorderColor = CustomColors.controlBorder;
+                        guna2NumericUpDown.UpDownButtonFillColor = CustomColors.controlBack;
+                        guna2NumericUpDown.UpDownButtonForeColor = CustomColors.text;
+                        guna2NumericUpDown.UpDownButtonBorderVisible = true;
+                        break;
+
+                    case Guna2ComboBox guna2ComboBox:
+                        guna2ComboBox.FillColor = CustomColors.controlBack;
+                        guna2ComboBox.ForeColor = CustomColors.text;
+                        guna2ComboBox.BorderColor = CustomColors.controlBorder;
+                        guna2ComboBox.HoverState.BorderColor = CustomColors.accent_blue;
+                        guna2ComboBox.FocusedState.BorderColor = CustomColors.accent_blue;
+                        guna2ComboBox.ItemsAppearance.BackColor = CustomColors.controlBack;
+                        break;
+
+                    case Guna2DataGridView guna2DataGridView:
+                        guna2DataGridView.Theme = CustomColors.dataGridViewTheme;
+                        guna2DataGridView.BackgroundColor = CustomColors.controlBack;
+
+                        UpdateDataGridViewHeaderTheme(guna2DataGridView);
+                        CustomizeScrollBar(guna2DataGridView);
+                        guna2DataGridView.ClearSelection();
+                        break;
+
+                    case Guna2CircleButton guna2CircleButton:
+                        guna2CircleButton.FillColor = CustomColors.controlBack;
+                        guna2CircleButton.HoverState.FillColor = CustomColors.controlBack;
+                        guna2CircleButton.HoverState.BorderColor = CustomColors.controlBorder;
+                        break;
+
+                    case Guna2ToggleSwitch guna2ToggleSwitch:
+                        guna2ToggleSwitch.CheckedState.FillColor = CustomColors.accent_blue;
+                        guna2ToggleSwitch.UncheckedState.FillColor = CustomColors.controlBack;
+                        break;
+
+                    case Guna2DateTimePicker guna2DateTimePicker:
+                        guna2DateTimePicker.FillColor = CustomColors.controlBack;
+                        guna2DateTimePicker.ForeColor = CustomColors.text;
+                        guna2DateTimePicker.BorderColor = CustomColors.controlBorder;
+                        guna2DateTimePicker.HoverState.BorderColor = CustomColors.accent_blue;
+                        break;
+
+                    case GunaChart gunaChart:
+                        gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.background4);
+
+                        if (gunaChart.Datasets.Count > 0)
+                        {
+                            if (gunaChart.Datasets[0] is GunaBarDataset)
+                            {
+                                LoadChart.ConfigureChartForBar(gunaChart);
+                            }
+                            else if (gunaChart.Datasets[0] is GunaLineDataset)
+                            {
+                                LoadChart.ConfigureChartForLine(gunaChart);
+                            }
+                            else if (gunaChart.Datasets[0] is GunaPieDataset)
+                            {
+                                LoadChart.ConfigureChartForPie(gunaChart);
+                            }
+                        }
+
+                        gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
+                        gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
+                        gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
+                        gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
+                        gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
+                        gunaChart.YAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
+                        break;
+                }
+
+                // Recursively apply theming to child controls if any
                 if (control.HasChildren)
                 {
-                    // Recursively loop through the child controls
-                    List<Control> childList = new();
-                    foreach (Control item in control.Controls)
+                    List<Control> childControls = new();
+                    foreach (Control childControl in control.Controls)
                     {
-                        childList.Add(item);
+                        childControls.Add(childControl);
                     }
-                    SetThemeForControl(childList);
-                    setCurrentControl = true;
-                }
-                if (!control.HasChildren || setCurrentControl)
-                {
-                    switch (control)
-                    {
-                        case LinkLabel linkLabel:
-                            linkLabel.LinkColor = CustomColors.accent_blue;
-                            linkLabel.VisitedLinkColor = CustomColors.accent_blue;
-                            linkLabel.ActiveLinkColor = CustomColors.accent_blue;
-                            linkLabel.ForeColor = CustomColors.text;
-                            linkLabel.LinkBehavior = LinkBehavior.HoverUnderline;
-                            break;
-
-                        case Label label:
-                            label.ForeColor = CustomColors.text;
-                            break;
-
-                        case PictureBox pictureBox:
-                            pictureBox.BackColor = CustomColors.mainBackground;
-                            break;
-
-                        case RichTextBox richTextBox:
-                            richTextBox.BackColor = CustomColors.mainBackground;
-                            richTextBox.ForeColor = CustomColors.text;
-                            break;
-
-                        case FlowLayoutPanel flowLayoutPanel:
-                            flowLayoutPanel.BackColor = CustomColors.mainBackground;
-                            CustomizeScrollBar(flowLayoutPanel);
-                            break;
-
-                        case Guna2Button guna2Button:
-                            guna2Button.FillColor = CustomColors.controlBack;
-                            guna2Button.ForeColor = CustomColors.text;
-                            guna2Button.BorderColor = CustomColors.controlBorder;
-                            guna2Button.DisabledState.FillColor = CustomColors.controlDisabledBack;
-                            guna2Button.HoverState.BorderColor = CustomColors.accent_blue;
-                            guna2Button.GotFocus += Guna2Button_GotFocus;
-                            guna2Button.LostFocus += Guna2Button_LostFocus;
-                            break;
-
-                        case Guna2TextBox guna2TextBox:
-                            guna2TextBox.FillColor = CustomColors.controlBack;
-                            guna2TextBox.HoverState.FillColor = CustomColors.controlBack;
-                            guna2TextBox.DisabledState.FillColor = CustomColors.controlDisabledBack;
-                            guna2TextBox.DisabledState.BorderColor = CustomColors.controlBorder;
-                            guna2TextBox.ForeColor = CustomColors.text;
-                            guna2TextBox.BorderColor = CustomColors.controlBorder;
-                            guna2TextBox.HoverState.BorderColor = CustomColors.accent_blue;
-                            guna2TextBox.FocusedState.BorderColor = CustomColors.accent_blue;
-                            guna2TextBox.FocusedState.FillColor = CustomColors.controlBack;
-                            break;
-
-                        case Guna2CustomCheckBox guna2CustomCheckBox:
-                            guna2CustomCheckBox.CheckedState.BorderColor = CustomColors.accent_blue;
-                            guna2CustomCheckBox.CheckedState.FillColor = CustomColors.accent_blue;
-                            guna2CustomCheckBox.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
-                            guna2CustomCheckBox.UncheckedState.FillColor = CustomColors.controlBack;
-                            break;
-
-                        case Guna2CustomRadioButton guna2CustomRadioButton:
-                            guna2CustomRadioButton.CheckedState.BorderColor = CustomColors.accent_blue;
-                            guna2CustomRadioButton.CheckedState.FillColor = CustomColors.accent_blue;
-                            guna2CustomRadioButton.UncheckedState.BorderColor = CustomColors.controlUncheckedBorder;
-                            guna2CustomRadioButton.UncheckedState.FillColor = CustomColors.controlBack;
-                            break;
-
-                        case Guna2Panel guna2Panel:
-                            guna2Panel.FillColor = CustomColors.mainBackground;
-                            break;
-
-                        case Panel panel:
-                            panel.BackColor = CustomColors.mainBackground;
-                            break;
-
-                        case Guna2TrackBar guna2TrackBar:
-                            guna2TrackBar.ThumbColor = CustomColors.accent_blue;
-                            guna2TrackBar.BackColor = CustomColors.mainBackground;
-                            break;
-
-                        case Guna2NumericUpDown guna2NumericUpDown:
-                            guna2NumericUpDown.FillColor = CustomColors.controlBack;
-                            guna2NumericUpDown.ForeColor = CustomColors.text;
-                            guna2NumericUpDown.BorderColor = CustomColors.controlBorder;
-                            guna2NumericUpDown.UpDownButtonFillColor = CustomColors.controlBack;
-                            guna2NumericUpDown.UpDownButtonForeColor = CustomColors.text;
-                            guna2NumericUpDown.UpDownButtonBorderVisible = true;
-                            break;
-
-                        case Guna2ComboBox guna2ComboBox:
-                            guna2ComboBox.FillColor = CustomColors.controlBack;
-                            guna2ComboBox.ForeColor = CustomColors.text;
-                            guna2ComboBox.BorderColor = CustomColors.controlBorder;
-                            guna2ComboBox.HoverState.BorderColor = CustomColors.accent_blue;
-                            guna2ComboBox.FocusedState.BorderColor = CustomColors.accent_blue;
-                            guna2ComboBox.ItemsAppearance.BackColor = CustomColors.controlBack;
-                            break;
-
-                        case Guna2DataGridView guna2DataGridView:
-                            guna2DataGridView.Theme = CustomColors.dataGridViewTheme;
-                            guna2DataGridView.BackgroundColor = CustomColors.controlBack;
-
-                            UpdateDataGridViewHeaderTheme(guna2DataGridView);
-                            CustomizeScrollBar(guna2DataGridView);
-                            guna2DataGridView.ClearSelection();
-                            break;
-
-                        case Guna2CircleButton guna2CircleButton:
-                            guna2CircleButton.FillColor = CustomColors.controlBack;
-                            guna2CircleButton.HoverState.FillColor = CustomColors.controlBack;
-                            guna2CircleButton.HoverState.BorderColor = CustomColors.controlBorder;
-                            break;
-
-                        case Guna2ToggleSwitch guna2ToggleSwitch:
-                            guna2ToggleSwitch.CheckedState.FillColor = CustomColors.accent_blue;
-                            guna2ToggleSwitch.UncheckedState.FillColor = CustomColors.controlBack;
-                            break;
-
-                        case Guna2DateTimePicker guna2DateTimePicker:
-                            guna2DateTimePicker.FillColor = CustomColors.controlBack;
-                            guna2DateTimePicker.ForeColor = CustomColors.text;
-                            guna2DateTimePicker.BorderColor = CustomColors.controlBorder;
-                            guna2DateTimePicker.HoverState.BorderColor = CustomColors.accent_blue;
-                            break;
-
-                        case GunaChart gunaChart:
-                            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.background4);
-
-                            if (gunaChart.Datasets.Count > 0)
-                            {
-                                if (gunaChart.Datasets[0] is GunaBarDataset)
-                                {
-                                    LoadChart.ConfigureChartForBar(gunaChart);
-                                }
-                                else if (gunaChart.Datasets[0] is GunaLineDataset)
-                                {
-                                    LoadChart.ConfigureChartForLine(gunaChart);
-                                }
-                                else if (gunaChart.Datasets[0] is GunaPieDataset)
-                                {
-                                    LoadChart.ConfigureChartForPie(gunaChart);
-                                }
-                            }
-
-                            gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
-                            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
-                            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
-                            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
-                            gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
-                            gunaChart.YAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
-                            break;
-                    }
+                    SetThemeForControl(childControls);
                 }
             }
         }

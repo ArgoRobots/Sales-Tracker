@@ -361,9 +361,9 @@ namespace Sales_Tracker
             if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Enter)
             {
                 Guna2Panel[] panels = [
-                    CustomControls.fileMenu,
-                    CustomControls.helpMenu,
-                    CustomControls.accountMenu,
+                    CustomControls.FileMenu,
+                    CustomControls.HelpMenu,
+                    CustomControls.AccountMenu,
                     CustomControls.ControlDropDown_Panel,
                     DataGridViewManager.RightClickDataGridView_Panel
                 ];
@@ -724,18 +724,18 @@ namespace Sales_Tracker
         // Event handlers - top bar
         private void File_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(CustomControls.fileMenu))
+            if (Controls.Contains(CustomControls.FileMenu))
             {
-                Controls.Remove(CustomControls.fileMenu);
+                Controls.Remove(CustomControls.FileMenu);
                 File_Button.Image = Resources.FileGray;
             }
             else
             {
                 CustomControls.CloseAllPanels(null, null);
                 File_Button.Image = Resources.FileWhite;
-                CustomControls.fileMenu.Location = new Point(File_Button.Left, Top_Panel.Height);
-                Controls.Add(CustomControls.fileMenu);
-                CustomControls.fileMenu.BringToFront();
+                CustomControls.FileMenu.Location = new Point(File_Button.Left, Top_Panel.Height);
+                Controls.Add(CustomControls.FileMenu);
+                CustomControls.FileMenu.BringToFront();
                 Focus();
             }
         }
@@ -754,34 +754,34 @@ namespace Sales_Tracker
         }
         private void Help_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(CustomControls.helpMenu))
+            if (Controls.Contains(CustomControls.HelpMenu))
             {
-                Controls.Remove(CustomControls.helpMenu);
+                Controls.Remove(CustomControls.HelpMenu);
                 Help_Button.Image = Resources.HelpGray;
             }
             else
             {
                 CustomControls.CloseAllPanels(null, null);
                 Help_Button.Image = Resources.HelpWhite;
-                CustomControls.helpMenu.Location = new Point(Help_Button.Left - CustomControls.helpMenu.Width + Help_Button.Width, Top_Panel.Height);
-                Controls.Add(CustomControls.helpMenu);
-                CustomControls.helpMenu.BringToFront();
+                CustomControls.HelpMenu.Location = new Point(Help_Button.Left - CustomControls.HelpMenu.Width + Help_Button.Width, Top_Panel.Height);
+                Controls.Add(CustomControls.HelpMenu);
+                CustomControls.HelpMenu.BringToFront();
             }
         }
         private void Account_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(CustomControls.accountMenu))
+            if (Controls.Contains(CustomControls.AccountMenu))
             {
-                Controls.Remove(CustomControls.accountMenu);
+                Controls.Remove(CustomControls.AccountMenu);
                 Account_Button.Image = Resources.ProfileGray;
             }
             else
             {
                 CustomControls.CloseAllPanels(null, null);
                 Account_Button.Image = Resources.ProfileWhite;
-                CustomControls.accountMenu.Location = new Point(Account_Button.Left - CustomControls.accountMenu.Width + Account_Button.Width, Top_Panel.Height);
-                Controls.Add(CustomControls.accountMenu);
-                CustomControls.accountMenu.BringToFront();
+                CustomControls.AccountMenu.Location = new Point(Account_Button.Left - CustomControls.AccountMenu.Width + Account_Button.Width, Top_Panel.Height);
+                Controls.Add(CustomControls.AccountMenu);
+                CustomControls.AccountMenu.BringToFront();
             }
         }
 

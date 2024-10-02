@@ -7,7 +7,7 @@ namespace Tests
     public class Misc_UnitTest
     {
         [TestMethod]
-        public void TestLoadingPanel()
+        public void TestBlankLoadingPanel()
         {
             Form testForm = new();
             LoadingPanel.InitBlankLoadingPanel();
@@ -19,6 +19,21 @@ namespace Tests
             // Hide the loading panel
             LoadingPanel.HideBlankLoadingPanel(testForm);
             Assert.IsFalse(testForm.Controls.Contains(LoadingPanel.BlankLoadingPanelInstance));
+        }
+
+        [TestMethod]
+        public void TestLoadingPanel()
+        {
+            Form testForm = new();
+            LoadingPanel.InitLoadingPanel();
+
+            // Show the loading panel
+            LoadingPanel.ShowLoadingScreen(testForm);
+            Assert.IsTrue(testForm.Controls.Contains(LoadingPanel.LoadingPanelInstance));
+
+            // Hide the loading panel
+            LoadingPanel.HideLoadingScreen(testForm);
+            Assert.IsFalse(testForm.Controls.Contains(LoadingPanel.LoadingPanelInstance));
         }
     }
 }

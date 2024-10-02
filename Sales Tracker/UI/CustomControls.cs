@@ -164,11 +164,16 @@ namespace Sales_Tracker.UI
         }
 
         // fileMenu
-        public static Guna2Panel fileMenu;
+        private static Guna2Panel _fileMenu;
+        public static Guna2Panel FileMenu
+        {
+            get => _fileMenu;
+            set => _fileMenu = value;
+        }
         private static void ConstructFileMenu()
         {
-            fileMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel));
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)fileMenu.Controls[0];
+            _fileMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel));
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
@@ -268,11 +273,16 @@ namespace Sales_Tracker.UI
         }
 
         // helpMenu
-        public static Guna2Panel helpMenu;
+        private static Guna2Panel _helpMenu;
+        public static Guna2Panel HelpMenu
+        {
+            get => _helpMenu;
+            set => _helpMenu = value;
+        }
         private static void ConstructHelpMenu()
         {
-            helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 7 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel));
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)helpMenu.Controls[0];
+            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 7 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel));
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_helpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Support", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
@@ -320,11 +330,16 @@ namespace Sales_Tracker.UI
         }
 
         // accountMenu
-        public static Guna2Panel accountMenu;
+        private static Guna2Panel _accountMenu;
+        public static Guna2Panel AccountMenu
+        {
+            get => _accountMenu;
+            set => _accountMenu = value;
+        }
         private static void ConstructProfileMenu()
         {
-            accountMenu = ConstructPanelForMenu(new Size(_panelWidth, 4 * _panelButtonHeight + _spaceForSeperator + _spaceForPanel));
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)accountMenu.Controls[0];
+            AccountMenu = ConstructPanelForMenu(new Size(_panelWidth, 4 * _panelButtonHeight + _spaceForSeperator + _spaceForPanel));
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)AccountMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Argo account", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
@@ -376,7 +391,7 @@ namespace Sales_Tracker.UI
             };
             controlsDropDown_Button.Click += (sender, e) =>
             {
-                if (MainMenu_Form.Instance.Controls.Contains(fileMenu))
+                if (MainMenu_Form.Instance.Controls.Contains(_fileMenu))
                 {
                     MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
                 }
@@ -529,12 +544,12 @@ namespace Sales_Tracker.UI
 
             if (MainMenu_Form.Instance == null) { return; }
 
-            MainMenu_Form.Instance.Controls.Remove(fileMenu);
-            MainMenu_Form.Instance.Controls.Remove(helpMenu);
-            MainMenu_Form.Instance.Controls.Remove(accountMenu);
-            DeselectAllMenuButtons(fileMenu);
-            DeselectAllMenuButtons(helpMenu);
-            DeselectAllMenuButtons(accountMenu);
+            MainMenu_Form.Instance.Controls.Remove(_fileMenu);
+            MainMenu_Form.Instance.Controls.Remove(_helpMenu);
+            MainMenu_Form.Instance.Controls.Remove(AccountMenu);
+            DeselectAllMenuButtons(_fileMenu);
+            DeselectAllMenuButtons(_helpMenu);
+            DeselectAllMenuButtons(AccountMenu);
 
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
