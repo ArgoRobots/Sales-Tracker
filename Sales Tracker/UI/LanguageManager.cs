@@ -60,11 +60,11 @@ namespace Sales_Tracker.UI
 
         // Main methods
         /// <summary>
-        /// Update all controls' text with the translated language.
+        /// Update the controls text with the translated language. It also updates all the child controls.
         /// </summary>
-        public static void UpdateLanguageForForm(Control control, string targetLanguageAbbreviation = null)
+        public static void UpdateLanguageForControl(Control control)
         {
-            targetLanguageAbbreviation ??= GetDefaultLanguageAbbreviation();
+            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
 
             // Ensure all the English text in this Form have been cached
             if (CacheAllEnglishTextInForm(control))
@@ -72,11 +72,11 @@ namespace Sales_Tracker.UI
                 SaveEnglishCacheToFile();
             }
 
-            // Translate all the text in this Form
-            TranslateAllTextInForm(control, targetLanguageAbbreviation);
+            // Translate all the text in this control
+            TranslateAllTextInControl(control, targetLanguageAbbreviation);
             SaveCacheToFile();
         }
-        public static void TranslateAllTextInForm(Control control, string targetLanguageAbbreviation)
+        public static void TranslateAllTextInControl(Control control, string targetLanguageAbbreviation)
         {
             CacheControlBounds(control);
 
@@ -108,7 +108,7 @@ namespace Sales_Tracker.UI
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
                             string itemKey = $"{controlKey}_{item_text}_{i}";
-                            translatedItems.Add(TranslateAndCacheText(targetLanguageAbbreviation, itemKey, control, guna2ComboBox.Items.ToString()));
+                            translatedItems.Add(TranslateAndCacheText(targetLanguageAbbreviation, itemKey, control, guna2ComboBox.Items[i].ToString()));
                         }
 
                         guna2ComboBox.Items.Clear();
@@ -137,7 +137,7 @@ namespace Sales_Tracker.UI
             // Recursively update child controls
             foreach (Control childControl in control.Controls)
             {
-                TranslateAllTextInForm(childControl, targetLanguageAbbreviation);
+                TranslateAllTextInControl(childControl, targetLanguageAbbreviation);
             }
         }
         /// <summary>
@@ -145,16 +145,19 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static string? TranslateAndCacheText(string targetLanguageAbbreviation, string controlKey, Control control, string text)
         {
+            if (!CanControlTranslate(control)) { return text; }
+
             if (string.IsNullOrEmpty(text))
             {
-                return "";
+                return text;
             }
 
             bool canCache = CanControlCache(control);
 
             // Get the cached translation for this control if it already exists
-            if (canCache && translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
-            controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
+            if (targetLanguageAbbreviation != "en" && canCache &&
+                translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
+                controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
             {
                 return cachedTranslation;
             }
@@ -168,7 +171,7 @@ namespace Sales_Tracker.UI
             }
             else
             {
-                englishText = text;
+                if (targetLanguageAbbreviation == "en") { return englishText; }
             }
 
             // Call the API to translate the text
@@ -253,7 +256,11 @@ namespace Sales_Tracker.UI
         }
         private static bool CanControlCache(Control control)
         {
-            return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotCacheText;
+            return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotCache;
+        }
+        private static bool CanControlTranslate(Control control)
+        {
+            return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotTranslate;
         }
 
         // Cache things
@@ -263,6 +270,8 @@ namespace Sales_Tracker.UI
         /// <returns>True if any text was caches, otherwise False.</returns>
         private static bool CacheAllEnglishTextInForm(Control control)
         {
+            if (!CanControlTranslate(control)) { return false; }
+
             if (!CanControlCache(control)) { return false; }
 
             string controlKey = GetControlKey(control);

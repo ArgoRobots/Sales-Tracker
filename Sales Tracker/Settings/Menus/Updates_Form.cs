@@ -18,7 +18,7 @@ namespace Sales_Tracker.Settings.Menus
             _instance = this;
 
             UpdateTheme();
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
         }
         public void UpdateTheme()
         {

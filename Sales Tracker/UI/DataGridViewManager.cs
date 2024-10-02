@@ -32,8 +32,9 @@ namespace Sales_Tracker.UI
         }
 
         // Construct DataGridView
-        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
+        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
+            dataGridView.Name = name;
             dataGridView.ReadOnly = true;
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToResizeRows = false;
@@ -634,18 +635,22 @@ namespace Sales_Tracker.UI
             UnselectAllRowsInCurrentDataGridView();
             dataGridView.Rows[row.Index].Selected = true;
         }
-        private static void LoadColumns<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
+        public static void LoadColumns<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
-            columnsToLoad ??= Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
-
-            foreach (TEnum column in columnsToLoad)
+            foreach (var columnHeader in columnHeaders)
             {
-                if (columnHeaders.TryGetValue(column, out string? value))
+                if (columnsToLoad != null && !columnsToLoad.Contains(columnHeader.Key))
                 {
-                    dataGridView.Columns.Add(column.ToString(), value);
+                    continue;
                 }
+
+                DataGridViewTextBoxColumn column = new()
+                {
+                    HeaderText = columnHeader.Value,
+                    Name = columnHeader.Key.ToString()  // Set the Name property for the language translation
+                };
+                dataGridView.Columns.Add(column);
             }
-            Theme.UpdateDataGridViewHeaderTheme(dataGridView);
         }
         private static void ConfigureMoveButton(string buttonText)
         {

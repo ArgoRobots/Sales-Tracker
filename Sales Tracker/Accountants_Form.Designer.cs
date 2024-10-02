@@ -41,7 +41,7 @@ namespace Sales_Tracker
             AccountantName_Label = new Label();
             Accountant_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddAccountant_Button = new Guna.UI2.WinForms.Guna2Button();
-            AddCategory_Label = new Label();
+            AddAccountant_Label = new Label();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
             Total_Label = new Label();
@@ -135,17 +135,17 @@ namespace Sales_Tracker
             AddAccountant_Button.Text = "Add accountant";
             AddAccountant_Button.Click += AddAccountant_Button_Click;
             // 
-            // AddCategory_Label
+            // AddAccountant_Label
             // 
-            AddCategory_Label.Anchor = AnchorStyles.Top;
-            AddCategory_Label.AutoSize = true;
-            AddCategory_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            AddCategory_Label.Location = new Point(467, 30);
-            AddCategory_Label.Name = "AddCategory_Label";
-            AddCategory_Label.Size = new Size(245, 45);
-            AddCategory_Label.TabIndex = 41;
-            AddCategory_Label.Text = "Add accountant";
-            AddCategory_Label.Click += CloseAllPanels;
+            AddAccountant_Label.Anchor = AnchorStyles.Top;
+            AddAccountant_Label.AutoSize = true;
+            AddAccountant_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            AddAccountant_Label.Location = new Point(467, 30);
+            AddAccountant_Label.Name = "AddAccountant_Label";
+            AddAccountant_Label.Size = new Size(245, 45);
+            AddAccountant_Label.TabIndex = 41;
+            AddAccountant_Label.Text = "Add accountant";
+            AddAccountant_Label.Click += CloseAllPanels;
             // 
             // Search_TextBox
             // 
@@ -208,7 +208,7 @@ namespace Sales_Tracker
             Controls.Add(AccountantName_Label);
             Controls.Add(Accountant_TextBox);
             Controls.Add(AddAccountant_Button);
-            Controls.Add(AddCategory_Label);
+            Controls.Add(AddAccountant_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             KeyPreview = true;
             MinimumSize = new Size(1200, 780);
@@ -231,7 +231,7 @@ namespace Sales_Tracker
         private Label AccountantName_Label;
         private Guna.UI2.WinForms.Guna2TextBox Accountant_TextBox;
         private Guna.UI2.WinForms.Guna2Button AddAccountant_Button;
-        private Label AddCategory_Label;
+        private Label AddAccountant_Label;
         private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
         private Label Total_Label;

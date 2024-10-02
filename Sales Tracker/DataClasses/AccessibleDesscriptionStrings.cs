@@ -13,7 +13,7 @@
 
         // Getters
         public static string DoNotTranslate => doNotTranslate;
-        public static string DoNotCacheText => doNotCache;
+        public static string DoNotCache => doNotCache;
         public static string AlignRightCenter => alignRightCenter;
         public static string AlignLeftCenter => alignLeftCenter;
     }

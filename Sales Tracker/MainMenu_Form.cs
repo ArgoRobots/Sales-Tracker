@@ -73,7 +73,8 @@ namespace Sales_Tracker
             HideShowingResultsForLabel();
 
             SetDoNotTranslateControls();
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
+            LanguageManager.UpdateLanguageForControl(Purchases_DataGridView);
         }
         public void ResetData()
         {
@@ -103,12 +104,12 @@ namespace Sales_Tracker
             if (_purchases_DataGridView == null)
             {
                 Size size = new(1300, 350);
-                _purchases_DataGridView = new Guna2DataGridView();
-                DataGridViewManager.InitializeDataGridView(_purchases_DataGridView, size, PurchaseColumnHeaders);
+                _purchases_DataGridView = new();
+                DataGridViewManager.InitializeDataGridView(_purchases_DataGridView, "purchases_DataGridView", size, PurchaseColumnHeaders);
                 _purchases_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
-                _sales_DataGridView = new Guna2DataGridView();
-                DataGridViewManager.InitializeDataGridView(_sales_DataGridView, size, SalesColumnHeaders);
+                _sales_DataGridView = new();
+                DataGridViewManager.InitializeDataGridView(_sales_DataGridView, "sales_DataGridView", size, SalesColumnHeaders);
                 _sales_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
                 Theme.CustomizeScrollBar(_sales_DataGridView);
             }
@@ -273,6 +274,10 @@ namespace Sales_Tracker
             }
             total = LoadChart.LoadProfitsIntoChart(_sales_DataGridView, _purchases_DataGridView, Profits_Chart, isLine);
             Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
+
+            LanguageManager.UpdateLanguageForControl(Profits_Chart);
+            LanguageManager.UpdateLanguageForControl(Totals_Chart);
+            LanguageManager.UpdateLanguageForControl(Distribution_Chart);
         }
         public void UpdateTheme()
         {
@@ -328,6 +333,8 @@ namespace Sales_Tracker
         private void SetDoNotTranslateControls()
         {
             CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Profits_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Totals_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
 
         // Form event handlers
@@ -1017,6 +1024,8 @@ namespace Sales_Tracker
 
             if (!hasData)
             {
+                string textWithoutWhitespace = string.Concat(text.Where(c => !char.IsWhiteSpace(c)));
+
                 // If there's no data and the label doesn't exist, create and add it
                 if (existingLabel == null)
                 {
@@ -1027,7 +1036,9 @@ namespace Sales_Tracker
                         Text = text,
                         AutoSize = true,
                         BackColor = Color.Transparent,
-                        Tag = text
+                        Tag = text,
+                        Anchor = AnchorStyles.Top,
+                        Name = $"{textWithoutWhitespace}_Label"  // Set the Name property for the language translation
                     };
 
                     control.Controls.Add(label);
@@ -1427,7 +1438,7 @@ namespace Sales_Tracker
             ItemsInPurchase
         }
 
-        // DataGridView getters
+        // DataGridView getters and setters
         public Guna2DataGridView Purchases_DataGridView => _purchases_DataGridView;
         public Guna2DataGridView Sales_DataGridView => _sales_DataGridView;
         public Guna2DataGridView SelectedDataGridView
@@ -1737,29 +1748,29 @@ namespace Sales_Tracker
         }
 
         // Settings
-        private Settings_Form SettingsForm;
+        private Settings_Form settingsForm;
         public void OpenSettingsMenu()
         {
             if (!Tools.IsFormOpen(typeof(Settings_Form)))
             {
-                SettingsForm = new Settings_Form();
-                SettingsForm.Show();
+                settingsForm = new Settings_Form();
+                settingsForm.Show();
             }
-            else { SettingsForm.BringToFront(); }
+            else { settingsForm.BringToFront(); }
         }
 
         // Logs
-        private Log_Form LogForm;
+        private Log_Form logForm;
         public void OpenLogs()
         {
             if (!Tools.IsFormOpen(typeof(Log_Form)))
             {
-                LogForm = new Log_Form();
-                LogForm.Show();
+                logForm = new Log_Form();
+                logForm.Show();
             }
             else
             {
-                LogForm.BringToFront();
+                logForm.BringToFront();
             }
         }
 

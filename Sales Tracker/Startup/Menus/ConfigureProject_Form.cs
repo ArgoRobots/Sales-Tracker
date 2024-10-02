@@ -24,7 +24,7 @@ namespace Sales_Tracker.Startup.Menus
             SearchBox.ConstructSearchBox();
 
             UpdateTheme();
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
 
             SetDefaultTextInTextBoxes();
             AddEventHandlersToTextBoxes();

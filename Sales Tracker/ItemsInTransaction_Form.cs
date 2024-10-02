@@ -40,7 +40,7 @@ namespace Sales_Tracker
             }
 
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
 
             // Attach event handlers to detect changes in DataGridView
             Items_DataGridView.CellValueChanged += (s, e) => hasChanges = true;
@@ -127,7 +127,7 @@ namespace Sales_Tracker
                 ? MainMenu_Form.Instance.PurchaseColumnHeaders
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
-            DataGridViewManager.InitializeDataGridView(Items_DataGridView, Items_DataGridView.Size, columnHeaders, columnsToLoad);
+            DataGridViewManager.InitializeDataGridView(Items_DataGridView, "Items_DataGridView", Items_DataGridView.Size, columnHeaders, columnsToLoad);
             Items_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Items_DataGridView.RowsRemoved -= DataGridViewManager.DataGridView_RowsRemoved;
             Items_DataGridView.UserDeletingRow -= DataGridViewManager.DataGridView_UserDeletingRow;

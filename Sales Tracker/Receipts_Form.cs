@@ -22,7 +22,7 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
 
             MainMenu_Form.Instance.isProgramLoading = true;
-            DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, Receipts_DataGridView.Size, ColumnHeaders);
+            DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", Receipts_DataGridView.Size, ColumnHeaders);
             Receipts_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             MainMenu_Form.Instance.SelectedDataGridView = Receipts_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Receipts;
@@ -36,7 +36,7 @@ namespace Sales_Tracker
             }
 
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
             MainMenu_Form.Instance.isProgramLoading = false;
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
         }

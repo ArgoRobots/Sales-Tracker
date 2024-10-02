@@ -24,7 +24,7 @@ namespace Sales_Tracker.Settings.Menus
 
             UpdateTheme();
             SetAccessibleDescription();
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
             UpdateControls();
             AddEventHandlersToTextBoxes();
         }

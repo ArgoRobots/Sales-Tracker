@@ -48,7 +48,7 @@ namespace Sales_Tracker.Classes
             string oldCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             if (oldCurrency != General_Form.Instance.Currency_TextBox.Text)
             {
-                //     UpdateCurrency(oldCurrency);
+                UpdateCurrency(oldCurrency);
             }
 
             // Check if file encryption setting changed
@@ -82,7 +82,7 @@ namespace Sales_Tracker.Classes
 
             foreach (Form form in forms)
             {
-                LanguageManager.UpdateLanguageForForm(form, LanguageManager.GetDefaultLanguageAbbreviation());
+                LanguageManager.UpdateLanguageForControl(form);
             }
 
             // Remove previous messages that mention language changes

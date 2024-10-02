@@ -30,7 +30,7 @@ namespace Sales_Tracker
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
             string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             Credited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({currency})";

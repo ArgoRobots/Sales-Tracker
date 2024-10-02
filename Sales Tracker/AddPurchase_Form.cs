@@ -32,7 +32,7 @@ namespace Sales_Tracker
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
             Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType)})";
         }

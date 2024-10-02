@@ -25,7 +25,7 @@ namespace Sales_Tracker.Settings.Menus
             SetPasswordButton();
             UpdateTheme();
             SetDoNotTranslateControls();
-            LanguageManager.UpdateLanguageForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
         }
         public void UpdateTheme()
         {
