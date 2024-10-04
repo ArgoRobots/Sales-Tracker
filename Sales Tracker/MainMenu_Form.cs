@@ -72,9 +72,8 @@ namespace Sales_Tracker
             SortTheDataGridViewByDate();
             HideShowingResultsForLabel();
 
-            SetDoNotTranslateControls();
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-            LanguageManager.UpdateLanguageForControl(Purchases_DataGridView);
         }
         public void ResetData()
         {
@@ -330,7 +329,7 @@ namespace Sales_Tracker
                 Statistics_Button.BorderColor = CustomColors.accent_blue;
             }
         }
-        private void SetDoNotTranslateControls()
+        private void SetAccessibleDescriptions()
         {
             CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Profits_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
@@ -803,6 +802,7 @@ namespace Sales_Tracker
             _selectedDataGridView = _purchases_DataGridView;
             Controls.Add(_purchases_DataGridView);
             Controls.Remove(_sales_DataGridView);
+            LanguageManager.UpdateLanguageForControl(Purchases_DataGridView);
             ResizeControls();
             RefreshDataGridView();
 
@@ -1038,7 +1038,7 @@ namespace Sales_Tracker
                         BackColor = Color.Transparent,
                         Tag = text,
                         Anchor = AnchorStyles.Top,
-                        Name = $"{textWithoutWhitespace}_Label"  // Set the Name property for the language translation
+                        Name = $"{textWithoutWhitespace}_Label"  // This is needed for the language translation
                     };
 
                     control.Controls.Add(label);
@@ -1677,12 +1677,12 @@ namespace Sales_Tracker
                 return;
             }
 
-            countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products");
-            companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products");
-            countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products");
-            accountants_Chart = ConstructStatisticsChart(800, "Transactions managed by accountants");
-            salesVsExpenses_Chart = ConstructStatisticsChart(800, "Total sales vs. total expenses");
-            averageOrderValue_Chart = ConstructStatisticsChart(800, "Average order value");
+            countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products", "countriesOfOrigin_Chart");
+            companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products", "companiesOfOrigin_Chart");
+            countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products", "countriesOfDestination_Chart");
+            accountants_Chart = ConstructStatisticsChart(800, "Transactions managed by accountants", "accountants_Chart");
+            salesVsExpenses_Chart = ConstructStatisticsChart(800, "Total sales vs. total expenses", "salesVsExpenses_Chart");
+            averageOrderValue_Chart = ConstructStatisticsChart(800, "Average order value", "averageOrderValue_Chart");
 
             statisticsControls =
             [
@@ -1694,11 +1694,12 @@ namespace Sales_Tracker
                 averageOrderValue_Chart
             ];
         }
-        private static GunaChart ConstructStatisticsChart(int top, string title)
+        private static GunaChart ConstructStatisticsChart(int top, string title, string name)
         {
             GunaChart gunaChart = new()
             {
                 Top = top,
+                Name = name,  // This is needed for the language translation
                 Height = 500
             };
 
@@ -1745,6 +1746,13 @@ namespace Sales_Tracker
             LoadChart.LoadAccountantsIntoChart([_purchases_DataGridView, _sales_DataGridView], accountants_Chart);
             LoadChart.LoadSalesVsExpensesChart(_purchases_DataGridView, _sales_DataGridView, salesVsExpenses_Chart, isLineChart);
             LoadChart.LoadAverageOrderValueChart(_sales_DataGridView, averageOrderValue_Chart, isLineChart);
+
+            LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart);
+            LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart);
+            LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart);
+            LanguageManager.UpdateLanguageForControl(accountants_Chart);
+            LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart);
+            LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
         }
 
         // Settings

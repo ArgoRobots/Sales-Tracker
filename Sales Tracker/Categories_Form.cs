@@ -32,26 +32,35 @@ namespace Sales_Tracker
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
-            ConstructTotalLabel();
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
             CenterSelectedDataGridView();
             Theme.SetThemeForForm(this);
+            SetAccessibleDescriptions();
+            LabelManager.SetTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
+            Controls.Remove(ShowingResultsFor_Label);
             LanguageManager.UpdateLanguageForControl(this);
-            HideShowingResultsForLabel();
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(purchases_DataGridView, sales_DataGridView);
             AddEventHandlersToTextBoxes();
-            SetTotalLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(Category_TextBox);
 
-            purchases_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
-            purchases_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
+            purchases_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, purchases_DataGridView); };
+            purchases_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, purchases_DataGridView); };
 
-            sales_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
-            sales_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
+            sales_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, sales_DataGridView); };
+            sales_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, sales_DataGridView); };
+        }
+        private void SetAccessibleDescriptions()
+        {
+            CategoryName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            WarningCategoryName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ForSale_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
 
         // Methods
@@ -170,11 +179,11 @@ namespace Sales_Tracker
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                ShowShowingResultsForLabel(Search_TextBox.Text.Trim());
+                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }
             else
             {
-                HideShowingResultsForLabel();
+                Controls.Remove(ShowingResultsFor_Label);
             }
         }
         private void ForPurchase_Label_Click(object sender, EventArgs e)
@@ -235,25 +244,6 @@ namespace Sales_Tracker
             Theme.CustomizeScrollBar(sales_DataGridView);
         }
 
-        // Label
-        private Label totalLabel;
-        private void ConstructTotalLabel()
-        {
-            totalLabel = new Label
-            {
-                Font = new Font("Segoe UI", 11),
-                AutoSize = true,
-                ForeColor = CustomColors.text,
-                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
-            };
-            Controls.Add(totalLabel);
-        }
-        private void SetTotalLabel()
-        {
-            totalLabel.Text = $"Total: {MainMenu_Form.Instance.SelectedDataGridView.Rows.Count}";
-            totalLabel.Location = new Point(MainMenu_Form.Instance.SelectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.SelectedDataGridView.Bottom + 10);
-        }
-
         // Validate category name
         public void VaidateCategoryTextBox()
         {
@@ -302,18 +292,6 @@ namespace Sales_Tracker
                 AddCategory_Button.Enabled = true;
                 AddCategory_Button.Tag = true;
             }
-        }
-
-        // SearchingFor_Label
-        private void ShowShowingResultsForLabel(string text)
-        {
-            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
-            ShowingResultsFor_Label.Left = (ClientSize.Width - ShowingResultsFor_Label.Width) / 2 - 8;
-            Controls.Add(ShowingResultsFor_Label);
-        }
-        private void HideShowingResultsForLabel()
-        {
-            Controls.Remove(ShowingResultsFor_Label);
         }
 
         // Methods

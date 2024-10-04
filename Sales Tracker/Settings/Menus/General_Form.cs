@@ -55,13 +55,13 @@ namespace Sales_Tracker.Settings.Menus
 
             TextBoxManager.Attach(Language_TextBox);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(LanguageManager.GetLanguageNames());
-            SearchBox.Attach(Language_TextBox, this, () => searchResult, searchBoxMaxHeight);
-            //Language_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+            SearchBox.Attach(Language_TextBox, this, () => searchResult, searchBoxMaxHeight, false);
+            Language_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
 
             TextBoxManager.Attach(Currency_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
-            SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight);
-            //Currency_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+            SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight, false);
+            Currency_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
         }
 
         // Form event handlers
@@ -102,6 +102,14 @@ namespace Sales_Tracker.Settings.Menus
         }
 
         // Methods
+        private void ValidateInputs()
+        {
+            bool isValid = (Language_TextBox.Tag == null || Language_TextBox.Tag.ToString() != "0") &&
+                    (Currency_TextBox.Tag == null || Currency_TextBox.Tag.ToString() != "0");
+
+            Settings_Form.Instance.Ok_Button.Enabled = isValid;
+            Settings_Form.Instance.Apply_Button.Enabled = isValid;
+        }
         public void UpdateControls()
         {
             Language_TextBox.Text = Properties.Settings.Default.Language;

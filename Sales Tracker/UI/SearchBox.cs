@@ -20,10 +20,10 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Attaches events to a Guna2TextBox to add a SearchBox.
         /// </summary>
-        public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results, int maxHeight)
+        public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results, int maxHeight, bool allowTextBoxEmpty = true)
         {
-            textBox.Click += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight); };
-            textBox.GotFocus += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight); };
+            textBox.Click += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
+            textBox.GotFocus += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
             textBox.TextChanged += SearchTextBoxChanged;
             textBox.PreviewKeyDown += AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             textBox.KeyDown += (sender, e) => { SearchBoxTextBox_KeyDown(e); };
@@ -65,16 +65,17 @@ namespace Sales_Tracker.UI
         private static Guna2TextBox searchTextBox;
         private static List<SearchResult> resultList;
         private static int maxHeight;
+        private static bool allowEmpty;
 
         // Event handlers
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
-            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, maxHeight);
+            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, maxHeight, allowEmpty);
         }
 
         // Main methods
-        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight)
+        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight, bool allowTextBoxEmpty)
         {
             List<SearchResult> results = resultsFunc();
 
@@ -82,6 +83,7 @@ namespace Sales_Tracker.UI
             searchTextBox = textBox;
             resultList = results;
             SearchBox.maxHeight = maxHeight;
+            allowEmpty = allowTextBoxEmpty;
 
             // Start timing
             long startTime = DateTime.Now.Ticks;
@@ -266,7 +268,7 @@ namespace Sales_Tracker.UI
         // Methods
         private static void CheckValidity(Guna2TextBox textBox, HashSet<string> resultNames_set)
         {
-            if (resultNames_set.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text))
+            if (resultNames_set.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text) && allowEmpty)
             {
                 SetTextBoxToValid(textBox);
             }
@@ -328,17 +330,11 @@ namespace Sales_Tracker.UI
                 {
                     if (btn.BorderThickness == 1)
                     {
-                        // Temporarily unsubscribe from the TextChanged event
-                        searchTextBox.TextChanged -= SearchTextBoxChanged;
-
                         searchTextBox.Text = btn.Text;
                         CloseSearchBox();
                         DeselectTextBox();
                         debounceTimer.Stop();
                         isResultSelected = true;
-
-                        // Re-subscribe to the TextChanged event
-                        searchTextBox.TextChanged += SearchTextBoxChanged;
                         break;
                     }
                 }

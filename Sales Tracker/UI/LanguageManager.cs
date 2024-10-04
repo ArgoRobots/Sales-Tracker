@@ -8,6 +8,7 @@ namespace Sales_Tracker.UI
 {
     public class LanguageManager
     {
+        // Properties
         private static readonly HttpClient httpClient = new();
         private static readonly string apiKey = "4e5f9ad96540482591a49028553e146c";
         private static readonly string translationEndpoint = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
@@ -16,6 +17,7 @@ namespace Sales_Tracker.UI
         private static readonly Dictionary<string, Rectangle> controlBoundsCache = new();
         private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column";
 
+        // Init.
         public static void InitLanguageManager()
         {
             translationCache = new Dictionary<string, Dictionary<string, string>>();
@@ -66,13 +68,12 @@ namespace Sales_Tracker.UI
         {
             string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
 
-            // Ensure all the English text in this Form have been cached
+            // Ensure all the English text in this Form has been cached
             if (CacheAllEnglishTextInForm(control))
             {
                 SaveEnglishCacheToFile();
             }
 
-            // Translate all the text in this control
             TranslateAllTextInControl(control, targetLanguageAbbreviation);
             SaveCacheToFile();
         }
@@ -169,9 +170,13 @@ namespace Sales_Tracker.UI
                 Log.Error_EnglishCacheDoesNotExist(controlKey);
                 return null;
             }
+            else if (targetLanguageAbbreviation == "en")
+            {
+                return englishText;
+            }
             else
             {
-                if (targetLanguageAbbreviation == "en") { return englishText; }
+                englishText = text;
             }
 
             // Call the API to translate the text
@@ -241,7 +246,7 @@ namespace Sales_Tracker.UI
             {
                 label.Left = originalBounds.Right - label.Width;
             }
-            else if (label.Anchor == AnchorStyles.Top)
+            else if (label.Anchor == AnchorStyles.Top || label.Anchor == AnchorStyles.Bottom)
             {
                 if (label.AccessibleDescription == AccessibleDescriptionStrings.AlignRightCenter)
                 {
@@ -249,9 +254,11 @@ namespace Sales_Tracker.UI
                 }
                 else if (label.AccessibleDescription != AccessibleDescriptionStrings.AlignLeftCenter)
                 {
+                    // Center
                     int originalCenterX = originalBounds.Left + originalBounds.Width / 2;
                     label.Left = originalCenterX - label.Width / 2;
                 }
+                // If it is AlignLeftCenter, do nothing
             }
         }
         private static bool CanControlCache(Control control)
@@ -265,7 +272,7 @@ namespace Sales_Tracker.UI
 
         // Cache things
         /// <summary>
-        /// Saves all the text in a Form to englishCache.
+        /// Saves all the text in a Control to englishCache.
         /// </summary>
         /// <returns>True if any text was caches, otherwise False.</returns>
         private static bool CacheAllEnglishTextInForm(Control control)
@@ -278,7 +285,7 @@ namespace Sales_Tracker.UI
 
             if (englishCache.ContainsKey(controlKey))
             {
-                return false;  // This form has already been cached
+                return false;  // This control has already been cached
             }
 
             switch (control)

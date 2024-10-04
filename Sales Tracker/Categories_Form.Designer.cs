@@ -30,14 +30,14 @@ namespace Sales_Tracker
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Category_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             AddCategory_Button = new Guna.UI2.WinForms.Guna2Button();
             AddCategory_Label = new Label();
@@ -50,13 +50,14 @@ namespace Sales_Tracker
             ForPurchase_Label = new Label();
             ForSale_Label = new Label();
             Sale_RadioButton = new Guna.UI2.WinForms.Guna2CustomRadioButton();
+            Total_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningCategoryName_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // Category_TextBox
             // 
             Category_TextBox.Anchor = AnchorStyles.Top;
-            Category_TextBox.CustomizableEdges = customizableEdges9;
+            Category_TextBox.CustomizableEdges = customizableEdges1;
             Category_TextBox.DefaultText = "";
             Category_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Category_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -72,7 +73,7 @@ namespace Sales_Tracker
             Category_TextBox.PasswordChar = '\0';
             Category_TextBox.PlaceholderText = "";
             Category_TextBox.SelectedText = "";
-            Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Category_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Category_TextBox.ShortcutsEnabled = false;
             Category_TextBox.Size = new Size(300, 50);
             Category_TextBox.TabIndex = 1;
@@ -87,14 +88,14 @@ namespace Sales_Tracker
             AddCategory_Button.BorderColor = Color.LightGray;
             AddCategory_Button.BorderRadius = 2;
             AddCategory_Button.BorderThickness = 1;
-            AddCategory_Button.CustomizableEdges = customizableEdges11;
+            AddCategory_Button.CustomizableEdges = customizableEdges3;
             AddCategory_Button.Enabled = false;
             AddCategory_Button.FillColor = Color.White;
             AddCategory_Button.Font = new Font("Segoe UI", 10F);
             AddCategory_Button.ForeColor = Color.Black;
             AddCategory_Button.Location = new Point(482, 150);
             AddCategory_Button.Name = "AddCategory_Button";
-            AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            AddCategory_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             AddCategory_Button.Size = new Size(215, 50);
             AddCategory_Button.TabIndex = 2;
             AddCategory_Button.Tag = "";
@@ -154,7 +155,7 @@ namespace Sales_Tracker
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top;
-            Search_TextBox.CustomizableEdges = customizableEdges13;
+            Search_TextBox.CustomizableEdges = customizableEdges5;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -170,7 +171,7 @@ namespace Sales_Tracker
             Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for categories";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 49;
@@ -198,7 +199,7 @@ namespace Sales_Tracker
             Purchase_RadioButton.CheckedState.InnerColor = Color.White;
             Purchase_RadioButton.Location = new Point(45, 47);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
-            Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges15;
+            Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges7;
             Purchase_RadioButton.Size = new Size(20, 20);
             Purchase_RadioButton.TabIndex = 51;
             Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -243,7 +244,7 @@ namespace Sales_Tracker
             Sale_RadioButton.CheckedState.InnerColor = Color.White;
             Sale_RadioButton.Location = new Point(237, 47);
             Sale_RadioButton.Name = "Sale_RadioButton";
-            Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Sale_RadioButton.Size = new Size(20, 20);
             Sale_RadioButton.TabIndex = 53;
             Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -252,10 +253,22 @@ namespace Sales_Tracker
             Sale_RadioButton.UncheckedState.InnerColor = Color.Transparent;
             Sale_RadioButton.CheckedChanged += Sale_RadioButton_CheckedChanged;
             // 
+            // Total_Label
+            // 
+            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Total_Label.AutoSize = true;
+            Total_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Total_Label.Location = new Point(936, 684);
+            Total_Label.Name = "Total_Label";
+            Total_Label.Size = new Size(68, 31);
+            Total_Label.TabIndex = 55;
+            Total_Label.Text = "Total:";
+            // 
             // Categories_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1178, 724);
+            Controls.Add(Total_Label);
             Controls.Add(Sale_RadioButton);
             Controls.Add(Purchase_RadioButton);
             Controls.Add(ForSale_Label);
@@ -296,5 +309,6 @@ namespace Sales_Tracker
         private Label ForSale_Label;
         private Guna.UI2.WinForms.Guna2CustomRadioButton Sale_RadioButton;
         public Guna.UI2.WinForms.Guna2CustomRadioButton Purchase_RadioButton;
+        private Label Total_Label;
     }
 }

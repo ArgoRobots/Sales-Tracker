@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -13,7 +14,13 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
             InitializeDatePickers();
             Theme.SetThemeForForm(this);
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
+        }
+        private void SetAccessibleDescriptions()
+        {
+            From_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
 
         // Form event handlers

@@ -24,14 +24,14 @@ namespace Sales_Tracker.Settings.Menus
             UpdateControls();
             SetPasswordButton();
             UpdateTheme();
-            SetDoNotTranslateControls();
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
         }
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
         }
-        private void SetDoNotTranslateControls()
+        private void SetAccessibleDescriptions()
         {
             EncryptFiles_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
         }

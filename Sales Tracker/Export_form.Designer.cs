@@ -217,7 +217,7 @@
             Export_Button.FillColor = Color.White;
             Export_Button.Font = new Font("Segoe UI", 10F);
             Export_Button.ForeColor = Color.Black;
-            Export_Button.Location = new Point(937, 630);
+            Export_Button.Location = new Point(937, 600);
             Export_Button.Name = "Export_Button";
             Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Export_Button.Size = new Size(200, 50);
@@ -248,7 +248,7 @@
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
-            ClientSize = new Size(1178, 724);
+            ClientSize = new Size(1178, 694);
             Controls.Add(FileType_ComboBox);
             Controls.Add(Export_Button);
             Controls.Add(ThreeDots_Button);
@@ -264,6 +264,7 @@
             Controls.Add(label2);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MinimumSize = new Size(1000, 750);
             Name = "Export_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

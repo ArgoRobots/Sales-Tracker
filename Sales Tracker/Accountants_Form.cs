@@ -30,7 +30,7 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             LoadAccountants();
             Theme.SetThemeForForm(this);
-            SetDoNotTranslateControls();
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LabelManager.SetTotalLabel(Total_Label, accountants_DataGridView);
             Controls.Remove(ShowingResultsFor_Label);
@@ -53,7 +53,7 @@ namespace Sales_Tracker
             accountants_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, accountants_DataGridView); };
             accountants_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, accountants_DataGridView); };
         }
-        private void SetDoNotTranslateControls()
+        private void SetAccessibleDescriptions()
         {
             AccountantName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;

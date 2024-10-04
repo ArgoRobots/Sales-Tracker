@@ -33,7 +33,7 @@ namespace Sales_Tracker.Startup.Menus
             Directories.EnsureAppDataDirectoriesExist();
             CustomControls.ConstructRightClickRename();
 
-            SetDoNotTranslateControls();
+            SetAccessibleDescriptions();
             LanguageManager.InitLanguageManager();
             LanguageManager.UpdateLanguageForControl(this);
 
@@ -66,7 +66,7 @@ namespace Sales_Tracker.Startup.Menus
                 OpenCompany_Button.Image = Resources.OpenFolderBlack;
             }
         }
-        private void SetDoNotTranslateControls()
+        private void SetAccessibleDescriptions()
         {
             ArgoSalesTracker_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
         }

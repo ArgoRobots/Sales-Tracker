@@ -52,7 +52,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Receipts_Form));
             ExportReceipts_Label = new Label();
             Category_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            ProductID_Label = new Label();
+            FilterByProduct_Label = new Label();
             From_Label = new Label();
             From_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
             To_DateTimePicker = new Guna.UI2.WinForms.Guna2DateTimePicker();
@@ -93,7 +93,7 @@
             Category_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Category_TextBox.Font = new Font("Segoe UI", 9F);
             Category_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Category_TextBox.Location = new Point(73, 154);
+            Category_TextBox.Location = new Point(130, 154);
             Category_TextBox.Margin = new Padding(4, 5, 4, 5);
             Category_TextBox.Name = "Category_TextBox";
             Category_TextBox.PasswordChar = '\0';
@@ -104,23 +104,23 @@
             Category_TextBox.TabIndex = 1;
             Category_TextBox.TextChanged += FilterReceipts;
             // 
-            // ProductID_Label
+            // FilterByProduct_Label
             // 
-            ProductID_Label.Anchor = AnchorStyles.Top;
-            ProductID_Label.AutoSize = true;
-            ProductID_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductID_Label.Location = new Point(73, 120);
-            ProductID_Label.Name = "ProductID_Label";
-            ProductID_Label.Size = new Size(183, 31);
-            ProductID_Label.TabIndex = 0;
-            ProductID_Label.Text = "Filter by product";
+            FilterByProduct_Label.Anchor = AnchorStyles.Top;
+            FilterByProduct_Label.AutoSize = true;
+            FilterByProduct_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            FilterByProduct_Label.Location = new Point(130, 120);
+            FilterByProduct_Label.Name = "FilterByProduct_Label";
+            FilterByProduct_Label.Size = new Size(183, 31);
+            FilterByProduct_Label.TabIndex = 0;
+            FilterByProduct_Label.Text = "Filter by product";
             // 
             // From_Label
             // 
             From_Label.Anchor = AnchorStyles.Top;
             From_Label.AutoSize = true;
             From_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            From_Label.Location = new Point(589, 164);
+            From_Label.Location = new Point(559, 164);
             From_Label.Name = "From_Label";
             From_Label.Size = new Size(66, 31);
             From_Label.TabIndex = 0;
@@ -134,7 +134,7 @@
             From_DateTimePicker.FillColor = Color.White;
             From_DateTimePicker.Font = new Font("Segoe UI", 9F);
             From_DateTimePicker.Format = DateTimePickerFormat.Long;
-            From_DateTimePicker.Location = new Point(589, 198);
+            From_DateTimePicker.Location = new Point(559, 198);
             From_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             From_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             From_DateTimePicker.Name = "From_DateTimePicker";
@@ -152,7 +152,7 @@
             To_DateTimePicker.FillColor = Color.White;
             To_DateTimePicker.Font = new Font("Segoe UI", 9F);
             To_DateTimePicker.Format = DateTimePickerFormat.Long;
-            To_DateTimePicker.Location = new Point(589, 285);
+            To_DateTimePicker.Location = new Point(559, 285);
             To_DateTimePicker.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             To_DateTimePicker.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             To_DateTimePicker.Name = "To_DateTimePicker";
@@ -167,7 +167,7 @@
             To_Label.Anchor = AnchorStyles.Top;
             To_Label.AutoSize = true;
             To_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            To_Label.Location = new Point(589, 251);
+            To_Label.Location = new Point(559, 251);
             To_Label.Name = "To_Label";
             To_Label.Size = new Size(37, 31);
             To_Label.TabIndex = 0;
@@ -261,7 +261,7 @@
             Product_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Product_TextBox.Font = new Font("Segoe UI", 9F);
             Product_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Product_TextBox.Location = new Point(73, 214);
+            Product_TextBox.Location = new Point(130, 214);
             Product_TextBox.Margin = new Padding(4, 5, 4, 5);
             Product_TextBox.Name = "Product_TextBox";
             Product_TextBox.PasswordChar = '\0';
@@ -301,24 +301,24 @@
             FilterByDate_Label.Anchor = AnchorStyles.Top;
             FilterByDate_Label.AutoSize = true;
             FilterByDate_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            FilterByDate_Label.Location = new Point(607, 111);
+            FilterByDate_Label.Location = new Point(577, 111);
             FilterByDate_Label.Name = "FilterByDate_Label";
             FilterByDate_Label.Padding = new Padding(5);
             FilterByDate_Label.Size = new Size(150, 40);
-            FilterByDate_Label.TabIndex = 21;
+            FilterByDate_Label.TabIndex = 20;
             FilterByDate_Label.Text = "Filter by date";
             FilterByDate_Label.Click += FilterByDate_Label_Click;
             // 
             // FilterByDate_CheckBox
             // 
-            FilterByDate_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            FilterByDate_CheckBox.Anchor = AnchorStyles.Top;
             FilterByDate_CheckBox.Animated = true;
             FilterByDate_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             FilterByDate_CheckBox.CheckedState.BorderRadius = 2;
             FilterByDate_CheckBox.CheckedState.BorderThickness = 0;
             FilterByDate_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             FilterByDate_CheckBox.CustomizableEdges = customizableEdges13;
-            FilterByDate_CheckBox.Location = new Point(589, 121);
+            FilterByDate_CheckBox.Location = new Point(559, 121);
             FilterByDate_CheckBox.Name = "FilterByDate_CheckBox";
             FilterByDate_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             FilterByDate_CheckBox.Size = new Size(20, 20);
@@ -334,17 +334,17 @@
             IncludeSaleReceipts_Label.Anchor = AnchorStyles.Top;
             IncludeSaleReceipts_Label.AutoSize = true;
             IncludeSaleReceipts_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            IncludeSaleReceipts_Label.Location = new Point(1124, 198);
+            IncludeSaleReceipts_Label.Location = new Point(1036, 209);
             IncludeSaleReceipts_Label.Name = "IncludeSaleReceipts_Label";
             IncludeSaleReceipts_Label.Padding = new Padding(5);
             IncludeSaleReceipts_Label.Size = new Size(218, 40);
-            IncludeSaleReceipts_Label.TabIndex = 23;
+            IncludeSaleReceipts_Label.TabIndex = 0;
             IncludeSaleReceipts_Label.Text = "Include sale receipts";
             IncludeSaleReceipts_Label.Click += IncludeSaleReceipts_Label_Click;
             // 
             // IncludeSaleReceipts_CheckBox
             // 
-            IncludeSaleReceipts_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            IncludeSaleReceipts_CheckBox.Anchor = AnchorStyles.Top;
             IncludeSaleReceipts_CheckBox.Animated = true;
             IncludeSaleReceipts_CheckBox.Checked = true;
             IncludeSaleReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
@@ -352,7 +352,7 @@
             IncludeSaleReceipts_CheckBox.CheckedState.BorderThickness = 0;
             IncludeSaleReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludeSaleReceipts_CheckBox.CustomizableEdges = customizableEdges15;
-            IncludeSaleReceipts_CheckBox.Location = new Point(1106, 208);
+            IncludeSaleReceipts_CheckBox.Location = new Point(1018, 219);
             IncludeSaleReceipts_CheckBox.Name = "IncludeSaleReceipts_CheckBox";
             IncludeSaleReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
             IncludeSaleReceipts_CheckBox.Size = new Size(20, 20);
@@ -368,17 +368,17 @@
             IncludePurchaseReceipts_Label.Anchor = AnchorStyles.Top;
             IncludePurchaseReceipts_Label.AutoSize = true;
             IncludePurchaseReceipts_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            IncludePurchaseReceipts_Label.Location = new Point(1124, 154);
+            IncludePurchaseReceipts_Label.Location = new Point(1036, 165);
             IncludePurchaseReceipts_Label.Name = "IncludePurchaseReceipts_Label";
             IncludePurchaseReceipts_Label.Padding = new Padding(5);
             IncludePurchaseReceipts_Label.Size = new Size(268, 40);
-            IncludePurchaseReceipts_Label.TabIndex = 25;
+            IncludePurchaseReceipts_Label.TabIndex = 0;
             IncludePurchaseReceipts_Label.Text = "Include purchase receipts";
             IncludePurchaseReceipts_Label.Click += IncludePurchaseReceipts_Label_Click;
             // 
             // IncludePurchaseReceipts_CheckBox
             // 
-            IncludePurchaseReceipts_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            IncludePurchaseReceipts_CheckBox.Anchor = AnchorStyles.Top;
             IncludePurchaseReceipts_CheckBox.Animated = true;
             IncludePurchaseReceipts_CheckBox.Checked = true;
             IncludePurchaseReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
@@ -386,7 +386,7 @@
             IncludePurchaseReceipts_CheckBox.CheckedState.BorderThickness = 0;
             IncludePurchaseReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludePurchaseReceipts_CheckBox.CustomizableEdges = customizableEdges17;
-            IncludePurchaseReceipts_CheckBox.Location = new Point(1106, 164);
+            IncludePurchaseReceipts_CheckBox.Location = new Point(1018, 175);
             IncludePurchaseReceipts_CheckBox.Name = "IncludePurchaseReceipts_CheckBox";
             IncludePurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
             IncludePurchaseReceipts_CheckBox.Size = new Size(20, 20);
@@ -415,7 +415,7 @@
             Controls.Add(To_DateTimePicker);
             Controls.Add(From_DateTimePicker);
             Controls.Add(From_Label);
-            Controls.Add(ProductID_Label);
+            Controls.Add(FilterByProduct_Label);
             Controls.Add(Category_TextBox);
             Controls.Add(ExportReceipts_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
@@ -434,7 +434,7 @@
 
         private Label ExportReceipts_Label;
         private Guna.UI2.WinForms.Guna2TextBox Category_TextBox;
-        private Label ProductID_Label;
+        private Label FilterByProduct_Label;
         private Label From_Label;
         private Guna.UI2.WinForms.Guna2DateTimePicker From_DateTimePicker;
         private Guna.UI2.WinForms.Guna2DateTimePicker To_DateTimePicker;

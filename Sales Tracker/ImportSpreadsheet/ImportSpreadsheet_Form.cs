@@ -232,10 +232,11 @@ namespace Sales_Tracker.ImportSpreadsheet
                     Font = new Font("Segoe UI", 11),
                     ForeColor = CustomColors.text,
                     AutoSize = false,
+                    AutoEllipsis = true,
+                    Text = items[i],
                     Size = new Size(flowPanel.Width - flowPanel.Padding.Left - 5, 30)  // Fixed height for single line
                 };
 
-                itemLabel.Text = Tools.ShortenTextWithEllipsis(itemLabel, items[i]);
                 flowPanel.Controls.Add(itemLabel);
             }
             outerPanel.Controls.Add(flowPanel);

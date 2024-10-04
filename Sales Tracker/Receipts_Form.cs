@@ -34,18 +34,25 @@ namespace Sales_Tracker
                 From_DateTimePicker.Value = oldestDate;
                 To_DateTimePicker.Value = DateTime.Now;
             }
+            MainMenu_Form.Instance.isProgramLoading = false;
 
             Theme.SetThemeForForm(this);
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-            MainMenu_Form.Instance.isProgramLoading = false;
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            if (Receipts_DataGridView.SelectedRows.Count > 0)
-            {
-                ExportSelected_Button.Enabled = true;
-            }
+            ExportSelected_Button.Enabled = Receipts_DataGridView.SelectedRows.Count > 0;
+        }
+        private void SetAccessibleDescriptions()
+        {
+            FilterByProduct_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            FilterByDate_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            From_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
         }
 
         // Form event handlers
@@ -87,7 +94,6 @@ namespace Sales_Tracker
                     string receipt = row.Tag.ToString();
                     receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName).Replace(ReadOnlyVariables.Receipt_text, "");
                     string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
-                    destinationFilePath = Directories.GetNewFileNameIfItAlreadyExists(destinationFilePath);
                     Directories.CopyFile(receipt, destinationFilePath);
                 }
 
