@@ -40,6 +40,8 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
+
+            CenterCheckBoxes();
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {
@@ -53,6 +55,28 @@ namespace Sales_Tracker
             To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+        }
+        private void CenterCheckBoxes()
+        {
+            int leftEdge = From_DateTimePicker.Right;
+            int rightEdge = ClientSize.Width;
+            int centerX = leftEdge + (rightEdge - leftEdge) / 2;
+            int spacing = IncludePurchaseReceipts_Label.Left - IncludePurchaseReceipts_CheckBox.Right;
+
+            // Calculate total widths of the checkboxes and labels
+            int purchaseTotalWidth = IncludePurchaseReceipts_CheckBox.Width + spacing + IncludePurchaseReceipts_Label.Width;
+            int saleTotalWidth = IncludeSaleReceipts_CheckBox.Width + spacing + IncludeSaleReceipts_Label.Width;
+            int maxTotalWidth = Math.Max(purchaseTotalWidth, saleTotalWidth);
+
+            // Compute the left position to center the controls
+            int controlsLeft = centerX - (maxTotalWidth / 2);
+
+            // Position the controls
+            IncludePurchaseReceipts_CheckBox.Left = controlsLeft;
+            IncludePurchaseReceipts_Label.Left = IncludePurchaseReceipts_CheckBox.Right + spacing;
+
+            IncludeSaleReceipts_CheckBox.Left = controlsLeft;
+            IncludeSaleReceipts_Label.Left = IncludeSaleReceipts_CheckBox.Right + spacing;
         }
 
         // Form event handlers
@@ -123,6 +147,7 @@ namespace Sales_Tracker
             IncludePurchaseReceipts_CheckBox.Checked = !IncludePurchaseReceipts_CheckBox.Checked;
         }
 
+        // DataGridView
         public enum Column
         {
             Type,
