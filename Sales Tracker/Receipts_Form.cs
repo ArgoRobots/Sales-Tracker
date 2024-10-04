@@ -51,8 +51,8 @@ namespace Sales_Tracker
             FilterByDate_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             From_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
 
         // Form event handlers

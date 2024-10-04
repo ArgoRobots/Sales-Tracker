@@ -15,7 +15,8 @@ namespace Sales_Tracker.UI
         private static Dictionary<string, Dictionary<string, string>> translationCache;  // language -> controlKey -> translation
         private static Dictionary<string, string> englishCache;  // controlKey -> originalText
         private static readonly Dictionary<string, Rectangle> controlBoundsCache = new();
-        private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column";
+        private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column",
+            before_text = "before", link_text = "link", after_text = "after";
 
         // Init.
         public static void InitLanguageManager()
@@ -85,6 +86,42 @@ namespace Sales_Tracker.UI
 
             switch (control)
             {
+                case LinkLabel linkLabel:
+                    // Normalize the fullText by replacing "\r\n" with "\n" to handle both cases
+                    string fullText = linkLabel.Text.Replace("\r\n", "\n");
+
+                    int linkStart = linkLabel.LinkArea.Start;
+                    int linkLength = linkLabel.LinkArea.Length;
+                    string linkText = fullText.Substring(linkStart, linkLength).Trim();
+
+                    // Extract the text before and after the link
+                    string textBeforeLink = fullText.Substring(0, linkStart).Trim();
+                    string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
+
+                    // Check if the original text contains a new line before the link
+                    bool hasNewLineBefore = fullText.Substring(0, linkStart).EndsWith('\n');
+
+                    // Generate proper control keys for each part
+                    string controlKeyBefore = GetControlKey(linkLabel, before_text);
+                    string controlKeyLink = GetControlKey(linkLabel, link_text);
+                    string controlKeyAfter = GetControlKey(linkLabel, after_text);
+
+                    // Translate the text
+                    string translatedTextBefore = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyBefore, control, textBeforeLink);
+                    string translatedLink = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyLink, control, linkText);
+                    string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, control, textAfterLink);
+
+                    // Combine the translated text, adding back the new line before the link if necessary
+                    string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) +
+                        translatedLink + " " + translatedTextAfter;
+
+                    // Set the translated text and preserve the link area
+                    linkLabel.Text = finalText;
+                    linkLabel.LinkArea = new LinkArea(translatedTextBefore.Length + (hasNewLineBefore ? 1 : 0), translatedLink.Length);
+
+                    AdjustLabelSizeAndPosition(linkLabel);
+                    break;
+
                 case Label label:
                     label.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, label.Text);
                     AdjustLabelSizeAndPosition(label);
@@ -146,12 +183,12 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static string? TranslateAndCacheText(string targetLanguageAbbreviation, string controlKey, Control control, string text)
         {
-            if (!CanControlTranslate(control)) { return text; }
-
             if (string.IsNullOrEmpty(text))
             {
                 return text;
             }
+
+            if (!CanControlTranslate(control)) { return text; }
 
             bool canCache = CanControlCache(control);
 
@@ -279,8 +316,6 @@ namespace Sales_Tracker.UI
         {
             if (!CanControlTranslate(control)) { return false; }
 
-            if (!CanControlCache(control)) { return false; }
-
             string controlKey = GetControlKey(control);
 
             if (englishCache.ContainsKey(controlKey))
@@ -294,6 +329,26 @@ namespace Sales_Tracker.UI
                     if (!string.IsNullOrEmpty(form.Text))
                     {
                         englishCache[controlKey] = form.Text;
+                    }
+                    break;
+
+                case LinkLabel linkLabel:
+                    if (!string.IsNullOrEmpty(linkLabel.Text))
+                    {
+                        // Split the text into before, link, and after parts
+                        string fullText = linkLabel.Text;
+                        int linkStart = linkLabel.LinkArea.Start;
+                        int linkLength = linkLabel.LinkArea.Length;
+                        string linkText = fullText.Substring(linkStart, linkLength + 1).Trim();
+
+                        // Extract the text before and after the link
+                        string textBeforeLink = fullText.Substring(0, linkStart).Trim();
+                        string textAfterLink = fullText.Substring(linkStart + linkLength + 1).Trim();
+
+                        // Cache each part separately using the same logic as translation
+                        englishCache[GetControlKey(linkLabel, before_text)] = textBeforeLink;
+                        englishCache[GetControlKey(linkLabel, link_text)] = linkText;
+                        englishCache[GetControlKey(linkLabel, after_text)] = textAfterLink;
                     }
                     break;
 
@@ -388,12 +443,21 @@ namespace Sales_Tracker.UI
         }
 
         // Misc. methods
-        private static string GetControlKey(Control control)
+        private static string GetControlKey(Control control, string section = null)
         {
             string formName = control.FindForm()?.Name ?? "UnknownForm";
             string controlName = control.Name;
-            return $"{formName}.{controlName}";
+
+            // Append section (before, link, after) if provided
+            string key = $"{formName}.{controlName}";
+            if (!string.IsNullOrEmpty(section))
+            {
+                key += $"_{section}";
+            }
+
+            return key;
         }
+
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
             // Ordered by how western the country is

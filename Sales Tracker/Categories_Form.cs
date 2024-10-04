@@ -57,8 +57,8 @@ namespace Sales_Tracker
         {
             CategoryName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             WarningCategoryName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            ForSale_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ForSale_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
             Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }

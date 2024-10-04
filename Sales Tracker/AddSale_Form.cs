@@ -30,6 +30,7 @@ namespace Sales_Tracker
             CheckIfProductsExist();
             CheckIfBuyersExist();
             Theme.SetThemeForForm(this);
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
             string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
@@ -78,6 +79,23 @@ namespace Sales_Tracker
             TextBoxManager.Attach(Credited_TextBox);
 
             TextBoxManager.Attach(Notes_TextBox);
+        }
+        private void SetAccessibleDescriptions()
+        {
+            MultipleItems_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            SaleNumber_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            AccountantName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ProductName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Date_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            PricePerUnit_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Discount_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Credited_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            SelectedReceipt_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            WarningAccountant_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            WarningProduct_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
 
         // Form event handlers
@@ -672,7 +690,7 @@ namespace Sales_Tracker
         private void RelocateBuyerWarning()
         {
             WarningBuyer_PictureBox.Location = new Point(AccountantName_TextBox.Left, AccountantName_TextBox.Bottom + CustomControls.SpaceBetweenControls);
-            WarningBuyer_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + CustomControls.SpaceBetweenControls, WarningBuyer_PictureBox.Top);
+            WarningAccountant_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + CustomControls.SpaceBetweenControls, WarningBuyer_PictureBox.Top);
         }
         private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
         private enum TextBoxnames
@@ -907,12 +925,12 @@ namespace Sales_Tracker
         }
         private void ShowBuyerWarning()
         {
-            WarningBuyer_LinkLabel.Visible = true;
+            WarningAccountant_LinkLabel.Visible = true;
             WarningBuyer_PictureBox.Visible = true;
         }
         private void HideBuyerWarning()
         {
-            WarningBuyer_LinkLabel.Visible = false;
+            WarningAccountant_LinkLabel.Visible = false;
             WarningBuyer_PictureBox.Visible = false;
         }
 

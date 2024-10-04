@@ -86,7 +86,7 @@ namespace Sales_Tracker
             WarningProduct_PictureBox = new PictureBox();
             Fee_Label = new Label();
             PaymentFee_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            WarningBuyer_LinkLabel = new LinkLabel();
+            WarningAccountant_LinkLabel = new LinkLabel();
             WarningBuyer_PictureBox = new PictureBox();
             CountryOfDestination_Label = new Label();
             CountryOfDestinaion_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -498,21 +498,21 @@ namespace Sales_Tracker
             PaymentFee_TextBox.TextChanged += ValidateInputs;
             PaymentFee_TextBox.Click += CloseAllPanels;
             // 
-            // WarningBuyer_LinkLabel
+            // WarningAccountant_LinkLabel
             // 
-            WarningBuyer_LinkLabel.Anchor = AnchorStyles.Top;
-            WarningBuyer_LinkLabel.AutoSize = true;
-            WarningBuyer_LinkLabel.Font = new Font("Segoe UI", 10F);
-            WarningBuyer_LinkLabel.LinkArea = new LinkArea(22, 15);
-            WarningBuyer_LinkLabel.Location = new Point(394, 210);
-            WarningBuyer_LinkLabel.Name = "WarningBuyer_LinkLabel";
-            WarningBuyer_LinkLabel.Size = new Size(210, 59);
-            WarningBuyer_LinkLabel.TabIndex = 6;
-            WarningBuyer_LinkLabel.TabStop = true;
-            WarningBuyer_LinkLabel.Text = "No accountants exist.\r\nCreate one here";
-            WarningBuyer_LinkLabel.UseCompatibleTextRendering = true;
-            WarningBuyer_LinkLabel.LinkClicked += WarningBuyer_LinkLabel_LinkClicked;
-            WarningBuyer_LinkLabel.Click += CloseAllPanels;
+            WarningAccountant_LinkLabel.Anchor = AnchorStyles.Top;
+            WarningAccountant_LinkLabel.AutoSize = true;
+            WarningAccountant_LinkLabel.Font = new Font("Segoe UI", 10F);
+            WarningAccountant_LinkLabel.LinkArea = new LinkArea(22, 15);
+            WarningAccountant_LinkLabel.Location = new Point(394, 210);
+            WarningAccountant_LinkLabel.Name = "WarningAccountant_LinkLabel";
+            WarningAccountant_LinkLabel.Size = new Size(210, 59);
+            WarningAccountant_LinkLabel.TabIndex = 6;
+            WarningAccountant_LinkLabel.TabStop = true;
+            WarningAccountant_LinkLabel.Text = "No accountants exist.\r\nCreate one here";
+            WarningAccountant_LinkLabel.UseCompatibleTextRendering = true;
+            WarningAccountant_LinkLabel.LinkClicked += WarningBuyer_LinkLabel_LinkClicked;
+            WarningAccountant_LinkLabel.Click += CloseAllPanels;
             // 
             // WarningBuyer_PictureBox
             // 
@@ -778,7 +778,7 @@ namespace Sales_Tracker
             Controls.Add(Discount_TextBox);
             Controls.Add(CountryOfDestination_Label);
             Controls.Add(CountryOfDestinaion_TextBox);
-            Controls.Add(WarningBuyer_LinkLabel);
+            Controls.Add(WarningAccountant_LinkLabel);
             Controls.Add(WarningBuyer_PictureBox);
             Controls.Add(Fee_Label);
             Controls.Add(PaymentFee_TextBox);
@@ -842,7 +842,7 @@ namespace Sales_Tracker
         private PictureBox WarningProduct_PictureBox;
         private Label Fee_Label;
         private Guna.UI2.WinForms.Guna2TextBox PaymentFee_TextBox;
-        private LinkLabel WarningBuyer_LinkLabel;
+        private LinkLabel WarningAccountant_LinkLabel;
         private PictureBox WarningBuyer_PictureBox;
         private Label CountryOfDestination_Label;
         private Guna.UI2.WinForms.Guna2TextBox CountryOfDestinaion_TextBox;

@@ -38,6 +38,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             HideShowingResultsForLabel();
             AddEventHandlersToTextBoxes();
@@ -117,6 +118,20 @@ namespace Sales_Tracker
             {
                 Sale_RadioButton.Checked = true;
             }
+        }
+        private void SetAccessibleDescriptions()
+        {
+            ProductsRemaining_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ForSale_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ProductID_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ProductName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            ProductCategory_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            CountryOfOrigin_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            CompanyOfOrigin_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            WarningProductName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            WarningCategory_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            WarningCompany_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
 
         // Form event handlers
