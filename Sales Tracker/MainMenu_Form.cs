@@ -17,8 +17,8 @@ namespace Sales_Tracker
     {
         // Proprties
         private static MainMenu_Form _instance;
-        private static List<string> _thingsThatHaveChangedInFile = [];
-        private static List<string> _settingsThatHaveChangedInFile = [];
+        private static readonly List<string> _thingsThatHaveChangedInFile = [];
+        private static readonly List<string> _settingsThatHaveChangedInFile = [];
         public DateTime fromDate, toDate;
         private static string _currencySymbol;
         private static bool _isFullVersion = true;
@@ -26,16 +26,8 @@ namespace Sales_Tracker
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
-        public static List<string> ThingsThatHaveChangedInFile
-        {
-            get => _thingsThatHaveChangedInFile;
-            private set => _thingsThatHaveChangedInFile = value;
-        }
-        public static List<string> SettingsThatHaveChangedInFile
-        {
-            get => _settingsThatHaveChangedInFile;
-            private set => _settingsThatHaveChangedInFile = value;
-        }
+        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
+        public static List<string> SettingsThatHaveChangedInFile => _settingsThatHaveChangedInFile;
         public static bool IsFullVersion
         {
             get => _isFullVersion;

@@ -9,14 +9,10 @@ namespace Sales_Tracker
     public partial class AddPurchase_Form : Form
     {
         // Properties
-        private static List<string> _thingsThatHaveChangedInFile = [];
+        private static readonly List<string> _thingsThatHaveChangedInFile = [];
 
         // Getters and setters
-        public static List<string> ThingsThatHaveChangedInFile
-        {
-            get => _thingsThatHaveChangedInFile;
-            private set => _thingsThatHaveChangedInFile = value;
-        }
+        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
 
         // Init.
         public AddPurchase_Form()

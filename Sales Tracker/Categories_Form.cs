@@ -9,15 +9,11 @@ namespace Sales_Tracker
     {
         // Properties
         private static Categories_Form _instance;
-        private static List<string> _thingsThatHaveChangedInFile = [];
+        private static readonly List<string> _thingsThatHaveChangedInFile = [];
 
         // Getters and setters
         public static Categories_Form Instance => _instance;
-        public static List<string> ThingsThatHaveChangedInFile
-        {
-            get => _thingsThatHaveChangedInFile;
-            private set => _thingsThatHaveChangedInFile = value;
-        }
+        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
 
         // Init.
         private readonly MainMenu_Form.SelectedOption oldOption;

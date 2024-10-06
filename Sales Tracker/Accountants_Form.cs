@@ -9,12 +9,13 @@ namespace Sales_Tracker
     {
         // Properties
         private static Accountants_Form _instance;
-        public static readonly List<string> thingsThatHaveChangedInFile = [];
+        private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Getters
         public static Accountants_Form Instance => _instance;
+        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
 
         // Init.
         public Accountants_Form()
@@ -86,7 +87,7 @@ namespace Sales_Tracker
             int newRowIndex = accountants_DataGridView.Rows.Add(name);
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
+            CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added accountant '{name}'");
 
             Accountant_TextBox.Text = "";

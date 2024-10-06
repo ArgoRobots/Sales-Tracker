@@ -81,10 +81,10 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.FillColor = Color.FromArgb(0, 103, 192);
             CheckForUpdates_Button.Font = new Font("Segoe UI", 9.75F);
             CheckForUpdates_Button.ForeColor = Color.White;
-            CheckForUpdates_Button.Location = new Point(525, 477);
+            CheckForUpdates_Button.Location = new Point(485, 477);
             CheckForUpdates_Button.Name = "CheckForUpdates_Button";
             CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            CheckForUpdates_Button.Size = new Size(200, 50);
+            CheckForUpdates_Button.Size = new Size(280, 45);
             CheckForUpdates_Button.TabIndex = 1;
             CheckForUpdates_Button.Text = "Check for updates";
             CheckForUpdates_Button.Click += CheckForUpdates_Button_Click;

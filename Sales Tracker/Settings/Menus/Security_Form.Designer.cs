@@ -79,11 +79,11 @@ namespace Sales_Tracker.Settings.Menus
             AddPassword_Button.FillColor = Color.FromArgb(250, 250, 250);
             AddPassword_Button.Font = new Font("Segoe UI", 9F);
             AddPassword_Button.ForeColor = Color.Black;
-            AddPassword_Button.Location = new Point(500, 445);
+            AddPassword_Button.Location = new Point(475, 445);
             AddPassword_Button.Margin = new Padding(4, 7, 4, 7);
             AddPassword_Button.Name = "AddPassword_Button";
             AddPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            AddPassword_Button.Size = new Size(250, 45);
+            AddPassword_Button.Size = new Size(300, 45);
             AddPassword_Button.TabIndex = 276;
             AddPassword_Button.Text = "Add password protection";
             AddPassword_Button.Click += AddPassword_Button_Click;

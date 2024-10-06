@@ -195,9 +195,9 @@ namespace Sales_Tracker
 
             top = AddListForThingsChanged("General", MainMenu_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Settings", MainMenu_Form.SettingsThatHaveChangedInFile, top);
-            top = AddListForThingsChanged("Accountants", Accountants_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Accountants", Accountants_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Categories", Categories_Form.ThingsThatHaveChangedInFile, top);
-            top = AddListForThingsChanged("Companies", Companies_Form.thingsThatHaveChangedInFile, top);
+            top = AddListForThingsChanged("Companies", Companies_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Purchases", AddPurchase_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Sales", AddSale_Form.ThingsThatHaveChangedInFile, top);
             top = AddListForThingsChanged("Products", Products_Form.ThingsThatHaveChangedInFile, top);

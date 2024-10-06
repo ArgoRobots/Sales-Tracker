@@ -53,9 +53,9 @@ namespace Sales_Tracker.Classes
         {
             if (MainMenu_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 MainMenu_Form.SettingsThatHaveChangedInFile.Count > 0 ||
-                Accountants_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                Accountants_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 Categories_Form.ThingsThatHaveChangedInFile.Count > 0 ||
-                Companies_Form.thingsThatHaveChangedInFile.Count > 0 ||
+                Companies_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 Products_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 AddSale_Form.ThingsThatHaveChangedInFile.Count > 0 ||
                 AddPurchase_Form.ThingsThatHaveChangedInFile.Count > 0)
@@ -68,9 +68,9 @@ namespace Sales_Tracker.Classes
         {
             MainMenu_Form.ThingsThatHaveChangedInFile.Clear();
             MainMenu_Form.SettingsThatHaveChangedInFile.Clear();
-            Accountants_Form.thingsThatHaveChangedInFile.Clear();
+            Accountants_Form.ThingsThatHaveChangedInFile.Clear();
             Categories_Form.ThingsThatHaveChangedInFile.Clear();
-            Companies_Form.thingsThatHaveChangedInFile.Clear();
+            Companies_Form.ThingsThatHaveChangedInFile.Clear();
             Products_Form.ThingsThatHaveChangedInFile.Clear();
             AddSale_Form.ThingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.ThingsThatHaveChangedInFile.Clear();

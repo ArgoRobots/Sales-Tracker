@@ -9,12 +9,13 @@ namespace Sales_Tracker
     {
         // Properties
         private static Companies_Form _instance;
-        public static readonly List<string> thingsThatHaveChangedInFile = [];
+        private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
         private readonly Guna2DataGridView oldSelectedDataGridView;
 
-        // Getters and setters
+        // Getters
         public static Companies_Form Instance => _instance;
+        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
 
         // Init.
         public Companies_Form()
@@ -88,7 +89,7 @@ namespace Sales_Tracker
             int newRowIndex = company_DataGridView.Rows.Add(name);
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(thingsThatHaveChangedInFile, name);
+            CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added company '{name}'");
 
             Company_TextBox.Text = "";

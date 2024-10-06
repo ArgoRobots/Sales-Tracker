@@ -12,11 +12,13 @@ namespace Sales_Tracker.UI
         private static readonly HttpClient httpClient = new();
         private static readonly string apiKey = "4e5f9ad96540482591a49028553e146c";
         private static readonly string translationEndpoint = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
+        private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column",
+            before_text = "before", link_text = "link", after_text = "after";
+
         private static Dictionary<string, Dictionary<string, string>> translationCache;  // language -> controlKey -> translation
         private static Dictionary<string, string> englishCache;  // controlKey -> originalText
         private static readonly Dictionary<string, Rectangle> controlBoundsCache = new();
-        private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column",
-            before_text = "before", link_text = "link", after_text = "after";
+        private static readonly Dictionary<Control, float> originalFontSizes = new();
 
         // Init.
         public static void InitLanguageManager()
@@ -87,38 +89,7 @@ namespace Sales_Tracker.UI
             switch (control)
             {
                 case LinkLabel linkLabel:
-                    // Normalize the fullText by replacing "\r\n" with "\n" to handle both cases
-                    string fullText = linkLabel.Text.Replace("\r\n", "\n");
-
-                    int linkStart = linkLabel.LinkArea.Start;
-                    int linkLength = linkLabel.LinkArea.Length;
-                    string linkText = fullText.Substring(linkStart, linkLength).Trim();
-
-                    // Extract the text before and after the link
-                    string textBeforeLink = fullText.Substring(0, linkStart).Trim();
-                    string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
-
-                    // Check if the original text contains a new line before the link
-                    bool hasNewLineBefore = fullText.Substring(0, linkStart).EndsWith('\n');
-
-                    // Generate proper control keys for each part
-                    string controlKeyBefore = GetControlKey(linkLabel, before_text);
-                    string controlKeyLink = GetControlKey(linkLabel, link_text);
-                    string controlKeyAfter = GetControlKey(linkLabel, after_text);
-
-                    // Translate the text
-                    string translatedTextBefore = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyBefore, control, textBeforeLink);
-                    string translatedLink = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyLink, control, linkText);
-                    string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, control, textAfterLink);
-
-                    // Combine the translated text, adding back the new line before the link if necessary
-                    string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) +
-                        translatedLink + " " + translatedTextAfter;
-
-                    // Set the translated text and preserve the link area
-                    linkLabel.Text = finalText;
-                    linkLabel.LinkArea = new LinkArea(translatedTextBefore.Length + (hasNewLineBefore ? 1 : 0), translatedLink.Length);
-
+                    TranslateLinkLabel(linkLabel, targetLanguageAbbreviation);
                     AdjustLabelSizeAndPosition(linkLabel);
                     break;
 
@@ -128,7 +99,8 @@ namespace Sales_Tracker.UI
                     break;
 
                 case Guna2Button guna2Button:
-                    guna2Button.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2Button.Text);
+                    string newText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2Button.Text);
+                    AdjustButtonFontSize(guna2Button, newText);
                     break;
 
                 case Guna2TextBox guna2TextBox:
@@ -306,6 +278,75 @@ namespace Sales_Tracker.UI
         {
             return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotTranslate;
         }
+        private static void TranslateLinkLabel(LinkLabel linkLabel, string targetLanguageAbbreviation)
+        {
+            // Normalize the fullText by replacing "\r\n" with "\n" to handle both cases
+            string fullText = linkLabel.Text.Replace("\r\n", "\n");
+
+            int linkStart = linkLabel.LinkArea.Start;
+            int linkLength = linkLabel.LinkArea.Length;
+            string linkText = fullText.Substring(linkStart, linkLength).Trim();
+
+            // Extract the text before and after the link
+            string textBeforeLink = fullText.Substring(0, linkStart).Trim();
+            string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
+
+            // Check if the original text contains a new line before the link
+            bool hasNewLineBefore = fullText.Substring(0, linkStart).EndsWith('\n');
+
+            // Generate proper control keys for each part
+            string controlKeyBefore = GetControlKey(linkLabel, before_text);
+            string controlKeyLink = GetControlKey(linkLabel, link_text);
+            string controlKeyAfter = GetControlKey(linkLabel, after_text);
+
+            // Translate the text
+            string translatedTextBefore = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyBefore, linkLabel, textBeforeLink);
+            string translatedLink = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyLink, linkLabel, linkText);
+            string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, linkLabel, textAfterLink);
+
+            // Combine the translated text, adding back the new line before the link if necessary
+            string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) +
+                translatedLink + " " + translatedTextAfter;
+
+            // Set the translated text and preserve the link area
+            linkLabel.Text = finalText;
+            linkLabel.LinkArea = new LinkArea(translatedTextBefore.Length + (hasNewLineBefore ? 1 : 0), translatedLink.Length);
+        }
+        public static void AdjustButtonFontSize(Guna2Button button, string text)
+        {
+            if (!originalFontSizes.ContainsKey(button))
+            {
+                originalFontSizes[button] = button.Font.Size;
+            }
+
+            float originalFontSize = originalFontSizes[button];
+            float minFontSize = 3.0f;
+            float maxFontSize = originalFontSize;
+
+            while (maxFontSize - minFontSize > 0.5f)
+            {
+                float fontSize = (minFontSize + maxFontSize) / 2;
+                button.Font = new Font(button.Font.FontFamily, fontSize, button.Font.Style);
+                button.Text = text;
+
+                button.PerformLayout();
+                Size preferredSize = button.PreferredSize;
+
+                if (preferredSize.Width <= button.Width && preferredSize.Height <= button.Height)
+                {
+                    minFontSize = fontSize;  // Try a larger font
+                }
+                else
+                {
+                    maxFontSize = fontSize;  // Try a smaller font
+                }
+            }
+
+            // Set the final font and text
+            float finalFontSize = Math.Max(minFontSize, 3.0f);
+            button.Font = new Font(button.Font.FontFamily, finalFontSize, button.Font.Style);
+            button.Text = text;
+        }
 
         // Cache things
         /// <summary>
@@ -335,7 +376,7 @@ namespace Sales_Tracker.UI
                 case LinkLabel linkLabel:
                     if (!string.IsNullOrEmpty(linkLabel.Text))
                     {
-                        // Split the text into before, link, and after parts
+                        // Split the text into parts
                         string fullText = linkLabel.Text;
                         int linkStart = linkLabel.LinkArea.Start;
                         int linkLength = linkLabel.LinkArea.Length;
@@ -457,7 +498,6 @@ namespace Sales_Tracker.UI
 
             return key;
         }
-
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
             // Ordered by how western the country is

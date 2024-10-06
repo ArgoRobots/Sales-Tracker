@@ -56,6 +56,9 @@ namespace Sales_Tracker
             IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
+        /// <summary>
+        /// Center the checkboxes to account for the text width changing with different languages.
+        /// </summary>
         private void CenterCheckBoxes()
         {
             int leftEdge = From_DateTimePicker.Right;

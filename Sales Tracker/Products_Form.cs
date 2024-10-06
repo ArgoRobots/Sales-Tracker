@@ -12,11 +12,7 @@ namespace Sales_Tracker
         private static Products_Form _instance;
 
         // Getters and setters
-        public static List<string> ThingsThatHaveChangedInFile
-        {
-            get => _thingsThatHaveChangedInFile;
-            private set => _thingsThatHaveChangedInFile = value;
-        }
+        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
         public static Products_Form Instance => _instance;
 
         // Init.
