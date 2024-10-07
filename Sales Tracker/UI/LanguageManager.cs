@@ -496,6 +496,13 @@ namespace Sales_Tracker.UI
                 {
                     parentNames.Insert(0, currentControl.Name);  // Add the parent names in reverse order (top-down)
                 }
+
+                // Stop if we encounter a form that is not the current control
+                if (currentControl is Form && currentControl != control)
+                {
+                    break;
+                }
+
                 currentControl = currentControl.Parent;
             }
 
@@ -510,7 +517,6 @@ namespace Sales_Tracker.UI
 
             return key;
         }
-
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
             // Ordered by how western the country is
