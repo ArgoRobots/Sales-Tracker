@@ -27,7 +27,6 @@ namespace Sales_Tracker.Startup.Menus
             LoadingPanel.InitBlankLoadingPanel();
             LoadingPanel.ShowBlankLoadingPanel(this);
 
-            ConstructRightClickOpenRecentMenu();
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
             Directories.EnsureAppDataDirectoriesExist();
@@ -36,6 +35,8 @@ namespace Sales_Tracker.Startup.Menus
             SetAccessibleDescriptions();
             LanguageManager.InitLanguageManager();
             LanguageManager.UpdateLanguageForControl(this);
+
+            ConstructRightClickOpenRecentMenu();
 
             LoadListOfRecentProjects();
 
@@ -52,7 +53,7 @@ namespace Sales_Tracker.Startup.Menus
         private void SetTheme()
         {
             Theme.SetThemeForForm(this);
-            Theme.UpdateThemeForPanel([rightClickOpenRecent_Panel]);
+            Theme.UpdateThemeForPanel([_rightClickOpenRecent_Panel]);
             rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.accent_red;
 
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
@@ -111,7 +112,7 @@ namespace Sales_Tracker.Startup.Menus
                 };
                 btn.MouseDown += (sender, e) =>
                 {
-                    Controls.Remove(rightClickOpenRecent_Panel);
+                    Controls.Remove(_rightClickOpenRecent_Panel);
 
                     if (e.Button != MouseButtons.Left) { return; }
                     Guna2Button button = (Guna2Button)sender;
@@ -150,10 +151,10 @@ namespace Sales_Tracker.Startup.Menus
                         Guna2Button button = (Guna2Button)sender;
 
                         // Position and show the right click panel
-                        rightClickOpenRecent_Panel.Location = new Point(e.X, OpenRecent_FlowLayoutPanel.Top + btn.Top + btn.Height);
-                        rightClickOpenRecent_Panel.Tag = button;
-                        Controls.Add(rightClickOpenRecent_Panel);
-                        rightClickOpenRecent_Panel.BringToFront();
+                        _rightClickOpenRecent_Panel.Location = new Point(e.X, OpenRecent_FlowLayoutPanel.Top + btn.Top + btn.Height);
+                        _rightClickOpenRecent_Panel.Tag = button;
+                        Controls.Add(_rightClickOpenRecent_Panel);
+                        _rightClickOpenRecent_Panel.BringToFront();
                     }
                 };
                 OpenRecent_FlowLayoutPanel.Controls.Add(btn);
@@ -252,12 +253,13 @@ namespace Sales_Tracker.Startup.Menus
         }
 
         // Right click open recent menu
-        public Guna2Panel rightClickOpenRecent_Panel;
+        private static Guna2Panel _rightClickOpenRecent_Panel;
+        public static Guna2Panel RightClickOpenRecent_Panel => _rightClickOpenRecent_Panel;
         private Guna2Button rightClickOpenRecent_DeleteBtn;
         private void ConstructRightClickOpenRecentMenu()
         {
-            rightClickOpenRecent_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel));
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickOpenRecent_Panel.Controls[0];
+            _rightClickOpenRecent_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickOpenRecent_Panel");
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickOpenRecent_Panel.Controls[0];
 
             Guna2Button menuBtn = CustomControls.ConstructBtnForMenu("Show in folder", CustomControls.PanelBtnWidth, false, flowPanel);
             menuBtn.Click += ShowInFolder;
@@ -270,6 +272,8 @@ namespace Sales_Tracker.Startup.Menus
 
             rightClickOpenRecent_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete in folder", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickOpenRecent_DeleteBtn.Click += DeleteInFolder;
+
+            LanguageManager.UpdateLanguageForControl(RightClickOpenRecent_Panel);
         }
         private void ShowInFolder(object sender, EventArgs e)
         {
@@ -286,9 +290,9 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void Rename(object sender, EventArgs e)
         {
-            Controls.Remove(rightClickOpenRecent_Panel);
+            Controls.Remove(_rightClickOpenRecent_Panel);
 
-            Guna2Button button = (Guna2Button)rightClickOpenRecent_Panel.Tag;
+            Guna2Button button = (Guna2Button)_rightClickOpenRecent_Panel.Tag;
 
             CustomControls.Rename_TextBox.Text = button.Text;
             CustomControls.Rename_TextBox.Location = new Point(OpenRecent_FlowLayoutPanel.Left + button.Left + 1, OpenRecent_FlowLayoutPanel.Top + button.Top);
@@ -303,7 +307,7 @@ namespace Sales_Tracker.Startup.Menus
         {
             CloseAllPanels(null, null);
 
-            if (rightClickOpenRecent_Panel.Tag is Guna2Button btn)
+            if (_rightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
                 string projectDir = btn.Tag.ToString();
 
@@ -324,7 +328,7 @@ namespace Sales_Tracker.Startup.Menus
         {
             CloseAllPanels(null, null);
 
-            if (rightClickOpenRecent_Panel.Tag is Guna2Button btn)
+            if (_rightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
                 string projectDir = btn.Tag.ToString();
                 if (File.Exists(projectDir))
@@ -356,7 +360,7 @@ namespace Sales_Tracker.Startup.Menus
             }
             Controls.Remove(CustomControls.Rename_TextBox);
 
-            Guna2Button button = (Guna2Button)rightClickOpenRecent_Panel.Tag;
+            Guna2Button button = (Guna2Button)_rightClickOpenRecent_Panel.Tag;
 
             // If the name did not change
             if (CustomControls.Rename_TextBox.Text == button.Text)
@@ -390,7 +394,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            Controls.Remove(rightClickOpenRecent_Panel);
+            Controls.Remove(_rightClickOpenRecent_Panel);
             CustomControls.Rename();
         }
     }

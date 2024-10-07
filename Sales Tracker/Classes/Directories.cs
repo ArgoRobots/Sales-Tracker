@@ -161,14 +161,13 @@ namespace Sales_Tracker.Classes
             // App data
             _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
 
-            _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;
-
             // Cache
             _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueProjectIdentifier("Argo Sales Tracker") + @"\";
             _translations_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
             _globalAppDataSettings_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
 
             // Other
+            _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;
             _desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
         public static void EnsureAppDataDirectoriesExist()

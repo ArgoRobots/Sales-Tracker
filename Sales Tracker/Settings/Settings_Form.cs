@@ -27,6 +27,7 @@ namespace Sales_Tracker.Settings
 
             UpdateTheme();
             General_Button.PerformClick();
+            LanguageManager.UpdateLanguageForControl(this);
         }
         private void UpdateTheme()
         {
@@ -122,7 +123,7 @@ namespace Sales_Tracker.Settings
                     CustomControls.AccountMenu,
                     CustomControls.ControlDropDown_Panel,
                     DataGridViewManager.RightClickDataGridView_Panel,
-                    GetStarted_Form.Instance.rightClickOpenRecent_Panel];
+                    GetStarted_Form.RightClickOpenRecent_Panel];
 
                 Theme.UpdateThemeForPanel(listOfMenus);
 

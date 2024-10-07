@@ -60,14 +60,14 @@ namespace Sales_Tracker.Settings
             // 
             General_Button.CustomizableEdges = customizableEdges1;
             General_Button.FillColor = Color.FromArgb(240, 240, 240);
-            General_Button.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold);
-            General_Button.ForeColor = Color.DimGray;
+            General_Button.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            General_Button.ForeColor = Color.Black;
             General_Button.Location = new Point(20, 98);
             General_Button.Margin = new Padding(6, 5, 6, 5);
             General_Button.Name = "General_Button";
             General_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             General_Button.Size = new Size(215, 60);
-            General_Button.TabIndex = 177;
+            General_Button.TabIndex = 1;
             General_Button.Text = "General";
             General_Button.TextAlign = HorizontalAlignment.Left;
             General_Button.Click += GeneralButton_Click;
@@ -82,12 +82,12 @@ namespace Sales_Tracker.Settings
             Cancel_Button.FillColor = Color.FromArgb(250, 250, 250);
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(1187, 909);
+            Cancel_Button.Location = new Point(1187, 914);
             Cancel_Button.Margin = new Padding(6, 5, 6, 5);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            Cancel_Button.Size = new Size(150, 50);
-            Cancel_Button.TabIndex = 184;
+            Cancel_Button.Size = new Size(150, 45);
+            Cancel_Button.TabIndex = 6;
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
             // 
@@ -101,12 +101,12 @@ namespace Sales_Tracker.Settings
             Ok_Button.FillColor = Color.FromArgb(250, 250, 250);
             Ok_Button.Font = new Font("Segoe UI", 10F);
             Ok_Button.ForeColor = Color.Black;
-            Ok_Button.Location = new Point(1025, 909);
+            Ok_Button.Location = new Point(1025, 914);
             Ok_Button.Margin = new Padding(6, 5, 6, 5);
             Ok_Button.Name = "Ok_Button";
             Ok_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            Ok_Button.Size = new Size(150, 50);
-            Ok_Button.TabIndex = 183;
+            Ok_Button.Size = new Size(150, 45);
+            Ok_Button.TabIndex = 5;
             Ok_Button.Text = "Ok";
             Ok_Button.Click += Ok_Button_Click;
             // 
@@ -120,12 +120,12 @@ namespace Sales_Tracker.Settings
             ResetToDefault_Button.FillColor = Color.FromArgb(250, 250, 250);
             ResetToDefault_Button.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ResetToDefault_Button.ForeColor = Color.Black;
-            ResetToDefault_Button.Location = new Point(15, 909);
+            ResetToDefault_Button.Location = new Point(15, 914);
             ResetToDefault_Button.Margin = new Padding(6, 5, 6, 5);
             ResetToDefault_Button.Name = "ResetToDefault_Button";
             ResetToDefault_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            ResetToDefault_Button.Size = new Size(215, 50);
-            ResetToDefault_Button.TabIndex = 181;
+            ResetToDefault_Button.Size = new Size(215, 45);
+            ResetToDefault_Button.TabIndex = 4;
             ResetToDefault_Button.Text = "Reset to default";
             ResetToDefault_Button.Click += ResetToDefault_Button_Click;
             // 
@@ -146,14 +146,14 @@ namespace Sales_Tracker.Settings
             // 
             Security_Button.CustomizableEdges = customizableEdges11;
             Security_Button.FillColor = Color.FromArgb(240, 240, 240);
-            Security_Button.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold);
-            Security_Button.ForeColor = Color.DimGray;
+            Security_Button.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            Security_Button.ForeColor = Color.Black;
             Security_Button.Location = new Point(20, 167);
             Security_Button.Margin = new Padding(6, 5, 6, 5);
             Security_Button.Name = "Security_Button";
             Security_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Security_Button.Size = new Size(215, 60);
-            Security_Button.TabIndex = 182;
+            Security_Button.TabIndex = 2;
             Security_Button.Text = "Security";
             Security_Button.TextAlign = HorizontalAlignment.Left;
             Security_Button.Click += SecurityButton_Click;
@@ -162,14 +162,14 @@ namespace Sales_Tracker.Settings
             // 
             Updates_Button.CustomizableEdges = customizableEdges13;
             Updates_Button.FillColor = Color.FromArgb(240, 240, 240);
-            Updates_Button.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold);
-            Updates_Button.ForeColor = Color.DimGray;
+            Updates_Button.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            Updates_Button.ForeColor = Color.Black;
             Updates_Button.Location = new Point(20, 237);
             Updates_Button.Margin = new Padding(6, 5, 6, 5);
             Updates_Button.Name = "Updates_Button";
             Updates_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Updates_Button.Size = new Size(215, 60);
-            Updates_Button.TabIndex = 180;
+            Updates_Button.TabIndex = 3;
             Updates_Button.Text = "Updates";
             Updates_Button.TextAlign = HorizontalAlignment.Left;
             Updates_Button.Click += UpdatesButton_Click;
@@ -184,12 +184,12 @@ namespace Sales_Tracker.Settings
             Apply_Button.FillColor = Color.FromArgb(250, 250, 250);
             Apply_Button.Font = new Font("Segoe UI", 10F);
             Apply_Button.ForeColor = Color.Black;
-            Apply_Button.Location = new Point(1349, 909);
+            Apply_Button.Location = new Point(1349, 914);
             Apply_Button.Margin = new Padding(6, 5, 6, 5);
             Apply_Button.Name = "Apply_Button";
             Apply_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            Apply_Button.Size = new Size(150, 50);
-            Apply_Button.TabIndex = 186;
+            Apply_Button.Size = new Size(150, 45);
+            Apply_Button.TabIndex = 7;
             Apply_Button.Text = "Apply";
             Apply_Button.Click += Apply_Button_Click;
             // 

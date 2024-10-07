@@ -660,8 +660,8 @@ namespace Sales_Tracker
         }
         private void AddControlsDropDown()
         {
-            CustomControls.controlsDropDown_Button.Location = new Point(MainTop_Panel.Width - CustomControls.controlsDropDown_Button.Width - 11, (MainTop_Panel.Height - CustomControls.controlsDropDown_Button.Height) / 2);
-            MainTop_Panel.Controls.Add(CustomControls.controlsDropDown_Button);
+            CustomControls.ControlsDropDown_Button.Location = new Point(MainTop_Panel.Width - CustomControls.ControlsDropDown_Button.Width - 11, (MainTop_Panel.Height - CustomControls.ControlsDropDown_Button.Height) / 2);
+            MainTop_Panel.Controls.Add(CustomControls.ControlsDropDown_Button);
             MainTop_Panel.Controls.Remove(ManageAccountants_Button);
             MainTop_Panel.Controls.Remove(ManageCategories_Button);
             MainTop_Panel.Controls.Remove(ManageCompanies_Button);
@@ -671,7 +671,7 @@ namespace Sales_Tracker
         }
         private void RemoveControlsDropDown()
         {
-            MainTop_Panel.Controls.Remove(CustomControls.controlsDropDown_Button);
+            MainTop_Panel.Controls.Remove(CustomControls.ControlsDropDown_Button);
 
             int buttonTop = (MainTop_Panel.Height - ManageAccountants_Button.Height) / 2;
             int buttonWidthPlusSpace = ManageAccountants_Button.Width + 8;

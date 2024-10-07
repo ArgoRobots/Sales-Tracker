@@ -2,6 +2,7 @@
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
+using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
@@ -62,12 +63,12 @@ namespace Sales_Tracker.Classes
         {
             Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
 
-            // Update the language in all open forms
-            List<Form> forms = [MainMenu_Form.Instance];
+            // Add all open forms
+            List<Control> controls = [MainMenu_Form.Instance];
 
             if (includeGeneralForm)
             {
-                forms.AddRange(
+                controls.AddRange(
                 [
                     Settings_Form.Instance,
                     General_Form.Instance,
@@ -77,10 +78,19 @@ namespace Sales_Tracker.Classes
             }
             if (Tools.IsFormOpen(typeof(Log_Form)))
             {
-                forms.Add(Log_Form.Instance);
+                controls.Add(Log_Form.Instance);
             }
 
-            foreach (Form form in forms)
+            // Add UI panels
+            controls.AddRange([CustomControls.FileMenu,
+                CustomControls.HelpMenu,
+                CustomControls.AccountMenu,
+                CustomControls.ControlDropDown_Panel,
+                GetStarted_Form.RightClickOpenRecent_Panel,
+                DataGridViewManager.RightClickDataGridView_Panel]);
+
+            // Set the language
+            foreach (Control form in controls)
             {
                 LanguageManager.UpdateLanguageForControl(form);
             }

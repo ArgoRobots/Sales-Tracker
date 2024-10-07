@@ -305,12 +305,12 @@ namespace Sales_Tracker.UI
             string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, linkLabel, textAfterLink);
 
             // Combine the translated text, adding back the new line before the link if necessary
-            string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) +
+            string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) + " " +
                 translatedLink + " " + translatedTextAfter;
 
             // Set the translated text and preserve the link area
             linkLabel.Text = finalText;
-            linkLabel.LinkArea = new LinkArea(translatedTextBefore.Length + (hasNewLineBefore ? 1 : 0), translatedLink.Length);
+            linkLabel.LinkArea = new LinkArea(translatedTextBefore.Length + 1, translatedLink.Length + 1);
         }
         public static void AdjustButtonFontSize(Guna2Button button, string text)
         {
@@ -380,11 +380,11 @@ namespace Sales_Tracker.UI
                         string fullText = linkLabel.Text;
                         int linkStart = linkLabel.LinkArea.Start;
                         int linkLength = linkLabel.LinkArea.Length;
-                        string linkText = fullText.Substring(linkStart, linkLength + 1).Trim();
+                        string linkText = fullText.Substring(linkStart, linkLength).Trim();
 
                         // Extract the text before and after the link
                         string textBeforeLink = fullText.Substring(0, linkStart).Trim();
-                        string textAfterLink = fullText.Substring(linkStart + linkLength + 1).Trim();
+                        string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
 
                         // Cache each part separately using the same logic as translation
                         englishCache[GetControlKey(linkLabel, before_text)] = textBeforeLink;
@@ -486,11 +486,23 @@ namespace Sales_Tracker.UI
         // Misc. methods
         private static string GetControlKey(Control control, string section = null)
         {
-            string formName = control.FindForm()?.Name ?? "UnknownForm";
-            string controlName = control.Name;
+            List<string> parentNames = new();
+            Control currentControl = control;
+
+            // Loop through all parent controls and add their names to the list
+            while (currentControl != null)
+            {
+                if (!string.IsNullOrEmpty(currentControl.Name))
+                {
+                    parentNames.Insert(0, currentControl.Name);  // Add the parent names in reverse order (top-down)
+                }
+                currentControl = currentControl.Parent;
+            }
+
+            // Join the parent names with a period
+            string key = string.Join(".", parentNames);
 
             // Append section (before, link, after) if provided
-            string key = $"{formName}.{controlName}";
             if (!string.IsNullOrEmpty(section))
             {
                 key += $"_{section}";
@@ -498,6 +510,7 @@ namespace Sales_Tracker.UI
 
             return key;
         }
+
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
             // Ordered by how western the country is

@@ -833,7 +833,7 @@ namespace Sales_Tracker.UI
         // Right click row methods
         public static void ConstructRightRowMenu()
         {
-            _rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel));
+            _rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickDataGridView_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
 
             rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, false, flowPanel);
