@@ -33,7 +33,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-            LabelManager.SetTotalLabel(Total_Label, company_DataGridView);
+            LabelManager.ShowTotalLabel(Total_Label, company_DataGridView);
             Controls.Remove(ShowingResultsFor_Label);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(company_DataGridView);
             AddEventHandlersToTextBoxes();
@@ -53,8 +53,8 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(Company_TextBox);
 
-            company_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, company_DataGridView); };
-            company_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, company_DataGridView); };
+            company_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };
+            company_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };
         }
         private void SetAccessibleDescriptions()
         {

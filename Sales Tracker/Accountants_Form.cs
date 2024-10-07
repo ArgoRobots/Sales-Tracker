@@ -33,7 +33,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-            LabelManager.SetTotalLabel(Total_Label, accountants_DataGridView);
+            LabelManager.ShowTotalLabel(Total_Label, accountants_DataGridView);
             Controls.Remove(ShowingResultsFor_Label);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(accountants_DataGridView);
             AddEventHandlersToTextBoxes();
@@ -51,8 +51,8 @@ namespace Sales_Tracker
             Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             TextBoxManager.Attach(Accountant_TextBox);
 
-            accountants_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, accountants_DataGridView); };
-            accountants_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, accountants_DataGridView); };
+            accountants_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, accountants_DataGridView); };
+            accountants_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, accountants_DataGridView); };
         }
         private void SetAccessibleDescriptions()
         {

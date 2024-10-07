@@ -58,6 +58,10 @@ namespace Sales_Tracker.Settings.Menus
                 }
             }
         }
+        private void EncryptFiles_Label_Click(object sender, EventArgs e)
+        {
+            EncryptFiles_CheckBox.Checked = !EncryptFiles_CheckBox.Checked;
+        }
         private void AddPassword_Button_Click(object sender, EventArgs e)
         {
             string password = PasswordManager.Password;
@@ -70,10 +74,6 @@ namespace Sales_Tracker.Settings.Menus
                 new PasswordManager_Form().ShowDialog();
             }
             SetPasswordButton();
-        }
-        private void EncryptFiles_Label_Click(object sender, EventArgs e)
-        {
-            EncryptFiles_CheckBox.Checked = !EncryptFiles_CheckBox.Checked;
         }
 
         // Methods

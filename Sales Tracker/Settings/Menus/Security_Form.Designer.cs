@@ -68,6 +68,7 @@ namespace Sales_Tracker.Settings.Menus
             EncryptFiles_CheckBox.UncheckedState.BorderRadius = 2;
             EncryptFiles_CheckBox.UncheckedState.BorderThickness = 0;
             EncryptFiles_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            EncryptFiles_CheckBox.CheckedChanged += EncryptFiles_CheckBox_CheckedChanged;
             // 
             // AddPassword_Button
             // 

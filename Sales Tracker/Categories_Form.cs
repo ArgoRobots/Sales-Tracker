@@ -33,7 +33,7 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             Theme.SetThemeForForm(this);
             SetAccessibleDescriptions();
-            LabelManager.SetTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
+            LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
             Controls.Remove(ShowingResultsFor_Label);
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(purchases_DataGridView, sales_DataGridView);
@@ -43,11 +43,11 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(Category_TextBox);
 
-            purchases_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, purchases_DataGridView); };
-            purchases_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, purchases_DataGridView); };
+            purchases_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, purchases_DataGridView); };
+            purchases_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, purchases_DataGridView); };
 
-            sales_DataGridView.RowsAdded += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, sales_DataGridView); };
-            sales_DataGridView.RowsRemoved += (sender, e) => { LabelManager.SetTotalLabel(Total_Label, sales_DataGridView); };
+            sales_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, sales_DataGridView); };
+            sales_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, sales_DataGridView); };
         }
         private void SetAccessibleDescriptions()
         {

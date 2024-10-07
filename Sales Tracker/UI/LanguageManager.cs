@@ -497,7 +497,7 @@ namespace Sales_Tracker.UI
                     parentNames.Insert(0, currentControl.Name);  // Add the parent names in reverse order (top-down)
                 }
 
-                // Stop if we encounter a form that is not the current control
+                // Stop if we encounter a form that is not the current control (a form within a form)
                 if (currentControl is Form && currentControl != control)
                 {
                     break;

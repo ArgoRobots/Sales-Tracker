@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
 
@@ -24,9 +25,9 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
 
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguageForControl(this);
 
             SetMessageBox(title, message, icon, buttons);
+            LanguageManager.UpdateLanguageForControl(this);
         }
 
         // Form event handlers
@@ -182,6 +183,7 @@ namespace Sales_Tracker
             {
                 Top = 10,
                 Text = Message_Label.Text,
+                AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
                 Font = new Font("Segoe UI", 11),
                 ForeColor = CustomColors.text,
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -222,6 +224,7 @@ namespace Sales_Tracker
             Label label = new()
             {
                 Text = title,
+                AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
                 Location = new Point(10, top),
                 AutoSize = true,
                 Font = new Font("Segoe UI", 11),
@@ -236,6 +239,7 @@ namespace Sales_Tracker
                 label = new()
                 {
                     Text = item,
+                    AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
                     Location = new Point(25, top),
                     AutoSize = true,
                     Font = new Font("Segoe UI", 11),

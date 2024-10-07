@@ -4,7 +4,7 @@
     {
         public static void ShowShowingResultsLabel(Label label, string text, Control parentControl)
         {
-            // Keep the first part (before ":") the same if it's been translated
+            // Keep the first part (before ":") the same in case it's been translated
             string[] parts = label.Text.Split(':');
             string baseText = parts[0].Trim();
             label.Text = $"{baseText}: {text}";
@@ -17,9 +17,9 @@
                 parentControl.Controls.Add(label);
             }
         }
-        public static void SetTotalLabel(Label totalLabel, DataGridView dataGridView)
+        public static void ShowTotalLabel(Label totalLabel, DataGridView dataGridView)
         {
-            // Keep the first part (before ":") the same if it's been translated
+            // Keep the first part (before ":") the same in case it's been translated
             string[] parts = totalLabel.Text.Split(':');
             string baseText = parts[0].Trim();
             totalLabel.Text = $"{baseText}: {dataGridView.Rows.Count}";
