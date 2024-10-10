@@ -30,7 +30,7 @@ namespace Sales_Tracker.UI
         }
 
         // Properties
-        private static readonly byte _panelButtonHeight = 35, _spaceForSeperator = 10, _spaceForPanel = 10, _spaceBetweenControls = 8;
+        private static readonly byte _panelButtonHeight = 35, spaceForSeperator = 10, _spaceForPanel = 10, _spaceBetweenControls = 8;
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -46,7 +46,6 @@ namespace Sales_Tracker.UI
         public static int PanelWidth => _panelWidth;
         public static int PanelBtnWidth => _panelBtnWidth;
         public static byte PanelButtonHeight => _panelButtonHeight;
-        public static byte SpaceForSeperator => _spaceForSeperator;
         public static byte SpaceForPanel => _spaceForPanel;
         public static byte SpaceBetweenControls => _spaceBetweenControls;
 
@@ -63,6 +62,7 @@ namespace Sales_Tracker.UI
                 Size = size,
                 Name = name
             };
+
             int half = _spaceForPanel / 2;
             FlowLayoutPanel flowLayoutPanel = new()
             {
@@ -95,7 +95,7 @@ namespace Sales_Tracker.UI
                 TextAlign = HorizontalAlignment.Left,
                 Font = new Font("Segoe UI", 10),
                 Text = text,
-                Name = text.Replace(" ", "") + "_Button",
+                Name = text.Replace(" ", "").Replace("...", "") + "_Button",
                 Margin = new Padding(0),
                 BorderColor = CustomColors.controlBorder
             };
@@ -186,7 +186,7 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructFileMenu()
         {
-            _fileMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel), "fileMenu_Panel");
+            _fileMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "fileMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", _panelBtnWidth, true, flowPanel);
@@ -295,7 +295,7 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructHelpMenu()
         {
-            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 7 * _panelButtonHeight + _spaceForSeperator * 2 + _spaceForPanel), "helpMenu_Panel");
+            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 7 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "helpMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_helpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Support", _panelBtnWidth, true, flowPanel);
@@ -352,7 +352,7 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructAccountMenu()
         {
-            AccountMenu = ConstructPanelForMenu(new Size(_panelWidth, 4 * _panelButtonHeight + _spaceForSeperator + _spaceForPanel), "accountMenu_Panel");
+            AccountMenu = ConstructPanelForMenu(new Size(_panelWidth, 4 * _panelButtonHeight + spaceForSeperator + _spaceForPanel), "accountMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)AccountMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Argo account", _panelBtnWidth, true, flowPanel);
@@ -424,7 +424,7 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructControlsDropDownMenu()
         {
-            _controlDropDown_Panel = ConstructPanelForMenu(new Size(300, 50 * 6 + 15 + _spaceForSeperator * 5), "controlDropDown_Panel");
+            _controlDropDown_Panel = ConstructPanelForMenu(new Size(300, 50 * 6 + 15 + spaceForSeperator * 5), "controlDropDown_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_controlDropDown_Panel.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);

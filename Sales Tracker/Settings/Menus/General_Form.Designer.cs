@@ -286,7 +286,6 @@ namespace Sales_Tracker.Settings.Menus
             Language_TextBox.ShortcutsEnabled = false;
             Language_TextBox.Size = new Size(255, 45);
             Language_TextBox.TabIndex = 1;
-            Language_TextBox.Click += CloseAllPanels;
             // 
             // ColorTheme_ComboBox
             // 

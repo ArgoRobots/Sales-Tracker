@@ -179,9 +179,13 @@ namespace Sales_Tracker.UI
                 Log.Error_EnglishCacheDoesNotExist(controlKey);
                 return null;
             }
-            else if (targetLanguageAbbreviation == "en")
+            else if (targetLanguageAbbreviation == "en" && canCache)
             {
                 return englishText;
+            }
+            else if (targetLanguageAbbreviation == "en")
+            {
+                return text;
             }
             else
             {
@@ -471,7 +475,7 @@ namespace Sales_Tracker.UI
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
             }
-            File.WriteAllText(Directories.Translations_file, jsonContent);
+            Directories.WriteTextToFile(Directories.Translations_file, jsonContent);
         }
         private static void SaveEnglishCacheToFile()
         {
@@ -480,7 +484,7 @@ namespace Sales_Tracker.UI
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
             }
-            File.WriteAllText(Directories.EnglishTexts_file, jsonContent);
+            Directories.WriteTextToFile(Directories.EnglishTexts_file, jsonContent);
         }
 
         // Misc. methods

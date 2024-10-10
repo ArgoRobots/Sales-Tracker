@@ -5,6 +5,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
+using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 using System.Collections;
 using System.ComponentModel;
@@ -1575,8 +1576,6 @@ namespace Sales_Tracker
             // Serialize to JSON and write to file
             string json = JsonSerializer.Serialize(rowsData, ReadOnlyVariables.JsonOptions);
             Directories.WriteTextToFile(filePath, json);
-
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
         }
         public void SaveCategoriesToFile(SelectedOption option)
         {
@@ -1599,8 +1598,6 @@ namespace Sales_Tracker
 
             string json = JsonSerializer.Serialize(categoryList, ReadOnlyVariables.JsonOptions);
             Directories.WriteTextToFile(filePath, json);
-
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{Selected} list");
         }
         public static void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
@@ -1617,14 +1614,12 @@ namespace Sales_Tracker
             }
 
             Directories.WriteLinesToFile(filePath, linesInDataGridView);
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
         }
         public static void SaveListToFile(List<string> list, SelectedOption selected)
         {
             string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
 
             Directories.WriteLinesToFile(filePath, list);
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"{selected} list");
         }
 
         // Statistics menu properties
@@ -1775,6 +1770,17 @@ namespace Sales_Tracker
         }
 
         // Misc.
+        public static List<Guna2Panel> GetMenus()
+        {
+            return [
+                CustomControls.FileMenu,
+                CustomControls.HelpMenu,
+                CustomControls.AccountMenu,
+                CustomControls.ControlDropDown_Panel,
+                GetStarted_Form.RightClickOpenRecent_Panel,
+                DataGridViewManager.RightClickDataGridView_Panel
+            ];
+        }
         public void RefreshDataGridView()
         {
             ApplyFilters();

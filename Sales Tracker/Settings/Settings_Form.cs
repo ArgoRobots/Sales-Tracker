@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Settings.Menus;
-using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings
@@ -39,6 +38,10 @@ namespace Sales_Tracker.Settings
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SearchBox.CloseSearchBox();
+        }
 
         // Left menu buttons
         private Guna2Button btnSelected;
@@ -70,18 +73,15 @@ namespace Sales_Tracker.Settings
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
             ApplyChanges(false);
             Close();
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
             Close();
         }
         private void Apply_Button_Click(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
             ApplyChanges(true);
         }
         private void ApplyChanges(bool includeGeneralForm)
@@ -117,30 +117,24 @@ namespace Sales_Tracker.Settings
 
                 MainMenu_Form.Instance.LoadCharts();
 
-                List<Guna2Panel> listOfMenus = [
-                    CustomControls.FileMenu,
-                    CustomControls.HelpMenu,
-                    CustomControls.AccountMenu,
-                    CustomControls.ControlDropDown_Panel,
-                    DataGridViewManager.RightClickDataGridView_Panel,
-                    GetStarted_Form.RightClickOpenRecent_Panel];
+                List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
 
-                Theme.UpdateThemeForPanel(listOfMenus);
+                Theme.SetThemeForControl(listOfPanels.Cast<Control>().ToList());
+
+                foreach (Guna2Panel guna2Panel in listOfPanels)
+                {
+                    guna2Panel.FillColor = CustomColors.panelBtn;
+                    guna2Panel.BorderColor = CustomColors.controlPanelBorder;
+                }
+
+                Theme.UpdateThemeForPanel(listOfPanels);
 
                 DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
 
-                if (Theme.CurrentTheme == Theme.ThemeType.Dark)
-                {
-                    CustomControls.Rename_TextBox.HoverState.BorderColor = Color.White;
-                    CustomControls.Rename_TextBox.FocusedState.BorderColor = Color.White;
-                    CustomControls.Rename_TextBox.BorderColor = Color.White;
-                }
-                else
-                {
-                    CustomControls.Rename_TextBox.HoverState.BorderColor = Color.Black;
-                    CustomControls.Rename_TextBox.FocusedState.BorderColor = Color.Black;
-                    CustomControls.Rename_TextBox.BorderColor = Color.Black;
-                }
+                // Set the border to white or black, depending on the theme
+                CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.text;
+                CustomControls.Rename_TextBox.FocusedState.BorderColor = CustomColors.text;
+                CustomControls.Rename_TextBox.BorderColor = CustomColors.text;
 
                 SearchBox.SearchResultBoxContainer.FillColor = CustomColors.controlBack;
                 SearchBox.SearchResultBox.FillColor = CustomColors.controlBack;
@@ -151,7 +145,6 @@ namespace Sales_Tracker.Settings
         private void SwitchForm(Form form, object btnSender)
         {
             SearchBox.CloseSearchBox();
-
             Guna2Button btn = (Guna2Button)btnSender;
 
             // If btn is not already selected

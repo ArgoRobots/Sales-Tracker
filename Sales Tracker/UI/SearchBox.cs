@@ -177,7 +177,6 @@ namespace Sales_Tracker.UI
                             Guna2Button button = (Guna2Button)sender;
                             searchTextBox.Text = button.Text;
                             CloseSearchBox();
-                            DeselectTextBox();
                             debounceTimer.Stop();
                         };
                         _searchResultBox.Controls.Add(btn);
@@ -332,7 +331,6 @@ namespace Sales_Tracker.UI
                     {
                         searchTextBox.Text = btn.Text;
                         CloseSearchBox();
-                        DeselectTextBox();
                         debounceTimer.Stop();
                         isResultSelected = true;
                         break;
@@ -393,17 +391,14 @@ namespace Sales_Tracker.UI
                 _searchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
             }
         }
-        private static void DeselectTextBox()
-        {
-            // Set focus to another control to avoid reopening the search box
-            Control dummyControl = new();
-            _searchBoxParent.Controls.Add(dummyControl);
-            dummyControl.Focus();
-            _searchBoxParent.Controls.Remove(dummyControl);
-        }
         public static void CloseSearchBox()
         {
-            _searchBoxParent?.Controls.Remove(_searchResultBoxContainer);
+            if (_searchBoxParent == null) { return; }
+            _searchBoxParent.Controls.Remove(_searchResultBoxContainer);
+
+            // Set focus to another control to avoid reopening the search box
+            Label firstLabel = _searchBoxParent.Controls.OfType<Label>().FirstOrDefault();
+            firstLabel?.Select();
         }
     }
 }

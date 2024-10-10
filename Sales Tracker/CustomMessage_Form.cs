@@ -9,25 +9,26 @@ namespace Sales_Tracker
     public partial class CustomMessage_Form : Form
     {
         // Properties
-        private static CustomMessage_Form _instance;
         public CustomMessageBoxResult result;
-
-        // Getters and setters
-        public static CustomMessage_Form Instance => _instance;
 
         // Init.
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             InitializeComponent();
-            _instance = this;
             DoubleBuffered = true;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
-
             Theme.SetThemeForForm(this);
+
+            SetAccessibleDescriptions();
+            LanguageManager.UpdateLanguageForControl(this);
 
             SetMessageBox(title, message, icon, buttons);
             LanguageManager.UpdateLanguageForControl(this);
+        }
+        private void SetAccessibleDescriptions()
+        {
+            Message_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
 
         // Form event handlers
@@ -124,8 +125,8 @@ namespace Sales_Tracker
                     break;
             }
         }
-        private Panel Changed_Panel;
-        private Guna2Panel ChangedBackground_Panel;
+        private Panel changed_Panel;
+        private Guna2Panel changedBackground_Panel;
         private void AdjustFormHeight(int contentHeight)
         {
             int requiredHeight = Math.Min(contentHeight, MaximumSize.Height);
@@ -133,18 +134,18 @@ namespace Sales_Tracker
             if (contentHeight > MaximumSize.Height - 150)
             {
                 Height = MaximumSize.Height;
-                ChangedBackground_Panel.Height = ClientSize.Height - 150;
-                Changed_Panel.Height = ClientSize.Height - 10;
+                changedBackground_Panel.Height = ClientSize.Height - 150;
+                changed_Panel.Height = ClientSize.Height - 10;
                 FormBorderStyle = FormBorderStyle.SizableToolWindow;
-                Changed_Panel.AutoScroll = true;
+                changed_Panel.AutoScroll = true;
             }
             else
             {
                 Height = requiredHeight + 200;
-                ChangedBackground_Panel.Height = ClientSize.Height - 150;
-                Changed_Panel.Height = ClientSize.Height - 150;
+                changedBackground_Panel.Height = ClientSize.Height - 150;
+                changed_Panel.Height = ClientSize.Height - 150;
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                Changed_Panel.AutoScroll = false;
+                changed_Panel.AutoScroll = false;
             }
         }
 
@@ -152,7 +153,7 @@ namespace Sales_Tracker
         private void ShowThingsThatHaveChanged()
         {
             // Construct panels
-            ChangedBackground_Panel = new()
+            changedBackground_Panel = new()
             {
                 Top = 50,
                 Size = new Size(450, 70),
@@ -162,7 +163,7 @@ namespace Sales_Tracker
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             };
 
-            Changed_Panel = new()
+            changed_Panel = new()
             {
                 Location = new Point(1, 1),
                 Size = new Size(448, 68),
@@ -170,11 +171,11 @@ namespace Sales_Tracker
                 AutoScroll = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             };
-            ChangedBackground_Panel.Left = (ClientSize.Width - Changed_Panel.Width) / 2;  // Center
-            ChangedBackground_Panel.Controls.Add(Changed_Panel);
-            Theme.CustomizeScrollBar(Changed_Panel);
+            changedBackground_Panel.Left = (ClientSize.Width - changed_Panel.Width) / 2;  // Center
+            changedBackground_Panel.Controls.Add(changed_Panel);
+            Theme.CustomizeScrollBar(changed_Panel);
 
-            Controls.Add(ChangedBackground_Panel);
+            Controls.Add(changedBackground_Panel);
             Controls.Remove(Icon_PictureBox);
             Controls.Remove(Message_Label);
 
@@ -183,11 +184,13 @@ namespace Sales_Tracker
             {
                 Top = 10,
                 Text = Message_Label.Text,
+                Name = "SaveChanges_Label",
+                AutoSize = true,
                 AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
+                Anchor = AnchorStyles.Top,
                 Font = new Font("Segoe UI", 11),
                 ForeColor = CustomColors.text,
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true
+                TextAlign = ContentAlignment.MiddleCenter
             };
             Controls.Add(label);
             label.Left = (ClientSize.Width - label.Width) / 2;
@@ -205,7 +208,7 @@ namespace Sales_Tracker
             top = AddListForThingsChanged("Products", Products_Form.ThingsThatHaveChangedInFile, top);
 
             // This is a dummy control to add extra space at the end, even when the panel is scrollable
-            Changed_Panel.Controls.Add(new Label()
+            changed_Panel.Controls.Add(new Control()
             {
                 Size = new Size(1, 15),
                 Left = 1,
@@ -225,13 +228,13 @@ namespace Sales_Tracker
             {
                 Text = title,
                 AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
-                Location = new Point(10, top),
                 AutoSize = true,
+                Location = new Point(10, top),
                 Font = new Font("Segoe UI", 11),
                 ForeColor = CustomColors.text,
-                Cursor = Cursors.Arrow,
+                Cursor = Cursors.Arrow
             };
-            Changed_Panel.Controls.Add(label);
+            changed_Panel.Controls.Add(label);
             top += label.Height + 5;
 
             foreach (string item in list)
@@ -240,13 +243,13 @@ namespace Sales_Tracker
                 {
                     Text = item,
                     AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
-                    Location = new Point(25, top),
                     AutoSize = true,
+                    Location = new Point(25, top),
                     Font = new Font("Segoe UI", 11),
                     ForeColor = CustomColors.text,
-                    Cursor = Cursors.Arrow,
+                    Cursor = Cursors.Arrow
                 };
-                Changed_Panel.Controls.Add(label);
+                changed_Panel.Controls.Add(label);
                 top += label.Height + 5;
             }
 
@@ -324,26 +327,45 @@ namespace Sales_Tracker
         Yes,
         No,
         Save,
-        DontSave
+        DontSave,
+        None
     }
 
     public static class CustomMessageBox
     {
+        private static bool _isMessageBoxShowing = false;
         public static CustomMessageBoxResult Show(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
-            // Construct a new form to free resources when it closes
-            if (Application.OpenForms.Count > 0 && Application.OpenForms[0].InvokeRequired)
+            // Only allow one MessageBox to appear at a time
+            if (_isMessageBoxShowing)
             {
-                return Application.OpenForms[0].Invoke(new Func<CustomMessageBoxResult>(() =>
-                {
-                    new CustomMessage_Form(title, message, icon, buttons).ShowDialog();
-                    return CustomMessage_Form.Instance.result;
-                }));
+                return CustomMessageBoxResult.None;
             }
-            else
+
+            _isMessageBoxShowing = true;
+
+            try
             {
-                new CustomMessage_Form(title, message, icon, buttons).ShowDialog();
-                return CustomMessage_Form.Instance.result;
+                // Construct a new form to free resources when it closes
+                if (Application.OpenForms.Count > 0 && Application.OpenForms[0].InvokeRequired)
+                {
+                    return Application.OpenForms[0].Invoke(new Func<CustomMessageBoxResult>(() =>
+                    {
+                        using CustomMessage_Form form = new(title, message, icon, buttons);
+                        form.ShowDialog();
+                        return form.result;
+                    }));
+                }
+                else
+                {
+                    using CustomMessage_Form form = new(title, message, icon, buttons);
+                    form.ShowDialog();
+                    return form.result;
+                }
+            }
+            finally
+            {
+                _isMessageBoxShowing = false;
             }
         }
     }
