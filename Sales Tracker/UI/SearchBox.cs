@@ -71,14 +71,14 @@ namespace Sales_Tracker.UI
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
-            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, maxHeight, allowEmpty);
+            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, maxHeight, allowEmpty, true);
         }
 
         // Main methods
-        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight, bool allowTextBoxEmpty)
+        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight, bool allowTextBoxEmpty, bool alwaysShow = false)
         {
             // Check if the search box is already shown for the same text box
-            if (searchTextBox == textBox)
+            if (searchTextBox == textBox & !alwaysShow)
             {
                 return;
             }
@@ -152,7 +152,7 @@ namespace Sales_Tracker.UI
                     }
                     else
                     {
-                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count), _searchResultBox);
+                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count, textBox), _searchResultBox);
                         _searchResultBox.Controls.Add(separator);
                         searchResultControls.Add(separator);
                     }
@@ -188,7 +188,7 @@ namespace Sales_Tracker.UI
                         _searchResultBox.Controls.Add(btn);
                         searchResultControls.Add(btn);
                     }
-                    btn.Size = new Size(CalculateControlWidth(metaList.Count), buttonHeight);
+                    btn.Size = new Size(CalculateControlWidth(metaList.Count, textBox), buttonHeight);
                     btn.Text = meta.Name;
                     btn.Location = new Point(1, yOffset);
                     btn.Image = meta.Flag;
@@ -246,15 +246,15 @@ namespace Sales_Tracker.UI
             double elapsedTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
             Log.Write(1, "Elapsed time for updating the SearchBox: " + elapsedTime + " ms");
         }
-        private static int CalculateControlWidth(int count)
+        private static int CalculateControlWidth(int count, Guna2TextBox textBox)
         {
             if (count > 12)
             {
-                return _searchResultBox.Width - SystemInformation.VerticalScrollBarWidth - 4;
+                return textBox.Width - SystemInformation.VerticalScrollBarWidth - 4;
             }
             else
             {
-                return _searchResultBox.Width - 2;
+                return textBox.Width - 2;
             }
         }
         public static List<SearchResult> ConvertToSearchResults(List<string> names)
@@ -263,6 +263,8 @@ namespace Sales_Tracker.UI
         }
         private static void SearchTextBoxChanged(object sender, EventArgs e)
         {
+            if (searchTextBox == null) { return; }
+
             HashSet<string> names = new(resultList.Select(result => result.Name));
             CheckValidity(searchTextBox, names);
 
