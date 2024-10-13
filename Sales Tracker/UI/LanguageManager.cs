@@ -13,18 +13,18 @@ namespace Sales_Tracker.UI
         private static readonly string apiKey = "4e5f9ad96540482591a49028553e146c";
         private static readonly string translationEndpoint = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
         private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column",
-            before_text = "before", link_text = "link", after_text = "after";
+            before_text = "before", link_text = "link", after_text = "after", full_text = "full";
 
         private static Dictionary<string, Dictionary<string, string>> translationCache;  // language -> controlKey -> translation
         private static Dictionary<string, string> englishCache;  // controlKey -> originalText
-        private static readonly Dictionary<string, Rectangle> controlBoundsCache = new();
-        private static readonly Dictionary<Control, float> originalFontSizes = new();
+        private static readonly Dictionary<string, Rectangle> controlBoundsCache = [];
+        private static readonly Dictionary<Control, float> originalFontSizes = [];
 
         // Init.
         public static void InitLanguageManager()
         {
-            translationCache = new Dictionary<string, Dictionary<string, string>>();
-            englishCache = new Dictionary<string, string>();
+            translationCache = [];
+            englishCache = [];
 
             // Load translation cache
             if (File.Exists(Directories.Translations_file))
@@ -114,7 +114,7 @@ namespace Sales_Tracker.UI
                     {
                         int selectedIndex = guna2ComboBox.SelectedIndex;
 
-                        List<object> translatedItems = new();
+                        List<object> translatedItems = [];
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
                             string itemKey = $"{controlKey}_{item_text}_{i}";
@@ -221,7 +221,7 @@ namespace Sales_Tracker.UI
                 {
                     if (!translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlDict))
                     {
-                        controlDict = new();
+                        controlDict = [];
                         translationCache[targetLanguageAbbreviation] = controlDict;
                     }
 
@@ -289,32 +289,45 @@ namespace Sales_Tracker.UI
 
             int linkStart = linkLabel.LinkArea.Start;
             int linkLength = linkLabel.LinkArea.Length;
-            string linkText = fullText.Substring(linkStart, linkLength).Trim();
 
-            // Extract the text before and after the link
-            string textBeforeLink = fullText.Substring(0, linkStart).Trim();
-            string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
+            if (linkLength > 0)
+            {
+                string linkText = fullText.Substring(linkStart, linkLength).Trim();
 
-            // Check if the original text contains a new line before the link
-            bool hasNewLineBefore = fullText.Substring(0, linkStart).EndsWith('\n');
+                // Extract the text before and after the link
+                string textBeforeLink = fullText.Substring(0, linkStart).Trim();
+                string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
 
-            // Generate proper control keys for each part
-            string controlKeyBefore = GetControlKey(linkLabel, before_text);
-            string controlKeyLink = GetControlKey(linkLabel, link_text);
-            string controlKeyAfter = GetControlKey(linkLabel, after_text);
+                // Check if the original text contains a new line before the link
+                bool hasNewLineBefore = fullText.Substring(0, linkStart).EndsWith('\n');
 
-            // Translate the text
-            string translatedTextBefore = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyBefore, linkLabel, textBeforeLink);
-            string translatedLink = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyLink, linkLabel, linkText);
-            string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, linkLabel, textAfterLink);
+                // Generate proper control keys for each part
+                string controlKeyBefore = GetControlKey(linkLabel, before_text);
+                string controlKeyLink = GetControlKey(linkLabel, link_text);
+                string controlKeyAfter = GetControlKey(linkLabel, after_text);
 
-            // Combine the translated text, adding back the new line before the link if necessary
-            string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) + " " +
-                translatedLink + " " + translatedTextAfter;
+                // Translate the text
+                string translatedTextBefore = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyBefore, linkLabel, textBeforeLink);
+                string translatedLink = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyLink, linkLabel, linkText);
+                string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, linkLabel, textAfterLink);
 
-            // Set the translated text and preserve the link area
-            linkLabel.Text = finalText;
-            linkLabel.LinkArea = new LinkArea(translatedTextBefore.Length + 1, translatedLink.Length + 1);
+                // Combine the translated text, adding back the new line before the link if necessary
+                string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) + " " +
+                    translatedLink + " " + translatedTextAfter;
+
+                // Set the translated text and preserve the link area
+                linkLabel.Text = finalText;
+                linkLabel.LinkArea = new LinkArea(translatedTextBefore.Length + 1, translatedLink.Length + 1);
+            }
+            else
+            {
+                // Translate and cache the entire text when no link is present
+                string controlKeyFull = GetControlKey(linkLabel, full_text);
+                string translatedFullText = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyFull, linkLabel, fullText.Trim());
+
+                // Set the translated text
+                linkLabel.Text = translatedFullText;
+            }
         }
         public static void AdjustButtonFontSize(Guna2Button button, string text)
         {
@@ -384,16 +397,25 @@ namespace Sales_Tracker.UI
                         string fullText = linkLabel.Text;
                         int linkStart = linkLabel.LinkArea.Start;
                         int linkLength = linkLabel.LinkArea.Length;
-                        string linkText = fullText.Substring(linkStart, linkLength).Trim();
 
-                        // Extract the text before and after the link
-                        string textBeforeLink = fullText.Substring(0, linkStart).Trim();
-                        string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
+                        if (linkLength > 0)
+                        {
+                            string linkText = fullText.Substring(linkStart, linkLength + 1).Trim();
 
-                        // Cache each part separately using the same logic as translation
-                        englishCache[GetControlKey(linkLabel, before_text)] = textBeforeLink;
-                        englishCache[GetControlKey(linkLabel, link_text)] = linkText;
-                        englishCache[GetControlKey(linkLabel, after_text)] = textAfterLink;
+                            // Extract the text before and after the link
+                            string textBeforeLink = fullText.Substring(0, linkStart + 1).Trim();
+                            string textAfterLink = fullText.Substring(linkStart + linkLength + 1).Trim();
+
+                            // Cache each part separately using the same logic as translation
+                            englishCache[GetControlKey(linkLabel, before_text)] = textBeforeLink;
+                            englishCache[GetControlKey(linkLabel, link_text)] = linkText;
+                            englishCache[GetControlKey(linkLabel, after_text)] = textAfterLink;
+                        }
+                        else
+                        {
+                            // If there's no link, cache the full text
+                            englishCache[GetControlKey(linkLabel, full_text)] = fullText.Trim();
+                        }
                     }
                     break;
 
@@ -490,7 +512,7 @@ namespace Sales_Tracker.UI
         // Misc. methods
         private static string GetControlKey(Control control, string section = null)
         {
-            List<string> parentNames = new();
+            List<string> parentNames = [];
             Control currentControl = control;
 
             // Loop through all parent controls and add their names to the list
@@ -524,8 +546,8 @@ namespace Sales_Tracker.UI
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
             // Ordered by how western the country is
-            return new List<KeyValuePair<string, string>>()
-            {
+            return
+            [
                 new("English", "en"),           // North America, UK, Australia
                 new("Irish", "ga"),             // Ireland
                 new("French", "fr"),            // France, Canada, Belgium
@@ -568,7 +590,7 @@ namespace Sales_Tracker.UI
                 new("Korean", "ko"),            // South Korea
                 new("Chinese (Simplified)", "zh-Hans"),  // Mainland China
                 new("Chinese (Traditional)", "zh-Hant")  // Taiwan, Hong Kong
-            };
+            ];
         }
         public static List<string> GetLanguageNames()
         {

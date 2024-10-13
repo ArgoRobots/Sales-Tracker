@@ -7,9 +7,9 @@ namespace Sales_Tracker.UI
     {
         // Add keyboard shortcuts to Guna2TextBox
         // Dictionaries to hold undo/redo stacks and flags for each TextBox
-        private static readonly Dictionary<Guna2TextBox, Stack<string>> undoStacks = new();
-        private static readonly Dictionary<Guna2TextBox, Stack<string>> redoStacks = new();
-        private static readonly Dictionary<Guna2TextBox, bool> isTextChangedByUserFlags = new();
+        private static readonly Dictionary<Guna2TextBox, Stack<string>> undoStacks = [];
+        private static readonly Dictionary<Guna2TextBox, Stack<string>> redoStacks = [];
+        private static readonly Dictionary<Guna2TextBox, bool> isTextChangedByUserFlags = [];
 
         /// <summary>
         /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
