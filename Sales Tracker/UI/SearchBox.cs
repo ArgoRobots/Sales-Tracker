@@ -77,6 +77,12 @@ namespace Sales_Tracker.UI
         // Main methods
         private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight, bool allowTextBoxEmpty)
         {
+            // Check if the search box is already shown for the same text box
+            if (searchTextBox == textBox && _searchBoxParent == searchBoxParent)
+            {
+                return;
+            }
+
             List<SearchResult> results = resultsFunc();
 
             _searchBoxParent = searchBoxParent;

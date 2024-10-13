@@ -10,7 +10,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.26100.1</TargetFramework>
     <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
 
     <!-- Disable null warnings -->
@@ -31,6 +31,7 @@
     <FileVersion>1.0.0</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SignAssembly>False</SignAssembly>
+    <SupportedOSPlatformVersion>10.0.26100.1</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

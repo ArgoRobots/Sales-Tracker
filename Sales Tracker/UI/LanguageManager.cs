@@ -394,17 +394,17 @@ namespace Sales_Tracker.UI
                     if (!string.IsNullOrEmpty(linkLabel.Text))
                     {
                         // Split the text into parts
-                        string fullText = linkLabel.Text;
+                        string fullText = linkLabel.Text.Replace("\r\n", "\n");
                         int linkStart = linkLabel.LinkArea.Start;
                         int linkLength = linkLabel.LinkArea.Length;
 
                         if (linkLength > 0)
                         {
-                            string linkText = fullText.Substring(linkStart, linkLength + 1).Trim();
+                            string linkText = fullText.Substring(linkStart, linkLength).Trim();
 
                             // Extract the text before and after the link
-                            string textBeforeLink = fullText.Substring(0, linkStart + 1).Trim();
-                            string textAfterLink = fullText.Substring(linkStart + linkLength + 1).Trim();
+                            string textBeforeLink = fullText.Substring(0, linkStart).Trim();
+                            string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
 
                             // Cache each part separately using the same logic as translation
                             englishCache[GetControlKey(linkLabel, before_text)] = textBeforeLink;
