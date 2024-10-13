@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
 using Timer = System.Windows.Forms.Timer;
 
@@ -24,6 +25,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             InitContainerPanel();
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
+            SetAccessibleDescriptions();
             RemoveReceiptLabel();
             AlignControls();
         }
@@ -35,6 +37,10 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             SkipHeaderRow_CheckBox.Left = newLeftPosition;
             SkipHeaderRow_Label.Left = SkipHeaderRow_CheckBox.Right + initialSpacing;
+        }
+        private void SetAccessibleDescriptions()
+        {
+            SkipHeaderRow_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
 
         // Form event handlers
@@ -344,7 +350,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             return Task.Run(() =>
             {
-                List<Panel> panels = new();
+                List<Panel> panels = [];
 
                 // Open the file in read-only and shared mode in case the file is being used by another program
                 using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -428,7 +434,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private List<string> ExtractFirstCells(IXLWorksheet worksheet)
         {
-            List<string> firstCells = new();
+            List<string> firstCells = [];
 
             IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
 
@@ -442,7 +448,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private List<string> ExtractProducts(IXLWorksheet productsWorksheet)
         {
-            List<string> products = new();
+            List<string> products = [];
             IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? productsWorksheet.RowsUsed().Skip(1) : productsWorksheet.RowsUsed();
 
             foreach (IXLRow row in rows)
@@ -461,7 +467,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private List<string> ExtractTransaction(IXLWorksheet productsWorksheet)
         {
-            List<string> products = new();
+            List<string> products = [];
             IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? productsWorksheet.RowsUsed().Skip(1) : productsWorksheet.RowsUsed();
 
             foreach (IXLRow row in rows)

@@ -131,7 +131,7 @@
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             File_Button = new Guna.UI2.WinForms.Guna2Button();
             HideMenu_timer = new System.Windows.Forms.Timer(components);
-            TotalText_Label = new Label();
+            Total_Label = new Label();
             Quantity_Label = new Label();
             Price_Label = new Label();
             Shipping_Label = new Label();
@@ -450,18 +450,18 @@
             File_Button.TabIndex = 3;
             File_Button.Click += File_Button_Click;
             // 
-            // TotalText_Label
+            // Total_Label
             // 
-            TotalText_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            TotalText_Label.AutoSize = true;
-            TotalText_Label.BackColor = Color.Transparent;
-            TotalText_Label.Font = new Font("Segoe UI", 11.25F);
-            TotalText_Label.Location = new Point(4, 22);
-            TotalText_Label.Name = "TotalText_Label";
-            TotalText_Label.Size = new Size(78, 31);
-            TotalText_Label.TabIndex = 5;
-            TotalText_Label.Text = "Totals:";
-            TotalText_Label.Click += CloseAllPanels;
+            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Total_Label.AutoSize = true;
+            Total_Label.BackColor = Color.Transparent;
+            Total_Label.Font = new Font("Segoe UI", 11.25F);
+            Total_Label.Location = new Point(4, 22);
+            Total_Label.Name = "Total_Label";
+            Total_Label.Size = new Size(78, 31);
+            Total_Label.TabIndex = 5;
+            Total_Label.Text = "Totals:";
+            Total_Label.Click += CloseAllPanels;
             // 
             // Quantity_Label
             // 
@@ -520,7 +520,7 @@
             Total_Panel.Controls.Add(Shipping_Label);
             Total_Panel.Controls.Add(Price_Label);
             Total_Panel.Controls.Add(Quantity_Label);
-            Total_Panel.Controls.Add(TotalText_Label);
+            Total_Panel.Controls.Add(Total_Label);
             Total_Panel.CustomizableEdges = customizableEdges25;
             Total_Panel.Location = new Point(228, 1446);
             Total_Panel.Name = "Total_Panel";
@@ -894,11 +894,8 @@
         public System.Windows.Forms.Timer HideMenu_timer;
         public System.Windows.Forms.Label Saved_Label;
         private Label CompanyName_Label;
-        public Label PriceText_Label;
-        public Label QuantityText_Label;
-        public Label ShippingText_Label;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
-        public Label TotalText_Label;
+        public Label Total_Label;
         public Label Quantity_Label;
         public Label Price_Label;
         public Label Shipping_Label;

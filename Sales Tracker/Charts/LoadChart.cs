@@ -575,7 +575,7 @@ namespace Sales_Tracker.Charts
             ConfigureChartForPie(chart);
 
             GunaPieDataset dataset = new();
-            Dictionary<string, double> accountantCounts = new();
+            Dictionary<string, double> accountantCounts = [];
             bool anyRowsVisible = false;
 
             foreach (Guna2DataGridView purchasesDataGridView in dataGridViews)
@@ -668,9 +668,9 @@ namespace Sales_Tracker.Charts
 
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, double> expensesByDate = new();
-            Dictionary<string, double> salesByDate = new();
-            HashSet<string> allDates = new();
+            Dictionary<string, double> expensesByDate = [];
+            Dictionary<string, double> salesByDate = [];
+            HashSet<string> allDates = [];
 
             // Calculate expenses totals by date
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
@@ -797,8 +797,8 @@ namespace Sales_Tracker.Charts
 
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, double> totalByDate = new();
-            Dictionary<string, int> ordersByDate = new();
+            Dictionary<string, double> totalByDate = [];
+            Dictionary<string, int> ordersByDate = [];
 
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
@@ -827,7 +827,7 @@ namespace Sales_Tracker.Charts
                 return;
             }
 
-            Dictionary<string, double> averageOrderValueByDate = new();
+            Dictionary<string, double> averageOrderValueByDate = [];
 
             foreach (string date in totalByDate.Keys)
             {
@@ -859,8 +859,8 @@ namespace Sales_Tracker.Charts
         public static void ApplyCustomColorsToDataset(GunaPieDataset dataset)
         {
             // Define the colors
-            ColorCollection colors = new()
-            {
+            ColorCollection colors =
+            [
                 CustomColors.pastelBlue,
                 CustomColors.pastelGreen,
                 Color.FromArgb(204, 102, 153),  // Soft pink
@@ -879,7 +879,7 @@ namespace Sales_Tracker.Charts
                 Color.FromArgb(153, 153, 204),  // Soft denim
                 Color.FromArgb(204, 102, 102),  // Warm rust
                 Color.FromArgb(153, 153, 153),  // Muted gray
-            };
+            ];
 
             // Apply the colors to the dataset
             dataset.FillColors = colors;
@@ -972,11 +972,30 @@ namespace Sales_Tracker.Charts
             }
             return (minDate, maxDate);
         }
-        public static void UpdateChart(GunaChart chart, IGunaDataset dataset)
+        private static void UpdateChart(GunaChart chart, IGunaDataset dataset)
         {
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
+            ApplyCurrencyFormatToDataset(dataset);
             chart.Update();
+        }
+        private static void ApplyCurrencyFormatToDataset(object dataset)
+        {
+            // This can be added in Guna Charts V.1.0.9, but this version is broken, so wait until V.1.1.0
+            switch (dataset)
+            {
+                case GunaBarDataset barDataset:
+                    //   barDataset.YFormat = "{0:C}";
+                    break;
+
+                case GunaLineDataset lineDataset:
+                    //   lineDataset.YFormat = "{0:C}";
+                    break;
+
+                case GunaPieDataset pieDataset:
+                    //    pieDataset.YFormat = "{0:C}";
+                    break;
+            }
         }
         private static void ClearChart(GunaChart chart)
         {

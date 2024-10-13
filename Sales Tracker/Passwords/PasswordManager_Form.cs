@@ -135,15 +135,15 @@ namespace Sales_Tracker.Passwords
         }
         private List<Control> GetControls()
         {
-            return new List<Control>
-            {
+            return
+            [
                 NewPassword_TextBox,
                 LengthRequirement_Label,
                 NumberRequirement_Label,
                 UppercaseRequirement_Label,
                 SpecialCharacterRequirement_Label,
                 Message_Label
-            };
+            ];
         }
         private void ValidateButton()
         {

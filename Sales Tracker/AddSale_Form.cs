@@ -118,7 +118,7 @@ namespace Sales_Tracker
             // When the user selects "multiple items in this order" but only adds one, treat it as one
             else if (panelsForMultipleProducts_List.Count == 1)
             {
-                // Extract details from the single panel and populate the single purchase fields
+                // Extract details from the single panel and populate the single sale fields
                 Guna2Panel singlePanel = panelsForMultipleProducts_List[0];
                 ProductName_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault()).Text;
                 Quantity_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault()).Text;
@@ -241,7 +241,7 @@ namespace Sales_Tracker
             if (totalPrice != amountCharged)
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.",
+                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -265,7 +265,7 @@ namespace Sales_Tracker
             decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
 
             // Store the money values in the tag
-            TagData purchaseData = new()
+            TagData saleData = new()
             {
                 PricePerUnitUSD = pricePerUnitUSD,
                 ShippingUSD = shippingUSD,
@@ -317,7 +317,7 @@ namespace Sales_Tracker
             // Set the tag
             if (newFilePath != "")
             {
-                MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, purchaseData);
+                MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Tag = (newFilePath, saleData);
             }
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
@@ -359,7 +359,7 @@ namespace Sales_Tracker
                 noteLabel = ReadOnlyVariables.Show_text;
             }
 
-            List<string> items = new();
+            List<string> items = [];
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
             decimal totalPrice = 0;

@@ -637,7 +637,7 @@ namespace Sales_Tracker.UI
         }
         public static void LoadColumns<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
-            foreach (var columnHeader in columnHeaders)
+            foreach (KeyValuePair<TEnum, string> columnHeader in columnHeaders)
             {
                 if (columnsToLoad != null && !columnsToLoad.Contains(columnHeader.Key))
                 {

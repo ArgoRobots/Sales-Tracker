@@ -90,7 +90,7 @@ namespace Sales_Tracker
         // Methods
         private void UpdateMainMenuRowTag()
         {
-            List<string> items = new();
+            List<string> items = [];
 
             if (oldSelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, TagData tagData))
             {

@@ -10,7 +10,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-    <TargetFramework>net8.0-windows10.0.26100.1</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
     <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
 
     <!-- Disable null warnings -->
@@ -26,24 +26,23 @@
     <NoWarn>$(NoWarn);IDE0305</NoWarn>
     <!-- Disable "Use range operator" -->
     <NoWarn>$(NoWarn);IDE0057</NoWarn>
-    <!-- Disable "Use collection initializers or expressions" -->
-    <NoWarn>$(NoWarn);IDE0028</NoWarn>
+
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
     <WindowsSdkSupportedTargetPlatformVersion Include="10.0.26100.1" WindowsSdkPackageVersion="10.0.26100.1" MinimumNETVersion="6.0" />
 		<SdkSupportedTargetPlatformVersion Include="10.0.26100.1" />
-		<PackageReference Include="ClosedXML" Version="0.102.3" />
+		<PackageReference Include="ClosedXML" Version="0.104.1" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.0.8" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
     <PackageReference Include="SharpCompress" Version="0.38.0" />
+    <PackageReference Include="System.IO.Packaging" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>

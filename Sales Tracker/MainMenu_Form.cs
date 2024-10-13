@@ -162,7 +162,7 @@ namespace Sales_Tracker
             foreach (Dictionary<string, object> rowData in rowsData)
             {
                 // Extract cell values
-                List<string?> cellValuesList = new();
+                List<string?> cellValuesList = [];
                 foreach (KeyValuePair<string, object> kv in rowData)
                 {
                     if (kv.Key != rowTagKey && kv.Key != noteTextKey)
@@ -327,6 +327,13 @@ namespace Sales_Tracker
             CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Profits_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
             Totals_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            PaymentFee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
 
         // Form event handlers
@@ -335,8 +342,9 @@ namespace Sales_Tracker
             _sales_DataGridView.ClearSelection();
             LoadingPanel.HideBlankLoadingPanel(this);
 
-            // Ensure the charts are rendered
-            // BeginInvoke ensures that it runs on the main UI thread after all pending UI events have been processed
+            // This is a bug with Guna Charts V.1.0.8. It has been fixed in V.1.0.9, but this version is broken.
+            // So this can probably be removed in V.1.1.0.
+            // This does not solve the problem, but it makes it better.
             BeginInvoke(() =>
             {
                 Totals_Chart.Invalidate();
@@ -528,7 +536,7 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Log.Write(2, "Closing Argo Studio");
+            Log.Write(2, "Closing Argo Sales Tracker");
 
             CustomControls.CloseAllPanels(null, null);
 
@@ -1526,12 +1534,12 @@ namespace Sales_Tracker
         public static void SaveDataGridViewToFileAsJson(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
-            List<Dictionary<string, object>> rowsData = new();
+            List<Dictionary<string, object>> rowsData = [];
 
             // Collect data from the DataGridView
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                Dictionary<string, object> rowData = new();
+                Dictionary<string, object> rowData = [];
 
                 foreach (DataGridViewCell cell in row.Cells)
                 {
@@ -1602,7 +1610,7 @@ namespace Sales_Tracker
         public static void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)
         {
             string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
-            List<string> linesInDataGridView = new();
+            List<string> linesInDataGridView = [];
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {

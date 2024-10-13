@@ -26,6 +26,7 @@ namespace Sales_Tracker.Settings.Menus
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
+            CenterEncryptControls();
         }
         public void UpdateTheme()
         {
@@ -34,6 +35,15 @@ namespace Sales_Tracker.Settings.Menus
         private void SetAccessibleDescriptions()
         {
             EncryptFiles_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+        }
+        private void CenterEncryptControls()
+        {
+            int spacing = EncryptFiles_CheckBox.Location.X - (EncryptFiles_Label.Location.X + EncryptFiles_Label.Width);
+            int totalWidth = EncryptFiles_Label.Width + spacing + EncryptFiles_CheckBox.Width;
+            int startX = (ClientSize.Width - totalWidth) / 2;
+
+            EncryptFiles_Label.Left = startX;
+            EncryptFiles_CheckBox.Left = EncryptFiles_Label.Left + EncryptFiles_Label.Width + spacing;
         }
 
         // Form event handlers
