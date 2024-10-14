@@ -126,12 +126,15 @@ namespace Sales_Tracker.Settings
 
             List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
 
-            Theme.SetThemeForControl(listOfPanels.Cast<Control>().ToList());
-
             foreach (Guna2Panel guna2Panel in listOfPanels)
             {
                 guna2Panel.FillColor = CustomColors.panelBtn;
                 guna2Panel.BorderColor = CustomColors.controlPanelBorder;
+
+                if (guna2Panel.Controls[0] is FlowLayoutPanel flowLayoutPanel)
+                {
+                    flowLayoutPanel.BackColor = CustomColors.mainBackground;
+                }
             }
 
             Theme.UpdateThemeForPanel(listOfPanels);
