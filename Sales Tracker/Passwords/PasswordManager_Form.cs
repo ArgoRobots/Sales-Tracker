@@ -15,6 +15,8 @@ namespace Sales_Tracker.Passwords
             Modify_RadioButton.Checked = true;
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
+
+            Message_Label.MaximumSize = new Size(ClientSize.Width - 40, 0);
         }
         private void AddEventHandlersToTextBoxes()
         {

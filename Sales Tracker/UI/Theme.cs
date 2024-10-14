@@ -193,7 +193,7 @@ namespace Sales_Tracker.Classes
                 // Recursively apply theming to child controls if any
                 if (control.HasChildren)
                 {
-                    List<Control> childControls = new();
+                    List<Control> childControls = [];
                     foreach (Control childControl in control.Controls)
                     {
                         childControls.Add(childControl);
@@ -291,7 +291,7 @@ namespace Sales_Tracker.Classes
         {
             form.BackColor = CustomColors.mainBackground;
 
-            List<Control> list = new();
+            List<Control> list = [];
             foreach (Control item in form.Controls)
             {
                 list.Add(item);

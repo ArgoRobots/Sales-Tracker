@@ -350,7 +350,9 @@ namespace Sales_Tracker.UI
                     return;
                 }
 
-                FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
+                FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls
+                    .OfType<FlowLayoutPanel>()
+                    .FirstOrDefault();
 
                 // Add move button
                 if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)

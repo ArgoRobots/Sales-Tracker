@@ -18,7 +18,7 @@
         }
 
         // Dictionary to hold settings loaded from files, with file path as key.
-        private static readonly Dictionary<string, Dictionary<string, string>> data = new();
+        private static readonly Dictionary<string, Dictionary<string, string>> data = [];
 
         /// <summary>
         /// Determines the file path based on the enum type.
@@ -46,7 +46,7 @@
         {
             if (!data.TryGetValue(filePath, out Dictionary<string, string>? values))
             {
-                values = ReadDataFile(filePath) ?? new Dictionary<string, string>();
+                values = ReadDataFile(filePath) ?? [];
                 data[filePath] = values;
             }
             return values;

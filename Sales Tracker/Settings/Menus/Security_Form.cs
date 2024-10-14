@@ -36,7 +36,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             EncryptFiles_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
         }
-        private void CenterEncryptControls()
+        public void CenterEncryptControls()
         {
             int spacing = EncryptFiles_CheckBox.Location.X - (EncryptFiles_Label.Location.X + EncryptFiles_Label.Width);
             int totalWidth = EncryptFiles_Label.Width + spacing + EncryptFiles_CheckBox.Width;

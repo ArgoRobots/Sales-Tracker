@@ -63,10 +63,13 @@ namespace Sales_Tracker
 
             Sales_Button.PerformClick();
             SortTheDataGridViewByDate();
-            HideShowingResultsForLabel();
 
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
+
+            HideShowingResultsForLabel();
+            AlignTotalLabels();
+            UpdateTotals();
         }
         public void ResetData()
         {
@@ -340,6 +343,7 @@ namespace Sales_Tracker
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
             _sales_DataGridView.ClearSelection();
+
             LoadingPanel.HideBlankLoadingPanel(this);
 
             // This is a bug with Guna Charts V.1.0.8. It has been fixed in V.1.0.9, but this version is broken.

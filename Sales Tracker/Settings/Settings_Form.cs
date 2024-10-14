@@ -73,6 +73,7 @@ namespace Sales_Tracker.Settings
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
+            SearchBox.CloseSearchBox();
             ApplyChanges(false);
             Close();
         }
@@ -90,6 +91,7 @@ namespace Sales_Tracker.Settings
         {
             UpdateColorTheme();
             UserSettings.SaveUserSettings(includeGeneralForm);
+            Security_Form.Instance.CenterEncryptControls();
         }
         private void UpdateColorTheme()
         {
