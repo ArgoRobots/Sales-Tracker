@@ -20,7 +20,7 @@ namespace Sales_Tracker.UI
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
             DataGridViewManager.ConstructRightRowMenu();
-            MainMenu_Form.ConstructRightClickGunaChartMenu();
+            MainMenu_Form.Instance.ConstructRightClickGunaChartMenu();
 
             // Set language
             LanguageManager.UpdateLanguageForControl(_fileMenu);

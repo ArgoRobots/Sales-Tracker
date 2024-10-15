@@ -343,7 +343,30 @@ namespace Sales_Tracker
         {
             GunaChart[] charts = [Totals_Chart, Distribution_Chart, Profits_Chart];
 
-            void leftClickAction(GunaChart chart) => CloseAllPanels(null, null);
+            void leftClickAction(GunaChart chart)
+            {
+                Point mousePosition = MousePosition;
+                Point localMousePosition = rightClickGunaChart_Panel.PointToClient(mousePosition);
+
+                // Check if the mouse click occurred within any of the panel's buttons
+                bool clickedOnControl = false;
+
+                foreach (Control control in rightClickGunaChart_Panel.Controls)
+                {
+                    if (control.Bounds.Contains(localMousePosition))
+                    {
+                        clickedOnControl = true;
+                        break;
+                    }
+                }
+
+                // Only close the panel if the click wasn't on any button or interactive control
+                if (!clickedOnControl)
+                {
+                    CloseAllPanels(null, null);
+                }
+            }
+
             MouseClickChartManager.Initialize(charts, leftClickAction, ShowRightClickChartMenu);
         }
 
@@ -681,14 +704,16 @@ namespace Sales_Tracker
         }
         private void AddControlsDropDown()
         {
-            CustomControls.ControlsDropDown_Button.Location = new Point(MainTop_Panel.Width - CustomControls.ControlsDropDown_Button.Width - 11, (MainTop_Panel.Height - CustomControls.ControlsDropDown_Button.Height) / 2);
+            CustomControls.ControlsDropDown_Button.Location = new Point(
+                MainTop_Panel.Width - CustomControls.ControlsDropDown_Button.Width - 11,
+                (MainTop_Panel.Height - CustomControls.ControlsDropDown_Button.Height) / 2);
+
             MainTop_Panel.Controls.Add(CustomControls.ControlsDropDown_Button);
-            MainTop_Panel.Controls.Remove(ManageAccountants_Button);
-            MainTop_Panel.Controls.Remove(ManageCategories_Button);
-            MainTop_Panel.Controls.Remove(ManageCompanies_Button);
-            MainTop_Panel.Controls.Remove(ManageProducts_Button);
-            MainTop_Panel.Controls.Remove(AddSale_Button);
-            MainTop_Panel.Controls.Remove(AddPurchase_Button);
+
+            foreach (var button in GetMainTopButtons())
+            {
+                MainTop_Panel.Controls.Remove(button);
+            };
         }
         private void RemoveControlsDropDown()
         {
@@ -696,19 +721,27 @@ namespace Sales_Tracker
 
             int buttonTop = (MainTop_Panel.Height - ManageAccountants_Button.Height) / 2;
             int buttonWidthPlusSpace = ManageAccountants_Button.Width + 8;
-            ManageAccountants_Button.Location = new Point(MainTop_Panel.Width - buttonWidthPlusSpace - 5, buttonTop);
-            ManageCategories_Button.Location = new Point(ManageAccountants_Button.Left - buttonWidthPlusSpace, buttonTop);
-            ManageCompanies_Button.Location = new Point(ManageCategories_Button.Left - buttonWidthPlusSpace, buttonTop);
-            ManageProducts_Button.Location = new Point(ManageCompanies_Button.Left - buttonWidthPlusSpace, buttonTop);
-            AddSale_Button.Location = new Point(ManageProducts_Button.Left - buttonWidthPlusSpace, buttonTop);
-            AddPurchase_Button.Location = new Point(AddSale_Button.Left - buttonWidthPlusSpace, buttonTop);
 
-            MainTop_Panel.Controls.Add(ManageAccountants_Button);
-            MainTop_Panel.Controls.Add(ManageCategories_Button);
-            MainTop_Panel.Controls.Add(ManageCompanies_Button);
-            MainTop_Panel.Controls.Add(ManageProducts_Button);
-            MainTop_Panel.Controls.Add(AddSale_Button);
-            MainTop_Panel.Controls.Add(AddPurchase_Button);
+            Control[] buttons = GetMainTopButtons();
+
+            // Set the location of each button in reverse order
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                buttons[i].Location = new Point(
+                    MainTop_Panel.Width - (buttonWidthPlusSpace * (i + 1)) - 5, buttonTop);
+                MainTop_Panel.Controls.Add(buttons[i]);
+            }
+        }
+        private Control[] GetMainTopButtons()
+        {
+            return [
+                ManageAccountants_Button,
+                ManageCategories_Button,
+                ManageCompanies_Button,
+                ManageProducts_Button,
+                AddSale_Button,
+                AddPurchase_Button
+            ];
         }
 
         /// <summary>
@@ -1768,26 +1801,46 @@ namespace Sales_Tracker
 
         // Right click Guna chart menu
         private static Guna2Panel rightClickGunaChart_Panel;
-        public static void ConstructRightClickGunaChartMenu()
+        public void ConstructRightClickGunaChartMenu()
         {
-            rightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(new Size(300, 2 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickGunaChart_Panel");
+            rightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth - 50, 2 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickGunaChart_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickGunaChart_Panel.Controls[0];
-
-            Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", CustomControls.PanelBtnWidth, false, flowPanel);
+            int newBtnWidth = CustomControls.PanelBtnWidth - 50;
+            Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, false, flowPanel);
             button.Click += ResetZoom;
 
-            button = CustomControls.ConstructBtnForMenu("Save image", CustomControls.PanelBtnWidth, false, flowPanel);
+            button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, false, flowPanel);
             button.Click += SaveImage;
         }
-        private static void ResetZoom(object sender, EventArgs e)
+        private void ResetZoom(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)sender;
+            CloseAllPanels(null, null);
+
+            GunaChart chart = (GunaChart)rightClickGunaChart_Panel.Tag;
             // Wait until the next update for Guna Charts to implement this
+            //chart.ResetZoom();
         }
-        private static void SaveImage(object sender, EventArgs e)
+        private void SaveImage(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)sender;
+            CloseAllPanels(null, null);
+
+            GunaChart chart = (GunaChart)rightClickGunaChart_Panel.Tag;
+            string filepath;
+
+            // Select folder
+            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string date = Tools.FormatDate(DateTime.Now);
+                filepath = dialog.SelectedPath + @"\" + chart.Title.Text + "-" + date + ArgoFiles.PngFileExtension;
+            }
+            else { return; }
+
+            MessageBox.Show(filepath);
+
             // Wait until the next update for Guna Charts to implement this
+            //chart.Export();
         }
         private void ShowRightClickChartMenu(GunaChart chart, Point mousePosition)
         {
@@ -1799,6 +1852,12 @@ namespace Sales_Tracker
 
             Controls.Add(rightClickGunaChart_Panel);
             rightClickGunaChart_Panel.BringToFront();
+
+            rightClickGunaChart_Panel.Tag = chart;
+        }
+        public bool DoControlsContainRightClickChartMenu()
+        {
+            return Controls.Contains(rightClickGunaChart_Panel);
         }
 
         // Settings

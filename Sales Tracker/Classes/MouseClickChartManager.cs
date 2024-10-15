@@ -29,7 +29,7 @@ namespace Sales_Tracker.Classes
         /// Custom IMessageFilter implementation that detects mouse clicks and determines
         /// whether a left or right click occurred on a GunaChart control.
         /// </summary>
-        private class CustomMessageFilter : IMessageFilter
+        public class CustomMessageFilter : IMessageFilter
         {
             /// <summary>
             /// Filters Windows messages before they are dispatched to controls.
@@ -41,28 +41,29 @@ namespace Sales_Tracker.Classes
                 // Detect left or right mouse button down events
                 if (m.Msg == 0x0201 || m.Msg == 0x0204)  // 0x0201 is WM_LBUTTONDOWN, 0x0204 is WM_RBUTTONDOWN
                 {
-                    bool isLeftClick = (m.Msg == 0x0201);
+                    bool isRightClick = (m.Msg == 0x0204);
                     Point mousePosition = Control.MousePosition;
 
                     // Check if the click happened on any of the charts
                     foreach (GunaChart chart in _charts)
                     {
+                        // Convert mouse position to the chart's parent coordinates
                         Point localMousePosition = chart.Parent.PointToClient(mousePosition);
 
                         // Check if the click is within the bounds of the chart
                         if (chart.Bounds.Contains(localMousePosition))
                         {
-                            if (isLeftClick)
+                            if (isRightClick)
+                            {
+                                // Trigger the right click action with chart and mouse position
+                                _onRightClick?.Invoke(chart, mousePosition);
+                                return true;
+                            }
+                            else
                             {
                                 // Trigger the left click action with chart
                                 _onLeftClick?.Invoke(chart);
                             }
-                            else
-                            {
-                                // Trigger the right click action with chart and mouse position
-                                _onRightClick?.Invoke(chart, mousePosition);
-                            }
-                            return true;
                         }
                     }
                 }
