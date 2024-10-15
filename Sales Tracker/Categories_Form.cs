@@ -300,7 +300,7 @@ namespace Sales_Tracker
         }
         public void CloseAllPanels(object sender, EventArgs? e)
         {
-            MainMenu_Form.CloseRightClickPanels();
+            MainMenu_Form.Instance.CloseRightClickPanels();
         }
     }
 }

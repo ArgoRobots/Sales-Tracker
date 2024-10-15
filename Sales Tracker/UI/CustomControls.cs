@@ -20,6 +20,7 @@ namespace Sales_Tracker.UI
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
             DataGridViewManager.ConstructRightRowMenu();
+            MainMenu_Form.ConstructRightClickGunaChartMenu();
 
             // Set language
             LanguageManager.UpdateLanguageForControl(_fileMenu);
@@ -571,7 +572,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
             MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
-            MainMenu_Form.CloseRightClickPanels();
+            MainMenu_Form.Instance.CloseRightClickPanels();
         }
         private static void DeselectAllMenuButtons(Guna2Panel panel)
         {

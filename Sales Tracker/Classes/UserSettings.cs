@@ -197,6 +197,7 @@ namespace Sales_Tracker.Classes
         {
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, "USD");
 
             General_Form.Instance.UpdateControls();
             Security_Form.Instance.UpdateControls();

@@ -70,6 +70,7 @@ namespace Sales_Tracker
             HideShowingResultsForLabel();
             AlignTotalLabels();
             UpdateTotals();
+            InitClickChartsManager();
         }
         public void ResetData()
         {
@@ -337,6 +338,13 @@ namespace Sales_Tracker
             PaymentFee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
             Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+        }
+        private void InitClickChartsManager()
+        {
+            GunaChart[] charts = [Totals_Chart, Distribution_Chart, Profits_Chart];
+
+            void leftClickAction(GunaChart chart) => CloseAllPanels(null, null);
+            MouseClickChartManager.Initialize(charts, leftClickAction, ShowRightClickChartMenu);
         }
 
         // Form event handlers
@@ -842,6 +850,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             ConstructControlsForStatistics();
+
             AddStatisticsControls();
             ResizeControls();
 
@@ -1635,7 +1644,7 @@ namespace Sales_Tracker
         }
 
         // Statistics menu properties
-        private List<Control> statisticsControls;
+        private List<GunaChart> statisticsCharts;
         private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart,
             accountants_Chart, salesVsExpenses_Chart, averageOrderValue_Chart;
 
@@ -1662,7 +1671,7 @@ namespace Sales_Tracker
             {
                 Controls.Add(control);
             }
-            foreach (Control control in statisticsControls)
+            foreach (Control control in statisticsCharts)
             {
                 Controls.Remove(control);
             }
@@ -1683,7 +1692,7 @@ namespace Sales_Tracker
             salesVsExpenses_Chart = ConstructStatisticsChart(800, "Total sales vs. total expenses", "salesVsExpenses_Chart");
             averageOrderValue_Chart = ConstructStatisticsChart(800, "Average order value", "averageOrderValue_Chart");
 
-            statisticsControls =
+            statisticsCharts =
             [
                 countriesOfOrigin_Chart,
                 companiesOfOrigin_Chart,
@@ -1692,6 +1701,9 @@ namespace Sales_Tracker
                 salesVsExpenses_Chart,
                 averageOrderValue_Chart
             ];
+
+            void leftClickAction(GunaChart statisticsControls) => CloseAllPanels(null, null);
+            MouseClickChartManager.Initialize(statisticsCharts.ToArray(), leftClickAction, ShowRightClickChartMenu);
         }
         private static GunaChart ConstructStatisticsChart(int top, string title, string name)
         {
@@ -1723,7 +1735,7 @@ namespace Sales_Tracker
             }
             Selected = SelectedOption.Statistics;
 
-            foreach (Control control in statisticsControls)
+            foreach (Control control in statisticsCharts)
             {
                 Controls.Add(control);
             }
@@ -1752,6 +1764,41 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(accountants_Chart);
             LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart);
             LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
+        }
+
+        // Right click Guna chart menu
+        private static Guna2Panel rightClickGunaChart_Panel;
+        public static void ConstructRightClickGunaChartMenu()
+        {
+            rightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(new Size(300, 2 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickGunaChart_Panel");
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickGunaChart_Panel.Controls[0];
+
+            Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", CustomControls.PanelBtnWidth, false, flowPanel);
+            button.Click += ResetZoom;
+
+            button = CustomControls.ConstructBtnForMenu("Save image", CustomControls.PanelBtnWidth, false, flowPanel);
+            button.Click += SaveImage;
+        }
+        private static void ResetZoom(object sender, EventArgs e)
+        {
+            GunaChart chart = (GunaChart)sender;
+            // Wait until the next update for Guna Charts to implement this
+        }
+        private static void SaveImage(object sender, EventArgs e)
+        {
+            GunaChart chart = (GunaChart)sender;
+            // Wait until the next update for Guna Charts to implement this
+        }
+        private void ShowRightClickChartMenu(GunaChart chart, Point mousePosition)
+        {
+            Point localMousePosition = PointToClient(mousePosition);
+
+            rightClickGunaChart_Panel.Location = new Point(
+                localMousePosition.X - ReadOnlyVariables.OffsetRightClickPanel,
+               localMousePosition.Y);
+
+            Controls.Add(rightClickGunaChart_Panel);
+            rightClickGunaChart_Panel.BringToFront();
         }
 
         // Settings
@@ -1804,9 +1851,10 @@ namespace Sales_Tracker
         {
             instance.Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
         }
-        public static void CloseRightClickPanels()
+        public void CloseRightClickPanels()
         {
             DataGridViewManager.ControlRightClickPanelWasAddedTo?.Controls.Remove(DataGridViewManager.RightClickDataGridView_Panel);
+            Controls.Remove(rightClickGunaChart_Panel);
             DataGridViewManager.DoNotDeleteRows = false;
         }
         private void CloseAllPanels(object sender, EventArgs? e)

@@ -500,7 +500,7 @@ namespace Sales_Tracker
         public void CloseAllPanels(object sender, EventArgs e)
         {
             SearchBox.CloseSearchBox();
-            MainMenu_Form.CloseRightClickPanels();
+            MainMenu_Form.Instance.CloseRightClickPanels();
         }
     }
 }

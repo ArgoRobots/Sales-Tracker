@@ -35,6 +35,7 @@ namespace Sales_Tracker.Settings.Menus
         private void SetAccessibleDescriptions()
         {
             EncryptFiles_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            AddPassword_Button.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
         public void CenterEncryptControls()
         {
