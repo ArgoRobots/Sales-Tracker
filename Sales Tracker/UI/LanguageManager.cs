@@ -67,12 +67,12 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Update the controls text with the translated language. It also updates all the child controls.
         /// </summary>
-        public static void UpdateLanguageForControl(Control control)
+        public static void UpdateLanguageForControl(Control control, bool cacheControlAgain = false)
         {
             string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
 
             // Ensure all the English text in this Form has been cached
-            if (CacheAllEnglishTextInForm(control))
+            if (CacheAllEnglishTextInForm(control, cacheControlAgain))
             {
                 SaveEnglishCacheToFile();
             }
@@ -370,13 +370,13 @@ namespace Sales_Tracker.UI
         /// Saves all the text in a Control to englishCache.
         /// </summary>
         /// <returns>True if any text was caches, otherwise False.</returns>
-        private static bool CacheAllEnglishTextInForm(Control control)
+        private static bool CacheAllEnglishTextInForm(Control control, bool cacheControlAgain)
         {
             if (!CanControlTranslate(control)) { return false; }
 
             string controlKey = GetControlKey(control);
 
-            if (englishCache.ContainsKey(controlKey))
+            if (englishCache.ContainsKey(controlKey) && !cacheControlAgain)
             {
                 return false;  // This control has already been cached
             }
@@ -472,7 +472,7 @@ namespace Sales_Tracker.UI
             // Recursively update child controls
             foreach (Control childControl in control.Controls)
             {
-                CacheAllEnglishTextInForm(childControl);
+                CacheAllEnglishTextInForm(childControl, cacheControlAgain);
             }
 
             return true;

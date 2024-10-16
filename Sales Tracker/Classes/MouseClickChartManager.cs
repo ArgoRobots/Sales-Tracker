@@ -1,4 +1,5 @@
 ﻿using Guna.Charts.WinForms;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
@@ -43,6 +44,13 @@ namespace Sales_Tracker.Classes
                 {
                     bool isRightClick = (m.Msg == 0x0204);
                     Point mousePosition = Control.MousePosition;
+
+                    // Check if the click happened within the FileMenu or HelpMenu panel (ignore the click if true)
+                    if (CustomControls.FileMenu.Bounds.Contains(CustomControls.FileMenu.PointToClient(mousePosition)) ||
+                       CustomControls.HelpMenu.Bounds.Contains(CustomControls.HelpMenu.PointToClient(mousePosition)))
+                    {
+                        return false;
+                    }
 
                     // Check if the click happened on any of the charts
                     foreach (GunaChart chart in _charts)
