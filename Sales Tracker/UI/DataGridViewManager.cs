@@ -380,27 +380,29 @@ namespace Sales_Tracker.UI
                 flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
                 flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
 
+                if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
+                {
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn, 1);
+                }
+
                 if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
                 {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn, 1);
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn, 2);
 
                     if (IsLastItemAReceipt(tagList[^1]))
                     {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 2);
+                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 3);
                     }
                 }
                 else if (grid.SelectedRows[0].Tag is (string item, TagData))
                 {
                     if (IsLastItemAReceipt(item))
                     {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 1);
+                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 2);
                     }
                 }
 
-                if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn, 1);
-                }
+                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_DeleteBtn, 4);
 
                 // Adjust the panel height based on the number of controls
                 int controlCount = flowPanel.Controls.Count;
@@ -583,7 +585,7 @@ namespace Sales_Tracker.UI
         private static bool IsLastItemAReceipt(string lastItem)
         {
             // Check if the last item starts with "receipt:"
-            if (lastItem.StartsWith(ReadOnlyVariables.CompanyName_text))
+            if (lastItem.StartsWith(ReadOnlyVariables.Receipt_text))
             {
                 lastItem = lastItem.Substring(8).Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName);
 
@@ -998,7 +1000,7 @@ namespace Sales_Tracker.UI
             }
             string newPath = string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
 
-            newPath = newPath.Replace(ReadOnlyVariables.CompanyName_text, "");
+            newPath = newPath.Replace(ReadOnlyVariables.Receipt_text, "");
 
             return File.Exists(newPath) ? newPath : "";
         }
@@ -1007,6 +1009,5 @@ namespace Sales_Tracker.UI
             flowPanel.Controls.Add(button);
             flowPanel.Controls.SetChildIndex(button, index);
         }
-
     }
 }

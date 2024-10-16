@@ -1049,6 +1049,7 @@ namespace Sales_Tracker
                 Cursor = Cursors.Arrow,
                 Location = new Point(left, 20),
                 Text = text,
+                Name = text + "_Label",  // This is needed for the language translation
                 Font = new Font("Segoe UI", 11),
                 AutoSize = true
             };
@@ -1073,7 +1074,8 @@ namespace Sales_Tracker
                 BorderColor = CustomColors.controlBorder,
                 BorderRadius = 3,
                 Cursor = Cursors.Hand,
-                ShortcutsEnabled = false
+                ShortcutsEnabled = false,
+                AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
             };
             textBox.FocusedState.FillColor = CustomColors.controlBack;
             textBox.HoverState.BorderColor = CustomColors.accent_blue;

@@ -44,9 +44,7 @@ namespace Sales_Tracker
             }
 
             Directory_TextBox.Text = Properties.Settings.Default.ExportDirectory;
-
-            FileType_ComboBox.SelectedIndex = 0; ;
-
+            FileType_ComboBox.SelectedIndex = 0;
             Name_TextBox.Text = Directories.CompanyName + " " + Tools.FormatDate(DateTime.Today);
         }
         private void Export_Form_Shown(object sender, EventArgs e)
@@ -108,8 +106,8 @@ namespace Sales_Tracker
             LoadingPanel.ShowLoadingScreen(this);
 
             string fileType = FileType_ComboBox.Text;
-
             await Task.Run(() => { Export(fileType); });
+            Close();
         }
 
         // Methods

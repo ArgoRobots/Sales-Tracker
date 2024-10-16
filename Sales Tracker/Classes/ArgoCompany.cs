@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Passwords;
+﻿using Sales_Tracker.DataClasses;
+using Sales_Tracker.Passwords;
 using Sales_Tracker.Startup.Menus;
 using System.Text;
 
@@ -216,9 +217,24 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.UpdateTotals();
                 MainMenu_Form.Instance.LoadCharts();
                 MainMenu_Form.Instance.HideShowingResultsForLabel();
+
+                bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchases_DataGridView) &&
+                    AreRowsVisible(MainMenu_Form.Instance.Sales_DataGridView);
+
+                MainMenu_Form.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView, ReadOnlyVariables.NoResults_text);
             }
         }
-
+        private static bool AreRowsVisible(DataGridView dataGridView)
+        {
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                if (row.Visible)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static Mutex? applicationMutex = null;
         public static bool OnlyAllowOneInstanceOfAProject(string projectFilePath)
         {

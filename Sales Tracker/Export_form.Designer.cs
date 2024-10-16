@@ -220,7 +220,7 @@
             Export_Button.Location = new Point(937, 600);
             Export_Button.Name = "Export_Button";
             Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Export_Button.Size = new Size(200, 50);
+            Export_Button.Size = new Size(200, 45);
             Export_Button.TabIndex = 5;
             Export_Button.Text = "Export";
             Export_Button.Click += Export_Button_Click;
