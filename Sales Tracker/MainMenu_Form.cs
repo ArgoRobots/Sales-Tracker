@@ -345,23 +345,10 @@ namespace Sales_Tracker
 
             void leftClickAction(GunaChart chart)
             {
-                Point mousePosition = MousePosition;
-                Point localMousePosition = rightClickGunaChart_Panel.PointToClient(mousePosition);
+                Point localMousePosition = rightClickGunaChart_Panel.PointToClient(MousePosition);
 
-                // Check if the mouse click occurred within any of the panel's buttons
-                bool clickedOnControl = false;
-
-                foreach (Control control in rightClickGunaChart_Panel.Controls)
-                {
-                    if (control.Bounds.Contains(localMousePosition))
-                    {
-                        clickedOnControl = true;
-                        break;
-                    }
-                }
-
-                // Only close the panel if the click wasn't on any button or interactive control
-                if (!clickedOnControl)
+                // Check if the mouse click occurred inside the panel or any of its controls
+                if (!rightClickGunaChart_Panel.DisplayRectangle.Contains(localMousePosition))
                 {
                     CloseAllPanels(null, null);
                 }

@@ -24,8 +24,8 @@ namespace Sales_Tracker.ImportSpreadsheet
             InitLoadingComponents();
             InitContainerPanel();
             Theme.SetThemeForForm(this);
-            LanguageManager.UpdateLanguageForControl(this);
             SetAccessibleDescriptions();
+            LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
             AlignControls();
         }

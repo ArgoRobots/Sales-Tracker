@@ -9,9 +9,9 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class MouseClickChartManager
     {
-        private static GunaChart[] _charts;
-        private static Action<GunaChart> _onLeftClick;
-        private static Action<GunaChart, Point> _onRightClick;
+        private static GunaChart[] charts;
+        private static Action<GunaChart> onLeftClick;
+        private static Action<GunaChart, Point> onRightClick;
 
         /// <summary>
         /// Initializes the click manager for specified GunaChart controls and assigns
@@ -19,9 +19,9 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void Initialize(GunaChart[] charts, Action<GunaChart> onLeftClick, Action<GunaChart, Point> onRightClick)
         {
-            _charts = charts;
-            _onLeftClick = onLeftClick;
-            _onRightClick = onRightClick;
+            MouseClickChartManager.charts = charts;
+            MouseClickChartManager.onLeftClick = onLeftClick;
+            MouseClickChartManager.onRightClick = onRightClick;
 
             Application.AddMessageFilter(new CustomMessageFilter());
         }
@@ -36,7 +36,6 @@ namespace Sales_Tracker.Classes
             /// Filters Windows messages before they are dispatched to controls.
             /// Detects left and right mouse button down events and invokes the appropriate action.
             /// </summary>
-            /// <returns>True if the message was handled and should not be passed to other controls; otherwise, false.</returns>
             public bool PreFilterMessage(ref Message m)
             {
                 // Detect left or right mouse button down events
@@ -53,25 +52,28 @@ namespace Sales_Tracker.Classes
                     }
 
                     // Check if the click happened on any of the charts
-                    foreach (GunaChart chart in _charts)
+                    foreach (GunaChart chart in charts)
                     {
-                        // Convert mouse position to the chart's parent coordinates
+                        if (chart.Parent == null)
+                        {
+                            // Skip this chart if it has no parent (if the statistics charts are not shown)
+                            continue;
+                        }
+
                         Point localMousePosition = chart.Parent.PointToClient(mousePosition);
 
                         // Check if the click is within the bounds of the chart
                         if (chart.Bounds.Contains(localMousePosition))
                         {
+                            // Trigger the left click action with chart
+                            onLeftClick?.Invoke(chart);
+
                             if (isRightClick)
                             {
                                 // Trigger the right click action with chart and mouse position
-                                _onRightClick?.Invoke(chart, mousePosition);
-                                return true;
+                                onRightClick?.Invoke(chart, mousePosition);
                             }
-                            else
-                            {
-                                // Trigger the left click action with chart
-                                _onLeftClick?.Invoke(chart);
-                            }
+                            break;
                         }
                     }
                 }

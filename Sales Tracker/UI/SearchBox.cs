@@ -91,10 +91,9 @@ namespace Sales_Tracker.UI
             SearchBox.maxHeight = maxHeight;
             allowEmpty = allowTextBoxEmpty;
 
-            // Start timing
+            // Start timer
             long startTime = DateTime.Now.Ticks;
 
-            _searchBoxParent = searchBoxParent;
             CustomControls.CloseAllPanels(null, null);
 
             if (results.Count == 0)
@@ -173,6 +172,8 @@ namespace Sales_Tracker.UI
                             Font = new Font("Segoe UI", 10),
                             FillColor = CustomColors.controlBack,
                             ForeColor = CustomColors.text,
+                            Height = buttonHeight,
+                            Left = 1,
                             BorderColor = CustomColors.accent_blue,
                             ImageAlign = HorizontalAlignment.Left,
                             ImageSize = new Size(25, 13),  // Country flags have different ratios. This is just a good size
@@ -182,15 +183,15 @@ namespace Sales_Tracker.UI
                         {
                             Guna2Button button = (Guna2Button)sender;
                             searchTextBox.Text = button.Text;
-                            CloseSearchBox();
                             debounceTimer.Stop();
+                            CloseSearchBox();
                         };
                         _searchResultBox.Controls.Add(btn);
                         searchResultControls.Add(btn);
                     }
-                    btn.Size = new Size(CalculateControlWidth(metaList.Count, textBox), buttonHeight);
                     btn.Text = meta.Name;
-                    btn.Location = new Point(1, yOffset);
+                    btn.Width = CalculateControlWidth(metaList.Count, textBox);
+                    btn.Top = yOffset;
                     btn.Image = meta.Flag;
                     btn.Visible = true;
                     btn.BorderThickness = 0;
@@ -239,7 +240,7 @@ namespace Sales_Tracker.UI
             _searchResultBox.ResumeLayout();
             _searchResultBoxContainer.BringToFront();
 
-            // End timing
+            // End timer
             long endTime = DateTime.Now.Ticks;
 
             // Calculate elapsed time in milliseconds
@@ -338,9 +339,9 @@ namespace Sales_Tracker.UI
                     if (btn.BorderThickness == 1)
                     {
                         searchTextBox.Text = btn.Text;
-                        CloseSearchBox();
                         debounceTimer.Stop();
                         isResultSelected = true;
+                        CloseSearchBox();
                         break;
                     }
                 }

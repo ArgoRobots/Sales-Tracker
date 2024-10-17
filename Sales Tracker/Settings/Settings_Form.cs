@@ -79,7 +79,6 @@ namespace Sales_Tracker.Settings
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
             Close();
         }
         private void Apply_Button_Click(object sender, EventArgs e)
