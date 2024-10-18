@@ -12,9 +12,15 @@ namespace Sales_Tracker.Settings
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
+        private bool _isFormClosing = false;
 
-        // Getters
+        // Getters and setters
         public static Settings_Form Instance => _instance;
+        public bool IsFormClosing
+        {
+            get => _isFormClosing;
+            set => _isFormClosing = value;
+        }
 
         // Init.
         public Settings_Form()
@@ -41,6 +47,7 @@ namespace Sales_Tracker.Settings
         private void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
             SearchBox.CloseSearchBox();
+            _isFormClosing = true;
         }
 
         // Left menu buttons

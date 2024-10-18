@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Settings;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -23,7 +24,14 @@ namespace Sales_Tracker.UI
         public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results, int maxHeight, bool allowTextBoxEmpty = true)
         {
             textBox.Click += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
-            textBox.GotFocus += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
+            textBox.GotFocus += (sender, e) =>
+            {
+                if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
+                {
+                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty);
+                    Settings_Form.Instance.IsFormClosing = false;
+                }
+            };
             textBox.TextChanged += SearchTextBoxChanged;
             textBox.PreviewKeyDown += AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             textBox.KeyDown += (sender, e) => { SearchBoxTextBox_KeyDown(e); };
@@ -78,7 +86,7 @@ namespace Sales_Tracker.UI
         private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight, bool allowTextBoxEmpty, bool alwaysShow = false)
         {
             // Check if the search box is already shown for the same text box
-            if (searchTextBox == textBox & !alwaysShow)
+            if (searchTextBox == textBox && !alwaysShow)
             {
                 return;
             }
@@ -414,6 +422,7 @@ namespace Sales_Tracker.UI
             }
 
             // Reset
+            _searchBoxParent = null;
             searchTextBox = null;
         }
     }
