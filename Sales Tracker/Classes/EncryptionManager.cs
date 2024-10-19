@@ -6,16 +6,22 @@ namespace Sales_Tracker.Classes
 {
     public static class EncryptionManager
     {
-        private static byte[] aesKey;
-        private static byte[] aesIV;
+        // Properties
+        private static byte[] _aesKey;
+        private static byte[] _aesIV;
         public const string encryptedTag = "encrypted:", encryptedValue = "true", passwordTag = "key:";
-        private static readonly string ConfigPath = "config.json";
+        private static readonly string configPath = "config" + ArgoFiles.JsonFileExtension;
 
+        // Getters and setters
+        public static byte[] AesKey => _aesKey;
+        public static byte[] AesIV => _aesIV;
+
+        // Init.
         public static void Initialize()
         {
             try
             {
-                (aesKey, aesIV) = EnsureConfigurationExists();
+                (_aesKey, _aesIV) = EnsureConfigurationExists();
             }
             catch (Exception ex)
             {
@@ -23,9 +29,6 @@ namespace Sales_Tracker.Classes
                 throw;
             }
         }
-
-        public static byte[] AesKey => aesKey;
-        public static byte[] AesIV => aesIV;
 
         // Streams
         public static MemoryStream EncryptStream(Stream inputStream, byte[] key, byte[] iv)
@@ -244,7 +247,7 @@ namespace Sales_Tracker.Classes
         }
         private static (byte[] Key, byte[] IV) EnsureConfigurationExists()
         {
-            if (!File.Exists(ConfigPath))
+            if (!File.Exists(configPath))
             {
                 byte[] key = GenerateRandomKey(32);
                 byte[] iv = GenerateRandomIV(16);
@@ -265,11 +268,11 @@ namespace Sales_Tracker.Classes
             };
 
             string configText = JsonSerializer.Serialize(config);
-            File.WriteAllText(ConfigPath, configText);
+            File.WriteAllText(configPath, configText);
         }
         private static (byte[] Key, byte[] IV) RetrieveKeys()
         {
-            string configText = File.ReadAllText(ConfigPath);
+            string configText = File.ReadAllText(configPath);
             Config config = JsonSerializer.Deserialize<Config>(configText);
 
             return (UnprotectData(config.EncryptedKey), UnprotectData(config.EncryptedIV));
@@ -285,8 +288,21 @@ namespace Sales_Tracker.Classes
 
         private class Config
         {
-            public byte[] EncryptedKey { get; set; }
-            public byte[] EncryptedIV { get; set; }
+            // Properties
+            private byte[] _encryptedKey;
+            private byte[] _encryptedIV;
+
+            // Getters and setters
+            public byte[] EncryptedKey
+            {
+                get => _encryptedKey;
+                set => _encryptedKey = value;
+            }
+            public byte[] EncryptedIV
+            {
+                get => _encryptedIV;
+                set => _encryptedIV = value;
+            }
         }
     }
 }

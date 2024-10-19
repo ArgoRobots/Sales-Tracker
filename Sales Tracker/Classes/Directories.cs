@@ -7,25 +7,10 @@ namespace Sales_Tracker.Classes
     public static class Directories
     {
         // Directories
-        private static string _companyName;
-        private static string _tempCompany_dir;
-        private static string _argoCompany_dir;
-        private static string _argoCompany_file;
-        private static string _appData_dir;
-        private static string _globalAppDataSettings_file;
-        private static string _appDataSettings_file;
-        private static string _purchases_file;
-        private static string _sales_file;
-        private static string _categoryPurchases_file;
-        private static string _categorySales_file;
-        private static string _accountants_file;
-        private static string _companies_file;
-        private static string _receipts_dir;
-        private static string _logs_dir;
-        private static string _desktop_dir;
-        private static string _cache_dir;
-        private static string _translations_file;
-        private static string _englishTexts_file;
+        private static string _companyName, _tempCompany_dir, _argoCompany_dir, _argoCompany_file, _appData_dir,
+            _globalAppDataSettings_file, _appDataSettings_file, _purchases_file, _sales_file, _categoryPurchases_file,
+            _categorySales_file, _accountants_file, _companies_file, _receipts_dir, _logs_dir, _desktop_dir, _cache_dir,
+            _translations_file, _englishTexts_file;
 
         // Getters and setters
         public static string CompanyName
@@ -475,7 +460,7 @@ namespace Sales_Tracker.Classes
                     string footer = Environment.NewLine + EncryptionManager.encryptedTag + EncryptionManager.encryptedValue + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
 
-                    Log.Write(2, $"File successfully created and encrypted: {destinationFile}");
+                    Log.Write(2, $"File created and encrypted successfully: {destinationFile}");
                 }
                 else
                 {
@@ -492,7 +477,7 @@ namespace Sales_Tracker.Classes
                     string footer = Environment.NewLine + EncryptionManager.encryptedTag + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
 
-                    Log.Write(2, $"File successfully created: {destinationFile}");
+                    Log.Write(2, $"File created successfully: {destinationFile}");
                 }
             }
             catch (Exception ex)
