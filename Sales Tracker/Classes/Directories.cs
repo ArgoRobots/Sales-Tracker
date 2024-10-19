@@ -522,7 +522,7 @@ namespace Sales_Tracker.Classes
                 using (FileStream fs = new(sourceFile, FileMode.Open, FileAccess.Read))
                 using (StreamReader reader = new(fs))
                 {
-                    List<string> lines = new();
+                    List<string> lines = [];
                     while (!reader.EndOfStream)
                     {
                         lines.Add(reader.ReadLine());

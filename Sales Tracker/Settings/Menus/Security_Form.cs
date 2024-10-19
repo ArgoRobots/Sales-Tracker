@@ -9,6 +9,7 @@ namespace Sales_Tracker.Settings.Menus
     {
         // Properties
         private static Security_Form _instance;
+        private readonly bool isFormLoading;
 
         // Getters
         public static Security_Form Instance => _instance;
@@ -21,7 +22,10 @@ namespace Sales_Tracker.Settings.Menus
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
+            isFormLoading = true;
             UpdateControls();
+            isFormLoading = false;
+
             SetPasswordButton();
             UpdateTheme();
             SetAccessibleDescriptions();
@@ -56,17 +60,18 @@ namespace Sales_Tracker.Settings.Menus
         // Event handlers
         private void EncryptFiles_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!EncryptFiles_CheckBox.Checked)
-            {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    "Argo Sales Tracker",
-                    "Disabling this feature will make your data vulnerable to unauthorized access. Are you sure you want to disable this feature?",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+            if (isFormLoading) { return; }
 
-                if (result != CustomMessageBoxResult.Yes)
-                {
-                    EncryptFiles_CheckBox.Checked = true;
-                }
+            if (EncryptFiles_CheckBox.Checked) { return; }
+
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Argo Sales Tracker",
+                "Disabling this feature will make your data vulnerable to unauthorized access. Are you sure you want to disable this feature?",
+                CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+
+            if (result != CustomMessageBoxResult.Yes)
+            {
+                EncryptFiles_CheckBox.Checked = true;
             }
         }
         private void EncryptFiles_Label_Click(object sender, EventArgs e)

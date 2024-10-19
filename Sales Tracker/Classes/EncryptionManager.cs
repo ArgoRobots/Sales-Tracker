@@ -176,43 +176,35 @@ namespace Sales_Tracker.Classes
                 return null;
             }
 
-            // Check if the file is encrypted and decrypt if necessary
-            using FileStream fs = new(inputFile, FileMode.Open, FileAccess.Read);
-            using StreamReader reader = new(fs);
-
-            // Read all lines to determine the encryption status from the second-to-last line
-            List<string> lines = [];
-            while (!reader.EndOfStream)
-            {
-                lines.Add(reader.ReadLine());
-            }
-
-            if (lines.Count < 2)
+            // Read all lines from the file
+            string[] lines = File.ReadAllLines(inputFile);
+            if (lines.Length < 2)
             {
                 return null;
             }
 
             string secondLastLine = lines[^2];
+            string lastLine = lines[^1];
+            string password;
 
-            // Check if the file is encrypted by examining the second-to-last line
+            // Check if the file is encrypted
             if (secondLastLine.Split(':')[1] == encryptedValue)
             {
+                // Decrypt footer
                 (MemoryStream decryptedStream, string[] footerLines) = DecryptFileToMemoryStream(inputFile, key, iv);
                 if (decryptedStream == null)
                 {
                     return null;
                 }
-
-                // Get the second last line from the footer
-                string password = DecryptString(footerLines[^1], key, iv);
-                password = password.Split(':')[1];
-                return string.IsNullOrEmpty(password) ? null : password;
+                password = footerLines[^1];
             }
             else
             {
-                string password = DecryptString(lines[^1], key, iv);
-                return password.Split(":")[1];
+                password = lastLine;
             }
+
+            string decryptedPassword = DecryptString(password, key, iv).Split(':')[1];
+            return string.IsNullOrEmpty(decryptedPassword) ? null : decryptedPassword;
         }
         public static void DecryptAndWriteToFile(string inputFile, string outputFile, byte[] key, byte[] iv)
         {
@@ -225,7 +217,7 @@ namespace Sales_Tracker.Classes
             using FileStream outputFileStream = new(outputFile, FileMode.Create, FileAccess.Write);
             decryptedStream.CopyTo(outputFileStream);
 
-            // Optionally, write the footer lines to the output file if needed
+            // Write the footer lines to the output file
             using StreamWriter writer = new(outputFileStream, Encoding.UTF8, leaveOpen: true);
             foreach (string line in footerLines)
             {
