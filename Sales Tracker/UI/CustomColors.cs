@@ -5,22 +5,9 @@ namespace Sales_Tracker.UI
     internal static class CustomColors
     {
         // Control colors
-        public static Color
-            controlBack,
-            controlDisabledBack,
-            controlBorder,
-            controlUncheckedBorder,
-            controlPanelBorder,
-            text,
-            fileHover,
-            fileSelected,
-            controlSelectedBorder,
-            commandMouseDown,
-            commandHidden,
-            panelBtn,
-            panelBtnHover,
-            grayText,
-            linkColor;
+        public static Color controlBack, controlDisabledBack, controlBorder, controlUncheckedBorder, controlPanelBorder,
+            text, fileHover, fileSelected, controlSelectedBorder, commandMouseDown, commandHidden, panelBtn,
+            panelBtnHover, grayText, linkColor;
 
         // Background colors
         public static Color mainBackground, background2, background3, background4;

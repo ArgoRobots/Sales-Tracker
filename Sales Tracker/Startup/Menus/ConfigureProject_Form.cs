@@ -24,6 +24,7 @@ namespace Sales_Tracker.Startup.Menus
             SearchBox.ConstructSearchBox();
 
             UpdateTheme();
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
 
             SetDefaultTextInTextBoxes();
@@ -40,6 +41,12 @@ namespace Sales_Tracker.Startup.Menus
             {
                 ThreeDots_Button.Image = Resources.ThreeDotsBlack;
             }
+        }
+        private void SetAccessibleDescriptions()
+        {
+            ProjectName_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Directory_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Currency_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
         private void AddEventHandlersToTextBoxes()
         {
