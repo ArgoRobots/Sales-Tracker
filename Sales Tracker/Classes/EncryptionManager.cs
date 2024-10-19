@@ -10,7 +10,6 @@ namespace Sales_Tracker.Classes
         private static byte[] _aesKey;
         private static byte[] _aesIV;
         public const string encryptedTag = "encrypted:", encryptedValue = "true", passwordTag = "key:";
-        private static readonly string configPath = "config" + ArgoFiles.JsonFileExtension;
 
         // Getters and setters
         public static byte[] AesKey => _aesKey;
@@ -247,7 +246,7 @@ namespace Sales_Tracker.Classes
         }
         private static (byte[] Key, byte[] IV) EnsureConfigurationExists()
         {
-            if (!File.Exists(configPath))
+            if (!File.Exists(Directories.Config_file))
             {
                 byte[] key = GenerateRandomKey(32);
                 byte[] iv = GenerateRandomIV(16);
@@ -268,11 +267,11 @@ namespace Sales_Tracker.Classes
             };
 
             string configText = JsonSerializer.Serialize(config);
-            File.WriteAllText(configPath, configText);
+            File.WriteAllText(Directories.Config_file, configText);
         }
         private static (byte[] Key, byte[] IV) RetrieveKeys()
         {
-            string configText = File.ReadAllText(configPath);
+            string configText = File.ReadAllText(Directories.Config_file);
             Config config = JsonSerializer.Deserialize<Config>(configText);
 
             return (UnprotectData(config.EncryptedKey), UnprotectData(config.EncryptedIV));

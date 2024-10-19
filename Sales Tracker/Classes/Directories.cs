@@ -10,7 +10,7 @@ namespace Sales_Tracker.Classes
         private static string _companyName, _tempCompany_dir, _argoCompany_dir, _argoCompany_file, _appData_dir,
             _globalAppDataSettings_file, _appDataSettings_file, _purchases_file, _sales_file, _categoryPurchases_file,
             _categorySales_file, _accountants_file, _companies_file, _receipts_dir, _logs_dir, _desktop_dir, _cache_dir,
-            _translations_file, _englishTexts_file;
+            _translations_file, _englishTexts_file, _config_file;
 
         // Getters and setters
         public static string CompanyName
@@ -108,6 +108,11 @@ namespace Sales_Tracker.Classes
             get => _englishTexts_file;
             set => _englishTexts_file = value;
         }
+        public static string Config_file
+        {
+            get => _config_file;
+            set => _config_file = value;
+        }
 
         // Methods
         public static void SetDirectories(string projectDir, string project_name)
@@ -145,6 +150,9 @@ namespace Sales_Tracker.Classes
         {
             // App data
             _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+
+            // AES encryption
+            _config_file = _appData_dir + "config" + ArgoFiles.JsonFileExtension;
 
             // Cache
             _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueProjectIdentifier("Argo Sales Tracker") + @"\";
