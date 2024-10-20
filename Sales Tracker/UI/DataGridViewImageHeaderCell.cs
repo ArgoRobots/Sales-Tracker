@@ -1,4 +1,4 @@
-﻿namespace Sales_Tracker.Classes
+﻿namespace Sales_Tracker.UI
 {
     internal class DataGridViewImageHeaderCell(Image image, string headerText, string messageBoxText) : DataGridViewColumnHeaderCell
     {

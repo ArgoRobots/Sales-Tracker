@@ -1,7 +1,8 @@
 ﻿using Guna.Charts.WinForms;
-using Sales_Tracker.UI;
+using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.UI
 {
     /// <summary>
     /// Manages mouse click detection for GunaChart controls and invokes specific actions
@@ -41,14 +42,36 @@ namespace Sales_Tracker.Classes
                 // Detect left or right mouse button down events
                 if (m.Msg == 0x0201 || m.Msg == 0x0204)  // 0x0201 is WM_LBUTTONDOWN, 0x0204 is WM_RBUTTONDOWN
                 {
-                    bool isRightClick = (m.Msg == 0x0204);
+                    bool isRightClick = m.Msg == 0x0204;
                     Point mousePosition = Control.MousePosition;
 
-                    // Check if the click happened within the FileMenu or HelpMenu panel (ignore the click if true)
-                    if (CustomControls.FileMenu.Bounds.Contains(CustomControls.FileMenu.PointToClient(mousePosition)) ||
-                       CustomControls.HelpMenu.Bounds.Contains(CustomControls.HelpMenu.PointToClient(mousePosition)))
+                    // Create a list of controls
+                    List<Control> controlsList =
+                    [
+                        CustomControls.FileMenu,
+                        CustomControls.HelpMenu
+                    ];
+                    Control mainPanel = DateRange_Form.Instance?.Main_Panel;
+                    if (mainPanel != null && MainMenu_Form.Instance.Controls.Contains(mainPanel))
                     {
-                        return false;
+                        controlsList.Add(mainPanel);
+                    }
+
+                    // Ignore the click if it happened within a control
+                    foreach (Control control in controlsList)
+                    {
+                        if (control == null || control.IsDisposed)
+                        {
+                            continue;
+                        }
+
+                        Point localMousePosition = control.PointToClient(mousePosition);
+
+                        // Check if the mouse click was within the bounds of the control
+                        if (control.ClientRectangle.Contains(localMousePosition))
+                        {
+                            return false;
+                        }
                     }
 
                     // Check if the click happened on any of the charts

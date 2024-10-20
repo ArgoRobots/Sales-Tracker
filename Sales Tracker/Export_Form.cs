@@ -19,6 +19,8 @@ namespace Sales_Tracker
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
+            CustomControls.MakeGButtonBluePrimary(Export_Button);
+
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
                 ThreeDots_Button.Image = Resources.ThreeDotsWhite;

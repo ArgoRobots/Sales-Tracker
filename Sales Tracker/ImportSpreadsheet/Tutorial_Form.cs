@@ -11,8 +11,13 @@ namespace Sales_Tracker.ImportSpreadsheet
             InitializeComponent();
 
             LoadingPanel.ShowBlankLoadingPanel(this);
-            Theme.SetThemeForForm(this);
+            UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
+        }
+        private void UpdateTheme()
+        {
+            Theme.SetThemeForForm(this);
+            CustomControls.MakeGButtonBluePrimary(Next_Button);
         }
 
         // Form event handlers

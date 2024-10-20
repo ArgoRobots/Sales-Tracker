@@ -453,7 +453,7 @@ namespace Sales_Tracker.UI
         {
             if (e.KeyCode == Keys.Delete)
             {
-                MainMenu_Form.Instance.CloseRightClickPanels();
+                MainMenu_Form.Instance.ClosePanels();
 
                 string message;
                 if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
@@ -860,7 +860,7 @@ namespace Sales_Tracker.UI
         }
         private static void ModifyRow(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.CloseRightClickPanels();
+            MainMenu_Form.Instance.ClosePanels();
             if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count > 1)
             {
                 CustomMessageBox.Show("Argo Sales Tracker", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
@@ -947,7 +947,7 @@ namespace Sales_Tracker.UI
         }
         private static void DeleteRow(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.CloseRightClickPanels();
+            MainMenu_Form.Instance.ClosePanels();
 
             int index = MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[^1].Index;
 

@@ -30,8 +30,14 @@ namespace Sales_Tracker
             }
 
             ConstructControls();
-            Theme.SetThemeForForm(this);
+            UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this, true);
+        }
+        public void UpdateTheme()
+        {
+            Theme.SetThemeForForm(this);
+            CustomControls.MakeGButtonBluePrimary(Save_Button);
+            CustomControls.MakeGButtonBlueSecondary(Cancel_Button);
         }
 
         // Form event handlers

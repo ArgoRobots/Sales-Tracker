@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
 
@@ -6,21 +7,78 @@ namespace Sales_Tracker
 {
     public partial class DateRange_Form : Form
     {
+        // Properties
+        private static DateRange_Form _instance;
+        private Dictionary<TimeSpan, Guna2CustomRadioButton> timeSpanOptions;
+
+        // Getters and setters
+        public static DateRange_Form Instance => _instance;
+
         // Init.
         public DateRange_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
-            InitializeDatePickers();
-            Theme.SetThemeForForm(this);
+
+            UpdateTheme();
             SetAccessibleDescriptions();
+            InitializeTimeSpanOptions();
             LanguageManager.UpdateLanguageForControl(this);
+
+            InitializeDatePickers();
+            InitializeControlsFromMainMenu();
+            SetCustomControls();
+        }
+        public void UpdateTheme()
+        {
+            Theme.SetThemeForForm(this);
+            Bottom_Separator.FillColor = CustomColors.controlBorder;
+            CustomControls.MakeGButtonBluePrimary(Apply_Button);
+            CustomControls.MakeGButtonBlueSecondary(Cancel_Button);
         }
         private void SetAccessibleDescriptions()
         {
             From_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+        }
+        private void InitializeTimeSpanOptions()
+        {
+            timeSpanOptions = new Dictionary<TimeSpan, Guna2CustomRadioButton>
+            {
+                { TimeSpan.MaxValue, AllTime_RadioButton },
+                { TimeSpan.FromDays(1), Last24Hours_RadioButton },
+                { TimeSpan.FromDays(2), Last48Hours_RadioButton },
+                { TimeSpan.FromDays(3), Last3Days_RadioButton },
+                { TimeSpan.FromDays(5), Last5Days_RadioButton },
+                { TimeSpan.FromDays(10), Last10Days_RadioButton },
+                { TimeSpan.FromDays(30), Last30Days_RadioButton },
+                { TimeSpan.FromDays(100), Last100Days_RadioButton },
+                { TimeSpan.FromDays(365), LastYear_RadioButton },
+                { TimeSpan.FromDays(365 * 2), Last2Years_RadioButton },
+                { TimeSpan.FromDays(365 * 5), Last5Years_RadioButton }
+            };
+        }
+        private void SetRadioButtonForTimeSpan(TimeSpan timeSpan)
+        {
+            if (timeSpanOptions.TryGetValue(timeSpan, out Guna2CustomRadioButton? selectedButton))
+            {
+                selectedButton.Checked = true;
+            }
+        }
+        private void InitializeControlsFromMainMenu()
+        {
+            if (MainMenu_Form.Instance.SortTimeSpan != null)
+            {
+                SetRadioButtonForTimeSpan((TimeSpan)MainMenu_Form.Instance.SortTimeSpan);
+            }
+            else
+            {
+                Custom_RadioButton.Checked = true;
+                From_DateTimePicker.Value = MainMenu_Form.Instance.SortFromDate ?? DateTime.Now;
+                To_DateTimePicker.Value = MainMenu_Form.Instance.SortToDate ?? DateTime.Now;
+            }
         }
 
         // Form event handlers
@@ -30,35 +88,93 @@ namespace Sales_Tracker
         }
 
         // Event handlers
-        private void Reset_Button_Click(object sender, EventArgs e)
+        private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            SetDatePickers();
+            MainMenu_Form.Instance.CloseDateRangePanel();
         }
         private void Apply_Button_Click(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.fromDate = From_DateTimePicker.Value;
-            MainMenu_Form.Instance.toDate = To_DateTimePicker.Value;
-
-            // Check if the current values of the DateTimePickers match the default values
-            bool isDefaultRange = From_DateTimePicker.Value.Date == GetOldestDate().Date &&
-                                  To_DateTimePicker.Value.Date == DateTime.Now.Date;
-
-            MainMenu_Form.Instance.Filter_ComboBox.Enabled = isDefaultRange;
+            if (Custom_RadioButton.Checked)
+            {
+                MainMenu_Form.Instance.SortTimeSpan = null;
+                MainMenu_Form.Instance.SortFromDate = From_DateTimePicker.Value;
+                MainMenu_Form.Instance.SortToDate = To_DateTimePicker.Value;
+            }
+            else
+            {
+                MainMenu_Form.Instance.SortFromDate = null;
+                MainMenu_Form.Instance.SortToDate = null;
+                MainMenu_Form.Instance.SortTimeSpan = GetSelectedTimeSpan();
+            }
             MainMenu_Form.Instance.SortDataGridView();
-            Close();
+            MainMenu_Form.Instance.CloseDateRangePanel();
+        }
+        private void Custom_RadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            SetCustomControls();
         }
 
-        // Methods
+        // Label event handlers
+        private void AllTime_Label_Click(object sender, EventArgs e)
+        {
+            AllTime_RadioButton.Checked = !AllTime_RadioButton.Checked;
+        }
+        private void Last24Hours_Label_Click(object sender, EventArgs e)
+        {
+            Last24Hours_RadioButton.Checked = !Last24Hours_RadioButton.Checked;
+        }
+        private void Last48Hours_Label_Click(object sender, EventArgs e)
+        {
+            Last48Hours_RadioButton.Checked = !Last48Hours_RadioButton.Checked;
+        }
+        private void Last3Days_Label_Click(object sender, EventArgs e)
+        {
+            Last3Days_RadioButton.Checked = !Last3Days_RadioButton.Checked;
+        }
+        private void Last5Days_Label_Click(object sender, EventArgs e)
+        {
+            Last5Days_RadioButton.Checked = !Last5Days_RadioButton.Checked;
+        }
+        private void Last10Days_Label_Click(object sender, EventArgs e)
+        {
+            Last10Days_RadioButton.Checked = !Last10Days_RadioButton.Checked;
+        }
+        private void Last30Days_Label_Click(object sender, EventArgs e)
+        {
+            Last30Days_RadioButton.Checked = !Last30Days_RadioButton.Checked;
+        }
+        private void Last100Days_Label_Click(object sender, EventArgs e)
+        {
+            Last100Days_RadioButton.Checked = !Last100Days_RadioButton.Checked;
+        }
+        private void LastYear_Label_Click(object sender, EventArgs e)
+        {
+            LastYear_RadioButton.Checked = !LastYear_RadioButton.Checked;
+        }
+        private void Last2Years_Label_Click(object sender, EventArgs e)
+        {
+            Last2Years_RadioButton.Checked = !Last2Years_RadioButton.Checked;
+        }
+        private void Last5Years_Label_Click(object sender, EventArgs e)
+        {
+            Last5Years_RadioButton.Checked = !Last5Years_RadioButton.Checked;
+        }
+        private void Custom_Label_Click(object sender, EventArgs e)
+        {
+            Custom_RadioButton.Checked = !Custom_RadioButton.Checked;
+        }
+
+        // DateTimePicker methods
         private void InitializeDatePickers()
         {
-            if (MainMenu_Form.Instance.fromDate == DateTime.MinValue)
+            if (MainMenu_Form.Instance.SortFromDate == null)
             {
                 SetDatePickers();
             }
             else
             {
-                From_DateTimePicker.Value = MainMenu_Form.Instance.fromDate;
-                To_DateTimePicker.Value = MainMenu_Form.Instance.toDate;
+                From_DateTimePicker.Value = (DateTime)MainMenu_Form.Instance.SortFromDate;
+                To_DateTimePicker.Value = (DateTime)MainMenu_Form.Instance.SortToDate;
             }
         }
         private void SetDatePickers()
@@ -97,6 +213,40 @@ namespace Sales_Tracker
                 }
             }
             return oldestDate;
+        }
+
+        // Methods
+        private TimeSpan? GetSelectedTimeSpan()
+        {
+            return timeSpanOptions.FirstOrDefault(kvp => kvp.Value.Checked).Key;
+        }
+        private void SetCustomControls()
+        {
+            if (Custom_RadioButton.Checked)
+            {
+                foreach (Control control in GetCustomRangeControls())
+                {
+                    Main_Panel.Controls.Add(control);
+                }
+                Main_Panel.Height = 620;
+            }
+            else
+            {
+                foreach (Control control in GetCustomRangeControls())
+                {
+                    Main_Panel.Controls.Remove(control);
+                }
+                Main_Panel.Height = 420;
+            }
+        }
+        private List<Control> GetCustomRangeControls()
+        {
+            return [
+                From_Label,
+                From_DateTimePicker,
+                To_Label,
+                To_DateTimePicker
+            ];
         }
     }
 }

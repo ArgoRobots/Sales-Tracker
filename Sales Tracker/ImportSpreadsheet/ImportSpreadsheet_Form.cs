@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -23,11 +24,16 @@ namespace Sales_Tracker.ImportSpreadsheet
             oldOption = MainMenu_Form.Instance.Selected;
             InitLoadingComponents();
             InitContainerPanel();
-            Theme.SetThemeForForm(this);
+            UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
             AlignControls();
+        }
+        public void UpdateTheme()
+        {
+            Theme.SetThemeForForm(this);
+            CustomControls.MakeGButtonBluePrimary(Import_Button);
         }
         private void AlignControls()
         {

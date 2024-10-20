@@ -298,9 +298,9 @@ namespace Sales_Tracker
                 AddCategory_Button.Enabled = !string.IsNullOrWhiteSpace(Category_TextBox.Text);
             }
         }
-        public void CloseAllPanels(object sender, EventArgs? e)
+        private void CloseAllPanels(object sender, EventArgs? e)
         {
-            MainMenu_Form.Instance.CloseRightClickPanels();
+            SearchBox.CloseSearchBox();
         }
     }
 }

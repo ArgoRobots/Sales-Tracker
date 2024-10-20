@@ -112,8 +112,6 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             ManageCompanies_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -144,13 +142,12 @@
             Totals_Chart = new Guna.Charts.WinForms.GunaChart();
             Distribution_Chart = new Guna.Charts.WinForms.GunaChart();
             Profits_Chart = new Guna.Charts.WinForms.GunaChart();
-            Filter_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             LineGraph_Label = new Label();
             LineGraph_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
             Statistics_Button = new Guna.UI2.WinForms.Guna2Button();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
-            DateRange_Button = new Guna.UI2.WinForms.Guna2Button();
+            TimeRange_Button = new Guna.UI2.WinForms.Guna2Button();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
@@ -703,33 +700,13 @@
             tick9.Font = chartFont24;
             Profits_Chart.ZAxes.Ticks = tick9;
             // 
-            // Filter_ComboBox
-            // 
-            Filter_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Filter_ComboBox.BackColor = Color.Transparent;
-            Filter_ComboBox.CustomizableEdges = customizableEdges31;
-            Filter_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            Filter_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            Filter_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
-            Filter_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Filter_ComboBox.Font = new Font("Segoe UI", 10F);
-            Filter_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
-            Filter_ComboBox.ItemHeight = 44;
-            Filter_ComboBox.Location = new Point(2019, 141);
-            Filter_ComboBox.Name = "Filter_ComboBox";
-            Filter_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges32;
-            Filter_ComboBox.Size = new Size(210, 50);
-            Filter_ComboBox.TabIndex = 1;
-            Filter_ComboBox.SelectedIndexChanged += Filter_ComboBox_SelectedIndexChanged;
-            Filter_ComboBox.Click += CloseAllPanels;
-            // 
             // LineGraph_Label
             // 
             LineGraph_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             LineGraph_Label.AutoSize = true;
             LineGraph_Label.BackColor = Color.Transparent;
             LineGraph_Label.Font = new Font("Segoe UI", 11.25F);
-            LineGraph_Label.Location = new Point(1548, 151);
+            LineGraph_Label.Location = new Point(1659, 156);
             LineGraph_Label.Name = "LineGraph_Label";
             LineGraph_Label.Size = new Size(123, 31);
             LineGraph_Label.TabIndex = 16;
@@ -747,10 +724,10 @@
             LineGraph_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
             LineGraph_ToggleSwitch.CheckedState.InnerBorderRadius = 10;
             LineGraph_ToggleSwitch.CheckedState.InnerColor = Color.White;
-            LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges33;
-            LineGraph_ToggleSwitch.Location = new Point(1675, 151);
+            LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges31;
+            LineGraph_ToggleSwitch.Location = new Point(1786, 156);
             LineGraph_ToggleSwitch.Name = "LineGraph_ToggleSwitch";
-            LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges32;
             LineGraph_ToggleSwitch.Size = new Size(60, 30);
             LineGraph_ToggleSwitch.TabIndex = 15;
             LineGraph_ToggleSwitch.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -767,7 +744,7 @@
             Statistics_Button.BorderColor = Color.LightGray;
             Statistics_Button.BorderRadius = 2;
             Statistics_Button.BorderThickness = 1;
-            Statistics_Button.CustomizableEdges = customizableEdges35;
+            Statistics_Button.CustomizableEdges = customizableEdges33;
             Statistics_Button.DisabledState.BorderColor = Color.DarkGray;
             Statistics_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Statistics_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -777,7 +754,7 @@
             Statistics_Button.ForeColor = Color.Black;
             Statistics_Button.Location = new Point(390, 144);
             Statistics_Button.Name = "Statistics_Button";
-            Statistics_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            Statistics_Button.ShadowDecoration.CustomizableEdges = customizableEdges34;
             Statistics_Button.Size = new Size(180, 50);
             Statistics_Button.TabIndex = 18;
             Statistics_Button.Text = "Statistics";
@@ -786,7 +763,7 @@
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Search_TextBox.CustomizableEdges = customizableEdges37;
+            Search_TextBox.CustomizableEdges = customizableEdges35;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -795,16 +772,16 @@
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Search_TextBox.Location = new Point(1742, 141);
+            Search_TextBox.Location = new Point(1853, 146);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for sales";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges36;
             Search_TextBox.ShortcutsEnabled = false;
-            Search_TextBox.Size = new Size(270, 50);
+            Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 55;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
@@ -821,34 +798,34 @@
             ShowingResultsFor_Label.Text = "Showing results for";
             ShowingResultsFor_Label.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // DateRange_Button
+            // TimeRange_Button
             // 
-            DateRange_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            DateRange_Button.BackColor = Color.Transparent;
-            DateRange_Button.BorderColor = Color.LightGray;
-            DateRange_Button.BorderRadius = 2;
-            DateRange_Button.BorderThickness = 1;
-            DateRange_Button.CustomizableEdges = customizableEdges39;
-            DateRange_Button.DisabledState.BorderColor = Color.DarkGray;
-            DateRange_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            DateRange_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            DateRange_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            DateRange_Button.FillColor = Color.White;
-            DateRange_Button.Font = new Font("Segoe UI", 9F);
-            DateRange_Button.ForeColor = Color.Black;
-            DateRange_Button.Location = new Point(2235, 141);
-            DateRange_Button.Name = "DateRange_Button";
-            DateRange_Button.ShadowDecoration.CustomizableEdges = customizableEdges40;
-            DateRange_Button.Size = new Size(150, 50);
-            DateRange_Button.TabIndex = 17;
-            DateRange_Button.Text = "Date range";
-            DateRange_Button.Click += DateRange_Button_Click;
+            TimeRange_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            TimeRange_Button.BackColor = Color.Transparent;
+            TimeRange_Button.BorderColor = Color.LightGray;
+            TimeRange_Button.BorderRadius = 2;
+            TimeRange_Button.BorderThickness = 1;
+            TimeRange_Button.CustomizableEdges = customizableEdges37;
+            TimeRange_Button.DisabledState.BorderColor = Color.DarkGray;
+            TimeRange_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            TimeRange_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            TimeRange_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            TimeRange_Button.FillColor = Color.White;
+            TimeRange_Button.Font = new Font("Segoe UI", 9F);
+            TimeRange_Button.ForeColor = Color.Black;
+            TimeRange_Button.Location = new Point(2160, 146);
+            TimeRange_Button.Name = "TimeRange_Button";
+            TimeRange_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            TimeRange_Button.Size = new Size(225, 50);
+            TimeRange_Button.TabIndex = 17;
+            TimeRange_Button.Text = "Time range";
+            TimeRange_Button.Click += TimeRange_Button_Click;
             // 
             // MainMenu_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(2404, 1562);
-            Controls.Add(DateRange_Button);
+            Controls.Add(TimeRange_Button);
             Controls.Add(ShowingResultsFor_Label);
             Controls.Add(Search_TextBox);
             Controls.Add(Statistics_Button);
@@ -859,7 +836,6 @@
             Controls.Add(MainTop_Panel);
             Controls.Add(Total_Panel);
             Controls.Add(Profits_Chart);
-            Controls.Add(Filter_ComboBox);
             Controls.Add(Totals_Chart);
             Controls.Add(Purchases_Button);
             Controls.Add(Sales_Button);
@@ -916,8 +892,7 @@
         public Label PaymentFee_Label;
         private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
-        public Guna.UI2.WinForms.Guna2Button DateRange_Button;
-        public Guna.UI2.WinForms.Guna2ComboBox Filter_ComboBox;
+        public Guna.UI2.WinForms.Guna2Button TimeRange_Button;
         public Guna.Charts.WinForms.GunaChart Totals_Chart;
         public Guna.Charts.WinForms.GunaChart Distribution_Chart;
         public Guna.Charts.WinForms.GunaChart Profits_Chart;

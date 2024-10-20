@@ -201,9 +201,9 @@ namespace Sales_Tracker
         {
             AddCompany_Button.Enabled = !string.IsNullOrWhiteSpace(Company_TextBox.Text) && Company_TextBox.Tag.ToString() != "0";
         }
-        public void CloseAllPanels(object sender, EventArgs? e)
+        private void CloseAllPanels(object sender, EventArgs? e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            SearchBox.CloseSearchBox();
         }
     }
 }

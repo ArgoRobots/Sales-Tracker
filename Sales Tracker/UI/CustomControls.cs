@@ -543,6 +543,23 @@ namespace Sales_Tracker.UI
             textBox.FocusedState.BorderColor = Color.Red;
         }
 
+        // Make button blue
+        public static void MakeGButtonBluePrimary(Guna2Button button)
+        {
+            button.BorderThickness = 0;
+            button.FillColor = CustomColors.accent_blue;
+            button.ForeColor = Color.White;
+            button.Font = new Font(button.Font, FontStyle.Bold);
+        }
+        public static void MakeGButtonBlueSecondary(Guna2Button button)
+        {
+            button.BorderThickness = 2;
+            button.FillColor = Color.Transparent;
+            button.BorderColor = CustomColors.accent_blue;
+            button.ForeColor = CustomColors.accent_blue;
+            button.Font = new Font(button.Font, FontStyle.Bold);
+        }
+
         // Close all panels
         public static void Rename()
         {
@@ -564,6 +581,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Controls.Remove(_fileMenu);
             MainMenu_Form.Instance.Controls.Remove(_helpMenu);
             MainMenu_Form.Instance.Controls.Remove(AccountMenu);
+            MainMenu_Form.Instance.CloseDateRangePanel();
             DeselectAllMenuButtons(_fileMenu);
             DeselectAllMenuButtons(_helpMenu);
             DeselectAllMenuButtons(AccountMenu);
@@ -572,7 +590,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
             MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
-            MainMenu_Form.Instance.CloseRightClickPanels();
+            MainMenu_Form.Instance.ClosePanels();
         }
         private static void DeselectAllMenuButtons(Guna2Panel panel)
         {

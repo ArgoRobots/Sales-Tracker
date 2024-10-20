@@ -200,7 +200,7 @@ namespace Sales_Tracker
             Purchase_RadioButton.Location = new Point(45, 47);
             Purchase_RadioButton.Name = "Purchase_RadioButton";
             Purchase_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges7;
-            Purchase_RadioButton.Size = new Size(20, 20);
+            Purchase_RadioButton.Size = new Size(25, 25);
             Purchase_RadioButton.TabIndex = 51;
             Purchase_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             Purchase_RadioButton.UncheckedState.BorderThickness = 2;
@@ -213,7 +213,7 @@ namespace Sales_Tracker
             ForPurchase_Label.Anchor = AnchorStyles.Top;
             ForPurchase_Label.AutoSize = true;
             ForPurchase_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForPurchase_Label.Location = new Point(63, 37);
+            ForPurchase_Label.Location = new Point(68, 37);
             ForPurchase_Label.Name = "ForPurchase_Label";
             ForPurchase_Label.Padding = new Padding(5);
             ForPurchase_Label.Size = new Size(155, 41);
@@ -226,7 +226,7 @@ namespace Sales_Tracker
             ForSale_Label.Anchor = AnchorStyles.Top;
             ForSale_Label.AutoSize = true;
             ForSale_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForSale_Label.Location = new Point(255, 37);
+            ForSale_Label.Location = new Point(260, 37);
             ForSale_Label.Name = "ForSale_Label";
             ForSale_Label.Padding = new Padding(5);
             ForSale_Label.Size = new Size(102, 41);
@@ -245,7 +245,7 @@ namespace Sales_Tracker
             Sale_RadioButton.Location = new Point(237, 47);
             Sale_RadioButton.Name = "Sale_RadioButton";
             Sale_RadioButton.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            Sale_RadioButton.Size = new Size(20, 20);
+            Sale_RadioButton.Size = new Size(25, 25);
             Sale_RadioButton.TabIndex = 53;
             Sale_RadioButton.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             Sale_RadioButton.UncheckedState.BorderThickness = 2;

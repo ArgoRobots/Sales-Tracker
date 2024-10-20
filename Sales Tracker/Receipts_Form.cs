@@ -1,4 +1,5 @@
-﻿using Guna.UI2.WinForms;
+﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
@@ -36,12 +37,18 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.isProgramLoading = false;
 
-            Theme.SetThemeForForm(this);
+            UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
 
             CenterCheckBoxes();
+        }
+        public void UpdateTheme()
+        {
+            Theme.SetThemeForForm(this);
+            CustomControls.MakeGButtonBluePrimary(ExportSelected_Button);
+            CustomControls.MakeGButtonBlueSecondary(ClearFilters_Button);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {

@@ -37,6 +37,9 @@ namespace Sales_Tracker.Settings
         private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
+            CustomControls.MakeGButtonBluePrimary(Ok_Button);
+            CustomControls.MakeGButtonBlueSecondary(Cancel_Button);
+            CustomControls.MakeGButtonBlueSecondary(Apply_Button);
         }
 
         // Form event handlers

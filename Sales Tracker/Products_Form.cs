@@ -497,10 +497,9 @@ namespace Sales_Tracker
             }
             AddProduct_Button.Enabled = allFieldsFilled;
         }
-        public void CloseAllPanels(object sender, EventArgs e)
+        private void CloseAllPanels(object sender, EventArgs e)
         {
             SearchBox.CloseSearchBox();
-            MainMenu_Form.Instance.CloseRightClickPanels();
         }
     }
 }
