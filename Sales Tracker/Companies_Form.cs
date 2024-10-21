@@ -110,7 +110,7 @@ namespace Sales_Tracker
         private void Company_TextBox_TextChanged(object sender, EventArgs e)
         {
             ValidateInputs();
-            VaidateCompanyTextBox();
+            ValidateCompanyTextBox();
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
@@ -157,7 +157,7 @@ namespace Sales_Tracker
         }
 
         // Validate company name
-        public void VaidateCompanyTextBox()
+        public void ValidateCompanyTextBox()
         {
             bool exists = MainMenu_Form.Instance.CompanyList.Any(a => string.Equals(a, Company_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
 

@@ -162,7 +162,7 @@ namespace Sales_Tracker.Classes
                 if (purchaseNumber == "") { continue; }
 
                 // Check if this row's purchase number already exists
-                if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+                if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                       $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
@@ -175,30 +175,30 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Create a new row
-                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Purchases_DataGridView.RowTemplate.Clone();
-                newRow.CreateCells(MainMenu_Form.Instance.Purchases_DataGridView);
+                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Purchase_DataGridView.RowTemplate.Clone();
+                newRow.CreateCells(MainMenu_Form.Instance.Purchase_DataGridView);
 
                 if (!ImportTransaction(row, newRow)) { return (false, wasSomethingImported); }
 
                 ImportItemsInTransaction(row, newRow);
 
                 // Add the row to the DataGridView
-                if (MainMenu_Form.Instance.Purchases_DataGridView.InvokeRequired)
+                if (MainMenu_Form.Instance.Purchase_DataGridView.InvokeRequired)
                 {
-                    MainMenu_Form.Instance.Purchases_DataGridView.Invoke(new Action(() =>
+                    MainMenu_Form.Instance.Purchase_DataGridView.Invoke(new Action(() =>
                     {
-                        newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+                        newRowIndex = MainMenu_Form.Instance.Purchase_DataGridView.Rows.Add(newRow);
                     }));
                 }
                 else
                 {
-                    newRowIndex = MainMenu_Form.Instance.Purchases_DataGridView.Rows.Add(newRow);
+                    newRowIndex = MainMenu_Form.Instance.Purchase_DataGridView.Rows.Add(newRow);
                 }
 
                 FormatNoteCell(newRow);
 
                 wasSomethingImported = true;
-                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchases_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchase_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             return (true, wasSomethingImported);
         }
@@ -215,7 +215,7 @@ namespace Sales_Tracker.Classes
                 if (saleNumber == "") { continue; }
 
                 // Check if this row's sales number already exists
-                if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+                if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                       $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
@@ -228,30 +228,30 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Create a new row
-                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Sales_DataGridView.RowTemplate.Clone();
-                newRow.CreateCells(MainMenu_Form.Instance.Sales_DataGridView);
+                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Sale_DataGridView.RowTemplate.Clone();
+                newRow.CreateCells(MainMenu_Form.Instance.Sale_DataGridView);
 
                 if (!ImportTransaction(row, newRow)) { return (false, wasSomethingImported); }
 
                 ImportItemsInTransaction(row, newRow);
 
                 // Add the row to the DataGridView
-                if (MainMenu_Form.Instance.Sales_DataGridView.InvokeRequired)
+                if (MainMenu_Form.Instance.Sale_DataGridView.InvokeRequired)
                 {
-                    MainMenu_Form.Instance.Sales_DataGridView.Invoke(new Action(() =>
+                    MainMenu_Form.Instance.Sale_DataGridView.Invoke(new Action(() =>
                     {
-                        newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
+                        newRowIndex = MainMenu_Form.Instance.Sale_DataGridView.Rows.Add(newRow);
                     }));
                 }
                 else
                 {
-                    newRowIndex = MainMenu_Form.Instance.Sales_DataGridView.Rows.Add(newRow);
+                    newRowIndex = MainMenu_Form.Instance.Sale_DataGridView.Rows.Add(newRow);
                 }
 
                 FormatNoteCell(newRow);
 
                 wasSomethingImported = true;
-                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Sales_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Sale_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
             return (true, wasSomethingImported);
         }
@@ -407,10 +407,10 @@ namespace Sales_Tracker.Classes
             using XLWorkbook workbook = new();
 
             IXLWorksheet purchaseWorksheet = workbook.Worksheets.Add("Purchases");
-            AddTransactionToWorksheet(purchaseWorksheet, MainMenu_Form.Instance.Purchases_DataGridView);
+            AddTransactionToWorksheet(purchaseWorksheet, MainMenu_Form.Instance.Purchase_DataGridView);
 
             IXLWorksheet salesWorksheet = workbook.Worksheets.Add("Sales");
-            AddTransactionToWorksheet(salesWorksheet, MainMenu_Form.Instance.Sales_DataGridView);
+            AddTransactionToWorksheet(salesWorksheet, MainMenu_Form.Instance.Sale_DataGridView);
 
             IXLWorksheet purchaseProductsWorksheet = workbook.Worksheets.Add("Purchase products");
             AddProductsToWorksheet(purchaseProductsWorksheet, MainMenu_Form.Instance.CategoryPurchaseList);

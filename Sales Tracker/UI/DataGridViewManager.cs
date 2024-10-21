@@ -203,8 +203,11 @@ namespace Sales_Tracker.UI
                         return;
                     }
 
-                    // Remove accountant from list
+                    // Remove company from list
                     MainMenu_Form.Instance.CompanyList.Remove(MainMenu_Form.Instance.CompanyList.FirstOrDefault(a => a == valueBeingRemoved));
+
+                    // In case the company name that is being deleted is in the TextBox
+                    Companies_Form.Instance.ValidateCompanyTextBox();
                     break;
 
                 case MainMenu_Form.SelectedOption.ItemsInPurchase:
@@ -564,7 +567,7 @@ namespace Sales_Tracker.UI
         /// <returns>True if it's being used by another row.</returns>
         private static bool IsThisBeingUsed(string type, string columnName, string valueBeingRemoved)
         {
-            foreach (DataGridViewRow row in GetAllRows())
+            foreach (DataGridViewRow row in GetAllRowsInMainMenu())
             {
                 if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
                 {
@@ -602,15 +605,7 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            // Perform sorting based on the current sorted column and direction
-            if (dataGridView.SortedColumn != null)
-            {
-                SortOrder sortOrder = dataGridView.SortOrder;
-                DataGridViewColumn sortedColumn = dataGridView.SortedColumn;
-                ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
-                                              ListSortDirection.Ascending : ListSortDirection.Descending;
-                dataGridView.Sort(sortedColumn, direction);
-            }
+            SortDataGridViewByCurrentDirection(dataGridView);
 
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
@@ -809,12 +804,26 @@ namespace Sales_Tracker.UI
             }
             return false;
         }
-        public static List<DataGridViewRow> GetAllRows()
+        public static List<DataGridViewRow> GetAllRowsInMainMenu()
         {
             List<DataGridViewRow> allRows = [];
-            allRows.AddRange(MainMenu_Form.Instance.Purchases_DataGridView.Rows.Cast<DataGridViewRow>());
-            allRows.AddRange(MainMenu_Form.Instance.Sales_DataGridView.Rows.Cast<DataGridViewRow>());
+            allRows.AddRange(MainMenu_Form.Instance.Purchase_DataGridView.Rows.Cast<DataGridViewRow>());
+            allRows.AddRange(MainMenu_Form.Instance.Sale_DataGridView.Rows.Cast<DataGridViewRow>());
             return allRows;
+        }
+        private static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
+        {
+            if (dataGridView.SortedColumn == null)
+            {
+                return;
+            }
+
+            SortOrder sortOrder = dataGridView.SortOrder;
+            DataGridViewColumn sortedColumn = dataGridView.SortedColumn;
+            ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
+                                          ListSortDirection.Ascending :
+                                          ListSortDirection.Descending;
+            dataGridView.Sort(sortedColumn, direction);
         }
 
         // Right click row properties
@@ -866,18 +875,20 @@ namespace Sales_Tracker.UI
         {
             CustomControls.CloseAllPanels(null, null);
 
-            MainMenu_Form.IsProgramLoading = true;
 
-            DataGridViewRow selectedRow = MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0];
+            DataGridView selectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
+            DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
             int selectedIndex = selectedRow.Index;
 
             // Save the current scroll position
-            int scrollPosition = MainMenu_Form.Instance.SelectedDataGridView.FirstDisplayedScrollingRowIndex;
+            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
 
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
-                Categories_Form.Instance.Purchases_DataGridView.Rows.Remove(selectedRow);
-                Categories_Form.Instance.Sales_DataGridView.Rows.Add(selectedRow);
+                MainMenu_Form.IsProgramLoading = true;
+                Categories_Form.Instance.Purchase_DataGridView.Rows.Remove(selectedRow);
+                Categories_Form.Instance.Sale_DataGridView.Rows.Add(selectedRow);
+                MainMenu_Form.IsProgramLoading = false;
 
                 Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
                     MainMenu_Form.Instance.CategoryPurchaseList,
@@ -886,12 +897,15 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.Instance.CategoryPurchaseList.Remove(category);
                 MainMenu_Form.Instance.CategorySaleList.Add(category);
 
-                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Purchases_DataGridView);
+                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Purchase_DataGridView);
+                SortDataGridViewByCurrentDirection(Categories_Form.Instance.Sale_DataGridView);
             }
             else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
             {
-                Categories_Form.Instance.Sales_DataGridView.Rows.Remove(selectedRow);
-                Categories_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
+                MainMenu_Form.IsProgramLoading = true;
+                Categories_Form.Instance.Sale_DataGridView.Rows.Remove(selectedRow);
+                Categories_Form.Instance.Purchase_DataGridView.Rows.Add(selectedRow);
+                MainMenu_Form.IsProgramLoading = false;
 
                 Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
                     MainMenu_Form.Instance.CategorySaleList,
@@ -900,23 +914,24 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.Instance.CategorySaleList.Remove(category);
                 MainMenu_Form.Instance.CategoryPurchaseList.Add(category);
 
-                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Sales_DataGridView);
+                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Sale_DataGridView);
+                SortDataGridViewByCurrentDirection(Categories_Form.Instance.Purchase_DataGridView);
             }
 
             // Select a new row
-            if (selectedIndex < MainMenu_Form.Instance.SelectedDataGridView.Rows.Count)
+            int newRowIndex = selectedIndex < selectedDataGridView.Rows.Count - 1 ? selectedIndex : selectedIndex - 1;
+
+            if (newRowIndex >= 0 && newRowIndex < selectedDataGridView.Rows.Count)
             {
-                MainMenu_Form.Instance.SelectedDataGridView.Rows[selectedIndex].Selected = true;
-            }
-            else if (MainMenu_Form.Instance.SelectedDataGridView.Rows.Count > 0)
-            {
-                MainMenu_Form.Instance.SelectedDataGridView.Rows[^1].Selected = true;
+                selectedDataGridView.ClearSelection();
+                selectedDataGridView.Rows[newRowIndex].Selected = true;
+                selectedDataGridView.CurrentCell = selectedDataGridView.Rows[newRowIndex].Cells[0]; // Optionally focus on the first cell
             }
 
             // Restore the scroll position
             if (scrollPosition != 0)
             {
-                MainMenu_Form.Instance.SelectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
+                selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
             }
 
             MainMenu_Form.IsProgramLoading = false;

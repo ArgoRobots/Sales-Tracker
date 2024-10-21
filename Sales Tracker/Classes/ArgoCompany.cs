@@ -218,8 +218,8 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.LoadCharts();
                 MainMenu_Form.Instance.HideShowingResultsForLabel();
 
-                bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchases_DataGridView) &&
-                    AreRowsVisible(MainMenu_Form.Instance.Sales_DataGridView);
+                bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchase_DataGridView) &&
+                    AreRowsVisible(MainMenu_Form.Instance.Sale_DataGridView);
 
                 MainMenu_Form.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView, ReadOnlyVariables.NoResults_text);
             }

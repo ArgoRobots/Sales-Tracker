@@ -107,16 +107,16 @@ namespace Sales_Tracker.Classes
 
             MainMenu_Form.IsProgramLoading = true;
 
-            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchases_DataGridView);
-            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sales_DataGridView);
+            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchase_DataGridView);
+            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sale_DataGridView);
 
-            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Purchases_DataGridView);
-            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Sales_DataGridView);
+            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Purchase_DataGridView);
+            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Sale_DataGridView);
             MainMenu_Form.Instance.LoadCharts();
             MainMenu_Form.Instance.UpdateTotals();
 
-            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
+            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
 
             MainMenu_Form.IsProgramLoading = false;
 

@@ -109,7 +109,7 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.Instance.Sales_Button.PerformClick();
             }
-            MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Sales_DataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
@@ -198,7 +198,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
@@ -334,7 +334,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",

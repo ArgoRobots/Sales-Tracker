@@ -108,7 +108,7 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.Instance.Purchases_Button.PerformClick();
             }
-            MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Purchases_DataGridView;
+            MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
             if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
@@ -197,7 +197,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
@@ -331,7 +331,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
                     $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",

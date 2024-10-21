@@ -187,12 +187,12 @@ namespace Sales_Tracker
             DateTime oldestDate = DateTime.Now;  // Default to today if no rows are found
 
             // Check if there are rows in both DataGridViews
-            if (MainMenu_Form.Instance.Sales_DataGridView.Rows.Count > 0 || MainMenu_Form.Instance.Purchases_DataGridView.Rows.Count > 0)
+            if (MainMenu_Form.Instance.Sale_DataGridView.Rows.Count > 0 || MainMenu_Form.Instance.Purchase_DataGridView.Rows.Count > 0)
             {
                 oldestDate = new[]
                 {
-                    GetOldestDateFromDataGridView(MainMenu_Form.Instance.Sales_DataGridView),
-                    GetOldestDateFromDataGridView(MainMenu_Form.Instance.Purchases_DataGridView)
+                    GetOldestDateFromDataGridView(MainMenu_Form.Instance.Sale_DataGridView),
+                    GetOldestDateFromDataGridView(MainMenu_Form.Instance.Purchase_DataGridView)
                 }.Min();
             }
             return oldestDate;

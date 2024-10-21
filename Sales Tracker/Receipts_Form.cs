@@ -191,12 +191,12 @@ namespace Sales_Tracker
 
             if (IncludeSaleReceipts_CheckBox.Checked)
             {
-                AddReceiptsFromDataGridView(MainMenu_Form.Instance.Sales_DataGridView, "Sale");
+                AddReceiptsFromDataGridView(MainMenu_Form.Instance.Sale_DataGridView, "Sale");
             }
 
             if (IncludePurchaseReceipts_CheckBox.Checked)
             {
-                AddReceiptsFromDataGridView(MainMenu_Form.Instance.Purchases_DataGridView, "Purchase");
+                AddReceiptsFromDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, "Purchase");
             }
 
             Tools.ScrollToTopOfDataGridView(Receipts_DataGridView);

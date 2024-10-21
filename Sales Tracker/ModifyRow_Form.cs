@@ -875,7 +875,7 @@ namespace Sales_Tracker
 
                 // Update all instances in DataGridViews
                 string categoryColumn = MainMenu_Form.Column.Category.ToString();
-                foreach (DataGridViewRow row in DataGridViewManager.GetAllRows())
+                foreach (DataGridViewRow row in DataGridViewManager.GetAllRowsInMainMenu())
                 {
                     if (row.Cells[categoryColumn].Value.ToString() == oldName)
                     {
@@ -919,7 +919,7 @@ namespace Sales_Tracker
 
                     // Update all instances in DataGridViews
                     string productColumn = MainMenu_Form.Column.Product.ToString();
-                    foreach (DataGridViewRow row in DataGridViewManager.GetAllRows())
+                    foreach (DataGridViewRow row in DataGridViewManager.GetAllRowsInMainMenu())
                     {
                         if (row.Cells[productColumn].Value.ToString() == oldName)
                         {
@@ -969,7 +969,7 @@ namespace Sales_Tracker
                     // Update all instances in DataGridViews
                     string categoryColumn = MainMenu_Form.Column.Category.ToString();
                     string nameColumn = MainMenu_Form.Column.Product.ToString();
-                    foreach (DataGridViewRow row in DataGridViewManager.GetAllRows())
+                    foreach (DataGridViewRow row in DataGridViewManager.GetAllRowsInMainMenu())
                     {
                         if (row.Cells[categoryColumn].Value.ToString() == category.Name
                             && row.Cells[nameColumn].Value.ToString() == product.Name)
@@ -996,8 +996,8 @@ namespace Sales_Tracker
                 // Update all instances in DataGridViews
                 string newValue = selectedRow.Cells[0].Value.ToString();
 
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.Company.ToString(), accountant, newValue);
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.Company.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Company.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Company.ToString(), accountant, newValue);
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Accountant.ToString())
             {
@@ -1014,13 +1014,13 @@ namespace Sales_Tracker
                 // Update all instances in DataGridViews
                 string newValue = selectedRow.Cells[0].Value.ToString();
 
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.Column.Name.ToString(), accountant, newValue);
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.Column.Name.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Name.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Name.ToString(), accountant, newValue);
             }
 
             CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"{MainMenu_Form.Instance.Selected} list");
-            DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-            DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
+            DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+            DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
         }
         private static void UpdateDataGridViewRows(DataGridView dataGridView, string columnName, string oldValue, string newValue)
         {
