@@ -79,7 +79,7 @@ namespace Sales_Tracker.UI
 
             removedRow = e.Row;
 
-            string type = "", columnName = "", valueBeingRemoved;
+            string type = "", columnName = "", valueBeingRemoved, action = "deleted";
             byte logIndex = 0;
 
             switch (MainMenu_Form.Instance.Selected)
@@ -102,7 +102,7 @@ namespace Sales_Tracker.UI
                     logIndex = 3;
                     valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved))
+                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, action))
                     {
                         e.Cancel = true;
                         return;
@@ -121,7 +121,7 @@ namespace Sales_Tracker.UI
                     logIndex = 3;
                     valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved))
+                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, action))
                     {
                         e.Cancel = true;
                         return;
@@ -135,12 +135,12 @@ namespace Sales_Tracker.UI
                     break;
 
                 case MainMenu_Form.SelectedOption.CategoryPurchases:
-                    type = "category for purchase";
+                    type = "category";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
                     valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Category.ToString(), valueBeingRemoved))
+                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Category.ToString(), valueBeingRemoved, action))
                     {
                         e.Cancel = true;
                         return;
@@ -154,12 +154,12 @@ namespace Sales_Tracker.UI
                     break;
 
                 case MainMenu_Form.SelectedOption.CategorySales:
-                    type = "category for sale";
+                    type = "category";
                     columnName = Categories_Form.Columns.CategoryName.ToString();
                     logIndex = 3;
                     valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Category.ToString(), valueBeingRemoved))
+                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Category.ToString(), valueBeingRemoved, action))
                     {
                         e.Cancel = true;
                         return;
@@ -178,7 +178,7 @@ namespace Sales_Tracker.UI
                     logIndex = 2;
                     valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-                    if (IsThisBeingUsed(type, Accountants_Form.Columns.AccountantName.ToString(), valueBeingRemoved))
+                    if (IsThisBeingUsed(type, Accountants_Form.Columns.AccountantName.ToString(), valueBeingRemoved, action))
                     {
                         e.Cancel = true;
                         return;
@@ -197,7 +197,7 @@ namespace Sales_Tracker.UI
                     logIndex = 2;
                     valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved))
+                    if (IsThisBeingUsed(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved, action))
                     {
                         e.Cancel = true;
                         return;
@@ -565,13 +565,13 @@ namespace Sales_Tracker.UI
         /// Shows a MessageBox if the row is being used by another row.
         /// </summary>
         /// <returns>True if it's being used by another row.</returns>
-        private static bool IsThisBeingUsed(string type, string columnName, string valueBeingRemoved)
+        private static bool IsThisBeingUsed(string type, string columnName, string valueBeingRemoved, string action)
         {
             foreach (DataGridViewRow row in GetAllRowsInMainMenu())
             {
                 if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", $"This {type} is being used and cannot be deleted", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Argo Sales Tracker", $"This {type} is being used and cannot be {action}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return true;
                 }
             }
@@ -882,17 +882,24 @@ namespace Sales_Tracker.UI
 
             // Save the current scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
+            string action = "moved";
 
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
+                string categoryName = selectedRow.Cells[0].Value.ToString();
+
+                if (IsThisBeingUsed("category", MainMenu_Form.Column.Category.ToString(), categoryName, action))
+                {
+                    return;
+                }
+
                 MainMenu_Form.IsProgramLoading = true;
                 Categories_Form.Instance.Purchase_DataGridView.Rows.Remove(selectedRow);
                 Categories_Form.Instance.Sale_DataGridView.Rows.Add(selectedRow);
                 MainMenu_Form.IsProgramLoading = false;
 
                 Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
-                    MainMenu_Form.Instance.CategoryPurchaseList,
-                    selectedRow.Cells[0].Value.ToString());
+                    MainMenu_Form.Instance.CategoryPurchaseList, categoryName);
 
                 MainMenu_Form.Instance.CategoryPurchaseList.Remove(category);
                 MainMenu_Form.Instance.CategorySaleList.Add(category);
@@ -902,14 +909,20 @@ namespace Sales_Tracker.UI
             }
             else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
             {
+                string categoryName = selectedRow.Cells[0].Value.ToString();
+
+                if (IsThisBeingUsed("category", MainMenu_Form.Column.Category.ToString(), categoryName, action))
+                {
+                    return;
+                }
+
                 MainMenu_Form.IsProgramLoading = true;
                 Categories_Form.Instance.Sale_DataGridView.Rows.Remove(selectedRow);
                 Categories_Form.Instance.Purchase_DataGridView.Rows.Add(selectedRow);
                 MainMenu_Form.IsProgramLoading = false;
 
                 Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
-                    MainMenu_Form.Instance.CategorySaleList,
-                    selectedRow.Cells[0].Value.ToString());
+                    MainMenu_Form.Instance.CategorySaleList, categoryName);
 
                 MainMenu_Form.Instance.CategorySaleList.Remove(category);
                 MainMenu_Form.Instance.CategoryPurchaseList.Add(category);
