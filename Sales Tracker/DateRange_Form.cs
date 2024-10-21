@@ -35,8 +35,8 @@ namespace Sales_Tracker
         {
             Theme.SetThemeForForm(this);
             Bottom_Separator.FillColor = CustomColors.controlBorder;
-            CustomControls.MakeGButtonBluePrimary(Apply_Button);
-            CustomControls.MakeGButtonBlueSecondary(Cancel_Button);
+            Theme.MakeGButtonBluePrimary(Apply_Button);
+            Theme.MakeGButtonBlueSecondary(Cancel_Button);
         }
         private void SetAccessibleDescriptions()
         {
@@ -173,8 +173,8 @@ namespace Sales_Tracker
             }
             else
             {
-                From_DateTimePicker.Value = (DateTime)MainMenu_Form.Instance.SortFromDate;
-                To_DateTimePicker.Value = (DateTime)MainMenu_Form.Instance.SortToDate;
+                From_DateTimePicker.Value = MainMenu_Form.Instance.SortFromDate ?? DateTime.Now;
+                To_DateTimePicker.Value = MainMenu_Form.Instance.SortToDate ?? DateTime.Now;
             }
         }
         private void SetDatePickers()

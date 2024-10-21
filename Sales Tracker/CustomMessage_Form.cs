@@ -23,6 +23,12 @@ namespace Sales_Tracker
             SetMessageBox(title, message, icon, buttons);
             SetAccessibleDescriptions(translateMessage);
 
+            LanguageManager.UpdateLanguageForControl(Save_Button);
+            LanguageManager.UpdateLanguageForControl(DontSave_Button);
+            LanguageManager.UpdateLanguageForControl(Yes_Button);
+            LanguageManager.UpdateLanguageForControl(No_Button);
+            LanguageManager.UpdateLanguageForControl(Ok_Button);
+            LanguageManager.UpdateLanguageForControl(Cancel_Button);
             LanguageManager.UpdateLanguageForControl(this);
         }
         private void SetAccessibleDescriptions(bool translateMessage)

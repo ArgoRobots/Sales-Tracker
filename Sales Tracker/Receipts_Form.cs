@@ -47,8 +47,8 @@ namespace Sales_Tracker
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-            CustomControls.MakeGButtonBluePrimary(ExportSelected_Button);
-            CustomControls.MakeGButtonBlueSecondary(ClearFilters_Button);
+            Theme.MakeGButtonBluePrimary(ExportSelected_Button);
+            Theme.MakeGButtonBlueSecondary(ClearFilters_Button);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {

@@ -925,7 +925,6 @@ namespace Sales_Tracker.UI
             {
                 selectedDataGridView.ClearSelection();
                 selectedDataGridView.Rows[newRowIndex].Selected = true;
-                selectedDataGridView.CurrentCell = selectedDataGridView.Rows[newRowIndex].Cells[0]; // Optionally focus on the first cell
             }
 
             // Restore the scroll position

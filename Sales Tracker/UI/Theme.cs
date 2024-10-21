@@ -69,6 +69,12 @@ namespace Sales_Tracker.Classes
                         break;
 
                     case Guna2Button guna2Button:
+                        // Don't change the theme if the button is blue
+                        if (IsButtonBlue(guna2Button))
+                        {
+                            continue;
+                        }
+
                         guna2Button.FillColor = CustomColors.controlBack;
                         guna2Button.ForeColor = CustomColors.text;
                         guna2Button.BorderColor = CustomColors.controlBorder;
@@ -315,6 +321,27 @@ namespace Sales_Tracker.Classes
                     CurrentTheme = ThemeType.Light;
                 }
             }
+        }
+
+        // Make button blue
+        public static void MakeGButtonBluePrimary(Guna2Button button)
+        {
+            button.BorderThickness = 0;
+            button.FillColor = CustomColors.accent_blue;
+            button.ForeColor = Color.White;
+            button.Font = new Font(button.Font, FontStyle.Bold);
+        }
+        public static void MakeGButtonBlueSecondary(Guna2Button button)
+        {
+            button.BorderThickness = 2;
+            button.FillColor = Color.Transparent;
+            button.BorderColor = CustomColors.accent_blue;
+            button.ForeColor = CustomColors.accent_blue;
+            button.Font = new Font(button.Font, FontStyle.Bold);
+        }
+        public static bool IsButtonBlue(Guna2Button button)
+        {
+            return button.FillColor == CustomColors.accent_blue || button.ForeColor == CustomColors.accent_blue;
         }
 
         // Set the header to dark

@@ -37,9 +37,9 @@ namespace Sales_Tracker.Settings
         private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-            CustomControls.MakeGButtonBluePrimary(Ok_Button);
-            CustomControls.MakeGButtonBlueSecondary(Cancel_Button);
-            CustomControls.MakeGButtonBlueSecondary(Apply_Button);
+            Theme.MakeGButtonBluePrimary(Ok_Button);
+            Theme.MakeGButtonBlueSecondary(Cancel_Button);
+            Theme.MakeGButtonBlueSecondary(Apply_Button);
         }
 
         // Form event handlers
@@ -54,8 +54,7 @@ namespace Sales_Tracker.Settings
         }
 
         // Left menu buttons
-        private Guna2Button btnSelected;
-
+        private Guna2Button selectedButton;
         private void GeneralButton_Click(object sender, EventArgs e)
         {
             SwitchForm(FormGeneral, sender);
@@ -149,7 +148,7 @@ namespace Sales_Tracker.Settings
             Theme.UpdateThemeForPanel(listOfPanels);
 
             // Update other controls
-            Theme.SetThemeForControl([CustomControls.ControlsDropDown_Button]);
+            Theme.SetThemeForControl([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
 
             DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
 
@@ -175,16 +174,16 @@ namespace Sales_Tracker.Settings
             }
 
             // Unselect button
-            if (btnSelected != null)
+            if (selectedButton != null)
             {
-                btnSelected.FillColor = CustomColors.controlBack;
+                selectedButton.FillColor = CustomColors.controlBack;
                 if (Theme.CurrentTheme == Theme.ThemeType.Dark)
                 {
-                    btnSelected.ForeColor = Color.White;
+                    selectedButton.ForeColor = Color.White;
                 }
                 else
                 {
-                    btnSelected.ForeColor = Color.Black;
+                    selectedButton.ForeColor = Color.Black;
                 }
             }
 
@@ -203,7 +202,7 @@ namespace Sales_Tracker.Settings
             form.BringToFront();
 
             // Save
-            btnSelected = btn;
+            selectedButton = btn;
         }
     }
 }

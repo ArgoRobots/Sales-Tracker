@@ -396,7 +396,7 @@ namespace Sales_Tracker.UI
                 BackColor = Color.Transparent,
                 BorderColor = CustomColors.controlBorder,
                 FillColor = CustomColors.panelBtn,
-                ForeColor=CustomColors.text,
+                ForeColor = CustomColors.text,
                 BorderRadius = 3,
                 BorderThickness = 2,
                 Cursor = Cursors.Hand,
@@ -409,9 +409,18 @@ namespace Sales_Tracker.UI
                 Text = "Controls",
                 TextOffset = new Point(-10, 0)
             };
-            _controlsDropDown_Button.Click += (sender, e) =>
+            _controlsDropDown_Button.Click += ControlsDropDownButton_Click;
+        }
+        private static void ControlsDropDownButton_Click(object sender, EventArgs e)
+        {
+            if (MainMenu_Form.Instance.Controls.Contains(_controlDropDown_Panel))
+            {
+                MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
+            }
+            else
             {
                 CloseAllPanels(null, null);
+
                 _controlDropDown_Panel.Location = new Point(
                     _controlsDropDown_Button.Right - _controlDropDown_Panel.Width,
                     MainMenu_Form.Instance.MainTop_Panel.Top + MainMenu_Form.Instance.MainTop_Panel.Height);
@@ -419,7 +428,7 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.Instance.Controls.Add(_controlDropDown_Panel);
                 _controlDropDown_Panel.BringToFront();
                 _controlDropDown_Panel.Focus();
-            };
+            }
         }
         private static void ConstructControlsDropDownMenu()
         {
@@ -539,23 +548,6 @@ namespace Sales_Tracker.UI
         {
             textBox.BorderColor = Color.Red;
             textBox.FocusedState.BorderColor = Color.Red;
-        }
-
-        // Make button blue
-        public static void MakeGButtonBluePrimary(Guna2Button button)
-        {
-            button.BorderThickness = 0;
-            button.FillColor = CustomColors.accent_blue;
-            button.ForeColor = Color.White;
-            button.Font = new Font(button.Font, FontStyle.Bold);
-        }
-        public static void MakeGButtonBlueSecondary(Guna2Button button)
-        {
-            button.BorderThickness = 2;
-            button.FillColor = Color.Transparent;
-            button.BorderColor = CustomColors.accent_blue;
-            button.ForeColor = CustomColors.accent_blue;
-            button.Font = new Font(button.Font, FontStyle.Bold);
         }
 
         // Close all panels

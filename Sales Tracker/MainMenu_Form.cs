@@ -76,6 +76,7 @@ namespace Sales_Tracker
             AlignTotalLabels();
             UpdateTotals();
             InitClickChartsManager();
+            InitTimeRangePanel();
         }
         public void ResetData()
         {
@@ -932,23 +933,39 @@ namespace Sales_Tracker
                 searchTimer.Start();
             }
         }
+
+        // TimeRange
+        private static Guna2Panel _timeRangePanel;
+        public static Guna2Panel TimeRangePanel => _timeRangePanel;
+        private static void InitTimeRangePanel()
+        {
+            DateRange_Form dateRange_Form = new();
+            _timeRangePanel = dateRange_Form.Main_Panel;
+            _timeRangePanel.BorderColor = CustomColors.controlPanelBorder;
+            _timeRangePanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        }
         private void TimeRange_Button_Click(object sender, EventArgs e)
         {
-            CloseAllPanels(null, null);
-            DateRange_Form dateRangeForm = new();
+            if (Controls.Contains(_timeRangePanel))
+            {
+                CloseDateRangePanel();
+            }
+            else
+            {
+                CloseAllPanels(null, null);
 
-            Guna2Panel panel = dateRangeForm.Main_Panel;
+                // Set the location for the panel
+                _timeRangePanel.Location = new Point(
+                    TimeRange_Button.Right - _timeRangePanel.Width,
+                    TimeRange_Button.Bottom);
 
-            // Align the right side of the form with the button's right side
-            panel.Location = new Point(
-                TimeRange_Button.Right - panel.Width,
-                TimeRange_Button.Bottom);
-
-            panel.BorderColor = CustomColors.controlPanelBorder;
-            panel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-
-            Controls.Add(panel);
-            panel.BringToFront();
+                Controls.Add(_timeRangePanel);
+                _timeRangePanel.BringToFront();
+            }
+        }
+        public void CloseDateRangePanel()
+        {
+            Controls.Remove(_timeRangePanel);
         }
 
         // Timer for loading the charts
@@ -1921,20 +1938,6 @@ namespace Sales_Tracker
         private void CloseAllPanels(object sender, EventArgs? e)
         {
             CustomControls.CloseAllPanels(null, null);
-        }
-        public void CloseDateRangePanel()
-        {
-            if (DateRange_Form.Instance == null) { return; }
-
-            foreach (Control control in Controls)
-            {
-                if (control is Panel && control.Name == DateRange_Form.Instance.Main_Panel.Name)
-                {
-                    Controls.Remove(control);
-                    DateRange_Form.Instance.Dispose();
-                    break;
-                }
-            }
         }
     }
 }

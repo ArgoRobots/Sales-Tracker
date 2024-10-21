@@ -33,7 +33,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-            CustomControls.MakeGButtonBluePrimary(Import_Button);
+            Theme.MakeGButtonBluePrimary(Import_Button);
         }
         private void AlignControls()
         {

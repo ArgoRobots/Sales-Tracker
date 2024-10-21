@@ -17,7 +17,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-            CustomControls.MakeGButtonBluePrimary(Next_Button);
+            Theme.MakeGButtonBluePrimary(Next_Button);
         }
 
         // Form event handlers

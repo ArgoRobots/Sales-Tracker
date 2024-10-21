@@ -19,7 +19,7 @@ namespace Sales_Tracker
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-            CustomControls.MakeGButtonBluePrimary(Export_Button);
+            Theme.MakeGButtonBluePrimary(Export_Button);
 
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
