@@ -40,14 +40,14 @@ namespace Sales_Tracker
         }
         private void LoadCompanies()
         {
-            MainMenu_Form.Instance.isProgramLoading = true;
+            MainMenu_Form.IsProgramLoading = true;
 
             foreach (string accountant in MainMenu_Form.Instance.CompanyList)
             {
                 company_DataGridView.Rows.Add(accountant);
             }
             Tools.ScrollToTopOfDataGridView(company_DataGridView);
-            MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.IsProgramLoading = false;
         }
         private void AddEventHandlersToTextBoxes()
         {

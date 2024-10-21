@@ -309,6 +309,6 @@ namespace Sales_Tracker
         private Label ForSale_Label;
         private Guna.UI2.WinForms.Guna2CustomRadioButton Sale_RadioButton;
         public Guna.UI2.WinForms.Guna2CustomRadioButton Purchase_RadioButton;
-        private Label Total_Label;
+        public Label Total_Label;
     }
 }

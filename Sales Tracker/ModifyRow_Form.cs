@@ -820,7 +820,7 @@ namespace Sales_Tracker
         private static void UpdateCategoryAndCountryAndCompany(DataGridViewRow row, string productName, List<Category> categoryList)
         {
             string categoryColumn = MainMenu_Form.Column.Category.ToString();
-            string category = MainMenu_Form.GetCategoryProductIsFrom(categoryList, productName);
+            string category = MainMenu_Form.GetCategoryNameProductIsFrom(categoryList, productName);
             row.Cells[categoryColumn].Value = category;
 
             string countryColumn = MainMenu_Form.Column.Country.ToString();
@@ -833,7 +833,7 @@ namespace Sales_Tracker
         }
         private void UpdateChargedDifference()
         {
-            MainMenu_Form.Instance.isProgramLoading = true;
+            MainMenu_Form.IsProgramLoading = true;
 
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
@@ -848,7 +848,7 @@ namespace Sales_Tracker
                     DataGridViewManager.UpdateRowWithNoItems(selectedRow);
                 }
             }
-            MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.IsProgramLoading = false;
         }
         private void SaveInListsAndUpdateDataGridViews()
         {

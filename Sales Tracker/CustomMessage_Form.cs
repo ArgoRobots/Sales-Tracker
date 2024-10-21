@@ -12,7 +12,7 @@ namespace Sales_Tracker
         public CustomMessageBoxResult result;
 
         // Init.
-        public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
+        public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons, bool translateMessage)
         {
             InitializeComponent();
             DoubleBuffered = true;
@@ -20,15 +20,21 @@ namespace Sales_Tracker
             LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
 
-            SetAccessibleDescriptions();
-            LanguageManager.UpdateLanguageForControl(this);
-
             SetMessageBox(title, message, icon, buttons);
+            SetAccessibleDescriptions(translateMessage);
+
             LanguageManager.UpdateLanguageForControl(this);
         }
-        private void SetAccessibleDescriptions()
+        private void SetAccessibleDescriptions(bool translateMessage)
         {
-            Message_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            if (translateMessage)
+            {
+                Message_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            }
+            else
+            {
+                Message_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            }
         }
 
         // Form event handlers
@@ -334,7 +340,7 @@ namespace Sales_Tracker
     public static class CustomMessageBox
     {
         private static bool _isMessageBoxShowing = false;
-        public static CustomMessageBoxResult Show(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
+        public static CustomMessageBoxResult Show(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons, bool translateMessage = true)
         {
             // Only allow one MessageBox to appear at a time
             if (_isMessageBoxShowing)
@@ -351,14 +357,14 @@ namespace Sales_Tracker
                 {
                     return Application.OpenForms[0].Invoke(new Func<CustomMessageBoxResult>(() =>
                     {
-                        using CustomMessage_Form form = new(title, message, icon, buttons);
+                        using CustomMessage_Form form = new(title, message, icon, buttons, translateMessage);
                         form.ShowDialog();
                         return form.result;
                     }));
                 }
                 else
                 {
-                    using CustomMessage_Form form = new(title, message, icon, buttons);
+                    using CustomMessage_Form form = new(title, message, icon, buttons, translateMessage);
                     form.ShowDialog();
                     return form.result;
                 }

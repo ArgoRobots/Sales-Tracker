@@ -62,7 +62,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void ItemsInTransaction_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MainMenu_Form.Instance.isProgramLoading = true;
+            MainMenu_Form.IsProgramLoading = true;
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
 
@@ -80,7 +80,7 @@ namespace Sales_Tracker
 
                 DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.SelectedDataGridView, MainMenu_Form.Instance.Selected);
             }
-            MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.IsProgramLoading = false;
         }
         private void ItemsInTransaction_Form_Shown(object sender, EventArgs e)
         {
@@ -147,7 +147,7 @@ namespace Sales_Tracker
         }
         private void LoadAllItemsInDataGridView(List<string> itemList)
         {
-            MainMenu_Form.Instance.isProgramLoading = true;
+            MainMenu_Form.IsProgramLoading = true;
 
             string defaultCurrencyType = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             string receiptFilePath = null;
@@ -183,7 +183,7 @@ namespace Sales_Tracker
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
 
-            MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.IsProgramLoading = false;
         }
     }
 }

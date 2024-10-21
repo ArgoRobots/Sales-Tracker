@@ -22,21 +22,27 @@ namespace Sales_Tracker
         private static readonly List<string> _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
         private static bool _isFullVersion = true;
+        private static bool _isProgramLoading;
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
         public static List<string> SettingsThatHaveChangedInFile => _settingsThatHaveChangedInFile;
+        public static string CurrencySymbol
+        {
+            get => _currencySymbol;
+            set => _currencySymbol = value;
+        }
         public static bool IsFullVersion
         {
             get => _isFullVersion;
             set => _isFullVersion = value;
         }
-        public static string CurrencySymbol
+        public static bool IsProgramLoading
         {
-            get => _currencySymbol;
-            set => _currencySymbol = value;
+            get => _isProgramLoading;
+            set => _isProgramLoading = value;
         }
 
         // Init.
@@ -54,11 +60,11 @@ namespace Sales_Tracker
 
             SetCompanyLabel();
 
-            isProgramLoading = true;
+            _isProgramLoading = true;
             LoadData();
             LoadColumnHeader();
             UpdateTheme();
-            isProgramLoading = false;
+            _isProgramLoading = false;
 
             Sales_Button.PerformClick();
             SortTheDataGridViewByDate();
@@ -596,7 +602,7 @@ namespace Sales_Tracker
         private bool wasControlsDropDownAdded;
         private void ResizeControls()
         {
-            if (isProgramLoading) { return; }
+            if (_isProgramLoading) { return; }
 
             if (ClientSize.Height > 1400)
             {
@@ -918,7 +924,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (isProgramLoading) { return; }
+            if (_isProgramLoading) { return; }
 
             if (!timerRunning)
             {
@@ -1171,6 +1177,7 @@ namespace Sales_Tracker
                 foreach (DataGridViewRow row in _selectedDataGridView.Rows)
                 {
                     row.Visible = true;
+                    hasVisibleRows = true;
                 }
             }
 
@@ -1355,7 +1362,7 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static string? GetCategoryProductIsFrom(List<Category> categoryList, string productName)
+        public static string? GetCategoryNameProductIsFrom(List<Category> categoryList, string productName)
         {
             foreach (Category category in categoryList)
             {
@@ -1383,9 +1390,19 @@ namespace Sales_Tracker
             }
             return false;
         }
+        public static Category? GetCategoryCategoryNameIsFrom(List<Category> categoryList, string categoryName)
+        {
+            foreach (Category category in categoryList)
+            {
+                if (category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return category;
+                }
+            }
+            return null;
+        }
 
         // DataGridView properties
-        public bool isProgramLoading;
         public SelectedOption Selected;
         private Guna2DataGridView _purchases_DataGridView, _sales_DataGridView, _selectedDataGridView;
         public enum SelectedOption
@@ -1618,7 +1635,7 @@ namespace Sales_Tracker
         }
         public void SaveCategoriesToFile(SelectedOption option)
         {
-            if (isProgramLoading)
+            if (_isProgramLoading)
             {
                 return;
             }

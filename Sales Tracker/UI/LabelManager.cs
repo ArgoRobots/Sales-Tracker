@@ -19,6 +19,8 @@
         }
         public static void ShowTotalLabel(Label totalLabel, DataGridView dataGridView)
         {
+            if (MainMenu_Form.IsProgramLoading) { return; }
+
             // Keep the first part (before ":") the same in case it's been translated
             string[] parts = totalLabel.Text.Split(':');
             string baseText = parts[0].Trim();

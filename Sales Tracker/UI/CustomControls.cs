@@ -19,13 +19,14 @@ namespace Sales_Tracker.UI
             ConstructAccountMenu();
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
-            DataGridViewManager.ConstructRightRowMenu();
+            DataGridViewManager.ConstructRightClickRowMenu();
             MainMenu_Form.Instance.ConstructRightClickGunaChartMenu();
 
             // Set language
             LanguageManager.UpdateLanguageForControl(_fileMenu);
             LanguageManager.UpdateLanguageForControl(_helpMenu);
             LanguageManager.UpdateLanguageForControl(_accountMenu);
+            LanguageManager.UpdateLanguageForControl(_controlsDropDown_Button);
             LanguageManager.UpdateLanguageForControl(_controlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(DataGridViewManager.RightClickDataGridView_Panel);
         }
@@ -395,6 +396,7 @@ namespace Sales_Tracker.UI
                 BackColor = Color.Transparent,
                 BorderColor = CustomColors.controlBorder,
                 FillColor = CustomColors.panelBtn,
+                ForeColor=CustomColors.text,
                 BorderRadius = 3,
                 BorderThickness = 2,
                 Cursor = Cursors.Hand,
@@ -409,18 +411,14 @@ namespace Sales_Tracker.UI
             };
             _controlsDropDown_Button.Click += (sender, e) =>
             {
-                if (MainMenu_Form.Instance.Controls.Contains(_fileMenu))
-                {
-                    MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
-                }
-                else
-                {
-                    CloseAllPanels(null, null);
-                    _controlDropDown_Panel.Location = new Point(_controlsDropDown_Button.Right - _controlDropDown_Panel.Width, MainMenu_Form.Instance.MainTop_Panel.Top + MainMenu_Form.Instance.MainTop_Panel.Height);
-                    MainMenu_Form.Instance.Controls.Add(_controlDropDown_Panel);
-                    _controlDropDown_Panel.BringToFront();
-                    _controlDropDown_Panel.Focus();
-                }
+                CloseAllPanels(null, null);
+                _controlDropDown_Panel.Location = new Point(
+                    _controlsDropDown_Button.Right - _controlDropDown_Panel.Width,
+                    MainMenu_Form.Instance.MainTop_Panel.Top + MainMenu_Form.Instance.MainTop_Panel.Height);
+
+                MainMenu_Form.Instance.Controls.Add(_controlDropDown_Panel);
+                _controlDropDown_Panel.BringToFront();
+                _controlDropDown_Panel.Focus();
             };
         }
         private static void ConstructControlsDropDownMenu()
@@ -438,22 +436,22 @@ namespace Sales_Tracker.UI
 
             ConstructSeperator(290, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, 0, true, flowPanel);
-            menuBtn.Size = new Size(290, 50);
-            menuBtn.Click += (sender, e) =>
-            {
-                CloseAllPanels(null, null);
-                MainMenu_Form.Instance.ManageAccountants_Button.PerformClick();
-            };
-
-            ConstructSeperator(290, flowPanel);
-
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCompanies_Button.Text, 0, true, flowPanel);
             menuBtn.Size = new Size(290, 50);
             menuBtn.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
                 MainMenu_Form.Instance.ManageCompanies_Button.PerformClick();
+            };
+
+            ConstructSeperator(290, flowPanel);
+
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCategories_Button.Text, 0, true, flowPanel);
+            menuBtn.Size = new Size(290, 50);
+            menuBtn.Click += (sender, e) =>
+            {
+                CloseAllPanels(null, null);
+                MainMenu_Form.Instance.ManageCategories_Button.PerformClick();
             };
 
             ConstructSeperator(290, flowPanel);

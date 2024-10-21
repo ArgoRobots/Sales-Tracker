@@ -22,7 +22,7 @@ namespace Sales_Tracker
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
 
-            MainMenu_Form.Instance.isProgramLoading = true;
+            MainMenu_Form.IsProgramLoading = true;
             DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", Receipts_DataGridView.Size, ColumnHeaders);
             Receipts_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             MainMenu_Form.Instance.SelectedDataGridView = Receipts_DataGridView;
@@ -35,7 +35,7 @@ namespace Sales_Tracker
                 From_DateTimePicker.Value = oldestDate;
                 To_DateTimePicker.Value = DateTime.Now;
             }
-            MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.IsProgramLoading = false;
 
             UpdateTheme();
             SetAccessibleDescriptions();

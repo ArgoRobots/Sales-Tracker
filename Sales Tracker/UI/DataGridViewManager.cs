@@ -69,7 +69,7 @@ namespace Sales_Tracker.UI
         }
         public static void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            if (MainMenu_Form.Instance.isProgramLoading) { return; }
+            if (MainMenu_Form.IsProgramLoading) { return; }
 
             if (_doNotDeleteRows)
             {
@@ -264,7 +264,7 @@ namespace Sales_Tracker.UI
         }
         public static void DataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            if (MainMenu_Form.Instance.isProgramLoading) { return; }
+            if (MainMenu_Form.IsProgramLoading) { return; }
 
             DataGridViewRowChanged(MainMenu_Form.Instance.SelectedDataGridView, MainMenu_Form.Instance.Selected);
 
@@ -362,14 +362,6 @@ namespace Sales_Tracker.UI
                 else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
                 {
                     ConfigureMoveButton("Move category to purchases");
-                }
-                else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductPurchases)
-                {
-                    ConfigureMoveButton("Move product to sales");
-                }
-                else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
-                {
-                    ConfigureMoveButton("Move product to purchases");
                 }
                 else
                 {
@@ -595,7 +587,7 @@ namespace Sales_Tracker.UI
         }
         public static void DataGridViewRowsAdded(Guna2DataGridView dataGridView, DataGridViewRowsAddedEventArgs e)
         {
-            if (MainMenu_Form.Instance.isProgramLoading) { return; }
+            if (MainMenu_Form.IsProgramLoading) { return; }
 
             DataGridViewRowChanged(MainMenu_Form.Instance.SelectedDataGridView, MainMenu_Form.Instance.Selected);
             DataGridViewRow row;
@@ -835,7 +827,7 @@ namespace Sales_Tracker.UI
         public static Guna2Button RightClickDataGridView_DeleteBtn => _rightClickDataGridView_DeleteBtn;
 
         // Right click row methods
-        public static void ConstructRightRowMenu()
+        public static void ConstructRightClickRowMenu()
         {
             _rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickDataGridView_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
@@ -874,6 +866,8 @@ namespace Sales_Tracker.UI
         {
             CustomControls.CloseAllPanels(null, null);
 
+            MainMenu_Form.IsProgramLoading = true;
+
             DataGridViewRow selectedRow = MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0];
             int selectedIndex = selectedRow.Index;
 
@@ -884,21 +878,29 @@ namespace Sales_Tracker.UI
             {
                 Categories_Form.Instance.Purchases_DataGridView.Rows.Remove(selectedRow);
                 Categories_Form.Instance.Sales_DataGridView.Rows.Add(selectedRow);
+
+                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
+                    MainMenu_Form.Instance.CategoryPurchaseList,
+                    selectedRow.Cells[0].Value.ToString());
+
+                MainMenu_Form.Instance.CategoryPurchaseList.Remove(category);
+                MainMenu_Form.Instance.CategorySaleList.Add(category);
+
+                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Purchases_DataGridView);
             }
             else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
             {
                 Categories_Form.Instance.Sales_DataGridView.Rows.Remove(selectedRow);
                 Categories_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
-            }
-            else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductPurchases)
-            {
-                Products_Form.Instance.Purchases_DataGridView.Rows.Remove(selectedRow);
-                Products_Form.Instance.Sales_DataGridView.Rows.Add(selectedRow);
-            }
-            else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
-            {
-                Products_Form.Instance.Sales_DataGridView.Rows.Remove(selectedRow);
-                Products_Form.Instance.Purchases_DataGridView.Rows.Add(selectedRow);
+
+                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
+                    MainMenu_Form.Instance.CategorySaleList,
+                    selectedRow.Cells[0].Value.ToString());
+
+                MainMenu_Form.Instance.CategorySaleList.Remove(category);
+                MainMenu_Form.Instance.CategoryPurchaseList.Add(category);
+
+                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Sales_DataGridView);
             }
 
             // Select a new row
@@ -912,7 +914,12 @@ namespace Sales_Tracker.UI
             }
 
             // Restore the scroll position
-            MainMenu_Form.Instance.SelectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
+            if (scrollPosition != 0)
+            {
+                MainMenu_Form.Instance.SelectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
+            }
+
+            MainMenu_Form.IsProgramLoading = false;
         }
         private static void ExportReceipt(object sender, EventArgs e)
         {

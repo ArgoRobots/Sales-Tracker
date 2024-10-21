@@ -29,16 +29,15 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             AddSearchBoxEvents();
             ConstructDataGridViews();
-            ConstructTotalLabel();
             LoadProducts();
             CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
             SetAccessibleDescriptions();
+            Controls.Remove(ShowingResultsFor_Label);
             LanguageManager.UpdateLanguageForControl(this);
-            HideShowingResultsForLabel();
+            DataGridViewManager.SortFirstColumnAndSelectFirstRow(_purchases_DataGridView, _sales_DataGridView);
             AddEventHandlersToTextBoxes();
-            SetTotalLabel();
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -53,11 +52,11 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(CompanyOfOrigin_TextBox);
 
-            _purchases_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
-            _purchases_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
+            _purchases_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, _purchases_DataGridView); };
+            _purchases_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, _purchases_DataGridView); };
 
-            _sales_DataGridView.RowsAdded += (sender, e) => { SetTotalLabel(); };
-            _sales_DataGridView.RowsRemoved += (sender, e) => { SetTotalLabel(); };
+            _sales_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, _sales_DataGridView); };
+            _sales_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, _sales_DataGridView); };
         }
         private void AddSearchBoxEvents()
         {
@@ -128,6 +127,7 @@ namespace Sales_Tracker
             WarningProductName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             WarningCategory_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             WarningCompany_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
 
         // Form event handlers
@@ -202,6 +202,7 @@ namespace Sales_Tracker
                 ProductCategory_TextBox.Text = "";
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();
+                LabelManager.ShowTotalLabel(Total_Label, _purchases_DataGridView);
             }
         }
         private void Sale_RadioButton_CheckedChanged(object sender, EventArgs e)
@@ -219,6 +220,7 @@ namespace Sales_Tracker
                 ProductCategory_TextBox.Text = "";
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();
+                LabelManager.ShowTotalLabel(Total_Label, _sales_DataGridView);
             }
         }
         private void ProductName_TextBox_TextChanged(object sender, EventArgs e)
@@ -244,7 +246,7 @@ namespace Sales_Tracker
             }
             else
             {
-                HideShowingResultsForLabel();
+                Controls.Remove(ShowingResultsFor_Label);
             }
         }
         private void ProductsRemaining_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -393,10 +395,6 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Left = (ClientSize.Width - ShowingResultsFor_Label.Width) / 2;
             Controls.Add(ShowingResultsFor_Label);
         }
-        private void HideShowingResultsForLabel()
-        {
-            Controls.Remove(ShowingResultsFor_Label);
-        }
 
         // DataGridView properties
         public enum Column
@@ -461,25 +459,6 @@ namespace Sales_Tracker
             if (MainMenu_Form.Instance.SelectedDataGridView == null) { return; }
             MainMenu_Form.Instance.SelectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
             MainMenu_Form.Instance.SelectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.SelectedDataGridView.Width) / 2, topForDataGridView);
-        }
-
-        // Label
-        private Label totalLabel;
-        private void ConstructTotalLabel()
-        {
-            totalLabel = new Label
-            {
-                Font = new Font("Segoe UI", 11),
-                AutoSize = true,
-                ForeColor = CustomColors.text,
-                Anchor = AnchorStyles.Right | AnchorStyles.Bottom
-            };
-            Controls.Add(totalLabel);
-        }
-        private void SetTotalLabel()
-        {
-            totalLabel.Text = $"Total: {MainMenu_Form.Instance.SelectedDataGridView.Rows.Count}";
-            totalLabel.Location = new Point(MainMenu_Form.Instance.SelectedDataGridView.Right - totalLabel.Width, MainMenu_Form.Instance.SelectedDataGridView.Bottom + 10);
         }
 
         // Methods

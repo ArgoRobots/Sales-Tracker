@@ -84,6 +84,9 @@ namespace Sales_Tracker.Classes
             List<Control> panelsList = MainMenu_Form.GetMenus().Cast<Control>().ToList();
             controlsList.AddRange(panelsList);
 
+            // Add other controls
+            controlsList.Add(CustomControls.ControlsDropDown_Button);
+
             // Set the language
             foreach (Control control in controlsList)
             {
@@ -102,7 +105,7 @@ namespace Sales_Tracker.Classes
             DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, newCurrency);
             MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
 
-            MainMenu_Form.Instance.isProgramLoading = true;
+            MainMenu_Form.IsProgramLoading = true;
 
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchases_DataGridView);
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sales_DataGridView);
@@ -115,7 +118,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchases_DataGridView, MainMenu_Form.SelectedOption.Purchases);
             MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sales_DataGridView, MainMenu_Form.SelectedOption.Sales);
 
-            MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.IsProgramLoading = false;
 
             // Remove previous messages that mention currency changes
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the currency from"));

@@ -148,6 +148,9 @@ namespace Sales_Tracker.Settings
 
             Theme.UpdateThemeForPanel(listOfPanels);
 
+            // Update other controls
+            Theme.SetThemeForControl([CustomControls.ControlsDropDown_Button]);
+
             DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
 
             // Set the border to white or black, depending on the theme

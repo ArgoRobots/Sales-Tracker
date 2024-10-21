@@ -88,6 +88,13 @@ namespace Sales_Tracker.UI
 
             switch (control)
             {
+                case Form form:
+                    if (!string.IsNullOrEmpty(form.Text))
+                    {
+                        form.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, form.Text);
+                    }
+                    break;
+
                 case LinkLabel linkLabel:
                     TranslateLinkLabel(linkLabel, targetLanguageAbbreviation);
                     AdjustLabelSizeAndPosition(linkLabel);
@@ -139,7 +146,22 @@ namespace Sales_Tracker.UI
                     foreach (DataGridViewColumn column in gunaDataGridView.Columns)
                     {
                         string columnKey = $"{controlKey}_{column_text}_{column.Name}";
-                        column.HeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, column.HeaderText);
+
+                        // Check if the column uses DataGridViewImageHeaderCell
+                        if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
+                        {
+                            // Translate the HeaderText property
+                            string translatedHeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, imageHeaderCell.HeaderText);
+                            imageHeaderCell.HeaderText = translatedHeaderText;
+
+                            // Show the updated text
+                            gunaDataGridView.Refresh();
+                        }
+                        else
+                        {
+                            // Translate regular column headers
+                            column.HeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, column.HeaderText);
+                        }
                     }
                     break;
             }
@@ -464,7 +486,18 @@ namespace Sales_Tracker.UI
                     foreach (DataGridViewColumn column in gunaDataGridView.Columns)
                     {
                         string columnKey = $"{controlKey}_{column_text}_{column.Name}";
-                        englishCache[columnKey] = column.HeaderText;
+
+                        // Check if the column uses DataGridViewImageHeaderCell
+                        if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
+                        {
+                            // Cache the HeaderText for DataGridViewImageHeaderCell
+                            englishCache[columnKey] = imageHeaderCell.HeaderText;
+                        }
+                        else
+                        {
+                            // Cache the regular DataGridViewColumn HeaderText
+                            englishCache[columnKey] = column.HeaderText;
+                        }
                     }
                     break;
             }

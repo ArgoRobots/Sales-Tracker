@@ -494,7 +494,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Import
         private bool ImportSpreadsheet()
         {
-            MainMenu_Form.Instance.isProgramLoading = true;
+            MainMenu_Form.IsProgramLoading = true;
 
             using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
@@ -566,7 +566,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     CustomMessageBoxButtons.Ok);
             }
 
-            MainMenu_Form.Instance.isProgramLoading = false;
+            MainMenu_Form.IsProgramLoading = false;
             return wasSomethingImported;
         }
 

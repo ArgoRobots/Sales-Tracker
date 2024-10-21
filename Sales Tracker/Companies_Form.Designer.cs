@@ -231,6 +231,6 @@ namespace Sales_Tracker
         private Label AddCompany_Label;
         private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
-        private Label Total_Label;
+        public Label Total_Label;
     }
 }
