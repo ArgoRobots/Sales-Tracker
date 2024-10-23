@@ -9,8 +9,9 @@ using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 using System.Collections;
 using System.ComponentModel;
-using System.Text.Json;
 using Timer = System.Windows.Forms.Timer;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Sales_Tracker
 {
@@ -134,7 +135,7 @@ namespace Sales_Tracker
             string json = Directories.ReadAllTextInFile(filePath);
             if (string.IsNullOrWhiteSpace(json)) { return; }
 
-            List<Category>? loadedCategories = JsonSerializer.Deserialize<List<Category>>(json);
+            List<Category>? loadedCategories = JsonConvert.DeserializeObject<List<Category>>(json);
 
             if (loadedCategories != null)
             {
@@ -158,7 +159,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            List<Dictionary<string, object>>? rowsData = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
+            List<Dictionary<string, object>>? rowsData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
 
             foreach (Dictionary<string, object> rowData in rowsData)
             {
@@ -177,22 +178,20 @@ namespace Sales_Tracker
                 int rowIndex = dataGridView.Rows.Add(cellValues);
 
                 // Set the row tag
-                if (rowData.TryGetValue(rowTagKey, out object value) && value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Object)
+                if (rowData.TryGetValue(rowTagKey, out object value) && value is JObject jsonObject)
                 {
-                    Dictionary<string, object>? tagObject = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonElement.GetRawText());
+                    Dictionary<string, object>? tagObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonObject.ToString());
 
                     if (tagObject != null)
                     {
                         // If the tagObject is a list of strings and TagData
-                        if (tagObject.TryGetValue(itemsKey, out object? itemsElement) &&
-                            itemsElement is JsonElement itemsJsonElement &&
-                            itemsJsonElement.ValueKind == JsonValueKind.Array)
+                        if (tagObject.TryGetValue(itemsKey, out object? itemsElement) && itemsElement is JArray itemsArray)
                         {
-                            List<string?> itemList = itemsJsonElement.EnumerateArray().Select(e => e.GetString()).ToList();
+                            List<string> itemList = itemsArray.Select(e => e.ToString()).ToList();
 
-                            if (tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement) && purchaseDataElement is JsonElement purchaseDataJsonElement)
+                            if (tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement) && purchaseDataElement is JObject purchaseDataObject)
                             {
-                                TagData? purchaseData = JsonSerializer.Deserialize<TagData>(purchaseDataJsonElement.GetRawText());
+                                TagData? purchaseData = JsonConvert.DeserializeObject<TagData>(purchaseDataObject.ToString());
 
                                 if (itemList != null && purchaseData != null)
                                 {
@@ -201,11 +200,10 @@ namespace Sales_Tracker
                             }
                         }
                         // If the tagObject is a string and TagData
-                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement) &&
-                            tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
+                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement) && tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
                         {
                             string? tagString = tagStringElement?.ToString();
-                            TagData? purchaseData1 = JsonSerializer.Deserialize<TagData>(purchaseData1Element?.ToString());
+                            TagData? purchaseData1 = JsonConvert.DeserializeObject<TagData>(purchaseData1Element?.ToString());
 
                             if (tagString != null && purchaseData1 != null)
                             {
@@ -213,12 +211,10 @@ namespace Sales_Tracker
                             }
                         }
                         // If the tagObject is a TagData
-                        else if (rowData.TryGetValue(rowTagKey, out object value1) &&
-                          value1 is JsonElement jsonElement1 &&
-                          jsonElement1.ValueKind == JsonValueKind.Object)
+                        else if (rowData.TryGetValue(rowTagKey, out object value1) && value1 is JObject jsonObject1)
                         {
-                            // Try to deserialize the JsonElement directly into a TagData object
-                            TagData? tagData = JsonSerializer.Deserialize<TagData>(jsonElement1.GetRawText());
+                            // Try to deserialize the JObject directly into a TagData object
+                            TagData? tagData = JsonConvert.DeserializeObject<TagData>(jsonObject1.ToString());
 
                             if (tagData != null)
                             {
@@ -1646,8 +1642,7 @@ namespace Sales_Tracker
                 rowsData.Add(rowData);
             }
 
-            // Serialize to JSON and write to file
-            string json = JsonSerializer.Serialize(rowsData, ReadOnlyVariables.JsonOptions);
+            string json = JsonConvert.SerializeObject(rowsData, Formatting.Indented);
             Directories.WriteTextToFile(filePath, json);
         }
         public void SaveCategoriesToFile(SelectedOption option)
@@ -1669,7 +1664,7 @@ namespace Sales_Tracker
                 categoryList = _categorySaleList;
             }
 
-            string json = JsonSerializer.Serialize(categoryList, ReadOnlyVariables.JsonOptions);
+            string json = JsonConvert.SerializeObject(categoryList, Formatting.Indented);
             Directories.WriteTextToFile(filePath, json);
         }
         public static void SaveDataGridViewToFile(Guna2DataGridView dataGridView, SelectedOption selected)

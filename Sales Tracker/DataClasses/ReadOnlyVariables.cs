@@ -5,8 +5,6 @@ namespace Sales_Tracker.DataClasses
     public class ReadOnlyVariables
     {
         // Properties
-        private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-
         private static readonly string emptyCell = "-",
             multipleItems_text = "Multiple items",
             receipt_text = "receipt:",
@@ -18,7 +16,6 @@ namespace Sales_Tracker.DataClasses
         private static readonly byte offsetRightClickPanel = 30;
 
         // Getters
-        public static JsonSerializerOptions JsonOptions => jsonOptions;
         public static string EmptyCell => emptyCell;
         public static string MultipleItems_text => multipleItems_text;
         public static string Receipt_text => receipt_text;

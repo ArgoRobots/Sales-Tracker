@@ -21,8 +21,10 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Attaches events to a Guna2TextBox to add a SearchBox.
         /// </summary>
-        public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results, int maxHeight, bool allowTextBoxEmpty = true)
+        public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results,
+            int maxHeight, bool allowTextBoxEmpty = true)
         {
+            textBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             textBox.Click += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
             textBox.GotFocus += (sender, e) =>
             {
@@ -83,7 +85,8 @@ namespace Sales_Tracker.UI
         }
 
         // Main methods
-        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc, int maxHeight, bool allowTextBoxEmpty, bool alwaysShow = false)
+        private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc,
+            int maxHeight, bool allowTextBoxEmpty, bool alwaysShow = false)
         {
             // Check if the search box is already shown for the same text box
             if (searchTextBox == textBox && !alwaysShow)

@@ -1,8 +1,8 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
+using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using System.Text.Json;
 
 namespace Sales_Tracker.UI
 {
@@ -34,7 +34,8 @@ namespace Sales_Tracker.UI
                 if (!string.IsNullOrWhiteSpace(cacheContent))
                 {
                     Dictionary<string, Dictionary<string, string>>? deserialized =
-                        JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(cacheContent);
+                         JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(cacheContent);
+
                     if (deserialized != null)
                     {
                         translationCache = deserialized;
@@ -50,7 +51,8 @@ namespace Sales_Tracker.UI
                 if (!string.IsNullOrWhiteSpace(englishContent))
                 {
                     Dictionary<string, string>? deserializedEnglish =
-                        JsonSerializer.Deserialize<Dictionary<string, string>>(englishContent);
+                        JsonConvert.DeserializeObject<Dictionary<string, string>>(englishContent);
+
                     if (deserializedEnglish != null)
                     {
                         englishCache = deserializedEnglish;
@@ -525,7 +527,7 @@ namespace Sales_Tracker.UI
         // Save cache to file
         private static void SaveCacheToFile()
         {
-            string jsonContent = JsonSerializer.Serialize(translationCache, ReadOnlyVariables.JsonOptions);
+            string jsonContent = JsonConvert.SerializeObject(translationCache, Formatting.Indented);
             if (!Directory.Exists(Directories.Cache_dir))
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
@@ -534,7 +536,7 @@ namespace Sales_Tracker.UI
         }
         private static void SaveEnglishCacheToFile()
         {
-            string jsonContent = JsonSerializer.Serialize(englishCache, ReadOnlyVariables.JsonOptions);
+            string jsonContent = JsonConvert.SerializeObject(englishCache, Formatting.Indented);
             if (!Directory.Exists(Directories.Cache_dir))
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
