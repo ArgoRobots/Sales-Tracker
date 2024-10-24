@@ -630,7 +630,7 @@ namespace Sales_Tracker
             RelocateBuyerWarning();
             SetReceiptLabelLocation();
 
-            if (Controls.Contains(WarningProduct_PictureBox))
+            if (WarningProduct_PictureBox.Visible)
             {
                 WarningProduct_PictureBox.Location = new Point(ProductName_TextBox.Left, ProductName_TextBox.Bottom + CustomControls.SpaceBetweenControls);
                 WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
@@ -684,7 +684,7 @@ namespace Sales_Tracker
             RelocateBuyerWarning();
             SetReceiptLabelLocation();
 
-            if (Controls.Contains(WarningProduct_PictureBox))
+            if (WarningProduct_PictureBox.Visible)
             {
                 WarningProduct_PictureBox.Location = new Point(_addButton.Left + CustomControls.SpaceBetweenControls, _addButton.Top - _flowPanelMargin * 2);
                 WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
@@ -928,7 +928,6 @@ namespace Sales_Tracker
             {
                 WarningProduct_PictureBox.Visible = false;
                 WarningProduct_LinkLabel.Visible = false;
-                _addButton.Visible = true;
             }
         }
 
