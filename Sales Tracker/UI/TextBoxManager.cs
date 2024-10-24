@@ -69,7 +69,7 @@ namespace Sales_Tracker.UI
             }
         }
 
-        /// <summary>
+        // <summary>
         /// Handles KeyDown event for keyboard shortcuts and text manipulation.
         /// </summary>
         private static void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -83,8 +83,222 @@ namespace Sales_Tracker.UI
 
             if (e.Control)
             {
-                HandleKeyboardShortcut(textBox, e);
+                if (e.Shift)
+                {
+                    HandleCtrlShiftSelection(textBox, e);
+                }
+                else if (IsArrowKey(e.KeyCode))
+                {
+                    HandleCtrlCursorMovement(textBox, e);
+                }
+                else
+                {
+                    HandleKeyboardShortcut(textBox, e);
+                }
             }
+            else if (e.Shift)
+            {
+                HandleShiftSelection(textBox, e);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the key is an arrow key.
+        /// </summary>
+        private static bool IsArrowKey(Keys key)
+        {
+            return key == Keys.Left || key == Keys.Right;
+        }
+
+        /// <summary>
+        /// Handles Ctrl + arrow key combinations for word-by-word cursor movement.
+        /// </summary>
+        private static void HandleCtrlCursorMovement(Guna2TextBox textBox, KeyEventArgs e)
+        {
+            string text = textBox.Text;
+            int currentPos = textBox.SelectionStart;
+
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                    textBox.SelectionStart = FindPreviousWordStart(text, currentPos);
+                    textBox.SelectionLength = 0;
+                    e.Handled = true;
+                    break;
+
+                case Keys.Right:
+                    if (textBox.SelectionLength > 0)
+                    {
+                        currentPos += textBox.SelectionLength;
+                    }
+                    textBox.SelectionStart = FindNextWordEnd(text, currentPos);
+                    textBox.SelectionLength = 0;
+                    e.Handled = true;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles Shift key combinations for character-level text selection.
+        /// </summary>
+        private static void HandleShiftSelection(Guna2TextBox textBox, KeyEventArgs e)
+        {
+            int selStart = textBox.SelectionStart;
+            int selLength = textBox.SelectionLength;
+
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                    if (selStart > 0)
+                    {
+                        if (textBox.SelectionLength == 0)
+                        {
+                            textBox.SelectionStart = selStart - 1;
+                            textBox.SelectionLength = 1;
+                        }
+                        else
+                        {
+                            if (selStart == textBox.SelectionStart)
+                            {
+                                textBox.SelectionStart = selStart - 1;
+                                textBox.SelectionLength = selLength + 1;
+                            }
+                            else
+                            {
+                                textBox.SelectionLength = selLength - 1;
+                            }
+                        }
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Keys.Right:
+                    if (selStart < textBox.Text.Length)
+                    {
+                        if (textBox.SelectionLength == 0)
+                        {
+                            textBox.SelectionLength = 1;
+                        }
+                        else
+                        {
+                            if (selStart == textBox.SelectionStart)
+                            {
+                                textBox.SelectionLength = selLength - 1;
+                            }
+                            else
+                            {
+                                textBox.SelectionLength = selLength + 1;
+                            }
+                        }
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Keys.Home:
+                    int currentPos = textBox.SelectionStart + textBox.SelectionLength;
+                    textBox.SelectionStart = 0;
+                    textBox.SelectionLength = currentPos;
+                    e.Handled = true;
+                    break;
+
+                case Keys.End:
+                    textBox.SelectionLength = textBox.Text.Length - textBox.SelectionStart;
+                    e.Handled = true;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Handles Ctrl+Shift key combinations for word-level text selection.
+        /// </summary>
+        private static void HandleCtrlShiftSelection(Guna2TextBox textBox, KeyEventArgs e)
+        {
+            string text = textBox.Text;
+            int selStart = textBox.SelectionStart;
+            int selLength = textBox.SelectionLength;
+
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                    int wordStart = FindPreviousWordStart(text, selStart);
+                    if (selLength == 0)
+                    {
+                        textBox.SelectionStart = wordStart;
+                        textBox.SelectionLength = selStart - wordStart;
+                    }
+                    else if (selStart == textBox.SelectionStart)
+                    {
+                        textBox.SelectionStart = wordStart;
+                        textBox.SelectionLength = selLength + (selStart - wordStart);
+                    }
+                    else
+                    {
+                        textBox.SelectionLength = selLength - (selStart - wordStart);
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Keys.Right:
+                    int wordEnd = FindNextWordEnd(text, selStart + selLength);
+                    if (selLength == 0)
+                    {
+                        textBox.SelectionLength = wordEnd - selStart;
+                    }
+                    else if (selStart == textBox.SelectionStart)
+                    {
+                        textBox.SelectionLength = selLength - (wordEnd - (selStart + selLength));
+                    }
+                    else
+                    {
+                        textBox.SelectionLength = selLength + (wordEnd - (selStart + selLength));
+                    }
+                    e.Handled = true;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Finds the starting position of the previous word.
+        /// </summary>
+        private static int FindPreviousWordStart(string text, int currentPos)
+        {
+            if (currentPos <= 0) return 0;
+
+            // Skip spaces before the current position
+            while (currentPos > 0 && char.IsWhiteSpace(text[currentPos - 1]))
+            {
+                currentPos--;
+            }
+
+            // Find the start of the current word
+            while (currentPos > 0 && !char.IsWhiteSpace(text[currentPos - 1]))
+            {
+                currentPos--;
+            }
+
+            return currentPos;
+        }
+
+        /// <summary>
+        /// Finds the ending position of the next word.
+        /// </summary>
+        private static int FindNextWordEnd(string text, int currentPos)
+        {
+            if (currentPos >= text.Length) return text.Length;
+
+            // Skip spaces after the current position
+            while (currentPos < text.Length && char.IsWhiteSpace(text[currentPos]))
+            {
+                currentPos++;
+            }
+
+            // Find the end of the current word
+            while (currentPos < text.Length && !char.IsWhiteSpace(text[currentPos]))
+            {
+                currentPos++;
+            }
+
+            return currentPos;
         }
 
         /// <summary>
