@@ -200,9 +200,8 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -240,9 +239,8 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -336,9 +334,8 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -436,9 +433,8 @@ namespace Sales_Tracker
 
             if (totalPrice != amountCharged)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -557,9 +553,7 @@ namespace Sales_Tracker
         // Methods for multiple items
         private List<Control> GetControlsForMultipleProducts()
         {
-            return [ProductName_TextBox, ProductName_Label,
-                Quantity_TextBox, Quantity_Label,
-                PricePerUnit_TextBox, PricePerUnit_Label];
+            return [ProductName_TextBox, ProductName_Label, Quantity_TextBox, Quantity_Label, PricePerUnit_TextBox, PricePerUnit_Label];
         }
         private readonly byte textBoxHeight = 48, circleButtonHeight = 38, extraSpaceForBottom = 210, spaceBetweenPanels = 10,
                initialHeightForPanel = 88, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
@@ -890,44 +884,28 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.Instance.GetCategoryAndProductSaleNames().Count == 0)
             {
-                ShowProductWarning();
+                Controls.Add(WarningProduct_PictureBox);
+                Controls.Add(WarningProduct_LinkLabel);
             }
             else
             {
-                HideProductWarning();
+                Controls.Remove(WarningProduct_PictureBox);
+                Controls.Remove(WarningProduct_LinkLabel);
+                Controls.Add(AddButton);
             }
-        }
-        private void ShowProductWarning()
-        {
-            Controls.Add(WarningProduct_PictureBox);
-            Controls.Add(WarningProduct_LinkLabel);
-        }
-        private void HideProductWarning()
-        {
-            Controls.Remove(WarningProduct_PictureBox);
-            Controls.Remove(WarningProduct_LinkLabel);
-            Controls.Add(AddButton);
         }
         private void CheckIfBuyersExist()
         {
             if (MainMenu_Form.Instance.AccountantList.Count == 0)
             {
-                ShowBuyerWarning();
+                Controls.Add(WarningAccountant_LinkLabel);
+                Controls.Add(WarningBuyer_PictureBox);
             }
             else
             {
-                HideBuyerWarning();
+                Controls.Remove(WarningAccountant_LinkLabel);
+                Controls.Remove(WarningBuyer_PictureBox);
             }
-        }
-        private void ShowBuyerWarning()
-        {
-            WarningAccountant_LinkLabel.Visible = true;
-            WarningBuyer_PictureBox.Visible = true;
-        }
-        private void HideBuyerWarning()
-        {
-            WarningAccountant_LinkLabel.Visible = false;
-            WarningBuyer_PictureBox.Visible = false;
         }
 
         // Misc.

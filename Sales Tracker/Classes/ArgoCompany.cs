@@ -180,9 +180,8 @@ namespace Sales_Tracker.Classes
                 // Save current project
                 if (AreAnyChangesMade())
                 {
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
-                        "Would you like to save your changes before opening a new project?",
-                        CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+                    string message = "Would you like to save your changes before opening a new project?";
+                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
                     switch (result)
                     {
