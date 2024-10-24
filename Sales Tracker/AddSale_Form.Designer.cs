@@ -87,7 +87,7 @@ namespace Sales_Tracker
             Fee_Label = new Label();
             PaymentFee_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             WarningAccountant_LinkLabel = new LinkLabel();
-            WarningBuyer_PictureBox = new PictureBox();
+            WarningAccountant_PictureBox = new PictureBox();
             CountryOfDestination_Label = new Label();
             CountryOfDestinaion_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Discount_Label = new Label();
@@ -102,7 +102,7 @@ namespace Sales_Tracker
             MultipleItems_Label = new Label();
             MultipleItems_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)WarningAccountant_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // Date_DateTimePicker
@@ -514,17 +514,17 @@ namespace Sales_Tracker
             WarningAccountant_LinkLabel.LinkClicked += WarningBuyer_LinkLabel_LinkClicked;
             WarningAccountant_LinkLabel.Click += CloseAllPanels;
             // 
-            // WarningBuyer_PictureBox
+            // WarningAccountant_PictureBox
             // 
-            WarningBuyer_PictureBox.Anchor = AnchorStyles.Top;
-            WarningBuyer_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningBuyer_PictureBox.Location = new Point(357, 212);
-            WarningBuyer_PictureBox.Name = "WarningBuyer_PictureBox";
-            WarningBuyer_PictureBox.Size = new Size(28, 28);
-            WarningBuyer_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            WarningBuyer_PictureBox.TabIndex = 58;
-            WarningBuyer_PictureBox.TabStop = false;
-            WarningBuyer_PictureBox.Click += CloseAllPanels;
+            WarningAccountant_PictureBox.Anchor = AnchorStyles.Top;
+            WarningAccountant_PictureBox.Image = Properties.Resources.ExclamationMark;
+            WarningAccountant_PictureBox.Location = new Point(357, 212);
+            WarningAccountant_PictureBox.Name = "WarningAccountant_PictureBox";
+            WarningAccountant_PictureBox.Size = new Size(28, 28);
+            WarningAccountant_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            WarningAccountant_PictureBox.TabIndex = 58;
+            WarningAccountant_PictureBox.TabStop = false;
+            WarningAccountant_PictureBox.Click += CloseAllPanels;
             // 
             // CountryOfDestination_Label
             // 
@@ -779,7 +779,7 @@ namespace Sales_Tracker
             Controls.Add(CountryOfDestination_Label);
             Controls.Add(CountryOfDestinaion_TextBox);
             Controls.Add(WarningAccountant_LinkLabel);
-            Controls.Add(WarningBuyer_PictureBox);
+            Controls.Add(WarningAccountant_PictureBox);
             Controls.Add(Fee_Label);
             Controls.Add(PaymentFee_TextBox);
             Controls.Add(WarningProduct_LinkLabel);
@@ -813,7 +813,7 @@ namespace Sales_Tracker
             TextChanged += ValidateInputs;
             Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)WarningProduct_PictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)WarningBuyer_PictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)WarningAccountant_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -843,7 +843,7 @@ namespace Sales_Tracker
         private Label Fee_Label;
         private Guna.UI2.WinForms.Guna2TextBox PaymentFee_TextBox;
         private LinkLabel WarningAccountant_LinkLabel;
-        private PictureBox WarningBuyer_PictureBox;
+        private PictureBox WarningAccountant_PictureBox;
         private Label CountryOfDestination_Label;
         private Guna.UI2.WinForms.Guna2TextBox CountryOfDestinaion_TextBox;
         private Label Discount_Label;

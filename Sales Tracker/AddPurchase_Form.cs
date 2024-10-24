@@ -26,7 +26,7 @@ namespace Sales_Tracker
             Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
             Currency_ComboBox.Text = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             CheckIfProductsExist();
-            CheckIfBuyersExist();
+            CheckIfAccountantsExist();
             Theme.SetThemeForForm(this);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
@@ -75,21 +75,30 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            MultipleItems_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Currency_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            OrderNumber_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            AccountantName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            ProductName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Date_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            PricePerUnit_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Discount_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Charged_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Label[] labelsToAlignLeftCenter =
+            [
+                MultipleItems_Label,
+                Currency_Label,
+                OrderNumber_Label,
+                AccountantName_Label,
+                ProductName_Label,
+                Date_Label,
+                Quantity_Label,
+                PricePerUnit_Label,
+                Shipping_Label,
+                Tax_Label,
+                Discount_Label,
+                Charged_Label,
+                WarningAccountant_LinkLabel,
+                WarningProduct_LinkLabel
+            ];
+
+            foreach (Label label in labelsToAlignLeftCenter)
+            {
+                label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            }
+
             SelectedReceipt_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            WarningAccountant_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            WarningProduct_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
 
         // Form event handlers
@@ -110,15 +119,15 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
-            if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
+            if (_panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
                 if (!AddSinglePurchase()) { return; }
             }
             // When the user selects "multiple items in this order" but only adds one, treat it as one
-            else if (panelsForMultipleProducts_List.Count == 1)
+            else if (_panelsForMultipleProducts_List.Count == 1)
             {
                 // Extract details from the single panel and populate the single purchase fields
-                Guna2Panel singlePanel = panelsForMultipleProducts_List[0];
+                Guna2Panel singlePanel = _panelsForMultipleProducts_List[0];
                 ProductName_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault()).Text;
                 Quantity_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault()).Text;
                 PricePerUnit_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault()).Text;
@@ -139,7 +148,7 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             if (MultipleItems_CheckBox.Checked)
             {
-                if (AddButton == null)
+                if (_addButton == null)
                 {
                     ConstructFlowPanel();
                     CosntructAddButton();
@@ -160,7 +169,7 @@ namespace Sales_Tracker
         private void WarningBuyer_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Accountants_Form().ShowDialog();
-            CheckIfBuyersExist();
+            CheckIfAccountantsExist();
         }
         private void Receipt_Button_Click(object sender, EventArgs e)
         {
@@ -170,7 +179,7 @@ namespace Sales_Tracker
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                receiptFilePath = ReadOnlyVariables.Receipt_text + dialog.FileName;
+                _receiptFilePath = ReadOnlyVariables.Receipt_text + dialog.FileName;
                 ShowReceiptLabel(dialog.SafeFileName);
             }
         }
@@ -272,13 +281,13 @@ namespace Sales_Tracker
             };
 
             string newFilePath = "";
-            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
+            if (!ReceiptsManager.CheckIfReceiptExists(_receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
+                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(_receiptFilePath);
                 if (!saved)
                 {
                     return false;
@@ -366,7 +375,7 @@ namespace Sales_Tracker
             decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
-            foreach (Guna2Panel panel in panelsForMultipleProducts_List)
+            foreach (Guna2Panel panel in _panelsForMultipleProducts_List)
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
                 string[] itemsInName = nameTextBox.Text.Split('>');
@@ -451,13 +460,13 @@ namespace Sales_Tracker
             totalPrice += chargedDifference;
 
             string newFilePath = "";
-            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
+            if (!ReceiptsManager.CheckIfReceiptExists(_receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
+                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(_receiptFilePath);
                 if (!saved)
                 {
                     return false;
@@ -526,7 +535,7 @@ namespace Sales_Tracker
         }
 
         // Receipts
-        private string receiptFilePath;
+        private string _receiptFilePath;
         private void ShowReceiptLabel(string text)
         {
             SelectedReceipt_Label.Text = text;
@@ -561,9 +570,9 @@ namespace Sales_Tracker
         {
             return [ProductName_TextBox, ProductName_Label, Quantity_TextBox, Quantity_Label, PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte textBoxHeight = 48, circleButtonHeight = 38, extraSpaceForBottom = 210, spaceBetweenPanels = 10,
-               initialHeightForPanel = 88, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
-        private readonly short initialWidthForPanel = 673, maxFlowPanelHeight = 300;
+        private readonly byte _textBoxHeight = 48, _circleButtonHeight = 38, _extraSpaceForBottom = 210, spaceBetweenPanels = 10,
+               _initialHeightForPanel = 88, _spaceOnSidesOfPanel = 100, _flowPanelMargin = 6;
+        private readonly short _initialWidthForPanel = 673, _flowPanelMaxHeight = 300;
         private void SetControlsForSingleProduct()
         {
             // Center controls
@@ -614,8 +623,8 @@ namespace Sales_Tracker
                 Controls.Add(control);
             }
 
-            Controls.Remove(FlowPanel);
-            Controls.Remove(AddButton);
+            _flowPanel.Visible = false;
+            _addButton.Visible = false;
             Height = 465;
 
             RelocateBuyerWarning();
@@ -669,7 +678,7 @@ namespace Sales_Tracker
                 Controls.Remove(control);
             }
 
-            Controls.Add(FlowPanel);
+            _flowPanel.Visible = true;
             SetHeight();
 
             RelocateBuyerWarning();
@@ -677,21 +686,21 @@ namespace Sales_Tracker
 
             if (Controls.Contains(WarningProduct_PictureBox))
             {
-                WarningProduct_PictureBox.Location = new Point(AddButton.Left + CustomControls.SpaceBetweenControls, AddButton.Top - flowPanelMargin * 2);
+                WarningProduct_PictureBox.Location = new Point(_addButton.Left + CustomControls.SpaceBetweenControls, _addButton.Top - _flowPanelMargin * 2);
                 WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
-                Controls.Remove(AddButton);
+                _addButton.Visible = false;
             }
             else
             {
-                Controls.Add(AddButton);
+                _addButton.Visible = true;
             }
         }
         private void RelocateBuyerWarning()
         {
-            WarningBuyer_PictureBox.Location = new Point(AccountantName_TextBox.Left, AccountantName_TextBox.Bottom + CustomControls.SpaceBetweenControls);
-            WarningAccountant_LinkLabel.Location = new Point(WarningBuyer_PictureBox.Right + CustomControls.SpaceBetweenControls, WarningBuyer_PictureBox.Top);
+            WarningAccountant_PictureBox.Location = new Point(AccountantName_TextBox.Left, AccountantName_TextBox.Bottom + CustomControls.SpaceBetweenControls);
+            WarningAccountant_LinkLabel.Location = new Point(WarningAccountant_PictureBox.Right + CustomControls.SpaceBetweenControls, WarningAccountant_PictureBox.Top);
         }
-        private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
+        private readonly List<Guna2Panel> _panelsForMultipleProducts_List = [];
         private enum TextBoxnames
         {
             name,
@@ -704,10 +713,10 @@ namespace Sales_Tracker
 
             Guna2Panel panel = new()
             {
-                Size = new Size(initialWidthForPanel, initialHeightForPanel),
+                Size = new Size(_initialWidthForPanel, _initialHeightForPanel),
                 FillColor = CustomColors.mainBackground
             };
-            panelsForMultipleProducts_List.Add(panel);
+            _panelsForMultipleProducts_List.Add(panel);
 
             Guna2TextBox textBox;
             int left;
@@ -732,16 +741,16 @@ namespace Sales_Tracker
 
             // Add minus button unless this is the first panel
             left = textBox.Right + CustomControls.SpaceBetweenControls;
-            if (panelsForMultipleProducts_List.Count > 1)
+            if (_panelsForMultipleProducts_List.Count > 1)
             {
-                CosntructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
+                CosntructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (_textBoxHeight - _circleButtonHeight) / 2 + textBox.Top), panel);
             }
 
-            FlowPanel.SuspendLayout();
-            FlowPanel.Controls.Add(panel);
+            _flowPanel.SuspendLayout();
+            _flowPanel.Controls.Add(panel);
             SetHeight();
-            FlowPanel.ResumeLayout();
-            FlowPanel.ScrollControlIntoView(panel);
+            _flowPanel.ResumeLayout();
+            _flowPanel.ScrollControlIntoView(panel);
         }
         private void CosntructLabel(string text, int left, Control parent)
         {
@@ -760,7 +769,7 @@ namespace Sales_Tracker
         {
             Guna2TextBox textBox = new()
             {
-                Size = new Size(width, textBoxHeight),
+                Size = new Size(width, _textBoxHeight),
                 Name = name,
                 Location = new Point(left, 28 + CustomControls.SpaceBetweenControls),
                 FillColor = CustomColors.controlBack,
@@ -805,7 +814,7 @@ namespace Sales_Tracker
                 FillColor = CustomColors.mainBackground,
                 BackColor = CustomColors.mainBackground,
                 Location = location,
-                Size = new Size(circleButtonHeight, circleButtonHeight),
+                Size = new Size(_circleButtonHeight, _circleButtonHeight),
                 ImageSize = new Size(32, 32),
                 PressedColor = CustomColors.controlBack
             };
@@ -830,92 +839,96 @@ namespace Sales_Tracker
             Guna2CircleButton button = (Guna2CircleButton)sender;
             Guna2Panel panel = (Guna2Panel)button.Parent;
 
-            FlowPanel.Controls.Remove(panel);
-            panelsForMultipleProducts_List.Remove(panel);
-            FlowPanel.Height -= initialHeightForPanel + flowPanelMargin;
+            _flowPanel.Controls.Remove(panel);
+            _panelsForMultipleProducts_List.Remove(panel);
+            _flowPanel.Height -= _initialHeightForPanel + _flowPanelMargin;
             SetHeight();
         }
-        private Guna2CircleButton AddButton;
-        private FlowLayoutPanel FlowPanel;
+        private Guna2CircleButton _addButton;
+        private FlowLayoutPanel _flowPanel;
         private void ConstructFlowPanel()
         {
-            int width = initialWidthForPanel + spaceOnSidesOfPanel;
-            FlowPanel = new()
+            int width = _initialWidthForPanel + _spaceOnSidesOfPanel;
+            _flowPanel = new()
             {
                 Anchor = AnchorStyles.Top,
                 AutoScroll = false,
                 Location = new Point((ClientSize.Width - width) / 2, 570),
-                Size = new Size(width, 20 + CustomControls.SpaceBetweenControls + textBoxHeight),
-                Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
-                Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
-                MaximumSize = new Size(width, maxFlowPanelHeight)
+                Size = new Size(width, 20 + CustomControls.SpaceBetweenControls + _textBoxHeight),
+                Padding = new Padding(_spaceOnSidesOfPanel / 2, 0, _spaceOnSidesOfPanel / 2, 0),
+                Margin = new Padding(_flowPanelMargin / 2, 0, _flowPanelMargin / 2, 0),
+                MaximumSize = new Size(width, _flowPanelMaxHeight),
+                Visible = false
             };
-            FlowPanel.Click += CloseAllPanels;
+            _flowPanel.Click += CloseAllPanels;
+            Controls.Add(_flowPanel);
         }
         private void CosntructAddButton()
         {
-            AddButton = new()
+            _addButton = new()
             {
                 FillColor = CustomColors.mainBackground,
                 BackColor = CustomColors.mainBackground,
                 Location = new Point(0, 60),
-                Size = new Size(circleButtonHeight, circleButtonHeight),
+                Size = new Size(_circleButtonHeight, _circleButtonHeight),
                 Image = Resources.AddWhite,
                 ImageSize = new Size(32, 32),
-                Left = FlowPanel.Left + spaceOnSidesOfPanel / 2,
-                PressedColor = CustomColors.controlBack
+                Left = _flowPanel.Left + _spaceOnSidesOfPanel / 2,
+                PressedColor = CustomColors.controlBack,
+                Visible = false
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
-                AddButton.Image = Resources.AddWhite;
+                _addButton.Image = Resources.AddWhite;
             }
             else
             {
-                AddButton.Image = Resources.AddBlack;
+                _addButton.Image = Resources.AddBlack;
             }
-            AddButton.Click += (sender, e) =>
+            _addButton.Click += (sender, e) =>
             {
                 CloseAllPanels(null, null);
                 ConstructControlsForMultipleProducts();
                 ValidateInputs(null, null);
             };
+            Controls.Add(_addButton);
         }
         private void SetHeight()
         {
-            int totalHeight = panelsForMultipleProducts_List.Sum(panel => panel.Height + flowPanelMargin);
-            FlowPanel.Height = Math.Min(totalHeight + flowPanelMargin, maxFlowPanelHeight);
-            FlowPanel.AutoScroll = totalHeight + flowPanelMargin > maxFlowPanelHeight;
+            int totalHeight = _panelsForMultipleProducts_List.Sum(panel => panel.Height + _flowPanelMargin);
+            _flowPanel.Height = Math.Min(totalHeight + _flowPanelMargin, _flowPanelMaxHeight);
+            _flowPanel.AutoScroll = totalHeight + _flowPanelMargin > _flowPanelMaxHeight;
 
-            Height = FlowPanel.Bottom + extraSpaceForBottom;
-            AddButton.Top = FlowPanel.Bottom + spaceBetweenPanels;
+            Height = _flowPanel.Bottom + _extraSpaceForBottom;
+            _addButton.Top = _flowPanel.Bottom + spaceBetweenPanels;
         }
 
         // Warning labels
+        private void CheckIfAccountantsExist()
+        {
+            if (MainMenu_Form.Instance.AccountantList.Count == 0)
+            {
+                WarningAccountant_LinkLabel.Visible = true;
+                WarningAccountant_PictureBox.Visible = true;
+            }
+            else
+            {
+                WarningAccountant_LinkLabel.Visible = false;
+                WarningAccountant_PictureBox.Visible = false;
+            }
+        }
         private void CheckIfProductsExist()
         {
             if (MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames().Count == 0)
             {
-                Controls.Add(WarningProduct_PictureBox);
-                Controls.Add(WarningProduct_LinkLabel);
+                WarningProduct_PictureBox.Visible = true;
+                WarningProduct_LinkLabel.Visible = true;
             }
             else
             {
-                Controls.Remove(WarningProduct_PictureBox);
-                Controls.Remove(WarningProduct_LinkLabel);
-                Controls.Add(AddButton);
-            }
-        }
-        private void CheckIfBuyersExist()
-        {
-            if (MainMenu_Form.Instance.AccountantList.Count == 0)
-            {
-                Controls.Add(WarningAccountant_LinkLabel);
-                Controls.Add(WarningBuyer_PictureBox);
-            }
-            else
-            {
-                Controls.Remove(WarningAccountant_LinkLabel);
-                Controls.Remove(WarningBuyer_PictureBox);
+                WarningProduct_PictureBox.Visible = false;
+                WarningProduct_LinkLabel.Visible = false;
+                _addButton.Visible = true;
             }
         }
 
@@ -939,7 +952,7 @@ namespace Sales_Tracker
 
             if (MultipleItems_CheckBox.Checked)
             {
-                allMultipleFieldsFilled = panelsForMultipleProducts_List
+                allMultipleFieldsFilled = _panelsForMultipleProducts_List
                     .SelectMany(panel => panel.Controls.OfType<Guna2TextBox>())
                     .All(textBox => !string.IsNullOrWhiteSpace(textBox.Text));
             }

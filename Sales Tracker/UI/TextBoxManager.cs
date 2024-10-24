@@ -76,7 +76,10 @@ namespace Sales_Tracker.UI
         {
             Guna2TextBox textBox = (Guna2TextBox)sender;
 
-            e.SuppressKeyPress = true;  // Remove Windows "ding" noise
+            if (e.Control || e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
+            {
+                e.SuppressKeyPress = true;  // Remove Windows "ding" noise
+            }
 
             if (e.Control)
             {
