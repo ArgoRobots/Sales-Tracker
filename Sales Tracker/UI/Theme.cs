@@ -265,16 +265,13 @@ namespace Sales_Tracker.Classes
         private static void Guna2Button_GotFocus(object sender, EventArgs e)
         {
             Guna2Button button = (Guna2Button)sender;
-
-            // Change the button's appearance when it receives focus
             button.BorderColor = CustomColors.accent_blue;
         }
         private static void Guna2Button_LostFocus(object sender, EventArgs e)
         {
             Guna2Button button = (Guna2Button)sender;
 
-            // Revert the button's appearance when it loses focus
-            if (button.BorderThickness == 1)
+            if (button.BorderThickness == 1 && !IsButtonBlue(button))
             {
                 button.BorderColor = CustomColors.controlBorder;
             }
@@ -333,8 +330,8 @@ namespace Sales_Tracker.Classes
         }
         public static void MakeGButtonBlueSecondary(Guna2Button button)
         {
-            button.BorderThickness = 2;
             button.FillColor = Color.Transparent;
+            button.BorderThickness = 2;
             button.BorderColor = CustomColors.accent_blue;
             button.ForeColor = CustomColors.accent_blue;
             button.Font = new Font(button.Font, FontStyle.Bold);

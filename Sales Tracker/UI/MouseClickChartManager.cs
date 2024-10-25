@@ -8,9 +8,10 @@ namespace Sales_Tracker.UI
     /// </summary>
     public static class MouseClickChartManager
     {
-        private static GunaChart[] charts;
+        private static readonly HashSet<GunaChart> registeredCharts = [];
         private static Action<GunaChart> onLeftClick;
         private static Action<GunaChart, Point> onRightClick;
+        private static CustomMessageFilter messageFilter;
 
         /// <summary>
         /// Initializes the click manager for specified GunaChart controls and assigns
@@ -18,11 +19,21 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static void Initialize(GunaChart[] charts, Action<GunaChart> onLeftClick, Action<GunaChart, Point> onRightClick)
         {
-            MouseClickChartManager.charts = charts;
+            // Add new charts to the collection
+            foreach (GunaChart chart in charts)
+            {
+                registeredCharts.Add(chart);
+            }
+
             MouseClickChartManager.onLeftClick = onLeftClick;
             MouseClickChartManager.onRightClick = onRightClick;
 
-            Application.AddMessageFilter(new CustomMessageFilter());
+            // Initialize message filter if not already done
+            if (messageFilter == null)
+            {
+                messageFilter = new CustomMessageFilter();
+                Application.AddMessageFilter(messageFilter);
+            }
         }
 
         /// <summary>
@@ -73,7 +84,7 @@ namespace Sales_Tracker.UI
                     }
 
                     // Check if the click happened on any of the charts
-                    foreach (GunaChart chart in charts)
+                    foreach (GunaChart chart in registeredCharts)
                     {
                         if (chart.Parent == null)
                         {
