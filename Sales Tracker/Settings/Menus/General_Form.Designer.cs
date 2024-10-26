@@ -95,10 +95,10 @@ namespace Sales_Tracker.Settings.Menus
             MoreInformation_Button.FillColor = Color.FromArgb(250, 250, 250);
             MoreInformation_Button.Font = new Font("Segoe UI", 9F);
             MoreInformation_Button.ForeColor = Color.Black;
-            MoreInformation_Button.Location = new Point(663, 470);
+            MoreInformation_Button.Location = new Point(668, 470);
             MoreInformation_Button.Name = "MoreInformation_Button";
             MoreInformation_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            MoreInformation_Button.Size = new Size(225, 45);
+            MoreInformation_Button.Size = new Size(220, 45);
             MoreInformation_Button.TabIndex = 6;
             MoreInformation_Button.Text = "More information";
             MoreInformation_Button.Click += MoreInformation_Button_Click;

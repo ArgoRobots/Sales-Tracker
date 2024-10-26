@@ -73,11 +73,19 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
 
+            SetToolTips();
             HideShowingResultsForLabel();
             AlignTotalLabels();
             UpdateTotals();
             InitClickChartsManager();
             InitTimeRangePanel();
+        }
+        private void SetToolTips()
+        {
+            CustomTooltip.SetToolTip(File_Button, "", "File");
+            CustomTooltip.SetToolTip(Save_Button, "", "Save");
+            CustomTooltip.SetToolTip(Help_Button, "", "Help");
+            CustomTooltip.SetToolTip(Account_Button, "", "Account");
         }
         public void ResetData()
         {
