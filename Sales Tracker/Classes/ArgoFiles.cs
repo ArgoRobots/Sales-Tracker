@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Handles file associations and icon registration for Argo Studio file types.
+    /// </summary>
     internal partial class ArgoFiles
     {
         public static readonly string ArgoCompanyFileExtension = ".ArgoSales",
@@ -12,20 +15,28 @@ namespace Sales_Tracker.Classes
                                       XlsxFileExtension = ".xlsx",
                                       PngFileExtension = ".png";
 
-        // Refresh Explorer to show changes in the file icons
+        /// <summary>
+        /// Import for the Windows Shell32 API function to notify the system of association changes.
+        /// </summary>
         [LibraryImport("shell32.dll", SetLastError = true)]
         private static partial void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
 
-        const uint SHCNE_ASSOCCHANGED = 0x8000000;
-        const uint SHCNF_IDLIST = 0x0;
+        // Shell change notification constants
+        const uint SHCNE_ASSOCCHANGED = 0x8000000;  // Notifies system of association change
+        const uint SHCNF_IDLIST = 0x0;              // No additional flags needed
 
+        /// <summary>
+        /// Registers a file extension with Windows and associates it with an icon and the current application.
+        /// </summary>
         public static void RegisterFileIcon(string extension, Icon icon, int iconIndex)
         {
-            // Dynamically get the path of the currently running executable
+            // Get the path of the currently running executable
             string applicationPath = Assembly.GetExecutingAssembly().Location;
             if (icon != null)
             {
-                // Save the icon to a temporary file
+                // Create a persistent copy of the icon in local app data
+                // This ensures Windows can always access the icon, even during application updates
+                // and without requiring the application to be running
                 string tempIconPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ArgoSalesTracker",
@@ -35,38 +46,44 @@ namespace Sales_Tracker.Classes
                 // Ensure directory exists
                 Directory.CreateDirectory(Path.GetDirectoryName(tempIconPath));
 
+                // Save a persistent copy of the icon
                 using (FileStream fs = new(tempIconPath, FileMode.Create))
                 {
                     icon.Save(fs);
                 }
 
+                // Generate a unique class name for this file type
                 string className = $"ArgoSalesTracker{extension.Replace(".", "")}";
 
+                // Registry path for user-specific file associations
                 // Use HKEY_CURRENT_USER because it doesn't require admin access
                 string userClassesRoot = @"Software\Classes";
 
-                // Create registry entries for file association
+                // Create file extension association
                 using (RegistryKey extensionKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{extension}"))
                 {
                     extensionKey.SetValue("", className);
                 }
 
+                // Create file type information
                 using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{className}"))
                 {
                     classKey.SetValue("", "Argo Sales Tracker File");
                 }
 
+                // Associate icon with file type
                 using (RegistryKey defaultIconKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{className}\DefaultIcon"))
                 {
                     defaultIconKey.SetValue("", $"{tempIconPath},{iconIndex}");
                 }
 
+                // Set up command to open files with this application
                 using (RegistryKey commandKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{className}\shell\open\command"))
                 {
                     commandKey.SetValue("", $"\"{applicationPath}\" \"%1\"");
                 }
 
-                // Notify the shell to refresh the icons
+                // Notify Windows to refresh icon cache and file associations
                 SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
             }
         }
