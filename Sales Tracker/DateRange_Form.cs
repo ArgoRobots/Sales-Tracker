@@ -28,7 +28,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
 
             ResetControls();
-            SetCustomControls();
+            SetCustomRangeControls();
         }
         private void ResetControls()
         {
@@ -44,7 +44,7 @@ namespace Sales_Tracker
 
             AllTime_RadioButton.Checked = true;
 
-            SetCustomControls();
+            SetCustomRangeControls();
         }
         public void UpdateTheme()
         {
@@ -107,7 +107,7 @@ namespace Sales_Tracker
         }
         private void Custom_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            SetCustomControls();
+            SetCustomRangeControls();
         }
 
         // Label event handlers
@@ -216,7 +216,7 @@ namespace Sales_Tracker
         {
             return timeSpanOptions.FirstOrDefault(kvp => kvp.Value.Checked).Key;
         }
-        private void SetCustomControls()
+        private void SetCustomRangeControls()
         {
             if (Custom_RadioButton.Checked)
             {

@@ -23,11 +23,18 @@ namespace Sales_Tracker.Classes
         {
             // Dynamically get the path of the currently running executable
             string applicationPath = Assembly.GetExecutingAssembly().Location;
-
             if (icon != null)
             {
                 // Save the icon to a temporary file
-                string tempIconPath = Path.Combine(Path.GetTempPath(), extension.Replace(".", "") + ".ico");
+                string tempIconPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ArgoSalesTracker",
+                    $"{extension.Replace(".", "")}.ico"
+                );
+
+                // Ensure directory exists
+                Directory.CreateDirectory(Path.GetDirectoryName(tempIconPath));
+
                 using (FileStream fs = new(tempIconPath, FileMode.Create))
                 {
                     icon.Save(fs);
@@ -35,23 +42,26 @@ namespace Sales_Tracker.Classes
 
                 string className = $"ArgoSalesTracker{extension.Replace(".", "")}";
 
+                // Use HKEY_CURRENT_USER because it doesn't require admin access
+                string userClassesRoot = @"Software\Classes";
+
                 // Create registry entries for file association
-                using (RegistryKey extensionKey = Registry.ClassesRoot.CreateSubKey(extension))
+                using (RegistryKey extensionKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{extension}"))
                 {
                     extensionKey.SetValue("", className);
                 }
 
-                using (RegistryKey classKey = Registry.ClassesRoot.CreateSubKey(className))
+                using (RegistryKey classKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{className}"))
                 {
-                    classKey.SetValue("", $"Argo Sales Tracker File");
+                    classKey.SetValue("", "Argo Sales Tracker File");
                 }
 
-                using (RegistryKey defaultIconKey = Registry.ClassesRoot.CreateSubKey($@"{className}\DefaultIcon"))
+                using (RegistryKey defaultIconKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{className}\DefaultIcon"))
                 {
                     defaultIconKey.SetValue("", $"{tempIconPath},{iconIndex}");
                 }
 
-                using (RegistryKey commandKey = Registry.ClassesRoot.CreateSubKey($@"{className}\shell\open\command"))
+                using (RegistryKey commandKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{className}\shell\open\command"))
                 {
                     commandKey.SetValue("", $"\"{applicationPath}\" \"%1\"");
                 }
