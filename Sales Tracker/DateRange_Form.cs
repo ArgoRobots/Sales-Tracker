@@ -27,8 +27,23 @@ namespace Sales_Tracker
             InitializeTimeSpanOptions();
             LanguageManager.UpdateLanguageForControl(this);
 
+            ResetControls();
+            SetCustomControls();
+        }
+        private void ResetControls()
+        {
+            // Uncheck all radio buttons first
+            foreach (Guna2CustomRadioButton radioButton in timeSpanOptions.Values)
+            {
+                radioButton.Checked = false;
+            }
+
+            Custom_RadioButton.Checked = false;
+
             InitializeDatePickers();
-            InitializeControlsFromMainMenu();
+
+            AllTime_RadioButton.Checked = true;
+
             SetCustomControls();
         }
         public void UpdateTheme()
@@ -60,26 +75,6 @@ namespace Sales_Tracker
                 { TimeSpan.FromDays(365 * 5), Last5Years_RadioButton }
             };
         }
-        private void SetRadioButtonForTimeSpan(TimeSpan timeSpan)
-        {
-            if (timeSpanOptions.TryGetValue(timeSpan, out Guna2CustomRadioButton? selectedButton))
-            {
-                selectedButton.Checked = true;
-            }
-        }
-        private void InitializeControlsFromMainMenu()
-        {
-            if (MainMenu_Form.Instance.SortTimeSpan != null)
-            {
-                SetRadioButtonForTimeSpan((TimeSpan)MainMenu_Form.Instance.SortTimeSpan);
-            }
-            else
-            {
-                Custom_RadioButton.Checked = true;
-                From_DateTimePicker.Value = MainMenu_Form.Instance.SortFromDate ?? DateTime.Now;
-                To_DateTimePicker.Value = MainMenu_Form.Instance.SortToDate ?? DateTime.Now;
-            }
-        }
 
         // Form event handlers
         private void DateRange_Form_Shown(object sender, EventArgs e)
@@ -91,6 +86,7 @@ namespace Sales_Tracker
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             MainMenu_Form.Instance.CloseDateRangePanel();
+            ResetControls();
         }
         private void Apply_Button_Click(object sender, EventArgs e)
         {

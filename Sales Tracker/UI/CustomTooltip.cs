@@ -37,7 +37,7 @@ namespace Sales_Tracker.UI
                 if (activeTooltip != null && activeTooltip != tooltip)
                 {
                     // Get the active form as the owner window
-                    Form? owner = Form.ActiveForm;
+                    Form owner = Form.ActiveForm;
                     if (owner != null)
                     {
                         activeTooltip.Hide(owner);
