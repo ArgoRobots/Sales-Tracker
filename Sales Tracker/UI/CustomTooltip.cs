@@ -9,7 +9,6 @@ namespace Sales_Tracker.UI
         // Properties
         private static readonly Dictionary<Control, Guna2HtmlToolTip> tooltips = [];
         private static Control? lastControl = null;
-        private static Guna2HtmlToolTip? activeTooltip = null;
 
         // Methods
         /// <summary>
@@ -37,23 +36,19 @@ namespace Sales_Tracker.UI
                 ReshowDelay = 100
             };
 
-            // Handle tooltip popup to ensure only one tooltip is visible at a time
+            // Only show the tooltip if the setting is true
             tooltip.Popup += (s, e) =>
             {
-                if (activeTooltip != null && activeTooltip != tooltip)
+                if (!Properties.Settings.Default.ShowTooltips)
                 {
-                    // Get the active form as the owner window
-                    Form owner = Form.ActiveForm;
-                    if (owner != null)
-                    {
-                        activeTooltip.Hide(owner);
-                    }
+                    e.Cancel = true;
+                    return;
                 }
-                activeTooltip = tooltip;
             };
 
             return tooltip;
         }
+
         /// <summary>
         /// Cleans up all tooltips and resets the tooltip system.
         /// Call this when starting the application or clearing up resources.
@@ -70,11 +65,12 @@ namespace Sales_Tracker.UI
                 tooltip.Dispose();
             }
             tooltips.Clear();
-            activeTooltip = null;
             lastControl = null;
         }
+
         /// <summary>
         /// Sets or updates a tooltip for a control with optional warning formatting.
+        /// Only shows tooltips if enabled in application settings.
         /// </summary>
         public static void SetToolTip(Control control, string title, string message)
         {
@@ -86,6 +82,10 @@ namespace Sales_Tracker.UI
                 // Handle mouse enter to manage tooltip visibility
                 control.MouseEnter += (s, e) =>
                 {
+                    // Only show tooltip if enabled in settings
+                    if (!Properties.Settings.Default.ShowTooltips) { return; }
+
+                    // Hide the previous tooltip if a new one is shown before it closes naturally
                     if (lastControl != control && lastControl != null)
                     {
                         if (tooltips.TryGetValue(lastControl, out Guna2HtmlToolTip? lastTooltip))

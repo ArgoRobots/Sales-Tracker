@@ -16,6 +16,13 @@ namespace Sales_Tracker.Classes
                 UpdateLanguage(includeGeneralFormForLanguage);
             }
 
+            // Check if show tooltips setting changed
+            if (Properties.Settings.Default.ShowTooltips != General_Form.Instance.ShowTooltips_CheckBox.Checked)
+            {
+                Properties.Settings.Default.ShowTooltips = General_Form.Instance.ShowTooltips_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the show tooltips setting");
+            }
+
             // Check if debug info setting changed
             if (Properties.Settings.Default.ShowDebugInfo != General_Form.Instance.ShowDebugInfo_CheckBox.Checked)
             {

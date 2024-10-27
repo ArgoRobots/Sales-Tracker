@@ -115,6 +115,7 @@ namespace Sales_Tracker.Settings.Menus
             Language_TextBox.Text = Properties.Settings.Default.Language;
             Currency_TextBox.Text = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             ColorTheme_ComboBox.Text = Theme.CurrentTheme.ToString();
+            ShowTooltips_CheckBox.Checked = Properties.Settings.Default.ShowTooltips;
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;
             SendAnonymousInformation_CheckBox.Checked = Properties.Settings.Default.SendAnonymousInformation;
             PurchaseReceipts_CheckBox.Checked = Properties.Settings.Default.PurchaseReceipts;
