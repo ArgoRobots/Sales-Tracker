@@ -24,9 +24,7 @@
 
 ## Installation
 1. Clone the repository to your local machine.
-2.	Open [Visual Studio Developer Command Prompt](https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022) as administrator. It should have been installed on your system when you installed Visual Studio.
-3.	Run the command:  ```devenv``` to open Visual Studio as administrator.
-4. Build the project by pressing ```Ctrl + Shift + B```.
+2. Build the project by pressing ```Ctrl + Shift + B```.
 
 ## Running the application
 After building the solution, press F5 to run the application in Debug mode, or Ctrl + F5 to run it in Release mode.
