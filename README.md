@@ -27,7 +27,7 @@
 2. Build the project by pressing ```Ctrl + Shift + B```.
 
 ## Running the application
-After building the solution, press F5 to run the application in Debug mode, or Ctrl + F5 to run it in Release mode.
+After building the solution, press F5 to run the application in Debug mode, or ```Ctrl + F5``` to run it in Release mode.
 
 To use the program effectively, follow these steps:
 1.	**Add an accountant**: The first step is to add an accountant that will be associated with the sales and purchases.
