@@ -2,9 +2,18 @@
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Static class responsible for handling currency-related operations including currency types,
+    /// symbols, and exchange rate calculations. Supports multiple international currencies and
+    /// provides real-time exchange rate data through the OpenExchangeRates API.
+    /// </summary>
     internal static class Currency
     {
-        // Ordered by how western the country is
+        /// <summary>
+        /// Enumeration of supported currency types, ordered by relative western geographic location.
+        /// Each entry represents a national or regional currency with its ISO 4217 three-letter code.
+        /// https://www.iso.org/iso-4217-currency-codes.html
+        /// </summary>
         public enum CurrencyTypes
         {
             USD,    // United States Dollar
@@ -33,6 +42,11 @@ namespace Sales_Tracker.Classes
             CNY,    // Chinese Yuan Renminbi
             TWD     // Taiwan Dollar
         }
+
+        /// <summary>
+        /// Dictionary mapping currency types to their corresponding symbols.
+        /// Provides quick lookup of currency symbols for display purposes.
+        /// </summary>
         private static readonly Dictionary<CurrencyTypes, string> CurrencySymbols = new()
         {
             { CurrencyTypes.USD, "$" },
@@ -61,10 +75,20 @@ namespace Sales_Tracker.Classes
             { CurrencyTypes.CNY, "¥" },
             { CurrencyTypes.TWD, "NT$" }
         };
+
+        /// <summary>
+        /// Gets a list of all supported currency type names.
+        /// </summary>
+        /// <returns>List of currency type names as strings.</returns>
         public static List<string> GetCurrencyTypesList()
         {
             return Enum.GetNames(typeof(CurrencyTypes)).ToList();
         }
+
+        /// <summary>
+        /// Gets the symbol for the default currency type set in application settings.
+        /// </summary>
+        /// <returns>Currency symbol as a string.</returns>
         public static string GetSymbol()
         {
             string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
@@ -80,8 +104,16 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// The date must be in yyyy-mm-dd format.
+        /// Retrieves the exchange rate between two currencies for a specific date using the OpenExchangeRates API.
         /// </summary>
+        /// <returns>
+        /// The exchange rate as a decimal value. Returns
+        /// 1 if source and target currencies are the same, or
+        /// -1 if an error occurs and the rate cannot be retrieved
+        /// </returns>
+        /// <remarks>
+        /// Requires an internet connection to access the OpenExchangeRates API.
+        /// </remarks>
         public static decimal GetExchangeRate(string sourceCurrency, string targetCurrency, string date, bool showErrorMessage = true)
         {
             if (sourceCurrency == targetCurrency) { return 1; }
@@ -131,10 +163,8 @@ namespace Sales_Tracker.Classes
             {
                 if (showErrorMessage)
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker",
-                        "It looks like you're not connected to the internet. Please check your connection and try again. A connection is needed to get the currency exchange rates",
-                        CustomMessageBoxIcon.Exclamation,
-                        CustomMessageBoxButtons.Ok);
+                    string message = "It looks like you're not connected to the internet. Please check your connection and try again. A connection is needed to get the currency exchange rates";
+                    CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 }
                 return -1;
             }

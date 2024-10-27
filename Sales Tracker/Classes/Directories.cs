@@ -4,6 +4,11 @@ using System.IO.Compression;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Static class responsible for managing file system operations and directory structures 
+    /// in the application. Handles file paths, directory creation/deletion,
+    /// and file operations including encryption and compression.
+    /// </summary>
     public static class Directories
     {
         // Directories
@@ -115,6 +120,9 @@ namespace Sales_Tracker.Classes
         }
 
         // Methods
+        /// <summary>
+        /// Initializes directory paths for a specific project.
+        /// </summary>
         public static void SetDirectories(string projectDir, string project_name)
         {
             Properties.Settings.Default.ProjectDirectory = projectDir;
@@ -173,8 +181,9 @@ namespace Sales_Tracker.Classes
 
         // Directories
         /// <summary>
-        /// Creates a directory.
+        /// Creates a new directory with optional hidden attribute.
         /// </summary>
+        /// <returns>True if directory was created successfully, false if it already exists</returns>
         public static bool CreateDirectory(string directory, bool hidden)
         {
             if (Directory.Exists(directory))
@@ -190,8 +199,9 @@ namespace Sales_Tracker.Classes
             }
             return true;
         }
+
         /// <summary>
-        /// Copies an existing directory to a new directory.
+        /// Recursively copies a directory and its contents to a new location.
         /// </summary>
         public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive, bool overWrite)
         {
@@ -229,9 +239,11 @@ namespace Sales_Tracker.Classes
                 }
             }
         }
+
         /// <summary>
-        /// Deletes a directory. If recursive is true, then the subdirectories will also be deleted.
+        /// Deletes a directory and optionally its contents.
         /// </summary>
+        /// <returns>True if directory was deleted successfully</returns>
         public static bool DeleteDirectory(string directory, bool recursive)
         {
             if (!Directory.Exists(directory))
@@ -264,9 +276,6 @@ namespace Sales_Tracker.Classes
         }
 
         // Files
-        /// <summary>
-        /// Creates a file.
-        /// </summary>
         public static bool CreateFile(string directory)
         {
             if (File.Exists(directory))
@@ -278,9 +287,6 @@ namespace Sales_Tracker.Classes
             File.Create(directory).Close();
             return true;
         }
-        /// <summary>
-        /// Copies a file.
-        /// </summary>
         public static bool CopyFile(string source, string destination)
         {
             if (!File.Exists(source))
@@ -297,9 +303,6 @@ namespace Sales_Tracker.Classes
             File.Copy(source, destination);
             return true;
         }
-        /// <summary>
-        /// Deletes a file.
-        /// </summary>
         public static bool DeleteFile(string directory)
         {
             if (!File.Exists(directory))
@@ -337,6 +340,9 @@ namespace Sales_Tracker.Classes
         }
 
         // Write to file
+        /// <summary>
+        /// Writes multiple lines to a file, creating the file if it doesn't exist.
+        /// </summary>
         public static void WriteLinesToFile(string filePath, IEnumerable<string> lines)
         {
             if (!File.Exists(filePath))
@@ -357,6 +363,10 @@ namespace Sales_Tracker.Classes
                 Log.Error_FailedToWriteToFile(filePath);
             }
         }
+
+        /// <summary>
+        /// Writes text to a file, creating the file if it doesn't exist.
+        /// </summary>
         public static void WriteTextToFile(string filePath, string content)
         {
             if (!File.Exists(filePath))
@@ -431,6 +441,7 @@ namespace Sales_Tracker.Classes
         // Tar files
         /// <summary>
         /// Creates an encrypted Argo Tar file from a directory.
+        /// Handles both encrypted and unencrypted file creation based on application settings.
         /// </summary>
         public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationFile, bool overwrite)
         {
@@ -606,49 +617,54 @@ namespace Sales_Tracker.Classes
             }
             throw new Exception("Path not found in the provided tar file string.");
         }
+
         /// <summary>
-        /// This also saves all.
+        /// Creates a backup of the current company project by saving all changes and creating a compressed archive.
+        /// Uses consistent naming convention to handle duplicates by appending " (2)", " (3)", etc.
         /// </summary>
-        public static void CreateBackup(string destinationDirectory, string fileExtension)
+        public static void CreateBackup(string destinationDirectory)
         {
             ArgoCompany.SaveAll();
 
-            string tarName = destinationDirectory;
-            string folderName = new DirectoryInfo(destinationDirectory).Name;
-            string newFileExtension = fileExtension;
+            string projectName = new DirectoryInfo(destinationDirectory).Name;
+            string backupDir = Path.GetDirectoryName(destinationDirectory);
+            string fileExtension = ArgoFiles.ArgoCompanyFileExtension;
 
-            if (fileExtension == ".ArgoProject")
+            // Get list of existing backup files (without extensions)
+            List<string> existingBackups = GetListOfAllFilesWithoutExtensionInDirectory(backupDir);
+
+            // Generate unique name if needed using consistent naming method
+            string uniqueName = projectName;
+            if (existingBackups.Contains(projectName))
             {
-                newFileExtension = ".zip";
+                uniqueName = Tools.AddNumberForAStringThatAlreadyExists(projectName, existingBackups);
             }
 
-            if (File.Exists(destinationDirectory + newFileExtension))
+            // Construct paths using the unique name
+            string uniqueBasePath = Path.Combine(backupDir, uniqueName);
+            string tempDirPath = uniqueBasePath;
+            string tempFilePath = Path.Combine(tempDirPath, projectName + fileExtension);
+            string finalZipPath = uniqueBasePath + ".zip";
+
+            // Create initial backup file
+            CopyFile(ArgoCompany_file, uniqueBasePath + fileExtension);
+
+            // Create temporary directory for zip processing
+            CreateDirectory(tempDirPath, true);
+
+            // Move backup file into temporary directory with correct name
+            MoveFile(uniqueBasePath + fileExtension, tempFilePath);
+
+            // Create zip archive from temporary directory
+            ZipFile.CreateFromDirectory(tempDirPath, finalZipPath);
+
+            Log.Write(4, $"Backed up '{uniqueName}'");
+
+            // Clean up temporary directory and files
+            if (Directory.Exists(tempDirPath))
             {
-                int count = 2;
-
-                while (true)
-                {
-                    if (!File.Exists(destinationDirectory + "-" + count + newFileExtension))
-                    {
-                        tarName = destinationDirectory + "-" + count;
-                        break;
-                    }
-                    count++;
-                }
+                DeleteDirectory(tempDirPath, true);
             }
-
-            // Copy the directory to the new location, and rename it so the tar file will have the new name
-            CopyFile(ArgoCompany_file, tarName + fileExtension);
-
-            // Move the file into a temp folder so it can be zipped. Use tarName to make sure the folder name does not already exist
-            CreateDirectory(tarName, true);
-            MoveFile(tarName + fileExtension, tarName + "\\" + folderName + fileExtension);
-
-            ZipFile.CreateFromDirectory(tarName, tarName + ".zip");
-
-            DeleteDirectory(tarName, true);
-
-            Log.Write(4, $"Backed up '{folderName}'");
         }
         /// <summary>
         /// Returns a list of all the files in the directory. Also remove the file extension.
@@ -680,15 +696,20 @@ namespace Sales_Tracker.Classes
                           .ToList();
         }
 
+        /// <summary>
+        /// Generates a new unique file name when a file already exists.
+        /// Appends a number to the filename to make it unique.
+        /// </summary>
+        /// <returns>New unique file name</returns>
         public static string GetNewFileNameIfItAlreadyExists(string filePath)
         {
-            string destinationDirectory = Path.GetDirectoryName(filePath);
-            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
-            string fileExtension = Path.GetExtension(filePath);
-
             // Check if the file already exists and get a new name if necessary
             if (File.Exists(filePath))
             {
+                string destinationDirectory = Path.GetDirectoryName(filePath);
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+                string fileExtension = Path.GetExtension(filePath);
+
                 List<string> filesList = GetListOfAllFilesWithoutExtensionInDirectory(destinationDirectory);
                 fileNameWithoutExtension = Tools.AddNumberForAStringThatAlreadyExists(fileNameWithoutExtension, filesList);
                 return Path.Combine(destinationDirectory, fileNameWithoutExtension + fileExtension);

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Handles file associations and icon registration for Argo Studio file types.
+    /// Handles file associations and icon registration for Argo Sales Tracker file types.
     /// </summary>
     internal partial class ArgoFiles
     {

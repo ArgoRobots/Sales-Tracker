@@ -5,20 +5,38 @@ using System.Text;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Static class responsible for managing company data files, project state, and file operations.
+    /// </summary>
     internal static class ArgoCompany
     {
+        /// <summary>
+        /// Static mutex used to ensure only one instance of a project can be open at a time.
+        /// </summary>
+        public static Mutex? applicationMutex = null;
+
+        /// <summary>
+        /// Initializes core components including encryption, cache files, and password management.
+        /// Run this when the program is started.
+        /// </summary>
         public static void InitThings()
         {
             EncryptionManager.Initialize();
             InitCacheFiles();
             PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
         }
+
+        /// <summary>
+        /// Initializes cache directory and global application settings file.
+        /// Creates necessary directories and files if they don't exist.
+        /// </summary>
         public static void InitCacheFiles()
         {
             if (!Directory.Exists(Directories.Cache_dir))
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
             }
+
             if (!File.Exists(Directories.GlobalAppDataSettings_file))
             {
                 Directories.CreateFile(Directories.GlobalAppDataSettings_file);
@@ -27,6 +45,9 @@ namespace Sales_Tracker.Classes
             }
         }
 
+        /// <summary>
+        /// Saves all current company data to a tar file and resets change tracking.
+        /// </summary>
         public static void SaveAll()
         {
             Directories.CreateArgoTarFileFromDirectory(Directories.TempCompany_dir, Directories.ArgoCompany_file, true);
@@ -36,6 +57,10 @@ namespace Sales_Tracker.Classes
             DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
             Properties.Settings.Default.Save();
         }
+
+        /// <summary>
+        /// Prompts user to select a location and saves the company data to a new location.
+        /// </summary>
         public static void SaveAs()
         {
             // Select folder
@@ -50,6 +75,11 @@ namespace Sales_Tracker.Classes
                 Directories.CopyFile(Directories.ArgoCompany_file, dialog.SelectedPath + Directories.CompanyName + ArgoFiles.ArgoCompanyFileExtension);
             }
         }
+
+        /// <summary>
+        /// Checks if any changes have been made across all forms in the application.
+        /// </summary>
+        /// <returns>True if any changes have been made, false otherwise.</returns>
         public static bool AreAnyChangesMade()
         {
             if (MainMenu_Form.ThingsThatHaveChangedInFile.Count > 0 ||
@@ -65,6 +95,10 @@ namespace Sales_Tracker.Classes
             }
             return false;
         }
+
+        /// <summary>
+        /// Resets all change tracking collections across all forms.
+        /// </summary>
         public static void ResetChanges()
         {
             MainMenu_Form.ThingsThatHaveChangedInFile.Clear();
@@ -76,6 +110,10 @@ namespace Sales_Tracker.Classes
             AddSale_Form.ThingsThatHaveChangedInFile.Clear();
             AddPurchase_Form.ThingsThatHaveChangedInFile.Clear();
         }
+
+        /// <summary>
+        /// Opens a dialog for selecting and opening an existing company file.
+        /// </summary>
         public static void OpenCompany()
         {
             // Select file
@@ -99,6 +137,11 @@ namespace Sales_Tracker.Classes
                 GetStarted_Form.Instance.ShowMainMenu();
             }
         }
+
+        /// <summary>
+        /// Opens a company file at the specified location.
+        /// </summary>
+        /// <returns>True if successfully opened, false otherwise</returns>
         private static bool Open(string filePath, string name)
         {
             Directories.SetDirectories(filePath, Path.GetFileNameWithoutExtension(name));
@@ -113,12 +156,17 @@ namespace Sales_Tracker.Classes
             // Save recently opened projects
             DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
 
+            // Import company data
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
             Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
             DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
 
             return true;
         }
+
+        /// <summary>
+        /// Renames the company project and updates all associated files and directories.
+        /// </summary>
         public static void Rename(string name)
         {
             string newFile = Directories.ArgoCompany_dir + name + ArgoFiles.ArgoCompanyFileExtension;
@@ -133,6 +181,10 @@ namespace Sales_Tracker.Classes
             // Update recently opened projects
             DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
         }
+
+        /// <summary>
+        /// Clears all cached data and displays the amount of space cleared.
+        /// </summary>
         public static void ClearCache()
         {
             string directoryPath = Directories.Cache_dir;
@@ -160,6 +212,11 @@ namespace Sales_Tracker.Classes
                 CustomMessageBox.Show("Argo Sales Tracker", $"No cache to clear", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
         }
+
+        /// <summary>
+        /// Opens a new project when another project is already open. Handles saving current
+        /// project changes if necessary.
+        /// </summary>
         public static void OpenProjectWhenAProgramIsAlreadyOpen()
         {
             // Select file
@@ -223,6 +280,11 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView, ReadOnlyVariables.NoResults_text);
             }
         }
+
+        /// <summary>
+        /// Checks if any rows in the given DataGridView are visible.
+        /// </summary>
+        /// <returns>True if any rows are visible, false otherwise</returns>
         private static bool AreRowsVisible(DataGridView dataGridView)
         {
             foreach (DataGridViewRow row in dataGridView.Rows)
@@ -234,7 +296,11 @@ namespace Sales_Tracker.Classes
             }
             return false;
         }
-        public static Mutex? applicationMutex = null;
+
+        /// <summary>
+        /// Ensures only one instance of a project can be open at a time.
+        /// </summary>
+        /// <returns>True if this is the only instance, false if another instance exists</returns>
         public static bool OnlyAllowOneInstanceOfAProject(string projectFilePath)
         {
             if (!CreateMutex(projectFilePath))
@@ -266,6 +332,11 @@ namespace Sales_Tracker.Classes
             }
             return false;
         }
+
+        /// <summary>
+        /// Generates a unique identifier for a project based on its file path.
+        /// </summary>
+        /// <returns>Base64 encoded unique identifier</returns>
         public static string GetUniqueProjectIdentifier(string projectFilePath)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(projectFilePath));

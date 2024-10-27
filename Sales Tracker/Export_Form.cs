@@ -120,7 +120,7 @@ namespace Sales_Tracker
             switch (fileType)
             {
                 case "ArgoSales (.zip)":
-                    Directories.CreateBackup(filePath, ArgoFiles.ArgoCompanyFileExtension);
+                    Directories.CreateBackup(filePath);
                     FinalizeExport($"Successfully backed up '{Directories.CompanyName}'");
                     break;
 

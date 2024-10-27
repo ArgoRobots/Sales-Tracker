@@ -8,12 +8,12 @@ namespace Sales_Tracker.Classes
 {
     internal class UserSettings
     {
-        public static void SaveUserSettings(bool includeGeneralForm)
+        public static void SaveUserSettings(bool includeGeneralFormForLanguage)
         {
             // Check if language changed
             if (Properties.Settings.Default.Language != General_Form.Instance.Language_TextBox.Text)
             {
-                UpdateLanguage(includeGeneralForm);
+                UpdateLanguage(includeGeneralFormForLanguage);
             }
 
             // Check if debug info setting changed
