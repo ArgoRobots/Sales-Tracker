@@ -50,25 +50,6 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Cleans up all tooltips and resets the tooltip system.
-        /// Call this when starting the application or clearing up resources.
-        /// </summary>
-        public static void InitializeTooltip()
-        {
-            foreach (Guna2HtmlToolTip tooltip in tooltips.Values)
-            {
-                Form owner = Form.ActiveForm;
-                if (owner != null)
-                {
-                    tooltip.Hide(owner);
-                }
-                tooltip.Dispose();
-            }
-            tooltips.Clear();
-            lastControl = null;
-        }
-
-        /// <summary>
         /// Sets or updates a tooltip for a control with optional warning formatting.
         /// Only shows tooltips if enabled in application settings.
         /// </summary>
@@ -79,49 +60,52 @@ namespace Sales_Tracker.UI
                 tooltip = CreateTooltip();
                 tooltips[control] = tooltip;
 
-                // Handle mouse enter to manage tooltip visibility
-                control.MouseEnter += (s, e) =>
-                {
-                    // Only show tooltip if enabled in settings
-                    if (!Properties.Settings.Default.ShowTooltips) { return; }
-
-                    // Hide the previous tooltip if a new one is shown before it closes naturally
-                    if (lastControl != control && lastControl != null)
-                    {
-                        if (tooltips.TryGetValue(lastControl, out Guna2HtmlToolTip? lastTooltip))
-                        {
-                            lastTooltip.Hide(lastControl);
-                        }
-                    }
-                    lastControl = control;
-                };
-
-                // Handle mouse leave with delayed hiding
-                control.MouseLeave += (s, e) =>
-                {
-                    if (tooltips.TryGetValue(control, out Guna2HtmlToolTip? currentTooltip))
-                    {
-                        // Add delay to prevent flickering when moving mouse quickly
-                        Task.Delay(50).ContinueWith(_ =>
-                        {
-                            control.BeginInvoke(() =>
-                            {
-                                if (!control.ClientRectangle.Contains(control.PointToClient(Control.MousePosition)))
-                                {
-                                    currentTooltip.Hide(control);
-                                    if (lastControl == control)
-                                    {
-                                        lastControl = null;
-                                    }
-                                }
-                            });
-                        });
-                    }
-                };
+                control.MouseEnter += Control_MouseEnter;
+                control.MouseLeave += Control_MouseLeave;
             }
 
             tooltip.ToolTipTitle = title;
             tooltip.SetToolTip(control, message);
+        }
+        private static void Control_MouseEnter(object sender, EventArgs e)
+        {
+            Control control = (Control)sender;
+
+            // Only show tooltip if enabled in settings
+            if (!Properties.Settings.Default.ShowTooltips) { return; }
+
+            // Hide the previous tooltip if a new one is shown before it closes naturally
+            if (lastControl != control && lastControl != null)
+            {
+                if (tooltips.TryGetValue(lastControl, out Guna2HtmlToolTip? lastTooltip))
+                {
+                    lastTooltip.Hide(lastControl);
+                }
+            }
+            lastControl = control;
+        }
+        private static void Control_MouseLeave(object sender, EventArgs e)
+        {
+            Control control = (Control)sender;
+
+            if (tooltips.TryGetValue(control, out Guna2HtmlToolTip? currentTooltip))
+            {
+                // Add delay to prevent flickering when moving mouse quickly
+                Task.Delay(50).ContinueWith(_ =>
+                {
+                    control.BeginInvoke(() =>
+                    {
+                        if (!control.ClientRectangle.Contains(control.PointToClient(Control.MousePosition)))
+                        {
+                            currentTooltip.Hide(control);
+                            if (lastControl == control)
+                            {
+                                lastControl = null;
+                            }
+                        }
+                    });
+                });
+            }
         }
     }
 }
