@@ -1,6 +1,9 @@
 ﻿using Guna.UI2.WinForms;
 namespace Sales_Tracker.UI
 {
+    /// <summary>
+    /// Provides custom tooltip functionality.
+    /// </summary>
     public static class CustomTooltip
     {
         // Properties
@@ -9,6 +12,9 @@ namespace Sales_Tracker.UI
         private static Guna2HtmlToolTip? activeTooltip = null;
 
         // Methods
+        /// <summary>
+        /// Creates and configures a new Guna2HtmlToolTip instance.
+        /// </summary>
         private static Guna2HtmlToolTip CreateTooltip()
         {
             Guna2HtmlToolTip tooltip = new()
@@ -31,7 +37,7 @@ namespace Sales_Tracker.UI
                 ReshowDelay = 100
             };
 
-            // Add mouse enter/leave handlers to manage tooltip visibility
+            // Handle tooltip popup to ensure only one tooltip is visible at a time
             tooltip.Popup += (s, e) =>
             {
                 if (activeTooltip != null && activeTooltip != tooltip)
@@ -48,6 +54,10 @@ namespace Sales_Tracker.UI
 
             return tooltip;
         }
+        /// <summary>
+        /// Cleans up all tooltips and resets the tooltip system.
+        /// Call this when starting the application or clearing up resources.
+        /// </summary>
         public static void InitializeTooltip()
         {
             foreach (Guna2HtmlToolTip tooltip in tooltips.Values)
@@ -63,6 +73,9 @@ namespace Sales_Tracker.UI
             activeTooltip = null;
             lastControl = null;
         }
+        /// <summary>
+        /// Sets or updates a tooltip for a control with optional warning formatting.
+        /// </summary>
         public static void SetToolTip(Control control, string title, string message)
         {
             if (!tooltips.TryGetValue(control, out Guna2HtmlToolTip? tooltip))
@@ -70,7 +83,7 @@ namespace Sales_Tracker.UI
                 tooltip = CreateTooltip();
                 tooltips[control] = tooltip;
 
-                // Add mouse enter handler to the control
+                // Handle mouse enter to manage tooltip visibility
                 control.MouseEnter += (s, e) =>
                 {
                     if (lastControl != control && lastControl != null)
@@ -83,12 +96,12 @@ namespace Sales_Tracker.UI
                     lastControl = control;
                 };
 
-                // Add mouse leave handler to the control
+                // Handle mouse leave with delayed hiding
                 control.MouseLeave += (s, e) =>
                 {
                     if (tooltips.TryGetValue(control, out Guna2HtmlToolTip? currentTooltip))
                     {
-                        // Add a small delay before hiding to prevent flickering
+                        // Add delay to prevent flickering when moving mouse quickly
                         Task.Delay(50).ContinueWith(_ =>
                         {
                             control.BeginInvoke(() =>
