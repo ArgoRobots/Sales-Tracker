@@ -77,7 +77,7 @@ namespace Sales_Tracker
             HideShowingResultsForLabel();
             AlignTotalLabels();
             UpdateTotals();
-            InitClickChartsManager();
+            MouseClickChartManager.InitCharts([Totals_Chart, Distribution_Chart, Profits_Chart]);
             InitTimeRangePanel();
         }
         private void SetToolTips()
@@ -339,23 +339,6 @@ namespace Sales_Tracker
             PaymentFee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
             Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-        }
-        private void InitClickChartsManager()
-        {
-            GunaChart[] charts = [Totals_Chart, Distribution_Chart, Profits_Chart];
-
-            void leftClickAction(GunaChart chart)
-            {
-                Point localMousePosition = rightClickGunaChart_Panel.PointToClient(MousePosition);
-
-                // Check if the mouse click occurred inside the panel or any of its controls
-                if (!rightClickGunaChart_Panel.DisplayRectangle.Contains(localMousePosition))
-                {
-                    CloseAllPanels(null, null);
-                }
-            }
-
-            MouseClickChartManager.Initialize(charts, leftClickAction, ShowRightClickChartMenu);
         }
 
         // Form event handlers
@@ -1720,6 +1703,10 @@ namespace Sales_Tracker
 
             CenterAndResizeControls();
         }
+
+        /// <summary>
+        /// Constructs statistics charts if they have not been constructed already.
+        /// </summary>
         private void ConstructControlsForStatistics()
         {
             if (countriesOfOrigin_Chart != null)
@@ -1744,8 +1731,7 @@ namespace Sales_Tracker
                 averageOrderValue_Chart
             ];
 
-            void leftClickAction(GunaChart statisticsControls) => CloseAllPanels(null, null);
-            MouseClickChartManager.Initialize(statisticsCharts.ToArray(), leftClickAction, ShowRightClickChartMenu);
+            MouseClickChartManager.InitCharts(statisticsCharts.ToArray());
         }
         private static GunaChart ConstructStatisticsChart(int top, string title, string name)
         {
@@ -1808,63 +1794,6 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
         }
 
-        // Right click Guna chart menu
-        private static Guna2Panel rightClickGunaChart_Panel;
-        public void ConstructRightClickGunaChartMenu()
-        {
-            rightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth - 50, 2 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickGunaChart_Panel");
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)rightClickGunaChart_Panel.Controls[0];
-            int newBtnWidth = CustomControls.PanelBtnWidth - 50;
-            Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, false, flowPanel);
-            button.Click += ResetZoom;
-
-            button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, false, flowPanel);
-            button.Click += SaveImage;
-        }
-        private void ResetZoom(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-
-            //GunaChart chart = (GunaChart)rightClickGunaChart_Panel.Tag;
-            // Wait until the next update for Guna Charts to implement this
-            //chart.ResetZoom();
-        }
-        private void SaveImage(object sender, EventArgs e)
-        {
-            CloseAllPanels(null, null);
-
-            GunaChart chart = (GunaChart)rightClickGunaChart_Panel.Tag;
-            string filepath;
-
-            // Select folder
-            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                string date = Tools.FormatDate(DateTime.Now);
-                filepath = dialog.SelectedPath + @"\" + chart.Title.Text + "-" + date + ArgoFiles.PngFileExtension;
-            }
-            else { return; }
-
-            MessageBox.Show(filepath);
-
-            // Wait until the next update for Guna Charts to implement this
-            //chart.Export();
-        }
-        private void ShowRightClickChartMenu(GunaChart chart, Point mousePosition)
-        {
-            Point localMousePosition = PointToClient(mousePosition);
-
-            rightClickGunaChart_Panel.Location = new Point(
-                localMousePosition.X - ReadOnlyVariables.OffsetRightClickPanel,
-               localMousePosition.Y);
-
-            Controls.Add(rightClickGunaChart_Panel);
-            rightClickGunaChart_Panel.BringToFront();
-
-            rightClickGunaChart_Panel.Tag = chart;
-        }
-
         // Settings
         private Settings_Form settingsForm;
         public void OpenSettingsMenu()
@@ -1918,7 +1847,7 @@ namespace Sales_Tracker
         public void ClosePanels()
         {
             DataGridViewManager.ControlRightClickPanelWasAddedTo?.Controls.Remove(DataGridViewManager.RightClickDataGridView_Panel);
-            Controls.Remove(rightClickGunaChart_Panel);
+            Controls.Remove(RightClickGunaChartMenu.RightClickGunaChart_Panel);
             DataGridViewManager.DoNotDeleteRows = false;
         }
         private void CloseAllPanels(object sender, EventArgs? e)

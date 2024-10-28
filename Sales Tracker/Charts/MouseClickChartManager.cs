@@ -1,6 +1,7 @@
 ﻿using Guna.Charts.WinForms;
+using Sales_Tracker.UI;
 
-namespace Sales_Tracker.UI
+namespace Sales_Tracker.Charts
 {
     /// <summary>
     /// Manages mouse click detection for GunaChart controls and invokes specific actions
@@ -17,7 +18,12 @@ namespace Sales_Tracker.UI
         /// Initializes the click manager for specified GunaChart controls and assigns
         /// actions to be called on left and right mouse clicks.
         /// </summary>
-        public static void Initialize(GunaChart[] charts, Action<GunaChart> onLeftClick, Action<GunaChart, Point> onRightClick)
+        public static void InitCharts(GunaChart[] charts)
+        {
+            static void leftClickAction(GunaChart statisticsControls) => CustomControls.CloseAllPanels(null, null);
+            Initialize(charts, leftClickAction, RightClickGunaChartMenu.ShowMenu);
+        }
+        private static void Initialize(GunaChart[] charts, Action<GunaChart> onLeftClick, Action<GunaChart, Point> onRightClick)
         {
             // Add new charts to the collection
             foreach (GunaChart chart in charts)

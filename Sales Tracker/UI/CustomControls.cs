@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.ImportSpreadsheet;
@@ -19,8 +20,10 @@ namespace Sales_Tracker.UI
             ConstructAccountMenu();
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
+
+            // Other controls
             DataGridViewManager.ConstructRightClickRowMenu();
-            MainMenu_Form.Instance.ConstructRightClickGunaChartMenu();
+            RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
 
             // Set language
             LanguageManager.UpdateLanguageForControl(_fileMenu);
