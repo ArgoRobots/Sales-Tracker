@@ -5,24 +5,26 @@ namespace Sales_Tracker.DataClasses
     public class ReadOnlyVariables
     {
         // Properties
-        private static readonly string emptyCell = "-",
-            multipleItems_text = "Multiple items",
-            receipt_text = "receipt:",
-            show_text = "show",
-            companyName_text = "CompanyName",
-            noData_text = "No data",
-            noResults_text = "No results";
+        private static readonly string _emptyCell = "-",
+            _multipleItems_text = "Multiple items",
+            _receipt_text = "receipt:",
+            _show_text = "show",
+            _companyName_text = "CompanyName",
+            _noData_text = "No data",
+            _noResults_text = "No results";
 
-        private static readonly byte offsetRightClickPanel = 30;
+        private static readonly byte _offsetRightClickPanel = 30;
+        private static readonly byte _paddingRightClickPanel = 5;
 
         // Getters
-        public static string EmptyCell => emptyCell;
-        public static string MultipleItems_text => multipleItems_text;
-        public static string Receipt_text => receipt_text;
-        public static string Show_text => show_text;
-        public static string CompanyName_text => companyName_text;
-        public static string NoData_text => noData_text;
-        public static string NoResults_text => noResults_text;
-        public static byte OffsetRightClickPanel => offsetRightClickPanel;
+        public static string EmptyCell => _emptyCell;
+        public static string MultipleItems_text => _multipleItems_text;
+        public static string Receipt_text => _receipt_text;
+        public static string Show_text => _show_text;
+        public static string CompanyName_text => _companyName_text;
+        public static string NoData_text => _noData_text;
+        public static string NoResults_text => _noResults_text;
+        public static byte OffsetRightClickPanel => _offsetRightClickPanel;
+        public static byte PaddingRightClickPanel => _paddingRightClickPanel;
     }
 }

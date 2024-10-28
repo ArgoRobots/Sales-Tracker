@@ -71,15 +71,39 @@ namespace Sales_Tracker.Charts
         {
             if (chart == null) { return; }
 
-            Control parentControl = chart.Parent;
+            Point localMousePosition = chart.Parent.PointToClient(mousePosition);
+            int formWidth = chart.Parent.ClientSize.Width;
+            int formHeight = chart.Parent.ClientSize.Height;
+            byte offset = ReadOnlyVariables.OffsetRightClickPanel;
+            byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
-            Point localMousePosition = parentControl.PointToClient(mousePosition);
-            _rightClickGunaChart_Panel.Location = new Point(
-                localMousePosition.X - ReadOnlyVariables.OffsetRightClickPanel,
-                localMousePosition.Y
-            );
+            // Calculate the horizontal position
+            bool tooFarRight = false;
+            if (_rightClickGunaChart_Panel.Width + localMousePosition.X - offset + padding > formWidth)
+            {
+                _rightClickGunaChart_Panel.Left = formWidth - _rightClickGunaChart_Panel.Width - padding;
+                tooFarRight = true;
+            }
+            else
+            {
+                _rightClickGunaChart_Panel.Left = localMousePosition.X - offset;
+            }
 
-            parentControl.Controls.Add(_rightClickGunaChart_Panel);
+            // Calculate the vertical position
+            if (localMousePosition.Y + _rightClickGunaChart_Panel.Height + padding > formHeight)
+            {
+                _rightClickGunaChart_Panel.Top = formHeight - _rightClickGunaChart_Panel.Height - padding;
+                if (!tooFarRight)
+                {
+                    _rightClickGunaChart_Panel.Left += offset;
+                }
+            }
+            else
+            {
+                _rightClickGunaChart_Panel.Top = localMousePosition.Y;
+            }
+
+            chart.Parent.Controls.Add(_rightClickGunaChart_Panel);
             _rightClickGunaChart_Panel.BringToFront();
             _rightClickGunaChart_Panel.Tag = chart;
         }

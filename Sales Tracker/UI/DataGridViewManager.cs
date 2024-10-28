@@ -409,7 +409,7 @@ namespace Sales_Tracker.UI
                 Form parentForm = grid.FindForm();
                 int formHeight = parentForm.ClientSize.Height;
                 int formWidth = parentForm.ClientSize.Width;
-                byte padding = 5;
+                byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
                 // Calculate the horizontal position
                 bool tooFarRight = false;

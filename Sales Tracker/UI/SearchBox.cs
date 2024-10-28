@@ -7,6 +7,10 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.UI
 {
+    /// <summary>
+    /// Provides functionality for creating and managing an interactive search box with auto-complete capabilities.
+    /// The search box supports keyboard navigation and debounced search.
+    /// </summary>
     public class SearchBox
     {
         // Properties
@@ -25,8 +29,8 @@ namespace Sales_Tracker.UI
             int maxHeight, bool allowTextBoxEmpty = true)
         {
             textBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            textBox.Click += (sender, e) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
-            textBox.GotFocus += (sender, e) =>
+            textBox.Click += delegate { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
+            textBox.GotFocus += delegate
             {
                 if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
                 {
