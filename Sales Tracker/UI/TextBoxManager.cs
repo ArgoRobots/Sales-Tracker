@@ -13,7 +13,7 @@ namespace Sales_Tracker.UI
         private static readonly Dictionary<Guna2TextBox, Stack<string>> undoStacks = [];
         private static readonly Dictionary<Guna2TextBox, Stack<string>> redoStacks = [];
         private static readonly Dictionary<Guna2TextBox, bool> isTextChangedByUserFlags = [];
-        private const int maxStackSize = 250;
+        private const byte maxStackSize = 250;
 
         /// <summary>
         /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
@@ -69,236 +69,53 @@ namespace Sales_Tracker.UI
             }
         }
 
-        // <summary>
         /// Handles KeyDown event for keyboard shortcuts and text manipulation.
         /// </summary>
         private static void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Guna2TextBox textBox = (Guna2TextBox)sender;
-
-            if (e.Control || e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
+            // Handle Ctrl+Y separately to prevent the "ding" sound
+            if (e.Control && e.KeyCode == Keys.Y)
             {
-                e.SuppressKeyPress = true;  // Remove Windows "ding" noise
+                e.SuppressKeyPress = true;
+                Guna2TextBox textBox = (Guna2TextBox)sender;
+                Redo(textBox);
+                return;
             }
 
-            if (e.Control)
+            // Only suppress invalid keys that would cause a "ding"
+            // Don't suppress regular typing or valid shortcuts
+            if (!IsInputKey(e.KeyCode) && !e.Control)
             {
-                if (e.Shift)
-                {
-                    HandleCtrlShiftSelection(textBox, e);
-                }
-                else if (IsArrowKey(e.KeyCode))
-                {
-                    HandleCtrlCursorMovement(textBox, e);
-                }
-                else
-                {
-                    HandleKeyboardShortcut(textBox, e);
-                }
+                e.SuppressKeyPress = true;
             }
-            else if (e.Shift)
+            else
             {
-                HandleShiftSelection(textBox, e);
+                Guna2TextBox textBox = (Guna2TextBox)sender;
+                HandleKeyboardShortcut(textBox, e);
             }
         }
-
-        /// <summary>
-        /// Checks if the key is an arrow key.
-        /// </summary>
-        private static bool IsArrowKey(Keys key)
+        private static bool IsInputKey(Keys keyData)
         {
-            return key == Keys.Left || key == Keys.Right;
-        }
-
-        /// <summary>
-        /// Handles Ctrl + arrow key combinations for word-by-word cursor movement.
-        /// </summary>
-        private static void HandleCtrlCursorMovement(Guna2TextBox textBox, KeyEventArgs e)
-        {
-            string text = textBox.Text;
-            int currentPos = textBox.SelectionStart;
-
-            switch (e.KeyCode)
+            switch (keyData)
             {
+                case Keys.Tab:
+                case Keys.Enter:
+                case Keys.Escape:
                 case Keys.Left:
-                    textBox.SelectionStart = FindPreviousWordStart(text, currentPos);
-                    textBox.SelectionLength = 0;
-                    e.Handled = true;
-                    break;
-
                 case Keys.Right:
-                    if (textBox.SelectionLength > 0)
-                    {
-                        currentPos += textBox.SelectionLength;
-                    }
-                    textBox.SelectionStart = FindNextWordEnd(text, currentPos);
-                    textBox.SelectionLength = 0;
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Handles Shift key combinations for character-level text selection.
-        /// </summary>
-        private static void HandleShiftSelection(Guna2TextBox textBox, KeyEventArgs e)
-        {
-            int selStart = textBox.SelectionStart;
-            int selLength = textBox.SelectionLength;
-
-            switch (e.KeyCode)
-            {
-                case Keys.Left:
-                    if (selStart > 0)
-                    {
-                        if (textBox.SelectionLength == 0)
-                        {
-                            textBox.SelectionStart = selStart - 1;
-                            textBox.SelectionLength = 1;
-                        }
-                        else
-                        {
-                            if (selStart == textBox.SelectionStart)
-                            {
-                                textBox.SelectionStart = selStart - 1;
-                                textBox.SelectionLength = selLength + 1;
-                            }
-                            else
-                            {
-                                textBox.SelectionLength = selLength - 1;
-                            }
-                        }
-                    }
-                    e.Handled = true;
-                    break;
-
-                case Keys.Right:
-                    if (selStart < textBox.Text.Length)
-                    {
-                        if (textBox.SelectionLength == 0)
-                        {
-                            textBox.SelectionLength = 1;
-                        }
-                        else
-                        {
-                            if (selStart == textBox.SelectionStart)
-                            {
-                                textBox.SelectionLength = selLength - 1;
-                            }
-                            else
-                            {
-                                textBox.SelectionLength = selLength + 1;
-                            }
-                        }
-                    }
-                    e.Handled = true;
-                    break;
-
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Delete:
+                case Keys.Back:
                 case Keys.Home:
-                    int currentPos = textBox.SelectionStart + textBox.SelectionLength;
-                    textBox.SelectionStart = 0;
-                    textBox.SelectionLength = currentPos;
-                    e.Handled = true;
-                    break;
-
                 case Keys.End:
-                    textBox.SelectionLength = textBox.Text.Length - textBox.SelectionStart;
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Handles Ctrl+Shift key combinations for word-level text selection.
-        /// </summary>
-        private static void HandleCtrlShiftSelection(Guna2TextBox textBox, KeyEventArgs e)
-        {
-            string text = textBox.Text;
-            int selStart = textBox.SelectionStart;
-            int selLength = textBox.SelectionLength;
-
-            switch (e.KeyCode)
-            {
-                case Keys.Left:
-                    int wordStart = FindPreviousWordStart(text, selStart);
-                    if (selLength == 0)
-                    {
-                        textBox.SelectionStart = wordStart;
-                        textBox.SelectionLength = selStart - wordStart;
-                    }
-                    else if (selStart == textBox.SelectionStart)
-                    {
-                        textBox.SelectionStart = wordStart;
-                        textBox.SelectionLength = selLength + (selStart - wordStart);
-                    }
-                    else
-                    {
-                        textBox.SelectionLength = selLength - (selStart - wordStart);
-                    }
-                    e.Handled = true;
-                    break;
-
-                case Keys.Right:
-                    int wordEnd = FindNextWordEnd(text, selStart + selLength);
-                    if (selLength == 0)
-                    {
-                        textBox.SelectionLength = wordEnd - selStart;
-                    }
-                    else if (selStart == textBox.SelectionStart)
-                    {
-                        textBox.SelectionLength = selLength - (wordEnd - (selStart + selLength));
-                    }
-                    else
-                    {
-                        textBox.SelectionLength = selLength + (wordEnd - (selStart + selLength));
-                    }
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Finds the starting position of the previous word.
-        /// </summary>
-        private static int FindPreviousWordStart(string text, int currentPos)
-        {
-            if (currentPos <= 0) return 0;
-
-            // Skip spaces before the current position
-            while (currentPos > 0 && char.IsWhiteSpace(text[currentPos - 1]))
-            {
-                currentPos--;
+                    return true;
             }
 
-            // Find the start of the current word
-            while (currentPos > 0 && !char.IsWhiteSpace(text[currentPos - 1]))
-            {
-                currentPos--;
-            }
-
-            return currentPos;
-        }
-
-        /// <summary>
-        /// Finds the ending position of the next word.
-        /// </summary>
-        private static int FindNextWordEnd(string text, int currentPos)
-        {
-            if (currentPos >= text.Length) return text.Length;
-
-            // Skip spaces after the current position
-            while (currentPos < text.Length && char.IsWhiteSpace(text[currentPos]))
-            {
-                currentPos++;
-            }
-
-            // Find the end of the current word
-            while (currentPos < text.Length && !char.IsWhiteSpace(text[currentPos]))
-            {
-                currentPos++;
-            }
-
-            return currentPos;
+            char keyChar = (char)keyData;
+            return char.IsLetterOrDigit(keyChar) ||
+                   char.IsPunctuation(keyChar) ||
+                   char.IsWhiteSpace(keyChar);
         }
 
         /// <summary>
@@ -308,100 +125,11 @@ namespace Sales_Tracker.UI
         {
             switch (e.KeyCode)
             {
-                case Keys.A:
-                    SelectAllText(textBox);
-                    break;
-
-                case Keys.C:
-                    CopySelectedText(textBox);
-                    break;
-
-                case Keys.X:
-                    CutSelectedText(textBox);
-                    break;
-
-                case Keys.V:
-                    PasteText(textBox);
-                    break;
-
                 case Keys.Z:
                     if (e.Shift) { Redo(textBox); }
                     else { Undo(textBox); }
                     break;
-
-                case Keys.Y:
-                    Redo(textBox);
-                    break;
             }
-        }
-
-        /// <summary>
-        /// Selects all text in the TextBox.
-        /// </summary>
-        private static void SelectAllText(Guna2TextBox textBox)
-        {
-            textBox.SelectAll();
-        }
-
-        /// <summary>
-        /// Copies selected text to clipboard if any text is selected.
-        /// </summary>
-        private static void CopySelectedText(Guna2TextBox textBox)
-        {
-            if (HasSelectedText(textBox))
-            {
-                Clipboard.SetText(textBox.SelectedText);
-            }
-        }
-
-        /// <summary>
-        /// Cuts selected text to clipboard if any text is selected.
-        /// </summary>
-        private static void CutSelectedText(Guna2TextBox textBox)
-        {
-            if (HasSelectedText(textBox))
-            {
-                Clipboard.SetText(textBox.SelectedText);
-                RemoveSelectedText(textBox);
-            }
-        }
-
-        /// <summary>
-        /// Pastes text from clipboard at current cursor position.
-        /// </summary>
-        private static void PasteText(Guna2TextBox textBox)
-        {
-            if (!Clipboard.ContainsText()) return;
-
-            int selectionStart = textBox.SelectionStart;
-            string clipboardText = Clipboard.GetText();
-
-            InsertTextAtCursor(textBox, clipboardText);
-            SetCursorPosition(textBox, selectionStart + clipboardText.Length);
-        }
-
-        /// <summary>
-        /// Checks if the TextBox has any text selected.
-        /// </summary>
-        private static bool HasSelectedText(Guna2TextBox textBox)
-        {
-            return !string.IsNullOrEmpty(textBox.SelectedText);
-        }
-
-        /// <summary>
-        /// Removes the currently selected text.
-        /// </summary>
-        private static void RemoveSelectedText(Guna2TextBox textBox)
-        {
-            textBox.SelectedText = string.Empty;
-        }
-
-        /// <summary>
-        /// Inserts text at the current cursor position.
-        /// </summary>
-        private static void InsertTextAtCursor(Guna2TextBox textBox, string text)
-        {
-            textBox.SelectedText = text;
         }
 
         /// <summary>

@@ -53,38 +53,38 @@ namespace Sales_Tracker.Startup.Menus
             byte searchBoxMaxHeight = 200;
 
             TextBoxManager.Attach(ProjectName_TextBox);
-            ProjectName_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+            ProjectName_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
 
             TextBoxManager.Attach(Directory_TextBox);
-            Directory_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+            Directory_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
 
             TextBoxManager.Attach(Currency_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
             SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight);
-            Currency_TextBox.TextChanged += (sender, e) => { ValidateInputs(); };
+            Currency_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
         }
         private void SetDefaultTextInTextBoxes()
         {
-            // Set default name. Choose a name that doesn't already exist in the directory
-            if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName") &&
-                !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName" + ArgoFiles.ArgoCompanyFileExtension))
+            string defaultName = "CompanyName";
+            List<string> existingNames = [];
+
+            string[] directories = Directory.GetDirectories(Properties.Settings.Default.ProjectDirectory);
+            string[] files = Directory.GetFiles(Properties.Settings.Default.ProjectDirectory, "*" + ArgoFiles.ArgoCompanyFileExtension);
+
+            foreach (string dir in directories)
             {
-                ProjectName_TextBox.Text = "CompanyName";
+                existingNames.Add(Path.GetFileName(dir));
             }
-            else
+            foreach (string file in files)
             {
-                int count = 2;
-                while (true)
-                {
-                    if (!Directory.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName (" + count + ")") &&
-                        !File.Exists(Properties.Settings.Default.ProjectDirectory + @"\CompanyName (" + count + ")" + ArgoFiles.ArgoCompanyFileExtension))
-                    {
-                        ProjectName_TextBox.Text = "CompanyName (" + count + ")";
-                        break;
-                    }
-                    count++;
-                }
+                existingNames.Add(Path.GetFileNameWithoutExtension(file));
             }
+            if (existingNames.Contains(defaultName))
+            {
+                defaultName = Tools.AddNumberForAStringThatAlreadyExists(defaultName, existingNames);
+            }
+
+            ProjectName_TextBox.Text = defaultName;
 
             // Set default directory
             if (Properties.Settings.Default.ProjectDirectory == "")

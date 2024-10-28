@@ -37,9 +37,7 @@ namespace Sales_Tracker.Startup.Menus
             LanguageManager.UpdateLanguageForControl(this);
 
             ConstructRightClickOpenRecentMenu();
-
             LoadListOfRecentProjects();
-
             SetFlowLayoutPanel();
             SetTheme();
         }

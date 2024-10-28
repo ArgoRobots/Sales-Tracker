@@ -1,5 +1,7 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -10,8 +12,6 @@ using Sales_Tracker.UI;
 using System.Collections;
 using System.ComponentModel;
 using Timer = System.Windows.Forms.Timer;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Sales_Tracker
 {
@@ -384,7 +384,7 @@ namespace Sales_Tracker
         {
             if (_instance == null) { return; }
             CustomControls.CloseAllPanels(null, null);
-            ResizeControls();
+            CenterAndResizeControls();
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -603,9 +603,9 @@ namespace Sales_Tracker
             Directories.DeleteDirectory(Directories.TempCompany_dir, true);
         }
 
-        // Resize controls
+        // Center and resize controls
         private bool wasControlsDropDownAdded;
-        private void ResizeControls()
+        private void CenterAndResizeControls()
         {
             if (_isProgramLoading) { return; }
 
@@ -698,7 +698,7 @@ namespace Sales_Tracker
 
             MainTop_Panel.Controls.Add(CustomControls.ControlsDropDown_Button);
 
-            foreach (var button in GetMainTopButtons())
+            foreach (Control button in GetMainTopButtons())
             {
                 MainTop_Panel.Controls.Remove(button);
             };
@@ -723,13 +723,8 @@ namespace Sales_Tracker
         private Control[] GetMainTopButtons()
         {
             return [
-                ManageAccountants_Button,
-                ManageCategories_Button,
-                ManageCompanies_Button,
-                ManageProducts_Button,
-                AddSale_Button,
-                AddPurchase_Button
-            ];
+                ManageAccountants_Button, ManageCategories_Button, ManageCompanies_Button,
+                ManageProducts_Button, AddSale_Button, AddPurchase_Button];
         }
 
         /// <summary>
@@ -837,7 +832,7 @@ namespace Sales_Tracker
             Controls.Add(_purchase_DataGridView);
             Controls.Remove(_sale_DataGridView);
             LanguageManager.UpdateLanguageForControl(Purchase_DataGridView);
-            ResizeControls();
+            CenterAndResizeControls();
             RefreshDataGridView();
 
             UnselectButtons();
@@ -857,7 +852,7 @@ namespace Sales_Tracker
             _selectedDataGridView = _sale_DataGridView;
             Controls.Add(_sale_DataGridView);
             Controls.Remove(_purchase_DataGridView);
-            ResizeControls();
+            CenterAndResizeControls();
             RefreshDataGridView();
 
             UnselectButtons();
@@ -873,7 +868,7 @@ namespace Sales_Tracker
             ConstructControlsForStatistics();
 
             AddStatisticsControls();
-            ResizeControls();
+            CenterAndResizeControls();
 
             UnselectButtons();
             SelectButton(Statistics_Button);
@@ -1112,7 +1107,7 @@ namespace Sales_Tracker
             ArgoCompany.Rename(CustomControls.Rename_TextBox.Text);
             CustomControls.Rename_TextBox.Text = "";
             MoveEditButton();
-            ResizeControls();
+            CenterAndResizeControls();
 
             UpdateMainMenuFormText(this);
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
@@ -1731,7 +1726,7 @@ namespace Sales_Tracker
                 Controls.Remove(control);
             }
 
-            ResizeControls();
+            CenterAndResizeControls();
         }
         private void ConstructControlsForStatistics()
         {
@@ -1800,7 +1795,7 @@ namespace Sales_Tracker
             }
 
             UpdateStatisticsCharts();
-            ResizeControls();
+            CenterAndResizeControls();
         }
         private void UpdateStatisticsCharts()
         {

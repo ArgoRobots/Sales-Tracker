@@ -8,6 +8,8 @@ namespace Sales_Tracker.Startup
     {
         // Properties
         private static Startup_Form _instance;
+        public readonly Form formGetStarted = new GetStarted_Form();
+        public readonly Form FormConfigureProject = new ConfigureProject_Form();
 
         // Getters
         public static Startup_Form Instance => _instance;
@@ -34,9 +36,6 @@ namespace Sales_Tracker.Startup
 
             LanguageManager.UpdateLanguageForControl(this);
         }
-
-        public readonly Form formGetStarted = new GetStarted_Form();
-        public readonly Form FormConfigureProject = new ConfigureProject_Form();
 
         public void SwitchMainForm(Form mainForm)
         {
