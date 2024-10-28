@@ -124,13 +124,13 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_Label.Anchor = AnchorStyles.Top;
             ShowDebugInfo_Label.AutoSize = true;
             ShowDebugInfo_Label.Font = new Font("Segoe UI", 10F);
-            ShowDebugInfo_Label.Location = new Point(287, 451);
+            ShowDebugInfo_Label.Location = new Point(444, 451);
             ShowDebugInfo_Label.Name = "ShowDebugInfo_Label";
             ShowDebugInfo_Label.Padding = new Padding(5);
-            ShowDebugInfo_Label.Size = new Size(328, 38);
+            ShowDebugInfo_Label.Size = new Size(171, 38);
             ShowDebugInfo_Label.TabIndex = 0;
             ShowDebugInfo_Label.Tag = "";
-            ShowDebugInfo_Label.Text = "Show debug info in message boxes";
+            ShowDebugInfo_Label.Text = "Show debug info";
             ShowDebugInfo_Label.Click += ShowDebugInfo_Label_Click;
             // 
             // SendAnonymousInformation_Label

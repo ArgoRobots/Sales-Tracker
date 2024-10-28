@@ -71,16 +71,10 @@ namespace Sales_Tracker.UI
         {
             Control control = (Control)sender;
 
-            // Only show tooltip if enabled in settings
-            if (!Properties.Settings.Default.ShowTooltips) { return; }
-
             // Hide the previous tooltip if a new one is shown before it closes naturally
-            if (lastControl != control && lastControl != null)
+            if (lastControl != control && lastControl != null && tooltips.TryGetValue(lastControl, out Guna2HtmlToolTip? lastTooltip))
             {
-                if (tooltips.TryGetValue(lastControl, out Guna2HtmlToolTip? lastTooltip))
-                {
-                    lastTooltip.Hide(lastControl);
-                }
+                lastTooltip.Hide(lastControl);
             }
             lastControl = control;
         }
@@ -88,24 +82,26 @@ namespace Sales_Tracker.UI
         {
             Control control = (Control)sender;
 
-            if (tooltips.TryGetValue(control, out Guna2HtmlToolTip? currentTooltip))
+            if (!tooltips.TryGetValue(control, out Guna2HtmlToolTip tooltip))
             {
-                // Add delay to prevent flickering when moving mouse quickly
-                Task.Delay(50).ContinueWith(_ =>
-                {
-                    control.BeginInvoke(() =>
-                    {
-                        if (!control.ClientRectangle.Contains(control.PointToClient(Control.MousePosition)))
-                        {
-                            currentTooltip.Hide(control);
-                            if (lastControl == control)
-                            {
-                                lastControl = null;
-                            }
-                        }
-                    });
-                });
+                return;
             }
+
+            // Add delay to prevent flickering when moving mouse quickly
+            Task.Delay(50).ContinueWith(_ =>
+            {
+                control.BeginInvoke(() =>
+                {
+                    if (!control.ClientRectangle.Contains(control.PointToClient(Control.MousePosition)))
+                    {
+                        tooltip.Hide(control);
+                        if (lastControl == control)
+                        {
+                            lastControl = null;
+                        }
+                    }
+                });
+            });
         }
     }
 }
