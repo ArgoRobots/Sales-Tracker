@@ -700,25 +700,17 @@ namespace Sales_Tracker
 
             foreach (Control button in GetMainTopButtons())
             {
-                MainTop_Panel.Controls.Remove(button);
+                button.Visible = false;
             };
         }
         private void RemoveControlsDropDown()
         {
             MainTop_Panel.Controls.Remove(CustomControls.ControlsDropDown_Button);
 
-            int buttonTop = (MainTop_Panel.Height - ManageAccountants_Button.Height) / 2;
-            int buttonWidthPlusSpace = ManageAccountants_Button.Width + 8;
-
-            Control[] buttons = GetMainTopButtons();
-
-            // Set the location of each button in reverse order
-            for (int i = 0; i < buttons.Length; i++)
+            foreach (Control button in GetMainTopButtons())
             {
-                buttons[i].Location = new Point(
-                    MainTop_Panel.Width - (buttonWidthPlusSpace * (i + 1)) - 5, buttonTop);
-                MainTop_Panel.Controls.Add(buttons[i]);
-            }
+                button.Visible = true;
+            };
         }
         private Control[] GetMainTopButtons()
         {
@@ -1871,10 +1863,6 @@ namespace Sales_Tracker
             rightClickGunaChart_Panel.BringToFront();
 
             rightClickGunaChart_Panel.Tag = chart;
-        }
-        public bool DoControlsContainRightClickChartMenu()
-        {
-            return Controls.Contains(rightClickGunaChart_Panel);
         }
 
         // Settings

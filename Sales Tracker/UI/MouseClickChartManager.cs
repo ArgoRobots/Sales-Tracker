@@ -58,7 +58,8 @@ namespace Sales_Tracker.UI
                     List<Control> controlsList =
                     [
                         CustomControls.FileMenu,
-                        CustomControls.HelpMenu
+                        CustomControls.HelpMenu,
+                        CustomControls.ControlDropDown_Panel
                     ];
                     Control mainPanel = DateRange_Form.Instance?.Main_Panel;
                     if (mainPanel != null && MainMenu_Form.Instance.Controls.Contains(mainPanel))
