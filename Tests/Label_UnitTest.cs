@@ -34,6 +34,18 @@ namespace Tests
                 Height = 300,
                 Location = new Point(50, 50)
             };
+
+            // Add test columns to DataGridView
+            dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "TestColumn1",
+                HeaderText = "Test Column 1"
+            });
+            dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "TestColumn2",
+                HeaderText = "Test Column 2"
+            });
         }
 
         [TestMethod]
@@ -89,9 +101,9 @@ namespace Tests
             label.Text = initialText;
 
             // Add some rows to the DataGridView
-            dataGridView.Rows.Add();
-            dataGridView.Rows.Add();
-            dataGridView.Rows.Add();
+            dataGridView.Rows.Add("Test 1", "Data 1");
+            dataGridView.Rows.Add("Test 2", "Data 2");
+            dataGridView.Rows.Add("Test 3", "Data 3");
 
             // Act
             LabelManager.ShowTotalLabel(label, dataGridView);
@@ -105,6 +117,9 @@ namespace Tests
         {
             // Arrange
             label.Text = "Total Records: ";
+
+            // Add a row to ensure proper sizing
+            dataGridView.Rows.Add("Test", "Data");
 
             // Act
             LabelManager.ShowTotalLabel(label, dataGridView);
@@ -121,9 +136,9 @@ namespace Tests
             string translatedPrefix = "Total des enregistrements";  // French example
             label.Text = $"{translatedPrefix}: ";
 
-            // Add some rows
-            dataGridView.Rows.Add();
-            dataGridView.Rows.Add();
+            // Add some rows with data
+            dataGridView.Rows.Add("Test 1", "Data 1");
+            dataGridView.Rows.Add("Test 2", "Data 2");
 
             // Act
             LabelManager.ShowTotalLabel(label, dataGridView);

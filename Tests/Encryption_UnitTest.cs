@@ -7,13 +7,17 @@ namespace Tests
     [TestClass]
     public class Encryption_Tests
     {
-        [TestMethod]
-        public void TestEncryptionDecryption()
+        [TestInitialize]
+        public void Setup()
         {
             Directories.SetUniversalDirectories();
             ArgoCompany.InitCacheFiles();
             EncryptionManager.Initialize();
+        }
 
+        [TestMethod]
+        public void TestEncryptionDecryption()
+        {
             string originalText = "MySecretPassword";
             byte[] key = EncryptionManager.AesKey;
             byte[] iv = EncryptionManager.AesIV;
@@ -31,10 +35,6 @@ namespace Tests
         [TestMethod]
         public void TestEncryptDecryptStream()
         {
-            Directories.SetUniversalDirectories();
-            ArgoCompany.InitCacheFiles();
-            EncryptionManager.Initialize();
-
             string originalText = "This is a stream test.";
             byte[] key = EncryptionManager.AesKey;
             byte[] iv = EncryptionManager.AesIV;

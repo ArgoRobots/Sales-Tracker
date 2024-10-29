@@ -6,7 +6,7 @@ namespace Sales_Tracker.UI
     /// Manages the custom color themes, providing different color settings for dark and light themes.
     /// Colors are applied to various UI elements and stored as static fields for easy access.
     /// </summary>
-    internal static class CustomColors
+    public static class CustomColors
     {
         // Control colors
         public static Color controlBack, controlDisabledBack, controlBorder, controlUncheckedBorder, controlPanelBorder,
