@@ -4,6 +4,10 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Handles the import and export of data to and from Excel spreadsheets, including data for 
+    /// accountants, companies, products, purchases, and sales in the application.
+    /// </summary>
     internal class SpreadsheetManager
     {
         // Import spreadsheet methods

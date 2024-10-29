@@ -2,8 +2,16 @@
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Manages operations related to receipts in the application, including saving, removing,
+    /// and checking the existence of receipt files.
+    /// </summary>
     public class ReceiptsManager
     {
+        /// <summary>
+        /// Saves a receipt file to a specified location, handling name conflicts by renaming the file to avoid overwriting existing receipts.
+        /// </summary>
+        /// <returns>A tuple containing the new path of the saved receipt and a boolean indicating if the save operation was successful.</returns>
         public static (string, bool) SaveReceiptInFile(string receiptFilePath)
         {
             // Replace the company name with companyName_text
@@ -48,6 +56,10 @@ namespace Sales_Tracker.Classes
 
             return (newPath, saved);
         }
+
+        /// <summary>
+        /// Removes a receipt from a specified DataGridViewRow tag, deleting the file from the filesystem if it exists.
+        /// </summary>
         public static void RemoveReceiptFromFile(DataGridViewRow row)
         {
             string filePath = row.Tag.ToString();
@@ -58,6 +70,11 @@ namespace Sales_Tracker.Classes
             }
             row.Tag = null;
         }
+
+        /// <summary>
+        /// Associates a receipt file path with a DataGridView row's tag, either updating an existing
+        /// tag list or setting a new file path.
+        /// </summary>
         public static void AddReceiptToTag(DataGridViewRow row, string filePath)
         {
             if (row.Tag is List<string> tagList)
@@ -69,6 +86,11 @@ namespace Sales_Tracker.Classes
                 row.Tag = filePath;
             }
         }
+
+        /// <summary>
+        /// Checks if a specified receipt file exists in the filesystem and shows a message if it does not.
+        /// </summary>
+        /// <returns>True if the receipt exists; otherwise, false.</returns>
         public static bool CheckIfReceiptExists(string receiptFilePath)
         {
             if (!File.Exists(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, "")))

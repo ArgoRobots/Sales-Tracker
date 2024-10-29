@@ -8,12 +8,18 @@ namespace Sales_Tracker.Classes
     /// <summary>
     /// Static class responsible for managing company data files, project state, and file operations.
     /// </summary>
-    internal static class ArgoCompany
+    public static class ArgoCompany
     {
+        private static Mutex? _applicationMutex = null;
+
         /// <summary>
         /// Static mutex used to ensure only one instance of a project can be open at a time.
         /// </summary>
-        public static Mutex? applicationMutex = null;
+        public static Mutex? ApplicationMutex
+        {
+            get => _applicationMutex;
+            private set => _applicationMutex = value;
+        }
 
         /// <summary>
         /// Initializes core components including encryption, cache files, and password management.
@@ -126,7 +132,7 @@ namespace Sales_Tracker.Classes
             {
                 if (!OnlyAllowOneInstanceOfAProject(Path.GetFileNameWithoutExtension(dialog.FileName)))
                 {
-                    applicationMutex?.Dispose();  // Reset
+                    _applicationMutex?.Dispose();  // Reset
                     return;
                 }
 
@@ -149,7 +155,7 @@ namespace Sales_Tracker.Classes
 
             if (!PasswordManager.EnterPassword())
             {
-                applicationMutex?.Dispose();  // Reset
+                _applicationMutex?.Dispose();  // Reset
                 return false;
             }
 
@@ -308,7 +314,7 @@ namespace Sales_Tracker.Classes
                 CustomMessageBox.Show("Argo Sales Tracker",
                     "This project is already open in another instance of Argo Sales Tracker",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                applicationMutex?.Dispose();  // Reset
+                _applicationMutex?.Dispose();  // Reset
                 return false;
             }
             return true;
@@ -323,7 +329,7 @@ namespace Sales_Tracker.Classes
         public static bool CreateMutex(string projectFilePath)
         {
             string uniqueMutexName = "Global\\MyApplication_" + GetUniqueProjectIdentifier(projectFilePath);
-            applicationMutex = new Mutex(initiallyOwned: true, name: uniqueMutexName, out bool createdNew);
+            _applicationMutex = new Mutex(initiallyOwned: true, name: uniqueMutexName, out bool createdNew);
 
             if (createdNew)
             {

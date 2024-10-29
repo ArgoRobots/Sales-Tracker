@@ -5,9 +5,8 @@ using System.IO.Compression;
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Static class responsible for managing file system operations and directory structures 
-    /// in the application. Handles file paths, directory creation/deletion,
-    /// and file operations including encryption and compression.
+    /// Static class responsible for managing file system operations and directory structures.
+    /// Handles file paths, directory creation/deletion, and file operations including encryption and compression.
     /// </summary>
     public static class Directories
     {

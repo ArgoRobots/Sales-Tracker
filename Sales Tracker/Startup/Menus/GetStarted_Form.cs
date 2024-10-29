@@ -118,7 +118,7 @@ namespace Sales_Tracker.Startup.Menus
                     string projectName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
                     if (!ArgoCompany.OnlyAllowOneInstanceOfAProject(projectName))
                     {
-                        ArgoCompany.applicationMutex?.Dispose();  // Reset
+                        ArgoCompany.ApplicationMutex?.Dispose();  // Reset
                         return;
                     }
 
@@ -130,7 +130,7 @@ namespace Sales_Tracker.Startup.Menus
 
                     if (!PasswordManager.EnterPassword())
                     {
-                        ArgoCompany.applicationMutex?.Dispose();  // Reset
+                        ArgoCompany.ApplicationMutex?.Dispose();  // Reset
                         return;
                     }
 
