@@ -130,6 +130,7 @@ namespace Sales_Tracker.Startup.Menus
 
             if (File.Exists(selectedDirectory + @"\" + ProjectName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
+                Directory_TextBox.Focus();
                 CustomMessageBox.Show("Argo Sales Tracker", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
@@ -153,7 +154,6 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.CategoryPurchases_file);
             Directories.CreateFile(Directories.Accountants_file);
             Directories.CreateFile(Directories.Companies_file);
-            ArgoCompany.InitCacheFiles();
 
             // Set recently opened projects
             DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
@@ -184,6 +184,10 @@ namespace Sales_Tracker.Startup.Menus
                 Directory_TextBox.Text = dialog.SelectedPath + @"\";
                 selectedDirectory = Directory_TextBox.Text;
             }
+
+            // Save so it loads back in when the program is restarted
+            Properties.Settings.Default.ProjectDirectory = selectedDirectory;
+            Properties.Settings.Default.Save();
         }
         private void TextBoxProjectName_TextChanged(object sender, EventArgs e)
         {
