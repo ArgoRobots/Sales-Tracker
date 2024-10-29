@@ -34,7 +34,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             SetAccessibleDescriptions();
             LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
-            Controls.Remove(ShowingResultsFor_Label);
+            ShowingResultsFor_Label.Visible = false;
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(_purchase_DataGridView, _sale_DataGridView);
             AddEventHandlersToTextBoxes();
@@ -133,8 +133,8 @@ namespace Sales_Tracker
             if (Purchase_RadioButton.Checked)
             {
                 CloseAllPanels(null, null);
-                Controls.Add(_purchase_DataGridView);
-                Controls.Remove(_sale_DataGridView);
+                _purchase_DataGridView.Visible = true;
+                _sale_DataGridView.Visible = false;
                 _purchase_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.SelectedDataGridView = _purchase_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategoryPurchases;
@@ -148,8 +148,8 @@ namespace Sales_Tracker
             if (Sale_RadioButton.Checked)
             {
                 CloseAllPanels(null, null);
-                Controls.Add(_sale_DataGridView);
-                Controls.Remove(_purchase_DataGridView);
+                _sale_DataGridView.Visible = true;
+                _purchase_DataGridView.Visible = false;
                 _sale_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.SelectedDataGridView = _sale_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.CategorySales;
@@ -181,7 +181,7 @@ namespace Sales_Tracker
             }
             else
             {
-                Controls.Remove(ShowingResultsFor_Label);
+                ShowingResultsFor_Label.Visible = false;
             }
         }
         private void ForPurchase_Label_Click(object sender, EventArgs e)
@@ -229,13 +229,13 @@ namespace Sales_Tracker
             Size size = new(740, 280);
 
             _purchase_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", size, ColumnHeaders);
+            DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", size, ColumnHeaders, null, this);
             _purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             _purchase_DataGridView.Location = new Point((ClientSize.Width - _purchase_DataGridView.Width) / 2, topForDataGridView);
             _purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
 
             _sale_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", size, ColumnHeaders);
+            DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", size, ColumnHeaders, null, this);
             _sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             _sale_DataGridView.Location = new Point((ClientSize.Width - _sale_DataGridView.Width) / 2, topForDataGridView);
             _sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;

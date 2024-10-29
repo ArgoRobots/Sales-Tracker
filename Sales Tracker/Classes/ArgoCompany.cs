@@ -277,7 +277,7 @@ namespace Sales_Tracker.Classes
                 bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchase_DataGridView) &&
                     AreRowsVisible(MainMenu_Form.Instance.Sale_DataGridView);
 
-                MainMenu_Form.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView, ReadOnlyVariables.NoResults_text);
+                MainMenu_Form.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView);
             }
         }
 

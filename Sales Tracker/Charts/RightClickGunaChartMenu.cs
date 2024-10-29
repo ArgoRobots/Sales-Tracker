@@ -69,11 +69,10 @@ namespace Sales_Tracker.Charts
         }
         public static void ShowMenu(GunaChart chart, Point mousePosition)
         {
-            if (chart == null) { return; }
-
-            Point localMousePosition = chart.Parent.PointToClient(mousePosition);
-            int formWidth = chart.Parent.ClientSize.Width;
-            int formHeight = chart.Parent.ClientSize.Height;
+            Form form = chart.FindForm();
+            Point localMousePosition = form.PointToClient(mousePosition);
+            int formWidth = form.ClientSize.Width;
+            int formHeight = form.ClientSize.Height;
             byte offset = ReadOnlyVariables.OffsetRightClickPanel;
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
@@ -103,7 +102,7 @@ namespace Sales_Tracker.Charts
                 _rightClickGunaChart_Panel.Top = localMousePosition.Y;
             }
 
-            chart.Parent.Controls.Add(_rightClickGunaChart_Panel);
+            form.Controls.Add(_rightClickGunaChart_Panel);
             _rightClickGunaChart_Panel.BringToFront();
             _rightClickGunaChart_Panel.Tag = chart;
         }

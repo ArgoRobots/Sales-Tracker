@@ -32,7 +32,7 @@ namespace Sales_Tracker.UI
         }
 
         // Construct DataGridView
-        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
+        public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control parent) where TEnum : Enum
         {
             dataGridView.Name = name;
             dataGridView.ReadOnly = true;
@@ -66,6 +66,7 @@ namespace Sales_Tracker.UI
 
             LoadColumns(dataGridView, columnHeaders, columnsToLoad);
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
+            parent.Controls.Add(dataGridView);
         }
         public static void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {

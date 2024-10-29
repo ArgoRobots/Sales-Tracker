@@ -4,8 +4,7 @@ using Sales_Tracker.UI;
 namespace Sales_Tracker.Charts
 {
     /// <summary>
-    /// Manages mouse click detection for GunaChart controls and invokes specific actions
-    /// based on left-click or right-click events.
+    /// Manages mouse click detection for GunaChart controls and invokes specific actions.
     /// </summary>
     public static class MouseClickChartManager
     {
@@ -15,8 +14,7 @@ namespace Sales_Tracker.Charts
         private static CustomMessageFilter messageFilter;
 
         /// <summary>
-        /// Initializes the click manager for specified GunaChart controls and assigns
-        /// actions to be called on left and right mouse clicks.
+        /// Initializes the click manager for specified GunaChart controls and assigns actions to be called on left and right mouse clicks.
         /// </summary>
         public static void InitCharts(GunaChart[] charts)
         {

@@ -127,7 +127,7 @@ namespace Sales_Tracker
                 ? MainMenu_Form.Instance.PurchaseColumnHeaders
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
-            DataGridViewManager.InitializeDataGridView(Items_DataGridView, "Items_DataGridView", Items_DataGridView.Size, columnHeaders, columnsToLoad);
+            DataGridViewManager.InitializeDataGridView(Items_DataGridView, "Items_DataGridView", Items_DataGridView.Size, columnHeaders, columnsToLoad, this);
             Items_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Items_DataGridView.RowsRemoved -= DataGridViewManager.DataGridView_RowsRemoved;
             Items_DataGridView.UserDeletingRow -= DataGridViewManager.DataGridView_UserDeletingRow;

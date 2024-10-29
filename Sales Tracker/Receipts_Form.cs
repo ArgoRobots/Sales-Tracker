@@ -23,7 +23,7 @@ namespace Sales_Tracker
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
 
             MainMenu_Form.IsProgramLoading = true;
-            DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", Receipts_DataGridView.Size, ColumnHeaders);
+            DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", Receipts_DataGridView.Size, ColumnHeaders, null, this);
             Receipts_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             MainMenu_Form.Instance.SelectedDataGridView = Receipts_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Receipts;

@@ -114,11 +114,11 @@ namespace Sales_Tracker
             {
                 Size size = new(1300, 350);
                 _purchase_DataGridView = new();
-                DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", size, PurchaseColumnHeaders);
+                DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", size, PurchaseColumnHeaders, null, this);
                 _purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
                 _sale_DataGridView = new();
-                DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", size, SalesColumnHeaders);
+                DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", size, SalesColumnHeaders, null, this);
                 _sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
                 Theme.CustomizeScrollBar(_sale_DataGridView);
             }
@@ -646,7 +646,7 @@ namespace Sales_Tracker
             {
                 int availableHeight = ClientSize.Height - Purchases_Button.Bottom;
 
-                int statChartHeight = availableHeight / 2 - chartWidthOffset * 3;
+                int statChartHeight = availableHeight / 2 - 50;
                 Size chartSize = new(chartWidth, statChartHeight);
 
                 // Calculate the space between the charts
@@ -672,6 +672,12 @@ namespace Sales_Tracker
         {
             chart.Size = size;
             chart.Location = new Point(left, top);
+
+            Label label = chart.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == ReadOnlyVariables.NoData_text);
+            if (label != null)
+            {
+                CenterLabelInControl(label, chart);
+            }
         }
         private void AddControlsDropDown()
         {
@@ -804,8 +810,8 @@ namespace Sales_Tracker
             AddMainControls();
             Selected = SelectedOption.Purchases;
             _selectedDataGridView = _purchase_DataGridView;
-            Controls.Add(_purchase_DataGridView);
-            Controls.Remove(_sale_DataGridView);
+            _purchase_DataGridView.Visible = true;
+            _sale_DataGridView.Visible = false;
             LanguageManager.UpdateLanguageForControl(Purchase_DataGridView);
             CenterAndResizeControls();
             RefreshDataGridView();
@@ -825,8 +831,8 @@ namespace Sales_Tracker
             AddMainControls();
             Selected = SelectedOption.Sales;
             _selectedDataGridView = _sale_DataGridView;
-            Controls.Add(_sale_DataGridView);
-            Controls.Remove(_purchase_DataGridView);
+            _sale_DataGridView.Visible = true;
+            _purchase_DataGridView.Visible = false;
             CenterAndResizeControls();
             RefreshDataGridView();
 
@@ -981,8 +987,9 @@ namespace Sales_Tracker
         /// If there is no data, then it adds a Label to the control.
         /// </summary>
         /// <returns>True if there is any data, False if there is no data.</returns>
-        public static bool ManageNoDataLabelOnControl(bool hasData, Control control, string text)
+        public static bool ManageNoDataLabelOnControl(bool hasData, Control control)
         {
+            string text = ReadOnlyVariables.NoData_text;
             Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == text);
 
             if (!hasData)
@@ -1007,7 +1014,7 @@ namespace Sales_Tracker
                     control.Controls.Add(label);
                     CenterLabelInControl(label, control);
 
-                    control.Resize += (sender, e) => CenterLabelInControl(label, control);
+                    control.Resize += delegate { CenterLabelInControl(label, control); };
 
                     label.BringToFront();
                 }
@@ -1172,7 +1179,7 @@ namespace Sales_Tracker
                 }
             }
 
-            ManageNoDataLabelOnControl(hasVisibleRows, _selectedDataGridView, ReadOnlyVariables.NoResults_text);
+            ManageNoDataLabelOnControl(hasVisibleRows, _selectedDataGridView);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)
         {
@@ -1227,13 +1234,11 @@ namespace Sales_Tracker
 
             // Update label text and location
             ShowingResultsFor_Label.Text = text;
-
-            // The control needs to be addded before the location is set, otherwise the control's size property is not calculated properly
-            Controls.Add(ShowingResultsFor_Label);
-
             ShowingResultsFor_Label.Location = new Point(
                 (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
                 MainTop_Panel.Bottom + (Distribution_Chart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
+
+            ShowingResultsFor_Label.Visible = true;
         }
         /// <summary>
         /// Helper function to convert TimeSpan into human-readable text
@@ -1256,7 +1261,7 @@ namespace Sales_Tracker
         }
         public void HideShowingResultsForLabel()
         {
-            Controls.Remove(ShowingResultsFor_Label);
+            ShowingResultsFor_Label.Visible = false;
         }
         private void SortTheDataGridViewByDate()
         {
@@ -1532,11 +1537,11 @@ namespace Sales_Tracker
 
             if (!DataGridViewManager.HasVisibleRows(_selectedDataGridView))
             {
-                Controls.Remove(Total_Panel);
+                Total_Panel.Visible = false;
             }
             else
             {
-                Controls.Add(Total_Panel);
+                Total_Panel.Visible = true;
             }
 
             int totalQuantity = 0;
@@ -1694,11 +1699,11 @@ namespace Sales_Tracker
 
             foreach (Control control in GetMainControlsList())
             {
-                Controls.Add(control);
+                control.Visible = true;
             }
             foreach (Control control in statisticsCharts)
             {
-                Controls.Remove(control);
+                control.Visible = false;
             }
 
             CenterAndResizeControls();
@@ -1733,7 +1738,7 @@ namespace Sales_Tracker
 
             MouseClickChartManager.InitCharts(statisticsCharts.ToArray());
         }
-        private static GunaChart ConstructStatisticsChart(int top, string title, string name)
+        private GunaChart ConstructStatisticsChart(int top, string title, string name)
         {
             GunaChart gunaChart = new()
             {
@@ -1752,6 +1757,7 @@ namespace Sales_Tracker
             gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
             gunaChart.XAxes.Ticks.Font = new("Segoe UI", 18);
             gunaChart.YAxes.Ticks.Font = new("Segoe UI", 18);
+            Controls.Add(gunaChart);
 
             return gunaChart;
         }
@@ -1765,11 +1771,11 @@ namespace Sales_Tracker
 
             foreach (Control control in statisticsCharts)
             {
-                Controls.Add(control);
+                control.Visible = true;
             }
             foreach (Control control in GetMainControlsList())
             {
-                Controls.Remove(control);
+                control.Visible = false;
             }
 
             UpdateStatisticsCharts();

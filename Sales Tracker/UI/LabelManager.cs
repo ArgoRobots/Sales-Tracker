@@ -12,10 +12,7 @@
             // Center the label horizontally
             label.Left = (parentControl.ClientSize.Width - label.Width) / 2;
 
-            if (!parentControl.Controls.Contains(label))
-            {
-                parentControl.Controls.Add(label);
-            }
+            label.Visible = true;
         }
         public static void ShowTotalLabel(Label totalLabel, DataGridView dataGridView)
         {

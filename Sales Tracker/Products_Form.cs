@@ -34,7 +34,7 @@ namespace Sales_Tracker
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
             SetAccessibleDescriptions();
-            Controls.Remove(ShowingResultsFor_Label);
+            ShowingResultsFor_Label.Visible = false;
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(purchase_DataGridView, sale_DataGridView);
             AddEventHandlersToTextBoxes();
@@ -193,8 +193,8 @@ namespace Sales_Tracker
 
             if (Purchase_RadioButton.Checked)
             {
-                Controls.Add(purchase_DataGridView);
-                Controls.Remove(sale_DataGridView);
+                purchase_DataGridView.Visible = true;
+                sale_DataGridView.Visible = false;
                 purchase_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.SelectedDataGridView = purchase_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
@@ -211,8 +211,8 @@ namespace Sales_Tracker
 
             if (Sale_RadioButton.Checked)
             {
-                Controls.Add(sale_DataGridView);
-                Controls.Remove(purchase_DataGridView);
+                sale_DataGridView.Visible = true;
+                purchase_DataGridView.Visible = false;
                 sale_DataGridView.ClearSelection();
                 MainMenu_Form.Instance.SelectedDataGridView = sale_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
@@ -246,7 +246,7 @@ namespace Sales_Tracker
             }
             else
             {
-                Controls.Remove(ShowingResultsFor_Label);
+                ShowingResultsFor_Label.Visible = false;
             }
         }
         private void ProductsRemaining_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -271,7 +271,7 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.IsFullVersion)
             {
-                Controls.Remove(ProductsRemaining_LinkLabel);
+                ProductsRemaining_LinkLabel.Visible = false;
                 return;
             }
 
@@ -422,7 +422,7 @@ namespace Sales_Tracker
             Size size = new(840, 270);
 
             purchase_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(purchase_DataGridView, "purchases_DataGridView", size, ColumnHeaders);
+            DataGridViewManager.InitializeDataGridView(purchase_DataGridView, "purchases_DataGridView", size, ColumnHeaders, null, this);
             purchase_DataGridView.RowsAdded += Sale_DataGridView_RowsChanged;
             purchase_DataGridView.RowsRemoved += Sale_DataGridView_RowsChanged;
             purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -430,7 +430,7 @@ namespace Sales_Tracker
             purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
 
             sale_DataGridView = new();
-            DataGridViewManager.InitializeDataGridView(sale_DataGridView, "sales_DataGridView", size, ColumnHeaders);
+            DataGridViewManager.InitializeDataGridView(sale_DataGridView, "sales_DataGridView", size, ColumnHeaders, null, this);
             sale_DataGridView.RowsAdded += Sale_DataGridView_RowsChanged;
             sale_DataGridView.RowsRemoved += Sale_DataGridView_RowsChanged;
             sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
