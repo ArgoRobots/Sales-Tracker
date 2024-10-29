@@ -2,6 +2,10 @@
 
 namespace Sales_Tracker.DataClasses
 {
+    /// <summary>
+    /// Provides a list of all countries with associated flags.
+    /// This list is used to support search functionalities within the application.
+    /// </summary>
     public static class Country
     {
         // https://ofac.treasury.gov/sanctions-programs-and-country-information
@@ -138,11 +142,7 @@ namespace Sales_Tracker.DataClasses
             new SearchResult("Nicaragua", Properties.Flags.Nicaragua, 0),
             new SearchResult("Niger", Properties.Flags.Niger, 0),
             new SearchResult("Nigeria", Properties.Flags.Nigeria, 0),
-
-            // Due to international sanctions imposed on North Korea for its nuclear weapons program
-            // and other illicit activities, we are required to exclude North Korea.
-            //  new SearchResult("North Korea", Properties.Flags.North_Korea, 0),
-
+            new SearchResult("North Korea", Properties.Flags.North_Korea, 0),
             new SearchResult("North Macedonia", Properties.Flags.North_Macedonia, 0),
             new SearchResult("Norway", Properties.Flags.Norway, 0),
             new SearchResult("Oman", Properties.Flags.Oman, 0),
@@ -157,11 +157,7 @@ namespace Sales_Tracker.DataClasses
             new SearchResult("Portugal", Properties.Flags.Portugal, 0),
             new SearchResult("Qatar", Properties.Flags.Qatar, 0),
             new SearchResult("Romania", Properties.Flags.Romania, 0),
-
-            // Due to international sanctions and legal regulations, we are required to exclude Russia.
-            // These measures have been imposed in response to Russia's invasion of Ukraine.
-            //  new SearchResult("Russia", Properties.Flags.Russia, 0),
-
+            new SearchResult("Russia", Properties.Flags.Russia, 0),
             new SearchResult("Rwanda", Properties.Flags.Rwanda, 0),
             new SearchResult("Saint Kitts and Nevis", Properties.Flags.Saint_Kitts_and_Nevis, 0),
             new SearchResult("Saint Lucia", Properties.Flags.Saint_Lucia, 0),

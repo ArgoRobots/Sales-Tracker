@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Provides a collection of utility methods for various formatting, file management, and input validation tasks.
+    /// </summary>
     public static class Tools
     {
         // Formatting
@@ -14,6 +17,7 @@ namespace Sales_Tracker.Classes
         {
             return $@"{dateTime:hh\:mm\:ss\.ff}";
         }
+
         /// <summary>
         /// Formats a DateTime into a date format.
         /// </summary>
@@ -42,6 +46,7 @@ namespace Sales_Tracker.Classes
                 }
             }.Start();
         }
+
         /// <summary>
         /// Check if a form of the specified type is already open.
         /// </summary>
@@ -49,6 +54,7 @@ namespace Sales_Tracker.Classes
         {
             return Application.OpenForms.OfType<Form>().Any(f => f.GetType() == formType);
         }
+
         /// <summary>
         /// Retrieves the version number of the currently executing assembly.
         /// </summary>
@@ -56,6 +62,7 @@ namespace Sales_Tracker.Classes
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
+
         /// <summary>
         /// Opens Windows File Explorer and selects the specified file in its folder.
         /// </summary>
@@ -106,9 +113,6 @@ namespace Sales_Tracker.Classes
             }
             return null;
         }
-        /// <summary>
-        /// Allow numbers and one period.
-        /// </summary>
         public static void OnlyAllowNumbersAndOneDecimalInGunaTextBox(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
@@ -117,9 +121,6 @@ namespace Sales_Tracker.Classes
                 e.Handled = true;
             }
         }
-        /// <summary>
-        /// Allow numbers, one period, and one minus sign at the front.
-        /// </summary>
         public static void OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox(object sender, KeyPressEventArgs e)
         {
             // Allow numbers, one period, and one minus sign at the front
@@ -182,6 +183,7 @@ namespace Sales_Tracker.Classes
             }
             return name;
         }
+
         /// <summary>
         /// Check if the string has " (num)" at the end and remove it.
         /// </summary>

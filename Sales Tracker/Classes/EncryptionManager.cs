@@ -4,6 +4,11 @@ using System.Text.Json;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// The EncryptionManager class provides functionality for encrypting and decrypting data, 
+    /// including streams and strings, using AES encryption. This class also manages encryption keys 
+    /// and initialization vectors (IVs), and includes methods for secure storage and retrieval.
+    /// </summary>
     public static class EncryptionManager
     {
         // Properties
@@ -15,7 +20,9 @@ namespace Sales_Tracker.Classes
         public static byte[] AesKey => _aesKey;
         public static byte[] AesIV => _aesIV;
 
-        // Init.
+        /// <summary>
+        /// Initializes the encryption manager by ensuring encryption key and IV configurations exist.
+        /// </summary>
         public static void Initialize()
         {
             try
@@ -29,7 +36,10 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        // Streams
+        /// <summary>
+        /// Encrypts the given input stream using AES encryption with the specified key and IV.
+        /// </summary>
+        /// <returns>An encrypted MemoryStream containing the encrypted data.</returns>
         public static MemoryStream EncryptStream(Stream inputStream, byte[] key, byte[] iv)
         {
             MemoryStream outputStream = new();
@@ -55,6 +65,11 @@ namespace Sales_Tracker.Classes
             outputStream.Position = 0;
             return outputStream;
         }
+
+        /// <summary>
+        /// Decrypts the specified encrypted file into a MemoryStream.
+        /// </summary>
+        /// <returns>A tuple containing the decrypted MemoryStream and any footer lines.</returns>
         public static (MemoryStream?, string[]) DecryptFileToMemoryStream(string inputFile, byte[] key, byte[] iv)
         {
             try
@@ -126,7 +141,10 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        // Strings
+        /// <summary>
+        /// Encrypts the specified plain text string using AES encryption with the provided key and IV.
+        /// </summary>
+        /// <returns>A Base64-encoded string containing the encrypted text.</returns>
         public static string EncryptString(string plainText, byte[] key, byte[] iv)
         {
             using Aes aesAlg = Aes.Create();
@@ -145,6 +163,11 @@ namespace Sales_Tracker.Classes
 
             return Convert.ToBase64String(msEncrypt.ToArray());
         }
+
+        /// <summary>
+        /// Decrypts the specified Base64-encoded cipher text string using AES decryption with the provided key and IV.
+        /// </summary>
+        /// <returns>The decrypted plain text, or null if decryption fails.</returns>
         public static string? DecryptString(string cipherText, byte[] key, byte[] iv)
         {
             using Aes aesAlg = Aes.Create();
@@ -170,7 +193,10 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        // Methods
+        /// <summary>
+        /// Retrieves the password stored in the specified file, decrypting it if necessary.
+        /// </summary>
+        /// <returns>The decrypted password, or null if retrieval or decryption fails.</returns>
         public static string? GetPasswordFromFile(string inputFile, byte[] key, byte[] iv)
         {
             if (!File.Exists(inputFile))
@@ -208,6 +234,10 @@ namespace Sales_Tracker.Classes
             string decryptedPassword = DecryptString(password, key, iv).Split(':')[1];
             return string.IsNullOrEmpty(decryptedPassword) ? null : decryptedPassword;
         }
+
+        /// <summary>
+        /// Decrypts the specified encrypted input file and writes the decrypted content to the output file.
+        /// </summary>
         public static void DecryptAndWriteToFile(string inputFile, string outputFile, byte[] key, byte[] iv)
         {
             (MemoryStream decryptedStream, string[] footerLines) = DecryptFileToMemoryStream(inputFile, key, iv);
@@ -226,6 +256,11 @@ namespace Sales_Tracker.Classes
                 writer.WriteLine(line);
             }
         }
+
+        /// <summary>
+        /// Generates a random cryptographic key of the specified size.
+        /// </summary>
+        /// <returns>A byte array containing the generated key.</returns>
         public static byte[] GenerateRandomKey(int size)
         {
             byte[] key = new byte[size];
@@ -235,6 +270,11 @@ namespace Sales_Tracker.Classes
             }
             return key;
         }
+
+        /// <summary>
+        /// Generates a random cryptographic initialization vector (IV) of the specified size.
+        /// </summary>
+        /// <returns>A byte array containing the generated IV.</returns>
         public static byte[] GenerateRandomIV(int size)
         {
             byte[] iv = new byte[size];
@@ -244,6 +284,11 @@ namespace Sales_Tracker.Classes
             }
             return iv;
         }
+
+        /// <summary>
+        /// Ensures that the cryptographic configuration exists. If it does not, generates a new key and IV, stores them, and returns them.
+        /// </summary>
+        /// <returns>A tuple containing the cryptographic key and IV.</returns>
         private static (byte[] Key, byte[] IV) EnsureConfigurationExists()
         {
             if (!File.Exists(Directories.Config_file))
@@ -258,6 +303,10 @@ namespace Sales_Tracker.Classes
                 return RetrieveKeys();
             }
         }
+
+        /// <summary>
+        /// Stores the provided cryptographic key and IV in a configuration file after encrypting them.
+        /// </summary>
         private static void StoreKeys(byte[] key, byte[] iv)
         {
             Config config = new()
@@ -269,6 +318,11 @@ namespace Sales_Tracker.Classes
             string configText = JsonSerializer.Serialize(config);
             File.WriteAllText(Directories.Config_file, configText);
         }
+
+        /// <summary>
+        /// Retrieves the stored cryptographic key and IV from the configuration file, decrypting them in the process.
+        /// </summary>
+        /// <returns>A tuple containing the decrypted cryptographic key and IV.</returns>
         private static (byte[] Key, byte[] IV) RetrieveKeys()
         {
             string configText = File.ReadAllText(Directories.Config_file);
@@ -276,10 +330,20 @@ namespace Sales_Tracker.Classes
 
             return (UnprotectData(config.EncryptedKey), UnprotectData(config.EncryptedIV));
         }
+
+        /// <summary>
+        /// Encrypts the provided data for storage.
+        /// </summary>
+        /// <returns>A byte array containing the encrypted data.</returns>
         private static byte[] ProtectData(byte[] data)
         {
             return ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
         }
+
+        /// <summary>
+        /// Decrypts the provided encrypted data.
+        /// </summary>
+        /// <returns>A byte array containing the decrypted data.</returns>
         private static byte[] UnprotectData(byte[] data)
         {
             return ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);

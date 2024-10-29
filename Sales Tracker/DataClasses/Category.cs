@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.DataClasses
 {
+    /// <summary>
+    /// Represents a category containing a list of products.
+    /// </summary>
     public class Category
     {
         // Properties

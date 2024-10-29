@@ -8,6 +8,12 @@ using System.Data;
 
 namespace Sales_Tracker.Charts
 {
+    /// <summary>
+    /// The LoadChart class provides methods to configure, clear, and load data into GunaChart charts, 
+    /// including bar, line, and pie charts, based on data provided by DataGridViews. 
+    /// This class supports displaying revenue, profit, distribution, 
+    /// and statistics like average order values, country of origin, and sales vs expenses.
+    /// </summary>
     internal class LoadChart
     {
         // Configuration

@@ -10,6 +10,10 @@ using System.Drawing.Drawing2D;
 
 namespace Sales_Tracker.UI
 {
+    /// <summary>
+    /// Manages the construction and customization of various UI controls, including menus, buttons, panels, and validation styling. 
+    /// This class helps streamline UI setup and ensures consistency across different control types.
+    /// </summary>
     internal class CustomControls
     {
         public static void ConstructControls()

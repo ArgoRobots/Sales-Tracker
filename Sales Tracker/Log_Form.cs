@@ -36,7 +36,7 @@ namespace Sales_Tracker
         // Form event handlers
         private void Log_form_Load(object sender, EventArgs e)
         {
-            RichTextBox.Text = Log.logText;
+            RichTextBox.Text = Log.LogText;
         }
         private void Log_form_Shown(object sender, EventArgs e)
         {

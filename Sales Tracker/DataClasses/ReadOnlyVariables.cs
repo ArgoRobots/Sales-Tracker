@@ -2,6 +2,9 @@
 
 namespace Sales_Tracker.DataClasses
 {
+    /// <summary>
+    /// Contains a set of read-only variables used for various UI and data-related text and formatting values.
+    /// </summary>
     public class ReadOnlyVariables
     {
         // Properties

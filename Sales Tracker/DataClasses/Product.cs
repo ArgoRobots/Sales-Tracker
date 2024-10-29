@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.DataClasses
 {
+    /// <summary>
+    /// Represents a product with details such as ID, name, country of origin, and company of origin.
+    /// </summary>
     public class Product
     {
         // Properties
@@ -36,10 +39,10 @@
 
         public Product(string productID, string productName, string countryOfOrigin, string companyOfOrigin)
         {
-            ProductID = productID;
-            Name = productName;
-            CountryOfOrigin = countryOfOrigin;
-            CompanyOfOrigin = companyOfOrigin;
+            _productID = productID;
+            _name = productName;
+            _countryOfOrigin = countryOfOrigin;
+            _companyOfOrigin = companyOfOrigin;
         }
     }
 }

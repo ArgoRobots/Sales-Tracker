@@ -2,12 +2,24 @@
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Provides logging functionality with different log levels and error handling mechanisms.
+    /// </summary>
     internal class Log
     {
-        public static string logText;
+        // Properties
+        public static string _logText;
+
+        // Getter and setter
+        public static string LogText
+        {
+            get => _logText;
+            set => _logText = value;
+        }
 
         /// <summary>
-        ///  0 = [Error], 1 = [Debug], 2 = [General], 3 = [Product manager]
+        /// Writes a log entry with a specified log level and message.
+        /// Log level index: 0 = [Error], 1 = [Debug], 2 = [General], 3 = [Robot Programmer].
         /// </summary>
         public static void Write(byte index, string text)
         {
@@ -37,7 +49,7 @@ namespace Sales_Tracker.Classes
                     break;
             }
             newText += text + "\n";
-            logText += newText;
+            _logText += newText;
 
             if (Tools.IsFormOpen(typeof(Log_Form)))
             {

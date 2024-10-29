@@ -565,7 +565,7 @@ namespace Sales_Tracker
                     }
                     if (!Directory.Exists(directory))
                     {
-                        Directories.WriteTextToFile(directory, Log.logText);
+                        Directories.WriteTextToFile(directory, Log.LogText);
                         break;
                     }
                     count++;

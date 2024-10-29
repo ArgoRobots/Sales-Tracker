@@ -1,5 +1,8 @@
 ﻿namespace Sales_Tracker.DataClasses
 {
+    /// <summary>
+    /// Represents a search result with a name, flag image, and score.
+    /// </summary>
     public class SearchResult(string name, Image flag, int score)
     {
         // Properties

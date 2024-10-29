@@ -6,6 +6,12 @@ using Sales_Tracker.DataClasses;
 
 namespace Sales_Tracker.UI
 {
+    /// <summary>
+    /// Manages language translation and caching for user interface controls.
+    /// Utilizes Microsoft Translator API to translate text and maintain language consistency across controls.
+    /// Provides caching to optimize translation efficiency and includes methods for dynamic text adjustment
+    /// on various control types to ensure correct alignment and font size adjustments post-translation.
+    /// </summary>
     public class LanguageManager
     {
         // Properties

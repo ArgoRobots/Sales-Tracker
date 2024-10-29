@@ -1,5 +1,13 @@
 ﻿namespace Sales_Tracker.DataClasses
 {
+    /// <summary>
+    /// Represents various cost-related data associated with a sales transaction, including pricing, shipping, tax, and total amounts in USD.
+    /// This object is stored in the <see cref="DataGridViewRow.Tag"/> property of each row in the DataGridView.
+    /// 
+    /// Each property in this class is represented in USD, the world reserve currency, to convert to other currencies.
+    /// These USD values are used for calculations, ensuring accurate exchange rate conversions.
+    /// The use of USD as the standard currency avoids exchange rate fluctuations between lesser-used currencies.
+    /// </summary>
     public class TagData
     {
         // Properties

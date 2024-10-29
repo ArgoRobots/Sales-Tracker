@@ -2,6 +2,9 @@
 
 namespace Sales_Tracker.Passwords
 {
+    /// <summary>
+    /// Provides password management functionality, including password validation and prompting the user for password entry.
+    /// </summary>
     internal class PasswordManager
     {
         // Properties

@@ -2,7 +2,7 @@
 namespace Sales_Tracker.UI
 {
     /// <summary>
-    /// Provides custom tooltip functionality.
+    /// Provides custom tooltip functionality using Guna2HtmlToolTip.
     /// </summary>
     public static class CustomTooltip
     {

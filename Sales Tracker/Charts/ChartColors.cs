@@ -3,6 +3,10 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Charts
 {
+    /// <summary>
+    /// Provides configuration for consistent theming of charts.
+    /// Configures title, legend, and axis colors to match the application's current theme, utilizing colors from <see cref="CustomColors"/>.
+    /// </summary>
     internal class ChartColors
     {
         public static ChartConfig Config()

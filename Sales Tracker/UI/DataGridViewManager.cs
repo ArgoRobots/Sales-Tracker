@@ -5,6 +5,11 @@ using System.ComponentModel;
 
 namespace Sales_Tracker.UI
 {
+    /// <summary>
+    /// Manages the setup, interactions, and event handling for DataGridView components in the.
+    /// This class includes methods for initializing DataGridViews, handling row and cell events, 
+    /// and customizing DataGridView behavior, such as right-click context menus and cell style updates.
+    /// </summary>
     public class DataGridViewManager
     {
         // Properties

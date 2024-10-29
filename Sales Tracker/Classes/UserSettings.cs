@@ -6,8 +6,14 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Manages user settings, including saving, updating, and resetting settings.
+    /// </summary>
     internal class UserSettings
     {
+        /// <summary>
+        /// Saves user settings, checking for changes in language, tooltip visibility, debug info, anonymous info sharing, and receipt settings.
+        /// </summary>
         public static void SaveUserSettings(bool includeGeneralFormForLanguage)
         {
             // Check if language changed
@@ -65,6 +71,10 @@ namespace Sales_Tracker.Classes
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed file encryption setting");
             }
         }
+
+        /// <summary>
+        /// Updates the application language across all open forms and UI elements.
+        /// </summary>
         private static void UpdateLanguage(bool includeGeneralForm)
         {
             Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
@@ -106,6 +116,10 @@ namespace Sales_Tracker.Classes
             // Add the new language change message
             CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the language to {Properties.Settings.Default.Language}");
         }
+
+        /// <summary>
+        /// Updates currency settings, including recalculating values and updating data grids.
+        /// </summary>
         private static void UpdateCurrency(string oldCurrency)
         {
             string newCurrency = General_Form.Instance.Currency_TextBox.Text;
@@ -133,6 +147,10 @@ namespace Sales_Tracker.Classes
             // Add the new currency change message
             CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the currency from {oldCurrency} to {newCurrency}");
         }
+
+        /// <summary>
+        /// Updates currency values in a specified DataGridView based on the current exchange rate.
+        /// </summary>
         private static void UpdateCurrencyValuesInGridView(Guna2DataGridView dataGridView)
         {
             // Get the current exchange rate from USD to the default currency
@@ -203,6 +221,10 @@ namespace Sales_Tracker.Classes
                 }
             }
         }
+
+        /// <summary>
+        /// Resets all user settings to their default values.
+        /// </summary>
         public static void ResetAllToDefault()
         {
             Properties.Settings.Default.Reset();

@@ -1,5 +1,9 @@
 ﻿namespace Sales_Tracker.UI
 {
+    /// <summary>
+    /// A custom panel that arranges child controls in a centered, flow layout with adjustable spacing.
+    /// The layout adapts to control resizing and dynamically centers controls horizontally within each row.
+    /// </summary>
     public class CenteredFlowLayoutPanel : Panel
     {
         // Properties
