@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.UI
+﻿using Sales_Tracker.DataClasses;
+
+namespace Sales_Tracker.UI
 {
     /// <summary>
     /// Manages the display and positioning of labels in the Sales Tracker application, ensuring that labels
@@ -40,6 +42,64 @@
 
             // Position the label near the bottom-right of the DataGridView
             totalLabel.Location = new Point(dataGridView.Right - totalLabel.Width, dataGridView.Bottom + 10);
+        }
+
+        /// <summary>
+        /// If there is no data, then it adds a Label to the control.
+        /// </summary>
+        /// <returns>True if there is any data, False if there is no data.</returns>
+        public static bool ManageNoDataLabelOnControl(bool hasData, Control control)
+        {
+            string text = ReadOnlyVariables.NoData_text;
+            Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == text);
+
+            if (!hasData)
+            {
+                string textWithoutWhitespace = string.Concat(text.Where(c => !char.IsWhiteSpace(c)));
+
+                // If there's no data and the label doesn't exist, create and add it
+                if (existingLabel == null)
+                {
+                    Label label = new()
+                    {
+                        Font = new Font("Segoe UI", 12),
+                        ForeColor = CustomColors.text,
+                        Text = text,
+                        AutoSize = true,
+                        BackColor = Color.Transparent,
+                        Tag = text,
+                        Anchor = AnchorStyles.Top,
+                        Name = $"{textWithoutWhitespace}_Label"  // This is needed for the language translation
+                    };
+
+                    control.Controls.Add(label);
+                    CenterLabelInParent(label);
+
+                    control.Resize += delegate { CenterLabelInParent(label); };
+
+                    label.BringToFront();
+                }
+                return false;
+            }
+            else
+            {
+                // If there's data and the label exists, remove it
+                if (existingLabel != null)
+                {
+                    control.Controls.Remove(existingLabel);
+                    existingLabel.Dispose();
+                }
+                return true;
+            }
+        }
+        public static void CenterLabelInParent(Label label)
+        {
+            Control parent = label.Parent;
+
+            if (label != null && parent != null)
+            {
+                label.Location = new Point((parent.Width - label.Width) / 2, (parent.Height - label.Height) / 2);
+            }
         }
     }
 }

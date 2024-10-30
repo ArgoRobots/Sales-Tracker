@@ -70,7 +70,7 @@ namespace Sales_Tracker.Charts
         public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart))
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
                 return 0;
@@ -135,7 +135,7 @@ namespace Sales_Tracker.Charts
         public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart))
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
                 return;
@@ -263,7 +263,7 @@ namespace Sales_Tracker.Charts
         public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart))
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
                 return 0;
@@ -359,7 +359,7 @@ namespace Sales_Tracker.Charts
         public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -431,7 +431,7 @@ namespace Sales_Tracker.Charts
         public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -504,7 +504,7 @@ namespace Sales_Tracker.Charts
         public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -576,7 +576,7 @@ namespace Sales_Tracker.Charts
         public static void LoadAccountantsIntoChart(IEnumerable<Guna2DataGridView> dataGridViews, GunaChart chart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews.ToArray());
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
 
             ConfigureChartForPie(chart);
 
@@ -635,7 +635,7 @@ namespace Sales_Tracker.Charts
         public static void LoadSalesVsExpensesChart(Guna2DataGridView purchasesDataGridView, Guna2DataGridView salesDataGridView, GunaChart chart, bool isLineChart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart))
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
                 return;
@@ -777,7 +777,7 @@ namespace Sales_Tracker.Charts
         public static void LoadAverageOrderValueChart(Guna2DataGridView salesDataGridView, GunaChart chart, bool isLineChart)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
-            if (!MainMenu_Form.ManageNoDataLabelOnControl(hasData, chart))
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
                 return;

@@ -27,6 +27,7 @@ namespace Sales_Tracker.Startup.Menus
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
 
+            SetDefaultProjectDirectory();
             SetDefaultTextInTextBoxes();
             AddEventHandlersToTextBoxes();
         }
@@ -86,7 +87,11 @@ namespace Sales_Tracker.Startup.Menus
 
             ProjectName_TextBox.Text = defaultName;
 
-            // Set default directory
+            // Set default currency
+            Currency_TextBox.Text = "CAD";
+        }
+        private void SetDefaultProjectDirectory()
+        {
             if (Properties.Settings.Default.ProjectDirectory == "")
             {
                 Properties.Settings.Default.ProjectDirectory = Directories.Desktop_dir;
@@ -97,9 +102,6 @@ namespace Sales_Tracker.Startup.Menus
             {
                 Directory_TextBox.Text = Properties.Settings.Default.ProjectDirectory;
             }
-
-            // Set default currency
-            Currency_TextBox.Text = "CAD";
         }
 
         // Form event handlers

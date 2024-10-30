@@ -1,6 +1,7 @@
 ﻿using Sales_Tracker.DataClasses;
 using Sales_Tracker.Passwords;
 using Sales_Tracker.Startup.Menus;
+using Sales_Tracker.UI;
 using System.Text;
 
 namespace Sales_Tracker.Classes
@@ -283,7 +284,7 @@ namespace Sales_Tracker.Classes
                 bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchase_DataGridView) &&
                     AreRowsVisible(MainMenu_Form.Instance.Sale_DataGridView);
 
-                MainMenu_Form.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView);
+                LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView);
             }
         }
 

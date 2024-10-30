@@ -676,7 +676,7 @@ namespace Sales_Tracker
             Label label = chart.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == ReadOnlyVariables.NoData_text);
             if (label != null)
             {
-                CenterLabelInControl(label, chart);
+                LabelManager.CenterLabelInParent(label);
             }
         }
         private void AddControlsDropDown()
@@ -983,62 +983,6 @@ namespace Sales_Tracker
             Statistics_Button.BorderColor = CustomColors.controlBorder;
         }
 
-        /// <summary>
-        /// If there is no data, then it adds a Label to the control.
-        /// </summary>
-        /// <returns>True if there is any data, False if there is no data.</returns>
-        public static bool ManageNoDataLabelOnControl(bool hasData, Control control)
-        {
-            string text = ReadOnlyVariables.NoData_text;
-            Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == text);
-
-            if (!hasData)
-            {
-                string textWithoutWhitespace = string.Concat(text.Where(c => !char.IsWhiteSpace(c)));
-
-                // If there's no data and the label doesn't exist, create and add it
-                if (existingLabel == null)
-                {
-                    Label label = new()
-                    {
-                        Font = new Font("Segoe UI", 12),
-                        ForeColor = CustomColors.text,
-                        Text = text,
-                        AutoSize = true,
-                        BackColor = Color.Transparent,
-                        Tag = text,
-                        Anchor = AnchorStyles.Top,
-                        Name = $"{textWithoutWhitespace}_Label"  // This is needed for the language translation
-                    };
-
-                    control.Controls.Add(label);
-                    CenterLabelInControl(label, control);
-
-                    control.Resize += delegate { CenterLabelInControl(label, control); };
-
-                    label.BringToFront();
-                }
-                return false;
-            }
-            else
-            {
-                // If there's data and the label exists, remove it
-                if (existingLabel != null)
-                {
-                    control.Controls.Remove(existingLabel);
-                    existingLabel.Dispose();
-                }
-                return true;
-            }
-        }
-        private static void CenterLabelInControl(Label label, Control parent)
-        {
-            if (label != null && parent != null)
-            {
-                label.Location = new Point((parent.Width - label.Width) / 2, (parent.Height - label.Height) / 2);
-            }
-        }
-
         // Company label
         public void RenameCompany()
         {
@@ -1179,7 +1123,7 @@ namespace Sales_Tracker
                 }
             }
 
-            ManageNoDataLabelOnControl(hasVisibleRows, _selectedDataGridView);
+            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, _selectedDataGridView);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)
         {
@@ -1673,12 +1617,12 @@ namespace Sales_Tracker
             Directories.WriteLinesToFile(filePath, list);
         }
 
-        // Statistics menu properties
+        // Statistics charts properties
         private List<GunaChart> statisticsCharts;
         private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart,
             accountants_Chart, salesVsExpenses_Chart, averageOrderValue_Chart;
 
-        // Statistics menu methods
+        // Statistics charts methods
         private List<Control> GetMainControlsList()
         {
             return [

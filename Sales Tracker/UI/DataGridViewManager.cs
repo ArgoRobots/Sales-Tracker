@@ -191,7 +191,7 @@ namespace Sales_Tracker.UI
                     }
 
                     // Remove accountant from list
-                    MainMenu_Form.Instance.AccountantList.Remove(MainMenu_Form.Instance.AccountantList.FirstOrDefault(a => a == valueBeingRemoved));
+                    MainMenu_Form.Instance.AccountantList.Remove(valueBeingRemoved);
 
                     // In case the accountant name that is being deleted is in the TextBox
                     Accountants_Form.Instance.VaidateAccountantTextBox();
@@ -210,7 +210,7 @@ namespace Sales_Tracker.UI
                     }
 
                     // Remove company from list
-                    MainMenu_Form.Instance.CompanyList.Remove(MainMenu_Form.Instance.CompanyList.FirstOrDefault(a => a == valueBeingRemoved));
+                    MainMenu_Form.Instance.CompanyList.Remove(valueBeingRemoved);
 
                     // In case the company name that is being deleted is in the TextBox
                     Companies_Form.Instance.ValidateCompanyTextBox();
@@ -359,51 +359,49 @@ namespace Sales_Tracker.UI
                     return;
                 }
 
-                FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls
-                    .OfType<FlowLayoutPanel>()
-                    .FirstOrDefault();
+                FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+                flowPanel.Controls.Clear();
+
+                // Add modify button
+                if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
+                {
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
+                }
 
                 // Add move button
                 if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
                 {
-                    ConfigureMoveButton("Move category to sales");
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to sales");
                 }
                 else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
                 {
-                    ConfigureMoveButton("Move category to purchases");
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to purchases");
                 }
                 else
                 {
                     flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
                 }
 
-                flowPanel.Controls.Remove(rightClickDataGridView_ModifyBtn);
-                flowPanel.Controls.Remove(rightClickDataGridView_ShowItemsBtn);
-                flowPanel.Controls.Remove(rightClickDataGridView_ExportReceiptBtn);
-
-                if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn, 1);
-                }
-
+                // Add other buttons
                 if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
                 {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn, 2);
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn);
 
                     if (IsLastItemAReceipt(tagList[^1]))
                     {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 3);
+                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
                     }
                 }
                 else if (grid.SelectedRows[0].Tag is (string item, TagData))
                 {
                     if (IsLastItemAReceipt(item))
                     {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn, 2);
+                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
                     }
                 }
 
-                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_DeleteBtn, 4);
+                // Add delete button
+                flowPanel.Controls.Add(_rightClickDataGridView_DeleteBtn);
 
                 // Adjust the panel height based on the number of controls
                 int controlCount = flowPanel.Controls.Count;
@@ -649,16 +647,6 @@ namespace Sales_Tracker.UI
                 dataGridView.Columns.Add(column);
             }
         }
-        private static void ConfigureMoveButton(string buttonText)
-        {
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
-
-            // Ensure the Move button is the second control
-            flowPanel.Controls.Add(rightClickDataGridView_MoveBtn);
-            flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, 1);
-
-            rightClickDataGridView_MoveBtn.Text = buttonText;
-        }
         public static string GetFilePathForDataGridView(MainMenu_Form.SelectedOption selected)
         {
             return selected switch
@@ -868,11 +856,6 @@ namespace Sales_Tracker.UI
         private static void ModifyRow(object sender, EventArgs e)
         {
             MainMenu_Form.Instance.ClosePanels();
-            if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count > 1)
-            {
-                CustomMessageBox.Show("Argo Sales Tracker", "You can only select one row to modify.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
 
             ModifyRow_Form modifyRow_Form = new(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]);
             modifyRow_Form.ShowDialog();
@@ -904,8 +887,7 @@ namespace Sales_Tracker.UI
                 Categories_Form.Instance.Sale_DataGridView.Rows.Add(selectedRow);
                 MainMenu_Form.IsProgramLoading = false;
 
-                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
-                    MainMenu_Form.Instance.CategoryPurchaseList, categoryName);
+                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(MainMenu_Form.Instance.CategoryPurchaseList, categoryName);
 
                 MainMenu_Form.Instance.CategoryPurchaseList.Remove(category);
                 MainMenu_Form.Instance.CategorySaleList.Add(category);
@@ -927,8 +909,7 @@ namespace Sales_Tracker.UI
                 Categories_Form.Instance.Purchase_DataGridView.Rows.Add(selectedRow);
                 MainMenu_Form.IsProgramLoading = false;
 
-                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(
-                    MainMenu_Form.Instance.CategorySaleList, categoryName);
+                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(MainMenu_Form.Instance.CategorySaleList, categoryName);
 
                 MainMenu_Form.Instance.CategorySaleList.Remove(category);
                 MainMenu_Form.Instance.CategoryPurchaseList.Add(category);
@@ -1044,10 +1025,13 @@ namespace Sales_Tracker.UI
 
             return File.Exists(newPath) ? newPath : "";
         }
-        private static void AddButtonToFlowPanel(FlowLayoutPanel flowPanel, Guna2Button button, int index)
+        private static void AddButtonToFlowPanel(FlowLayoutPanel flowPanel, Guna2Button button, string text = null)
         {
             flowPanel.Controls.Add(button);
-            flowPanel.Controls.SetChildIndex(button, index);
+            if (text != null)
+            {
+                button.Text = text;
+            }
         }
     }
 }
