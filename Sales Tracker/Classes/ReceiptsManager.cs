@@ -90,10 +90,10 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Checks if a specified receipt file exists in the filesystem and shows a message if it does not.
         /// </summary>
-        /// <returns>True if the receipt exists; otherwise, false.</returns>
+        /// <returns>True if the receipt exists or if the user did not select a receipt; otherwise, false.</returns>
         public static bool CheckIfReceiptExists(string receiptFilePath)
         {
-            if (!File.Exists(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, "")))
+            if (receiptFilePath != null && !File.Exists(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, "")))
             {
                 CustomMessageBox.Show("Argo Sales Tracker", $"The receipt you selected no longer exists", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return false;

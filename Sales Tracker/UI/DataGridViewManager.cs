@@ -67,11 +67,13 @@ namespace Sales_Tracker.UI
             dataGridView.CellMouseClick += DataGridView_CellMouseClick;
             dataGridView.CellMouseMove += DataGridView_CellMouseMove;
             dataGridView.CellMouseLeave += DataGridView_CellMouseLeave;
+            dataGridView.ColumnHeaderMouseClick += DataGridView_ColumnHeaderMouseClick;
 
             LoadColumns(dataGridView, columnHeaders, columnsToLoad);
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
             parent.Controls.Add(dataGridView);
         }
+        // DataGridView event handlers
         public static void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
@@ -411,6 +413,12 @@ namespace Sales_Tracker.UI
                 }
             }
         }
+        private static void DataGridView_ColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
+        {
+            UpdateAlternatingRowColors((DataGridView)sender);
+        }
+
+        // Methods for DataGridView for event handlers
         private static bool IsLastCellClicked(DataGridViewCellMouseEventArgs e, DataGridView dataGridView)
         {
             return e.RowIndex >= 0 && e.ColumnIndex == dataGridView.Columns.Count - 1;
@@ -621,7 +629,7 @@ namespace Sales_Tracker.UI
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
-            DataGridViewRowChanged(MainMenu_Form.Instance.SelectedDataGridView, MainMenu_Form.Instance.Selected);
+            DataGridViewRowChanged(dataGridView, MainMenu_Form.Instance.Selected);
             DataGridViewRow row;
 
             if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
@@ -843,6 +851,33 @@ namespace Sales_Tracker.UI
                                           ListSortDirection.Ascending :
                                           ListSortDirection.Descending;
             dataGridView.Sort(sortedColumn, direction);
+        }
+        public static void UpdateAlternatingRowColors(DataGridView dataGridView)
+        {
+            if (dataGridView.Rows.Count == 0)
+            {
+                return;
+            }
+
+            Color defaultBackColor = dataGridView.DefaultCellStyle.BackColor;
+            Color alternatingBackColor = dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
+
+            int visibleRowIndex = 0;
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                if (!row.Visible)
+                {
+                    continue;
+                }
+
+                // Apply alternating colors only to visible rows
+                row.DefaultCellStyle.BackColor = (visibleRowIndex % 2 == 0)
+                    ? defaultBackColor
+                    : alternatingBackColor;
+
+                visibleRowIndex++;
+            }
         }
 
         // Right click row properties

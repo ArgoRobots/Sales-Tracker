@@ -1123,6 +1123,7 @@ namespace Sales_Tracker
                 }
             }
 
+            DataGridViewManager.UpdateAlternatingRowColors(_selectedDataGridView);
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, _selectedDataGridView);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)

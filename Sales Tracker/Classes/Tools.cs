@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.UI;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -83,6 +84,9 @@ namespace Sales_Tracker.Classes
                                           .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
                 row.Visible = isVisible;
             }
+
+            DataGridViewManager.UpdateAlternatingRowColors(MainMenu_Form.Instance.SelectedDataGridView);
+
             return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
         }
         public static void ScrollToTopOfDataGridView(Guna2DataGridView dataGridView)
