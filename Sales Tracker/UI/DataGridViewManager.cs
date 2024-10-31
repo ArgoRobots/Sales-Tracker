@@ -62,7 +62,6 @@ namespace Sales_Tracker.UI
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
-            dataGridView.MouseDown += DataGridView_MouseDown;
             dataGridView.MouseUp += DataGridView_MouseUp;
             dataGridView.KeyDown += DataGridView_KeyDown;
             dataGridView.CellMouseClick += DataGridView_CellMouseClick;
@@ -317,136 +316,26 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.SaveDataGridViewToFile(dataGridView, selected);
             }
         }
-        private static void DataGridView_MouseDown(object sender, MouseEventArgs e)
-        {
-            CustomControls.CloseAllPanels(null, null);
-
-            Guna2DataGridView grid = (Guna2DataGridView)sender;
-            DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
-
-            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales && info.RowIndex != -1)
-            {
-                _selectedRowInMainMenu = grid.Rows[info.RowIndex];
-            }
-
-            if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
-            {
-                // The right click button does not select rows by default, so implement it here
-                // If it is not currently selected, unselect others
-                if (info.RowIndex == -1)
-                {
-                    return;
-                }
-                UnselectAllRowsInCurrentDataGridView();
-
-                // Select current row
-                grid.Rows[info.RowIndex].Selected = true;
-                grid.Focus();
-            }
-        }
         private static void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
             Guna2DataGridView grid = (Guna2DataGridView)sender;
-            if (grid.SelectedRows.Count == 0) { return; }
-
-            if (e.Button == MouseButtons.Right && grid.Rows.Count > 0)
+            if (!IsValidRightClick(grid, e))
             {
-                DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
-
-                // If a row was not clicked
-                if (info.Type != DataGridViewHitTestType.Cell)
-                {
-                    return;
-                }
-
-                FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-                flowPanel.Controls.Clear();
-
-                // Add modify button
-                if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
-                }
-
-                // Add move button
-                if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to sales");
-                }
-                else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to purchases");
-                }
-                else
-                {
-                    flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
-                }
-
-                // Add other buttons
-                if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn);
-
-                    if (IsLastItemAReceipt(tagList[^1]))
-                    {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
-                    }
-                }
-                else if (grid.SelectedRows[0].Tag is (string item, TagData))
-                {
-                    if (IsLastItemAReceipt(item))
-                    {
-                        AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
-                    }
-                }
-
-                // Add delete button
-                flowPanel.Controls.Add(_rightClickDataGridView_DeleteBtn);
-
-                // Adjust the panel height based on the number of controls
-                int controlCount = flowPanel.Controls.Count;
-                _rightClickDataGridView_Panel.Height = controlCount * CustomControls.PanelButtonHeight + 10;
-                flowPanel.Height = controlCount * CustomControls.PanelButtonHeight;
-
-                Control controlSender = (Control)sender;
-                _controlRightClickPanelWasAddedTo = controlSender.Parent;
-                Form parentForm = grid.FindForm();
-                int formHeight = parentForm.ClientSize.Height;
-                int formWidth = parentForm.ClientSize.Width;
-                byte padding = ReadOnlyVariables.PaddingRightClickPanel;
-
-                // Calculate the horizontal position
-                bool tooFarRight = false;
-                if (MainMenu_Form.Instance.SelectedDataGridView.Left + _rightClickDataGridView_Panel.Width + e.X - ReadOnlyVariables.OffsetRightClickPanel + padding > formWidth)
-                {
-                    _rightClickDataGridView_Panel.Left = formWidth - _rightClickDataGridView_Panel.Width - padding;
-                    tooFarRight = true;
-                }
-                else
-                {
-                    _rightClickDataGridView_Panel.Left = MainMenu_Form.Instance.SelectedDataGridView.Left + e.X - ReadOnlyVariables.OffsetRightClickPanel;
-                }
-
-                // Calculate the vertical position
-                int verticalOffset = grid.FirstDisplayedScrollingRowIndex * grid.Rows[0].Height;
-                int rowTop = (info.RowIndex + 1) * grid.Rows[0].Height - verticalOffset + MainMenu_Form.Instance.SelectedDataGridView.Top + columnHeaderHeight;
-
-                if (rowTop + _rightClickDataGridView_Panel.Height > formHeight + padding)
-                {
-                    _rightClickDataGridView_Panel.Top = formHeight - _rightClickDataGridView_Panel.Height - padding;
-                    if (!tooFarRight)
-                    {
-                        _rightClickDataGridView_Panel.Left += ReadOnlyVariables.OffsetRightClickPanel;
-                    }
-                }
-                else
-                {
-                    _rightClickDataGridView_Panel.Top = rowTop;
-                }
-
-                _controlRightClickPanelWasAddedTo.Controls.Add(_rightClickDataGridView_Panel);
-                _rightClickDataGridView_Panel.BringToFront();
+                return;
             }
+
+            DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
+            if (info.Type != DataGridViewHitTestType.Cell)
+            {
+                return;
+            }
+
+            Control controlSender = (Control)sender;
+            _controlRightClickPanelWasAddedTo = controlSender.Parent;
+
+            SelectRowAndDeselectAllOthers(grid, e);
+            ConfigureRightClickDataGridViewMenuButtons(grid);
+            PositionRightClickDataGridViewMenu(grid, e, info);
         }
         private static void DataGridView_KeyDown(object sender, KeyEventArgs e)
         {
@@ -562,6 +451,142 @@ namespace Sales_Tracker.UI
         {
             cell.Style.ForeColor = CustomColors.text;
             cell.Style.SelectionForeColor = CustomColors.text;
+        }
+
+        // Methods for DataGridView for MouseUp
+        private static bool IsValidRightClick(Guna2DataGridView grid, MouseEventArgs e)
+        {
+            return e.Button == MouseButtons.Right && grid.Rows.Count > 0;
+        }
+        private static void SelectRowAndDeselectAllOthers(Guna2DataGridView grid, MouseEventArgs e)
+        {
+            DataGridView.HitTestInfo info = grid.HitTest(e.X, e.Y);
+            if (info.RowIndex == -1)
+            {
+                return;
+            }
+            if (!grid.Rows[info.RowIndex].Selected)
+            {
+                UnselectAllRowsInCurrentDataGridView();
+            }
+
+            // Select current row
+            grid.Rows[info.RowIndex].Selected = true;
+            grid.Focus();
+        }
+        private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
+        {
+            FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            flowPanel.Controls.Clear();
+
+            // Add modify button
+            if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
+            }
+
+            // Add move button
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
+            {
+                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to sales");
+            }
+            else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
+            {
+                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to purchases");
+            }
+            else
+            {
+                flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
+            }
+
+            // Add other buttons
+            if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
+            {
+                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn);
+
+                if (IsLastItemAReceipt(tagList[^1]))
+                {
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
+                }
+            }
+            else if (grid.SelectedRows[0].Tag is (string item, TagData))
+            {
+                if (IsLastItemAReceipt(item))
+                {
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
+                }
+            }
+
+            // Add delete button
+            flowPanel.Controls.Add(_rightClickDataGridView_DeleteBtn);
+        }
+        private static void PositionRightClickDataGridViewMenu(Guna2DataGridView grid, MouseEventArgs e, DataGridView.HitTestInfo info)
+        {
+            Form parentForm = grid.FindForm();
+            int formHeight = parentForm.ClientSize.Height;
+            int formWidth = parentForm.ClientSize.Width;
+
+            SetHorizontalPosition(grid, e, formWidth);
+            SetVerticalPosition(grid, info, formHeight);
+
+            SetRightClickMenuHeight();
+            _controlRightClickPanelWasAddedTo.Controls.Add(_rightClickDataGridView_Panel);
+            _rightClickDataGridView_Panel.BringToFront();
+        }
+        private static void SetHorizontalPosition(Guna2DataGridView grid, MouseEventArgs e, int formWidth)
+        {
+            if (grid.Left + _rightClickDataGridView_Panel.Width + e.X - ReadOnlyVariables.OffsetRightClickPanel + ReadOnlyVariables.PaddingRightClickPanel > formWidth)
+            {
+                _rightClickDataGridView_Panel.Left = formWidth - _rightClickDataGridView_Panel.Width - ReadOnlyVariables.PaddingRightClickPanel;
+            }
+            else
+            {
+                _rightClickDataGridView_Panel.Left = grid.Left + e.X - ReadOnlyVariables.OffsetRightClickPanel;
+            }
+        }
+        private static void SetVerticalPosition(Guna2DataGridView grid, DataGridView.HitTestInfo info, int formHeight)
+        {
+            int rowHeight = grid.Rows[0].Height;
+            int headerHeight = grid.ColumnHeadersHeight;
+
+            // Calculate scroll offset considering only visible rows
+            int scrollOffset = 0;
+            for (int i = 0; i < grid.FirstDisplayedScrollingRowIndex; i++)
+            {
+                if (grid.Rows[i].Visible)
+                {
+                    scrollOffset += rowHeight;
+                }
+            }
+
+            // Calculate position up to target row, counting only visible rows
+            int visibleRowsBeforeTarget = 0;
+            for (int i = 0; i < info.RowIndex; i++)
+            {
+                if (grid.Rows[i].Visible)
+                {
+                    visibleRowsBeforeTarget++;
+                }
+            }
+
+            int rowTop = headerHeight + ((visibleRowsBeforeTarget + 1) * rowHeight) - scrollOffset + grid.Top;
+
+            if (rowTop + _rightClickDataGridView_Panel.Height > formHeight - ReadOnlyVariables.PaddingRightClickPanel)
+            {
+                _rightClickDataGridView_Panel.Top = formHeight - _rightClickDataGridView_Panel.Height - ReadOnlyVariables.PaddingRightClickPanel;
+            }
+            else
+            {
+                _rightClickDataGridView_Panel.Top = rowTop;
+            }
+        }
+        private static void SetRightClickMenuHeight()
+        {
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
+            int controlCount = flowPanel.Controls.Count;
+
+            _rightClickDataGridView_Panel.Height = controlCount * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel;
+            flowPanel.Height = controlCount * CustomControls.PanelButtonHeight;
         }
 
         // Methods for DataGridView

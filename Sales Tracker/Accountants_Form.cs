@@ -34,7 +34,7 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView);
-            Controls.Remove(ShowingResultsFor_Label);
+            ShowingResultsFor_Label.Visible = false;
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(accountant_DataGridView);
             AddEventHandlersToTextBoxes();
         }
@@ -51,8 +51,8 @@ namespace Sales_Tracker
             Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             TextBoxManager.Attach(Accountant_TextBox);
 
-            accountant_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
-            accountant_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
+            accountant_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
+            accountant_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
         }
         private void SetAccessibleDescriptions()
         {
@@ -118,8 +118,9 @@ namespace Sales_Tracker
             }
             else
             {
-                Controls.Remove(ShowingResultsFor_Label);
+                ShowingResultsFor_Label.Visible = false;
             }
+            LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView);
         }
 
         // DataGridView

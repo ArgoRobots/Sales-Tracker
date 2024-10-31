@@ -758,7 +758,7 @@ namespace Sales_Tracker
                         column == MainMenu_Form.Column.Total.ToString())
                     {
                         // Format the number with two decimal places
-                        if (decimal.TryParse(gTextBox.Text, out decimal number))
+                        if (decimal.TryParse(gTextBox.Text.Trim(), out decimal number))
                         {
                             selectedRow.Cells[column].Value = string.Format("{0:N2}", number);
                         }
@@ -797,17 +797,17 @@ namespace Sales_Tracker
                             cell.Value = ReadOnlyVariables.EmptyCell;
                             DataGridViewManager.RemoveUnderlineFromCell(cell);
                         }
-                        cell.Tag = gTextBox.Text;
+                        cell.Tag = gTextBox.Text.Trim();
                     }
                     else
                     {
-                        selectedRow.Cells[column].Value = gTextBox.Text;
+                        selectedRow.Cells[column].Value = gTextBox.Text.Trim();
                     }
                 }
                 else if (control is Guna2ComboBox gComboBox)
                 {
                     string columnName = gComboBox.Name;
-                    selectedRow.Cells[columnName].Value = gComboBox.SelectedItem;
+                    selectedRow.Cells[columnName].Value = gComboBox.SelectedItem.ToString().Trim();
                 }
                 else if (control is Guna2DateTimePicker gDatePicker)
                 {

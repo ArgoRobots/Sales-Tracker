@@ -52,11 +52,11 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(CompanyOfOrigin_TextBox);
 
-            purchase_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
-            purchase_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
+            purchase_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
+            purchase_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
 
-            sale_DataGridView.RowsAdded += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
-            sale_DataGridView.RowsRemoved += (sender, e) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
+            sale_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
+            sale_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
         }
         private void AddSearchBoxEvents()
         {
@@ -150,11 +150,17 @@ namespace Sales_Tracker
         // Event handlers
         private void AddProduct_Button_Click(object sender, EventArgs e)
         {
-            // Check if product ID already exists
             string productID = ProductID_TextBox.Text.Trim();
-            if (productID != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.SelectedDataGridView, Column.ProductID.ToString(), productID))
+            if (productID == "")
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                productID = ReadOnlyVariables.EmptyCell;
+            }
+
+            // Check if product ID already exists
+            if (productID != ReadOnlyVariables.EmptyCell &&
+                DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.SelectedDataGridView, Column.ProductID.ToString(), productID))
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show("Product already exists",
                     $"The product #{productID} already exists. Would you like to add this product anyways?",
                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -165,7 +171,7 @@ namespace Sales_Tracker
             }
 
             string name = ProductName_TextBox.Text.Trim();
-            Product product = new(ProductID_TextBox.Text.Trim(), name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
+            Product product = new(productID, name, CountryOfOrigin_TextBox.Text, CompanyOfOrigin_TextBox.Text);
             string category = ProductCategory_TextBox.Text;
 
             if (Sale_RadioButton.Checked)
@@ -242,12 +248,13 @@ namespace Sales_Tracker
         {
             if (Tools.SearchSelectedDataGridView(Search_TextBox))
             {
-                ShowShowingResultsForLabel(Search_TextBox.Text);
+                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }
             else
             {
                 ShowingResultsFor_Label.Visible = false;
             }
+            LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
         }
         private void ProductsRemaining_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -308,7 +315,9 @@ namespace Sales_Tracker
                 categories = MainMenu_Form.Instance.CategoryPurchaseList;
             }
 
-            if (MainMenu_Form.DoesProductExist(ProductName_TextBox.Text, categories))
+            string category = ProductCategory_TextBox.Text.Trim();
+
+            if (MainMenu_Form.DoesProductExistInCategory(ProductName_TextBox.Text, categories, category))
             {
                 AddProduct_Button.Enabled = false;
                 CustomControls.SetGTextBoxToInvalid(ProductName_TextBox);
@@ -388,14 +397,6 @@ namespace Sales_Tracker
             WarningCompany_LinkLabel.Visible = false;
         }
 
-        // SearchingFor_Label
-        private void ShowShowingResultsForLabel(string text)
-        {
-            ShowingResultsFor_Label.Text = $"Showing results for: {text}";
-            ShowingResultsFor_Label.Left = (ClientSize.Width - ShowingResultsFor_Label.Width) / 2;
-            Controls.Add(ShowingResultsFor_Label);
-        }
-
         // DataGridView properties
         public enum Column
         {
@@ -452,8 +453,7 @@ namespace Sales_Tracker
         // Methods
         private void ValidateInputs(object sender, EventArgs e)
         {
-            bool allFieldsFilled = !string.IsNullOrWhiteSpace(ProductID_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
+            bool allFieldsFilled = !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(ProductCategory_TextBox.Text) && ProductCategory_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text) && CountryOfOrigin_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(CompanyOfOrigin_TextBox.Text) && CompanyOfOrigin_TextBox.Tag.ToString() != "0";

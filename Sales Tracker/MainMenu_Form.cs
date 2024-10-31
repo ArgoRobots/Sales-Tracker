@@ -1316,16 +1316,21 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static bool DoesProductExist(string productName, List<Category> categories)
+        public static bool DoesProductExistInCategory(string productName, List<Category> categories, string categoryName)
         {
             foreach (Category category in categories)
             {
-                foreach (Product product in category.ProductList)
+                if (category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (product.Name == productName)
+                    foreach (Product product in category.ProductList)
                     {
-                        return true;
+                        if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
                     }
+                    // Break since we found and checked the category
+                    break;
                 }
             }
             return false;

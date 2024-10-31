@@ -38,7 +38,8 @@ namespace Sales_Tracker.UI
             // Keep the first part (before ":") the same in case it's been translated
             string[] parts = totalLabel.Text.Split(':');
             string baseText = parts[0].Trim();
-            totalLabel.Text = $"{baseText}: {dataGridView.Rows.Count}";
+            int count = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
+            totalLabel.Text = $"{baseText}: {count}";
 
             // Position the label near the bottom-right of the DataGridView
             totalLabel.Location = new Point(dataGridView.Right - totalLabel.Width, dataGridView.Bottom + 10);

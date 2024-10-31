@@ -88,6 +88,10 @@ namespace Sales_Tracker.UI
             {
                 e.SuppressKeyPress = true;
             }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+            }
             else
             {
                 Guna2TextBox textBox = (Guna2TextBox)sender;
@@ -110,6 +114,7 @@ namespace Sales_Tracker.UI
                 case Keys.Home:
                 case Keys.End:
                 case Keys.OemPeriod:
+                case Keys.Oemcomma:
                 case Keys.OemMinus:
                 case Keys.Subtract:
                 case Keys.Decimal:
