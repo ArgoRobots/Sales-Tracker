@@ -371,132 +371,18 @@ namespace Sales_Tracker
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Enter)
+            if (keyData is Keys.Up or Keys.Down or Keys.Right or Keys.Left or Keys.Enter)
             {
                 foreach (Guna2Panel panel in GetMenus())
                 {
                     if (Controls.Contains(panel))
                     {
-                        HandlePanelkeyDown(panel, keyData);
+                        MenuKeyShortcutManager.HandlePanelkeyDown(panel, keyData);
                         return true;
                     }
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-        private static void HandlePanelkeyDown(Guna2Panel panel, Keys e)
-        {
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
-            IList results = flowPanel.Controls;
-
-            if (results.Count == 0)
-            {
-                return;
-            }
-
-            // Select the next result
-            bool isResultSelected = false;
-            if (e is Keys.Down or Keys.Tab)
-            {
-                for (int i = 0; i < results.Count; i++)
-                {
-                    if (results[i] is not Guna2Button) { continue; }
-
-                    Guna2Button btn = (Guna2Button)results[i];
-
-                    // Find the result that is selected
-                    if (btn.BorderThickness == 1)
-                    {
-                        // Unselect current one
-                        btn.BorderThickness = 0;
-
-                        // If it's not the last one
-                        if (i < results.Count - 1)
-                        {
-                            // Find the next button
-                            for (int j = i + 1; j < results.Count; j++)
-                            {
-                                if (results[j] is Guna2Button nextBtn)
-                                {
-                                    nextBtn.BorderThickness = 1;
-                                    isResultSelected = true;
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // Select the first button
-                            Guna2Button firstBtn = (Guna2Button)results[0];
-                            firstBtn.BorderThickness = 1;
-                        }
-                        break;
-                    }
-                }
-            }
-            else if (e is Keys.Up)
-            {
-                for (int i = 0; i < results.Count; i++)
-                {
-                    if (results[i] is not Guna2Button) { continue; }
-
-                    Guna2Button btn = (Guna2Button)results[i];
-
-                    // Find the result that is selected
-                    if (btn.BorderThickness == 1)
-                    {
-                        // Unselect current one
-                        btn.BorderThickness = 0;
-
-                        // If it's not the first one
-                        if (i > 0)
-                        {
-                            for (int j = i - 1; j >= 0; j--)
-                            {
-                                if (results[j] is Guna2Button prevBtn)
-                                {
-                                    prevBtn.BorderThickness = 1;
-                                    isResultSelected = true;
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // Select the last button
-                            for (int j = results.Count - 1; j >= 0; j--)
-                            {
-                                if (results[j] is Guna2Button lastBtn)
-                                {
-                                    lastBtn.BorderThickness = 1;
-                                    isResultSelected = true;
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            else if (e is Keys.Enter)
-            {
-                for (int i = 0; i < results.Count; i++)
-                {
-                    if (results[i] is Guna2Button btn && btn.BorderThickness == 1)
-                    {
-                        btn.PerformClick();
-                        isResultSelected = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!isResultSelected)
-            {
-                // Select the first button
-                Guna2Button firstBtn = (Guna2Button)results[0];
-                firstBtn.BorderThickness = 1;
-            }
         }
         private void MainMenu_form_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1322,8 +1208,8 @@ namespace Sales_Tracker
                             return true;
                         }
                     }
-                    // Break since we found and checked the category
-                    break;
+                    // Return since we found and checked the category
+                    return false;
                 }
             }
             return false;
@@ -1779,7 +1665,8 @@ namespace Sales_Tracker
                 CustomControls.AccountMenu,
                 CustomControls.ControlDropDown_Panel,
                 GetStarted_Form.RightClickOpenRecent_Panel,
-                DataGridViewManager.RightClickDataGridView_Panel
+                DataGridViewManager.RightClickDataGridView_Panel,
+                RightClickGunaChartMenu.RightClickGunaChart_Panel
             ];
         }
         public void RefreshDataGridView()

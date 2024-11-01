@@ -21,8 +21,8 @@ namespace Sales_Tracker.UI
             CascadingMenu.Init();
 
             // Main menu controls
-            ConstructFileMenu();
             ConstructRecentlyOpenedMenu();
+            ConstructFileMenu();
             ConstructHelpMenu();
             ConstructAccountMenu();
             ContructControlsDropDownButton();
@@ -43,7 +43,7 @@ namespace Sales_Tracker.UI
         }
 
         // Properties
-        private static readonly byte _panelButtonHeight = 35, spaceForSeperator = 10, _spaceForPanel = 10, _spaceBetweenControls = 8, offsetForKeyboardShortcutOrArrow = 15;
+        private static readonly byte _panelButtonHeight = 35, spaceForSeperator = 11, _spaceForPanel = 10, _spaceBetweenControls = 8, offsetForKeyboardShortcutOrArrow = 15;
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -228,19 +228,18 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Open recent company", _panelBtnWidth, false, flowPanel);
             menuBtn.ImageSize = new Size(11, 11);
             menuBtn.ImageOffset = new Point((menuBtn.Width - menuBtn.ImageSize.Width - offsetForKeyboardShortcutOrArrow) - (menuBtn.Width / 2), 0);
+            menuBtn.Tag = _recentlyOpenedMenu;
             Theme.SetRightArrowImageBasedOnTheme(menuBtn);
             menuBtn.Click += (sender, e) =>
             {
                 Guna2Button btn = (Guna2Button)sender;
                 SetRecentlyOpenedMenu();
-                btn.Tag = _recentlyOpenedMenu;
                 CascadingMenu.OpenMenu();
             };
             menuBtn.MouseEnter += (sender, e) =>
             {
                 Guna2Button btn = (Guna2Button)sender;
                 SetRecentlyOpenedMenu();
-                btn.Tag = _recentlyOpenedMenu;
             };
             menuBtn.MouseLeave += CascadingMenu.CloseMenu;
             _openRecentCompany_Button = menuBtn;
@@ -339,7 +338,7 @@ namespace Sales_Tracker.UI
             SetRightClickMenuHeight(_recentlyOpenedMenu);
 
             _recentlyOpenedMenu.Location = new Point(_fileMenu.Right,
-                _fileMenu.Top + (_spaceForPanel / 2) + _panelButtonHeight * 2);
+                _fileMenu.Top + _panelButtonHeight * 2);
 
             MainMenu_Form.Instance.Controls.Add(_recentlyOpenedMenu);
             _recentlyOpenedMenu.BringToFront();
@@ -670,6 +669,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Controls.Remove(_helpMenu);
             MainMenu_Form.Instance.Controls.Remove(AccountMenu);
             MainMenu_Form.Instance.CloseDateRangePanel();
+            MenuKeyShortcutManager.SelectedPanel = null;
             DeselectAllMenuButtons(_fileMenu);
             DeselectAllMenuButtons(_recentlyOpenedMenu);
             DeselectAllMenuButtons(_helpMenu);

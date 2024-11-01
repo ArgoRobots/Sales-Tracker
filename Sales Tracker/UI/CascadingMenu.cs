@@ -33,5 +33,13 @@ namespace Sales_Tracker.UI
         {
             HideMenu_timer.Enabled = false;
         }
+        public static bool IsThisACascadingMenu(Guna2Panel panel)
+        {
+            return panel == CustomControls.RecentlyOpenedMenu;
+        }
+        public static void RemoveCascadingMenus()
+        {
+            MainMenu_Form.Instance.Controls.Remove(CustomControls.RecentlyOpenedMenu);
+        }
     }
 }
