@@ -221,8 +221,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Opens a new project when another project is already open. Handles saving current
-        /// project changes if necessary.
+        /// Opens a new project when another project is already open. Handles saving current project changes if necessary.
         /// </summary>
         public static void OpenProjectWhenAProgramIsAlreadyOpen()
         {
@@ -234,58 +233,67 @@ namespace Sales_Tracker.Classes
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                // If this project is already open
-                if (Directories.ArgoCompany_file == dialog.FileName)
-                {
-                    CustomMessageBox.Show("Argo Sales Tracker", "This project is already open", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                    return;
-                }
-
-                // Save current project
-                if (AreAnyChangesMade())
-                {
-                    string message = "Would you like to save your changes before opening a new project?";
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
-
-                    switch (result)
-                    {
-                        case CustomMessageBoxResult.Save:
-                            SaveAll();
-                            break;
-                        case CustomMessageBoxResult.DontSave:
-                            // Do nothing so the hidden directory is deleted
-                            break;
-                        case CustomMessageBoxResult.Cancel:
-                            return;
-                        default:  // If the CustomMessageBox was closed
-                            return;
-                    }
-                }
-
-                Directories.DeleteDirectory(Directories.TempCompany_dir, true);
-
-                if (!Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName))
-                {
-                    return;
-                }
-
-                MainMenu_Form.IsProgramLoading = true;
-                MainMenu_Form.Instance.ResetData();
-                MainMenu_Form.Instance.LoadData();
-                MainMenu_Form.IsProgramLoading = false;
-
-                MainMenu_Form.UpdateMainMenuFormText(MainMenu_Form.Instance);
-                MainMenu_Form.Instance.SetCompanyLabel();
-
-                MainMenu_Form.Instance.UpdateTotals();
-                MainMenu_Form.Instance.LoadCharts();
-                MainMenu_Form.Instance.HideShowingResultsForLabel();
-
-                bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchase_DataGridView) &&
-                    AreRowsVisible(MainMenu_Form.Instance.Sale_DataGridView);
-
-                LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView);
+                OpenProject(dialog.FileName);
             }
+        }
+
+        /// <summary>
+        /// Opens a new project from the specified file path when another project is already open.
+        /// Handles saving current project changes if necessary.
+        /// </summary>
+        public static void OpenProject(string filePath)
+        {
+            // If this project is already open
+            if (Directories.ArgoCompany_file == filePath)
+            {
+                CustomMessageBox.Show("Argo Sales Tracker", "This project is already open", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            // Save current project
+            if (AreAnyChangesMade())
+            {
+                string message = "Would you like to save your changes before opening a new project?";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+
+                switch (result)
+                {
+                    case CustomMessageBoxResult.Save:
+                        SaveAll();
+                        break;
+                    case CustomMessageBoxResult.DontSave:
+                        // Do nothing so the hidden directory is deleted
+                        break;
+                    case CustomMessageBoxResult.Cancel:
+                        return;
+                    default:  // If the CustomMessageBox was closed
+                        return;
+                }
+            }
+
+            Directories.DeleteDirectory(Directories.TempCompany_dir, true);
+
+            if (!Open(Directory.GetParent(filePath).FullName, filePath))
+            {
+                return;
+            }
+
+            MainMenu_Form.IsProgramLoading = true;
+            MainMenu_Form.Instance.ResetData();
+            MainMenu_Form.Instance.LoadData();
+            MainMenu_Form.IsProgramLoading = false;
+
+            MainMenu_Form.UpdateMainMenuFormText(MainMenu_Form.Instance);
+            MainMenu_Form.Instance.SetCompanyLabel();
+
+            MainMenu_Form.Instance.UpdateTotals();
+            MainMenu_Form.Instance.LoadCharts();
+            MainMenu_Form.Instance.HideShowingResultsForLabel();
+
+            bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchase_DataGridView) &&
+                                  AreRowsVisible(MainMenu_Form.Instance.Sale_DataGridView);
+
+            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView);
         }
 
         /// <summary>
@@ -402,6 +410,37 @@ namespace Sales_Tracker.Classes
                     Directories.DeleteDirectory(project, true);
                 }
             }
+        }
+
+        /// <summary>
+        /// Retrieves a list of valid recent project paths from the global application data settings.
+        /// </summary>
+        /// <returns>A list of valid project file paths.</returns>
+        public static List<string> GetValidRecentProjectPaths(bool excludeCurrentCompany)
+        {
+            string? value = DataFileManager.GetValue(DataFileManager.GlobalAppDataSettings.RecentProjects);
+            if (string.IsNullOrEmpty(value))
+            {
+                return [];
+            }
+
+            string[] projectPaths = value.Split(',');
+            Array.Reverse(projectPaths);  // Reverse the array so it loads in the correct order
+
+            string? currentCompanyPath = null;
+            if (excludeCurrentCompany)
+            {
+                currentCompanyPath = Directories.ArgoCompany_file;
+            }
+
+            // Remove duplicates (case-insensitive), filter valid paths, and optionally exclude the current company
+            List<string> validProjectPaths = projectPaths
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Where(File.Exists)
+                .Where(path => !excludeCurrentCompany || !string.Equals(path, currentCompanyPath, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            return validProjectPaths;
         }
     }
 }

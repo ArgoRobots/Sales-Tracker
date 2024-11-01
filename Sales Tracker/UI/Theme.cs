@@ -1,6 +1,7 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Charts;
+using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
 
@@ -322,6 +323,19 @@ namespace Sales_Tracker.Classes
                 {
                     CurrentTheme = ThemeType.Light;
                 }
+            }
+        }
+
+        // Set RightArrow image
+        public static void SetRightArrowImageBasedOnTheme(Guna2Button button)
+        {
+            if (CurrentTheme == ThemeType.Dark)
+            {
+                button.Image = Resources.RightArrowWhite;
+            }
+            else
+            {
+                button.Image = Resources.RightArrowBlack;
             }
         }
 

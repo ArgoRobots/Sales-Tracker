@@ -146,6 +146,7 @@ namespace Sales_Tracker.Settings
             }
 
             Theme.UpdateThemeForPanel(listOfPanels);
+            Theme.SetRightArrowImageBasedOnTheme(CustomControls.OpenRecentCompany_Button);
 
             // Update other controls
             Theme.SetThemeForControl([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);

@@ -62,6 +62,7 @@ namespace Sales_Tracker.Charts
                     List<Control> controlsList =
                     [
                         CustomControls.FileMenu,
+                        CustomControls.RecentlyOpenedMenu,
                         CustomControls.HelpMenu,
                         CustomControls.ControlDropDown_Panel
                     ];

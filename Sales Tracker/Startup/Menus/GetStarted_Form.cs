@@ -80,20 +80,7 @@ namespace Sales_Tracker.Startup.Menus
         // Recent projects
         private void LoadListOfRecentProjects()
         {
-            string? value = DataFileManager.GetValue(DataFileManager.GlobalAppDataSettings.RecentProjects);
-            if (value == null)
-            {
-                return;
-            }
-
-            string[] projectDirs = value.Split([',']);
-            Array.Reverse(projectDirs);  // Reverse the array so it loads in the correct order
-
-            // Remove duplicates and filter valid directories
-            List<string> validProjectDirs = projectDirs
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .Where(File.Exists)
-                .ToList();
+            List<string> validProjectDirs = ArgoCompany.GetValidRecentProjectPaths(false);
 
             foreach (string projectDir in validProjectDirs)
             {
@@ -134,7 +121,8 @@ namespace Sales_Tracker.Startup.Menus
                         return;
                     }
 
-                    DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension);
+                    string filePath = newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension;
+                    DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, filePath);
 
                     List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
                     Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
@@ -385,7 +373,7 @@ namespace Sales_Tracker.Startup.Menus
 
             // Add event to close FormStartup when FormMainMenu is closed
             MainMenu_Form FormMainMenu = new();
-            FormMainMenu.FormClosed += (s, args) => Startup_Form.Instance.Close();
+            FormMainMenu.FormClosed += delegate { Startup_Form.Instance.Close(); };
 
             MainMenu_Form.UpdateMainMenuFormText(FormMainMenu);
             FormMainMenu.Show();

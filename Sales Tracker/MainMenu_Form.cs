@@ -373,15 +373,7 @@ namespace Sales_Tracker
         {
             if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Enter)
             {
-                Guna2Panel[] panels = [
-                    CustomControls.FileMenu,
-                    CustomControls.HelpMenu,
-                    CustomControls.AccountMenu,
-                    CustomControls.ControlDropDown_Panel,
-                    DataGridViewManager.RightClickDataGridView_Panel
-                ];
-
-                foreach (Guna2Panel panel in panels)
+                foreach (Guna2Panel panel in GetMenus())
                 {
                     if (Controls.Contains(panel))
                     {
@@ -1782,6 +1774,7 @@ namespace Sales_Tracker
         {
             return [
                 CustomControls.FileMenu,
+                CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
                 CustomControls.AccountMenu,
                 CustomControls.ControlDropDown_Panel,

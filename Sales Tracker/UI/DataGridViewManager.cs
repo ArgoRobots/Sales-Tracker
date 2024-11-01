@@ -537,7 +537,7 @@ namespace Sales_Tracker.UI
             SetHorizontalPosition(grid, e, formWidth);
             SetVerticalPosition(grid, info, formHeight);
 
-            SetRightClickMenuHeight();
+            CustomControls.SetRightClickMenuHeight(_rightClickDataGridView_Panel);
             _controlRightClickPanelWasAddedTo.Controls.Add(_rightClickDataGridView_Panel);
             _rightClickDataGridView_Panel.BringToFront();
         }
@@ -587,14 +587,6 @@ namespace Sales_Tracker.UI
             {
                 _rightClickDataGridView_Panel.Top = rowTop;
             }
-        }
-        private static void SetRightClickMenuHeight()
-        {
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
-            int controlCount = flowPanel.Controls.Count;
-
-            _rightClickDataGridView_Panel.Height = controlCount * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel;
-            flowPanel.Height = controlCount * CustomControls.PanelButtonHeight;
         }
 
         // Methods for DataGridView
