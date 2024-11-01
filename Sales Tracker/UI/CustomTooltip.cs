@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+
 namespace Sales_Tracker.UI
 {
     /// <summary>
@@ -37,14 +38,7 @@ namespace Sales_Tracker.UI
             };
 
             // Only show the tooltip if the setting is true
-            tooltip.Popup += (s, e) =>
-            {
-                if (!Properties.Settings.Default.ShowTooltips)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-            };
+            tooltip.Popup += (_, e) => e.Cancel = !Properties.Settings.Default.ShowTooltips;
 
             return tooltip;
         }

@@ -82,72 +82,81 @@ namespace Sales_Tracker.Startup.Menus
         {
             List<string> validProjectDirs = ArgoCompany.GetValidRecentProjectPaths(false);
 
-            foreach (string projectDir in validProjectDirs)
+            if (validProjectDirs.Count == 0)
             {
-                // Construct button
-                Guna2Button btn = new()
+                LabelManager.AddNoRecentlyOpenedCompanies(OpenRecent_FlowLayoutPanel);
+            }
+            else
+            {
+                foreach (string projectDir in validProjectDirs)
                 {
-                    BackColor = CustomColors.controlBack,
-                    FillColor = CustomColors.controlBack,
-                    Size = new Size(CalculateButtonWidth(), 60),
-                    Text = Path.GetFileNameWithoutExtension(projectDir),
-                    Font = new Font("Segoe UI", 11),
-                    Tag = projectDir,
-                    AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
-                };
-                btn.MouseDown += (sender, e) =>
-                {
-                    Controls.Remove(_rightClickOpenRecent_Panel);
-
-                    if (e.Button != MouseButtons.Left) { return; }
-                    Guna2Button button = (Guna2Button)sender;
-
-                    string projectName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
-                    if (!ArgoCompany.OnlyAllowOneInstanceOfAProject(projectName))
+                    // Construct button
+                    Guna2Button btn = new()
                     {
-                        ArgoCompany.ApplicationMutex?.Dispose();  // Reset
-                        return;
-                    }
+                        BackColor = CustomColors.controlBack,
+                        FillColor = CustomColors.controlBack,
+                        Size = new Size(CalculateButtonWidth(), 60),
+                        Text = Path.GetFileNameWithoutExtension(projectDir),
+                        Font = new Font("Segoe UI", 11),
+                        Tag = projectDir,
+                        AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
+                    };
+                    btn.MouseDown += Btn_MouseDown;
+                    btn.MouseUp += Btn_MouseUp;
+                    OpenRecent_FlowLayoutPanel.Controls.Add(btn);
 
-                    // Save new ProjectDirectory
-                    string newDir = Directory.GetParent(button.Tag.ToString()).FullName;
+                    // Initialize file watcher for the directory
+                    string directory = Path.GetDirectoryName(projectDir);
+                    InitializeFileWatcher(directory);
+                }
+            }
+        }
+        private void Btn_MouseDown(object? sender, MouseEventArgs e)
+        {
+            Controls.Remove(_rightClickOpenRecent_Panel);
 
-                    Directories.SetDirectories(newDir, projectName);
-                    ArgoCompany.InitThings();
+            if (e.Button != MouseButtons.Left) { return; }
+            Guna2Button button = (Guna2Button)sender;
 
-                    if (!PasswordManager.EnterPassword())
-                    {
-                        ArgoCompany.ApplicationMutex?.Dispose();  // Reset
-                        return;
-                    }
+            string projectName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
+            if (!ArgoCompany.OnlyAllowOneInstanceOfAProject(projectName))
+            {
+                ArgoCompany.ApplicationMutex?.Dispose();  // Reset
+                return;
+            }
 
-                    string filePath = newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension;
-                    DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, filePath);
+            // Save new ProjectDirectory
+            string newDir = Directory.GetParent(button.Tag.ToString()).FullName;
 
-                    List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
-                    Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
-                    DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+            Directories.SetDirectories(newDir, projectName);
+            ArgoCompany.InitThings();
 
-                    ShowMainMenu();
-                };
-                btn.MouseUp += (sender, e) =>
-                {
-                    if (e.Button == MouseButtons.Right)
-                    {
-                        Guna2Button button = (Guna2Button)sender;
+            if (!PasswordManager.EnterPassword())
+            {
+                ArgoCompany.ApplicationMutex?.Dispose();  // Reset
+                return;
+            }
 
-                        // Position and show the right click panel
-                        _rightClickOpenRecent_Panel.Location = new Point(e.X, OpenRecent_FlowLayoutPanel.Top + btn.Top + btn.Height);
-                        _rightClickOpenRecent_Panel.Tag = button;
-                        Controls.Add(_rightClickOpenRecent_Panel);
-                        _rightClickOpenRecent_Panel.BringToFront();
-                    }
-                };
-                OpenRecent_FlowLayoutPanel.Controls.Add(btn);
+            string filePath = newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension;
+            DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, filePath);
 
-                // Initialize file watcher for the directory
-                string directory = Path.GetDirectoryName(projectDir);
-                InitializeFileWatcher(directory);
+            List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
+            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
+            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+
+            ShowMainMenu();
+        }
+        private void Btn_MouseUp(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                Guna2Button button = (Guna2Button)sender;
+
+                // Position and show the right click panel
+                _rightClickOpenRecent_Panel.Location = new Point(e.X, OpenRecent_FlowLayoutPanel.Top + button.Top + button.Height);
+                _rightClickOpenRecent_Panel.Tag = button;
+                Controls.Add(_rightClickOpenRecent_Panel);
+                _rightClickOpenRecent_Panel.BringToFront();
             }
         }
         private int CalculateButtonWidth()

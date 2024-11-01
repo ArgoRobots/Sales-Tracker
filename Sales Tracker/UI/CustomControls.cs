@@ -316,16 +316,7 @@ namespace Sales_Tracker.UI
 
             if (validProjectDirs.Count == 0)
             {
-                // Add a label indicating no recent projects
-                Label noProjectsLabel = new()
-                {
-                    Text = "No recently opened projects",
-                    Size = new Size(_panelBtnWidth, _panelButtonHeight),
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                    ForeColor = CustomColors.text,
-                };
-                flowPanel.Controls.Add(noProjectsLabel);
+                LabelManager.AddNoRecentlyOpenedCompanies(flowPanel);
             }
             else
             {

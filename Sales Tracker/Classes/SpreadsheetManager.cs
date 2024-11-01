@@ -81,10 +81,10 @@ namespace Sales_Tracker.Classes
                 string countryOfOrigin = row.Cell(4).GetValue<string>();
                 string companyOfOrigin = row.Cell(5).GetValue<string>();
 
-                List<string> unitedStatesVariants = new()
-                {
+                List<string> unitedStatesVariants =
+                [
                     "US", "USA", "U.S.", "U.S.A.", "United States of America", "America", "U.S. of A.", "The States"
-                };
+                ];
 
                 // Check if the country exists or if it's a variant of "United States"
                 if (unitedStatesVariants.Any(variant => variant.Equals(countryOfOrigin, StringComparison.OrdinalIgnoreCase)))
@@ -422,11 +422,11 @@ namespace Sales_Tracker.Classes
             IXLWorksheet saleProductsWorksheet = workbook.Worksheets.Add("Sale products");
             AddProductsToWorksheet(saleProductsWorksheet, MainMenu_Form.Instance.CategorySaleList);
 
-            IXLWorksheet accountantsWorksheet = workbook.Worksheets.Add("Accountants");
-            AddAccountantsToWorksheet(accountantsWorksheet);
-
             IXLWorksheet companiesWorksheet = workbook.Worksheets.Add("Companies");
             AddCompaniesToWorksheet(companiesWorksheet);
+
+            IXLWorksheet accountantsWorksheet = workbook.Worksheets.Add("Accountants");
+            AddAccountantsToWorksheet(accountantsWorksheet);
 
             // Save the file
             workbook.SaveAs(filePath);
@@ -584,21 +584,6 @@ namespace Sales_Tracker.Classes
                 excelCell.Value = cellValue;
             }
         }
-        private static void AddAccountantsToWorksheet(IXLWorksheet worksheet)
-        {
-            worksheet.Cell(1, 1).Value = "Accountant name";
-            worksheet.Cell(1, 1).Style.Font.Bold = true;
-            worksheet.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.LightBlue;
-
-            int currentRow = 2;
-            foreach (string accountant in MainMenu_Form.Instance.AccountantList)
-            {
-                worksheet.Cell(currentRow, 1).Value = accountant;
-                currentRow++;
-            }
-
-            worksheet.Columns().AdjustToContents();
-        }
         private static void AddCompaniesToWorksheet(IXLWorksheet worksheet)
         {
             worksheet.Cell(1, 1).Value = "Company name";
@@ -609,6 +594,21 @@ namespace Sales_Tracker.Classes
             foreach (string company in MainMenu_Form.Instance.CompanyList)
             {
                 worksheet.Cell(currentRow, 1).Value = company;
+                currentRow++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+        }
+        private static void AddAccountantsToWorksheet(IXLWorksheet worksheet)
+        {
+            worksheet.Cell(1, 1).Value = "Accountant name";
+            worksheet.Cell(1, 1).Style.Font.Bold = true;
+            worksheet.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.LightBlue;
+
+            int currentRow = 2;
+            foreach (string accountant in MainMenu_Form.Instance.AccountantList)
+            {
+                worksheet.Cell(currentRow, 1).Value = accountant;
                 currentRow++;
             }
 
