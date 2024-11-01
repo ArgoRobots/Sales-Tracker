@@ -17,6 +17,7 @@ namespace Sales_Tracker.UI
         private static Guna2Panel _searchResultBox;
         private static Guna2Panel _searchResultBoxContainer;
         private static Timer debounceTimer;
+        private static Label noResults_Label;
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
@@ -66,12 +67,26 @@ namespace Sales_Tracker.UI
             _searchResultBox.HorizontalScroll.Enabled = false;
             _searchResultBox.HorizontalScroll.Maximum = 0;
             _searchResultBoxContainer.Controls.Add(_searchResultBox);
+            Theme.CustomizeScrollBar(_searchResultBox);
 
             debounceTimer = new Timer
             {
                 Interval = 300
             };
             debounceTimer.Tick += DebounceTimer_Tick;
+
+            InitNoResultsLabel();
+        }
+        private static void InitNoResultsLabel()
+        {
+            noResults_Label = new()
+            {
+                Text = "No results",
+                Height = 30,
+                ForeColor = CustomColors.text,
+                Font = new Font("Segoe UI", 10),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
         }
 
         public const string addLine = "ADD LINE CONTROL";
@@ -221,30 +236,33 @@ namespace Sales_Tracker.UI
                 searchResultControls[i].Visible = false;
             }
 
-            int totalHeight = yOffset + 1;
-            if (totalHeight > maxHeight)
-            {
-                _searchResultBoxContainer.Height = maxHeight + 3;
-                _searchResultBox.Height = maxHeight;
-                _searchResultBox.AutoScroll = true;
-                Theme.CustomizeScrollBar(_searchResultBox);
-            }
-            else if (controlIndex == 0)
-            {
-                CloseSearchBox();
-                debounceTimer.Stop();
-                return;
-            }
-            else
-            {
-                _searchResultBox.Height = totalHeight;
-                _searchResultBoxContainer.Height = totalHeight + 10;
-                _searchResultBox.AutoScroll = false;
-            }
-
             // Set width to match textBox
             _searchResultBoxContainer.Width = textBox.Width;
             _searchResultBox.Width = textBox.Width - 3;
+
+            int totalHeight = yOffset + 1;
+            if (totalHeight > maxHeight)
+            {
+                _searchResultBox.Controls.Remove(noResults_Label);
+
+                _searchResultBoxContainer.Height = maxHeight + 3;
+                _searchResultBox.Height = maxHeight;
+            }
+            else if (controlIndex == 0)
+            {
+                noResults_Label.Width = _searchResultBox.Width;
+                _searchResultBox.Controls.Add(noResults_Label);
+
+                _searchResultBox.Height = 50;
+                _searchResultBoxContainer.Height = _searchResultBox.Height + 10;
+            }
+            else
+            {
+                _searchResultBox.Controls.Remove(noResults_Label);
+
+                _searchResultBox.Height = totalHeight;
+                _searchResultBoxContainer.Height = totalHeight + 10;
+            }
 
             // Show search box
             SetSearchBoxLocation(textBox);
