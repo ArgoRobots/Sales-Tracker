@@ -33,8 +33,6 @@ namespace Sales_Tracker.Startup
 
             // TO DO: make this only run once, during progam installation
             ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.ArgoColor, 0);
-
-            LanguageManager.UpdateLanguageForControl(this);
         }
 
         public void SwitchMainForm(Form mainForm)

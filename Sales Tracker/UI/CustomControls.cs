@@ -316,7 +316,7 @@ namespace Sales_Tracker.UI
 
             if (validProjectDirs.Count == 0)
             {
-                LabelManager.AddNoRecentlyOpenedCompanies(flowPanel);
+                LabelManager.AddNoRecentlyOpenedCompanies(flowPanel, _panelBtnWidth);
             }
             else
             {

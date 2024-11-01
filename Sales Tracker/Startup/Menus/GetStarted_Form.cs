@@ -84,31 +84,30 @@ namespace Sales_Tracker.Startup.Menus
 
             if (validProjectDirs.Count == 0)
             {
-                LabelManager.AddNoRecentlyOpenedCompanies(OpenRecent_FlowLayoutPanel);
+                LabelManager.AddNoRecentlyOpenedCompanies(OpenRecent_FlowLayoutPanel, CalculateButtonWidth());
+                return;
             }
-            else
-            {
-                foreach (string projectDir in validProjectDirs)
-                {
-                    // Construct button
-                    Guna2Button btn = new()
-                    {
-                        BackColor = CustomColors.controlBack,
-                        FillColor = CustomColors.controlBack,
-                        Size = new Size(CalculateButtonWidth(), 60),
-                        Text = Path.GetFileNameWithoutExtension(projectDir),
-                        Font = new Font("Segoe UI", 11),
-                        Tag = projectDir,
-                        AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
-                    };
-                    btn.MouseDown += Btn_MouseDown;
-                    btn.MouseUp += Btn_MouseUp;
-                    OpenRecent_FlowLayoutPanel.Controls.Add(btn);
 
-                    // Initialize file watcher for the directory
-                    string directory = Path.GetDirectoryName(projectDir);
-                    InitializeFileWatcher(directory);
-                }
+            foreach (string projectDir in validProjectDirs)
+            {
+                // Construct button
+                Guna2Button btn = new()
+                {
+                    BackColor = CustomColors.controlBack,
+                    FillColor = CustomColors.controlBack,
+                    Size = new Size(CalculateButtonWidth(), 60),
+                    Text = Path.GetFileNameWithoutExtension(projectDir),
+                    Font = new Font("Segoe UI", 11),
+                    Tag = projectDir,
+                    AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
+                };
+                btn.MouseDown += Btn_MouseDown;
+                btn.MouseUp += Btn_MouseUp;
+                OpenRecent_FlowLayoutPanel.Controls.Add(btn);
+
+                // Initialize file watcher for the directory
+                string directory = Path.GetDirectoryName(projectDir);
+                InitializeFileWatcher(directory);
             }
         }
         private void Btn_MouseDown(object? sender, MouseEventArgs e)
