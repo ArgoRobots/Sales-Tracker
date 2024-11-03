@@ -135,7 +135,7 @@ namespace Sales_Tracker
             Invoke(() =>
             {
                 LoadingPanel.HideLoadingScreen(this);
-                CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Successfully exported", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             });
         }
     }

@@ -73,7 +73,7 @@ namespace Sales_Tracker.Settings
         {
             SearchBox.CloseSearchBox();
 
-            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", "All settings will be reset to default.", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
+            CustomMessageBoxResult result = CustomMessageBox.Show("Reset settings", "All settings will be reset to default.", CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
             if (result == CustomMessageBoxResult.Ok)
             {
                 UserSettings.ResetAllToDefault();

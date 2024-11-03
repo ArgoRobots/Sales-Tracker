@@ -133,7 +133,7 @@ namespace Sales_Tracker.Startup.Menus
             if (File.Exists(selectedDirectory + @"\" + ProjectName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
                 Directory_TextBox.Focus();
-                CustomMessageBox.Show("Argo Sales Tracker", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Project already exists", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
 

@@ -208,8 +208,8 @@ namespace Sales_Tracker
             // Check if purchase ID already exists
             if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
-                string message = $"The order #{purchaseNumber} already exists. Would you like to add this purchase anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                string message = $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?";
+                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -248,7 +248,7 @@ namespace Sales_Tracker
             if (totalPrice != amountCharged)
             {
                 string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -341,7 +341,7 @@ namespace Sales_Tracker
             if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
             {
                 string message = $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -450,7 +450,7 @@ namespace Sales_Tracker
             {
                 string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
                 string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged} {currency}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice} {currency}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {

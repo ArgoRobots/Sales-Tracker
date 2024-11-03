@@ -592,7 +592,7 @@ namespace Sales_Tracker
         /// <returns>Returns true if the user cancels. Returns false if the user saves.</returns>
         private static bool AskUserToSaveBeforeClosing()
         {
-            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+            CustomMessageBoxResult result = CustomMessageBox.Show("Save changes",
                 "Save changes to the following items?",
                 CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 

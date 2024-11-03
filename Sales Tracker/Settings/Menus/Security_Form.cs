@@ -65,7 +65,7 @@ namespace Sales_Tracker.Settings.Menus
             if (EncryptFiles_CheckBox.Checked) { return; }
 
             CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Argo Sales Tracker",
+                "Unencrypt files",
                 "Disabling this feature will make your data vulnerable to unauthorized access. Are you sure you want to disable this feature?",
                 CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 

@@ -84,7 +84,7 @@ namespace Sales_Tracker.Classes
             // Log error with debug info
             Write(0, message + debugInfo);
 
-            CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+            CustomMessageBox.Show("Error", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
         }
 
         // File errors

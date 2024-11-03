@@ -210,7 +210,7 @@ namespace Sales_Tracker
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -249,7 +249,7 @@ namespace Sales_Tracker
             if (totalPrice != amountCharged)
             {
                 string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -344,7 +344,7 @@ namespace Sales_Tracker
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
             {
                 string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -443,7 +443,7 @@ namespace Sales_Tracker
             if (totalPrice != amountCharged)
             {
                 string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {

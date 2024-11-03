@@ -95,7 +95,7 @@ namespace Sales_Tracker.Classes
         {
             if (receiptFilePath != null && !File.Exists(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, "")))
             {
-                CustomMessageBox.Show("Argo Sales Tracker", $"The receipt you selected no longer exists", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Receipt does not exist", $"The receipt you selected no longer exists", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return false;
             }
             return true;

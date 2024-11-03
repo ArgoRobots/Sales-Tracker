@@ -25,7 +25,7 @@ namespace Sales_Tracker
 
             if (receiptFilePath != "" && !File.Exists(receiptFilePath))
             {
-                CustomMessageBox.Show("Argo Sales Tracker", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Receipt does not exist", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 Log.Error_FileDoesNotExist(receiptFilePath);
             }
 

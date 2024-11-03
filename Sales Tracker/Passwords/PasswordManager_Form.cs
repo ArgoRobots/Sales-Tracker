@@ -66,25 +66,25 @@ namespace Sales_Tracker.Passwords
             {
                 if (PasswordManager.Password != CurrentPassword_TextBox.Text)
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", "The current password is incorrect", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Incorrect passowrd", "The current password is incorrect", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     CurrentPassword_TextBox.Focus();
                     return;
                 }
 
                 PasswordManager.Password = NewPassword_TextBox.Text;
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Removed updated");
-                CustomMessageBox.Show("Argo Sales Tracker", "Password updated successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Password updated", "Password updated successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 Close();
             }
             else
             {
                 if (PasswordManager.Password != CurrentPassword_TextBox.Text)
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", "The password is incorrect", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Incorrect passowrd", "The password is incorrect", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     return;
                 }
 
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                CustomMessageBoxResult result = CustomMessageBox.Show("Remove password",
                    "Removing your password will make your data vulnerable to unauthorized access. Are you sure you want to continue?",
                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
@@ -95,7 +95,7 @@ namespace Sales_Tracker.Passwords
 
                 PasswordManager.Password = null;
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Removed password");
-                CustomMessageBox.Show("Argo Sales Tracker", "Password removed successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Password removed", "Password removed successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 Close();
             }
         }

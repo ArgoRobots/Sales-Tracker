@@ -374,7 +374,7 @@ namespace Sales_Tracker.UI
                 {
                     message = "Are you sure you want to delete the selected rows?";
                 }
-                CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Delete rows", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -623,7 +623,7 @@ namespace Sales_Tracker.UI
             {
                 if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", $"This {type} is being used and cannot be {action}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show($"Cannot be {action}", $"This {type} is being used and cannot be {action}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return true;
                 }
             }
@@ -989,7 +989,7 @@ namespace Sales_Tracker.UI
                 if (category != null && category.ProductList.Count > 0)
                 {
                     CustomMessageBox.Show(
-                        "Argo Sales Tracker",
+                        "Cannot move category",
                         $"Cannot move category '{categoryName}' because it contains products",
                         CustomMessageBoxIcon.Error,
                         CustomMessageBoxButtons.Ok
@@ -1049,7 +1049,7 @@ namespace Sales_Tracker.UI
 
             if (!File.Exists(receiptFilePath))
             {
-                CustomMessageBox.Show("Argo Sales Tracker", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("The receipt no longer exists", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 Log.Error_FileDoesNotExist(receiptFilePath);
                 return;
             }

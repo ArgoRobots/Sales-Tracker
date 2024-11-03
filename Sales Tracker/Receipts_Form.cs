@@ -131,7 +131,7 @@ namespace Sales_Tracker
                     Directories.CopyFile(receipt, destinationFilePath);
                 }
 
-                CustomMessageBox.Show("Argo Sales Tracker",
+                CustomMessageBox.Show("Receipts exported",
                    "Receipts exported successfully",
                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }

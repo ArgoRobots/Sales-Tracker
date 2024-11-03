@@ -147,7 +147,7 @@ namespace Sales_Tracker.Passwords
             }
             else
             {
-                CustomMessageBox.Show("Argo Sales Tracker", "The password is incorrect", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Incorrect passowrd", "The password is incorrect", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 Password_TextBox.Focus();
             }
         }

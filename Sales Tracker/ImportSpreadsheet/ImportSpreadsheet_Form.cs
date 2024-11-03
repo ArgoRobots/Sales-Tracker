@@ -112,16 +112,16 @@ namespace Sales_Tracker.ImportSpreadsheet
                     MainMenu_Form.Instance.RefreshDataGridView();
 
                     CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported '{Path.GetFileName(spreadsheetFilePath)}'");
-                    CustomMessageBox.Show("Argo Sales Tracker", "Finished importing spreadsheet", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
                 else
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", "Nothing was imported", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Nothing was imported", "Nothing was imported", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show("Argo Sales Tracker", $"An error occurred while importing the spreadsheet: {ex.Message}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
 
             HideLoadingIndicator();
@@ -138,7 +138,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
             catch
             {
-                CustomMessageBox.Show("Argo Sales Tracker",
+                CustomMessageBox.Show("Spreadsheet is invalid",
                     "This spreadsheet is invalid or corrupted. Please choose a valid spreadsheet.",
                      CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
 
@@ -364,7 +364,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
                 if (workbook.Worksheets.Count == 0)
                 {
-                    CustomMessageBox.Show("Argo Sales Tracker", "This spreadsheet doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Spreadsheet is invalid", "This spreadsheet doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return panels;
                 }
 
@@ -560,7 +560,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (salesImportFailed) { message += "'Sales'"; }
                 message += " because it looks like you are not connected to the internet. A connection is needed to get the exchange rates. Please check your connection and try again";
 
-                CustomMessageBox.Show("Argo Sales Tracker",
+                CustomMessageBox.Show("No connection",
                     message,
                     CustomMessageBoxIcon.Exclamation,
                     CustomMessageBoxButtons.Ok);
