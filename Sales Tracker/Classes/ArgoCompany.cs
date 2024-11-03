@@ -243,6 +243,13 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void OpenProject(string filePath)
         {
+            // Validate the file path
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+            {
+                CustomMessageBox.Show("Project does not exist", "The specified project file does not exist.", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
             // If this project is already open
             if (Directories.ArgoCompany_file == filePath)
             {
