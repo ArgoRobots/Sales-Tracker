@@ -246,7 +246,7 @@ namespace Sales_Tracker.UI
 
                         if (itemList.Count == index)
                         {
-                            CustomMessageBoxResult result = CustomMessageBox.Show("Argo Sales Tracker",
+                            CustomMessageBoxResult result = CustomMessageBox.Show($"Delete the {selected}",
                                 $"Deleting the last item will also delete the {selected}.",
                                 CustomMessageBoxIcon.Info, CustomMessageBoxButtons.OkCancel);
 
@@ -983,8 +983,17 @@ namespace Sales_Tracker.UI
             foreach (DataGridViewRow row in rowsToMove)
             {
                 string categoryName = row.Cells[0].Value.ToString();
-                if (IsThisBeingUsed("category", MainMenu_Form.Column.Category.ToString(), categoryName, "moved"))
+
+                // Get the category and check if it has products
+                Category? category = MainMenu_Form.GetCategoryCategoryNameIsFrom(sourceList, categoryName);
+                if (category != null && category.ProductList.Count > 0)
                 {
+                    CustomMessageBox.Show(
+                        "Argo Sales Tracker",
+                        $"Cannot move category '{categoryName}' because it contains products",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok
+                    );
                     continue;
                 }
 
@@ -993,7 +1002,6 @@ namespace Sales_Tracker.UI
                 targetGrid.Rows.Add(row);
 
                 // Update category lists
-                Category? category = MainMenu_Form.GetCategoryCategoryNameIsFrom(sourceList, categoryName);
                 sourceList.Remove(category);
                 targetList.Add(category);
 
