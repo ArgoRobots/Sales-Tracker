@@ -37,6 +37,7 @@ namespace Sales_Tracker.UI
         }
 
         // Construct DataGridView
+        private static bool isMouseDown;
         public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control parent) where TEnum : Enum
         {
             dataGridView.Name = name;
@@ -62,6 +63,8 @@ namespace Sales_Tracker.UI
             dataGridView.ColumnWidthChanged += DataGridView_ColumnWidthChanged;
             dataGridView.RowsRemoved += DataGridView_RowsRemoved;
             dataGridView.UserDeletingRow += DataGridView_UserDeletingRow;
+            dataGridView.MouseDown += DataGridView_MouseDown;
+            dataGridView.MouseMove += DataGridView_MouseMove;
             dataGridView.MouseUp += DataGridView_MouseUp;
             dataGridView.KeyDown += DataGridView_KeyDown;
             dataGridView.CellMouseClick += DataGridView_CellMouseClick;
@@ -73,6 +76,7 @@ namespace Sales_Tracker.UI
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
             parent.Controls.Add(dataGridView);
         }
+
         // DataGridView event handlers
         public static void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
@@ -318,9 +322,26 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.SaveDataGridViewToFile(dataGridView, selected);
             }
         }
+        private static void DataGridView_MouseDown(object sender, MouseEventArgs e)
+        {
+            isMouseDown = true;
+        }
+        private static void DataGridView_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                CustomControls.CloseAllPanels(null, null);
+            }
+        }
         private static void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
+            isMouseDown = false;
             Guna2DataGridView grid = (Guna2DataGridView)sender;
+
+            CustomControls.CloseAllPanels(null, null);
+
+            SelectRowAndDeselectAllOthers(grid, e);
+
             if (!IsValidRightClick(grid, e))
             {
                 return;
@@ -335,7 +356,6 @@ namespace Sales_Tracker.UI
             Control controlSender = (Control)sender;
             _controlRightClickPanelWasAddedTo = controlSender.Parent;
 
-            SelectRowAndDeselectAllOthers(grid, e);
             ConfigureRightClickDataGridViewMenuButtons(grid);
             PositionRightClickDataGridViewMenu(grid, e, info);
         }
@@ -490,7 +510,10 @@ namespace Sales_Tracker.UI
             // Add modify button
             if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
             {
-                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
+                if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
+                {
+                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
+                }
             }
 
             // Add move button
@@ -891,7 +914,7 @@ namespace Sales_Tracker.UI
             rightClickDataGridView_ModifyBtn.Click += ModifyRow;
 
             rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, false, flowPanel);
-            rightClickDataGridView_MoveBtn.Click += MoveRow;
+            rightClickDataGridView_MoveBtn.Click += MoveRows;
 
             rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, false, flowPanel);
             rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
@@ -912,80 +935,102 @@ namespace Sales_Tracker.UI
             ModifyRow_Form modifyRow_Form = new(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]);
             modifyRow_Form.ShowDialog();
         }
-        private static void MoveRow(object sender, EventArgs e)
+        private static void MoveRows(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels(null, null);
+            Guna2DataGridView selectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
+            List<DataGridViewRow> selectedRows = selectedDataGridView.SelectedRows.Cast<DataGridViewRow>().ToList();
+            if (selectedRows.Count == 0) { return; }
 
-
-            DataGridView selectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
-            DataGridViewRow selectedRow = selectedDataGridView.SelectedRows[0];
-            int selectedIndex = selectedRow.Index;
-
-            // Save the current scroll position
+            // Save scroll position
             int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
-            string action = "moved";
+            int firstSelectedIndex = selectedRows[0].Index;
 
+            // Move rows based on current selection
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
-                string categoryName = selectedRow.Cells[0].Value.ToString();
-
-                if (IsThisBeingUsed("category", MainMenu_Form.Column.Category.ToString(), categoryName, action))
-                {
-                    return;
-                }
-
-                MainMenu_Form.IsProgramLoading = true;
-                Categories_Form.Instance.Purchase_DataGridView.Rows.Remove(selectedRow);
-                Categories_Form.Instance.Sale_DataGridView.Rows.Add(selectedRow);
-                MainMenu_Form.IsProgramLoading = false;
-
-                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(MainMenu_Form.Instance.CategoryPurchaseList, categoryName);
-
-                MainMenu_Form.Instance.CategoryPurchaseList.Remove(category);
-                MainMenu_Form.Instance.CategorySaleList.Add(category);
-
-                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Purchase_DataGridView);
-                SortDataGridViewByCurrentDirection(Categories_Form.Instance.Sale_DataGridView);
+                MoveCategoryRows(selectedRows, true);
             }
             else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
             {
-                string categoryName = selectedRow.Cells[0].Value.ToString();
+                MoveCategoryRows(selectedRows, false);
+            }
 
-                if (IsThisBeingUsed("category", MainMenu_Form.Column.Category.ToString(), categoryName, action))
+            // Restore selection and scroll position
+            RestoreSelectionAndScroll(selectedDataGridView, firstSelectedIndex, scrollPosition);
+        }
+        private static void MoveCategoryRows(List<DataGridViewRow> rowsToMove, bool fromPurchaseToSale)
+        {
+            Guna2DataGridView sourceGrid = fromPurchaseToSale
+                ? Categories_Form.Instance.Purchase_DataGridView
+                : Categories_Form.Instance.Sale_DataGridView;
+
+            Guna2DataGridView targetGrid = fromPurchaseToSale
+                ? Categories_Form.Instance.Sale_DataGridView
+                : Categories_Form.Instance.Purchase_DataGridView;
+
+            List<Category> sourceList = fromPurchaseToSale
+                ? MainMenu_Form.Instance.CategoryPurchaseList
+                : MainMenu_Form.Instance.CategorySaleList;
+
+            List<Category> targetList = fromPurchaseToSale
+                ? MainMenu_Form.Instance.CategorySaleList
+                : MainMenu_Form.Instance.CategoryPurchaseList;
+
+            MainMenu_Form.IsProgramLoading = true;
+            int successfulMoves = 0;
+
+            foreach (DataGridViewRow row in rowsToMove)
+            {
+                string categoryName = row.Cells[0].Value.ToString();
+                if (IsThisBeingUsed("category", MainMenu_Form.Column.Category.ToString(), categoryName, "moved"))
                 {
-                    return;
+                    continue;
                 }
 
-                MainMenu_Form.IsProgramLoading = true;
-                Categories_Form.Instance.Sale_DataGridView.Rows.Remove(selectedRow);
-                Categories_Form.Instance.Purchase_DataGridView.Rows.Add(selectedRow);
-                MainMenu_Form.IsProgramLoading = false;
+                // Move the row between grids
+                sourceGrid.Rows.Remove(row);
+                targetGrid.Rows.Add(row);
 
-                Category category = MainMenu_Form.GetCategoryCategoryNameIsFrom(MainMenu_Form.Instance.CategorySaleList, categoryName);
+                // Update category lists
+                Category? category = MainMenu_Form.GetCategoryCategoryNameIsFrom(sourceList, categoryName);
+                sourceList.Remove(category);
+                targetList.Add(category);
 
-                MainMenu_Form.Instance.CategorySaleList.Remove(category);
-                MainMenu_Form.Instance.CategoryPurchaseList.Add(category);
-
-                LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, Categories_Form.Instance.Sale_DataGridView);
-                SortDataGridViewByCurrentDirection(Categories_Form.Instance.Purchase_DataGridView);
+                successfulMoves++;
             }
 
-            // Select a new row
-            int newRowIndex = selectedIndex < selectedDataGridView.Rows.Count - 1 ? selectedIndex : selectedIndex - 1;
-
-            if (newRowIndex >= 0 && newRowIndex < selectedDataGridView.Rows.Count)
+            if (successfulMoves > 0)
             {
-                selectedDataGridView.ClearSelection();
-                selectedDataGridView.Rows[newRowIndex].Selected = true;
+                string direction = fromPurchaseToSale ? "Sales" : "Purchases";
+                string message = successfulMoves == 1
+                    ? $"Moved {successfulMoves} category to {direction}"
+                    : $"Moved {successfulMoves} categories to {direction}";
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, message);
             }
 
-            // Restore the scroll position
-            if (scrollPosition != 0)
-            {
-                selectedDataGridView.FirstDisplayedScrollingRowIndex = scrollPosition;
-            }
+            // Update UI
+            LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, sourceGrid);
+            SortDataGridViewByCurrentDirection(targetGrid);
 
             MainMenu_Form.IsProgramLoading = false;
+        }
+        private static void RestoreSelectionAndScroll(DataGridView gridView, int previousIndex, int scrollPosition)
+        {
+            gridView.ClearSelection();
+
+            // Select the row at the previous index or the last row if the previous index is now out of bounds
+            int newRowIndex = previousIndex < gridView.Rows.Count - 1 ? previousIndex : gridView.Rows.Count - 1;
+            if (newRowIndex >= 0 && newRowIndex < gridView.Rows.Count)
+            {
+                gridView.Rows[newRowIndex].Selected = true;
+            }
+
+            // Restore scroll position
+            if (scrollPosition != 0 && scrollPosition < gridView.Rows.Count)
+            {
+                gridView.FirstDisplayedScrollingRowIndex = scrollPosition;
+            }
         }
         private static void ExportReceipt(object sender, EventArgs e)
         {
