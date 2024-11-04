@@ -1252,7 +1252,7 @@ namespace Sales_Tracker
         public enum Column
         {
             OrderNumber,
-            Name,
+            Accountant,
             Product,
             Category,
             Country,
@@ -1271,7 +1271,7 @@ namespace Sales_Tracker
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
             { Column.OrderNumber, "Order #" },
-            { Column.Name, "Accountant" },
+            { Column.Accountant, "Accountant" },
             { Column.Product, "Product" },
             { Column.Category, "Category" },
             { Column.Country, "Country of origin" },
@@ -1290,7 +1290,7 @@ namespace Sales_Tracker
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
             { Column.OrderNumber, "Sale #" },
-            { Column.Name, "Accountant" },
+            { Column.Accountant, "Accountant" },
             { Column.Product, "Product" },
             { Column.Category, "Category" },
             { Column.Country, "Country of destination" },

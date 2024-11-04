@@ -27,15 +27,15 @@ namespace Sales_Tracker.UI
         /// Attaches events to a Guna2TextBox to add a SearchBox.
         /// </summary>
         public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results,
-            int maxHeight, bool allowTextBoxEmpty = true)
+            int maxHeight, bool allowTextBoxEmpty = true, bool increaseWidth = false)
         {
             textBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            textBox.Click += delegate { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty); };
+            textBox.Click += delegate { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty, false, increaseWidth); };
             textBox.GotFocus += delegate
             {
                 if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
                 {
-                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty);
+                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty, false, increaseWidth);
                     Settings_Form.Instance.IsFormClosing = false;
                 }
             };
@@ -93,19 +93,19 @@ namespace Sales_Tracker.UI
         private static Control _searchBoxParent;
         private static Guna2TextBox searchTextBox;
         private static List<SearchResult> resultList;
-        private static int maxHeight;
-        private static bool allowEmpty;
+        private static int _maxHeight;
+        private static bool allowEmpty, _increaseWidth;
 
         // Event handlers
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
-            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, maxHeight, allowEmpty, true);
+            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, _maxHeight, allowEmpty, true, _increaseWidth);
         }
 
         // Main methods
         private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc,
-            int maxHeight, bool allowTextBoxEmpty, bool alwaysShow = false)
+            int maxHeight, bool allowTextBoxEmpty, bool alwaysShow = false, bool increaseWidth = false)
         {
             // Check if the search box is already shown for the same text box
             if (searchTextBox == textBox && !alwaysShow)
@@ -113,18 +113,19 @@ namespace Sales_Tracker.UI
                 return;
             }
 
+            CustomControls.CloseAllPanels(null, null);
+
             List<SearchResult> results = resultsFunc();
 
             _searchBoxParent = searchBoxParent;
             searchTextBox = textBox;
             resultList = results;
-            SearchBox.maxHeight = maxHeight;
+            _maxHeight = maxHeight;
             allowEmpty = allowTextBoxEmpty;
+            _increaseWidth = increaseWidth;
 
             // Start timer
             long startTime = DateTime.Now.Ticks;
-
-            CustomControls.CloseAllPanels(null, null);
 
             if (results.Count == 0)
             {
@@ -133,6 +134,7 @@ namespace Sales_Tracker.UI
             }
 
             _searchResultBox.SuspendLayout();
+            _searchResultBox.VerticalScroll.Value = 0;
             foreach (Control control in searchResultControls)
             {
                 control.Visible = false;
@@ -181,7 +183,7 @@ namespace Sales_Tracker.UI
                     }
                     else
                     {
-                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count, textBox), _searchResultBox);
+                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count, textBox, increaseWidth), _searchResultBox);
                         _searchResultBox.Controls.Add(separator);
                         searchResultControls.Add(separator);
                     }
@@ -209,30 +211,6 @@ namespace Sales_Tracker.UI
                             ImageSize = new Size(25, 13),  // Country flags have different ratios. This is just a good size
                             TextAlign = HorizontalAlignment.Left
                         };
-                        // Add custom paint event to handle text truncation
-                        btn.Paint += (sender, e) =>
-                        {
-                            Guna2Button button = (Guna2Button)sender;
-                            Graphics g = e.Graphics;
-
-                            // Calculate available width for text
-                            int availableWidth = button.Width - (button.Image != null ? 35 : 10) - 10;  // Account for image width and right padding
-
-                            // Create rectangle for text
-                            Rectangle textRect = new(
-                                button.Image != null ? 35 : 10,
-                                0,
-                                availableWidth,
-                                button.Height);
-
-                            // Draw text with ellipsis
-                            TextRenderer.DrawText(g,
-                                button.Text,
-                                button.Font,
-                                textRect,
-                                button.ForeColor,
-                                TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine | TextFormatFlags.VerticalCenter);
-                        };
                         btn.Click += (sender, e) =>
                         {
                             Guna2Button button = (Guna2Button)sender;
@@ -240,11 +218,16 @@ namespace Sales_Tracker.UI
                             debounceTimer.Stop();
                             CloseSearchBox();
                         };
+
+                        int padding = btn.Image != null ? 25 : 0;
+                        int availableWidth = btn.Width - padding;
+                        btn.Text = Tools.AddEllipsisToString(btn.Text, btn.Font, availableWidth);
+
                         _searchResultBox.Controls.Add(btn);
                         searchResultControls.Add(btn);
                     }
                     btn.Text = meta.Name;
-                    btn.Width = CalculateControlWidth(metaList.Count, textBox);
+                    btn.Width = CalculateControlWidth(metaList.Count, textBox, increaseWidth);
                     btn.Top = yOffset;
                     btn.Image = meta.Flag;
                     btn.Visible = true;
@@ -254,15 +237,10 @@ namespace Sales_Tracker.UI
                 controlIndex++;
             }
 
-            // Hide any remaining controls
-            for (int i = controlIndex; i < searchResultControls.Count; i++)
-            {
-                searchResultControls[i].Visible = false;
-            }
-
             // Set width to match textBox
-            _searchResultBoxContainer.Width = textBox.Width;
-            _searchResultBox.Width = textBox.Width - 3;
+            int containerWidth = textBox.Width + (increaseWidth ? 100 : 0);
+            _searchResultBoxContainer.Width = containerWidth;
+            _searchResultBox.Width = containerWidth - 3;
 
             int totalHeight = yOffset + 1;
             if (totalHeight > maxHeight)
@@ -304,15 +282,16 @@ namespace Sales_Tracker.UI
             double elapsedTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
             Log.Write(1, "Elapsed time for updating the SearchBox: " + elapsedTime + " ms");
         }
-        private static int CalculateControlWidth(int count, Guna2TextBox textBox)
+        private static int CalculateControlWidth(int count, Guna2TextBox textBox, bool increaseWidth)
         {
+            int baseWidth = textBox.Width + (increaseWidth ? 100 : 0);
             if (count > 12)
             {
-                return textBox.Width - SystemInformation.VerticalScrollBarWidth - 4;
+                return baseWidth - SystemInformation.VerticalScrollBarWidth - 4;
             }
             else
             {
-                return textBox.Width - 2;
+                return baseWidth - 2;
             }
         }
         public static List<SearchResult> ConvertToSearchResults(List<string> names)

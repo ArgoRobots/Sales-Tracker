@@ -403,7 +403,7 @@ namespace Sales_Tracker.UI
             string columnName = Accountants_Form.Columns.AccountantName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, Accountants_Form.Columns.AccountantName.ToString(), valueBeingRemoved, "deleted"))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Accountant.ToString(), valueBeingRemoved, "deleted"))
             {
                 e.Cancel = true;
                 return;
@@ -933,7 +933,10 @@ namespace Sales_Tracker.UI
             {
                 if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
                 {
-                    CustomMessageBox.Show($"Cannot be {action}", $"This {type} is being used and cannot be {action}", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show(
+                        $"Cannot be {action}",
+                        $"This {type} is being used and cannot be {action}",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return true;
                 }
             }

@@ -47,7 +47,7 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(ProductName_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
-            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight);
+            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
@@ -739,7 +739,7 @@ namespace Sales_Tracker
             // Product name
             textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
-            SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight);
+            SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             CosntructLabel(ProductName_Label.Text, 0, panel);

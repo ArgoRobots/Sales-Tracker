@@ -46,7 +46,7 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(ProductName_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames());
-            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight);
+            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(CountryOfDestinaion_TextBox);
@@ -329,8 +329,9 @@ namespace Sales_Tracker
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, productName);
-            Log.Write(3, $"Added Sale '{productName}'");
+            string logMessage = $"Added Sale '{saleNumber}'";
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, logMessage);
+            Log.Write(3, logMessage);
 
             return true;
         }
@@ -522,8 +523,9 @@ namespace Sales_Tracker
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, saleNumber);
-            Log.Write(3, $"Added sale '{saleNumber}' with '{totalQuantity}' items");
+            string logMessage = $"Added sale '{saleNumber}' with '{totalQuantity}' items";
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, logMessage);
+            Log.Write(3, logMessage);
 
             return true;
         }
@@ -715,7 +717,7 @@ namespace Sales_Tracker
             // Product name
             textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames());
-            SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight);
+            SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, true);
 
             CosntructLabel(ProductName_Label.Text, 0, panel);
 

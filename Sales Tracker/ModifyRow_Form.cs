@@ -395,12 +395,12 @@ namespace Sales_Tracker
                         left += controlWidth + CustomControls.SpaceBetweenControls;
                         break;
 
-                    case nameof(MainMenu_Form.Column.Name):
+                    case nameof(MainMenu_Form.Column.Accountant):
                         if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
                         {
-                            text = MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Name];
+                            text = MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Accountant];
                         }
-                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Name]; }
+                        else { text = MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Accountant]; }
 
                         ConstructLabel(text, left, Panel);
 
@@ -418,7 +418,7 @@ namespace Sales_Tracker
                             ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
 
                             Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, Panel);
-                            SearchBox.Attach(ProductName_TextBox, this, GetListForSearchBox, searchBoxMaxHeight);
+                            SearchBox.Attach(ProductName_TextBox, this, GetListForSearchBox, searchBoxMaxHeight, false, true);
                             ProductName_TextBox.TextChanged += ValidateInputs;
 
                             left += controlWidth + CustomControls.SpaceBetweenControls;
@@ -591,7 +591,7 @@ namespace Sales_Tracker
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], 0, Panel);
 
                         Guna2TextBox ProductName_TextBox = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, Panel);
-                        SearchBox.Attach(ProductName_TextBox, this, GetListForSearchBox, searchBoxMaxHeight);
+                        SearchBox.Attach(ProductName_TextBox, this, GetListForSearchBox, searchBoxMaxHeight, false, true);
                         ProductName_TextBox.TextChanged += ValidateInputs;
 
                         left += controlWidth + CustomControls.SpaceBetweenControls;
@@ -1014,8 +1014,8 @@ namespace Sales_Tracker
                 // Update all instances in DataGridViews
                 string newValue = selectedRow.Cells[0].Value.ToString();
 
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Name.ToString(), accountant, newValue);
-                UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Name.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Accountant.ToString(), accountant, newValue);
+                UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Accountant.ToString(), accountant, newValue);
             }
 
             CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"{MainMenu_Form.Instance.Selected} list");

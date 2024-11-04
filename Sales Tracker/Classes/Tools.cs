@@ -203,6 +203,40 @@ namespace Sales_Tracker.Classes
             }
             return name;
         }
+        public static string AddEllipsisToString(string text, Font font, int availableWidth)
+        {
+            using Graphics g = Graphics.FromHwnd(IntPtr.Zero);
+            SizeF textSize = g.MeasureString(text, font);
+
+            // If text fits, return it as-is
+            if (textSize.Width <= availableWidth)
+            {
+                return text;
+            }
+
+            // Binary search for the optimal truncation point
+            int low = 0;
+            int high = text.Length;
+            string ellipsis = "...";
+
+            while (low < high)
+            {
+                int mid = (low + high + 1) / 2;
+                string truncated = text[..mid] + ellipsis;
+                SizeF truncatedSize = g.MeasureString(truncated, font);
+
+                if (truncatedSize.Width <= availableWidth)
+                {
+                    low = mid;
+                }
+                else
+                {
+                    high = mid - 1;
+                }
+            }
+
+            return text[..low] + ellipsis;
+        }
 
         // Bytes
         /// <summary>

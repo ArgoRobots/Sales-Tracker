@@ -596,7 +596,7 @@ namespace Sales_Tracker.Charts
                     if (!row.Visible) { continue; }
                     anyRowsVisible = true;
 
-                    string accountant = row.Cells[MainMenu_Form.Column.Name.ToString()].Value.ToString();
+                    string accountant = row.Cells[MainMenu_Form.Column.Accountant.ToString()].Value.ToString();
 
                     if (!string.IsNullOrEmpty(accountant))
                     {
