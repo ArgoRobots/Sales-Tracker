@@ -114,7 +114,6 @@ namespace Sales_Tracker.UI
                 case Keys.Home:
                 case Keys.End:
                 case Keys.OemPeriod:
-                case Keys.Oemcomma:
                 case Keys.OemMinus:
                 case Keys.Subtract:
                 case Keys.Decimal:

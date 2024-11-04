@@ -195,13 +195,13 @@ namespace Sales_Tracker
         }
 
         // DataGridView properties
-        public enum Columns
+        public enum Column
         {
             CategoryName,
         }
-        public readonly Dictionary<Columns, string> ColumnHeaders = new()
+        public readonly Dictionary<Column, string> ColumnHeaders = new()
         {
-            { Columns.CategoryName, "Category" },
+            { Column.CategoryName, "Category" },
         };
         private Guna2DataGridView _purchase_DataGridView, _sale_DataGridView;
         private const byte topForDataGridView = 250;

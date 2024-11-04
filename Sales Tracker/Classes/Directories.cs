@@ -147,9 +147,6 @@ namespace Sales_Tracker.Classes
             _companies_file = _tempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
             _receipts_dir = _appData_dir + project_name + @"\receipts\";
 
-            // Logs
-            _logs_dir = _tempCompany_dir + @"logs\";
-
             // Misc.
             _appDataSettings_file = _tempCompany_dir + "appSettings" + ArgoFiles.TxtFileExtension;
         }
@@ -165,6 +162,7 @@ namespace Sales_Tracker.Classes
             _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueProjectIdentifier("Argo Sales Tracker") + @"\";
             _translations_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
             _globalAppDataSettings_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
+            _logs_dir = _cache_dir + @"logs\";
 
             // Other
             _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;

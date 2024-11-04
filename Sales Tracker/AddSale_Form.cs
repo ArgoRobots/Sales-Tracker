@@ -207,7 +207,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.ID.ToString(), saleNumber))
             {
                 string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
@@ -342,7 +342,7 @@ namespace Sales_Tracker
             string saleNumber = SaleNumber_TextBox.Text.Trim();
 
             // Check if sale ID already exists
-            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), saleNumber))
+            if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.ID.ToString(), saleNumber))
             {
                 string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);

@@ -363,10 +363,13 @@ namespace Sales_Tracker
 
             Log.Write(2, "Argo Sales Tracker has finished starting");
         }
+        private void MainMenu_Form_ResizeBegin(object sender, EventArgs e)
+        {
+            CustomControls.CloseAllPanels(null, null);
+        }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
             if (_instance == null) { return; }
-            CustomControls.CloseAllPanels(null, null);
             CenterAndResizeControls();
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -425,29 +428,31 @@ namespace Sales_Tracker
             CustomControls.CloseAllPanels(null, null);
 
             // Save logs in file
-            if (Directory.Exists(Directories.Logs_dir))
+            if (!Directory.Exists(Directories.Logs_dir))
             {
-                DateTime time = DateTime.Now;
-                int count = 0;
-                string directory;
+                Directories.CreateDirectory(Directories.Logs_dir, false);
+            }
 
-                while (true)
+            DateTime time = DateTime.Now;
+            int count = 0;
+            string directory;
+
+            while (true)
+            {
+                if (count == 0)
                 {
-                    if (count == 0)
-                    {
-                        directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}{ArgoFiles.TxtFileExtension}";
-                    }
-                    else
-                    {
-                        directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}-{count}{ArgoFiles.TxtFileExtension}";
-                    }
-                    if (!Directory.Exists(directory))
-                    {
-                        Directories.WriteTextToFile(directory, Log.LogText);
-                        break;
-                    }
-                    count++;
+                    directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}{ArgoFiles.TxtFileExtension}";
                 }
+                else
+                {
+                    directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}-{count}{ArgoFiles.TxtFileExtension}";
+                }
+                if (!Directory.Exists(directory))
+                {
+                    Directories.WriteTextToFile(directory, Log.LogText);
+                    break;
+                }
+                count++;
             }
 
             if (ArgoCompany.AreAnyChangesMade())
@@ -1225,6 +1230,34 @@ namespace Sales_Tracker
             }
             return null;
         }
+        public static Category? GetCategoryProductNameIsFrom(List<Category> categoryList, string productName)
+        {
+            foreach (Category category in categoryList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return category;
+                    }
+                }
+            }
+            return null;
+        }
+        public static Product? GetProductProductNameIsFrom(List<Category> categoryList, string productName)
+        {
+            foreach (Category category in categoryList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return product;
+                    }
+                }
+            }
+            return null;
+        }
         public static bool DoesCategoryHaveProducts(string categoryName, List<Category> sourceList)
         {
             Category? category = GetCategoryCategoryNameIsFrom(sourceList, categoryName);
@@ -1251,7 +1284,7 @@ namespace Sales_Tracker
         }
         public enum Column
         {
-            OrderNumber,
+            ID,
             Accountant,
             Product,
             Category,
@@ -1270,7 +1303,7 @@ namespace Sales_Tracker
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
-            { Column.OrderNumber, "Order #" },
+            { Column.ID, "Order #" },
             { Column.Accountant, "Accountant" },
             { Column.Product, "Product" },
             { Column.Category, "Category" },
@@ -1289,7 +1322,7 @@ namespace Sales_Tracker
         };
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
-            { Column.OrderNumber, "Sale #" },
+            { Column.ID, "Sale #" },
             { Column.Accountant, "Accountant" },
             { Column.Product, "Product" },
             { Column.Category, "Category" },
@@ -1323,6 +1356,13 @@ namespace Sales_Tracker
         {
             get => _selectedDataGridView;
             set => _selectedDataGridView = value;
+        }
+
+        // DataGridView methods
+        public IEnumerable<DataGridViewRow> GetAllRows()
+        {
+            return Purchase_DataGridView.Rows.Cast<DataGridViewRow>()
+                .Concat(Sale_DataGridView.Rows.Cast<DataGridViewRow>());
         }
 
         // Total labels

@@ -206,7 +206,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
             {
                 string message = $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
@@ -352,7 +352,7 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.OrderNumber.ToString(), purchaseNumber))
+            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
             {
                 string message = $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);

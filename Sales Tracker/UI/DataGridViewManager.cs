@@ -304,14 +304,16 @@ namespace Sales_Tracker.UI
             string type = "purchase";
             string columnName = MainMenu_Form.Column.Product.ToString();
             string name = e.Row.Cells[columnName].Value?.ToString();
-            Log.Write(2, $"Deleted {type} '{name}'");
+
+            LogAndAddThingThatChanged($"Deleted {type} '{name}'");
         }
         private static void HandleSalesDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "sale";
             string columnName = MainMenu_Form.Column.Product.ToString();
             string name = e.Row.Cells[columnName].Value?.ToString();
-            Log.Write(2, $"Deleted {type} '{name}'");
+
+            LogAndAddThingThatChanged($"Deleted {type} '{name}'");
         }
         private static void HandleProductPurchasesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -332,7 +334,7 @@ namespace Sales_Tracker.UI
             // In case the product name that is being deleted is in the TextBox
             Products_Form.Instance.ValidateProductNameTextBox();
 
-            Log.Write(3, $"Deleted {type} '{valueBeingRemoved}'");
+            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
         }
         private static void HandleProductSalesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -353,12 +355,12 @@ namespace Sales_Tracker.UI
             // In case the product name that is being deleted is in the TextBox
             Products_Form.Instance.ValidateProductNameTextBox();
 
-            Log.Write(3, $"Deleted {type} '{valueBeingRemoved}'");
+            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
         }
         private static void HandleCategoryPurchasesDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "category";
-            string columnName = Categories_Form.Columns.CategoryName.ToString();
+            string columnName = Categories_Form.Column.CategoryName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
             if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategoryPurchaseList, "deleted"))
@@ -374,12 +376,12 @@ namespace Sales_Tracker.UI
             // In case the category name that is being deleted is in the TextBox
             Categories_Form.Instance.VaidateCategoryTextBox();
 
-            Log.Write(3, $"Deleted {type} '{valueBeingRemoved}'");
+            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
         }
         private static void HandleCategorySalesDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "category";
-            string columnName = Categories_Form.Columns.CategoryName.ToString();
+            string columnName = Categories_Form.Column.CategoryName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
             if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategorySaleList, "deleted"))
@@ -395,12 +397,12 @@ namespace Sales_Tracker.UI
             // In case the category name that is being deleted is in the TextBox
             Categories_Form.Instance.VaidateCategoryTextBox();
 
-            Log.Write(3, $"Deleted {type} '{valueBeingRemoved}'");
+            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
         }
         private static void HandleAccountantsDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "accountant";
-            string columnName = Accountants_Form.Columns.AccountantName.ToString();
+            string columnName = Accountants_Form.Column.AccountantName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
             if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Accountant.ToString(), valueBeingRemoved, "deleted"))
@@ -415,12 +417,12 @@ namespace Sales_Tracker.UI
             // In case the accountant name that is being deleted is in the TextBox
             Accountants_Form.Instance.VaidateAccountantTextBox();
 
-            Log.Write(2, $"Deleted {type} '{valueBeingRemoved}'");
+            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
         }
         private static void HandleCompaniesDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "company";
-            string columnName = Companies_Form.Columns.Company.ToString();
+            string columnName = Companies_Form.Column.Company.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
             if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved, "deleted"))
@@ -435,7 +437,7 @@ namespace Sales_Tracker.UI
             // In case the company name that is being deleted is in the TextBox
             Companies_Form.Instance.ValidateCompanyTextBox();
 
-            Log.Write(2, $"Deleted {type} '{valueBeingRemoved}'");
+            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
         }
         private static void HandleItemsDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -478,7 +480,13 @@ namespace Sales_Tracker.UI
 
             // Remove the row from the tag
             itemList.RemoveAt(e.Row.Index);
-            Log.Write(2, $"Deleted item '{productName}' in {selected}");
+
+            LogAndAddThingThatChanged($"Deleted item '{productName}' in {selected}");
+        }
+        private static void LogAndAddThingThatChanged(string message)
+        {
+            Log.Write(2, message);
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, message);
         }
 
         // Methods for DataGridView for event handlers
@@ -705,7 +713,7 @@ namespace Sales_Tracker.UI
             UnselectAllRowsInCurrentDataGridView();
             dataGridView.Rows[row.Index].Selected = true;
         }
-        public static void LoadColumns<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
+        private static void LoadColumns<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
             foreach (KeyValuePair<TEnum, string> columnHeader in columnHeaders)
             {
@@ -717,7 +725,7 @@ namespace Sales_Tracker.UI
                 DataGridViewTextBoxColumn column = new()
                 {
                     HeaderText = columnHeader.Value,
-                    Name = columnHeader.Key.ToString()  // Set the Name property for the language translation
+                    Name = columnHeader.Key.ToString()
                 };
                 dataGridView.Columns.Add(column);
             }
@@ -873,13 +881,6 @@ namespace Sales_Tracker.UI
             }
             return false;
         }
-        public static List<DataGridViewRow> GetAllRowsInMainMenu()
-        {
-            List<DataGridViewRow> allRows = [];
-            allRows.AddRange(MainMenu_Form.Instance.Purchase_DataGridView.Rows.Cast<DataGridViewRow>());
-            allRows.AddRange(MainMenu_Form.Instance.Sale_DataGridView.Rows.Cast<DataGridViewRow>());
-            return allRows;
-        }
         private static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
         {
             if (dataGridView.SortedColumn == null)
@@ -889,9 +890,9 @@ namespace Sales_Tracker.UI
 
             SortOrder sortOrder = dataGridView.SortOrder;
             DataGridViewColumn sortedColumn = dataGridView.SortedColumn;
-            ListSortDirection direction = (sortOrder == SortOrder.Ascending) ?
-                                          ListSortDirection.Ascending :
-                                          ListSortDirection.Descending;
+            ListSortDirection direction = (sortOrder == SortOrder.Ascending)
+                ? ListSortDirection.Ascending
+                : ListSortDirection.Descending;
             dataGridView.Sort(sortedColumn, direction);
         }
         public static void UpdateAlternatingRowColors(DataGridView dataGridView)
@@ -929,7 +930,7 @@ namespace Sales_Tracker.UI
         /// <returns>True if it's being used by another row.</returns>
         private static bool IsThisBeingUsedByDataGridView(string type, string columnName, string valueBeingRemoved, string action)
         {
-            foreach (DataGridViewRow row in GetAllRowsInMainMenu())
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
             {
                 if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
                 {

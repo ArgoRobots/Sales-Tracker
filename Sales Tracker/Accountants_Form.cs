@@ -124,13 +124,13 @@ namespace Sales_Tracker
         }
 
         // DataGridView
-        public enum Columns
+        public enum Column
         {
             AccountantName,
         }
-        public readonly Dictionary<Columns, string> ColumnHeaders = new()
+        public readonly Dictionary<Column, string> ColumnHeaders = new()
         {
-            { Columns.AccountantName, "Accountant" },
+            { Column.AccountantName, "Accountant" },
         };
         private Guna2DataGridView accountant_DataGridView;
         private const byte topForDataGridView = 250;
