@@ -209,6 +209,30 @@ namespace Sales_Tracker.UI
                             ImageSize = new Size(25, 13),  // Country flags have different ratios. This is just a good size
                             TextAlign = HorizontalAlignment.Left
                         };
+                        // Add custom paint event to handle text truncation
+                        btn.Paint += (sender, e) =>
+                        {
+                            Guna2Button button = (Guna2Button)sender;
+                            Graphics g = e.Graphics;
+
+                            // Calculate available width for text
+                            int availableWidth = button.Width - (button.Image != null ? 35 : 10) - 10;  // Account for image width and right padding
+
+                            // Create rectangle for text
+                            Rectangle textRect = new(
+                                button.Image != null ? 35 : 10,
+                                0,
+                                availableWidth,
+                                button.Height);
+
+                            // Draw text with ellipsis
+                            TextRenderer.DrawText(g,
+                                button.Text,
+                                button.Font,
+                                textRect,
+                                button.ForeColor,
+                                TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine | TextFormatFlags.VerticalCenter);
+                        };
                         btn.Click += (sender, e) =>
                         {
                             Guna2Button button = (Guna2Button)sender;

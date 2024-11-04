@@ -1,5 +1,4 @@
-﻿using Sales_Tracker.DataClasses;
-using Sales_Tracker.Passwords;
+﻿using Sales_Tracker.Passwords;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 using System.Text;

@@ -1225,6 +1225,11 @@ namespace Sales_Tracker
             }
             return null;
         }
+        public static bool DoesCategoryHaveProducts(string categoryName, List<Category> sourceList)
+        {
+            Category? category = GetCategoryCategoryNameIsFrom(sourceList, categoryName);
+            return category != null && category.ProductList.Count > 0;
+        }
 
         // DataGridView properties
         public SelectedOption Selected;

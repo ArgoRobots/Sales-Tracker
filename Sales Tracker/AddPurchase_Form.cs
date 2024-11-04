@@ -232,7 +232,7 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax + fee - discount;
+            decimal totalPrice = quantity * pricePerUnit;
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
             if (note != "")
@@ -240,14 +240,27 @@ namespace Sales_Tracker
                 noteLabel = ReadOnlyVariables.Show_text;
             }
 
-            // Round to 2 decimal places
-            decimal amountCharged = decimal.Parse(Charged_TextBox.Text);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_ComboBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
+            if (exchangeRateToDefault == -1) { return false; }
+
+            // Convert currency
+            pricePerUnit *= exchangeRateToDefault;
+            shipping *= exchangeRateToDefault;
+            tax *= exchangeRateToDefault;
+            fee *= exchangeRateToDefault;
+            discount *= exchangeRateToDefault;
+            totalPrice *= exchangeRateToDefault;
+
+            totalPrice += shipping + tax + fee - discount;
             totalPrice = Math.Round(totalPrice, 2);
+
+            decimal amountCharged = decimal.Parse(Charged_TextBox.Text);
             decimal chargedDifference = amountCharged - totalPrice;
 
             if (totalPrice != amountCharged)
             {
-                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the purchase (${totalPrice}). The difference will be accounted for.";
+                string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged} {currency}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice} {currency}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -309,7 +322,7 @@ namespace Sales_Tracker
                 fee.ToString("N2"),
                 discount.ToString("N2"),
                 chargedDifference.ToString("N2"),
-                totalPrice.ToString("N2"),
+                amountCharged.ToString("N2"),
                 noteLabel
             );
 
@@ -326,8 +339,9 @@ namespace Sales_Tracker
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, categoryName);
-            Log.Write(3, $"Added purchase '{categoryName}'");
+            string logMessage = $"Added purchase '{purchaseNumber}'";
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, logMessage);
+            Log.Write(3, logMessage);
 
             return true;
         }
@@ -492,7 +506,7 @@ namespace Sales_Tracker
                 fee.ToString("N2"),
                 discount.ToString("N2"),
                 chargedDifference.ToString("N2"),
-                totalPrice.ToString("N2"),
+                amountCharged.ToString("N2"),
                 noteLabel
             );
             if (noteLabel == ReadOnlyVariables.Show_text)
@@ -528,8 +542,9 @@ namespace Sales_Tracker
 
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, purchaseNumber);
-            Log.Write(3, $"Added purchase '{purchaseNumber}' with '{totalQuantity}' items");
+            string logMessage = $"Added purchase '{purchaseNumber}' with '{totalQuantity}' items";
+            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, logMessage);
+            Log.Write(3, logMessage);
 
             return true;
         }
