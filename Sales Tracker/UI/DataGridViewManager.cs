@@ -559,12 +559,9 @@ namespace Sales_Tracker.UI
             flowPanel.Controls.Clear();
 
             // Add modify button
-            if (MainMenu_Form.Instance.Selected is not MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
+            if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
             {
-                if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
-                }
+                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
             }
 
             // Add move button
@@ -788,18 +785,22 @@ namespace Sales_Tracker.UI
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
-            decimal pricePerUnit = 0;
+            decimal totalPrice = 0;
 
-            foreach (string item in items)
+            int index = 0;
+            if (items[^1].StartsWith(ReadOnlyVariables.Receipt_text))
             {
-                string[] itemDetails = item.Split(',');
+                index = 1;
+            }
 
-                if (itemDetails.Length < 7) { continue; }
+            for (int i = 0; i < items.Count - index; i++)
+            {
+                string[] itemDetails = items[i].Split(',');
 
                 string currentCategoryName = itemDetails[1];
                 string currentCountry = itemDetails[2];
                 string currentCompany = itemDetails[3];
-                pricePerUnit += decimal.Parse(itemDetails[5]);
+                totalPrice += decimal.Parse(itemDetails[5]);
 
                 if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
                 else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
@@ -818,25 +819,27 @@ namespace Sales_Tracker.UI
             selectedRow.Cells[MainMenu_Form.Column.Category.ToString()].Value = categoryName;
             selectedRow.Cells[MainMenu_Form.Column.Country.ToString()].Value = country;
             selectedRow.Cells[MainMenu_Form.Column.Company.ToString()].Value = company;
-            selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value = items.Count - 1;
+            selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value = items.Count - index;
 
             // Update charged difference
-            int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value.ToString());
             decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
             decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
+            totalPrice += shipping + tax;
 
-            selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value = totalPrice;
+            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value =
+                Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
         }
         public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
         {
+            // Update charged difference
             int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value.ToString());
             decimal pricePerUnit = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value.ToString());
             decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
             decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
             decimal totalPrice = quantity * pricePerUnit + shipping + tax;
-            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
+
+            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value =
+                Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
         }
         public static void UpdateAllRows(DataGridView dataGridView)
         {

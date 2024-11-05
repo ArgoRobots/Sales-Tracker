@@ -919,7 +919,7 @@ namespace Sales_Tracker
             CenterAndResizeControls();
 
             UpdateMainMenuFormText(this);
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
+            CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
         }
         public void SetCompanyLabel()
         {

@@ -54,7 +54,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             SaveInRow();
-            UpdateChargedDifference();
+            UpdateRow();
             SaveInListsAndUpdateDataGridViews();
 
             // If the user selected a new receipt
@@ -86,7 +86,7 @@ namespace Sales_Tracker
             if (selectedTag == MainMenu_Form.DataGridViewTag.Accountant.ToString())
             {
                 ConstructControlsForAccountant();
-                left = controlWidth + 10;
+                left = controlWidth;
             }
             else if (selectedTag == MainMenu_Form.DataGridViewTag.Category.ToString())
             {
@@ -160,17 +160,12 @@ namespace Sales_Tracker
                 string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
                 listOfOldValues.Add(cellValue);
 
-                switch (columnName)
-                {
-                    case nameof(Accountants_Form.Column.AccountantName):
-                        ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Column.AccountantName], 0, Panel);
+                ConstructLabel(Accountants_Form.Instance.ColumnHeaders[Accountants_Form.Column.AccountantName], 0, Panel);
 
-                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyLetters, true, false, Panel);
-                        controlToFocus.TextChanged += Accountant_TextBox_TextChanged;
+                controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyLetters, true, false, Panel);
+                controlToFocus.TextChanged += Accountant_TextBox_TextChanged;
 
-                        ConstructWarningLabel();
-                        break;
-                }
+                ConstructWarningLabel();
             }
         }
         private void Accountant_TextBox_TextChanged(object sender, EventArgs e)
@@ -194,7 +189,7 @@ namespace Sales_Tracker
             {
                 EnableSaveButton();
                 CustomControls.SetGTextBoxToValid(textBox);
-                HideAccountantWarning();
+                HideWarning();
             }
         }
         private void ConstructControlsForCategory()
@@ -205,17 +200,12 @@ namespace Sales_Tracker
                 string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
                 listOfOldValues.Add(cellValue);
 
-                switch (columnName)
-                {
-                    case nameof(Categories_Form.Column.CategoryName):
-                        ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Column.CategoryName], 0, Panel);
+                ConstructLabel(Categories_Form.Instance.ColumnHeaders[Categories_Form.Column.CategoryName], 0, Panel);
 
-                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, Panel);
-                        controlToFocus.TextChanged += Category_TextBox_TextChanged;
+                controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, Panel);
+                controlToFocus.TextChanged += Category_TextBox_TextChanged;
 
-                        ConstructWarningLabel();
-                        break;
-                }
+                ConstructWarningLabel();
             }
         }
         private void Category_TextBox_TextChanged(object sender, EventArgs e)
@@ -251,7 +241,7 @@ namespace Sales_Tracker
             {
                 EnableSaveButton();
                 CustomControls.SetGTextBoxToValid(textBox);
-                HideAccountantWarning();
+                HideWarning();
             }
         }
         private void ConstructControlsForCompany()
@@ -262,17 +252,12 @@ namespace Sales_Tracker
                 string cellValue = selectedRow.Cells[column.Index].Value?.ToString() ?? "";
                 listOfOldValues.Add(cellValue);
 
-                switch (columnName)
-                {
-                    case nameof(Companies_Form.Column.Company):
-                        ConstructLabel(Companies_Form.Instance.ColumnHeaders[Companies_Form.Column.Company], 0, Panel);
+                ConstructLabel(Companies_Form.Instance.ColumnHeaders[Companies_Form.Column.Company], 0, Panel);
 
-                        controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, Panel);
-                        controlToFocus.TextChanged += Company_TextBox_TextChanged;
+                controlToFocus = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, true, false, Panel);
+                controlToFocus.TextChanged += Company_TextBox_TextChanged;
 
-                        ConstructWarningLabel();
-                        break;
-                }
+                ConstructWarningLabel();
             }
         }
         private void Company_TextBox_TextChanged(object sender, EventArgs e)
@@ -297,7 +282,7 @@ namespace Sales_Tracker
             {
                 EnableSaveButton();
                 CustomControls.SetGTextBoxToValid(textBox);
-                HideAccountantWarning();
+                HideWarning();
             }
         }
         private int ConstructControlsForProduct()
@@ -425,6 +410,7 @@ namespace Sales_Tracker
                             ProductName_TextBox.TextChanged += ValidateInputs;
 
                             left += controlWidth + CustomControls.SpaceBetweenControls;
+                            oldProductName = cellValue;
                         }
 
                         // Button
@@ -664,18 +650,18 @@ namespace Sales_Tracker
         }
 
         // Warning label
-        private PictureBox WarningAccountantName_PictureBox;
-        private Label WarningAccountantName_Label;
+        private PictureBox Warning_PictureBox;
+        private Label Warning_Label;
         private void ConstructWarningLabel()
         {
-            WarningAccountantName_PictureBox = new()
+            Warning_PictureBox = new()
             {
-                Size = new Size(19, 19),
+                Size = new Size(28, 28),
                 Image = Properties.Resources.ExclamationMark,
                 SizeMode = PictureBoxSizeMode.StretchImage,
             };
 
-            WarningAccountantName_Label = new()
+            Warning_Label = new()
             {
                 ForeColor = CustomColors.text,
                 Font = new Font("Segoe UI", 10),
@@ -684,18 +670,18 @@ namespace Sales_Tracker
         }
         private void ShowWarning(Guna2TextBox textBox, string text)
         {
-            WarningAccountantName_PictureBox.Top = textBox.Top + textBox.Height + 6;
-            WarningAccountantName_PictureBox.Left = textBox.Left;
-            WarningAccountantName_Label.Top = WarningAccountantName_PictureBox.Top;
-            WarningAccountantName_Label.Left = WarningAccountantName_PictureBox.Right + 8;
-            WarningAccountantName_Label.Text = text;
-            Panel.Controls.Add(WarningAccountantName_PictureBox);
-            Panel.Controls.Add(WarningAccountantName_Label);
+            Warning_PictureBox.Top = textBox.Top + textBox.Height + CustomControls.SpaceBetweenControls;
+            Warning_PictureBox.Left = textBox.Left;
+            Warning_Label.Top = Warning_PictureBox.Top;
+            Warning_Label.Left = Warning_PictureBox.Right + CustomControls.SpaceBetweenControls;
+            Warning_Label.Text = text;
+            Panel.Controls.Add(Warning_PictureBox);
+            Panel.Controls.Add(Warning_Label);
         }
-        private void HideAccountantWarning()
+        private void HideWarning()
         {
-            Panel.Controls.Remove(WarningAccountantName_PictureBox);
-            Panel.Controls.Remove(WarningAccountantName_Label);
+            Panel.Controls.Remove(Warning_PictureBox);
+            Panel.Controls.Remove(Warning_Label);
         }
 
         // Methods
@@ -768,9 +754,9 @@ namespace Sales_Tracker
                     }
                     else if (column == MainMenu_Form.Column.Product.ToString())
                     {
-                        // This only needs to run once
-
-                        string productName = gTextBox.Text.Split('>')[1].Trim();
+                        string productName = gTextBox.Text.Contains('>')
+                            ? gTextBox.Text.Split('>')[1].Trim()
+                            : gTextBox.Text.Trim();
 
                         if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.ItemsInPurchase)
                         {
@@ -783,8 +769,6 @@ namespace Sales_Tracker
                     }
                     else if (column == Products_Form.Column.ProductName.ToString())
                     {
-                        // This only needs to run once
-
                         List<Category> categoryList = [];
                         if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
                         {
@@ -847,16 +831,17 @@ namespace Sales_Tracker
                     {
                         DataGridViewCell cell = selectedRow.Cells[column];
 
-                        if (cell.Value.ToString() == ReadOnlyVariables.EmptyCell)
-                        {
-                            cell.Value = ReadOnlyVariables.Show_text;
-                            DataGridViewManager.AddUnderlineToCell(cell);
-                        }
-                        if (cell.Value.ToString() == ReadOnlyVariables.Show_text && gTextBox.Text == "")
+                        if (gTextBox.Text == "")
                         {
                             cell.Value = ReadOnlyVariables.EmptyCell;
                             DataGridViewManager.RemoveUnderlineFromCell(cell);
                         }
+                        else
+                        {
+                            cell.Value = ReadOnlyVariables.Show_text;
+                            DataGridViewManager.AddUnderlineToCell(cell);
+                        }
+
                         cell.Tag = gTextBox.Text.Trim();
                     }
                     else
@@ -925,7 +910,7 @@ namespace Sales_Tracker
                 mainRow.Tag = (itemList, tagData);
             }
         }
-        private void UpdateChargedDifference()
+        private void UpdateRow()
         {
             MainMenu_Form.IsProgramLoading = true;
 
@@ -960,6 +945,8 @@ namespace Sales_Tracker
         {
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
+                string type = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale";
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {type} transaction");
                 return;
             }
 
@@ -979,7 +966,7 @@ namespace Sales_Tracker
                     break;
             }
 
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"{MainMenu_Form.Instance.Selected} list");
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {MainMenu_Form.Instance.Selected} list");
             DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
             DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
         }
@@ -1095,14 +1082,8 @@ namespace Sales_Tracker
             }
 
             string newValue = selectedRow.Cells[0].Value.ToString();
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView,
-                                  MainMenu_Form.Column.Company.ToString(),
-                                  company,
-                                  newValue);
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView,
-                                  MainMenu_Form.Column.Company.ToString(),
-                                  company,
-                                  newValue);
+            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Company.ToString(), company, newValue);
+            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Company.ToString(), company, newValue);
         }
         private void UpdateAccountant()
         {
@@ -1115,14 +1096,8 @@ namespace Sales_Tracker
             }
 
             string newValue = selectedRow.Cells[0].Value.ToString();
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView,
-                                  MainMenu_Form.Column.Accountant.ToString(),
-                                  accountant,
-                                  newValue);
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView,
-                                  MainMenu_Form.Column.Accountant.ToString(),
-                                  accountant,
-                                  newValue);
+            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Accountant.ToString(), accountant, newValue);
+            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Accountant.ToString(), accountant, newValue);
         }
 
         // Construct controls
@@ -1266,7 +1241,7 @@ namespace Sales_Tracker
         private void SetControlForTextBoxEmpty(Guna2TextBox textBox)
         {
             CustomControls.SetGTextBoxToValid(textBox);
-            HideAccountantWarning();
+            HideWarning();
             DisableSaveButton();
         }
         public void CloseAllPanels(object sender, EventArgs e)

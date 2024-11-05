@@ -151,17 +151,17 @@ namespace Sales_Tracker
 
             string defaultCurrencyType = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             string receiptFilePath = null;
-            int startIndex = 0;
+            int index = 0;
 
             // Check if the last item is the receipt file path
             if (itemList.Count > 0 && itemList[^1].StartsWith(ReadOnlyVariables.Receipt_text))
             {
                 receiptFilePath = itemList[^1];
-                startIndex = 1;
+                index = 1;
             }
 
             // Add rows to DataGridView, and convert money values
-            for (int i = 0; i < itemList.Count - startIndex; i++)
+            for (int i = 0; i < itemList.Count - index; i++)
             {
                 string[] values = itemList[i].Split(',');
                 decimal quantity = decimal.Parse(values[4]);
