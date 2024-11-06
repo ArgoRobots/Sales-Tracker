@@ -17,8 +17,7 @@ namespace Sales_Tracker
             MainMenu_Form.Column.Country,
             MainMenu_Form.Column.Company,
             MainMenu_Form.Column.Quantity,
-            MainMenu_Form.Column.PricePerUnit,
-            MainMenu_Form.Column.Total
+            MainMenu_Form.Column.PricePerUnit
         ];
         private bool hasChanges = false;
 
@@ -26,6 +25,7 @@ namespace Sales_Tracker
         public ItemsInTransaction_Form(DataGridViewRow row)
         {
             InitializeComponent();
+            DataGridViewManager.SelectedRowInMainMenu = row;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
 
@@ -136,19 +136,12 @@ namespace Sales_Tracker
             LoadAllItemsInDataGridView(itemList);
 
             MainMenu_Form.Instance.SelectedDataGridView = Items_DataGridView;
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
-            {
-                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInSale;
-            }
-            else
-            {
-                MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ItemsInPurchase;
-            }
+            MainMenu_Form.Instance.Selected = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales
+                ? MainMenu_Form.SelectedOption.ItemsInSale
+                : MainMenu_Form.SelectedOption.ItemsInPurchase;
         }
         private void LoadAllItemsInDataGridView(List<string> itemList)
         {
-            MainMenu_Form.IsProgramLoading = true;
-
             string defaultCurrencyType = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             string receiptFilePath = null;
             int index = 0;
@@ -164,26 +157,13 @@ namespace Sales_Tracker
             for (int i = 0; i < itemList.Count - index; i++)
             {
                 string[] values = itemList[i].Split(',');
-                decimal quantity = decimal.Parse(values[4]);
 
-                if (defaultCurrencyType == "USD")
-                {
-                    decimal pricePerUnit = decimal.Parse(values[6]);
-                    values[5] = pricePerUnit.ToString("N2");
-                    values[6] = (quantity * pricePerUnit).ToString("N2");
-                }
-                else
-                {
-                    values[5] = decimal.Parse(values[5]).ToString("N2");
-                    decimal pricePerUnit = decimal.Parse(values[5]);
-                    values[6] = (quantity * pricePerUnit).ToString("N2");
-                }
+                int sourceIndex = (defaultCurrencyType == "USD") ? 6 : 5;
+                values[5] = decimal.Parse(values[sourceIndex]).ToString("N2");
 
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
-
-            MainMenu_Form.IsProgramLoading = false;
         }
     }
 }

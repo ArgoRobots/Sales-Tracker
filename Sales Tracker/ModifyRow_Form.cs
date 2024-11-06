@@ -55,7 +55,7 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             SaveInRow();
             UpdateRow();
-            SaveInListsAndUpdateDataGridViews();
+            SaveInListsAndUpdateMainMenuForm();
 
             // If the user selected a new receipt
             if (receiptFilePath != null)
@@ -758,13 +758,18 @@ namespace Sales_Tracker
                             ? gTextBox.Text.Split('>')[1].Trim()
                             : gTextBox.Text.Trim();
 
-                        if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.ItemsInPurchase)
+                        if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases)
                         {
                             UpdateItemsInTransaction(selectedRow, productName, MainMenu_Form.Instance.CategoryPurchaseList, false);
                         }
-                        else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Sales or MainMenu_Form.SelectedOption.ItemsInSale)
+                        else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
                         {
                             UpdateItemsInTransaction(selectedRow, productName, MainMenu_Form.Instance.CategorySaleList, false);
+                        }
+                        else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
+                        {
+                            string productColumn = MainMenu_Form.Column.Product.ToString();
+                            selectedRow.Cells[productColumn].Value = productName;
                         }
                     }
                     else if (column == Products_Form.Column.ProductName.ToString())
@@ -912,10 +917,10 @@ namespace Sales_Tracker
         }
         private void UpdateRow()
         {
-            MainMenu_Form.IsProgramLoading = true;
-
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
+                MainMenu_Form.IsProgramLoading = true;
+
                 string productName = selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString();
 
                 if (productName == ReadOnlyVariables.MultipleItems_text)
@@ -926,8 +931,9 @@ namespace Sales_Tracker
                 {
                     DataGridViewManager.UpdateRowWithNoItems(selectedRow);
                 }
+
+                MainMenu_Form.IsProgramLoading = false;
             }
-            MainMenu_Form.IsProgramLoading = false;
         }
         private static void UpdateDataGridViewRows(DataGridView dataGridView, string columnName, string oldValue, string newValue)
         {
@@ -940,8 +946,10 @@ namespace Sales_Tracker
             }
         }
 
-        // Save in list and update DataGridView method
-        private void SaveInListsAndUpdateDataGridViews()
+        /// <summary>
+        /// When changes are made to Categories_Form, Accountants_Form, etc., the changes are reflected in MainMenu_Form's lists and DataGridViews.
+        /// </summary>
+        private void SaveInListsAndUpdateMainMenuForm()
         {
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
@@ -966,9 +974,12 @@ namespace Sales_Tracker
                     break;
             }
 
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {MainMenu_Form.Instance.Selected} list");
-            DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-            DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
+            if (selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
+            {
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {selectedTag} list");
+                DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+                DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
+            }
         }
         private void UpdateCategory()
         {

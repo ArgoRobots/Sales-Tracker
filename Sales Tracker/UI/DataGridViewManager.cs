@@ -786,6 +786,7 @@ namespace Sales_Tracker.UI
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
             decimal totalPrice = 0;
+            int quantity = 0;
 
             int index = 0;
             if (items[^1].StartsWith(ReadOnlyVariables.Receipt_text))
@@ -800,7 +801,8 @@ namespace Sales_Tracker.UI
                 string currentCategoryName = itemDetails[1];
                 string currentCountry = itemDetails[2];
                 string currentCompany = itemDetails[3];
-                totalPrice += decimal.Parse(itemDetails[5]);
+                quantity += Convert.ToInt32(itemDetails[4]);
+                totalPrice += decimal.Parse(itemDetails[5]) * quantity;
 
                 if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
                 else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
@@ -819,7 +821,7 @@ namespace Sales_Tracker.UI
             selectedRow.Cells[MainMenu_Form.Column.Category.ToString()].Value = categoryName;
             selectedRow.Cells[MainMenu_Form.Column.Country.ToString()].Value = country;
             selectedRow.Cells[MainMenu_Form.Column.Company.ToString()].Value = company;
-            selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value = items.Count - index;
+            selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value = quantity;
 
             // Update charged difference
             decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());

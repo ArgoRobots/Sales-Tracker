@@ -197,7 +197,8 @@ namespace Sales_Tracker
                         {
                             List<string> itemList = itemsArray.Select(e => e.ToString()).ToList();
 
-                            if (tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement) && purchaseDataElement is JObject purchaseDataObject)
+                            if (tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement)
+                                && purchaseDataElement is JObject purchaseDataObject)
                             {
                                 TagData? purchaseData = JsonConvert.DeserializeObject<TagData>(purchaseDataObject.ToString());
 
@@ -208,7 +209,8 @@ namespace Sales_Tracker
                             }
                         }
                         // If the tagObject is a string and TagData
-                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement) && tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
+                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement)
+                            && tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
                         {
                             string? tagString = tagStringElement?.ToString();
                             TagData? purchaseData1 = JsonConvert.DeserializeObject<TagData>(purchaseData1Element?.ToString());
@@ -892,8 +894,7 @@ namespace Sales_Tracker
 
                 CustomMessageBoxResult result = CustomMessageBox.Show($"Rename company",
                     $"Do you want to rename '{name}' to '{suggestedCompanyName}'? There is already a company with the same name.",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.OkCancel);
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
 
                 if (result == CustomMessageBoxResult.Ok)
                 {
