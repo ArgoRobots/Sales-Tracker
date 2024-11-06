@@ -933,11 +933,11 @@ namespace Sales_Tracker.UI
         /// Shows a MessageBox if the row is being used by another row.
         /// </summary>
         /// <returns>True if it's being used by another row.</returns>
-        private static bool IsThisBeingUsedByDataGridView(string type, string columnName, string valueBeingRemoved, string action)
+        private static bool IsThisBeingUsedByDataGridView(string type, string columnName, string value, string action)
         {
             foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
             {
-                if (row.Cells[columnName].Value.ToString() == valueBeingRemoved)
+                if (row.Cells[columnName].Value.ToString() == value)
                 {
                     CustomMessageBox.Show(
                         $"Cannot be {action}",

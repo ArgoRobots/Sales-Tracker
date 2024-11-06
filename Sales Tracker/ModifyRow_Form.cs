@@ -30,6 +30,7 @@ namespace Sales_Tracker
             }
 
             ConstructControls();
+            AttachChangeHandlers();
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this, true);
         }
@@ -47,6 +48,70 @@ namespace Sales_Tracker
             controlToFocus?.Focus();
             CenterControls();
             LoadingPanel.HideBlankLoadingPanel(this);
+        }
+
+        // Methods for checking if there are changes
+        private bool hasChanges = false;
+        private void AttachChangeHandlers()
+        {
+            foreach (Control control in Panel.Controls)
+            {
+                AttachChangeHandler(control);
+            }
+
+            if (SecondPanel != null)
+            {
+                foreach (Control control in SecondPanel.Controls)
+                {
+                    AttachChangeHandler(control);
+                }
+            }
+        }
+        private void AttachChangeHandler(Control control)
+        {
+            if (control is Guna2TextBox textBox)
+            {
+                textBox.TextChanged += (s, e) => CheckForChanges((Guna2TextBox)s);
+            }
+            else if (control is Guna2ComboBox comboBox)
+            {
+                comboBox.SelectedIndexChanged += (s, e) => CheckForChanges((Guna2ComboBox)s);
+            }
+            else if (control is Guna2DateTimePicker datePicker)
+            {
+                datePicker.ValueChanged += (s, e) => CheckForChanges((Guna2DateTimePicker)s);
+            }
+        }
+        private void CheckForChanges(Control control)
+        {
+            int index = GetControlIndex(control.Name);
+            if (index < 0 || index >= listOfOldValues.Count) { return; }
+
+            string currentValue = GetControlValue(control);
+            hasChanges = currentValue != listOfOldValues[index];
+        }
+        private static string GetControlValue(Control control)
+        {
+            return control switch
+            {
+                Guna2TextBox textBox => textBox.Text.Trim(),
+                Guna2ComboBox comboBox => comboBox.SelectedItem?.ToString().Trim() ?? "",
+                Guna2DateTimePicker datePicker => Tools.FormatDate(datePicker.Value),
+                _ => ""
+            };
+        }
+        private int GetControlIndex(string controlName)
+        {
+            int index = 0;
+            foreach (DataGridViewColumn column in selectedRow.DataGridView.Columns)
+            {
+                if (column.Name == controlName)
+                {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
         }
 
         // Event handlers
@@ -974,12 +1039,30 @@ namespace Sales_Tracker
                     break;
             }
 
-            if (selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
+            if (hasChanges && IsThisBeingUsedByDataGridView(selectedRow.Cells[0].Value.ToString())
+                && selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
             {
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {selectedTag} list");
-                DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-                DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
+
+                MainMenu_Form.Instance.UpdateTotals();
+                MainMenu_Form.Instance.LoadCharts();
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
             }
+        }
+        private static bool IsThisBeingUsedByDataGridView(string value)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (cell.Value?.ToString() == value)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         private void UpdateCategory()
         {
