@@ -9,7 +9,6 @@ using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
-using System.Collections;
 using System.ComponentModel;
 using Timer = System.Windows.Forms.Timer;
 

@@ -24,7 +24,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
 
             // Hide caret
-            RichTextBox.MouseDown += (sender, e) =>
+            RichTextBox.MouseDown += delegate
             {
                 HideCaret(RichTextBox.Handle);
             };

@@ -491,7 +491,7 @@ namespace Sales_Tracker
                             BorderThickness = 1,
                             Font = new Font("Segoe UI", 10),
                         };
-                        Receipt_Button.Click += (sender, e) =>
+                        Receipt_Button.Click += delegate
                         {
                             // Select file
                             OpenFileDialog dialog = new();
@@ -520,17 +520,17 @@ namespace Sales_Tracker
                         };
                         RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(30, 30);
                         RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
-                        RemoveReceipt_ImageButton.Click += (sender, e) =>
+                        RemoveReceipt_ImageButton.Click += delegate
                         {
                             CloseAllPanels(null, null);
                             RemoveReceiptLabel();
                             removedReceipt = true;
                         };
-                        RemoveReceipt_ImageButton.MouseEnter += (sender, e) =>
+                        RemoveReceipt_ImageButton.MouseEnter += delegate
                         {
                             RemoveReceipt_ImageButton.BackColor = CustomColors.fileHover;
                         };
-                        RemoveReceipt_ImageButton.MouseLeave += (sender, e) =>
+                        RemoveReceipt_ImageButton.MouseLeave += delegate
                         {
                             RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
                         };

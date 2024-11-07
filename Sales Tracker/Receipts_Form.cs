@@ -106,13 +106,17 @@ namespace Sales_Tracker
         }
         private void ExportSelected_Button_Click(object sender, EventArgs e)
         {
+            ExportSelectedReceipts(Receipts_DataGridView);
+        }
+        public static void ExportSelectedReceipts(Guna2DataGridView dataGridView)
+        {
             // Select directory
             Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 string destinationPath = dialog.SelectedPath;
-                int selectedRowCount = Receipts_DataGridView.SelectedRows.Count;
+                int selectedRowCount = dataGridView.SelectedRows.Count;
 
                 if (selectedRowCount > 1)
                 {
@@ -123,10 +127,19 @@ namespace Sales_Tracker
                 }
 
                 // Iterate through selected rows and copy files
-                foreach (DataGridViewRow row in Receipts_DataGridView.SelectedRows)
+                foreach (DataGridViewRow row in dataGridView.SelectedRows)
                 {
-                    string receipt = row.Tag.ToString();
-                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName).Replace(ReadOnlyVariables.Receipt_text, "");
+                    string receipt = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
+
+                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
+                        .Replace(ReadOnlyVariables.Receipt_text, "");
+
+                    if (!File.Exists(receipt))
+                    {
+                        Log.Error_FileDoesNotExist(receipt);
+                        continue;
+                    }
+
                     string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
                     Directories.CopyFile(receipt, destinationFilePath);
                 }
@@ -229,12 +242,14 @@ namespace Sales_Tracker
                 string receipt = "";
                 if (row.Tag is (string dir, TagData))
                 {
-                    receipt = dir.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName).Replace(ReadOnlyVariables.Receipt_text, "");
+                    receipt = dir.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
+                        .Replace(ReadOnlyVariables.Receipt_text, "");
                 }
                 else if (row.Tag is (List<string> items, TagData))
                 {
                     receipt = items[^1];
-                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName).Replace(ReadOnlyVariables.Receipt_text, "");
+                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
+                        .Replace(ReadOnlyVariables.Receipt_text, "");
                 }
                 Receipts_DataGridView.Rows[^1].Tag = receipt;
 

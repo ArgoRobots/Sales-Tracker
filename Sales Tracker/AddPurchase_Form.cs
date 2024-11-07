@@ -900,7 +900,7 @@ namespace Sales_Tracker
             {
                 _addButton.Image = Resources.AddBlack;
             }
-            _addButton.Click += (sender, e) =>
+            _addButton.Click += delegate
             {
                 CloseAllPanels(null, null);
                 ConstructControlsForMultipleProducts();

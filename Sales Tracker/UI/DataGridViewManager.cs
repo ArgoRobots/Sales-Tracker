@@ -464,8 +464,7 @@ namespace Sales_Tracker.UI
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     $"Delete the {selected}",
                     $"Deleting the last item will also delete the {selected}.",
-                    CustomMessageBoxIcon.Info,
-                    CustomMessageBoxButtons.OkCancel);
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -1112,26 +1111,7 @@ namespace Sales_Tracker.UI
         private static void ExportReceipt(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels(null, null);
-
-            DataGridViewRow selectedRow = MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0];
-            string receiptFilePath = GetFilePathFromRowTag(selectedRow.Tag);
-
-            if (!File.Exists(receiptFilePath))
-            {
-                CustomMessageBox.Show("The receipt no longer exists", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-                Log.Error_FileDoesNotExist(receiptFilePath);
-                return;
-            }
-
-            // Select directory
-            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                string newFilepath = dialog.SelectedPath + @"\" + Path.GetFileName(receiptFilePath);
-                newFilepath = Directories.GetNewFileNameIfItAlreadyExists(newFilepath);
-                Directories.CopyFile(receiptFilePath, newFilepath);
-            }
+            Receipts_Form.ExportSelectedReceipts(MainMenu_Form.Instance.SelectedDataGridView);
         }
         private static ItemsInTransaction_Form itemsInPurchase_Form;
         private static void ShowItems(object sender, EventArgs e)
@@ -1183,6 +1163,10 @@ namespace Sales_Tracker.UI
             else if (tag is (string tagString, TagData))
             {
                 return ProcessDirectoryFromString(tagString);
+            }
+            else if (tag is string tagString2)
+            {
+                return ProcessDirectoryFromString(tagString2);
             }
             return "";
         }
