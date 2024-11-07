@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
-using Guna.UI2.WinForms;
+﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
@@ -121,15 +120,18 @@ namespace Sales_Tracker
                 if (selectedRowCount > 1)
                 {
                     // Create a new folder for multiple files
-                    string newFolderPath = Path.Combine(destinationPath, "Receipts_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
+                    string newFolderPath = Path.Combine(destinationPath, "Argo Sales Tracker receipts - " + DateTime.Now.ToString("yyyyMMddHHmmss"));
                     Directory.CreateDirectory(newFolderPath);
                     destinationPath = newFolderPath;
                 }
+
+                bool isAnyReceiptExported = false;
 
                 // Iterate through selected rows and copy files
                 foreach (DataGridViewRow row in dataGridView.SelectedRows)
                 {
                     string receipt = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
+                    if (receipt == "") { continue; }
 
                     receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
                         .Replace(ReadOnlyVariables.Receipt_text, "");
@@ -142,11 +144,15 @@ namespace Sales_Tracker
 
                     string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
                     Directories.CopyFile(receipt, destinationFilePath);
+                    isAnyReceiptExported = true;
                 }
 
-                CustomMessageBox.Show("Receipts exported",
-                   "Receipts exported successfully",
-                   CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                if (isAnyReceiptExported)
+                {
+                    CustomMessageBox.Show("Receipts exported",
+                        "Receipts exported successfully",
+                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                }
             }
         }
         private void FilterByDate_Label_Click(object sender, EventArgs e)

@@ -557,13 +557,13 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             flowPanel.Controls.Clear();
 
-            // Add modify button
+            // Add ModifyBtn
             if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
             {
                 AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
             }
 
-            // Add move button
+            // Add MoveBtn
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
                 AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to sales");
@@ -577,26 +577,36 @@ namespace Sales_Tracker.UI
                 flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
             }
 
-            // Add other buttons
-            if (grid.SelectedRows[0].Tag is (List<string> tagList, TagData))
+            // Add ShowItemsBtn
+            if (grid.SelectedRows[0].Tag is (List<string>, TagData)
+                && MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
             {
                 AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn);
-
-                if (IsLastItemAReceipt(tagList[^1]))
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
-                }
             }
-            else if (grid.SelectedRows[0].Tag is (string item, TagData))
+
+            // Add ExportReceiptBtn
+            if (AnySelectedRowHasReceipt(grid))
             {
-                if (IsLastItemAReceipt(item))
-                {
-                    AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
-                }
+                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
             }
 
-            // Add delete button
+            // Add DeleteBtn)
             flowPanel.Controls.Add(_rightClickDataGridView_DeleteBtn);
+        }
+        private static bool AnySelectedRowHasReceipt(DataGridView grid)
+        {
+            foreach (DataGridViewRow row in grid.SelectedRows)
+            {
+                if (row.Tag is (List<string> tagList, TagData) && IsLastItemAReceipt(tagList[^1]))
+                {
+                    return true;
+                }
+                else if (row.Tag is (string item, TagData) && IsLastItemAReceipt(item))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         private static void PositionRightClickDataGridViewMenu(Guna2DataGridView grid, MouseEventArgs e, DataGridView.HitTestInfo info)
         {
