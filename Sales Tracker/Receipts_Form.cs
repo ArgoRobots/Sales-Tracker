@@ -120,18 +120,24 @@ namespace Sales_Tracker
                 if (selectedRowCount > 1)
                 {
                     // Create a new folder for multiple files
-                    string newFolderPath = Path.Combine(destinationPath, "Argo Sales Tracker receipts - " + DateTime.Now.ToString("yyyyMMddHHmmss"));
+                    string newFolderPath = Path.Combine(destinationPath, $"Argo Sales Tracker receipts for {Directories.CompanyName} - "
+                        + DateTime.Now.ToString("yyyyMMddHHmmss"));
+
                     Directory.CreateDirectory(newFolderPath);
                     destinationPath = newFolderPath;
                 }
 
-                bool isAnyReceiptExported = false;
+                bool isAnyReceiptExported = false, doAllRowsHaveReceipt = true;
 
                 // Iterate through selected rows and copy files
                 foreach (DataGridViewRow row in dataGridView.SelectedRows)
                 {
                     string receipt = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
-                    if (receipt == "") { continue; }
+                    if (receipt == "")
+                    {
+                        doAllRowsHaveReceipt = false;
+                        continue;
+                    }
 
                     receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
                         .Replace(ReadOnlyVariables.Receipt_text, "");
@@ -149,8 +155,12 @@ namespace Sales_Tracker
 
                 if (isAnyReceiptExported)
                 {
+                    string message = "Receipts exported successfully";
+
+                    if (!doAllRowsHaveReceipt) { message += " Note: Not all the selected rows contain a receipt."; }
+
                     CustomMessageBox.Show("Receipts exported",
-                        "Receipts exported successfully",
+                        message,
                         CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             }
