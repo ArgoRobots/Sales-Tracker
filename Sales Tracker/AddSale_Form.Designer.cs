@@ -511,7 +511,7 @@ namespace Sales_Tracker
             WarningAccountant_LinkLabel.TabStop = true;
             WarningAccountant_LinkLabel.Text = "No accountants exist.\r\nCreate one here";
             WarningAccountant_LinkLabel.UseCompatibleTextRendering = true;
-            WarningAccountant_LinkLabel.LinkClicked += WarningBuyer_LinkLabel_LinkClicked;
+            WarningAccountant_LinkLabel.LinkClicked += WarningAccountant_LinkLabel_LinkClicked;
             WarningAccountant_LinkLabel.Click += CloseAllPanels;
             // 
             // WarningAccountant_PictureBox

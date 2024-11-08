@@ -120,15 +120,15 @@ namespace Sales_Tracker
             }
             MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            if (_panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
+            if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
                 if (!AddSingleSale()) { return; }
             }
             // When the user selects "multiple items in this order" but only adds one, treat it as one
-            else if (_panelsForMultipleProducts_List.Count == 1)
+            else if (panelsForMultipleProducts_List.Count == 1)
             {
                 // Extract details from the single panel and populate the single sale fields
-                Guna2Panel singlePanel = _panelsForMultipleProducts_List[0];
+                Guna2Panel singlePanel = panelsForMultipleProducts_List[0];
                 ProductName_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault()).Text;
                 Quantity_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault()).Text;
                 PricePerUnit_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault()).Text;
@@ -149,7 +149,7 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             if (MultipleItems_CheckBox.Checked)
             {
-                if (_addButton == null)
+                if (addButton == null)
                 {
                     ConstructFlowPanel();
                     CosntructAddButton();
@@ -167,7 +167,7 @@ namespace Sales_Tracker
             new Products_Form(false).ShowDialog();
             CheckIfProductsExist();
         }
-        private void WarningBuyer_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void WarningAccountant_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new Accountants_Form().ShowDialog();
             CheckIfAccountantsExist();
@@ -180,7 +180,7 @@ namespace Sales_Tracker
             OpenFileDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                _receiptFilePath = ReadOnlyVariables.Receipt_text + dialog.FileName;
+                receiptFilePath = ReadOnlyVariables.Receipt_text + dialog.FileName;
                 ShowReceiptLabel(dialog.SafeFileName);
             }
         }
@@ -218,7 +218,8 @@ namespace Sales_Tracker
                 }
             }
 
-            string buyerName = AccountantName_TextBox.Text;
+            // Get values from TextBoxes
+            string accountant = AccountantName_TextBox.Text;
 
             string[] items = ProductName_TextBox.Text.Split('>');
             string categoryName = items[0].Trim();
@@ -233,7 +234,7 @@ namespace Sales_Tracker
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
             string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
-            decimal totalPrice = quantity * pricePerUnit - discount;
+            decimal totalPrice = Math.Round(quantity * pricePerUnit - discount, 2);
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
             if (note != "")
@@ -241,37 +242,34 @@ namespace Sales_Tracker
                 noteLabel = ReadOnlyVariables.Show_text;
             }
 
-            // Round to 2 decimal places
-            decimal credited = decimal.Parse(Credited_TextBox.Text);
-            totalPrice = Math.Round(totalPrice, 2);
-            decimal chargedDifference = credited - totalPrice;
+            decimal credited = Math.Round(decimal.Parse(Credited_TextBox.Text), 2);
+            decimal creditedDifference = credited - totalPrice;
 
-            if (totalPrice != credited)
+            if (creditedDifference != 0)
             {
-                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different",
+                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
                     return false;
                 }
             }
-            totalPrice += chargedDifference;
 
-            // Convert to USD
-            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(currency, "USD", date);
+            // Convert default currency to USD
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
-            decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
-            decimal shippingUSD = shipping * exchangeRateToUSD;
-            decimal taxUSD = tax * exchangeRateToUSD;
-            decimal feeUSD = fee * exchangeRateToUSD;
-            decimal discountUSD = discount * exchangeRateToUSD;
-            decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
-            decimal creditedUSD = credited * exchangeRateToUSD;
+            decimal pricePerUnitUSD = Math.Round(pricePerUnit * exchangeRateToUSD, 2);
+            decimal shippingUSD = Math.Round(shipping * exchangeRateToUSD, 2);
+            decimal taxUSD = Math.Round(tax * exchangeRateToUSD, 2);
+            decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
+            decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
+            decimal chargedDifferenceUSD = Math.Round(creditedDifference * exchangeRateToUSD, 2);
+            decimal creditedUSD = Math.Round(credited * exchangeRateToUSD, 2);
 
-            // Store the money values in the tag
+            // Store the USD values in the tag
             TagData saleData = new()
             {
                 PricePerUnitUSD = pricePerUnitUSD,
@@ -283,14 +281,15 @@ namespace Sales_Tracker
                 ChargedOrCreditedUSD = creditedUSD
             };
 
+            // Save the receipt
             string newFilePath = "";
-            if (!ReceiptsManager.CheckIfReceiptExists(_receiptFilePath))
+            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(_receiptFilePath);
+                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
 
                 if (!saved)
                 {
@@ -298,9 +297,10 @@ namespace Sales_Tracker
                 }
             }
 
+            // Add the row with the default values
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 saleNumber,
-                buyerName,
+                accountant,
                 productName,
                 categoryName,
                 country,
@@ -312,8 +312,8 @@ namespace Sales_Tracker
                 tax.ToString("N"),
                 fee.ToString("N"),
                 discount.ToString("N"),
-                chargedDifference.ToString("N2"),
-                totalPrice.ToString("N"),
+                creditedDifference.ToString("N2"),
+                credited.ToString("N"),
                 noteLabel
             );
             if (noteLabel == ReadOnlyVariables.Show_text)
@@ -344,8 +344,9 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.ID.ToString(), saleNumber))
             {
-                string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists",
+                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -353,6 +354,7 @@ namespace Sales_Tracker
                 }
             }
 
+            // Get values from TextBoxes
             string accountant = AccountantName_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
@@ -372,12 +374,11 @@ namespace Sales_Tracker
             decimal totalPrice = 0;
             int totalQuantity = 0;
 
-            // Get exchange rate
-            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(currency, "USD", date);
+            // Convert default currency to USD
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
-            foreach (Guna2Panel panel in _panelsForMultipleProducts_List)
+            foreach (Guna2Panel panel in panelsForMultipleProducts_List)
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
                 string[] itemsInName = nameTextBox.Text.Split('>');
@@ -435,15 +436,13 @@ namespace Sales_Tracker
                 items.Add(item);
             }
 
-            totalPrice -= discount;
-            totalPrice = Math.Round(totalPrice, 2);
+            totalPrice = Math.Round(totalPrice - discount, 2);
+            decimal credited = Math.Round(decimal.Parse(Credited_TextBox.Text), 2);
+            decimal creditedDifference = credited - totalPrice;
 
-            decimal amountCharged = decimal.Parse(Credited_TextBox.Text);
-            decimal chargedDifference = amountCharged - totalPrice;
-
-            if (totalPrice != amountCharged)
+            if (creditedDifference != 0)
             {
-                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
+                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -451,16 +450,16 @@ namespace Sales_Tracker
                     return false;
                 }
             }
-            totalPrice += chargedDifference;
+            totalPrice += creditedDifference;
 
             string newFilePath = "";
-            if (!ReceiptsManager.CheckIfReceiptExists(_receiptFilePath))
+            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(_receiptFilePath);
+                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
 
                 if (!saved)
                 {
@@ -486,7 +485,7 @@ namespace Sales_Tracker
                 tax.ToString("N2"),
                 fee.ToString("N2"),
                 discount.ToString("N2"),
-                chargedDifference.ToString("N2"),
+                creditedDifference.ToString("N2"),
                 totalPrice.ToString("N2"),
                 noteLabel
             );
@@ -500,12 +499,12 @@ namespace Sales_Tracker
             }
 
             // Calculate USD values
-            decimal shippingUSD = shipping * exchangeRateToUSD;
-            decimal taxUSD = tax * exchangeRateToUSD;
-            decimal feeUSD = fee * exchangeRateToUSD;
-            decimal discountUSD = discount * exchangeRateToUSD;
-            decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
-            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+            decimal shippingUSD = Math.Round(shipping * exchangeRateToUSD, 2);
+            decimal taxUSD = Math.Round(tax * exchangeRateToUSD, 2);
+            decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
+            decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
+            decimal chargedDifferenceUSD = Math.Round(creditedDifference * exchangeRateToUSD, 2);
+            decimal creditedUSD = Math.Round(credited * exchangeRateToUSD, 2);
 
             // Store the money values in the tag
             TagData tagData = new()
@@ -515,7 +514,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                ChargedOrCreditedUSD = totalPriceUSD
+                ChargedOrCreditedUSD = creditedUSD
             };
 
             // Set the tag
@@ -531,7 +530,7 @@ namespace Sales_Tracker
         }
 
         // Receipts
-        private string _receiptFilePath;
+        private string receiptFilePath;
         private void ShowReceiptLabel(string text)
         {
             SelectedReceipt_Label.Text = text;
@@ -566,9 +565,9 @@ namespace Sales_Tracker
         {
             return [ProductName_TextBox, ProductName_Label, Quantity_TextBox, Quantity_Label, PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte _textBoxHeight = 48, _circleButtonHeight = 38, _extraSpaceForBottom = 210, _spaceBetweenPanels = 10,
-               _initialHeightForPanel = 88, _spaceOnSidesOfPanel = 100, _flowPanelMargin = 6;
-        private readonly short _initialWidthForPanel = 673, _flowPanelMaxHeight = 300;
+        private readonly byte textBoxHeight = 48, circleButtonHeight = 38, extraSpaceForBottom = 210, spaceBetweenPanels = 10,
+               initialHeightForPanel = 88, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
+        private readonly short initialWidthForPanel = 673, flowPanelMaxHeight = 300;
         private void SetControlsForSingleProduct()
         {
             // Center controls
@@ -619,11 +618,11 @@ namespace Sales_Tracker
                 Controls.Add(control);
             }
 
-            _flowPanel.Visible = false;
-            _addButton.Visible = false;
+            flowPanel.Visible = false;
+            addButton.Visible = false;
             Height = 465;
 
-            RelocateBuyerWarning();
+            RelocateAccountantWarning();
 
             if (WarningProduct_PictureBox.Visible)
             {
@@ -672,28 +671,28 @@ namespace Sales_Tracker
                 Controls.Remove(control);
             }
 
-            _flowPanel.Visible = true;
+            flowPanel.Visible = true;
             SetHeight();
 
-            RelocateBuyerWarning();
+            RelocateAccountantWarning();
 
             if (WarningProduct_PictureBox.Visible)
             {
-                WarningProduct_PictureBox.Location = new Point(_addButton.Left + CustomControls.SpaceBetweenControls, _addButton.Top - _flowPanelMargin * 2);
+                WarningProduct_PictureBox.Location = new Point(addButton.Left + CustomControls.SpaceBetweenControls, addButton.Top - flowPanelMargin * 2);
                 WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
-                _addButton.Visible = false;
+                addButton.Visible = false;
             }
             else
             {
-                _addButton.Visible = true;
+                addButton.Visible = true;
             }
         }
-        private void RelocateBuyerWarning()
+        private void RelocateAccountantWarning()
         {
             WarningAccountant_PictureBox.Location = new Point(AccountantName_TextBox.Left, AccountantName_TextBox.Bottom + CustomControls.SpaceBetweenControls);
             WarningAccountant_LinkLabel.Location = new Point(WarningAccountant_PictureBox.Right + CustomControls.SpaceBetweenControls, WarningAccountant_PictureBox.Top);
         }
-        private readonly List<Guna2Panel> _panelsForMultipleProducts_List = [];
+        private readonly List<Guna2Panel> panelsForMultipleProducts_List = [];
         private enum TextBoxnames
         {
             name,
@@ -706,10 +705,10 @@ namespace Sales_Tracker
 
             Guna2Panel panel = new()
             {
-                Size = new Size(_initialWidthForPanel, _initialHeightForPanel),
+                Size = new Size(initialWidthForPanel, initialHeightForPanel),
                 FillColor = CustomColors.mainBackground
             };
-            _panelsForMultipleProducts_List.Add(panel);
+            panelsForMultipleProducts_List.Add(panel);
 
             Guna2TextBox textBox;
             int left;
@@ -733,23 +732,23 @@ namespace Sales_Tracker
 
             // Add minus button unless this is the first panel
             left = textBox.Right + CustomControls.SpaceBetweenControls;
-            if (_panelsForMultipleProducts_List.Count > 1)
+            if (panelsForMultipleProducts_List.Count > 1)
             {
-                CosntructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (_textBoxHeight - _circleButtonHeight) / 2 + textBox.Top), panel);
+                CosntructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
             }
 
-            _flowPanel.SuspendLayout();
-            _flowPanel.Controls.Add(panel);
+            flowPanel.SuspendLayout();
+            flowPanel.Controls.Add(panel);
             SetHeight();
-            _flowPanel.ResumeLayout();
-            _flowPanel.ScrollControlIntoView(panel);
+            flowPanel.ResumeLayout();
+            flowPanel.ScrollControlIntoView(panel);
         }
         private void CosntructLabel(string text, int left, Control parent)
         {
             Label label = new()
             {
                 Text = text,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 11),
                 ForeColor = CustomColors.text,
                 Left = left,
                 AutoSize = true
@@ -761,7 +760,7 @@ namespace Sales_Tracker
         {
             Guna2TextBox textBox = new()
             {
-                Size = new Size(width, _textBoxHeight),
+                Size = new Size(width, textBoxHeight),
                 Name = name,
                 Location = new Point(left, 28 + CustomControls.SpaceBetweenControls),
                 BorderColor = CustomColors.controlBorder,
@@ -806,7 +805,7 @@ namespace Sales_Tracker
                 FillColor = CustomColors.mainBackground,
                 BackColor = CustomColors.mainBackground,
                 Location = location,
-                Size = new Size(_circleButtonHeight, _circleButtonHeight),
+                Size = new Size(circleButtonHeight, circleButtonHeight),
                 ImageSize = new Size(32, 32),
                 PressedColor = CustomColors.controlBack
             };
@@ -831,67 +830,67 @@ namespace Sales_Tracker
             Guna2CircleButton button = (Guna2CircleButton)sender;
             Guna2Panel panel = (Guna2Panel)button.Parent;
 
-            _flowPanel.Controls.Remove(panel);
-            _panelsForMultipleProducts_List.Remove(panel);
-            _flowPanel.Height -= _initialHeightForPanel + _flowPanelMargin;
+            flowPanel.Controls.Remove(panel);
+            panelsForMultipleProducts_List.Remove(panel);
+            flowPanel.Height -= initialHeightForPanel + flowPanelMargin;
             SetHeight();
         }
-        private Guna2CircleButton _addButton;
-        private FlowLayoutPanel _flowPanel;
+        private Guna2CircleButton addButton;
+        private FlowLayoutPanel flowPanel;
         private void ConstructFlowPanel()
         {
-            int width = _initialWidthForPanel + _spaceOnSidesOfPanel;
-            _flowPanel = new()
+            int width = initialWidthForPanel + spaceOnSidesOfPanel;
+            flowPanel = new()
             {
                 Anchor = AnchorStyles.Top,
                 AutoScroll = false,
                 Location = new Point((ClientSize.Width - width) / 2, 570),
-                Size = new Size(width, 20 + CustomControls.SpaceBetweenControls + _textBoxHeight),
-                Padding = new Padding(_spaceOnSidesOfPanel / 2, 0, _spaceOnSidesOfPanel / 2, 0),
-                Margin = new Padding(_flowPanelMargin / 2, 0, _flowPanelMargin / 2, 0),
-                MaximumSize = new Size(width, _flowPanelMaxHeight),
+                Size = new Size(width, 20 + CustomControls.SpaceBetweenControls + textBoxHeight),
+                Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
+                Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
+                MaximumSize = new Size(width, flowPanelMaxHeight),
                 Visible = false
             };
-            _flowPanel.Click += CloseAllPanels;
-            Controls.Add(_flowPanel);
+            flowPanel.Click += CloseAllPanels;
+            Controls.Add(flowPanel);
         }
         private void CosntructAddButton()
         {
-            _addButton = new()
+            addButton = new()
             {
                 FillColor = CustomColors.mainBackground,
                 BackColor = CustomColors.mainBackground,
                 Location = new Point(0, 60),
-                Size = new Size(_circleButtonHeight, _circleButtonHeight),
+                Size = new Size(circleButtonHeight, circleButtonHeight),
                 ImageSize = new Size(32, 32),
-                Left = _flowPanel.Left + _spaceOnSidesOfPanel / 2,
+                Left = flowPanel.Left + spaceOnSidesOfPanel / 2,
                 PressedColor = CustomColors.controlBack,
                 Visible = false
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
-                _addButton.Image = Resources.AddWhite;
+                addButton.Image = Resources.AddWhite;
             }
             else
             {
-                _addButton.Image = Resources.AddBlack;
+                addButton.Image = Resources.AddBlack;
             }
-            _addButton.Click += delegate
+            addButton.Click += delegate
             {
                 CloseAllPanels(null, null);
                 ConstructControlsForMultipleProducts();
                 ValidateInputs(null, null);
             };
-            Controls.Add(_addButton);
+            Controls.Add(addButton);
         }
         private void SetHeight()
         {
-            int totalHeight = _panelsForMultipleProducts_List.Sum(panel => panel.Height + _flowPanelMargin);
-            _flowPanel.Height = Math.Min(totalHeight + _flowPanelMargin, _flowPanelMaxHeight);
-            _flowPanel.AutoScroll = totalHeight + _flowPanelMargin > _flowPanelMaxHeight;
+            int totalHeight = panelsForMultipleProducts_List.Sum(panel => panel.Height + flowPanelMargin);
+            flowPanel.Height = Math.Min(totalHeight + flowPanelMargin, flowPanelMaxHeight);
+            flowPanel.AutoScroll = totalHeight + flowPanelMargin > flowPanelMaxHeight;
 
-            MinimumSize = new Size(Width, _flowPanel.Bottom + _extraSpaceForBottom);
-            _addButton.Top = _flowPanel.Bottom + _spaceBetweenPanels;
+            MinimumSize = new Size(Width, flowPanel.Bottom + extraSpaceForBottom);
+            addButton.Top = flowPanel.Bottom + spaceBetweenPanels;
         }
 
         // Warning labels
@@ -943,7 +942,7 @@ namespace Sales_Tracker
 
             if (MultipleItems_CheckBox.Checked)
             {
-                allMultipleFieldsFilled = _panelsForMultipleProducts_List
+                allMultipleFieldsFilled = panelsForMultipleProducts_List
                     .SelectMany(panel => panel.Controls.OfType<Guna2TextBox>())
                     .All(textBox => !string.IsNullOrWhiteSpace(textBox.Text));
             }

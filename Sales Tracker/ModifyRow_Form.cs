@@ -457,10 +457,10 @@ namespace Sales_Tracker
 
                         ConstructLabel(text, left, Panel);
 
-                        Guna2TextBox BuyerName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, Panel);
+                        Guna2TextBox Accountant_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, Panel);
                         searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
-                        SearchBox.Attach(BuyerName_TextBox, this, () => searchResult, searchBoxMaxHeight);
-                        BuyerName_TextBox.TextChanged += ValidateInputs;
+                        SearchBox.Attach(Accountant_TextBox, this, () => searchResult, searchBoxMaxHeight);
+                        Accountant_TextBox.TextChanged += ValidateInputs;
 
                         left += controlWidth + CustomControls.SpaceBetweenControls;
                         break;
@@ -1019,7 +1019,8 @@ namespace Sales_Tracker
             if (selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
                 string type = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale";
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {type} transaction");
+                string id = selectedRow.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString();
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {type} '{id}'");
                 return;
             }
 

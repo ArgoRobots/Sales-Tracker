@@ -331,15 +331,14 @@ namespace Sales_Tracker
         private void SetAccessibleDescriptions()
         {
             CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Profits_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Totals_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            PaymentFee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Profits_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Totals_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            PaymentFee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
         }
 
         // Form event handlers
