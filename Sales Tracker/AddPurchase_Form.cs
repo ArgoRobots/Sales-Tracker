@@ -206,10 +206,12 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
+            if (purchaseNumber != ReadOnlyVariables.EmptyCell
+                && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
             {
-                string message = $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists",
+                     $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -217,6 +219,7 @@ namespace Sales_Tracker
                 }
             }
 
+            // Get values from TextBoxes
             string buyerName = AccountantName_TextBox.Text;
 
             string[] items = ProductName_TextBox.Text.Split('>');
@@ -232,7 +235,6 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            decimal totalPrice = quantity * pricePerUnit;
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
             if (note != "")
@@ -240,28 +242,25 @@ namespace Sales_Tracker
                 noteLabel = ReadOnlyVariables.Show_text;
             }
 
+            // Convert currency to default
             decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_ComboBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
             if (exchangeRateToDefault == -1) { return false; }
 
-            // Convert currency
-            pricePerUnit *= exchangeRateToDefault;
-            shipping *= exchangeRateToDefault;
-            tax *= exchangeRateToDefault;
-            fee *= exchangeRateToDefault;
-            discount *= exchangeRateToDefault;
-            totalPrice *= exchangeRateToDefault;
+            decimal pricePerUnitDefault = pricePerUnit * exchangeRateToDefault;
+            decimal shippingDefault = shipping * exchangeRateToDefault;
+            decimal taxDefault = tax * exchangeRateToDefault;
+            decimal feeDefault = fee * exchangeRateToDefault;
+            decimal discountDefault = discount * exchangeRateToDefault;
+            decimal totalPriceDefault = Math.Round(pricePerUnitDefault * quantity + shippingDefault + taxDefault + feeDefault - discountDefault, 2);
+            decimal charged = decimal.Parse(Charged_TextBox.Text);
+            decimal chargedDifference = charged - totalPriceDefault;
 
-            totalPrice += shipping + tax + fee - discount;
-            totalPrice = Math.Round(totalPrice, 2);
-
-            decimal amountCharged = decimal.Parse(Charged_TextBox.Text);
-            decimal chargedDifference = amountCharged - totalPrice;
-
-            if (totalPrice != amountCharged)
+            if (chargedDifference != 0)
             {
                 string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged} {currency}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice} {currency}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different",
+                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -269,19 +268,22 @@ namespace Sales_Tracker
                 }
             }
 
-            // Convert to USD
+            // Convert selected currency to USD
             decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
-            decimal pricePerUnitUSD = pricePerUnit * exchangeRateToUSD;
-            decimal shippingUSD = shipping * exchangeRateToUSD;
-            decimal taxUSD = tax * exchangeRateToUSD;
-            decimal feeUSD = fee * exchangeRateToUSD;
-            decimal discountUSD = discount * exchangeRateToUSD;
-            decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
-            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+            decimal pricePerUnitUSD = Math.Round(pricePerUnit * exchangeRateToUSD, 2);
+            decimal shippingUSD = Math.Round(shipping * exchangeRateToUSD, 2);
+            decimal taxUSD = Math.Round(tax * exchangeRateToUSD, 2);
+            decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
+            decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
 
-            // Store the money values in the tag
+            // Convert this from default to USD
+            decimal exchangeRateToUSD1 = Currency.GetExchangeRate(DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), "USD", date);
+            decimal chargedDifferenceUSD = Math.Round(chargedDifference * exchangeRateToUSD1, 2);
+            decimal chargedUSD = Math.Round(charged * exchangeRateToUSD1, 2);
+
+            // Store the USD values in the tag
             TagData purchaseData = new()
             {
                 PricePerUnitUSD = pricePerUnitUSD,
@@ -290,9 +292,10 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                ChargedOrCreditedUSD = chargedUSD
             };
 
+            // Save the receipt
             string newFilePath = "";
             if (!ReceiptsManager.CheckIfReceiptExists(_receiptFilePath))
             {
@@ -307,6 +310,7 @@ namespace Sales_Tracker
                 }
             }
 
+            // Add the row with the default values
             int newRowIndex = MainMenu_Form.Instance.SelectedDataGridView.Rows.Add(
                 purchaseNumber,
                 buyerName,
@@ -316,13 +320,13 @@ namespace Sales_Tracker
                 company,
                 date,
                 quantity.ToString(),
-                pricePerUnit.ToString("N2"),
-                shipping.ToString("N2"),
-                tax.ToString("N2"),
-                fee.ToString("N2"),
-                discount.ToString("N2"),
+                pricePerUnitDefault.ToString("N2"),
+                shippingDefault.ToString("N2"),
+                taxDefault.ToString("N2"),
+                feeDefault.ToString("N2"),
+                discountDefault.ToString("N2"),
                 chargedDifference.ToString("N2"),
-                amountCharged.ToString("N2"),
+                charged.ToString("N2"),
                 noteLabel
             );
 
@@ -352,10 +356,12 @@ namespace Sales_Tracker
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
             // Check if purchase ID already exists
-            if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
+            if (purchaseNumber != ReadOnlyVariables.EmptyCell
+                && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
             {
-                string message = $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists",
+                    $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -448,30 +454,26 @@ namespace Sales_Tracker
             }
 
             // Convert currency
-            shipping *= exchangeRateToDefault;
-            tax *= exchangeRateToDefault;
-            fee *= exchangeRateToDefault;
-            discount *= exchangeRateToDefault;
-            totalPrice *= exchangeRateToDefault;
+            decimal shippingDefault = shipping * exchangeRateToDefault;
+            decimal taxDefault = tax + exchangeRateToDefault;
+            decimal feeDefault = fee * exchangeRateToDefault;
+            decimal discountDefault = discount * exchangeRateToDefault;
+            decimal totalPriceDefault = Math.Round(totalPrice * exchangeRateToDefault + shipping + tax + fee - discount, 2);
+            decimal charged = decimal.Parse(Charged_TextBox.Text);
+            decimal chargedDifference = charged - totalPriceDefault;
 
-            totalPrice += shipping + tax + fee - discount;
-            totalPrice = Math.Round(totalPrice, 2);
-
-            decimal amountCharged = decimal.Parse(Charged_TextBox.Text);
-            decimal chargedDifference = amountCharged - totalPrice;
-
-            if (totalPrice != amountCharged)
+            if (totalPriceDefault != charged)
             {
                 string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-                string message = $"Amount charged ({MainMenu_Form.CurrencySymbol}{amountCharged} {currency}) is not equal to the total price of the sale ({MainMenu_Form.CurrencySymbol}{totalPrice} {currency}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different",
+                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
                     return false;
                 }
             }
-            totalPrice += chargedDifference;
 
             string newFilePath = "";
             if (!ReceiptsManager.CheckIfReceiptExists(_receiptFilePath))
@@ -501,12 +503,12 @@ namespace Sales_Tracker
                 date,
                 totalQuantity.ToString(),
                 ReadOnlyVariables.EmptyCell,
-                shipping.ToString("N2"),
-                tax.ToString("N2"),
-                fee.ToString("N2"),
-                discount.ToString("N2"),
+                shippingDefault.ToString("N2"),
+                taxDefault.ToString("N2"),
+                feeDefault.ToString("N2"),
+                discountDefault.ToString("N2"),
                 chargedDifference.ToString("N2"),
-                amountCharged.ToString("N2"),
+                charged.ToString("N2"),
                 noteLabel
             );
             if (noteLabel == ReadOnlyVariables.Show_text)
@@ -519,12 +521,15 @@ namespace Sales_Tracker
             }
 
             // Calculate USD values
-            decimal shippingUSD = shipping * exchangeRateToUSD;
-            decimal taxUSD = tax * exchangeRateToUSD;
-            decimal feeUSD = fee * exchangeRateToUSD;
-            decimal discountUSD = discount * exchangeRateToUSD;
-            decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
-            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+            decimal shippingUSD = Math.Round(shipping * exchangeRateToUSD, 2);
+            decimal taxUSD = Math.Round(tax * exchangeRateToUSD, 2);
+            decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
+            decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
+
+            // Convert this from default to USD
+            decimal exchangeRateToUSD1 = Currency.GetExchangeRate(DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), "USD", date);
+            decimal chargedDifferenceUSD = Math.Round(chargedDifference * exchangeRateToUSD1, 2);
+            decimal chargedUSD = Math.Round(charged * exchangeRateToUSD1, 2);
 
             // Store the money values in the tag
             TagData tagData = new()
@@ -534,7 +539,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                ChargedOrCreditedUSD = chargedUSD
             };
 
             // Set the tag
@@ -914,7 +919,7 @@ namespace Sales_Tracker
             _flowPanel.Height = Math.Min(totalHeight + _flowPanelMargin, _flowPanelMaxHeight);
             _flowPanel.AutoScroll = totalHeight + _flowPanelMargin > _flowPanelMaxHeight;
 
-            Height = _flowPanel.Bottom + _extraSpaceForBottom;
+            MinimumSize = new Size(Width, _flowPanel.Bottom + _extraSpaceForBottom);
             _addButton.Top = _flowPanel.Bottom + spaceBetweenPanels;
         }
 

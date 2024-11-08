@@ -319,7 +319,7 @@ namespace Sales_Tracker.Classes
                             tagData.ChargedDifferenceUSD = decimalValue;
                             break;
                         case 14:
-                            tagData.TotalUSD = decimalValue;
+                            tagData.ChargedOrCreditedUSD = decimalValue;
                             break;
                     }
 
@@ -543,7 +543,7 @@ namespace Sales_Tracker.Classes
                             usdValue = tagData.ChargedDifferenceUSD;
                             break;
                         case 14:
-                            usdValue = tagData.TotalUSD;
+                            usdValue = tagData.ChargedOrCreditedUSD;
                             break;
                     }
                     excelCell.Value = useEmpty ? ReadOnlyVariables.EmptyCell : usdValue.ToString("N5");

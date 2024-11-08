@@ -17,7 +17,7 @@
         private decimal _feeUSD;
         private decimal _discountUSD;
         private decimal _chargedDifferenceUSD;
-        private decimal _totalUSD;
+        private decimal _chargedOrCreditedUSD;
 
         // Getters and setters
         public decimal PricePerUnitUSD
@@ -50,10 +50,10 @@
             get => _chargedDifferenceUSD;
             set => _chargedDifferenceUSD = value;
         }
-        public decimal TotalUSD
+        public decimal ChargedOrCreditedUSD
         {
-            get => _totalUSD;
-            set => _totalUSD = value;
+            get => _chargedOrCreditedUSD;
+            set => _chargedOrCreditedUSD = value;
         }
     }
 }

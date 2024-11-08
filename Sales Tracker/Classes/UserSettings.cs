@@ -131,8 +131,6 @@ namespace Sales_Tracker.Classes
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchase_DataGridView);
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sale_DataGridView);
 
-            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Purchase_DataGridView);
-            DataGridViewManager.UpdateAllRows(MainMenu_Form.Instance.Sale_DataGridView);
             MainMenu_Form.Instance.LoadCharts();
             MainMenu_Form.Instance.UpdateTotals();
 
@@ -142,10 +140,11 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.IsProgramLoading = false;
 
             // Remove previous messages that mention currency changes
-            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the currency from"));
+            string message = "Changed the currency from";
+            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
 
             // Add the new currency change message
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the currency from {oldCurrency} to {newCurrency}");
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"{message} {oldCurrency} to {newCurrency}");
         }
 
         /// <summary>
@@ -153,16 +152,20 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static void UpdateCurrencyValuesInGridView(Guna2DataGridView dataGridView)
         {
+            if (dataGridView.Rows.Count == 0) { return; }
+
             // Get the current exchange rate from USD to the default currency
             string currentCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-            string currentDate = Tools.FormatDate(DateTime.Now);
-            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", currentCurrency, currentDate);
-            if (exchangeRateToDefault == -1) { return; }
-
-            decimal pricePerUnit, shipping, tax, fee, total;
+            decimal exchangeRateToDefault;
+            decimal pricePerUnit, shipping, tax, fee, chargedDifference, chargedorCredited;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
+                // Get exchange rate from the row's date column
+                string rowDate = row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString();
+                exchangeRateToDefault = Currency.GetExchangeRate("USD", currentCurrency, rowDate);
+                if (exchangeRateToDefault == -1) { return; }
+
                 if (row.Tag is (string, TagData tagData))
                 {
                     // Convert the USD values to the current currency
@@ -170,50 +173,51 @@ namespace Sales_Tracker.Classes
                     shipping = tagData.ShippingUSD * exchangeRateToDefault;
                     tax = tagData.TaxUSD * exchangeRateToDefault;
                     fee = tagData.FeeUSD * exchangeRateToDefault;
-                    total = tagData.TotalUSD * exchangeRateToDefault;
+                    chargedDifference = tagData.ChargedDifferenceUSD * exchangeRateToDefault;
+                    chargedorCredited = tagData.ChargedOrCreditedUSD * exchangeRateToDefault;
 
                     // Update the row values with the converted amounts
                     row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = pricePerUnit.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = shipping.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tax.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value = total.ToString("N2");
-
-                    DataGridViewManager.UpdateRowWithNoItems(row);
+                    row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
+                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value = chargedorCredited.ToString("N2");
                 }
                 else if (row.Tag is (List<string> itemList, TagData tagData1))
                 {
-                    string lastItem = null;
-                    if (itemList.Last().StartsWith(ReadOnlyVariables.Receipt_text))
-                    {
-                        lastItem = itemList.Last();
-                    }
+                    // Check for receipt and set offset
+                    bool hasReceipt = itemList.Last().StartsWith(ReadOnlyVariables.Receipt_text);
 
                     // Convert the USD values to the default currency
                     shipping = tagData1.ShippingUSD * exchangeRateToDefault;
                     tax = tagData1.TaxUSD * exchangeRateToDefault;
                     fee = tagData1.FeeUSD * exchangeRateToDefault;
+                    chargedDifference = tagData1.ChargedDifferenceUSD * exchangeRateToDefault;
+                    chargedorCredited = tagData1.ChargedOrCreditedUSD * exchangeRateToDefault;
 
                     row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = shipping.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tax.ToString("N2");
                     row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
+                    row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
+                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value = chargedorCredited.ToString("N2");
 
-                    // Set the default price per unit for items in the transaction
+                    // Set the price per unit for items in the transaction
                     List<string> valuesList = [];
-                    for (int i = 0; i < itemList.Count - 1; i++)
+                    for (int i = 0; i < itemList.Count - (hasReceipt ? 1 : 0); i++)
                     {
                         string[] values = itemList[i].Split(',');
-
                         decimal itemQuantity = decimal.Parse(values[4]);
                         decimal itemPricePerUnitUSD = decimal.Parse(values[6]);
+
                         values[5] = (itemPricePerUnitUSD * exchangeRateToDefault).ToString("N2");
                         valuesList.Add(string.Join(",", values));
                     }
 
                     // Add the receipt file path if it exists
-                    if (lastItem != null)
+                    if (hasReceipt)
                     {
-                        valuesList.Add(lastItem);
+                        valuesList.Add(itemList.Last());
                     }
 
                     // Save

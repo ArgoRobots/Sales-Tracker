@@ -38,6 +38,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void SetAccessibleDescription()
         {
+            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
             Language_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
             Currency_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
             ColorTheme_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;

@@ -242,13 +242,13 @@ namespace Sales_Tracker
             }
 
             // Round to 2 decimal places
-            decimal amountCharged = decimal.Parse(Credited_TextBox.Text);
+            decimal credited = decimal.Parse(Credited_TextBox.Text);
             totalPrice = Math.Round(totalPrice, 2);
-            decimal chargedDifference = amountCharged - totalPrice;
+            decimal chargedDifference = credited - totalPrice;
 
-            if (totalPrice != amountCharged)
+            if (totalPrice != credited)
             {
-                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{amountCharged}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
+                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
                 CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -269,7 +269,7 @@ namespace Sales_Tracker
             decimal feeUSD = fee * exchangeRateToUSD;
             decimal discountUSD = discount * exchangeRateToUSD;
             decimal chargedDifferenceUSD = chargedDifference * exchangeRateToUSD;
-            decimal totalPriceUSD = totalPrice * exchangeRateToUSD;
+            decimal creditedUSD = credited * exchangeRateToUSD;
 
             // Store the money values in the tag
             TagData saleData = new()
@@ -280,7 +280,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                ChargedOrCreditedUSD = creditedUSD
             };
 
             string newFilePath = "";
@@ -515,7 +515,7 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                TotalUSD = totalPriceUSD
+                ChargedOrCreditedUSD = totalPriceUSD
             };
 
             // Set the tag
@@ -890,7 +890,7 @@ namespace Sales_Tracker
             _flowPanel.Height = Math.Min(totalHeight + _flowPanelMargin, _flowPanelMaxHeight);
             _flowPanel.AutoScroll = totalHeight + _flowPanelMargin > _flowPanelMaxHeight;
 
-            Height = _flowPanel.Bottom + _extraSpaceForBottom;
+            MinimumSize = new Size(Width, _flowPanel.Bottom + _extraSpaceForBottom);
             _addButton.Top = _flowPanel.Bottom + _spaceBetweenPanels;
         }
 
