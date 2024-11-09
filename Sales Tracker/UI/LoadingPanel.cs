@@ -21,7 +21,7 @@ namespace Sales_Tracker.UI
         {
             _blankLoadingPanel = new Panel
             {
-                BackColor = CustomColors.mainBackground
+                BackColor = CustomColors.MainBackground
             };
         }
         public static void ShowBlankLoadingPanel(Control control)
@@ -54,12 +54,12 @@ namespace Sales_Tracker.UI
 
             _loadingPanel = new Panel
             {
-                BackColor = CustomColors.mainBackground
+                BackColor = CustomColors.MainBackground
             };
             Guna2WinProgressIndicator progressIndicator = new()
             {
                 AutoStart = true,
-                ProgressColor = CustomColors.accent_blue,
+                ProgressColor = CustomColors.AccentBlue,
             };
 
             _loadingPanel.Controls.Add(progressIndicator);

@@ -79,7 +79,7 @@ namespace Sales_Tracker
             {
                 RichTextBox.SelectionStart = m.Index;
                 RichTextBox.SelectionLength = m.Length;
-                RichTextBox.SelectionColor = CustomColors.grayText;
+                RichTextBox.SelectionColor = CustomColors.GrayText;
             }
 
             // Set colors
@@ -89,7 +89,7 @@ namespace Sales_Tracker
             while (start < end)
             {
                 RichTextBox.Find(text, start, RichTextBox.TextLength, RichTextBoxFinds.None);
-                RichTextBox.SelectionColor = CustomColors.accent_red;
+                RichTextBox.SelectionColor = CustomColors.AccentRed;
                 start = RichTextBox.Text.IndexOf(text, start) + 1;
             }
 

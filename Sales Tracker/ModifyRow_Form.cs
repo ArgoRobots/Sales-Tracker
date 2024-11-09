@@ -484,8 +484,8 @@ namespace Sales_Tracker
                         {
                             Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
                             Text = "Change receipt",
-                            BackColor = CustomColors.controlBack,
-                            FillColor = CustomColors.controlBack,
+                            BackColor = CustomColors.ControlBack,
+                            FillColor = CustomColors.ControlBack,
                             Size = new Size(buttonWidth, controlHeight),
                             BorderRadius = 2,
                             BorderThickness = 1,
@@ -528,17 +528,17 @@ namespace Sales_Tracker
                         };
                         RemoveReceipt_ImageButton.MouseEnter += delegate
                         {
-                            RemoveReceipt_ImageButton.BackColor = CustomColors.fileHover;
+                            RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
                         };
                         RemoveReceipt_ImageButton.MouseLeave += delegate
                         {
-                            RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
+                            RemoveReceipt_ImageButton.BackColor = CustomColors.MainBackground;
                         };
 
                         // Label
                         SelectedReceipt_Label = new()
                         {
-                            ForeColor = CustomColors.text,
+                            ForeColor = CustomColors.Text,
                             Font = new Font("Segoe UI", 10),
                             AutoSize = true,
                             Anchor = AnchorStyles.Top
@@ -728,7 +728,7 @@ namespace Sales_Tracker
 
             Warning_Label = new()
             {
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
                 Font = new Font("Segoe UI", 10),
                 AutoSize = true
             };
@@ -1215,7 +1215,7 @@ namespace Sales_Tracker
         {
             Label label = new()
             {
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
                 Cursor = Cursors.Arrow,
                 Location = new Point(left, 20),
                 Text = text,
@@ -1236,20 +1236,20 @@ namespace Sales_Tracker
                 Height = controlHeight,
                 Name = name,
                 Text = text,
-                ForeColor = CustomColors.text,
-                BackColor = CustomColors.controlBack,
+                ForeColor = CustomColors.Text,
+                BackColor = CustomColors.ControlBack,
                 Font = new Font("Segoe UI", 10),
                 MaxLength = maxLength,
-                FillColor = CustomColors.controlBack,
-                BorderColor = CustomColors.controlBorder,
+                FillColor = CustomColors.ControlBack,
+                BorderColor = CustomColors.ControlBorder,
                 BorderRadius = 3,
                 Cursor = Cursors.Hand,
                 ShortcutsEnabled = false,
                 AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
             };
-            textBox.FocusedState.FillColor = CustomColors.controlBack;
-            textBox.HoverState.BorderColor = CustomColors.accent_blue;
-            textBox.FocusedState.BorderColor = CustomColors.accent_blue;
+            textBox.FocusedState.FillColor = CustomColors.ControlBack;
+            textBox.HoverState.BorderColor = CustomColors.AccentBlue;
+            textBox.FocusedState.BorderColor = CustomColors.AccentBlue;
 
             if (smallWidth)
             {
@@ -1310,15 +1310,15 @@ namespace Sales_Tracker
             {
                 Location = new Point(left, 43 + CustomControls.SpaceBetweenControls),
                 Size = new Size(controlWidth, controlHeight),
-                FillColor = CustomColors.controlBack,
-                ForeColor = CustomColors.text,
-                BorderColor = CustomColors.controlBorder,
+                FillColor = CustomColors.ControlBack,
+                ForeColor = CustomColors.Text,
+                BorderColor = CustomColors.ControlBorder,
                 BorderRadius = 3,
                 Name = name,
                 Value = value
             };
             gDatePicker.Click += CloseAllPanels;
-            gDatePicker.HoverState.BorderColor = CustomColors.accent_blue;
+            gDatePicker.HoverState.BorderColor = CustomColors.AccentBlue;
             control.Controls.Add(gDatePicker);
 
             return gDatePicker;

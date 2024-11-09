@@ -20,7 +20,7 @@ namespace Sales_Tracker.Startup
             InitializeComponent();
             _instance = this;
 
-            BackColor = CustomColors.mainBackground;
+            BackColor = CustomColors.MainBackground;
 
             if (args.Contains("autoClickButton"))
             {

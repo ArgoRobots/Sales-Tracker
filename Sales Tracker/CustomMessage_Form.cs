@@ -56,8 +56,8 @@ namespace Sales_Tracker
             Text = title;
             Message_Label.Text = message;
             Message_Label.LinkArea = new LinkArea(CustomMessageBoxVariables.LinkStart, CustomMessageBoxVariables.LinkLength);
-            Message_Label.LinkColor = CustomColors.linkColor;
-            Message_Label.ActiveLinkColor = CustomColors.linkColor;
+            Message_Label.LinkColor = CustomColors.LinkColor;
+            Message_Label.ActiveLinkColor = CustomColors.LinkColor;
 
             CustomMessageBoxVariables.Reset();
             Controls.Add(Icon_PictureBox);
@@ -169,8 +169,8 @@ namespace Sales_Tracker
             {
                 Top = 50,
                 Size = new Size(450, 70),
-                BackColor = CustomColors.mainBackground,
-                BorderColor = CustomColors.controlBorder,
+                BackColor = CustomColors.MainBackground,
+                BorderColor = CustomColors.ControlBorder,
                 BorderThickness = 1,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             };
@@ -179,7 +179,7 @@ namespace Sales_Tracker
             {
                 Location = new Point(1, 1),
                 Size = new Size(448, 68),
-                BackColor = CustomColors.mainBackground,
+                BackColor = CustomColors.MainBackground,
                 AutoScroll = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             };
@@ -201,7 +201,7 @@ namespace Sales_Tracker
                 AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
                 Anchor = AnchorStyles.Top,
                 Font = new Font("Segoe UI", 11),
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
                 TextAlign = ContentAlignment.MiddleCenter
             };
             Controls.Add(label);
@@ -243,7 +243,7 @@ namespace Sales_Tracker
                 AutoSize = true,
                 Location = new Point(10, top),
                 Font = new Font("Segoe UI", 11),
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
                 Cursor = Cursors.Arrow
             };
             changed_Panel.Controls.Add(label);
@@ -258,7 +258,7 @@ namespace Sales_Tracker
                     AutoSize = true,
                     Location = new Point(25, top),
                     Font = new Font("Segoe UI", 11),
-                    ForeColor = CustomColors.text,
+                    ForeColor = CustomColors.Text,
                     Cursor = Cursors.Arrow
                 };
                 changed_Panel.Controls.Add(label);

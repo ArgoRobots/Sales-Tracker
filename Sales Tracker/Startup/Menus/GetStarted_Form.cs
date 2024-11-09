@@ -52,7 +52,7 @@ namespace Sales_Tracker.Startup.Menus
         {
             Theme.SetThemeForForm(this);
             Theme.UpdateThemeForPanel([_rightClickOpenRecent_Panel]);
-            rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.accent_red;
+            rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.AccentRed;
 
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
@@ -93,8 +93,8 @@ namespace Sales_Tracker.Startup.Menus
                 // Construct button
                 Guna2Button btn = new()
                 {
-                    BackColor = CustomColors.controlBack,
-                    FillColor = CustomColors.controlBack,
+                    BackColor = CustomColors.ControlBack,
+                    FillColor = CustomColors.ControlBack,
                     Size = new Size(CalculateButtonWidth(), 60),
                     Text = Path.GetFileNameWithoutExtension(projectDir),
                     Font = new Font("Segoe UI", 11),

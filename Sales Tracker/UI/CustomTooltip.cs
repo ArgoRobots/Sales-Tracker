@@ -21,10 +21,10 @@ namespace Sales_Tracker.UI
             {
                 // Basic settings
                 TitleFont = new Font("Segoe UI", 10, FontStyle.Bold),
-                TitleForeColor = CustomColors.text,
-                BackColor = CustomColors.controlBack,
-                ForeColor = CustomColors.text,
-                BorderColor = CustomColors.controlPanelBorder,
+                TitleForeColor = CustomColors.Text,
+                BackColor = CustomColors.ControlBack,
+                ForeColor = CustomColors.Text,
+                BorderColor = CustomColors.ControlPanelBorder,
                 Font = new Font("Segoe UI", 10),
 
                 // Animation settings

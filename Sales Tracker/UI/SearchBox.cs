@@ -55,14 +55,14 @@ namespace Sales_Tracker.UI
                 BorderStyle = DashStyle.Solid,
                 BorderColor = Color.Gray,
                 BorderThickness = 1,
-                FillColor = CustomColors.controlBack,
+                FillColor = CustomColors.ControlBack,
                 BorderRadius = 1,
                 UseTransparentBackground = true
             };
             _searchResultBox = new Guna2Panel
             {
                 Location = new Point(1, 1),
-                FillColor = CustomColors.controlBack
+                FillColor = CustomColors.ControlBack
             };
             _searchResultBox.HorizontalScroll.Enabled = false;
             _searchResultBox.HorizontalScroll.Maximum = 0;
@@ -83,7 +83,7 @@ namespace Sales_Tracker.UI
             {
                 Text = "No results",
                 Height = 30,
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
                 Font = new Font("Segoe UI", 10),
                 TextAlign = ContentAlignment.MiddleCenter
             };
@@ -202,11 +202,11 @@ namespace Sales_Tracker.UI
                         btn = new Guna2Button
                         {
                             Font = new Font("Segoe UI", 10),
-                            FillColor = CustomColors.controlBack,
-                            ForeColor = CustomColors.text,
+                            FillColor = CustomColors.ControlBack,
+                            ForeColor = CustomColors.Text,
                             Height = buttonHeight,
                             Left = 1,
-                            BorderColor = CustomColors.accent_blue,
+                            BorderColor = CustomColors.AccentBlue,
                             ImageAlign = HorizontalAlignment.Left,
                             ImageSize = new Size(25, 13),  // Country flags have different ratios. This is just a good size
                             TextAlign = HorizontalAlignment.Left
@@ -401,16 +401,16 @@ namespace Sales_Tracker.UI
         }
         private static void SetTextBoxToInvalid(Guna2TextBox gTextBox)
         {
-            gTextBox.BorderColor = CustomColors.accent_red;
-            gTextBox.HoverState.BorderColor = CustomColors.accent_red;
-            gTextBox.FocusedState.BorderColor = CustomColors.accent_red;
+            gTextBox.BorderColor = CustomColors.AccentRed;
+            gTextBox.HoverState.BorderColor = CustomColors.AccentRed;
+            gTextBox.FocusedState.BorderColor = CustomColors.AccentRed;
             gTextBox.Tag = "0";
         }
         private static void SetTextBoxToValid(Guna2TextBox gTextBox)
         {
-            gTextBox.BorderColor = CustomColors.controlBorder;
-            gTextBox.HoverState.BorderColor = CustomColors.accent_blue;
-            gTextBox.FocusedState.BorderColor = CustomColors.accent_blue;
+            gTextBox.BorderColor = CustomColors.ControlBorder;
+            gTextBox.HoverState.BorderColor = CustomColors.AccentBlue;
+            gTextBox.FocusedState.BorderColor = CustomColors.AccentBlue;
             gTextBox.Tag = "1";
         }
         private static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)

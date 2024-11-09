@@ -289,15 +289,15 @@ namespace Sales_Tracker
                 Edit_Button.Image = Resources.EditBlack;
             }
 
-            MainTop_Panel.FillColor = CustomColors.background4;
-            Edit_Button.FillColor = CustomColors.background4;
-            Top_Panel.BackColor = CustomColors.background3;
-            File_Button.FillColor = CustomColors.background3;
-            Save_Button.FillColor = CustomColors.background3;
-            Help_Button.FillColor = CustomColors.background3;
-            Account_Button.FillColor = CustomColors.background3;
+            MainTop_Panel.FillColor = CustomColors.Background4;
+            Edit_Button.FillColor = CustomColors.Background4;
+            Top_Panel.BackColor = CustomColors.Background3;
+            File_Button.FillColor = CustomColors.Background3;
+            Save_Button.FillColor = CustomColors.Background3;
+            Help_Button.FillColor = CustomColors.Background3;
+            Account_Button.FillColor = CustomColors.Background3;
 
-            ShowingResultsFor_Label.ForeColor = CustomColors.text;
+            ShowingResultsFor_Label.ForeColor = CustomColors.Text;
             ReselectedButton();
 
             Theme.SetThemeForControl([
@@ -317,15 +317,15 @@ namespace Sales_Tracker
         {
             if (Purchases_Button.BorderThickness == 2)
             {
-                Purchases_Button.BorderColor = CustomColors.accent_blue;
+                Purchases_Button.BorderColor = CustomColors.AccentBlue;
             }
             else if (Sales_Button.BorderThickness == 2)
             {
-                Sales_Button.BorderColor = CustomColors.accent_blue;
+                Sales_Button.BorderColor = CustomColors.AccentBlue;
             }
             else if (Statistics_Button.BorderThickness == 2)
             {
-                Statistics_Button.BorderColor = CustomColors.accent_blue;
+                Statistics_Button.BorderColor = CustomColors.AccentBlue;
             }
         }
         private void SetAccessibleDescriptions()
@@ -811,7 +811,7 @@ namespace Sales_Tracker
         {
             DateRange_Form dateRange_Form = new();
             _timeRangePanel = dateRange_Form.Main_Panel;
-            _timeRangePanel.BorderColor = CustomColors.controlPanelBorder;
+            _timeRangePanel.BorderColor = CustomColors.ControlPanelBorder;
             _timeRangePanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         }
         private void TimeRange_Button_Click(object sender, EventArgs e)
@@ -861,16 +861,16 @@ namespace Sales_Tracker
         private static void SelectButton(Guna2Button button)
         {
             button.BorderThickness = 2;
-            button.BorderColor = CustomColors.accent_blue;
+            button.BorderColor = CustomColors.AccentBlue;
         }
         private void UnselectButtons()
         {
             Purchases_Button.BorderThickness = 1;
             Sales_Button.BorderThickness = 1;
             Statistics_Button.BorderThickness = 1;
-            Purchases_Button.BorderColor = CustomColors.controlBorder;
-            Sales_Button.BorderColor = CustomColors.controlBorder;
-            Statistics_Button.BorderColor = CustomColors.controlBorder;
+            Purchases_Button.BorderColor = CustomColors.ControlBorder;
+            Sales_Button.BorderColor = CustomColors.ControlBorder;
+            Statistics_Button.BorderColor = CustomColors.ControlBorder;
         }
 
         // Company label
@@ -1626,7 +1626,7 @@ namespace Sales_Tracker
                 Height = 500
             };
 
-            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.background4);
+            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.Background4);
             LoadChart.ConfigureChartForPie(gunaChart);
             gunaChart.Title.Text = title;
             gunaChart.Title.Display = true;

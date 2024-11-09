@@ -153,11 +153,11 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.fileHover;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
         }
         private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.MainBackground;
         }
         private void OpenTutorial_Button_Click(object sender, EventArgs e)
         {
@@ -198,7 +198,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             Panel outerPanel = new()
             {
                 Size = new Size(panelWidth, panelHeight),
-                BackColor = CustomColors.background4,
+                BackColor = CustomColors.Background4,
                 BorderStyle = BorderStyle.FixedSingle,
                 Tag = worksheetName
             };
@@ -210,7 +210,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 AutoSize = true,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 Location = new Point(outerPanel.Padding.Left, outerPanel.Padding.Top),
-                ForeColor = CustomColors.text
+                ForeColor = CustomColors.Text
             };
             outerPanel.Controls.Add(titleLabel);
 
@@ -242,7 +242,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 Label itemLabel = new()
                 {
                     Font = new Font("Segoe UI", 11),
-                    ForeColor = CustomColors.text,
+                    ForeColor = CustomColors.Text,
                     AutoSize = false,
                     AutoEllipsis = true,
                     Text = items[i],
@@ -265,7 +265,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     Font = new Font("Segoe UI", 11),
                     AutoSize = true,
                     Location = new Point(outerPanel.Padding.Left, moreLabelY),
-                    ForeColor = CustomColors.text
+                    ForeColor = CustomColors.Text
                 };
                 outerPanel.Controls.Add(moreLabel);
             }
@@ -307,7 +307,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             loadingIndicator = new Guna2WinProgressIndicator
             {
                 AutoStart = true,
-                ProgressColor = CustomColors.accent_blue,
+                ProgressColor = CustomColors.AccentBlue,
                 Anchor = AnchorStyles.Top
             };
 

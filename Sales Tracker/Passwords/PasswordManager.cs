@@ -33,41 +33,41 @@ namespace Sales_Tracker.Passwords
 
             if (password.Length >= 8)
             {
-                length.ForeColor = CustomColors.accent_green;
+                length.ForeColor = CustomColors.AccentGreen;
             }
             else
             {
-                length.ForeColor = CustomColors.text;
+                length.ForeColor = CustomColors.Text;
                 isValid = false;
             }
 
             if (password.Any(char.IsUpper))
             {
-                uppercase.ForeColor = CustomColors.accent_green;
+                uppercase.ForeColor = CustomColors.AccentGreen;
             }
             else
             {
-                uppercase.ForeColor = CustomColors.text;
+                uppercase.ForeColor = CustomColors.Text;
                 isValid = false;
             }
 
             if (password.Any(char.IsDigit))
             {
-                digit.ForeColor = CustomColors.accent_green;
+                digit.ForeColor = CustomColors.AccentGreen;
             }
             else
             {
-                digit.ForeColor = CustomColors.text;
+                digit.ForeColor = CustomColors.Text;
                 isValid = false;
             }
 
             if (password.Any(ch => !char.IsLetterOrDigit(ch)))
             {
-                specialChar.ForeColor = CustomColors.accent_green;
+                specialChar.ForeColor = CustomColors.AccentGreen;
             }
             else
             {
-                specialChar.ForeColor = CustomColors.text;
+                specialChar.ForeColor = CustomColors.Text;
                 isValid = false;
             }
 

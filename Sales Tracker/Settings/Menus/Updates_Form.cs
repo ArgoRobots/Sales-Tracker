@@ -23,7 +23,7 @@ namespace Sales_Tracker.Settings.Menus
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-            CheckForUpdates_Button.FillColor = CustomColors.accent_blue;
+            CheckForUpdates_Button.FillColor = CustomColors.AccentBlue;
             CheckForUpdates_Button.ForeColor = Color.White;
         }
 

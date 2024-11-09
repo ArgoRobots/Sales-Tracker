@@ -49,7 +49,7 @@ namespace Sales_Tracker
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
-            Bottom_Separator.FillColor = CustomColors.controlBorder;
+            Bottom_Separator.FillColor = CustomColors.ControlBorder;
             Theme.MakeGButtonBluePrimary(Apply_Button);
             Theme.MakeGButtonBlueSecondary(Cancel_Button);
         }

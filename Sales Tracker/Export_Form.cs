@@ -86,8 +86,8 @@ namespace Sales_Tracker
             else
             {
                 Export_Button.Enabled = true;
-                Directory_TextBox.BorderColor = CustomColors.controlBorder;
-                Directory_TextBox.FocusedState.BorderColor = CustomColors.controlBorder;
+                Directory_TextBox.BorderColor = CustomColors.ControlBorder;
+                Directory_TextBox.FocusedState.BorderColor = CustomColors.ControlBorder;
                 WarningDir_Label.Visible = false;
                 WarningDir_PictureBox.Visible = false;
             }

@@ -86,7 +86,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.pastelBlue);
+            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
@@ -279,7 +279,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.pastelBlue);
+            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
@@ -666,8 +666,8 @@ namespace Sales_Tracker.Charts
             }
 
             // Apply styles to the datasets with different colors
-            ApplyStyleToBarOrLineDataSet(expensesDataset, isLineChart, CustomColors.pastelGreen);
-            ApplyStyleToBarOrLineDataSet(salesDataset, isLineChart, CustomColors.pastelBlue);
+            ApplyStyleToBarOrLineDataSet(expensesDataset, isLineChart, CustomColors.PastelGreen);
+            ApplyStyleToBarOrLineDataSet(salesDataset, isLineChart, CustomColors.PastelBlue);
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
@@ -796,7 +796,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.pastelBlue);
+            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows);
@@ -867,8 +867,8 @@ namespace Sales_Tracker.Charts
             // Define the colors
             ColorCollection colors =
             [
-                CustomColors.pastelBlue,
-                CustomColors.pastelGreen,
+                CustomColors.PastelBlue,
+                CustomColors.PastelGreen,
                 Color.FromArgb(204, 102, 153),  // Soft pink
                 Color.FromArgb(153, 102, 204),  // Soft purple
                 Color.FromArgb(102, 204, 153),  // Muted teal

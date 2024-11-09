@@ -68,14 +68,14 @@ namespace Sales_Tracker.UI
             {
                 Size = webBrowser.Size,
                 Location = webBrowser.Location,
-                BackColor = CustomColors.mainBackground,
+                BackColor = CustomColors.MainBackground,
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom
             };
 
             // Create the loading label
             loadingLabel = new()
             {
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
                 Font = new Font("Segoe UI", 11),
                 AutoSize = true,
                 TextAlign = ContentAlignment.MiddleCenter,

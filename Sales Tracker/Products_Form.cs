@@ -286,12 +286,12 @@ namespace Sales_Tracker
             if (productsRemaining <= 0)
             {
                 AddProduct_Button.Enabled = false;
-                ProductsRemaining_LinkLabel.ForeColor = CustomColors.accent_red;
+                ProductsRemaining_LinkLabel.ForeColor = CustomColors.AccentRed;
             }
             else
             {
                 AddProduct_Button.Enabled = true;
-                ProductsRemaining_LinkLabel.ForeColor = CustomColors.text;
+                ProductsRemaining_LinkLabel.ForeColor = CustomColors.Text;
             }
 
             ProductsRemaining_LinkLabel.LinkArea = new LinkArea(0, 0);  // This fixes a rendering bug. The last letter "w" was being cut off

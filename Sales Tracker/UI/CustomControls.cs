@@ -68,10 +68,10 @@ namespace Sales_Tracker.UI
             Guna2Panel panel = new()
             {
                 BorderStyle = DashStyle.Solid,
-                BorderColor = CustomColors.controlPanelBorder,
+                BorderColor = CustomColors.ControlPanelBorder,
                 BorderThickness = 1,
                 BorderRadius = 4,
-                FillColor = CustomColors.panelBtn,
+                FillColor = CustomColors.PanelBtn,
                 Size = size,
                 Name = name
             };
@@ -79,7 +79,7 @@ namespace Sales_Tracker.UI
             int half = _spaceForPanel / 2;
             FlowLayoutPanel flowLayoutPanel = new()
             {
-                BackColor = CustomColors.panelBtn,
+                BackColor = CustomColors.PanelBtn,
                 Size = new Size(size.Width - _spaceForPanel, size.Height - _spaceForPanel),
                 Location = new Point(half, half)
             };
@@ -90,8 +90,8 @@ namespace Sales_Tracker.UI
         {
             Guna2Separator seperator = new()
             {
-                FillColor = CustomColors.controlBorder,
-                BackColor = CustomColors.panelBtn,
+                FillColor = CustomColors.ControlBorder,
+                BackColor = CustomColors.PanelBtn,
                 Size = new Size(width, 1),
                 Margin = new Padding(0, 5, 0, 5)
             };
@@ -103,18 +103,18 @@ namespace Sales_Tracker.UI
             Guna2Button menuBtn = new()
             {
                 Size = new Size(width, _panelButtonHeight),
-                FillColor = CustomColors.panelBtn,
-                ForeColor = CustomColors.text,
+                FillColor = CustomColors.PanelBtn,
+                ForeColor = CustomColors.Text,
                 TextAlign = HorizontalAlignment.Left,
                 Font = new Font("Segoe UI", 10),
                 Text = text,
                 Name = text.Replace(" ", "").Replace("...", "") + "_Button",
                 Margin = new Padding(0),
-                BorderColor = CustomColors.controlBorder
+                BorderColor = CustomColors.ControlBorder
             };
-            menuBtn.HoverState.BorderColor = CustomColors.controlBorder;
-            menuBtn.HoverState.FillColor = CustomColors.panelBtnHover;
-            menuBtn.PressedColor = CustomColors.panelBtnHover;
+            menuBtn.HoverState.BorderColor = CustomColors.ControlBorder;
+            menuBtn.HoverState.FillColor = CustomColors.PanelBtnHover;
+            menuBtn.PressedColor = CustomColors.PanelBtnHover;
             if (closeAllPanels)
             {
                 menuBtn.Click += CloseAllPanels;
@@ -127,7 +127,7 @@ namespace Sales_Tracker.UI
 
                 if (label != null)
                 {
-                    label.BackColor = CustomColors.panelBtnHover;
+                    label.BackColor = CustomColors.PanelBtnHover;
                 }
                 btn.BorderThickness = 1;
             };
@@ -138,7 +138,7 @@ namespace Sales_Tracker.UI
 
                 if (label != null)
                 {
-                    label.BackColor = CustomColors.panelBtn;
+                    label.BackColor = CustomColors.PanelBtn;
                 }
                 btn.BorderThickness = 0;
             };
@@ -150,8 +150,8 @@ namespace Sales_Tracker.UI
         {
             Label KeyShortcut = new()
             {
-                ForeColor = CustomColors.text,
-                BackColor = CustomColors.panelBtn,
+                ForeColor = CustomColors.Text,
+                BackColor = CustomColors.PanelBtn,
                 Font = new Font("Segoe UI", 10),
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = true,
@@ -165,17 +165,17 @@ namespace Sales_Tracker.UI
             KeyShortcut.MouseEnter += (sender, e) =>
             {
                 Label label = (Label)sender;
-                label.BackColor = CustomColors.panelBtnHover;
+                label.BackColor = CustomColors.PanelBtnHover;
                 Guna2Button btn = (Guna2Button)label.Parent;
-                btn.FillColor = CustomColors.panelBtnHover;
+                btn.FillColor = CustomColors.PanelBtnHover;
                 btn.BorderThickness = 1;
             };
             KeyShortcut.MouseLeave += (sender, e) =>
             {
                 Label label = (Label)sender;
-                label.BackColor = CustomColors.panelBtn;
+                label.BackColor = CustomColors.PanelBtn;
                 Guna2Button btn = (Guna2Button)label.Parent;
-                btn.FillColor = CustomColors.panelBtn;
+                btn.FillColor = CustomColors.PanelBtn;
                 btn.BorderThickness = 0;
             };
             KeyShortcut.MouseUp += (sender, e) =>
@@ -354,14 +354,14 @@ namespace Sales_Tracker.UI
 
             if (ArgoCompany.AreAnyChangesMade())
             {
-                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.accent_green;
+                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.AccentGreen;
                 MainMenu_Form.Instance.Saved_Label.Text = "Saving...";
                 ArgoCompany.SaveAll();
                 MainMenu_Form.Instance.Saved_Label.Text = "Saved";
             }
             else if (Tools.IsFormOpen(typeof(MainMenu_Form)))
             {
-                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.text;
+                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.Text;
                 MainMenu_Form.Instance.Saved_Label.Text = "No changed found";
             }
 
@@ -483,9 +483,9 @@ namespace Sales_Tracker.UI
             _controlsDropDown_Button = new Guna2Button
             {
                 BackColor = Color.Transparent,
-                BorderColor = CustomColors.controlBorder,
-                FillColor = CustomColors.panelBtn,
-                ForeColor = CustomColors.text,
+                BorderColor = CustomColors.ControlBorder,
+                FillColor = CustomColors.PanelBtn,
+                ForeColor = CustomColors.Text,
                 BorderRadius = 3,
                 BorderThickness = 2,
                 Cursor = Cursors.Hand,
@@ -594,8 +594,8 @@ namespace Sales_Tracker.UI
                 Font = new Font("Segoe UI", 10),
                 Top = 1,
                 MaxLength = 30,
-                ForeColor = CustomColors.text,
-                FillColor = CustomColors.controlBack,
+                ForeColor = CustomColors.Text,
+                FillColor = CustomColors.ControlBack,
                 BorderStyle = DashStyle.Solid,
                 TextOffset = new Point(-3, 0),
                 BorderThickness = 1,
@@ -637,8 +637,8 @@ namespace Sales_Tracker.UI
         // Validity
         public static void SetGTextBoxToValid(Guna2TextBox textBox)
         {
-            textBox.BorderColor = CustomColors.controlBorder;
-            textBox.FocusedState.BorderColor = CustomColors.accent_blue;
+            textBox.BorderColor = CustomColors.ControlBorder;
+            textBox.FocusedState.BorderColor = CustomColors.AccentBlue;
         }
         public static void SetGTextBoxToInvalid(Guna2TextBox textBox)
         {

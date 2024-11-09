@@ -52,9 +52,9 @@ namespace Sales_Tracker.UI
             dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
             dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = CustomColors.text;
-            dataGridView.Theme = CustomColors.dataGridViewTheme;
-            dataGridView.BackgroundColor = CustomColors.controlBack;
+            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = CustomColors.Text;
+            dataGridView.Theme = CustomColors.DataGridViewTheme;
+            dataGridView.BackgroundColor = CustomColors.ControlBack;
             dataGridView.Size = size;
             dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.None;
@@ -517,8 +517,8 @@ namespace Sales_Tracker.UI
         {
             if (hitbox.Contains(mousePos))
             {
-                cell.Style.ForeColor = CustomColors.accent_blue;
-                cell.Style.SelectionForeColor = CustomColors.accent_blue;
+                cell.Style.ForeColor = CustomColors.AccentBlue;
+                cell.Style.SelectionForeColor = CustomColors.AccentBlue;
             }
             else
             {
@@ -527,8 +527,8 @@ namespace Sales_Tracker.UI
         }
         private static void ResetCellStyle(DataGridViewCell cell)
         {
-            cell.Style.ForeColor = CustomColors.text;
-            cell.Style.SelectionForeColor = CustomColors.text;
+            cell.Style.ForeColor = CustomColors.Text;
+            cell.Style.SelectionForeColor = CustomColors.Text;
         }
 
         // Methods for DataGridView for MouseUp
@@ -1000,7 +1000,7 @@ namespace Sales_Tracker.UI
             rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
 
             _rightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, false, flowPanel);
-            _rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
+            _rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
             _rightClickDataGridView_DeleteBtn.Click += DeleteRow;
 
             CustomControls.ConstructKeyShortcut("Del", _rightClickDataGridView_DeleteBtn);

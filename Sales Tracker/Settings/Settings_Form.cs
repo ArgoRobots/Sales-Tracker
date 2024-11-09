@@ -136,12 +136,12 @@ namespace Sales_Tracker.Settings
 
             foreach (Guna2Panel guna2Panel in listOfPanels)
             {
-                guna2Panel.FillColor = CustomColors.panelBtn;
-                guna2Panel.BorderColor = CustomColors.controlPanelBorder;
+                guna2Panel.FillColor = CustomColors.PanelBtn;
+                guna2Panel.BorderColor = CustomColors.ControlPanelBorder;
 
                 if (guna2Panel.Controls[0] is FlowLayoutPanel flowLayoutPanel)
                 {
-                    flowLayoutPanel.BackColor = CustomColors.mainBackground;
+                    flowLayoutPanel.BackColor = CustomColors.MainBackground;
                 }
             }
 
@@ -151,15 +151,15 @@ namespace Sales_Tracker.Settings
             // Update other controls
             Theme.SetThemeForControl([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
 
-            DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.accent_red;
+            DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
 
             // Set the border to white or black, depending on the theme
-            CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.text;
-            CustomControls.Rename_TextBox.FocusedState.BorderColor = CustomColors.text;
-            CustomControls.Rename_TextBox.BorderColor = CustomColors.text;
+            CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.Text;
+            CustomControls.Rename_TextBox.FocusedState.BorderColor = CustomColors.Text;
+            CustomControls.Rename_TextBox.BorderColor = CustomColors.Text;
 
-            SearchBox.SearchResultBoxContainer.FillColor = CustomColors.controlBack;
-            SearchBox.SearchResultBox.FillColor = CustomColors.controlBack;
+            SearchBox.SearchResultBoxContainer.FillColor = CustomColors.ControlBack;
+            SearchBox.SearchResultBox.FillColor = CustomColors.ControlBack;
         }
 
         // Misc.
@@ -169,7 +169,7 @@ namespace Sales_Tracker.Settings
             Guna2Button btn = (Guna2Button)btnSender;
 
             // If btn is already selected
-            if (btn.FillColor == CustomColors.accent_blue)
+            if (btn.FillColor == CustomColors.AccentBlue)
             {
                 return;
             }
@@ -177,7 +177,7 @@ namespace Sales_Tracker.Settings
             // Unselect button
             if (selectedButton != null)
             {
-                selectedButton.FillColor = CustomColors.controlBack;
+                selectedButton.FillColor = CustomColors.ControlBack;
                 if (Theme.CurrentTheme == Theme.ThemeType.Dark)
                 {
                     selectedButton.ForeColor = Color.White;
@@ -189,7 +189,7 @@ namespace Sales_Tracker.Settings
             }
 
             // Select new button
-            btn.FillColor = CustomColors.accent_blue;
+            btn.FillColor = CustomColors.AccentBlue;
             btn.ForeColor = Color.White;
             form.BringToFront();
 

@@ -64,7 +64,7 @@ namespace Sales_Tracker.UI
                     Label label = new()
                     {
                         Font = new Font("Segoe UI", 12),
-                        ForeColor = CustomColors.text,
+                        ForeColor = CustomColors.Text,
                         Text = text,
                         AutoSize = true,
                         BackColor = Color.Transparent,
@@ -111,7 +111,7 @@ namespace Sales_Tracker.UI
                 Size = new Size(labelWidth, CustomControls.PanelButtonHeight),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
             };
             parent.Controls.Add(noProjectsLabel);
         }

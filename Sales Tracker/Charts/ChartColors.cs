@@ -12,8 +12,8 @@ namespace Sales_Tracker.Charts
         public static ChartConfig Config()
         {
             ChartConfig config = new();
-            Color gridColor = CustomColors.grayText;
-            Color foreColor = CustomColors.text;
+            Color gridColor = CustomColors.GrayText;
+            Color foreColor = CustomColors.Text;
 
             config.Title.ForeColor = foreColor;
 

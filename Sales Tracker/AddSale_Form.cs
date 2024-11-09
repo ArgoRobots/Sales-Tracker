@@ -190,11 +190,11 @@ namespace Sales_Tracker
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.fileHover;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
         }
         private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.mainBackground;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.MainBackground;
         }
         private void MultipleItems_Label_Click(object sender, EventArgs e)
         {
@@ -707,7 +707,7 @@ namespace Sales_Tracker
             Guna2Panel panel = new()
             {
                 Size = new Size(initialWidthForPanel, initialHeightForPanel),
-                FillColor = CustomColors.mainBackground
+                FillColor = CustomColors.MainBackground
             };
             panelsForMultipleProducts_List.Add(panel);
 
@@ -750,7 +750,7 @@ namespace Sales_Tracker
             {
                 Text = text,
                 Font = new Font("Segoe UI", 11),
-                ForeColor = CustomColors.text,
+                ForeColor = CustomColors.Text,
                 Left = left,
                 AutoSize = true
             };
@@ -764,14 +764,14 @@ namespace Sales_Tracker
                 Size = new Size(width, textBoxHeight),
                 Name = name,
                 Location = new Point(left, 28 + CustomControls.SpaceBetweenControls),
-                BorderColor = CustomColors.controlBorder,
-                FillColor = CustomColors.controlBack,
-                ForeColor = CustomColors.text,
+                BorderColor = CustomColors.ControlBorder,
+                FillColor = CustomColors.ControlBack,
+                ForeColor = CustomColors.Text,
                 ShortcutsEnabled = false
             };
-            textBox.HoverState.BorderColor = CustomColors.accent_blue;
-            textBox.FocusedState.BorderColor = CustomColors.accent_blue;
-            textBox.FocusedState.FillColor = CustomColors.controlBack;
+            textBox.HoverState.BorderColor = CustomColors.AccentBlue;
+            textBox.FocusedState.BorderColor = CustomColors.AccentBlue;
+            textBox.FocusedState.FillColor = CustomColors.ControlBack;
 
             // Assign the appropriate KeyPress event handler based on the keyPressValidation parameter
             switch (keyPressValidation)
@@ -803,12 +803,12 @@ namespace Sales_Tracker
         {
             Guna2CircleButton circleBtn = new()
             {
-                FillColor = CustomColors.mainBackground,
-                BackColor = CustomColors.mainBackground,
+                FillColor = CustomColors.MainBackground,
+                BackColor = CustomColors.MainBackground,
                 Location = location,
                 Size = new Size(circleButtonHeight, circleButtonHeight),
                 ImageSize = new Size(32, 32),
-                PressedColor = CustomColors.controlBack
+                PressedColor = CustomColors.ControlBack
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
@@ -859,13 +859,13 @@ namespace Sales_Tracker
         {
             addButton = new()
             {
-                FillColor = CustomColors.mainBackground,
-                BackColor = CustomColors.mainBackground,
+                FillColor = CustomColors.MainBackground,
+                BackColor = CustomColors.MainBackground,
                 Location = new Point(0, 60),
                 Size = new Size(circleButtonHeight, circleButtonHeight),
                 ImageSize = new Size(32, 32),
                 Left = flowPanel.Left + spaceOnSidesOfPanel / 2,
-                PressedColor = CustomColors.controlBack,
+                PressedColor = CustomColors.ControlBack,
                 Visible = false,
                 Anchor = AnchorStyles.Top
             };
