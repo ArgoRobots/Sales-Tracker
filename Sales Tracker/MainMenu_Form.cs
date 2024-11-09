@@ -18,11 +18,9 @@ namespace Sales_Tracker
     {
         // Proprties
         private static MainMenu_Form _instance;
-        private static readonly List<string> _thingsThatHaveChangedInFile = [];
-        private static readonly List<string> _settingsThatHaveChangedInFile = [];
+        private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
-        private static bool _isFullVersion = true;
-        private static bool _isProgramLoading;
+        private static bool _isFullVersion = true, _isProgramLoading;
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters

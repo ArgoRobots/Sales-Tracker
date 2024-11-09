@@ -10,10 +10,39 @@ namespace Sales_Tracker.UI
     internal class TextBoxManager
     {
         // Dictionaries to hold undo/redo stacks and flags for each TextBox
-        private static readonly Dictionary<Guna2TextBox, Stack<string>> undoStacks = [];
-        private static readonly Dictionary<Guna2TextBox, Stack<string>> redoStacks = [];
+        private static readonly Dictionary<Guna2TextBox, Stack<TextState>> undoStacks = [];
+        private static readonly Dictionary<Guna2TextBox, Stack<TextState>> redoStacks = [];
         private static readonly Dictionary<Guna2TextBox, bool> isTextChangedByUserFlags = [];
         private const byte maxStackSize = 250;
+
+        /// <summary>
+        /// Represents the state of a TextBox, including its text content and cursor position
+        /// </summary>
+        private class TextState
+        {
+            // Properties
+            private readonly string _text;
+            private readonly int _cursorPosition;
+
+            // Getters and setters
+            public string Text
+            {
+                get => _text;
+                init => _text = value ?? "";
+            }
+            public int CursorPosition
+            {
+                get => _cursorPosition;
+                init => _cursorPosition = value >= 0 ? value : 0;
+            }
+
+            // Methods
+            public TextState(string text, int cursorPosition)
+            {
+                Text = text ?? "";
+                CursorPosition = cursorPosition >= 0 ? cursorPosition : 0;
+            }
+        }
 
         /// <summary>
         /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
@@ -35,10 +64,10 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void InitializeTextBox(Guna2TextBox textBox)
         {
-            undoStacks[textBox] = new Stack<string>();
-            redoStacks[textBox] = new Stack<string>();
+            undoStacks[textBox] = new Stack<TextState>();
+            redoStacks[textBox] = new Stack<TextState>();
             isTextChangedByUserFlags[textBox] = true;
-            undoStacks[textBox].Push(textBox.Text);
+            undoStacks[textBox].Push(new TextState(textBox.Text, textBox.SelectionStart));
         }
 
         /// <summary>
@@ -73,7 +102,6 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            // Handle Ctrl+Y separately to prevent the "ding" sound
             if (e.Control && e.KeyCode == Keys.Y)
             {
                 e.SuppressKeyPress = true;
@@ -82,8 +110,6 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            // Only suppress invalid keys that would cause a "ding"
-            // Don't suppress regular typing or valid shortcuts
             if (!IsInputKey(e.KeyCode) && !e.Control)
             {
                 e.SuppressKeyPress = true;
@@ -98,6 +124,7 @@ namespace Sales_Tracker.UI
                 HandleKeyboardShortcut(textBox, e);
             }
         }
+
         private static bool IsInputKey(Keys keyData)
         {
             switch (keyData)
@@ -131,21 +158,18 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void HandleKeyboardShortcut(Guna2TextBox textBox, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            if (e.Control)
             {
-                case Keys.Z:
-                    if (e.Shift) { Redo(textBox); }
-                    else { Undo(textBox); }
-                    break;
+                switch (e.KeyCode)
+                {
+                    case Keys.Z when e.Shift:
+                        Redo(textBox);
+                        break;
+                    case Keys.Z:
+                        Undo(textBox);
+                        break;
+                }
             }
-        }
-
-        /// <summary>
-        /// Sets the cursor position in the TextBox.
-        /// </summary>
-        private static void SetCursorPosition(Guna2TextBox textBox, int position)
-        {
-            textBox.SelectionStart = position;
         }
 
         /// <summary>
@@ -156,10 +180,10 @@ namespace Sales_Tracker.UI
             Guna2TextBox textBox = (Guna2TextBox)sender;
             if (!isTextChangedByUserFlags[textBox]) { return; }
 
-            Stack<string> undoStack = undoStacks[textBox];
-            Stack<string> redoStack = redoStacks[textBox];
+            Stack<TextState> undoStack = undoStacks[textBox];
+            Stack<TextState> redoStack = redoStacks[textBox];
 
-            if (undoStack.Count == 0 || undoStack.Peek() != textBox.Text)
+            if (undoStack.Count == 0 || undoStack.Peek().Text != textBox.Text)
             {
                 UpdateUndoStack(textBox, undoStack);
                 redoStack.Clear();
@@ -169,9 +193,9 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Updates the undo stack and manages its size.
         /// </summary>
-        private static void UpdateUndoStack(Guna2TextBox textBox, Stack<string> undoStack)
+        private static void UpdateUndoStack(Guna2TextBox textBox, Stack<TextState> undoStack)
         {
-            undoStack.Push(textBox.Text);
+            undoStack.Push(new TextState(textBox.Text, textBox.SelectionStart));
 
             if (undoStack.Count > maxStackSize)
             {
@@ -184,15 +208,15 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void LimitStackSize(Guna2TextBox textBox)
         {
-            Stack<string> tempStack = new();
-            Stack<string> currentStack = undoStacks[textBox];
+            Stack<TextState> tempStack = new();
+            Stack<TextState> currentStack = undoStacks[textBox];
 
             for (int i = 0; i < maxStackSize && currentStack.Count > 0; i++)
             {
                 tempStack.Push(currentStack.Pop());
             }
 
-            undoStacks[textBox] = new Stack<string>(tempStack.Reverse());
+            undoStacks[textBox] = new Stack<TextState>(tempStack.Reverse());
         }
 
         /// <summary>
@@ -200,13 +224,14 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void Undo(Guna2TextBox textBox)
         {
-            Stack<string> undoStack = undoStacks[textBox];
-            Stack<string> redoStack = redoStacks[textBox];
+            Stack<TextState> undoStack = undoStacks[textBox];
+            Stack<TextState> redoStack = redoStacks[textBox];
 
             if (undoStack.Count > 1)
             {
                 redoStack.Push(undoStack.Pop());
-                UpdateTextBoxContent(textBox, undoStack.Peek());
+                TextState state = undoStack.Peek();
+                UpdateTextBoxContent(textBox, state.Text, state.CursorPosition);
             }
         }
 
@@ -215,25 +240,25 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void Redo(Guna2TextBox textBox)
         {
-            Stack<string> undoStack = undoStacks[textBox];
-            Stack<string> redoStack = redoStacks[textBox];
+            Stack<TextState> undoStack = undoStacks[textBox];
+            Stack<TextState> redoStack = redoStacks[textBox];
 
             if (redoStack.Count > 0)
             {
-                string redoText = redoStack.Pop();
-                undoStack.Push(redoText);
-                UpdateTextBoxContent(textBox, redoText);
+                TextState state = redoStack.Pop();
+                undoStack.Push(state);
+                UpdateTextBoxContent(textBox, state.Text, state.CursorPosition);
             }
         }
 
         /// <summary>
         /// Updates TextBox content without triggering TextChanged event.
         /// </summary>
-        private static void UpdateTextBoxContent(Guna2TextBox textBox, string newText)
+        private static void UpdateTextBoxContent(Guna2TextBox textBox, string newText, int cursorPosition)
         {
             isTextChangedByUserFlags[textBox] = false;
             textBox.Text = newText;
-            SetCursorPosition(textBox, textBox.Text.Length);
+            textBox.SelectionStart = cursorPosition;
             isTextChangedByUserFlags[textBox] = true;
         }
     }
