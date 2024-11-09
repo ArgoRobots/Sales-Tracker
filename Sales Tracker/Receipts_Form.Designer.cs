@@ -99,7 +99,7 @@
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 1;
-            Search_TextBox.TextChanged += FilterReceipts;
+            Search_TextBox.TextChanged += FilterDataGridView;
             // 
             // Search_Label
             // 
@@ -139,7 +139,7 @@
             From_DateTimePicker.Size = new Size(300, 50);
             From_DateTimePicker.TabIndex = 3;
             From_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
-            From_DateTimePicker.ValueChanged += FilterReceipts;
+            From_DateTimePicker.ValueChanged += FilterDataGridView;
             // 
             // To_DateTimePicker
             // 
@@ -157,7 +157,7 @@
             To_DateTimePicker.Size = new Size(300, 50);
             To_DateTimePicker.TabIndex = 4;
             To_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
-            To_DateTimePicker.ValueChanged += FilterReceipts;
+            To_DateTimePicker.ValueChanged += FilterDataGridView;
             // 
             // To_Label
             // 
@@ -301,7 +301,7 @@
             FilterByDate_CheckBox.UncheckedState.BorderRadius = 2;
             FilterByDate_CheckBox.UncheckedState.BorderThickness = 0;
             FilterByDate_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            FilterByDate_CheckBox.CheckedChanged += FilterReceipts;
+            FilterByDate_CheckBox.CheckedChanged += FilterDataGridView;
             // 
             // IncludeSaleReceipts_Label
             // 

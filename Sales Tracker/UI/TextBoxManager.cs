@@ -18,30 +18,13 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Represents the state of a TextBox, including its text content and cursor position
         /// </summary>
-        private class TextState
+        private class TextState(string text, int cursorPosition)
         {
-            // Properties
-            private readonly string _text;
-            private readonly int _cursorPosition;
+            private readonly string _text = text ?? "";
+            private readonly int _cursorPosition = cursorPosition >= 0 ? cursorPosition : 0;
 
-            // Getters and setters
-            public string Text
-            {
-                get => _text;
-                init => _text = value ?? "";
-            }
-            public int CursorPosition
-            {
-                get => _cursorPosition;
-                init => _cursorPosition = value >= 0 ? value : 0;
-            }
-
-            // Methods
-            public TextState(string text, int cursorPosition)
-            {
-                Text = text ?? "";
-                CursorPosition = cursorPosition >= 0 ? cursorPosition : 0;
-            }
+            public string Text => _text;
+            public int CursorPosition => _cursorPosition;
         }
 
         /// <summary>

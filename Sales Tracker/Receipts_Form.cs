@@ -257,7 +257,7 @@ namespace Sales_Tracker
                 Receipts_DataGridView.Sort(sortedColumn, sortDirection);
             }
 
-            FilterReceipts(null, null);
+            FilterDataGridView(null, null);
         }
         private void AddReceiptsFromDataGridView(Guna2DataGridView sourceDataGridView, string type)
         {
@@ -299,7 +299,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        private void FilterReceipts(object sender, EventArgs e)
+        private void FilterDataGridView(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in Receipts_DataGridView.Rows)
             {
