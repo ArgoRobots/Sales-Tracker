@@ -4,8 +4,7 @@ using Sales_Tracker.Classes;
 namespace Sales_Tracker.UI
 {
     /// <summary>
-    /// Manages the custom color themes, providing different color settings for dark and light themes.
-    /// Colors are organized into logical groupings and exposed through read-only properties.
+    /// Manages the custom colors, providing different color settings for dark and light themes.
     /// </summary>
     public static class CustomColors
     {

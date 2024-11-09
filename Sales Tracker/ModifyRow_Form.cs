@@ -1045,13 +1045,14 @@ namespace Sales_Tracker
             if (hasChanges && IsThisBeingUsedByDataGridView(selectedRow.Cells[product ? 1 : 0].Value.ToString())
                 && selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
             {
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {selectedTag} list");
 
                 MainMenu_Form.Instance.UpdateTotals();
                 MainMenu_Form.Instance.LoadCharts();
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
             }
+
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {selectedTag} list");
         }
         private static bool IsThisBeingUsedByDataGridView(string value)
         {

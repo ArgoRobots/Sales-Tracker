@@ -248,7 +248,7 @@ namespace Sales_Tracker
             double total;
             bool isLine = LineGraph_ToggleSwitch.Checked;
 
-            if (Selected == SelectedOption.Sales)
+            if (_sale_DataGridView.Visible)
             {
                 total = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, Totals_Chart, isLine);
                 Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{total:N2}";
@@ -259,7 +259,7 @@ namespace Sales_Tracker
                     Distribution_Chart.Title.Text = "Distribution of revenue";
                 }
             }
-            else
+            else if (_purchase_DataGridView.Visible)
             {
                 total = LoadChart.LoadTotalsIntoChart(_purchase_DataGridView, Totals_Chart, isLine);
                 Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{total:N2}";
@@ -1316,7 +1316,7 @@ namespace Sales_Tracker
             { Column.Country, "Country of origin" },
             { Column.Company, "Company of origin" },
             { Column.Date, "Date" },
-            { Column.Quantity, "Quantity" },
+            { Column.Quantity, "Unique products" },
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
@@ -1571,10 +1571,7 @@ namespace Sales_Tracker
         }
         private void AddMainControls()
         {
-            if (Selected != SelectedOption.Statistics)
-            {
-                return;
-            }
+            if (statisticsCharts == null) { return; }
 
             foreach (Control control in GetMainControlsList())
             {
