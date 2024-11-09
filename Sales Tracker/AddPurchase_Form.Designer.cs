@@ -85,7 +85,7 @@ namespace Sales_Tracker
             WarningProduct_LinkLabel = new LinkLabel();
             WarningProduct_PictureBox = new PictureBox();
             Fee_Label = new Label();
-            PaymentFee_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            Fee_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Currency_Label = new Label();
             WarningAccountant_LinkLabel = new LinkLabel();
@@ -474,31 +474,31 @@ namespace Sales_Tracker
             Fee_Label.Text = "Fee";
             Fee_Label.Click += CloseAllPanels;
             // 
-            // PaymentFee_TextBox
+            // Fee_TextBox
             // 
-            PaymentFee_TextBox.Anchor = AnchorStyles.Top;
-            PaymentFee_TextBox.CustomizableEdges = customizableEdges52;
-            PaymentFee_TextBox.DefaultText = "";
-            PaymentFee_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            PaymentFee_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            PaymentFee_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            PaymentFee_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            PaymentFee_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            PaymentFee_TextBox.Font = new Font("Segoe UI", 9F);
-            PaymentFee_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            PaymentFee_TextBox.Location = new Point(994, 327);
-            PaymentFee_TextBox.Margin = new Padding(4, 5, 4, 5);
-            PaymentFee_TextBox.MaxLength = 10;
-            PaymentFee_TextBox.Name = "PaymentFee_TextBox";
-            PaymentFee_TextBox.PasswordChar = '\0';
-            PaymentFee_TextBox.PlaceholderText = "";
-            PaymentFee_TextBox.SelectedText = "";
-            PaymentFee_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges53;
-            PaymentFee_TextBox.ShortcutsEnabled = false;
-            PaymentFee_TextBox.Size = new Size(150, 50);
-            PaymentFee_TextBox.TabIndex = 14;
-            PaymentFee_TextBox.TextChanged += ValidateInputs;
-            PaymentFee_TextBox.Click += CloseAllPanels;
+            Fee_TextBox.Anchor = AnchorStyles.Top;
+            Fee_TextBox.CustomizableEdges = customizableEdges52;
+            Fee_TextBox.DefaultText = "";
+            Fee_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Fee_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Fee_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Fee_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Fee_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Fee_TextBox.Font = new Font("Segoe UI", 9F);
+            Fee_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Fee_TextBox.Location = new Point(994, 327);
+            Fee_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Fee_TextBox.MaxLength = 10;
+            Fee_TextBox.Name = "Fee_TextBox";
+            Fee_TextBox.PasswordChar = '\0';
+            Fee_TextBox.PlaceholderText = "";
+            Fee_TextBox.SelectedText = "";
+            Fee_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges53;
+            Fee_TextBox.ShortcutsEnabled = false;
+            Fee_TextBox.Size = new Size(150, 50);
+            Fee_TextBox.TabIndex = 14;
+            Fee_TextBox.TextChanged += ValidateInputs;
+            Fee_TextBox.Click += CloseAllPanels;
             // 
             // Currency_ComboBox
             // 
@@ -654,9 +654,9 @@ namespace Sales_Tracker
             Discount_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Discount_Label.Location = new Point(1152, 291);
             Discount_Label.Name = "Discount_Label";
-            Discount_Label.Size = new Size(93, 31);
+            Discount_Label.Size = new Size(104, 31);
             Discount_Label.TabIndex = 57;
-            Discount_Label.Text = "Disount";
+            Discount_Label.Text = "Dicsount";
             Discount_Label.Click += CloseAllPanels;
             // 
             // Discount_TextBox
@@ -778,7 +778,7 @@ namespace Sales_Tracker
             Controls.Add(Currency_Label);
             Controls.Add(Currency_ComboBox);
             Controls.Add(Fee_Label);
-            Controls.Add(PaymentFee_TextBox);
+            Controls.Add(Fee_TextBox);
             Controls.Add(WarningProduct_LinkLabel);
             Controls.Add(WarningProduct_PictureBox);
             Controls.Add(Date_DateTimePicker);
@@ -838,7 +838,7 @@ namespace Sales_Tracker
         private LinkLabel WarningProduct_LinkLabel;
         private PictureBox WarningProduct_PictureBox;
         private Label Fee_Label;
-        private Guna.UI2.WinForms.Guna2TextBox PaymentFee_TextBox;
+        private Guna.UI2.WinForms.Guna2TextBox Fee_TextBox;
         private Guna.UI2.WinForms.Guna2ComboBox Currency_ComboBox;
         private Label Currency_Label;
         private LinkLabel WarningAccountant_LinkLabel;

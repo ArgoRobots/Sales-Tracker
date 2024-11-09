@@ -65,8 +65,8 @@ namespace Sales_Tracker
             Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             TextBoxManager.Attach(Tax_TextBox);
 
-            PaymentFee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
-            TextBoxManager.Attach(PaymentFee_TextBox);
+            Fee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxManager.Attach(Fee_TextBox);
 
             Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
             TextBoxManager.Attach(Discount_TextBox);
@@ -140,9 +140,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            // Reset
-            RemoveReceiptLabel();
-            SaleNumber_TextBox.Text = "";
+            ClearInputs();
         }
         private void MultipleItems_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -202,6 +200,19 @@ namespace Sales_Tracker
         }
 
         // Methods to add sales
+        private void ClearInputs()
+        {
+            RemoveReceiptLabel();
+            SaleNumber_TextBox.Text = "";
+            Quantity_TextBox.Text = "";
+            PricePerUnit_TextBox.Text = "";
+            Shipping_TextBox.Text = "";
+            Tax_TextBox.Text = "";
+            Fee_TextBox.Text = "";
+            Discount_TextBox.Text = "";
+            Credited_TextBox.Text = "";
+            Notes_TextBox.Text = "";
+        }
         private bool AddSingleSale()
         {
             string saleNumber = SaleNumber_TextBox.Text.Trim();
@@ -231,7 +242,7 @@ namespace Sales_Tracker
             decimal pricePerUnit = decimal.Parse(PricePerUnit_TextBox.Text);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
-            decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
+            decimal fee = decimal.Parse(Fee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
             string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
             decimal totalPrice = Math.Round(quantity * pricePerUnit - discount, 2);
@@ -359,7 +370,7 @@ namespace Sales_Tracker
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
             decimal shipping = decimal.Parse(Shipping_TextBox.Text);
             decimal tax = decimal.Parse(Tax_TextBox.Text);
-            decimal fee = decimal.Parse(PaymentFee_TextBox.Text);
+            decimal fee = decimal.Parse(Fee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
@@ -591,7 +602,7 @@ namespace Sales_Tracker
                 PricePerUnit_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Shipping_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Tax_TextBox.Width - CustomControls.SpaceBetweenControls -
-                PaymentFee_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Fee_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Discount_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Credited_TextBox.Width) / 2;
 
@@ -604,9 +615,9 @@ namespace Sales_Tracker
             Shipping_Label.Left = Shipping_TextBox.Left;
             Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.SpaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
-            PaymentFee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
-            Fee_Label.Left = PaymentFee_TextBox.Left;
-            Discount_TextBox.Left = PaymentFee_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Fee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Fee_Label.Left = Fee_TextBox.Left;
+            Discount_TextBox.Left = Fee_TextBox.Right + CustomControls.SpaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
             Credited_TextBox.Left = Discount_TextBox.Right + CustomControls.SpaceBetweenControls;
             Credited_Label.Left = Credited_TextBox.Left;
@@ -650,7 +661,7 @@ namespace Sales_Tracker
                 Date_DateTimePicker.Width - CustomControls.SpaceBetweenControls -
                 Shipping_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Tax_TextBox.Width - CustomControls.SpaceBetweenControls -
-                PaymentFee_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Fee_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Discount_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Credited_TextBox.Width) / 2;
 
@@ -659,9 +670,9 @@ namespace Sales_Tracker
             Shipping_Label.Left = Shipping_TextBox.Left;
             Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.SpaceBetweenControls;
             Tax_Label.Left = Tax_TextBox.Left;
-            PaymentFee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
-            Fee_Label.Left = PaymentFee_TextBox.Left;
-            Discount_TextBox.Left = PaymentFee_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Fee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Fee_Label.Left = Fee_TextBox.Left;
+            Discount_TextBox.Left = Fee_TextBox.Right + CustomControls.SpaceBetweenControls;
             Discount_Label.Left = Discount_TextBox.Left;
             Credited_TextBox.Left = Discount_TextBox.Right + CustomControls.SpaceBetweenControls;
             Credited_Label.Left = Credited_TextBox.Left;
@@ -930,7 +941,7 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(AccountantName_TextBox.Text) && AccountantName_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(PaymentFee_TextBox.Text) &&
+                                   !string.IsNullOrWhiteSpace(Fee_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(CountryOfDestinaion_TextBox.Text) && CountryOfDestinaion_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(Credited_TextBox.Text);

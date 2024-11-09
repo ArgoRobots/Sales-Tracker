@@ -124,7 +124,6 @@ namespace Sales_Tracker.UI
                 HandleKeyboardShortcut(textBox, e);
             }
         }
-
         private static bool IsInputKey(Keys keyData)
         {
             switch (keyData)

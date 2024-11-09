@@ -41,7 +41,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
 
-            CenterCheckBoxes();
+            CenterControls();
         }
         public void UpdateTheme()
         {
@@ -55,40 +55,19 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            FilterByProduct_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Search_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             FilterByDate_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             From_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
         }
-        /// <summary>
-        /// Center the checkboxes to account for the text width changing with different languages.
-        /// </summary>
-        private void CenterCheckBoxes()
-        {
-            int leftEdge = From_DateTimePicker.Right;
-            int rightEdge = ClientSize.Width;
-            int centerX = leftEdge + (rightEdge - leftEdge) / 2;
-            int spacing = IncludePurchaseReceipts_Label.Left - IncludePurchaseReceipts_CheckBox.Right;
-
-            // Calculate total widths of the checkboxes and labels
-            int purchaseTotalWidth = IncludePurchaseReceipts_CheckBox.Width + spacing + IncludePurchaseReceipts_Label.Width;
-            int saleTotalWidth = IncludeSaleReceipts_CheckBox.Width + spacing + IncludeSaleReceipts_Label.Width;
-            int maxTotalWidth = Math.Max(purchaseTotalWidth, saleTotalWidth);
-
-            // Compute the left position to center the controls
-            int controlsLeft = centerX - (maxTotalWidth / 2);
-
-            // Position the controls
-            IncludePurchaseReceipts_CheckBox.Left = controlsLeft;
-            IncludePurchaseReceipts_Label.Left = IncludePurchaseReceipts_CheckBox.Right + spacing;
-
-            IncludeSaleReceipts_CheckBox.Left = controlsLeft;
-            IncludeSaleReceipts_Label.Left = IncludeSaleReceipts_CheckBox.Right + spacing;
-        }
 
         // Form event handlers
+        private void Receipts_Form_Shown(object sender, EventArgs e)
+        {
+            CenterControls();
+        }
         private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
@@ -98,8 +77,7 @@ namespace Sales_Tracker
         // Event handlers
         private void ClearFilters_Button_Click(object sender, EventArgs e)
         {
-            Category_TextBox.Text = "";
-            Product_TextBox.Text = "";
+            Search_TextBox.Text = "";
             From_DateTimePicker.Value = oldestDate;
             To_DateTimePicker.Value = DateTime.Now;
         }
@@ -190,6 +168,7 @@ namespace Sales_Tracker
         public enum Column
         {
             Type,
+            ID,
             Product,
             Category,
             Date,
@@ -198,6 +177,7 @@ namespace Sales_Tracker
         public readonly Dictionary<Column, string> ColumnHeaders = new()
         {
             { Column.Type, "Type" },
+            { Column.ID, "Transaction ID" },
             { Column.Product, "Product name" },
             { Column.Category, "Category" },
             { Column.Date, "Date" },
@@ -205,6 +185,47 @@ namespace Sales_Tracker
         };
 
         // Methods
+        /// <summary>
+        /// Center the checkboxes between form left and DateTimePicker, and search controls between DateTimePicker and form right.
+        /// </summary>
+        private void CenterControls()
+        {
+            // Center checkboxes between form left and DateTimePicker
+            int leftEdge = 0;
+            int rightEdge = From_DateTimePicker.Left;
+            int centerX = leftEdge + (rightEdge - leftEdge) / 2;
+            int spacing = IncludePurchaseReceipts_Label.Left - IncludePurchaseReceipts_CheckBox.Right;
+
+            // Calculate total widths of the checkboxes and labels
+            int purchaseTotalWidth = IncludePurchaseReceipts_CheckBox.Width + spacing + IncludePurchaseReceipts_Label.Width;
+            int saleTotalWidth = IncludeSaleReceipts_CheckBox.Width + spacing + IncludeSaleReceipts_Label.Width;
+            int maxTotalWidth = Math.Max(purchaseTotalWidth, saleTotalWidth);
+
+            // Compute the left position to center the checkbox controls
+            int controlsLeft = centerX - (maxTotalWidth / 2);
+
+            // Position the checkbox controls
+            IncludePurchaseReceipts_CheckBox.Left = controlsLeft;
+            IncludePurchaseReceipts_Label.Left = IncludePurchaseReceipts_CheckBox.Right + spacing;
+            IncludeSaleReceipts_CheckBox.Left = controlsLeft;
+            IncludeSaleReceipts_Label.Left = IncludeSaleReceipts_CheckBox.Right + spacing;
+
+            // Center search controls between DateTimePicker right and form right
+            int searchLeftEdge = From_DateTimePicker.Right;
+            int searchRightEdge = ClientSize.Width;
+            int searchCenterX = searchLeftEdge + (searchRightEdge - searchLeftEdge) / 2;
+            int searchSpacing = Search_TextBox.Left - Search_Label.Right;
+
+            // Calculate total width of search controls
+            int searchTotalWidth = Search_Label.Width + searchSpacing + Search_TextBox.Width;
+
+            // Compute the left position to center the search controls
+            int searchControlsLeft = searchCenterX - (searchTotalWidth / 2);
+
+            // Position the search controls
+            Search_Label.Left = searchControlsLeft;
+            Search_TextBox.Left = Search_Label.Right + searchSpacing;
+        }
         private void AddAllReceiptsAndGetOldestDate()
         {
             // Save the current sort order
@@ -249,6 +270,7 @@ namespace Sales_Tracker
 
                 Receipts_DataGridView.Rows.Add(
                     type,
+                    row.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString(),
@@ -281,19 +303,9 @@ namespace Sales_Tracker
         {
             foreach (DataGridViewRow row in Receipts_DataGridView.Rows)
             {
-                bool visible = true;
-
-                if (!string.IsNullOrEmpty(Category_TextBox.Text) &&
-                    !row.Cells[Column.Category.ToString()].Value.ToString().Contains(Category_TextBox.Text, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    visible = false;
-                }
-
-                if (!string.IsNullOrEmpty(Product_TextBox.Text) &&
-                    !row.Cells[Column.Product.ToString()].Value.ToString().Contains(Product_TextBox.Text, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    visible = false;
-                }
+                bool visible = row.Cells.Cast<DataGridViewCell>()
+                    .Any(cell => cell.Value != null &&
+                        cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
 
                 if (FilterByDate_CheckBox.Checked)
                 {
