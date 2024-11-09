@@ -456,10 +456,10 @@ namespace Sales_Tracker
 
             // Convert currency
             decimal shippingDefault = shipping * exchangeRateToDefault;
-            decimal taxDefault = tax + exchangeRateToDefault;
+            decimal taxDefault = tax * exchangeRateToDefault;
             decimal feeDefault = fee * exchangeRateToDefault;
             decimal discountDefault = discount * exchangeRateToDefault;
-            decimal totalPriceDefault = Math.Round(totalPrice * exchangeRateToDefault + shipping + tax + fee - discount, 2);
+            decimal totalPriceDefault = Math.Round(totalPrice * exchangeRateToDefault + shippingDefault + taxDefault + feeDefault - discountDefault, 2);
             decimal charged = Math.Round(decimal.Parse(Charged_TextBox.Text), 2);
             decimal chargedDifference = charged - totalPriceDefault;
 
@@ -646,7 +646,8 @@ namespace Sales_Tracker
 
             flowPanel.Visible = false;
             addButton.Visible = false;
-            Height = 465;
+            MinimumSize = new Size(Width, 695);
+            Size = MinimumSize;
 
             RelocateAccountantWarning();
             SetReceiptLabelLocation();
@@ -896,7 +897,8 @@ namespace Sales_Tracker
                 ImageSize = new Size(32, 32),
                 Left = flowPanel.Left + spaceOnSidesOfPanel / 2,
                 PressedColor = CustomColors.controlBack,
-                Visible = false
+                Visible = false,
+                Anchor = AnchorStyles.Top
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {

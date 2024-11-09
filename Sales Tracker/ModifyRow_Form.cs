@@ -1040,7 +1040,9 @@ namespace Sales_Tracker
                     break;
             }
 
-            if (hasChanges && IsThisBeingUsedByDataGridView(selectedRow.Cells[0].Value.ToString())
+            bool product = selectedTag == MainMenu_Form.DataGridViewTag.Product.ToString();
+
+            if (hasChanges && IsThisBeingUsedByDataGridView(selectedRow.Cells[product ? 1 : 0].Value.ToString())
                 && selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
             {
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {selectedTag} list");

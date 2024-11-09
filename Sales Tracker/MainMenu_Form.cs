@@ -688,10 +688,12 @@ namespace Sales_Tracker
         private void Purchases_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            if (Selected == SelectedOption.Purchases) { return; }
+
             _purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-            AddMainControls();
             Selected = SelectedOption.Purchases;
+            AddMainControls();
             _selectedDataGridView = _purchase_DataGridView;
             _purchase_DataGridView.Visible = true;
             _sale_DataGridView.Visible = false;
@@ -709,10 +711,12 @@ namespace Sales_Tracker
         private void Sales_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            if (Selected == SelectedOption.Sales) { return; }
+
             _sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
-            AddMainControls();
             Selected = SelectedOption.Sales;
+            AddMainControls();
             _selectedDataGridView = _sale_DataGridView;
             _sale_DataGridView.Visible = true;
             _purchase_DataGridView.Visible = false;
@@ -729,8 +733,11 @@ namespace Sales_Tracker
         private void Statistics_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
+            if (Selected == SelectedOption.Statistics) { return; }
+
             ConstructControlsForStatistics();
 
+            Selected = SelectedOption.Statistics;
             AddStatisticsControls();
             CenterAndResizeControls();
 
@@ -1635,12 +1642,6 @@ namespace Sales_Tracker
         }
         private void AddStatisticsControls()
         {
-            if (Selected == SelectedOption.Statistics)
-            {
-                return;
-            }
-            Selected = SelectedOption.Statistics;
-
             foreach (Control control in statisticsCharts)
             {
                 control.Visible = true;

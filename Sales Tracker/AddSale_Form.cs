@@ -620,7 +620,8 @@ namespace Sales_Tracker
 
             flowPanel.Visible = false;
             addButton.Visible = false;
-            Height = 465;
+            MinimumSize = new Size(Width, 695);
+            Size = MinimumSize;
 
             RelocateAccountantWarning();
 
@@ -865,7 +866,8 @@ namespace Sales_Tracker
                 ImageSize = new Size(32, 32),
                 Left = flowPanel.Left + spaceOnSidesOfPanel / 2,
                 PressedColor = CustomColors.controlBack,
-                Visible = false
+                Visible = false,
+                Anchor = AnchorStyles.Top
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
