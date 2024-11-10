@@ -31,6 +31,10 @@ namespace Sales_Tracker.UI
         /// the original base text to maintain consistency across language changes. The label is positioned near
         /// the bottom-right of the DataGridView.
         /// </summary>
+        /// <example>
+        /// Input text: "Total: 5"
+        /// Output text: "Total: 6"
+        /// </example>
         public static void ShowTotalLabel(Label totalLabel, DataGridView dataGridView)
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
@@ -43,6 +47,38 @@ namespace Sales_Tracker.UI
 
             // Position the label near the bottom-right of the DataGridView
             totalLabel.Location = new Point(dataGridView.Right - totalLabel.Width, dataGridView.Bottom + 10);
+        }
+
+        /// <summary>
+        /// Updates the totals label text to display the row count with "transactions" text while preserving
+        /// the original base text and transaction word to maintain consistency across language changes.
+        /// </summary>
+        /// <example>
+        /// Input text: "Totals: (5 transactions)"
+        /// Output text: "Totals: (6 transactions)"
+        /// </example>
+        public static void ShowTotalsWithTransactions(Label totalsLabel, DataGridView dataGridView)
+        {
+            if (MainMenu_Form.IsProgramLoading) { return; }
+
+            string baseText = totalsLabel.Text.Split(['(', ':'])[0].Trim();
+
+            // Extract the word "transactions" (or its translation) from the existing text
+            string transactionText = "transactions";  // default fallback
+            if (totalsLabel.Text.Contains('('))
+            {
+                var match = totalsLabel.Text.Split('(')[1];
+                if (match.Contains(' '))
+                {
+                    transactionText = match.Split(' ')[1].TrimEnd(')');
+                }
+            }
+
+            // Get count of visible rows
+            int count = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
+
+            // Format with preserved translations
+            totalsLabel.Text = $"{baseText}: ({count} {transactionText})";
         }
 
         /// <summary>

@@ -455,9 +455,9 @@
             Total_Label.Font = new Font("Segoe UI", 11.25F);
             Total_Label.Location = new Point(4, 22);
             Total_Label.Name = "Total_Label";
-            Total_Label.Size = new Size(78, 31);
+            Total_Label.Size = new Size(239, 31);
             Total_Label.TabIndex = 5;
-            Total_Label.Text = "Totals:";
+            Total_Label.Text = "Totals: (x transactions)";
             Total_Label.Click += CloseAllPanels;
             // 
             // Quantity_Label

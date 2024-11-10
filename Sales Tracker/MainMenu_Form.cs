@@ -1395,6 +1395,7 @@ namespace Sales_Tracker
                 Total_Panel.Visible = true;
             }
 
+            int totalVisibleRows = 0;
             int totalQuantity = 0;
             decimal totalTax = 0;
             decimal totalShipping = 0;
@@ -1405,6 +1406,7 @@ namespace Sales_Tracker
             foreach (DataGridViewRow row in _selectedDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                totalVisibleRows++;
 
                 totalQuantity += Convert.ToInt32(row.Cells[Column.Quantity.ToString()].Value);
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
@@ -1417,6 +1419,7 @@ namespace Sales_Tracker
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
             }
 
+            LabelManager.ShowTotalsWithTransactions(Total_Label, _selectedDataGridView);
             Quantity_Label.Text = totalQuantity.ToString();
             Tax_Label.Text = totalTax.ToString("C");
             Shipping_Label.Text = totalShipping.ToString("C");
