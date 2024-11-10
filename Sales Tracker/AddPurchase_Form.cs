@@ -743,10 +743,12 @@ namespace Sales_Tracker
         private void ConstructControlsForMultipleProducts()
         {
             byte searchBoxMaxHeight = 150;
+            int panelHeight = panelsForMultipleProducts_List.Count == 0 ? initialHeightForPanel : initialHeightForPanel - 20;
+            int textBoxTop = panelsForMultipleProducts_List.Count == 0 ? 28 + CustomControls.SpaceBetweenControls : CustomControls.SpaceBetweenControls;
 
             Guna2Panel panel = new()
             {
-                Size = new Size(initialWidthForPanel, initialHeightForPanel),
+                Size = new Size(initialWidthForPanel, panelHeight),
                 FillColor = CustomColors.MainBackground
             };
             panelsForMultipleProducts_List.Add(panel);
@@ -755,22 +757,30 @@ namespace Sales_Tracker
             int left;
 
             // Product name
-            textBox = CosntructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
+            if (panelsForMultipleProducts_List.Count == 1)
+            {
+                CosntructLabel(ProductName_Label.Text, 0, panel);
+            }
+            textBox = CosntructTextBox(new Point(0, textBoxTop), ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
             SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
-            CosntructLabel(ProductName_Label.Text, 0, panel);
+            // Price per unit
+            left = textBox.Right + CustomControls.SpaceBetweenControls;
+            if (panelsForMultipleProducts_List.Count == 1)
+            {
+                CosntructLabel(PricePerUnit_Label.Text, left, panel);
+            }
+            textBox = CosntructTextBox(new Point(left, textBoxTop), PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, panel);
 
             // Quantity
             left = textBox.Right + CustomControls.SpaceBetweenControls;
-            textBox = CosntructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, panel);
-            CosntructLabel(Quantity_Label.Text, left, panel);
-
-            // Price per unit
-            left = textBox.Right + CustomControls.SpaceBetweenControls;
-            textBox = CosntructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, panel);
-            CosntructLabel(PricePerUnit_Label.Text, left, panel);
+            if (panelsForMultipleProducts_List.Count == 1)
+            {
+                CosntructLabel(Quantity_Label.Text, left, panel);
+            }
+            textBox = CosntructTextBox(new Point(left, textBoxTop), Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, panel);
 
             // Add minus button unless this is the first panel
             left = textBox.Right + CustomControls.SpaceBetweenControls;
@@ -798,13 +808,13 @@ namespace Sales_Tracker
             label.Click += CloseAllPanels;
             parent.Controls.Add(label);
         }
-        private Guna2TextBox CosntructTextBox(int left, int width, string name, CustomControls.KeyPressValidation keyPressValidation, Control parent)
+        private Guna2TextBox CosntructTextBox(Point location, int width, string name, CustomControls.KeyPressValidation keyPressValidation, Control parent)
         {
             Guna2TextBox textBox = new()
             {
                 Size = new Size(width, textBoxHeight),
                 Name = name,
-                Location = new Point(left, 28 + CustomControls.SpaceBetweenControls),
+                Location = location,
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,
                 ForeColor = CustomColors.Text,

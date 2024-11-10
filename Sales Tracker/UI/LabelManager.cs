@@ -39,7 +39,7 @@ namespace Sales_Tracker.UI
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
-            // Keep the first part (before ":") the same in case it's been translated
+            // Extract the word "total" (or its translation) from the existing text
             string[] parts = totalLabel.Text.Split(':');
             string baseText = parts[0].Trim();
             int count = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
@@ -67,7 +67,7 @@ namespace Sales_Tracker.UI
             string transactionText = "transactions";  // default fallback
             if (totalsLabel.Text.Contains('('))
             {
-                var match = totalsLabel.Text.Split('(')[1];
+                string match = totalsLabel.Text.Split('(')[1];
                 if (match.Contains(' '))
                 {
                     transactionText = match.Split(' ')[1].TrimEnd(')');

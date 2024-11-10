@@ -1307,7 +1307,7 @@ namespace Sales_Tracker
             { Column.Country, "Country of destination" },
             { Column.Company, "Company of origin" },
             { Column.Date, "Date" },
-            { Column.Quantity, "Quantity" },
+            { Column.Quantity, "Unique products" },
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
