@@ -31,6 +31,7 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             LoadCompanies();
             Theme.SetThemeForForm(this);
+            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LabelManager.ShowTotalLabel(Total_Label, company_DataGridView);
@@ -92,7 +93,7 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added company '{name}'");
 
-            Company_TextBox.Text = "";
+            Company_TextBox.Clear();
             CustomControls.SetGTextBoxToValid(Company_TextBox);
             HideCompanyWarning();
             Company_TextBox.Focus();
@@ -123,6 +124,10 @@ namespace Sales_Tracker
                 ShowingResultsFor_Label.Visible = false;
             }
             LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
+        }
+        private void Search_TextBox_IconRightClick(object sender, EventArgs e)
+        {
+            Search_TextBox.Clear();
         }
 
         // DataGridView

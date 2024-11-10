@@ -315,6 +315,9 @@ namespace Sales_Tracker
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Search_TextBox.IconRight = Properties.Resources.CloseGray;
+            Search_TextBox.IconRightOffset = new Point(5, 0);
+            Search_TextBox.IconRightSize = new Size(22, 22);
             Search_TextBox.Location = new Point(1281, 292);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
@@ -326,6 +329,7 @@ namespace Sales_Tracker
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 9;
+            Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
             // 

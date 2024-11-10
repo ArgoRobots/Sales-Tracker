@@ -31,7 +31,8 @@ namespace Sales_Tracker
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
             CenterSelectedDataGridView();
-            Theme.SetThemeForForm(this);
+            SetTheme();
+            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
             SetAccessibleDescriptions();
             LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
             ShowingResultsFor_Label.Visible = false;
@@ -57,6 +58,10 @@ namespace Sales_Tracker
             ForSale_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
             Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+        }
+        private void SetTheme()
+        {
+            Theme.SetThemeForForm(this);
         }
 
         // Methods
@@ -184,6 +189,10 @@ namespace Sales_Tracker
                 ShowingResultsFor_Label.Visible = false;
             }
             LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
+        }
+        private void Search_TextBox_IconRightClick(object sender, EventArgs e)
+        {
+            Search_TextBox.Text = "";
         }
         private void ForPurchase_Label_Click(object sender, EventArgs e)
         {

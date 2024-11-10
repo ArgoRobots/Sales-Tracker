@@ -31,6 +31,7 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             LoadAccountants();
             Theme.SetThemeForForm(this);
+            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView);
@@ -90,7 +91,7 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added accountant '{name}'");
 
-            Accountant_TextBox.Text = "";
+            Accountant_TextBox.Clear();
             CustomControls.SetGTextBoxToValid(Accountant_TextBox);
             HideAccountantWarning();
             Accountant_TextBox.Focus();
@@ -121,6 +122,10 @@ namespace Sales_Tracker
                 ShowingResultsFor_Label.Visible = false;
             }
             LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView);
+        }
+        private void Search_TextBox_IconRightClick(object sender, EventArgs e)
+        {
+            Search_TextBox.Clear();
         }
 
         // DataGridView

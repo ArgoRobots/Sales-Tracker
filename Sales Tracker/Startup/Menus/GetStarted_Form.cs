@@ -372,7 +372,7 @@ namespace Sales_Tracker.Startup.Menus
                 button.Tag = newProjectDir;
             }
 
-            CustomControls.Rename_TextBox.Text = "";
+            CustomControls.Rename_TextBox.Clear();
         }
         public void ShowMainMenu()
         {

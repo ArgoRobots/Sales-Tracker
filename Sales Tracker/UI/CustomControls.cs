@@ -14,7 +14,7 @@ namespace Sales_Tracker.UI
     /// Manages the construction and customization of various UI controls, including menus, buttons, panels, and validation styling. 
     /// This class helps streamline UI setup and ensures consistency across different control types.
     /// </summary>
-    internal class CustomControls
+    internal static class CustomControls
     {
         public static void ConstructControls()
         {
@@ -578,6 +578,32 @@ namespace Sales_Tracker.UI
             {
                 new AddPurchase_Form().ShowDialog();
             };
+        }
+
+        // Init hover effect for Guna2ImageButton
+        public static void InitHoverEffectForImageButton(Guna2ImageButton control, bool forSearchBox)
+        {
+            Color hoverColor = CustomColors.FileHover;
+            Color defaultColor = forSearchBox ? CustomColors.ControlBack : CustomColors.MainBackground;
+
+            control.Tag = (hoverColor, defaultColor);
+
+            control.MouseEnter += Control_MouseEnter;
+            control.MouseLeave += Control_MouseLeave;
+        }
+        private static void Control_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Guna2ImageButton button && button.Tag is ValueTuple<Color, Color> colors)
+            {
+                button.BackColor = colors.Item1;  // hoverColor
+            }
+        }
+        private static void Control_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Guna2ImageButton button && button.Tag is ValueTuple<Color, Color> colors)
+            {
+                button.BackColor = colors.Item2;  // defaultColor
+            }
         }
 
         // Rename

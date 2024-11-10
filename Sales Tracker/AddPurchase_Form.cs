@@ -27,7 +27,7 @@ namespace Sales_Tracker
             Currency_ComboBox.Text = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             CheckIfProductsExist();
             CheckIfAccountantsExist();
-            Theme.SetThemeForForm(this);
+            SetTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
@@ -99,6 +99,11 @@ namespace Sales_Tracker
             }
 
             SelectedReceipt_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+        }
+        private void SetTheme()
+        {
+            Theme.SetThemeForForm(this);
+            CustomControls.InitHoverEffectForImageButton(RemoveReceipt_ImageButton, false);
         }
 
         // Form event handlers
@@ -185,14 +190,6 @@ namespace Sales_Tracker
         {
             RemoveReceiptLabel();
         }
-        private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
-        {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
-        }
-        private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
-        {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.MainBackground;
-        }
         private void MultipleItems_Label_Click(object sender, EventArgs e)
         {
             MultipleItems_CheckBox.Checked = !MultipleItems_CheckBox.Checked;
@@ -202,15 +199,15 @@ namespace Sales_Tracker
         private void ClearInputs()
         {
             RemoveReceiptLabel();
-            OrderNumber_TextBox.Text = "";
-            Quantity_TextBox.Text = "";
-            PricePerUnit_TextBox.Text = "";
-            Shipping_TextBox.Text = "";
-            Tax_TextBox.Text = "";
-            Fee_TextBox.Text = "";
-            Discount_TextBox.Text = "";
-            Charged_TextBox.Text = "";
-            Notes_TextBox.Text = "";
+            OrderNumber_TextBox.Clear();
+            Quantity_TextBox.Clear();
+            PricePerUnit_TextBox.Clear();
+            Shipping_TextBox.Clear();
+            Tax_TextBox.Clear();
+            Fee_TextBox.Clear();
+            Discount_TextBox.Clear();
+            Charged_TextBox.Clear();
+            Notes_TextBox.Clear();
         }
         private bool AddSinglePurchase()
         {

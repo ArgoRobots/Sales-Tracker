@@ -62,6 +62,7 @@ namespace Sales_Tracker
             LoadData();
             LoadColumnHeader();
             UpdateTheme();
+            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
             _isProgramLoading = false;
 
             Sales_Button.PerformClick();
@@ -95,7 +96,7 @@ namespace Sales_Tracker
             _purchase_DataGridView.Rows.Clear();
             _sale_DataGridView.Rows.Clear();
 
-            Search_TextBox.Text = "";
+            Search_TextBox.Clear();
             _sortFromDate = default;
             _sortToDate = default;
         }
@@ -278,6 +279,7 @@ namespace Sales_Tracker
         public void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
+
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
                 Edit_Button.Image = Resources.EditWhite;
@@ -296,7 +298,7 @@ namespace Sales_Tracker
             Account_Button.FillColor = CustomColors.Background3;
 
             ShowingResultsFor_Label.ForeColor = CustomColors.Text;
-            ReselectedButton();
+            ReselectButton();
 
             Theme.SetThemeForControl([
                 _sale_DataGridView,
@@ -311,7 +313,7 @@ namespace Sales_Tracker
                 accountants_Chart
             ]);
         }
-        public void ReselectedButton()
+        public void ReselectButton()
         {
             if (Purchases_Button.BorderThickness == 2)
             {
@@ -775,6 +777,10 @@ namespace Sales_Tracker
                 searchTimer.Start();
             }
         }
+        private void Search_TextBox_IconRightClick(object sender, EventArgs e)
+        {
+            Search_TextBox.Clear();
+        }
 
         // TimeRange
         private static Guna2Panel _timeRangePanel;
@@ -892,7 +898,7 @@ namespace Sales_Tracker
 
             CompanyName_Label.Text = CustomControls.Rename_TextBox.Text;
             ArgoCompany.Rename(CustomControls.Rename_TextBox.Text);
-            CustomControls.Rename_TextBox.Text = "";
+            CustomControls.Rename_TextBox.Clear();
             MoveEditButton();
             CenterAndResizeControls();
 

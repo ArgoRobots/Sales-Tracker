@@ -90,6 +90,10 @@
             Search_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             Search_TextBox.Font = new Font("Segoe UI", 9F);
             Search_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Search_TextBox.IconLeftSize = new Size(0, 0);
+            Search_TextBox.IconRight = Properties.Resources.CloseGray;
+            Search_TextBox.IconRightOffset = new Point(5, 0);
+            Search_TextBox.IconRightSize = new Size(22, 22);
             Search_TextBox.Location = new Point(1000, 199);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.Name = "Search_TextBox";
@@ -99,6 +103,7 @@
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 1;
+            Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += FilterDataGridView;
             // 
             // Search_Label

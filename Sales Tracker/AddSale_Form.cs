@@ -203,15 +203,15 @@ namespace Sales_Tracker
         private void ClearInputs()
         {
             RemoveReceiptLabel();
-            SaleNumber_TextBox.Text = "";
-            Quantity_TextBox.Text = "";
-            PricePerUnit_TextBox.Text = "";
-            Shipping_TextBox.Text = "";
-            Tax_TextBox.Text = "";
-            Fee_TextBox.Text = "";
-            Discount_TextBox.Text = "";
-            Credited_TextBox.Text = "";
-            Notes_TextBox.Text = "";
+            SaleNumber_TextBox.Clear();
+            Quantity_TextBox.Clear();
+            PricePerUnit_TextBox.Clear();
+            Shipping_TextBox.Clear();
+            Tax_TextBox.Clear();
+            Fee_TextBox.Clear();
+            Discount_TextBox.Clear();
+            Credited_TextBox.Clear();
+            Notes_TextBox.Clear();
         }
         private bool AddSingleSale()
         {

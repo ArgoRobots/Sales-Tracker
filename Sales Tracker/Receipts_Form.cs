@@ -36,18 +36,13 @@ namespace Sales_Tracker
             }
             MainMenu_Form.IsProgramLoading = false;
 
-            UpdateTheme();
+            SetTheme();
+            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
 
             CenterControls();
-        }
-        public void UpdateTheme()
-        {
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(ExportSelected_Button);
-            Theme.MakeGButtonBlueSecondary(ClearFilters_Button);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {
@@ -61,6 +56,12 @@ namespace Sales_Tracker
             To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+        }
+        private void SetTheme()
+        {
+            Theme.SetThemeForForm(this);
+            Theme.MakeGButtonBluePrimary(ExportSelected_Button);
+            Theme.MakeGButtonBlueSecondary(ClearFilters_Button);
         }
 
         // Form event handlers
@@ -162,6 +163,10 @@ namespace Sales_Tracker
         private void IncludePurchaseReceipts_Label_Click(object sender, EventArgs e)
         {
             IncludePurchaseReceipts_CheckBox.Checked = !IncludePurchaseReceipts_CheckBox.Checked;
+        }
+        private void Search_TextBox_IconRightClick(object sender, EventArgs e)
+        {
+            Search_TextBox.Text = "";
         }
 
         // DataGridView

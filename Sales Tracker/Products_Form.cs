@@ -33,6 +33,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
+            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
             SetAccessibleDescriptions();
             ShowingResultsFor_Label.Visible = false;
             LanguageManager.UpdateLanguageForControl(this);
@@ -190,8 +191,8 @@ namespace Sales_Tracker
             CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added product '{name}'");
 
-            ProductName_TextBox.Text = "";
-            ProductID_TextBox.Text = "";
+            ProductName_TextBox.Clear();
+            ProductID_TextBox.Clear();
         }
         public void Purchase_RadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -205,7 +206,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.SelectedDataGridView = purchase_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductPurchases;
                 CenterSelectedDataGridView();
-                ProductCategory_TextBox.Text = "";
+                ProductCategory_TextBox.Clear();
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();
                 LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView);
@@ -223,7 +224,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.SelectedDataGridView = sale_DataGridView;
                 MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.ProductSales;
                 CenterSelectedDataGridView();
-                ProductCategory_TextBox.Text = "";
+                ProductCategory_TextBox.Clear();
                 ValidateCategoryTextBox();
                 SetProductsRemainingLabel();
                 LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView);
@@ -255,6 +256,10 @@ namespace Sales_Tracker
                 ShowingResultsFor_Label.Visible = false;
             }
             LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
+        }
+        private void Search_TextBox_IconRightClick(object sender, EventArgs e)
+        {
+            Search_TextBox.Clear();
         }
         private void ProductsRemaining_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
