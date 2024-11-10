@@ -425,33 +425,7 @@ namespace Sales_Tracker
 
             CustomControls.CloseAllPanels(null, null);
 
-            // Save logs in file
-            if (!Directory.Exists(Directories.Logs_dir))
-            {
-                Directories.CreateDirectory(Directories.Logs_dir, false);
-            }
-
-            DateTime time = DateTime.Now;
-            int count = 0;
-            string directory;
-
-            while (true)
-            {
-                if (count == 0)
-                {
-                    directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}{ArgoFiles.TxtFileExtension}";
-                }
-                else
-                {
-                    directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}-{count}{ArgoFiles.TxtFileExtension}";
-                }
-                if (!Directory.Exists(directory))
-                {
-                    Directories.WriteTextToFile(directory, Log.LogText);
-                    break;
-                }
-                count++;
-            }
+            Log.SaveLogs();
 
             if (ArgoCompany.AreAnyChangesMade())
             {

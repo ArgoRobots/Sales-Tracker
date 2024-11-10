@@ -17,6 +17,74 @@ namespace Sales_Tracker.Classes
             set => _logText = value;
         }
 
+        // Save logs
+        public static void SaveLogs()
+        {
+            if (!Directory.Exists(Directories.Logs_dir))
+            {
+                Directories.CreateDirectory(Directories.Logs_dir, false);
+            }
+
+            CleanupOldLogFiles();
+
+            DateTime time = DateTime.Now;
+            int count = 0;
+            string directory;
+
+            while (true)
+            {
+                if (count == 0)
+                {
+                    directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}{ArgoFiles.TxtFileExtension}";
+                }
+                else
+                {
+                    directory = $@"{Directories.Logs_dir}\{time.Year}-{time.Month}-{time.Day}-{time.Hour}-{time.Minute}-{count}{ArgoFiles.TxtFileExtension}";
+                }
+
+                if (!File.Exists(directory))
+                {
+                    Directories.WriteTextToFile(directory, Log.LogText);
+                    break;
+                }
+                count++;
+            }
+        }
+        private static void CleanupOldLogFiles()
+        {
+            byte maxFiles = 30;
+
+            try
+            {
+                List<FileInfo> logFiles = Directory.GetFiles(Directories.Logs_dir, $"*{ArgoFiles.TxtFileExtension}")
+                    .Select(f => new FileInfo(f))
+                    .OrderByDescending(f => f.CreationTime)
+                    .ToList();
+
+                if (logFiles.Count > maxFiles)
+                {
+                    // Remove the oldest files
+                    foreach (FileInfo? file in logFiles.Skip(maxFiles))
+                    {
+                        try
+                        {
+                            file.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log the error but continue with other files
+                            Log.LogText += $"Failed to delete old log file {file.FullName}: {ex.Message}\n";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogText += $"Error during log cleanup: {ex.Message}\n";
+            }
+        }
+
+        // Writing to log methods
         /// <summary>
         /// Writes a log entry with a specified log level and message.
         /// Log level index: 0 = [Error], 1 = [Debug], 2 = [General], 3 = [Robot Programmer].
