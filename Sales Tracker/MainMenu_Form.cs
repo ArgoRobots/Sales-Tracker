@@ -254,7 +254,7 @@ namespace Sales_Tracker
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(_sale_DataGridView, Distribution_Chart);
+                    LoadChart.LoadDistributionIntoChart(_sale_DataGridView, Distribution_Chart, PieChartGrouping.Top12);
                     Distribution_Chart.Title.Text = "Distribution of revenue";
                 }
             }
@@ -265,7 +265,7 @@ namespace Sales_Tracker
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(_purchase_DataGridView, Distribution_Chart);
+                    LoadChart.LoadDistributionIntoChart(_purchase_DataGridView, Distribution_Chart, PieChartGrouping.Top12);
                     Distribution_Chart.Title.Text = "Distribution of expenses";
                 }
             }
@@ -1636,10 +1636,10 @@ namespace Sales_Tracker
         {
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
-            LoadChart.LoadCountriesOfOriginForProductsIntoChart(_purchase_DataGridView, countriesOfOrigin_Chart);
-            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_purchase_DataGridView, companiesOfOrigin_Chart);
-            LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_sale_DataGridView, countriesOfDestination_Chart);
-            LoadChart.LoadAccountantsIntoChart([_purchase_DataGridView, _sale_DataGridView], accountants_Chart);
+            LoadChart.LoadCountriesOfOriginForProductsIntoChart(_purchase_DataGridView, countriesOfOrigin_Chart, PieChartGrouping.Top12);
+            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_purchase_DataGridView, companiesOfOrigin_Chart, PieChartGrouping.Top12);
+            LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_sale_DataGridView, countriesOfDestination_Chart, PieChartGrouping.Top12);
+            LoadChart.LoadAccountantsIntoChart([_purchase_DataGridView, _sale_DataGridView], accountants_Chart, PieChartGrouping.Top12);
             LoadChart.LoadSalesVsExpensesChart(_purchase_DataGridView, _sale_DataGridView, salesVsExpenses_Chart, isLineChart);
             LoadChart.LoadAverageOrderValueChart(_sale_DataGridView, averageOrderValue_Chart, isLineChart);
 

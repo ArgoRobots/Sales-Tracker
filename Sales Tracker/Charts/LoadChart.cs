@@ -8,6 +8,12 @@ using System.Data;
 
 namespace Sales_Tracker.Charts
 {
+    public enum PieChartGrouping
+    {
+        Unlimited = 0,
+        Top12 = 12
+    }
+
     /// <summary>
     /// The LoadChart class provides methods to configure, clear, and load data into GunaChart charts, 
     /// including bar, line, and pie charts, based on data provided by DataGridViews. 
@@ -132,7 +138,7 @@ namespace Sales_Tracker.Charts
             UpdateChart(chart, dataset);
             return grandTotal;
         }
-        public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart)
+        public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -148,7 +154,7 @@ namespace Sales_Tracker.Charts
             double totalTax = 0;
             double totalShipping = 0;
             double totalFee = 0;
-            Dictionary<string, double> categoryCosts = [];
+            Dictionary<string, double> allData = [];
             bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
@@ -185,13 +191,13 @@ namespace Sales_Tracker.Charts
                                 string itemCategory = itemDetails[1];
                                 double itemCost = double.Parse(itemDetails[6]);
 
-                                if (categoryCosts.ContainsKey(itemCategory))
+                                if (allData.ContainsKey(itemCategory))
                                 {
-                                    categoryCosts[itemCategory] += itemCost;
+                                    allData[itemCategory] += itemCost;
                                 }
                                 else
                                 {
-                                    categoryCosts[itemCategory] = itemCost;
+                                    allData[itemCategory] = itemCost;
                                 }
                             }
                         }
@@ -199,13 +205,13 @@ namespace Sales_Tracker.Charts
                 }
                 else
                 {
-                    if (categoryCosts.ContainsKey(category))
+                    if (allData.ContainsKey(category))
                     {
-                        categoryCosts[category] += cost;
+                        allData[category] += cost;
                     }
                     else
                     {
-                        categoryCosts[category] = cost;
+                        allData[category] = cost;
                     }
                 }
             }
@@ -221,40 +227,33 @@ namespace Sales_Tracker.Charts
             totalFee = Math.Round(totalFee, 2);
 
             // Get total count to calculate percentages
-            double totalCost = Math.Round(totalTax + totalShipping + totalFee + categoryCosts.Values.Sum(), 2);
+            // Get total count to calculate percentages
+            double totalCost = Math.Round(totalTax + totalShipping + totalFee + allData.Values.Sum(), 2);
 
-            // Add combined category costs with percentage labels
-            foreach (KeyValuePair<string, double> category in categoryCosts)
-            {
-                double roundedValue = Math.Round(category.Value, 2);
-                double percentage = roundedValue / totalCost * 100;
-                dataset.DataPoints.Add(category.Key, roundedValue);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{category.Key} ({percentage:F2}%)";
-            }
-
-            // Add separate datapoints with percentage labels
-            double shippingPercentage = Math.Round(totalShipping / totalCost * 100, 2);
-            double taxPercentage = Math.Round(totalTax / totalCost * 100, 2);
-            double feePercentage = Math.Round(totalFee / totalCost * 100, 2);
-
-            totalShipping = Math.Round(totalShipping, 2);
-
+            // Combine all data into one dictionary
             if (totalShipping != 0)
             {
-                dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Shipping], totalShipping);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Shipping ({shippingPercentage:F2}%)";
+                allData.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Shipping], totalShipping);
             }
-
             if (totalTax != 0)
             {
-                dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Tax], totalTax);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Tax ({taxPercentage:F2}%)";
+                allData.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Tax], totalTax);
             }
-
             if (totalFee != 0)
             {
-                dataset.DataPoints.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Fee], totalFee);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"Fee ({feePercentage:F2}%)";
+                allData.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Fee], totalFee);
+            }
+
+            // Sort and group all data together
+            Dictionary<string, double> sortedData = SortAndGroupData(allData, grouping);
+
+            // Add all data points with percentage labels
+            foreach (KeyValuePair<string, double> item in sortedData)
+            {
+                double roundedValue = Math.Round(item.Value, 2);
+                double percentage = roundedValue / totalCost * 100;
+                dataset.DataPoints.Add(item.Key, roundedValue);
+                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{item.Key} ({percentage:F2}%)";
             }
 
             ApplyCustomColorsToDataset(dataset);
@@ -356,7 +355,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Statistics charts
-        public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
+        public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
@@ -417,8 +416,11 @@ namespace Sales_Tracker.Charts
             // Get total count to calculate percentages
             double totalCount = countryCounts.Values.Sum();
 
+            // Group countries if needed
+            Dictionary<string, double> groupedCountryCounts = SortAndGroupData(countryCounts, grouping);
+
             // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> countryCount in countryCounts)
+            foreach (KeyValuePair<string, double> countryCount in groupedCountryCounts)
             {
                 double percentage = countryCount.Value / totalCount * 100;
                 dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
@@ -428,7 +430,7 @@ namespace Sales_Tracker.Charts
             ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
-        public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart)
+        public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
@@ -490,8 +492,11 @@ namespace Sales_Tracker.Charts
             // Get total count to calculate percentages
             double totalCount = companyCounts.Values.Sum();
 
+            // Group companies if needed
+            Dictionary<string, double> groupedCompanyCounts = SortAndGroupData(companyCounts, grouping);
+
             // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> companyCount in companyCounts)
+            foreach (KeyValuePair<string, double> companyCount in groupedCompanyCounts)
             {
                 double percentage = companyCount.Value / totalCount * 100;
                 dataset.DataPoints.Add(companyCount.Key, companyCount.Value);
@@ -501,7 +506,7 @@ namespace Sales_Tracker.Charts
             ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
-        public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart)
+        public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
@@ -562,8 +567,11 @@ namespace Sales_Tracker.Charts
             // Get total count to calculate percentages
             double totalCount = countryCounts.Values.Sum();
 
+            // Group countries if needed
+            Dictionary<string, double> groupedCountryCounts = SortAndGroupData(countryCounts, grouping);
+
             // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> countryCount in countryCounts)
+            foreach (KeyValuePair<string, double> countryCount in groupedCountryCounts)
             {
                 double percentage = countryCount.Value / totalCount * 100;
                 dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
@@ -573,7 +581,7 @@ namespace Sales_Tracker.Charts
             ApplyCustomColorsToDataset(dataset);
             UpdateChart(chart, dataset);
         }
-        public static void LoadAccountantsIntoChart(IEnumerable<Guna2DataGridView> dataGridViews, GunaChart chart)
+        public static void LoadAccountantsIntoChart(IEnumerable<Guna2DataGridView> dataGridViews, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews.ToArray());
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
@@ -621,8 +629,11 @@ namespace Sales_Tracker.Charts
             // Get total count to calculate percentages
             double totalCount = accountantCounts.Values.Sum();
 
+            // Group accountants if needed
+            Dictionary<string, double> groupedAccountantCounts = SortAndGroupData(accountantCounts, grouping);
+
             // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> accountantCount in accountantCounts)
+            foreach (KeyValuePair<string, double> accountantCount in groupedAccountantCounts)
             {
                 double percentage = accountantCount.Value / totalCount * 100;
                 dataset.DataPoints.Add(accountantCount.Key, accountantCount.Value);
@@ -845,6 +856,29 @@ namespace Sales_Tracker.Charts
         }
 
         // Methods
+        /// <summary>
+        /// Sorts dictionary items by value in descending order and optionally groups smaller items into an "Other" category.
+        /// </summary>
+        /// <returns>A new dictionary sorted by value in descending order, with optional "Other" category.</returns>
+        private static Dictionary<string, double> SortAndGroupData(Dictionary<string, double> data, PieChartGrouping maxItems)
+        {
+            List<KeyValuePair<string, double>> sortedData = data.OrderByDescending(x => x.Value).ToList();
+
+            if (maxItems == PieChartGrouping.Unlimited || sortedData.Count <= (int)maxItems)
+            {
+                return sortedData.ToDictionary(x => x.Key, x => x.Value);
+            }
+
+            Dictionary<string, double> result = sortedData.Take((int)maxItems).ToDictionary(x => x.Key, x => x.Value);
+
+            double otherSum = sortedData.Skip((int)maxItems).Sum(x => x.Value);
+            if (otherSum > 0)
+            {
+                result.Add("Other", otherSum);
+            }
+
+            return result;
+        }
         private static void ApplyStyleToBarOrLineDataSet(IGunaDataset dataset, bool isLineChart, Color color)
         {
             if (isLineChart)
@@ -864,30 +898,27 @@ namespace Sales_Tracker.Charts
         }
         public static void ApplyCustomColorsToDataset(GunaPieDataset dataset)
         {
-            // Define the colors
+            // Define the colors - soft and vibrant palette
             ColorCollection colors =
             [
                 CustomColors.PastelBlue,
                 CustomColors.PastelGreen,
-                Color.FromArgb(204, 102, 153),  // Soft pink
-                Color.FromArgb(153, 102, 204),  // Soft purple
                 Color.FromArgb(102, 204, 153),  // Muted teal
+                Color.FromArgb(204, 102, 153),  // Soft pink
+                Color.FromArgb(153, 204, 204),  // Soft aqua
+                Color.FromArgb(153, 102, 204),  // Soft purple
+                Color.FromArgb(204, 153, 102),  // Soft orange
+                Color.FromArgb(102, 178, 178),  // Sea green
                 Color.FromArgb(204, 102, 102),  // Soft red
                 Color.FromArgb(153, 153, 204),  // Muted lavender
-                Color.FromArgb(204, 102, 102),  // Soft coral
-                Color.FromArgb(153, 204, 204),  // Soft aqua
-                Color.FromArgb(204, 153, 153),  // Muted peach
-                Color.FromArgb(204, 153, 204),  // Soft lilac
                 Color.FromArgb(153, 204, 153),  // Soft sage
                 Color.FromArgb(204, 204, 153),  // Muted gold
-                Color.FromArgb(204, 102, 102),  // Soft terracotta
-                Color.FromArgb(153, 204, 153),  // Muted mint
-                Color.FromArgb(153, 153, 204),  // Soft denim
-                Color.FromArgb(204, 102, 102),  // Warm rust
+                Color.FromArgb(178, 102, 178),  // Soft magenta
+                Color.FromArgb(102, 127, 204),  // Ocean blue
+                Color.FromArgb(204, 153, 204),  // Soft lilac
                 Color.FromArgb(153, 153, 153),  // Muted gray
+                Color.FromArgb(178, 178, 102),  // Olive gold
             ];
-
-            // Apply the colors to the dataset
             dataset.FillColors = colors;
         }
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
