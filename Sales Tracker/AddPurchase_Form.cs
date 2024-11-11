@@ -23,8 +23,6 @@ namespace Sales_Tracker
 
             AddEventHandlersToTextBoxes();
             Date_DateTimePicker.Value = DateTime.Now;
-            Currency_ComboBox.DataSource = Enum.GetValues(typeof(Currency.CurrencyTypes));
-            Currency_ComboBox.Text = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             CheckIfProductsExist();
             CheckIfAccountantsExist();
             SetTheme();
@@ -37,17 +35,21 @@ namespace Sales_Tracker
         {
             byte searchBoxMaxHeight = 255;
 
+            TextBoxManager.Attach(Currency_TextBox);
+            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
+            SearchBox.Attach(Currency_TextBox, this, () => searchResult, searchBoxMaxHeight);
+
             TextBoxManager.Attach(OrderNumber_TextBox);
 
             AccountantName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
             TextBoxManager.Attach(AccountantName_TextBox);
-            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
-            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight);
+            List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
+            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult1, searchBoxMaxHeight);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(ProductName_TextBox);
-            List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
-            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, true);
+            List<SearchResult> searchResult2 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
+            SearchBox.Attach(ProductName_TextBox, this, () => searchResult2, searchBoxMaxHeight, false, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
@@ -251,7 +253,7 @@ namespace Sales_Tracker
             }
 
             // Convert selected currency to default
-            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_ComboBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_TextBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
             if (exchangeRateToDefault == -1) { return false; }
 
             decimal pricePerUnitDefault = pricePerUnit * exchangeRateToDefault;
@@ -277,7 +279,7 @@ namespace Sales_Tracker
             }
 
             // Convert selected currency to USD
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_TextBox.Text, "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
             decimal pricePerUnitUSD = Math.Round(pricePerUnit * exchangeRateToUSD, 2);
@@ -391,7 +393,7 @@ namespace Sales_Tracker
             }
 
             // Convert selected currency to default
-            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_ComboBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_TextBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
             if (exchangeRateToDefault == -1) { return false; }
 
             List<string> items = [];
@@ -401,7 +403,7 @@ namespace Sales_Tracker
             int totalQuantity = 0;
 
             // Convert selected currency to USD
-            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_ComboBox.Text, "USD", date);
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(Currency_TextBox.Text, "USD", date);
             if (exchangeRateToUSD == -1) { return false; }
 
             foreach (Guna2Panel panel in panelsForMultipleProducts_List)
@@ -605,14 +607,14 @@ namespace Sales_Tracker
         private void SetControlsForSingleProduct()
         {
             // Center controls
-            Currency_ComboBox.Left = (ClientSize.Width - Currency_ComboBox.Width - CustomControls.SpaceBetweenControls -
+            Currency_TextBox.Left = (ClientSize.Width - Currency_TextBox.Width - CustomControls.SpaceBetweenControls -
                 OrderNumber_TextBox.Width - CustomControls.SpaceBetweenControls -
                 AccountantName_TextBox.Width - CustomControls.SpaceBetweenControls -
                 ProductName_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Receipt_Button.Width) / 2;
 
-            Currency_Label.Left = Currency_ComboBox.Left;
-            OrderNumber_TextBox.Left = Currency_ComboBox.Right + CustomControls.SpaceBetweenControls;
+            Currency_Label.Left = Currency_TextBox.Left;
+            OrderNumber_TextBox.Left = Currency_TextBox.Right + CustomControls.SpaceBetweenControls;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
             AccountantName_TextBox.Left = OrderNumber_TextBox.Right + CustomControls.SpaceBetweenControls;
             AccountantName_Label.Left = AccountantName_TextBox.Left;
@@ -669,14 +671,14 @@ namespace Sales_Tracker
         private void SetControlsForMultipleProducts()
         {
             // Center controls
-            Currency_ComboBox.Left = (ClientSize.Width -
-                Currency_ComboBox.Width - CustomControls.SpaceBetweenControls -
+            Currency_TextBox.Left = (ClientSize.Width -
+                Currency_TextBox.Width - CustomControls.SpaceBetweenControls -
                 OrderNumber_TextBox.Width - CustomControls.SpaceBetweenControls -
                 AccountantName_TextBox.Width - CustomControls.SpaceBetweenControls -
                 Receipt_Button.Width) / 2;
 
-            Currency_Label.Left = Currency_ComboBox.Left;
-            OrderNumber_TextBox.Left = Currency_ComboBox.Right + CustomControls.SpaceBetweenControls;
+            Currency_Label.Left = Currency_TextBox.Left;
+            OrderNumber_TextBox.Left = Currency_TextBox.Right + CustomControls.SpaceBetweenControls;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
             AccountantName_TextBox.Left = OrderNumber_TextBox.Right + CustomControls.SpaceBetweenControls;
             AccountantName_Label.Left = AccountantName_TextBox.Left;

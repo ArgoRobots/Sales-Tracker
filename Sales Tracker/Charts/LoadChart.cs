@@ -112,7 +112,7 @@ namespace Sales_Tracker.Charts
                 }
 
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.Quantity.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.UniqueProducts.ToString()].Value);
                 double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
                 grandTotal += total;
@@ -170,7 +170,7 @@ namespace Sales_Tracker.Charts
                 double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
                 double fee = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Fee.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.Quantity.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.UniqueProducts.ToString()].Value);
                 string category = row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString();
 
                 totalTax += tax;
@@ -652,15 +652,11 @@ namespace Sales_Tracker.Charts
                 return;
             }
 
-            // Ensure we're configuring the chart based on the chart type
             if (isLineChart)
             {
                 ConfigureChartForLine(chart);
             }
-            else
-            {
-                ConfigureChartForBar(chart);
-            }
+            else { ConfigureChartForBar(chart); }
 
             // Create the datasets for expenses and sales with labels
             IGunaDataset expensesDataset;

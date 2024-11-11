@@ -552,7 +552,7 @@ namespace Sales_Tracker
                         left += controlWidth;
                         break;
 
-                    case nameof(MainMenu_Form.Column.Quantity):
+                    case nameof(MainMenu_Form.Column.UniqueProducts):
                         secondRow = true;
                         if (cellValue == ReadOnlyVariables.EmptyCell) { continue; }
 
@@ -563,7 +563,7 @@ namespace Sales_Tracker
                             continue;
                         }
 
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], secondLeft, SecondPanel);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.UniqueProducts], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbers, false, true, SecondPanel);
                         secondLeft += smallControlWidth + CustomControls.SpaceBetweenControls;
                         break;
@@ -651,8 +651,8 @@ namespace Sales_Tracker
                         left += controlWidth + CustomControls.SpaceBetweenControls;
                         break;
 
-                    case nameof(MainMenu_Form.Column.Quantity):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Quantity], left, Panel);
+                    case nameof(MainMenu_Form.Column.UniqueProducts):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.UniqueProducts], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbers, true, false, Panel);
                         left += controlWidth + CustomControls.SpaceBetweenControls;
                         break;

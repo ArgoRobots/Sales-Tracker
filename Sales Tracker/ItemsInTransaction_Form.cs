@@ -16,7 +16,7 @@ namespace Sales_Tracker
             MainMenu_Form.Column.Category,
             MainMenu_Form.Column.Country,
             MainMenu_Form.Column.Company,
-            MainMenu_Form.Column.Quantity,
+            MainMenu_Form.Column.UniqueProducts,
             MainMenu_Form.Column.PricePerUnit
         ];
         private bool hasChanges = false;

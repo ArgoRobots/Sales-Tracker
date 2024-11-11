@@ -828,7 +828,7 @@ namespace Sales_Tracker.UI
             selectedRow.Cells[MainMenu_Form.Column.Category.ToString()].Value = categoryName;
             selectedRow.Cells[MainMenu_Form.Column.Country.ToString()].Value = country;
             selectedRow.Cells[MainMenu_Form.Column.Company.ToString()].Value = company;
-            selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value = totalQuantity;
+            selectedRow.Cells[MainMenu_Form.Column.UniqueProducts.ToString()].Value = totalQuantity;
 
             // Update charged difference
             decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
@@ -842,7 +842,7 @@ namespace Sales_Tracker.UI
         public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
         {
             // Update charged difference
-            int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.Quantity.ToString()].Value.ToString());
+            int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.UniqueProducts.ToString()].Value.ToString());
             decimal pricePerUnit = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value.ToString());
             decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
             decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());

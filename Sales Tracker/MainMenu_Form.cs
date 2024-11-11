@@ -313,7 +313,7 @@ namespace Sales_Tracker
                 accountants_Chart
             ]);
         }
-        public void ReselectButton()
+        private void ReselectButton()
         {
             if (Purchases_Button.BorderThickness == 2)
             {
@@ -1275,7 +1275,7 @@ namespace Sales_Tracker
             Country,
             Company,
             Date,
-            Quantity,
+            UniqueProducts,
             PricePerUnit,
             Shipping,
             Tax,
@@ -1294,7 +1294,7 @@ namespace Sales_Tracker
             { Column.Country, "Country of origin" },
             { Column.Company, "Company of origin" },
             { Column.Date, "Date" },
-            { Column.Quantity, "Unique products" },
+            { Column.UniqueProducts, "Unique products" },
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
@@ -1313,7 +1313,7 @@ namespace Sales_Tracker
             { Column.Country, "Country of destination" },
             { Column.Company, "Company of origin" },
             { Column.Date, "Date" },
-            { Column.Quantity, "Unique products" },
+            { Column.UniqueProducts, "Unique products" },
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
@@ -1352,7 +1352,7 @@ namespace Sales_Tracker
         // Total labels
         public void AlignTotalLabels()
         {
-            string quantityColumn = Column.Quantity.ToString();
+            string quantityColumn = Column.UniqueProducts.ToString();
             string taxColumn = Column.Tax.ToString();
             string shippingColumn = Column.Shipping.ToString();
             string feeColumn = Column.Fee.ToString();
@@ -1414,7 +1414,7 @@ namespace Sales_Tracker
                 if (!row.Visible) { continue; }
                 totalVisibleRows++;
 
-                totalQuantity += Convert.ToInt32(row.Cells[Column.Quantity.ToString()].Value);
+                totalQuantity += Convert.ToInt32(row.Cells[Column.UniqueProducts.ToString()].Value);
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);

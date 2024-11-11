@@ -24,9 +24,6 @@ namespace Sales_Tracker.Classes
             {
                 Directories.CreateDirectory(Directories.Logs_dir, false);
             }
-
-            CleanupOldLogFiles();
-
             DateTime time = DateTime.Now;
             int count = 0;
             string directory;
@@ -49,6 +46,8 @@ namespace Sales_Tracker.Classes
                 }
                 count++;
             }
+
+            CleanupOldLogFiles();
         }
         private static void CleanupOldLogFiles()
         {
