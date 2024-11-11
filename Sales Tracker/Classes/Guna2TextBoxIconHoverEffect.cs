@@ -8,7 +8,7 @@ namespace Sales_Tracker.Classes
         private static bool isIconHovered = false;
         private static Rectangle iconBounds;
 
-        public static void InitializeIconHoverEffect(Guna2TextBox textbox)
+        public static void Initialize(Guna2TextBox textbox)
         {
             // Calculate icon bounds once
             iconBounds = new Rectangle(
@@ -51,14 +51,14 @@ namespace Sales_Tracker.Classes
                 }
             };
 
-            textbox.MouseLeave += (s, e) =>
+            textbox.MouseLeave += delegate
             {
                 isIconHovered = false;
                 textbox.Invalidate();
             };
 
             // Update icon bounds when control resizes
-            textbox.Resize += (s, e) =>
+            textbox.Resize += delegate
             {
                 iconBounds = new Rectangle(
                     textbox.Width - (textbox.IconRightSize.Width + 5 + textbox.IconRightOffset.X),
@@ -68,7 +68,7 @@ namespace Sales_Tracker.Classes
                 );
             };
 
-            textbox.IconRightClick += (s, e) =>
+            textbox.IconRightClick += delegate
             {
                 textbox.Clear();
             };

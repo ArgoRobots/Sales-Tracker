@@ -358,7 +358,11 @@ namespace Sales_Tracker.Charts
         public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
-            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return;
+            }
 
             ConfigureChartForPie(chart);
 
@@ -433,7 +437,11 @@ namespace Sales_Tracker.Charts
         public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
-            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return;
+            }
 
             ConfigureChartForPie(chart);
 
@@ -509,7 +517,11 @@ namespace Sales_Tracker.Charts
         public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
-            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return;
+            }
 
             ConfigureChartForPie(chart);
 
@@ -584,7 +596,11 @@ namespace Sales_Tracker.Charts
         public static void LoadAccountantsIntoChart(IEnumerable<Guna2DataGridView> dataGridViews, GunaChart chart, PieChartGrouping grouping)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews.ToArray());
-            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart)) { return; }
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return;
+            }
 
             ConfigureChartForPie(chart);
 

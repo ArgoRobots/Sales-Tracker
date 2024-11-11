@@ -109,7 +109,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 if (await Task.Run(ImportSpreadsheet))
                 {
-                    MainMenu_Form.Instance.RefreshDataGridView();
+                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
 
                     CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Imported '{Path.GetFileName(spreadsheetFilePath)}'");
                     CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);

@@ -851,6 +851,7 @@
             Text = "Argo Sales Tracker";
             WindowState = FormWindowState.Maximized;
             FormClosing += MainMenu_form_FormClosing;
+            Load += MainMenu_Form_Load;
             Shown += MainMenu_form_Shown;
             ResizeBegin += MainMenu_Form_ResizeBegin;
             Click += CloseAllPanels;

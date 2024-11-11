@@ -80,7 +80,7 @@ namespace Sales_Tracker.UI
             string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
 
             // Ensure all the English text in this Form has been cached
-            if (CacheAllEnglishTextInForm(control, cacheControlAgain))
+            if (CacheAllEnglishTextInControl(control, cacheControlAgain))
             {
                 SaveEnglishCacheToFile();
             }
@@ -400,7 +400,7 @@ namespace Sales_Tracker.UI
         /// Saves all the text in a Control to englishCache.
         /// </summary>
         /// <returns>True if any text was caches, otherwise False.</returns>
-        private static bool CacheAllEnglishTextInForm(Control control, bool cacheControlAgain)
+        private static bool CacheAllEnglishTextInControl(Control control, bool cacheControlAgain)
         {
             if (!CanControlTranslate(control)) { return false; }
 
@@ -513,7 +513,7 @@ namespace Sales_Tracker.UI
             // Recursively update child controls
             foreach (Control childControl in control.Controls)
             {
-                CacheAllEnglishTextInForm(childControl, cacheControlAgain);
+                CacheAllEnglishTextInControl(childControl, cacheControlAgain);
             }
 
             return true;

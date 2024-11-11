@@ -106,13 +106,13 @@ namespace Sales_Tracker.UI
                         BackColor = Color.Transparent,
                         Tag = text,
                         Anchor = AnchorStyles.Top,
-                        Name = $"{textWithoutWhitespace}_Label"  // This is needed for the language translation
+                        Name = $"NoData_Label"  // This is needed for the language translation
                     };
 
                     control.Controls.Add(label);
-                    CenterLabelInParent(label);
+                    CenterNoDataLabelInControl(control);
 
-                    control.Resize += delegate { CenterLabelInParent(label); };
+                    control.Resize += delegate { CenterNoDataLabelInControl(control); };
 
                     label.BringToFront();
                 }
@@ -129,13 +129,14 @@ namespace Sales_Tracker.UI
                 return true;
             }
         }
-        public static void CenterLabelInParent(Label label)
+        public static void CenterNoDataLabelInControl(Control control)
         {
-            Control parent = label.Parent;
+            string text = ReadOnlyVariables.NoData_text;
+            Label label = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == text);
 
-            if (label != null && parent != null)
+            if (label != null)
             {
-                label.Location = new Point((parent.Width - label.Width) / 2, (parent.Height - label.Height) / 2);
+                label.Location = new Point((control.Width - label.Width) / 2, (control.Height - label.Height) / 2);
             }
         }
         public static void AddNoRecentlyOpenedCompanies(Control parent, int labelWidth)

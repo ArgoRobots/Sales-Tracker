@@ -50,31 +50,21 @@ namespace Sales_Tracker
             _instance = this;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
-
-            CustomControls.ConstructControls();
-            InitiateSearchTimer();
-
+            _isProgramLoading = true;
             CurrencySymbol = Currency.GetSymbol();
 
+            CustomControls.ConstructControls();
+            ConstructControlsForStatistics();
+            InitiateSearchTimer();
             SetCompanyLabel();
-
-            _isProgramLoading = true;
             LoadData();
-            LoadColumnHeader();
+            LoadCustomColumnHeaders();
             UpdateTheme();
-            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
-            _isProgramLoading = false;
-
-            Sales_Button.PerformClick();
-            SortTheDataGridViewByDate();
-
+            Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-
             SetToolTips();
             HideShowingResultsForLabel();
-            AlignTotalLabels();
-            UpdateTotals();
             MouseClickChartManager.InitCharts([Totals_Chart, Distribution_Chart, Profits_Chart]);
             InitTimeRangePanel();
         }
@@ -124,7 +114,7 @@ namespace Sales_Tracker
             AddRowsFromFile(_purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(_sale_DataGridView, SelectedOption.Sales);
         }
-        private void LoadColumnHeader()
+        private void LoadCustomColumnHeaders()
         {
             DataGridViewColumn chargedDifferenceColumn = _purchase_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
@@ -242,7 +232,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void LoadCharts(bool onlyLoadForLineCharts = false)
+        public void LoadOrRefreshCharts(bool onlyLoadForLineCharts = false)
         {
             double total;
             bool isLine = LineGraph_ToggleSwitch.Checked;
@@ -272,9 +262,9 @@ namespace Sales_Tracker
             total = LoadChart.LoadProfitsIntoChart(_sale_DataGridView, _purchase_DataGridView, Profits_Chart, isLine);
             Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
 
-            LanguageManager.UpdateLanguageForControl(Profits_Chart);
-            LanguageManager.UpdateLanguageForControl(Totals_Chart);
-            LanguageManager.UpdateLanguageForControl(Distribution_Chart);
+            LanguageManager.UpdateLanguageForControl(Profits_Chart, true);
+            LanguageManager.UpdateLanguageForControl(Totals_Chart, true);
+            LanguageManager.UpdateLanguageForControl(Distribution_Chart, true);
         }
         public void UpdateTheme()
         {
@@ -331,8 +321,6 @@ namespace Sales_Tracker
         private void SetAccessibleDescriptions()
         {
             CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Profits_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Totals_Chart.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
@@ -342,10 +330,20 @@ namespace Sales_Tracker
         }
 
         // Form event handlers
-        private void MainMenu_form_Shown(object sender, EventArgs e)
+        private void MainMenu_Form_Load(object sender, EventArgs e)
         {
+            Sales_Button.PerformClick();
             _sale_DataGridView.ClearSelection();
 
+            _isProgramLoading = false;
+
+            SortTheDataGridViewByDate();
+            AlignTotalLabels();
+            UpdateTotalLabels();
+            CenterAndResizeControls();
+        }
+        private void MainMenu_form_Shown(object sender, EventArgs e)
+        {
             LoadingPanel.HideBlankLoadingPanel(this);
 
             // This is a bug with Guna Charts V.1.0.8. It has been fixed in V.1.0.9, but this version is broken.
@@ -445,7 +443,7 @@ namespace Sales_Tracker
 
         // Center and resize controls
         private bool wasControlsDropDownAdded;
-        private void CenterAndResizeControls()
+        public void CenterAndResizeControls()
         {
             if (_isProgramLoading) { return; }
 
@@ -471,22 +469,6 @@ namespace Sales_Tracker
             int leftX = (ClientSize.Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2;
             int middleX = leftX + chartWidth + spaceBetweenCharts;
             int rightX = middleX + chartWidth + spaceBetweenCharts;
-
-            // Set positions
-            Totals_Chart.Width = chartWidth;
-            Totals_Chart.Left = leftX;
-
-            Distribution_Chart.Size = new Size(chartWidth, chartHeight);
-            Distribution_Chart.Left = middleX;
-
-            Profits_Chart.Size = new Size(chartWidth, chartHeight);
-            Profits_Chart.Left = rightX;
-
-            _selectedDataGridView.Size = new Size(ClientSize.Width - 65, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
-            _selectedDataGridView.Location = new Point((ClientSize.Width - _selectedDataGridView.Width) / 2, ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - _selectedDataGridView.Height);
-
-            Total_Panel.Location = new Point(_selectedDataGridView.Left, _selectedDataGridView.Top + _selectedDataGridView.Height);
-            Total_Panel.Width = _selectedDataGridView.Width;
 
             if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
             {
@@ -524,17 +506,32 @@ namespace Sales_Tracker
                 SetChartPosition(salesVsExpenses_Chart, chartSize, middleX, bottomRowY);
                 SetChartPosition(averageOrderValue_Chart, chartSize, rightX, bottomRowY);
             }
+            else
+            {
+                // Set positions
+                Totals_Chart.Width = chartWidth;
+                Totals_Chart.Left = leftX;
+
+                Distribution_Chart.Size = new Size(chartWidth, chartHeight);
+                Distribution_Chart.Left = middleX;
+
+                Profits_Chart.Size = new Size(chartWidth, chartHeight);
+                Profits_Chart.Left = rightX;
+
+                _selectedDataGridView.Size = new Size(ClientSize.Width - 65,
+                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - Totals_Chart.Height - Totals_Chart.Top - 15);
+                _selectedDataGridView.Location = new Point((ClientSize.Width - _selectedDataGridView.Width) / 2,
+                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - _selectedDataGridView.Height);
+
+                Total_Panel.Location = new Point(_selectedDataGridView.Left, _selectedDataGridView.Top + _selectedDataGridView.Height);
+                Total_Panel.Width = _selectedDataGridView.Width;
+            }
         }
         private static void SetChartPosition(GunaChart chart, Size size, int left, int top)
         {
             chart.Size = size;
             chart.Location = new Point(left, top);
-
-            Label label = chart.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == ReadOnlyVariables.NoData_text);
-            if (label != null)
-            {
-                LabelManager.CenterLabelInParent(label);
-            }
+            LabelManager.CenterNoDataLabelInControl(chart);
         }
         private void AddControlsDropDown()
         {
@@ -667,15 +664,14 @@ namespace Sales_Tracker
             _purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
             Selected = SelectedOption.Purchases;
-            AddMainControls();
+            ShowMainControls();
             _selectedDataGridView = _purchase_DataGridView;
             _purchase_DataGridView.Visible = true;
             _sale_DataGridView.Visible = false;
             LanguageManager.UpdateLanguageForControl(Purchase_DataGridView);
             CenterAndResizeControls();
-            RefreshDataGridView();
+            RefreshDataGridViewAndCharts();
 
-            UnselectButtons();
             SelectButton(Purchases_Button);
 
             _purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -690,14 +686,13 @@ namespace Sales_Tracker
             _sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
             Selected = SelectedOption.Sales;
-            AddMainControls();
+            ShowMainControls();
             _selectedDataGridView = _sale_DataGridView;
             _sale_DataGridView.Visible = true;
             _purchase_DataGridView.Visible = false;
             CenterAndResizeControls();
-            RefreshDataGridView();
+            RefreshDataGridViewAndCharts();
 
-            UnselectButtons();
             SelectButton(Sales_Button);
 
             _sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -709,13 +704,10 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             if (Selected == SelectedOption.Statistics) { return; }
 
-            ConstructControlsForStatistics();
-
             Selected = SelectedOption.Statistics;
             AddStatisticsControls();
             CenterAndResizeControls();
 
-            UnselectButtons();
             SelectButton(Statistics_Button);
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
@@ -751,7 +743,7 @@ namespace Sales_Tracker
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            LoadCharts(true);
+            LoadOrRefreshCharts(true);
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -836,8 +828,9 @@ namespace Sales_Tracker
         }
 
         // Methods for Event handlers
-        private static void SelectButton(Guna2Button button)
+        private void SelectButton(Guna2Button button)
         {
+            UnselectButtons();
             button.BorderThickness = 2;
             button.BorderColor = CustomColors.AccentBlue;
         }
@@ -939,11 +932,11 @@ namespace Sales_Tracker
         // Search DataGridView methods
         public void SortDataGridView()
         {
-            ApplyFilters();
-            LoadCharts();
-            UpdateTotals();
+            ApplyFiltersToDataGridView();
+            LoadOrRefreshCharts();
+            UpdateTotalLabels();
         }
-        private void ApplyFilters()
+        private void ApplyFiltersToDataGridView()
         {
             if (_sortFromDate != null && _sortToDate != null)
             {
@@ -1385,21 +1378,14 @@ namespace Sales_Tracker
             Price_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
             Price_Label.Width = _selectedDataGridView.Columns[totalPriceColumn].Width;
         }
-        public void UpdateTotals()
+        public void UpdateTotalLabels()
         {
             if (Selected != SelectedOption.Purchases && Selected != SelectedOption.Sales)
             {
                 return;
             }
 
-            if (!DataGridViewManager.HasVisibleRows(_selectedDataGridView))
-            {
-                Total_Panel.Visible = false;
-            }
-            else
-            {
-                Total_Panel.Visible = true;
-            }
+            Total_Panel.Visible = DataGridViewManager.HasVisibleRows(_selectedDataGridView);
 
             int totalVisibleRows = 0;
             int totalQuantity = 0;
@@ -1550,7 +1536,7 @@ namespace Sales_Tracker
                 Total_Panel
             ];
         }
-        private void AddMainControls()
+        private void ShowMainControls()
         {
             if (statisticsCharts == null) { return; }
 
@@ -1562,8 +1548,6 @@ namespace Sales_Tracker
             {
                 control.Visible = false;
             }
-
-            CenterAndResizeControls();
         }
 
         /// <summary>
@@ -1571,11 +1555,6 @@ namespace Sales_Tracker
         /// </summary>
         private void ConstructControlsForStatistics()
         {
-            if (countriesOfOrigin_Chart != null)
-            {
-                return;
-            }
-
             countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products", "countriesOfOrigin_Chart");
             companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products", "companiesOfOrigin_Chart");
             countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products", "countriesOfDestination_Chart");
@@ -1620,6 +1599,8 @@ namespace Sales_Tracker
         }
         private void AddStatisticsControls()
         {
+            LoadOrRefreshStatisticsCharts();
+
             foreach (Control control in statisticsCharts)
             {
                 control.Visible = true;
@@ -1628,11 +1609,8 @@ namespace Sales_Tracker
             {
                 control.Visible = false;
             }
-
-            UpdateStatisticsCharts();
-            CenterAndResizeControls();
         }
-        private void UpdateStatisticsCharts()
+        private void LoadOrRefreshStatisticsCharts()
         {
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
@@ -1643,12 +1621,12 @@ namespace Sales_Tracker
             LoadChart.LoadSalesVsExpensesChart(_purchase_DataGridView, _sale_DataGridView, salesVsExpenses_Chart, isLineChart);
             LoadChart.LoadAverageOrderValueChart(_sale_DataGridView, averageOrderValue_Chart, isLineChart);
 
-            LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart);
-            LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart);
-            LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart);
-            LanguageManager.UpdateLanguageForControl(accountants_Chart);
-            LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart);
-            LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
+            LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart, true);
+            LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart, true);
+            LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart, true);
+            LanguageManager.UpdateLanguageForControl(accountants_Chart, true);
+            LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart, true);
+            LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart, true);
         }
 
         // Settings
@@ -1692,11 +1670,11 @@ namespace Sales_Tracker
                 RightClickGunaChartMenu.RightClickGunaChart_Panel
             ];
         }
-        public void RefreshDataGridView()
+        public void RefreshDataGridViewAndCharts()
         {
-            ApplyFilters();
-            LoadCharts();
-            UpdateTotals();
+            ApplyFiltersToDataGridView();
+            LoadOrRefreshCharts();
+            UpdateTotalLabels();
             _selectedDataGridView.ClearSelection();
         }
         public static void UpdateMainMenuFormText(Form instance)

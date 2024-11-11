@@ -80,6 +80,7 @@ namespace Sales_Tracker.UI
         // DataGridView event handlers
         public static void DataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
+            if (MainMenu_Form.IsProgramLoading) { return; }
             MainMenu_Form.Instance.AlignTotalLabels();
         }
         public static void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
@@ -168,8 +169,8 @@ namespace Sales_Tracker.UI
         {
             if (selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
-                MainMenu_Form.Instance.UpdateTotals();
-                MainMenu_Form.Instance.LoadCharts();
+                MainMenu_Form.Instance.UpdateTotalLabels();
+                MainMenu_Form.Instance.LoadOrRefreshCharts();
                 MainMenu_Form.SaveDataGridViewToFileAsJson(dataGridView, selected);
             }
             else if (selected is MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales or

@@ -32,7 +32,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             CenterSelectedDataGridView();
             SetTheme();
-            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
+            Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
             ShowingResultsFor_Label.Visible = false;

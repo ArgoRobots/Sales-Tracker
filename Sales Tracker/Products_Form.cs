@@ -33,7 +33,7 @@ namespace Sales_Tracker
             CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
-            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
+            Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             ShowingResultsFor_Label.Visible = false;
             LanguageManager.UpdateLanguageForControl(this);

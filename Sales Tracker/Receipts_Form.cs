@@ -37,7 +37,7 @@ namespace Sales_Tracker
             MainMenu_Form.IsProgramLoading = false;
 
             SetTheme();
-            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
+            Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);

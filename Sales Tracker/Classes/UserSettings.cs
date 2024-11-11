@@ -110,6 +110,8 @@ namespace Sales_Tracker.Classes
                 LanguageManager.UpdateLanguageForControl(control);
             }
 
+            MainMenu_Form.Instance.CenterAndResizeControls();
+
             // Remove previous messages that mention language changes
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the language to"));
 
@@ -131,8 +133,8 @@ namespace Sales_Tracker.Classes
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchase_DataGridView);
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sale_DataGridView);
 
-            MainMenu_Form.Instance.LoadCharts();
-            MainMenu_Form.Instance.UpdateTotals();
+            MainMenu_Form.Instance.LoadOrRefreshCharts();
+            MainMenu_Form.Instance.UpdateTotalLabels();
 
             MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
             MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);

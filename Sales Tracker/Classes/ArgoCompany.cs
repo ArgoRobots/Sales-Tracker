@@ -292,8 +292,8 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.UpdateMainMenuFormText(MainMenu_Form.Instance);
             MainMenu_Form.Instance.SetCompanyLabel();
 
-            MainMenu_Form.Instance.UpdateTotals();
-            MainMenu_Form.Instance.LoadCharts();
+            MainMenu_Form.Instance.UpdateTotalLabels();
+            MainMenu_Form.Instance.LoadOrRefreshCharts();
             MainMenu_Form.Instance.HideShowingResultsForLabel();
 
             bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchase_DataGridView) &&

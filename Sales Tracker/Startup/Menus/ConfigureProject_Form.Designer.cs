@@ -277,7 +277,7 @@ namespace Sales_Tracker.Startup.Menus
             Currency_TextBox.SelectedText = "";
             Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             Currency_TextBox.ShortcutsEnabled = false;
-            Currency_TextBox.Size = new Size(255, 45);
+            Currency_TextBox.Size = new Size(255, 50);
             Currency_TextBox.TabIndex = 275;
             // 
             // ConfigureProject_Form
@@ -304,7 +304,7 @@ namespace Sales_Tracker.Startup.Menus
             Name = "ConfigureProject_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Shown += ConfigureProject_Form_Shown;
-            Click += ConfigureProject_form_Click;
+            Click += ConfigureProject_Form_Click;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).EndInit();
             ResumeLayout(false);

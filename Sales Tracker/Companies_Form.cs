@@ -31,7 +31,7 @@ namespace Sales_Tracker
             CenterSelectedDataGridView();
             LoadCompanies();
             Theme.SetThemeForForm(this);
-            Guna2TextBoxIconHoverEffect.InitializeIconHoverEffect(Search_TextBox);
+            Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LabelManager.ShowTotalLabel(Total_Label, company_DataGridView);

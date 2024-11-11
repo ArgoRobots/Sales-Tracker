@@ -1046,8 +1046,8 @@ namespace Sales_Tracker
                 && selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
             {
 
-                MainMenu_Form.Instance.UpdateTotals();
-                MainMenu_Form.Instance.LoadCharts();
+                MainMenu_Form.Instance.UpdateTotalLabels();
+                MainMenu_Form.Instance.LoadOrRefreshCharts();
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
             }

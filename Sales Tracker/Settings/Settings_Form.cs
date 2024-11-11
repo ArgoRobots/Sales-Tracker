@@ -130,7 +130,7 @@ namespace Sales_Tracker.Settings
             MainMenu_Form.Instance.UpdateTheme();
             UpdateTheme();
 
-            MainMenu_Form.Instance.LoadCharts();
+            MainMenu_Form.Instance.LoadOrRefreshCharts();
 
             List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
 

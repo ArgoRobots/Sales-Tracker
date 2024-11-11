@@ -111,7 +111,7 @@ namespace Sales_Tracker.Startup.Menus
 
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void ConfigureProject_form_Click(object sender, EventArgs e)
+        private void ConfigureProject_Form_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
             ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
