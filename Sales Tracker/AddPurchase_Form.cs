@@ -739,9 +739,9 @@ namespace Sales_Tracker
         }
         private void ConstructControlsForMultipleProducts()
         {
-            byte searchBoxMaxHeight = 150;
-            int panelHeight = panelsForMultipleProducts_List.Count == 0 ? initialHeightForPanel : initialHeightForPanel - 20;
-            int textBoxTop = panelsForMultipleProducts_List.Count == 0 ? 28 + CustomControls.SpaceBetweenControls : CustomControls.SpaceBetweenControls;
+            byte searchBoxMaxHeight = 150, spaceForLabels = 28;
+            int panelHeight = panelsForMultipleProducts_List.Count == 0 ? initialHeightForPanel : initialHeightForPanel - spaceForLabels;
+            int textBoxTop = panelsForMultipleProducts_List.Count == 0 ? spaceForLabels + CustomControls.SpaceBetweenControls : CustomControls.SpaceBetweenControls;
 
             Guna2Panel panel = new()
             {
