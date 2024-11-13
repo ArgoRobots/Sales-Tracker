@@ -346,19 +346,6 @@ namespace Sales_Tracker
         {
             LoadingPanel.HideBlankLoadingPanel(this);
 
-            // This is a bug with Guna Charts V.1.0.8. It has been fixed in V.1.0.9, but this version is broken.
-            // So this can probably be removed in V.1.1.0.
-            // This does not solve the problem, but it makes it better.
-            BeginInvoke(() =>
-            {
-                Totals_Chart.Invalidate();
-                Totals_Chart.Refresh();
-                Distribution_Chart.Invalidate();
-                Distribution_Chart.Refresh();
-                Profits_Chart.Invalidate();
-                Profits_Chart.Refresh();
-            });
-
             Log.Write(2, "Argo Sales Tracker has finished starting");
         }
         private void MainMenu_Form_ResizeBegin(object sender, EventArgs e)

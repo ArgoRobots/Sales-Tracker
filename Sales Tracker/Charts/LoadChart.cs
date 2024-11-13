@@ -1029,19 +1029,18 @@ namespace Sales_Tracker.Charts
         }
         private static void ApplyCurrencyFormatToDataset(object dataset)
         {
-            // This can be added in Guna Charts V.1.0.9, but this version is broken, so wait until V.1.1.0
             switch (dataset)
             {
                 case GunaBarDataset barDataset:
-                    //   barDataset.YFormat = "{0:C}";
+                    barDataset.YFormat = "{0:C}";
                     break;
 
                 case GunaLineDataset lineDataset:
-                    //   lineDataset.YFormat = "{0:C}";
+                    lineDataset.YFormat = "{0:C}";
                     break;
 
                 case GunaPieDataset pieDataset:
-                    //    pieDataset.YFormat = "{0:C}";
+                    pieDataset.YFormat = "{0:C}";
                     break;
             }
         }

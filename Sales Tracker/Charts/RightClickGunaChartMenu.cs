@@ -25,47 +25,34 @@ namespace Sales_Tracker.Charts
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
             int newBtnWidth = CustomControls.PanelBtnWidth - 50;
 
-            Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, false, flowPanel);
+            Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
             button.Click += ResetZoom;
 
-            button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, false, flowPanel);
+            button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
             button.Click += SaveImage;
 
             _rightClickGunaChart_Panel = panel;
         }
         private static void ResetZoom(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
-            //GunaChart chart = (GunaChart)rightClickGunaChart_Panel.Tag;
-            // Wait until the next update for Guna Charts to implement this
-            //chart.ResetZoom();
+            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            chart.ResetZoom();
         }
         private static void SaveImage(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
             GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
-            string filepath;
 
-            // Select folder
-            using (Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new())
+            using SaveFileDialog dialog = new();
+            string date = Tools.FormatDate(DateTime.Now);
+            dialog.FileName = $"{Directories.CompanyName} {chart.Title.Text.ToLower()} {date}";
+            dialog.DefaultExt = "png";
+            dialog.Filter = "PNG Image|*.png";
+            dialog.Title = "Save Chart Image";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    string date = Tools.FormatDate(DateTime.Now);
-                    filepath = Path.Combine(
-                        dialog.SelectedPath,
-                        $"{chart.Title.Text}-{date}{ArgoFiles.PngFileExtension}"
-                    );
-                }
-                else
-                {
-                    return;
-                }
+                chart.Export(dialog.FileName);
             }
-
-            MessageBox.Show(filepath);
-            // Wait until the next update for Guna Charts to implement this
-            //chart.Export();
         }
         public static void ShowMenu(GunaChart chart, Point mousePosition)
         {

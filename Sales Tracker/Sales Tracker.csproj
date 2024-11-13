@@ -12,7 +12,7 @@
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    
+
     <!-- Disable null warnings -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
     <NoWarn>$(NoWarn);CS8625</NoWarn>
