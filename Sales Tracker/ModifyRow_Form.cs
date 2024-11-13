@@ -17,8 +17,6 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
-
             selectedRow = row;
             selectedTag = row.DataGridView.Tag.ToString();
             receiptFilePath = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
@@ -33,6 +31,7 @@ namespace Sales_Tracker
             AttachChangeHandlers();
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this, true);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         public void UpdateTheme()
         {
@@ -552,7 +551,7 @@ namespace Sales_Tracker
                         left += controlWidth;
                         break;
 
-                    case nameof(MainMenu_Form.Column.UniqueProducts):
+                    case nameof(MainMenu_Form.Column.TotalItems):
                         secondRow = true;
                         if (cellValue == ReadOnlyVariables.EmptyCell) { continue; }
 
@@ -563,7 +562,7 @@ namespace Sales_Tracker
                             continue;
                         }
 
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.UniqueProducts], secondLeft, SecondPanel);
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.TotalItems], secondLeft, SecondPanel);
                         ConstructTextBox(secondLeft, columnName, cellValue, 10, CustomControls.KeyPressValidation.OnlyNumbers, false, true, SecondPanel);
                         secondLeft += smallControlWidth + CustomControls.SpaceBetweenControls;
                         break;
@@ -651,8 +650,8 @@ namespace Sales_Tracker
                         left += controlWidth + CustomControls.SpaceBetweenControls;
                         break;
 
-                    case nameof(MainMenu_Form.Column.UniqueProducts):
-                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.UniqueProducts], left, Panel);
+                    case nameof(MainMenu_Form.Column.TotalItems):
+                        ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.TotalItems], left, Panel);
                         ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.OnlyNumbers, true, false, Panel);
                         left += controlWidth + CustomControls.SpaceBetweenControls;
                         break;

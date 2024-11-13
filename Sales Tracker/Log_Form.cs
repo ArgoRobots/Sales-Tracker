@@ -19,7 +19,6 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
 
@@ -31,6 +30,8 @@ namespace Sales_Tracker
 
             // Select "Enable autoscroll"
             AutoScroll_ComboBox.SelectedIndex = 0;
+
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
 
         // Form event handlers

@@ -17,7 +17,6 @@ namespace Sales_Tracker
             InitializeComponent();
             DoubleBuffered = true;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             Theme.SetThemeForForm(this);
 
             SetMessageBox(title, message, icon, buttons);
@@ -30,6 +29,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(Ok_Button);
             LanguageManager.UpdateLanguageForControl(Cancel_Button);
             LanguageManager.UpdateLanguageForControl(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetAccessibleDescriptions(bool translateMessage)
         {

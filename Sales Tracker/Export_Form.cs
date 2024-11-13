@@ -11,10 +11,10 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         public void UpdateTheme()
         {

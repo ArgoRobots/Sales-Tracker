@@ -112,7 +112,7 @@ namespace Sales_Tracker.Charts
                 }
 
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.UniqueProducts.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.TotalItems.ToString()].Value);
                 double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
                 grandTotal += total;
@@ -170,7 +170,7 @@ namespace Sales_Tracker.Charts
                 double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
                 double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
                 double fee = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Fee.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.UniqueProducts.ToString()].Value);
+                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.TotalItems.ToString()].Value);
                 string category = row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString();
 
                 totalTax += tax;
@@ -917,7 +917,6 @@ namespace Sales_Tracker.Charts
                 CustomColors.PastelGreen,
                 Color.FromArgb(102, 204, 153),  // Muted teal
                 Color.FromArgb(204, 102, 153),  // Soft pink
-                Color.FromArgb(153, 204, 204),  // Soft aqua
                 Color.FromArgb(153, 102, 204),  // Soft purple
                 Color.FromArgb(204, 153, 102),  // Soft orange
                 Color.FromArgb(102, 178, 178),  // Sea green

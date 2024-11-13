@@ -20,8 +20,6 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
-
             UpdateTheme();
             SetAccessibleDescriptions();
             InitializeTimeSpanOptions();
@@ -29,6 +27,7 @@ namespace Sales_Tracker
 
             ResetControls();
             SetCustomRangeControls();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ResetControls()
         {

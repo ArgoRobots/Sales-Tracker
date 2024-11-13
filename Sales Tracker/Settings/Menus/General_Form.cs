@@ -18,15 +18,13 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
-
             InitComboBoxDataSources();
-
             UpdateTheme();
             SetAccessibleDescription();
             LanguageManager.UpdateLanguageForControl(this);
             UpdateControls();
             AddEventHandlersToTextBoxes();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void InitComboBoxDataSources()
         {

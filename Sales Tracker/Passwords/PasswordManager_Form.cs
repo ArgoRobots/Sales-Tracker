@@ -10,13 +10,12 @@ namespace Sales_Tracker.Passwords
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Modify_RadioButton.Checked = true;
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
-
             Message_Label.MaximumSize = new Size(ClientSize.Width - 40, 0);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
         {

@@ -28,11 +28,10 @@ namespace Sales_Tracker.Settings
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
-
             UpdateTheme();
             General_Button.PerformClick();
             LanguageManager.UpdateLanguageForControl(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void UpdateTheme()
         {

@@ -25,7 +25,7 @@ namespace Sales_Tracker.Startup.Menus
             fileWatchers = [];
 
             LoadingPanel.InitBlankLoadingPanel();
-            LoadingPanel.ShowBlankLoadingPanel(this);
+            LoadingPanel.InitLoadingPanel();
 
             CustomColors.SetColors();
             Directories.SetUniversalDirectories();
@@ -40,6 +40,7 @@ namespace Sales_Tracker.Startup.Menus
             LoadListOfRecentProjects();
             SetFlowLayoutPanel();
             SetTheme();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetFlowLayoutPanel()
         {

@@ -20,16 +20,14 @@ namespace Sales_Tracker.Startup.Menus
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             SearchBox.ConstructSearchBox();
-
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-
             SetDefaultProjectDirectory();
             SetDefaultTextInTextBoxes();
             AddEventHandlersToTextBoxes();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         public void UpdateTheme()
         {

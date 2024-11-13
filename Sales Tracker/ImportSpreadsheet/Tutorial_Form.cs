@@ -10,9 +10,9 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void UpdateTheme()
         {

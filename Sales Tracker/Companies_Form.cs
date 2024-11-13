@@ -23,8 +23,6 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
-
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
@@ -38,6 +36,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.Visible = false;
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(company_DataGridView);
             AddEventHandlersToTextBoxes();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void LoadCompanies()
         {

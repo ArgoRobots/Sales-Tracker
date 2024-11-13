@@ -50,8 +50,6 @@ namespace Sales_Tracker.UI
         // loadingPanel
         public static void InitLoadingPanel()
         {
-            if (_loadingPanel != null) { return; }
-
             _loadingPanel = new Panel
             {
                 BackColor = CustomColors.MainBackground

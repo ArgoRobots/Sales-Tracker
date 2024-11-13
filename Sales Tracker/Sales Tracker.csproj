@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Sales_Tracker</RootNamespace>
@@ -10,9 +9,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-    <TargetFramework>net8.0-windows10.0.26100.1</TargetFramework>
-    <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
-
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    
     <!-- Disable null warnings -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
     <NoWarn>$(NoWarn);CS8625</NoWarn>
@@ -22,28 +22,24 @@
     <NoWarn>$(NoWarn);CS8604</NoWarn>
     <NoWarn>$(NoWarn);CS8618</NoWarn>
     <NoWarn>$(NoWarn);CS8622</NoWarn>
-    <!-- Disable "Use collection expression for fluent" -->
     <NoWarn>$(NoWarn);IDE0305</NoWarn>
-    <!-- Disable "Use range operator" -->
     <NoWarn>$(NoWarn);IDE0057</NoWarn>
 
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SignAssembly>False</SignAssembly>
-    <SupportedOSPlatformVersion>10.0.26100.1</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <WindowsSdkSupportedTargetPlatformVersion Include="10.0.26100.1" WindowsSdkPackageVersion="10.0.26100.1" MinimumNETVersion="6.0" />
-		<SdkSupportedTargetPlatformVersion Include="10.0.26100.1" />
-		<PackageReference Include="ClosedXML" Version="0.104.1" />
-    <PackageReference Include="Guna.Charts.WinForms" Version="1.0.8" />
+    <!-- Keep only the necessary packages and remove conflicting SDK references -->
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
+    <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
     <PackageReference Include="SharpCompress" Version="0.38.0" />
-    <PackageReference Include="System.IO.Packaging" Version="8.0.1" />
+    <PackageReference Include="System.IO.Packaging" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

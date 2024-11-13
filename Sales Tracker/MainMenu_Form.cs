@@ -49,7 +49,6 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             _isProgramLoading = true;
             CurrencySymbol = Currency.GetSymbol();
 
@@ -67,6 +66,7 @@ namespace Sales_Tracker
             HideShowingResultsForLabel();
             MouseClickChartManager.InitCharts([Totals_Chart, Distribution_Chart, Profits_Chart]);
             InitTimeRangePanel();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetToolTips()
         {
@@ -1268,7 +1268,7 @@ namespace Sales_Tracker
             Country,
             Company,
             Date,
-            UniqueProducts,
+            TotalItems,
             PricePerUnit,
             Shipping,
             Tax,
@@ -1287,7 +1287,7 @@ namespace Sales_Tracker
             { Column.Country, "Country of origin" },
             { Column.Company, "Company of origin" },
             { Column.Date, "Date" },
-            { Column.UniqueProducts, "Unique products" },
+            { Column.TotalItems, "Total items" },
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
@@ -1306,7 +1306,7 @@ namespace Sales_Tracker
             { Column.Country, "Country of destination" },
             { Column.Company, "Company of origin" },
             { Column.Date, "Date" },
-            { Column.UniqueProducts, "Unique products" },
+            { Column.TotalItems, "Total items" },
             { Column.PricePerUnit, "Price per unit" },
             { Column.Shipping, "Shipping" },
             { Column.Tax, "Tax" },
@@ -1345,7 +1345,7 @@ namespace Sales_Tracker
         // Total labels
         public void AlignTotalLabels()
         {
-            string quantityColumn = Column.UniqueProducts.ToString();
+            string quantityColumn = Column.TotalItems.ToString();
             string taxColumn = Column.Tax.ToString();
             string shippingColumn = Column.Shipping.ToString();
             string feeColumn = Column.Fee.ToString();
@@ -1400,7 +1400,7 @@ namespace Sales_Tracker
                 if (!row.Visible) { continue; }
                 totalVisibleRows++;
 
-                totalQuantity += Convert.ToInt32(row.Cells[Column.UniqueProducts.ToString()].Value);
+                totalQuantity += Convert.ToInt32(row.Cells[Column.TotalItems.ToString()].Value);
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);

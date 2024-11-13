@@ -20,8 +20,6 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             _instance = this;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
-
             isFormLoading = true;
             UpdateControls();
             isFormLoading = false;
@@ -31,6 +29,7 @@ namespace Sales_Tracker.Settings.Menus
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             CenterEncryptControls();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         public void UpdateTheme()
         {

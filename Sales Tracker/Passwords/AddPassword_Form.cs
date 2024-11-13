@@ -10,10 +10,10 @@ namespace Sales_Tracker.Passwords
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
         {

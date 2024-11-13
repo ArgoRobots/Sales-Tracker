@@ -19,7 +19,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
 
             oldOption = MainMenu_Form.Instance.Selected;
             InitLoadingComponents();
@@ -29,6 +28,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
             AlignControls();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         public void UpdateTheme()
         {

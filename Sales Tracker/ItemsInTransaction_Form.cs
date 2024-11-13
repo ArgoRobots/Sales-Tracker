@@ -16,7 +16,7 @@ namespace Sales_Tracker
             MainMenu_Form.Column.Category,
             MainMenu_Form.Column.Country,
             MainMenu_Form.Column.Company,
-            MainMenu_Form.Column.UniqueProducts,
+            MainMenu_Form.Column.TotalItems,
             MainMenu_Form.Column.PricePerUnit
         ];
         private bool hasChanges = false;
@@ -27,7 +27,6 @@ namespace Sales_Tracker
             InitializeComponent();
             DataGridViewManager.SelectedRowInMainMenu = row;
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
 
             oldOption = MainMenu_Form.Instance.Selected;
             oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
@@ -46,6 +45,8 @@ namespace Sales_Tracker
             Items_DataGridView.CellValueChanged += delegate { hasChanges = true; };
             Items_DataGridView.RowsAdded += delegate { hasChanges = true; };
             Items_DataGridView.RowsRemoved += delegate { hasChanges = true; };
+
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetTitle()
         {

@@ -19,8 +19,6 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
-
             AddEventHandlersToTextBoxes();
             Date_DateTimePicker.Value = DateTime.Now;
             CheckIfProductsExist();
@@ -30,6 +28,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
             Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType)})";
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -128,7 +127,7 @@ namespace Sales_Tracker
 
             if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
-                if (!AddSinglePurchase()) { return; }
+                if (!AddPurchase()) { return; }
             }
             // When the user selects "multiple items in this order" but only adds one, treat it as one
             else if (panelsForMultipleProducts_List.Count == 1)
@@ -139,9 +138,9 @@ namespace Sales_Tracker
                 Quantity_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.quantity.ToString(), false).FirstOrDefault()).Text;
                 PricePerUnit_TextBox.Text = ((Guna2TextBox)singlePanel.Controls.Find(TextBoxnames.pricePerUnit.ToString(), false).FirstOrDefault()).Text;
 
-                if (!AddSinglePurchase()) { return; }
+                if (!AddPurchase()) { return; }
             }
-            else if (!AddMultiplePurchases())
+            else if (!AddPurchaseWithMultipleItems())
             {
                 return;
             }
@@ -156,7 +155,7 @@ namespace Sales_Tracker
                 if (addButton == null)
                 {
                     ConstructFlowPanel();
-                    CosntructAddButton();
+                    ConstructAddButton();
                     ConstructControlsForMultipleProducts();
                 }
                 SetControlsForMultipleProducts();
@@ -211,7 +210,7 @@ namespace Sales_Tracker
             Charged_TextBox.Clear();
             Notes_TextBox.Clear();
         }
-        private bool AddSinglePurchase()
+        private bool AddPurchase()
         {
             string purchaseNumber = OrderNumber_TextBox.Text.Trim();
 
@@ -359,7 +358,7 @@ namespace Sales_Tracker
 
             return true;
         }
-        private bool AddMultiplePurchases()
+        private bool AddPurchaseWithMultipleItems()
         {
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
 
@@ -597,63 +596,66 @@ namespace Sales_Tracker
         }
 
         // Methods for multiple items
-        private List<Control> GetControlsForMultipleProducts()
+        private List<Control> GetControlsForSingleProduct()
         {
             return [ProductName_TextBox, ProductName_Label, Quantity_TextBox, Quantity_Label, PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte textBoxHeight = 48, circleButtonHeight = 38, extraSpaceForBottom = 210, spaceBetweenPanels = 10,
-               initialHeightForPanel = 88, spaceOnSidesOfPanel = 100, flowPanelMargin = 6;
-        private readonly short initialWidthForPanel = 673, flowPanelMaxHeight = 300;
+        private readonly byte panelAndTextBoxHeight = 45, labelPanelHeight = 30, circleButtonHeight = 38, spaceOnSidesOfPanel = 100;
+        private readonly short panelWidth = 673, flowPanelMaxHeight = 300, topForPanels = 570;
         private void SetControlsForSingleProduct()
         {
+            byte space = CustomControls.SpaceBetweenControls;
+
             // Center controls
-            Currency_TextBox.Left = (ClientSize.Width - Currency_TextBox.Width - CustomControls.SpaceBetweenControls -
-                OrderNumber_TextBox.Width - CustomControls.SpaceBetweenControls -
-                AccountantName_TextBox.Width - CustomControls.SpaceBetweenControls -
-                ProductName_TextBox.Width - CustomControls.SpaceBetweenControls -
+            Currency_TextBox.Left = (ClientSize.Width -
+                Currency_TextBox.Width - space -
+                OrderNumber_TextBox.Width - space -
+                AccountantName_TextBox.Width - space -
+                ProductName_TextBox.Width - space -
                 Receipt_Button.Width) / 2;
 
             Currency_Label.Left = Currency_TextBox.Left;
-            OrderNumber_TextBox.Left = Currency_TextBox.Right + CustomControls.SpaceBetweenControls;
+            OrderNumber_TextBox.Left = Currency_TextBox.Right + space;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
-            AccountantName_TextBox.Left = OrderNumber_TextBox.Right + CustomControls.SpaceBetweenControls;
+            AccountantName_TextBox.Left = OrderNumber_TextBox.Right + space;
             AccountantName_Label.Left = AccountantName_TextBox.Left;
-            ProductName_TextBox.Left = AccountantName_TextBox.Right + CustomControls.SpaceBetweenControls;
+            ProductName_TextBox.Left = AccountantName_TextBox.Right + space;
             ProductName_Label.Left = ProductName_TextBox.Left;
-            Receipt_Button.Left = ProductName_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Receipt_Button.Left = ProductName_TextBox.Right + space;
 
             Date_DateTimePicker.Left = (ClientSize.Width -
-                Date_DateTimePicker.Width - CustomControls.SpaceBetweenControls -
-                Quantity_TextBox.Width - CustomControls.SpaceBetweenControls -
-                PricePerUnit_TextBox.Width - CustomControls.SpaceBetweenControls -
-                Shipping_TextBox.Width - CustomControls.SpaceBetweenControls -
-                Tax_TextBox.Width - CustomControls.SpaceBetweenControls -
-                Fee_TextBox.Width - CustomControls.SpaceBetweenControls -
-                Charged_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Date_DateTimePicker.Width - space -
+                Quantity_TextBox.Width - space -
+                PricePerUnit_TextBox.Width - space -
+                Shipping_TextBox.Width - space -
+                Tax_TextBox.Width - space -
+                Fee_TextBox.Width - space -
+                Charged_TextBox.Width - space -
                 Discount_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
-            Quantity_TextBox.Left = Date_DateTimePicker.Right + CustomControls.SpaceBetweenControls;
+            Quantity_TextBox.Left = Date_DateTimePicker.Right + space;
             Quantity_Label.Left = Quantity_TextBox.Left;
-            PricePerUnit_TextBox.Left = Quantity_TextBox.Right + CustomControls.SpaceBetweenControls;
+            PricePerUnit_TextBox.Left = Quantity_TextBox.Right + space;
             PricePerUnit_Label.Left = PricePerUnit_TextBox.Left;
-            Shipping_TextBox.Left = PricePerUnit_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Shipping_TextBox.Left = PricePerUnit_TextBox.Right + space;
             Shipping_Label.Left = Shipping_TextBox.Left;
-            Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Tax_TextBox.Left = Shipping_TextBox.Right + space;
             Tax_Label.Left = Tax_TextBox.Left;
-            Fee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Fee_TextBox.Left = Tax_TextBox.Right + space;
             Fee_Label.Left = Fee_TextBox.Left;
-            Discount_TextBox.Left = Fee_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Discount_TextBox.Left = Fee_TextBox.Right + space;
             Discount_Label.Left = Discount_TextBox.Left;
-            Charged_TextBox.Left = Discount_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Charged_TextBox.Left = Discount_TextBox.Right + space;
             Charged_Label.Left = Charged_TextBox.Left;
 
             // Add controls
-            foreach (Control control in GetControlsForMultipleProducts())
+            foreach (Control control in GetControlsForSingleProduct())
             {
                 Controls.Add(control);
             }
 
+            labelPanel.Visible = false;
             flowPanel.Visible = false;
             addButton.Visible = false;
             MinimumSize = new Size(Width, 695);
@@ -670,55 +672,57 @@ namespace Sales_Tracker
         }
         private void SetControlsForMultipleProducts()
         {
+            byte space = CustomControls.SpaceBetweenControls;
+
             // Center controls
             Currency_TextBox.Left = (ClientSize.Width -
-                Currency_TextBox.Width - CustomControls.SpaceBetweenControls -
-                OrderNumber_TextBox.Width - CustomControls.SpaceBetweenControls -
-                AccountantName_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Currency_TextBox.Width - space -
+                OrderNumber_TextBox.Width - space -
+                AccountantName_TextBox.Width - space -
                 Receipt_Button.Width) / 2;
 
             Currency_Label.Left = Currency_TextBox.Left;
-            OrderNumber_TextBox.Left = Currency_TextBox.Right + CustomControls.SpaceBetweenControls;
+            OrderNumber_TextBox.Left = Currency_TextBox.Right + space;
             OrderNumber_Label.Left = OrderNumber_TextBox.Left;
-            AccountantName_TextBox.Left = OrderNumber_TextBox.Right + CustomControls.SpaceBetweenControls;
+            AccountantName_TextBox.Left = OrderNumber_TextBox.Right + space;
             AccountantName_Label.Left = AccountantName_TextBox.Left;
-            Receipt_Button.Left = AccountantName_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Receipt_Button.Left = AccountantName_TextBox.Right + space;
 
             Date_DateTimePicker.Left = (ClientSize.Width -
-                Date_DateTimePicker.Width - CustomControls.SpaceBetweenControls -
-                Shipping_TextBox.Width - CustomControls.SpaceBetweenControls -
-                Tax_TextBox.Width - CustomControls.SpaceBetweenControls -
-                Fee_TextBox.Width - CustomControls.SpaceBetweenControls -
-                Charged_TextBox.Width - CustomControls.SpaceBetweenControls -
+                Date_DateTimePicker.Width - space -
+                Shipping_TextBox.Width - space -
+                Tax_TextBox.Width - space -
+                Fee_TextBox.Width - space -
+                Charged_TextBox.Width - space -
                 Discount_TextBox.Width) / 2;
 
             Date_Label.Left = Date_DateTimePicker.Left;
-            Shipping_TextBox.Left = Date_DateTimePicker.Right + CustomControls.SpaceBetweenControls;
+            Shipping_TextBox.Left = Date_DateTimePicker.Right + space;
             Shipping_Label.Left = Shipping_TextBox.Left;
-            Tax_TextBox.Left = Shipping_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Tax_TextBox.Left = Shipping_TextBox.Right + space;
             Tax_Label.Left = Tax_TextBox.Left;
-            Fee_TextBox.Left = Tax_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Fee_TextBox.Left = Tax_TextBox.Right + space;
             Fee_Label.Left = Fee_TextBox.Left;
-            Discount_TextBox.Left = Fee_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Discount_TextBox.Left = Fee_TextBox.Right + space;
             Discount_Label.Left = Discount_TextBox.Left;
-            Charged_TextBox.Left = Discount_TextBox.Right + CustomControls.SpaceBetweenControls;
+            Charged_TextBox.Left = Discount_TextBox.Right + space;
             Charged_Label.Left = Charged_TextBox.Left;
 
             // Remove controls
-            foreach (Control control in GetControlsForMultipleProducts())
+            foreach (Control control in GetControlsForSingleProduct())
             {
                 Controls.Remove(control);
             }
 
+            labelPanel.Visible = true;
             flowPanel.Visible = true;
-            SetHeight();
-
+            SetHeightAndAddButton();
             RelocateAccountantWarning();
             SetReceiptLabelLocation();
 
             if (WarningProduct_PictureBox.Visible)
             {
-                WarningProduct_PictureBox.Location = new Point(addButton.Left + CustomControls.SpaceBetweenControls, addButton.Top - flowPanelMargin * 2);
+                WarningProduct_PictureBox.Location = new Point(addButton.Left + CustomControls.SpaceBetweenControls, addButton.Top - CustomControls.SpaceBetweenControls * 2);
                 WarningProduct_LinkLabel.Location = new Point(WarningProduct_PictureBox.Left + WarningProduct_PictureBox.Width + CustomControls.SpaceBetweenControls, WarningProduct_PictureBox.Top);
                 addButton.Visible = false;
             }
@@ -739,62 +743,69 @@ namespace Sales_Tracker
             quantity,
             pricePerUnit
         }
+        private Guna2Panel labelPanel;
         private void ConstructControlsForMultipleProducts()
         {
-            byte searchBoxMaxHeight = 150, spaceForLabels = 28;
-            int panelHeight = panelsForMultipleProducts_List.Count == 0 ? initialHeightForPanel : initialHeightForPanel - spaceForLabels;
-            int textBoxTop = panelsForMultipleProducts_List.Count == 0 ? spaceForLabels + CustomControls.SpaceBetweenControls : CustomControls.SpaceBetweenControls;
-
             Guna2Panel panel = new()
             {
-                Size = new Size(initialWidthForPanel, panelHeight),
+                Size = new Size(panelWidth, panelAndTextBoxHeight),
                 FillColor = CustomColors.MainBackground
             };
             panelsForMultipleProducts_List.Add(panel);
 
-            Guna2TextBox textBox;
-            int left;
-
-            // Product name
             if (panelsForMultipleProducts_List.Count == 1)
             {
-                CosntructLabel(ProductName_Label.Text, 0, panel);
+                labelPanel = new()
+                {
+                    Location = new Point((ClientSize.Width - panelWidth) / 2, topForPanels),
+                    Anchor = AnchorStyles.Top,
+                    Size = new Size(panelWidth, labelPanelHeight),
+                    FillColor = CustomColors.MainBackground,
+                    Visible = false
+                };
+                Controls.Add(labelPanel);
             }
-            textBox = CosntructTextBox(new Point(0, textBoxTop), ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
+
+            // Product name
+            if (labelPanel != null)
+            {
+                ConstructLabel(ProductName_Label.Text, 0, labelPanel);
+            }
+            Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
-            SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, true);
+            SearchBox.Attach(textBox, this, () => searchResult, 150, false, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             // Price per unit
-            left = textBox.Right + CustomControls.SpaceBetweenControls;
-            if (panelsForMultipleProducts_List.Count == 1)
+            int left = textBox.Right + CustomControls.SpaceBetweenControls;
+            if (labelPanel != null)
             {
-                CosntructLabel(PricePerUnit_Label.Text, left, panel);
+                ConstructLabel(PricePerUnit_Label.Text, left, labelPanel);
             }
-            textBox = CosntructTextBox(new Point(left, textBoxTop), PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, panel);
+            textBox = ConstructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, panel);
 
             // Quantity
             left = textBox.Right + CustomControls.SpaceBetweenControls;
-            if (panelsForMultipleProducts_List.Count == 1)
+            if (labelPanel != null)
             {
-                CosntructLabel(Quantity_Label.Text, left, panel);
+                ConstructLabel(Quantity_Label.Text, left, labelPanel);
             }
-            textBox = CosntructTextBox(new Point(left, textBoxTop), Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, panel);
+            textBox = ConstructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, panel);
 
             // Add minus button unless this is the first panel
             left = textBox.Right + CustomControls.SpaceBetweenControls;
             if (panelsForMultipleProducts_List.Count > 1)
             {
-                CosntructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (textBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
+                ConstructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (panelAndTextBoxHeight - circleButtonHeight) / 2 + textBox.Top), panel);
             }
 
-            flowPanel.SuspendLayout();
+            SuspendLayout();
             flowPanel.Controls.Add(panel);
-            SetHeight();
-            flowPanel.ResumeLayout();
+            SetHeightAndAddButton();
             flowPanel.ScrollControlIntoView(panel);
+            ResumeLayout();
         }
-        private void CosntructLabel(string text, int left, Control parent)
+        private void ConstructLabel(string text, int left, Control parent)
         {
             Label label = new()
             {
@@ -807,13 +818,13 @@ namespace Sales_Tracker
             label.Click += CloseAllPanels;
             parent.Controls.Add(label);
         }
-        private Guna2TextBox CosntructTextBox(Point location, int width, string name, CustomControls.KeyPressValidation keyPressValidation, Control parent)
+        private Guna2TextBox ConstructTextBox(int left, int width, string name, CustomControls.KeyPressValidation keyPressValidation, Control parent)
         {
             Guna2TextBox textBox = new()
             {
-                Size = new Size(width, textBoxHeight),
+                Size = new Size(width, panelAndTextBoxHeight),
                 Name = name,
-                Location = location,
+                Left = left,
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,
                 ForeColor = CustomColors.Text,
@@ -849,9 +860,9 @@ namespace Sales_Tracker
             parent.Controls.Add(textBox);
             return textBox;
         }
-        private void CosntructMinusButton(Point location, Control parent)
+        private void ConstructMinusButton(Point location, Control parent)
         {
-            Guna2CircleButton circleBtn = new()
+            Guna2CircleButton minusButton = new()
             {
                 FillColor = CustomColors.MainBackground,
                 BackColor = CustomColors.MainBackground,
@@ -862,50 +873,46 @@ namespace Sales_Tracker
             };
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
             {
-                circleBtn.Image = Resources.MinusWhite;
+                minusButton.Image = Resources.MinusWhite;
             }
             else
             {
-                circleBtn.Image = Resources.MinusBlack;
+                minusButton.Image = Resources.MinusBlack;
             }
-            circleBtn.Click += (sender, e) =>
-            {
-                CloseAllPanels(null, null);
-                RemovePanelForMultipleProducts(sender, e);
-                ValidateInputs(null, null);
-            };
-            parent.Controls.Add(circleBtn);
+            minusButton.Click += MinusButton_Click;
+            parent.Controls.Add(minusButton);
         }
-        private void RemovePanelForMultipleProducts(object sender, EventArgs e)
+        private void MinusButton_Click(object? sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             Guna2CircleButton button = (Guna2CircleButton)sender;
             Guna2Panel panel = (Guna2Panel)button.Parent;
 
             flowPanel.Controls.Remove(panel);
             panelsForMultipleProducts_List.Remove(panel);
-            flowPanel.Height -= initialHeightForPanel + flowPanelMargin;
-            SetHeight();
+
+            SetHeightAndAddButton();
+            ValidateInputs(null, null);
         }
         private Guna2CircleButton addButton;
         private FlowLayoutPanel flowPanel;
         private void ConstructFlowPanel()
         {
-            int width = initialWidthForPanel + spaceOnSidesOfPanel;
+            int width = panelWidth + spaceOnSidesOfPanel;
             flowPanel = new()
             {
-                Anchor = AnchorStyles.Top,
-                AutoScroll = false,
-                Location = new Point((ClientSize.Width - width) / 2, 570),
-                Size = new Size(width, 20 + CustomControls.SpaceBetweenControls + textBoxHeight),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom,
+                Location = new Point((ClientSize.Width - width) / 2, topForPanels + labelPanelHeight + CustomControls.SpaceBetweenControls),
+                Size = new Size(width, panelAndTextBoxHeight + CustomControls.SpaceBetweenControls),
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
-                Margin = new Padding(flowPanelMargin / 2, 0, flowPanelMargin / 2, 0),
-                MaximumSize = new Size(width, flowPanelMaxHeight),
-                Visible = false
+                Visible = false,
             };
+            Theme.CustomizeScrollBar(flowPanel);
             flowPanel.Click += CloseAllPanels;
             Controls.Add(flowPanel);
         }
-        private void CosntructAddButton()
+        private void ConstructAddButton()
         {
             addButton = new()
             {
@@ -936,14 +943,16 @@ namespace Sales_Tracker
             };
             Controls.Add(addButton);
         }
-        private void SetHeight()
+        private void SetHeightAndAddButton()
         {
-            int totalHeight = panelsForMultipleProducts_List.Sum(panel => panel.Height + flowPanelMargin);
-            flowPanel.Height = Math.Min(totalHeight + flowPanelMargin, flowPanelMaxHeight);
-            flowPanel.AutoScroll = totalHeight + flowPanelMargin > flowPanelMaxHeight;
+            int totalHeight = panelsForMultipleProducts_List.Sum(panel => panel.Height + panel.Margin.Top + panel.Margin.Bottom);
 
-            MinimumSize = new Size(Width, flowPanel.Bottom + extraSpaceForBottom);
-            addButton.Top = flowPanel.Bottom + spaceBetweenPanels;
+            flowPanel.MinimumSize = new Size(flowPanel.Width, Math.Min(totalHeight, flowPanelMaxHeight));
+            flowPanel.Height = flowPanel.MinimumSize.Height;
+            flowPanel.Anchor = AnchorStyles.None;
+            MinimumSize = new Size(Width, flowPanel.Bottom + 200);
+            flowPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            addButton.Top = flowPanel.Bottom + CustomControls.SpaceBetweenControls;
         }
 
         // Warning labels
@@ -978,12 +987,12 @@ namespace Sales_Tracker
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(OrderNumber_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(AccountantName_TextBox.Text) && AccountantName_TextBox.Tag.ToString() != "0" &&
-                                   !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(Fee_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(Charged_TextBox.Text);
+                !string.IsNullOrWhiteSpace(AccountantName_TextBox.Text) && AccountantName_TextBox.Tag.ToString() != "0" &&
+                !string.IsNullOrWhiteSpace(Shipping_TextBox.Text) &&
+                !string.IsNullOrWhiteSpace(Tax_TextBox.Text) &&
+                !string.IsNullOrWhiteSpace(Fee_TextBox.Text) &&
+                !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
+                !string.IsNullOrWhiteSpace(Charged_TextBox.Text);
 
             if (Properties.Settings.Default.PurchaseReceipts)
             {
@@ -1001,8 +1010,8 @@ namespace Sales_Tracker
             else
             {
                 allFieldsFilled &= !string.IsNullOrWhiteSpace(ProductName_TextBox.Text) && ProductName_TextBox.Tag.ToString() != "0" &&
-                                   !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
-                                   !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
+                    !string.IsNullOrWhiteSpace(Quantity_TextBox.Text) &&
+                    !string.IsNullOrWhiteSpace(PricePerUnit_TextBox.Text);
             }
             AddPurchase_Button.Enabled = allFieldsFilled && allMultipleFieldsFilled;
         }

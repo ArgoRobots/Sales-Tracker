@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.UI;
 using Windows.Security.Credentials;
 
@@ -11,11 +12,11 @@ namespace Sales_Tracker.Passwords
         {
             InitializeComponent();
 
-            LoadingPanel.ShowBlankLoadingPanel(this);
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
             SetWindowsHelloControls();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -47,7 +48,7 @@ namespace Sales_Tracker.Passwords
         }
 
         // Windows Hello
-        private Guna.UI2.WinForms.Guna2Button WindowsHello_Button;
+        private Guna2Button WindowsHello_Button;
         private void ConstructWindowsHelloButton()
         {
             if (WindowsHello_Button != null) { return; }
