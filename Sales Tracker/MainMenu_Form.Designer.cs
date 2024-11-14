@@ -136,7 +136,7 @@
             Tax_Label = new Label();
             Total_Panel = new Guna.UI2.WinForms.Guna2Panel();
             ChargedDifference_Label = new Label();
-            PaymentFee_Label = new Label();
+            Fee_Label = new Label();
             Sales_Button = new Guna.UI2.WinForms.Guna2Button();
             Purchases_Button = new Guna.UI2.WinForms.Guna2Button();
             Totals_Chart = new Guna.Charts.WinForms.GunaChart();
@@ -148,6 +148,7 @@
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
             TimeRange_Button = new Guna.UI2.WinForms.Guna2Button();
+            Discount_Label = new Label();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
@@ -477,7 +478,7 @@
             Price_Label.AutoSize = true;
             Price_Label.BackColor = Color.Transparent;
             Price_Label.Font = new Font("Segoe UI", 11.25F);
-            Price_Label.Location = new Point(1632, 22);
+            Price_Label.Location = new Point(1627, 22);
             Price_Label.Name = "Price_Label";
             Price_Label.Size = new Size(64, 31);
             Price_Label.TabIndex = 5;
@@ -489,7 +490,7 @@
             Shipping_Label.AutoSize = true;
             Shipping_Label.BackColor = Color.Transparent;
             Shipping_Label.Font = new Font("Segoe UI", 11.25F);
-            Shipping_Label.Location = new Point(728, 22);
+            Shipping_Label.Location = new Point(708, 22);
             Shipping_Label.Name = "Shipping_Label";
             Shipping_Label.Size = new Size(106, 31);
             Shipping_Label.TabIndex = 7;
@@ -501,7 +502,7 @@
             Tax_Label.AutoSize = true;
             Tax_Label.BackColor = Color.Transparent;
             Tax_Label.Font = new Font("Segoe UI", 11.25F);
-            Tax_Label.Location = new Point(935, 22);
+            Tax_Label.Location = new Point(895, 22);
             Tax_Label.Name = "Tax_Label";
             Tax_Label.Size = new Size(46, 31);
             Tax_Label.TabIndex = 9;
@@ -511,8 +512,9 @@
             // Total_Panel
             // 
             Total_Panel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Total_Panel.Controls.Add(Discount_Label);
             Total_Panel.Controls.Add(ChargedDifference_Label);
-            Total_Panel.Controls.Add(PaymentFee_Label);
+            Total_Panel.Controls.Add(Fee_Label);
             Total_Panel.Controls.Add(Tax_Label);
             Total_Panel.Controls.Add(Shipping_Label);
             Total_Panel.Controls.Add(Price_Label);
@@ -531,22 +533,22 @@
             ChargedDifference_Label.AutoSize = true;
             ChargedDifference_Label.BackColor = Color.Transparent;
             ChargedDifference_Label.Font = new Font("Segoe UI", 11.25F);
-            ChargedDifference_Label.Location = new Point(1322, 22);
+            ChargedDifference_Label.Location = new Point(1337, 22);
             ChargedDifference_Label.Name = "ChargedDifference_Label";
             ChargedDifference_Label.Size = new Size(209, 31);
             ChargedDifference_Label.TabIndex = 11;
             ChargedDifference_Label.Text = "Charged difference";
             // 
-            // PaymentFee_Label
+            // Fee_Label
             // 
-            PaymentFee_Label.AutoSize = true;
-            PaymentFee_Label.BackColor = Color.Transparent;
-            PaymentFee_Label.Font = new Font("Segoe UI", 11.25F);
-            PaymentFee_Label.Location = new Point(1082, 22);
-            PaymentFee_Label.Name = "PaymentFee_Label";
-            PaymentFee_Label.Size = new Size(139, 31);
-            PaymentFee_Label.TabIndex = 10;
-            PaymentFee_Label.Text = "Payment fee";
+            Fee_Label.AutoSize = true;
+            Fee_Label.BackColor = Color.Transparent;
+            Fee_Label.Font = new Font("Segoe UI", 11.25F);
+            Fee_Label.Location = new Point(1022, 22);
+            Fee_Label.Name = "Fee_Label";
+            Fee_Label.Size = new Size(49, 31);
+            Fee_Label.TabIndex = 10;
+            Fee_Label.Text = "Fee";
             // 
             // Sales_Button
             // 
@@ -595,7 +597,6 @@
             // Totals_Chart
             // 
             Totals_Chart.Anchor = AnchorStyles.Top;
-            Totals_Chart.BackColor = Color.White;
             chartFont1.FontName = "Arial";
             Totals_Chart.Legend.LabelFont = chartFont1;
             Totals_Chart.Location = new Point(99, 219);
@@ -631,7 +632,6 @@
             // Distribution_Chart
             // 
             Distribution_Chart.Anchor = AnchorStyles.Top;
-            Distribution_Chart.BackColor = Color.White;
             chartFont9.FontName = "Arial";
             Distribution_Chart.Legend.LabelFont = chartFont9;
             Distribution_Chart.Location = new Point(835, 219);
@@ -667,7 +667,6 @@
             // Profits_Chart
             // 
             Profits_Chart.Anchor = AnchorStyles.Top;
-            Profits_Chart.BackColor = Color.White;
             chartFont17.FontName = "Arial";
             Profits_Chart.Legend.LabelFont = chartFont17;
             Profits_Chart.Location = new Point(1569, 219);
@@ -825,6 +824,17 @@
             TimeRange_Button.Text = "Time range";
             TimeRange_Button.Click += TimeRange_Button_Click;
             // 
+            // Discount_Label
+            // 
+            Discount_Label.AutoSize = true;
+            Discount_Label.BackColor = Color.Transparent;
+            Discount_Label.Font = new Font("Segoe UI", 11.25F);
+            Discount_Label.Location = new Point(1152, 22);
+            Discount_Label.Name = "Discount_Label";
+            Discount_Label.Size = new Size(104, 31);
+            Discount_Label.TabIndex = 12;
+            Discount_Label.Text = "Discount";
+            // 
             // MainMenu_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
@@ -895,7 +905,7 @@
         public Guna.UI2.WinForms.Guna2Button Account_Button;
         public Guna.UI2.WinForms.Guna2Button Statistics_Button;
         public Label ChargedDifference_Label;
-        public Label PaymentFee_Label;
+        public Label Fee_Label;
         private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
         public Guna.UI2.WinForms.Guna2Button TimeRange_Button;
@@ -903,5 +913,6 @@
         public Guna.Charts.WinForms.GunaChart Distribution_Chart;
         public Guna.Charts.WinForms.GunaChart Profits_Chart;
         public Guna.UI2.WinForms.Guna2Panel Total_Panel;
+        public Label Discount_Label;
     }
 }

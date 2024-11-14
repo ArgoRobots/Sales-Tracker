@@ -232,7 +232,7 @@ namespace Sales_Tracker
                 }
             }
         }
-        public void LoadOrRefreshCharts(bool onlyLoadForLineCharts = false)
+        public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
             double total;
             bool isLine = LineGraph_ToggleSwitch.Checked;
@@ -324,7 +324,8 @@ namespace Sales_Tracker
             Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            PaymentFee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Fee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Discount_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
         }
@@ -730,7 +731,8 @@ namespace Sales_Tracker
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            LoadOrRefreshCharts(true);
+            LoadOrRefreshMainCharts(true);
+            LoadOrRefreshStatisticsCharts(true);
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -811,7 +813,7 @@ namespace Sales_Tracker
             searchTimer.Stop();
             timerRunning = false;
 
-            SortDataGridView();
+            RefreshDataGridViewAndCharts();
         }
 
         // Methods for Event handlers
@@ -917,11 +919,20 @@ namespace Sales_Tracker
         }
 
         // Search DataGridView methods
-        public void SortDataGridView()
+        public void RefreshDataGridViewAndCharts()
         {
             ApplyFiltersToDataGridView();
-            LoadOrRefreshCharts();
-            UpdateTotalLabels();
+
+            if (Selected == SelectedOption.Statistics)
+            {
+                LoadOrRefreshStatisticsCharts(false);
+            }
+            else
+            {
+                LoadOrRefreshMainCharts();
+                UpdateTotalLabels();
+                _selectedDataGridView.ClearSelection();
+            }
         }
         private void ApplyFiltersToDataGridView()
         {
@@ -1336,6 +1347,7 @@ namespace Sales_Tracker
             string taxColumn = Column.Tax.ToString();
             string shippingColumn = Column.Shipping.ToString();
             string feeColumn = Column.Fee.ToString();
+            string discountColumn = Column.Discount.ToString();
             string chargedDifference = Column.ChargedDifference.ToString();
             string totalPriceColumn = Column.Total.ToString();
 
@@ -1348,8 +1360,11 @@ namespace Sales_Tracker
             Shipping_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[shippingColumn].Index, -1, true).Left;
             Shipping_Label.Width = _selectedDataGridView.Columns[shippingColumn].Width;
 
-            PaymentFee_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[feeColumn].Index, -1, true).Left;
-            PaymentFee_Label.Width = _selectedDataGridView.Columns[feeColumn].Width;
+            Fee_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[feeColumn].Index, -1, true).Left;
+            Fee_Label.Width = _selectedDataGridView.Columns[feeColumn].Width;
+
+            Discount_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[discountColumn].Index, -1, true).Left;
+            Discount_Label.Width = _selectedDataGridView.Columns[feeColumn].Width;
 
             if (_selectedDataGridView == _purchase_DataGridView)
             {
@@ -1374,13 +1389,15 @@ namespace Sales_Tracker
 
             Total_Panel.Visible = DataGridViewManager.HasVisibleRows(_selectedDataGridView);
 
-            int totalVisibleRows = 0;
-            int totalQuantity = 0;
-            decimal totalTax = 0;
-            decimal totalShipping = 0;
-            decimal fee = 0;
-            decimal chargedDifference = 0;
-            decimal totalPrice = 0;
+            int totalVisibleRows = 0,
+                totalQuantity = 0;
+
+            decimal totalTax = 0,
+                totalShipping = 0,
+                fee = 0,
+                discount = 0,
+                chargedDifference = 0,
+                totalPrice = 0;
 
             foreach (DataGridViewRow row in _selectedDataGridView.Rows)
             {
@@ -1391,6 +1408,7 @@ namespace Sales_Tracker
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
+                discount += Convert.ToDecimal(row.Cells[Column.Discount.ToString()].Value);
                 if (Selected == SelectedOption.Purchases)
                 {
                     chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
@@ -1402,7 +1420,8 @@ namespace Sales_Tracker
             Quantity_Label.Text = totalQuantity.ToString();
             Tax_Label.Text = totalTax.ToString("C");
             Shipping_Label.Text = totalShipping.ToString("C");
-            PaymentFee_Label.Text = fee.ToString("C");
+            Fee_Label.Text = fee.ToString("C");
+            Discount_Label.Text = discount.ToString("C");
             ChargedDifference_Label.Text = chargedDifference.ToString("C");
             Price_Label.Text = totalPrice.ToString("C");
         }
@@ -1586,7 +1605,7 @@ namespace Sales_Tracker
         }
         private void ShowStatisticsControls()
         {
-            LoadOrRefreshStatisticsCharts();
+            LoadOrRefreshStatisticsCharts(false);
 
             foreach (Control control in statisticsCharts)
             {
@@ -1597,34 +1616,36 @@ namespace Sales_Tracker
                 control.Visible = false;
             }
         }
-        private void LoadOrRefreshStatisticsCharts()
+        private void LoadOrRefreshStatisticsCharts(bool onlyRefreshForLineCharts)
         {
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
-            LoadChart.LoadCountriesOfOriginForProductsIntoChart(_purchase_DataGridView, countriesOfOrigin_Chart, PieChartGrouping.Top12);
-            countriesOfOrigin_Chart.Title.Text = "Countries of origin for purchased products";
+            if (!onlyRefreshForLineCharts)
+            {
+                LoadChart.LoadCountriesOfOriginForProductsIntoChart(_purchase_DataGridView, countriesOfOrigin_Chart, PieChartGrouping.Top12);
+                countriesOfOrigin_Chart.Title.Text = "Countries of origin for purchased products";
+                LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart);
 
-            LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_purchase_DataGridView, companiesOfOrigin_Chart, PieChartGrouping.Top12);
-            companiesOfOrigin_Chart.Title.Text = "Companies of origin for purchased products";
+                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_purchase_DataGridView, companiesOfOrigin_Chart, PieChartGrouping.Top12);
+                companiesOfOrigin_Chart.Title.Text = "Companies of origin for purchased products";
+                LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart);
 
-            LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_sale_DataGridView, countriesOfDestination_Chart, PieChartGrouping.Top12);
-            countriesOfDestination_Chart.Title.Text = "Countries of destination for sold products";
+                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_sale_DataGridView, countriesOfDestination_Chart, PieChartGrouping.Top12);
+                countriesOfDestination_Chart.Title.Text = "Countries of destination for sold products";
+                LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart);
 
-            LoadChart.LoadAccountantsIntoChart([_purchase_DataGridView, _sale_DataGridView], accountants_Chart, PieChartGrouping.Top12);
-            accountants_Chart.Title.Text = "Transactions managed by accountants";
+                LoadChart.LoadAccountantsIntoChart([_purchase_DataGridView, _sale_DataGridView], accountants_Chart, PieChartGrouping.Top12);
+                accountants_Chart.Title.Text = "Transactions managed by accountants";
+                LanguageManager.UpdateLanguageForControl(accountants_Chart);
+            }
 
             LoadChart.LoadSalesVsExpensesChart(_purchase_DataGridView, _sale_DataGridView, salesVsExpenses_Chart, isLineChart);
-            salesVsExpenses_Chart.Title.Text = "Total sales vs. total expenses";
+            salesVsExpenses_Chart.Title.Text = "Total expenses vs. total sales";
+            LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart);
 
             LoadChart.LoadAverageOrderValueChart(_sale_DataGridView, averageOrderValue_Chart, isLineChart);
             averageOrderValue_Chart.Title.Text = "Average order value";
-
-            LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart, true);
-            LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart, true);
-            LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart, true);
-            LanguageManager.UpdateLanguageForControl(accountants_Chart, true);
-            LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart, true);
-            LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart, true);
+            LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
         }
 
         // Settings
@@ -1667,13 +1688,6 @@ namespace Sales_Tracker
                 DataGridViewManager.RightClickDataGridView_Panel,
                 RightClickGunaChartMenu.RightClickGunaChart_Panel
             ];
-        }
-        public void RefreshDataGridViewAndCharts()
-        {
-            ApplyFiltersToDataGridView();
-            LoadOrRefreshCharts();
-            UpdateTotalLabels();
-            _selectedDataGridView.ClearSelection();
         }
         public static void UpdateMainMenuFormText(Form instance)
         {

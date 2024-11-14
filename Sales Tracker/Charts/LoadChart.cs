@@ -813,10 +813,7 @@ namespace Sales_Tracker.Charts
             {
                 ConfigureChartForLine(chart);
             }
-            else
-            {
-                ConfigureChartForBar(chart);
-            }
+            else { ConfigureChartForBar(chart); }
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset(); }

@@ -285,6 +285,11 @@ namespace Sales_Tracker.UI
         }
         private static void AdjustLabelPosition(Label label, Rectangle originalBounds)
         {
+            if (label.Name == LabelManager.NoDataLabelName)
+            {
+                return;
+            }
+
             if (label.Anchor.HasFlag(AnchorStyles.Right))
             {
                 label.Left = originalBounds.Right - label.Width;

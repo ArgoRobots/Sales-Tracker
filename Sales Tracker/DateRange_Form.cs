@@ -101,7 +101,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.SortToDate = null;
                 MainMenu_Form.Instance.SortTimeSpan = GetSelectedTimeSpan();
             }
-            MainMenu_Form.Instance.SortDataGridView();
+            MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             MainMenu_Form.Instance.CloseDateRangePanel();
         }
         private void Custom_RadioButton_CheckedChanged(object sender, EventArgs e)

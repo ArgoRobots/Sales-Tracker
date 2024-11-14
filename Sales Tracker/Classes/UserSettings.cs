@@ -133,7 +133,7 @@ namespace Sales_Tracker.Classes
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchase_DataGridView);
             UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sale_DataGridView);
 
-            MainMenu_Form.Instance.LoadOrRefreshCharts();
+            MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.UpdateTotalLabels();
 
             MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);

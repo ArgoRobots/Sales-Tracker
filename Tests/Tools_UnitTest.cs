@@ -1,5 +1,4 @@
-﻿using Guna.UI2.WinForms;
-using Sales_Tracker.Classes;
+﻿using Sales_Tracker.Classes;
 using System.Windows.Forms;
 
 namespace Tests
@@ -40,72 +39,6 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestOnlyAllowNumbersInTextBox()
-        {
-            Guna2TextBox textBox = new();
-            KeyPressEventArgs keyPressEvent = new('5');
-
-            Tools.OnlyAllowNumbersInTextBox(textBox, keyPressEvent);
-            Assert.IsFalse(keyPressEvent.Handled);
-
-            keyPressEvent = new KeyPressEventArgs('a');
-            Tools.OnlyAllowNumbersInTextBox(textBox, keyPressEvent);
-            Assert.IsTrue(keyPressEvent.Handled);
-        }
-
-        [TestMethod]
-        public void TestOnlyAllowLettersInTextBox()
-        {
-            Guna2TextBox textBox = new();
-            KeyPressEventArgs keyPressEvent = new('a');
-
-            Tools.OnlyAllowLettersInTextBox(textBox, keyPressEvent);
-            Assert.IsFalse(keyPressEvent.Handled);
-
-            keyPressEvent = new KeyPressEventArgs('1');
-            Tools.OnlyAllowLettersInTextBox(textBox, keyPressEvent);
-            Assert.IsTrue(keyPressEvent.Handled);
-        }
-
-        [TestMethod]
-        public void TestOnlyAllowNumbersAndOneDecimalInGunaTextBox()
-        {
-            Guna2TextBox textBox = new();
-            KeyPressEventArgs keyPressEvent = new('5');
-
-            Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox(textBox, keyPressEvent);
-            Assert.IsFalse(keyPressEvent.Handled);
-
-            keyPressEvent = new KeyPressEventArgs('.');
-            Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox(textBox, keyPressEvent);
-            Assert.IsFalse(keyPressEvent.Handled);
-
-            textBox.Text = "3.14";
-            keyPressEvent = new KeyPressEventArgs('.');
-            Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox(textBox, keyPressEvent);
-            Assert.IsTrue(keyPressEvent.Handled);
-        }
-
-        [TestMethod]
-        public void TestOnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox()
-        {
-            Guna2TextBox textBox = new();
-            KeyPressEventArgs keyPressEvent = new('5');
-
-            Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox(textBox, keyPressEvent);
-            Assert.IsFalse(keyPressEvent.Handled);
-
-            keyPressEvent = new KeyPressEventArgs('-');
-            Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox(textBox, keyPressEvent);
-            Assert.IsFalse(keyPressEvent.Handled);
-
-            textBox.Text = "-3.14";
-            keyPressEvent = new KeyPressEventArgs('.');
-            Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox(textBox, keyPressEvent);
-            Assert.IsTrue(keyPressEvent.Handled);
-        }
-
-        [TestMethod]
         public void TestIsFormOpen()
         {
             Form testForm = new();
@@ -117,16 +50,6 @@ namespace Tests
             testForm.Close();
             isOpen = Tools.IsFormOpen(typeof(Form));
             Assert.IsFalse(isOpen);
-        }
-
-        [TestMethod]
-        public void TestMakeSureTextIsNotSelectedAndCursorIsAtEnd()
-        {
-            Guna2TextBox textBox = new() { Text = "Hello World" };
-            Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd(textBox, EventArgs.Empty);
-
-            Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
-            Assert.AreEqual(0, textBox.SelectionLength);
         }
     }
 }

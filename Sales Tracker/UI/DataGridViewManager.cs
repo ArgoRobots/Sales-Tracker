@@ -170,7 +170,7 @@ namespace Sales_Tracker.UI
             if (selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
                 MainMenu_Form.Instance.UpdateTotalLabels();
-                MainMenu_Form.Instance.LoadOrRefreshCharts();
+                MainMenu_Form.Instance.LoadOrRefreshMainCharts();
                 MainMenu_Form.SaveDataGridViewToFileAsJson(dataGridView, selected);
             }
             else if (selected is MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales or
@@ -703,7 +703,7 @@ namespace Sales_Tracker.UI
 
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
-                MainMenu_Form.Instance.SortDataGridView();
+                MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             }
 
             // Calculate the middle index

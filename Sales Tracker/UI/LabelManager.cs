@@ -8,6 +8,13 @@ namespace Sales_Tracker.UI
     /// </summary>
     public class LabelManager
     {
+        // Properties
+        private static readonly string _noDataLabelName = "NoData_Label";
+
+        // Getter
+        public static string NoDataLabelName => _noDataLabelName;
+
+        // Methods
         /// <summary>
         /// Updates the label text to show the specified results message while preserving the original base text.
         /// This method ensures that the label’s prefix remains consistent even if the application language changes.
@@ -106,7 +113,7 @@ namespace Sales_Tracker.UI
                         BackColor = Color.Transparent,
                         Tag = text,
                         Anchor = AnchorStyles.Top,
-                        Name = $"NoData_Label"  // This is needed for the language translation
+                        Name = _noDataLabelName  // This is needed for the language translation
                     };
 
                     control.Controls.Add(label);
