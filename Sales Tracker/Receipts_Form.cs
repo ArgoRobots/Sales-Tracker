@@ -37,6 +37,7 @@ namespace Sales_Tracker
             MainMenu_Form.IsProgramLoading = false;
 
             SetTheme();
+            LabelManager.ShowTotalLabel(Total_Label, Receipts_DataGridView, true);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
@@ -56,6 +57,7 @@ namespace Sales_Tracker
             To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
             IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
         }
         private void SetTheme()
         {
@@ -176,6 +178,7 @@ namespace Sales_Tracker
             ID,
             Product,
             Category,
+            Company,
             Date,
             Total
         }
@@ -185,6 +188,7 @@ namespace Sales_Tracker
             { Column.ID, "Transaction ID" },
             { Column.Product, "Product name" },
             { Column.Category, "Category" },
+            { Column.Company, "Company" },
             { Column.Date, "Date" },
             { Column.Total, "Total revenue" }
         };
@@ -278,6 +282,7 @@ namespace Sales_Tracker
                     row.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString(),
+                    row.Cells[MainMenu_Form.Column.Company.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Total.ToString()].Value.ToString());
 
@@ -323,6 +328,7 @@ namespace Sales_Tracker
 
                 row.Visible = visible;
             }
+            LabelManager.ShowTotalLabel(Total_Label, Receipts_DataGridView, true);
         }
     }
 }

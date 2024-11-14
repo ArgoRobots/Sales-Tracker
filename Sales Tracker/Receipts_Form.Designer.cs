@@ -64,6 +64,7 @@
             IncludeSaleReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             IncludePurchaseReceipts_Label = new Label();
             IncludePurchaseReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
+            Total_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -376,10 +377,22 @@
             IncludePurchaseReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
             IncludePurchaseReceipts_CheckBox.CheckedChanged += IncludePurchaseReceipts_CheckBox_CheckedChanged;
             // 
+            // Total_Label
+            // 
+            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Total_Label.AutoSize = true;
+            Total_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Total_Label.Location = new Point(18, 715);
+            Total_Label.Name = "Total_Label";
+            Total_Label.Size = new Size(68, 31);
+            Total_Label.TabIndex = 51;
+            Total_Label.Text = "Total:";
+            // 
             // Receipts_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1418, 794);
+            Controls.Add(Total_Label);
             Controls.Add(FilterByDate_CheckBox);
             Controls.Add(IncludePurchaseReceipts_CheckBox);
             Controls.Add(IncludeSaleReceipts_CheckBox);
@@ -428,5 +441,6 @@
         private Guna.UI2.WinForms.Guna2CustomCheckBox IncludeSaleReceipts_CheckBox;
         private Label IncludePurchaseReceipts_Label;
         private Guna.UI2.WinForms.Guna2CustomCheckBox IncludePurchaseReceipts_CheckBox;
+        public Label Total_Label;
     }
 }

@@ -36,13 +36,13 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Updates the total label text to display the row count of the specified DataGridView while preserving
         /// the original base text to maintain consistency across language changes. The label is positioned near
-        /// the bottom-right of the DataGridView.
+        /// the bottom of the DataGridView, either to the left or right based on the positionOnLeft parameter.
         /// </summary>
         /// <example>
         /// Input text: "Total: 5"
         /// Output text: "Total: 6"
         /// </example>
-        public static void ShowTotalLabel(Label totalLabel, DataGridView dataGridView)
+        public static void ShowTotalLabel(Label totalLabel, DataGridView dataGridView, bool positionOnLeft = false)
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
@@ -52,9 +52,13 @@ namespace Sales_Tracker.UI
             int count = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
             totalLabel.Text = $"{baseText}: {count}";
 
-            // Position the label near the bottom-right of the DataGridView
-            totalLabel.Location = new Point(dataGridView.Right - totalLabel.Width, dataGridView.Bottom + 10);
+            // Position the label near the bottom of the DataGridView
+            int xPosition = positionOnLeft
+                ? dataGridView.Left
+                : dataGridView.Right - totalLabel.Width;
+            totalLabel.Location = new Point(xPosition, dataGridView.Bottom + 10);
         }
+
 
         /// <summary>
         /// Updates the totals label text to display the row count with "transactions" text while preserving
