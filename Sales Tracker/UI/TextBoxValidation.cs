@@ -45,18 +45,6 @@ namespace Sales_Tracker.UI
             textBox.TextChanged += ValidateLettersOnly;
         }
 
-        /// <summary>
-        /// Ensures text is not selected and cursor is at the end
-        /// </summary>
-        public static void SetCursorToEnd(Guna2TextBox textBox)
-        {
-            textBox.Click += (_, _) =>
-            {
-                textBox.SelectionStart = textBox.Text.Length;
-                textBox.SelectionLength = 0;
-            };
-        }
-
         // Private methods
         private static void OnlyAllowNumbersInTextBox(object sender, KeyPressEventArgs e)
         {
