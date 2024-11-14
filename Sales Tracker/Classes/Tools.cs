@@ -105,9 +105,9 @@ namespace Sales_Tracker.Classes
         {
             foreach (Control childControl in control.Controls)
             {
-                if (childControl is Guna2TextBox { Focused: true } gTextBox)
+                if (childControl is Guna2TextBox { Focused: true } textBox)
                 {
-                    return gTextBox;
+                    return textBox;
                 }
                 Guna2TextBox? result = FindSelectedGTextBox(childControl);
                 if (result != null)

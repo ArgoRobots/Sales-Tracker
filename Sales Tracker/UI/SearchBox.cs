@@ -399,19 +399,19 @@ namespace Sales_Tracker.UI
             control.BorderThickness = 1;
             _searchResultBox.ScrollControlIntoView(control);
         }
-        private static void SetTextBoxToInvalid(Guna2TextBox gTextBox)
+        private static void SetTextBoxToInvalid(Guna2TextBox textBox)
         {
-            gTextBox.BorderColor = CustomColors.AccentRed;
-            gTextBox.HoverState.BorderColor = CustomColors.AccentRed;
-            gTextBox.FocusedState.BorderColor = CustomColors.AccentRed;
-            gTextBox.Tag = "0";
+            textBox.BorderColor = CustomColors.AccentRed;
+            textBox.HoverState.BorderColor = CustomColors.AccentRed;
+            textBox.FocusedState.BorderColor = CustomColors.AccentRed;
+            textBox.Tag = "0";
         }
-        private static void SetTextBoxToValid(Guna2TextBox gTextBox)
+        private static void SetTextBoxToValid(Guna2TextBox textBox)
         {
-            gTextBox.BorderColor = CustomColors.ControlBorder;
-            gTextBox.HoverState.BorderColor = CustomColors.AccentBlue;
-            gTextBox.FocusedState.BorderColor = CustomColors.AccentBlue;
-            gTextBox.Tag = "1";
+            textBox.BorderColor = CustomColors.ControlBorder;
+            textBox.HoverState.BorderColor = CustomColors.AccentBlue;
+            textBox.FocusedState.BorderColor = CustomColors.AccentBlue;
+            textBox.Tag = "1";
         }
         private static void AllowTabAndEnterKeysInTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {

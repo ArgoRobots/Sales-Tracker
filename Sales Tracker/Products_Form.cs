@@ -418,7 +418,7 @@ namespace Sales_Tracker
             { Column.CountryOfOrigin, "Country of origin" },
             { Column.CompanyOfOrigin, "Company of origin" },
         };
-        private const int topForDataGridView = 380;
+        private const short topForDataGridView = 380;
         private Guna2DataGridView purchase_DataGridView, sale_DataGridView;
 
         // DataGridView methods

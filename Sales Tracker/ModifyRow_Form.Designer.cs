@@ -49,7 +49,7 @@
             ModifyRow_Label.Size = new Size(182, 45);
             ModifyRow_Label.TabIndex = 0;
             ModifyRow_Label.Text = "Modify row";
-            ModifyRow_Label.Click += CloseAllPanels;
+            ModifyRow_Label.Click += CloseSearchBox;
             // 
             // Cancel_Button
             // 
@@ -104,7 +104,7 @@
             Panel.Name = "Panel";
             Panel.Size = new Size(840, 150);
             Panel.TabIndex = 15;
-            Panel.Click += CloseAllPanels;
+            Panel.Click += CloseSearchBox;
             // 
             // ModifyRow_Form
             // 
@@ -120,7 +120,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Shown += ModifyRow_Form_Shown;
-            Click += CloseAllPanels;
+            Click += CloseSearchBox;
             ResumeLayout(false);
             PerformLayout();
         }
