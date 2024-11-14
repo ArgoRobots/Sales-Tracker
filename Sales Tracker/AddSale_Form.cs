@@ -745,7 +745,7 @@ namespace Sales_Tracker
             {
                 ConstructLabel(ProductName_Label.Text, 0, labelPanel);
             }
-            Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, panel);
+            Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, false, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
             SearchBox.Attach(textBox, this, () => searchResult, 150, false, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
@@ -756,7 +756,7 @@ namespace Sales_Tracker
             {
                 ConstructLabel(PricePerUnit_Label.Text, left, labelPanel);
             }
-            textBox = ConstructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, panel);
+            textBox = ConstructTextBox(left, PricePerUnit_TextBox.Width, TextBoxnames.pricePerUnit.ToString(), CustomControls.KeyPressValidation.OnlyNumbersAndDecimal, true, panel);
 
             // Quantity
             left = textBox.Right + CustomControls.SpaceBetweenControls;
@@ -764,7 +764,7 @@ namespace Sales_Tracker
             {
                 ConstructLabel(Quantity_Label.Text, left, labelPanel);
             }
-            textBox = ConstructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, panel);
+            textBox = ConstructTextBox(left, Quantity_TextBox.Width, TextBoxnames.quantity.ToString(), CustomControls.KeyPressValidation.OnlyNumbers, true, panel);
 
             // Add minus button unless this is the first panel
             left = textBox.Right + CustomControls.SpaceBetweenControls;
@@ -792,7 +792,7 @@ namespace Sales_Tracker
             label.Click += CloseAllPanels;
             parent.Controls.Add(label);
         }
-        private Guna2TextBox ConstructTextBox(int left, int width, string name, CustomControls.KeyPressValidation keyPressValidation, Control parent)
+        private Guna2TextBox ConstructTextBox(int left, int width, string name, CustomControls.KeyPressValidation keyPressValidation, bool closeAllPanels, Control parent)
         {
             Guna2TextBox textBox = new()
             {
@@ -826,8 +826,10 @@ namespace Sales_Tracker
                 case CustomControls.KeyPressValidation.None:
                     break;
             }
-
-            textBox.Click += CloseAllPanels;
+            if (closeAllPanels)
+            {
+                textBox.Click += CloseAllPanels;
+            }
             textBox.TextChanged += ValidateInputs;
             TextBoxManager.Attach(textBox);
 
