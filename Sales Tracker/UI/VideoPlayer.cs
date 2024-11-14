@@ -48,7 +48,7 @@ namespace Sales_Tracker.UI
             // Set the HTML content to the webBrowser
             webBrowser.DocumentText = html;
 
-            webBrowser.DocumentCompleted += delegate
+            webBrowser.DocumentCompleted += (_, _) =>
             {
                 StopFailureTimer();
                 webBrowser.Parent.Controls.Remove(loadingPanel);

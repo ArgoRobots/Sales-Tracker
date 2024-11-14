@@ -214,13 +214,13 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_fileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Process.Start(Application.ExecutablePath, "autoClickButton");
             };
 
             menuBtn = ConstructBtnForMenu("Open company", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 ArgoCompany.OpenProjectWhenAProgramIsAlreadyOpen();
             };
@@ -248,34 +248,34 @@ namespace Sales_Tracker.UI
 
             menuBtn = ConstructBtnForMenu("Save", _panelBtnWidth, true, flowPanel);
             menuBtn.Name = "Save";
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 SaveAll();
             };
             ConstructKeyShortcut("Ctrl+S", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Save as...", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 ArgoCompany.SaveAs();
             };
             ConstructKeyShortcut("Ctrl+Shift+S", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Export as...", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new Export_Form().ShowDialog();
             };
             ConstructKeyShortcut("Ctrl+E", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Export receipts", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new Receipts_Form().ShowDialog();
             };
 
             menuBtn = ConstructBtnForMenu("Import spreadsheet", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 if (ShouldShowTutorial())
                 {
@@ -290,7 +290,7 @@ namespace Sales_Tracker.UI
             ConstructSeperator(_panelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Show company in folder", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.ShowFileInFolder(Directories.ArgoCompany_file);
             };
@@ -298,7 +298,7 @@ namespace Sales_Tracker.UI
         private static void ConstructRecentlyOpenedMenu()
         {
             _recentlyOpenedMenu = ConstructPanelForMenu(new Size(_panelWidth, 100), "recentlyOpenedMenu_Panel");
-            _recentlyOpenedMenu.MouseEnter += delegate { CascadingMenu.KeepMenuOpen(); };
+            _recentlyOpenedMenu.MouseEnter += (_, _) => { CascadingMenu.KeepMenuOpen(); };
         }
         private static void SetRecentlyOpenedMenu()
         {
@@ -325,7 +325,7 @@ namespace Sales_Tracker.UI
                     string text = Path.GetFileNameWithoutExtension(projectDir);
                     Guna2Button menuBtn = ConstructBtnForMenu(text, _panelBtnWidth, true, flowPanel);
                     menuBtn.Tag = projectDir;
-                    menuBtn.MouseEnter += delegate { CascadingMenu.KeepMenuOpen(); };
+                    menuBtn.MouseEnter += (_, _) => { CascadingMenu.KeepMenuOpen(); };
                     menuBtn.Click += (sender, e) =>
                     {
                         Guna2Button button = (Guna2Button)sender;
@@ -362,14 +362,14 @@ namespace Sales_Tracker.UI
             else if (Tools.IsFormOpen(typeof(MainMenu_Form)))
             {
                 MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.Text;
-                MainMenu_Form.Instance.Saved_Label.Text = "No changed found";
+                MainMenu_Form.Instance.Saved_Label.Text = "No changes found";
             }
 
             System.Windows.Forms.Timer timer = new()
             {
                 Interval = 3000
             };
-            timer.Tick += delegate
+            timer.Tick += (_, _) =>
             {
                 MainMenu_Form.Instance.Saved_Label.Visible = false;
                 timer.Stop();
@@ -390,17 +390,17 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_helpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Support", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
             menuBtn = ConstructBtnForMenu("Forums", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
             menuBtn = ConstructBtnForMenu("Contact us", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
@@ -408,14 +408,14 @@ namespace Sales_Tracker.UI
             ConstructSeperator(_panelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Show logs", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 MainMenu_Form.Instance.OpenLogs();
             };
             ConstructKeyShortcut("Ctrl+L", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Clear cache", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 ArgoCompany.ClearCache();
             };
@@ -423,12 +423,12 @@ namespace Sales_Tracker.UI
             ConstructSeperator(_panelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("What's new", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
             menuBtn = ConstructBtnForMenu("About", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
@@ -447,19 +447,19 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)AccountMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Argo account", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
 
             menuBtn = ConstructBtnForMenu("Settings", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 MainMenu_Form.Instance.OpenSettingsMenu();
             };
 
             menuBtn = ConstructBtnForMenu("Share feedback", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
@@ -467,7 +467,7 @@ namespace Sales_Tracker.UI
             ConstructSeperator(_panelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Sign out", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("");
             };
@@ -529,7 +529,7 @@ namespace Sales_Tracker.UI
 
             Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new Accountants_Form().ShowDialog();
             };
@@ -538,7 +538,7 @@ namespace Sales_Tracker.UI
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCompanies_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new Companies_Form().ShowDialog();
             };
@@ -547,7 +547,7 @@ namespace Sales_Tracker.UI
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCategories_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new Categories_Form(true).ShowDialog();
             };
@@ -556,7 +556,7 @@ namespace Sales_Tracker.UI
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageProducts_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new Products_Form(true).ShowDialog();
             };
@@ -565,7 +565,7 @@ namespace Sales_Tracker.UI
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Sales_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new AddSale_Form().ShowDialog();
             };
@@ -574,7 +574,7 @@ namespace Sales_Tracker.UI
 
             menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Purchases_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
-            menuBtn.Click += delegate
+            menuBtn.Click += (_, _) =>
             {
                 new AddPurchase_Form().ShowDialog();
             };

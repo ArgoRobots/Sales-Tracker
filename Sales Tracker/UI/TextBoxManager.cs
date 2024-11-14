@@ -61,7 +61,7 @@ namespace Sales_Tracker.UI
             textBox.TextChanged += TextBox_TextChanged;
             textBox.KeyDown += TextBox_KeyDown;
             textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
-            textBox.Enter += Tools.MakeSureTextIsNotSelectedAndCursorIsAtEnd;
+            TextBoxValidation.SetCursorToEnd(textBox);
         }
 
         /// <summary>

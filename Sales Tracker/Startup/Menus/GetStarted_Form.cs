@@ -382,7 +382,7 @@ namespace Sales_Tracker.Startup.Menus
 
             // Add event to close FormStartup when FormMainMenu is closed
             MainMenu_Form FormMainMenu = new();
-            FormMainMenu.FormClosed += delegate { Startup_Form.Instance.Close(); };
+            FormMainMenu.FormClosed += (_, _) => { Startup_Form.Instance.Close(); };
 
             MainMenu_Form.UpdateMainMenuFormText(FormMainMenu);
             FormMainMenu.Show();

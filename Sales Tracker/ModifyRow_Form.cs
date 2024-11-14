@@ -490,7 +490,7 @@ namespace Sales_Tracker
                             BorderThickness = 1,
                             Font = new Font("Segoe UI", 10),
                         };
-                        Receipt_Button.Click += delegate
+                        Receipt_Button.Click += (_, _) =>
                         {
                             // Select file
                             OpenFileDialog dialog = new();
@@ -519,17 +519,17 @@ namespace Sales_Tracker
                         };
                         RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(30, 30);
                         RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
-                        RemoveReceipt_ImageButton.Click += delegate
+                        RemoveReceipt_ImageButton.Click += (_, _) =>
                         {
                             CloseAllPanels(null, null);
                             RemoveReceiptLabel();
                             removedReceipt = true;
                         };
-                        RemoveReceipt_ImageButton.MouseEnter += delegate
+                        RemoveReceipt_ImageButton.MouseEnter += (_, _) =>
                         {
                             RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
                         };
-                        RemoveReceipt_ImageButton.MouseLeave += delegate
+                        RemoveReceipt_ImageButton.MouseLeave += (_, _) =>
                         {
                             RemoveReceipt_ImageButton.BackColor = CustomColors.MainBackground;
                         };
@@ -1261,16 +1261,16 @@ namespace Sales_Tracker
             switch (keyPressValidation)
             {
                 case CustomControls.KeyPressValidation.OnlyNumbersAndDecimalAndMinus:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox;
+                    TextBoxValidation.OnlyAllowNumbersAndOneDecimalAndOneMinus(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyNumbersAndDecimal:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+                    TextBoxValidation.OnlyAllowNumbersAndOneDecimal(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyNumbers:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+                    TextBoxValidation.OnlyAllowNumbers(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyLetters:
-                    textBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+                    TextBoxValidation.OnlyAllowLetters(textBox);
                     break;
                 case CustomControls.KeyPressValidation.None:
                     break;

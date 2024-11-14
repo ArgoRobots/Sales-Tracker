@@ -47,16 +47,16 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(ProductCategory_TextBox);
 
-            CountryOfOrigin_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            TextBoxValidation.OnlyAllowLetters(CountryOfOrigin_TextBox);
             TextBoxManager.Attach(CountryOfOrigin_TextBox);
 
             TextBoxManager.Attach(CompanyOfOrigin_TextBox);
 
-            purchase_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
-            purchase_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
+            purchase_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
+            purchase_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
 
-            sale_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
-            sale_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
+            sale_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
+            sale_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
         }
         private void AddSearchBoxEvents()
         {

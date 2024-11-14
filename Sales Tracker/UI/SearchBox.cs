@@ -30,8 +30,8 @@ namespace Sales_Tracker.UI
             int maxHeight, bool allowTextBoxEmpty = true, bool increaseWidth = false)
         {
             textBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            textBox.Click += delegate { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty, false, increaseWidth); };
-            textBox.GotFocus += delegate
+            textBox.Click += (_, _) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, allowTextBoxEmpty, false, increaseWidth); };
+            textBox.GotFocus += (_, _) =>
             {
                 if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
                 {

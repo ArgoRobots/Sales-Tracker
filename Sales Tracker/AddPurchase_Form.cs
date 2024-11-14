@@ -40,7 +40,7 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(OrderNumber_TextBox);
 
-            AccountantName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            TextBoxValidation.OnlyAllowLetters(AccountantName_TextBox);
             TextBoxManager.Attach(AccountantName_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
             SearchBox.Attach(AccountantName_TextBox, this, () => searchResult1, searchBoxMaxHeight);
@@ -51,25 +51,25 @@ namespace Sales_Tracker
             SearchBox.Attach(ProductName_TextBox, this, () => searchResult2, searchBoxMaxHeight, false, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
-            Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+            TextBoxValidation.OnlyAllowNumbers(Quantity_TextBox);
             TextBoxManager.Attach(Quantity_TextBox);
 
-            PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(PricePerUnit_TextBox);
             TextBoxManager.Attach(PricePerUnit_TextBox);
 
-            Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Shipping_TextBox);
             TextBoxManager.Attach(Shipping_TextBox);
 
-            Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Tax_TextBox);
             TextBoxManager.Attach(Tax_TextBox);
 
-            Fee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Fee_TextBox);
             TextBoxManager.Attach(Fee_TextBox);
 
-            Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Discount_TextBox);
             TextBoxManager.Attach(Discount_TextBox);
 
-            Charged_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Charged_TextBox);
             TextBoxManager.Attach(Charged_TextBox);
 
             TextBoxManager.Attach(Notes_TextBox);
@@ -838,16 +838,16 @@ namespace Sales_Tracker
             switch (keyPressValidation)
             {
                 case CustomControls.KeyPressValidation.OnlyNumbersAndDecimalAndMinus:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox;
+                    TextBoxValidation.OnlyAllowNumbersAndOneDecimalAndOneMinus(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyNumbersAndDecimal:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+                    TextBoxValidation.OnlyAllowNumbersAndOneDecimal(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyNumbers:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+                    TextBoxValidation.OnlyAllowNumbers(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyLetters:
-                    textBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+                    TextBoxValidation.OnlyAllowLetters(textBox);
                     break;
                 case CustomControls.KeyPressValidation.None:
                     break;
@@ -935,7 +935,7 @@ namespace Sales_Tracker
             {
                 addButton.Image = Resources.AddBlack;
             }
-            addButton.Click += delegate
+            addButton.Click += (_, _) =>
             {
                 CloseAllPanels(null, null);
                 ConstructControlsForMultipleProducts();

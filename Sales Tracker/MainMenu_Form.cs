@@ -692,7 +692,7 @@ namespace Sales_Tracker
             if (Selected == SelectedOption.Statistics) { return; }
 
             Selected = SelectedOption.Statistics;
-            AddStatisticsControls();
+            ShowStatisticsControls();
             CenterAndResizeControls();
 
             SelectButton(Statistics_Button);
@@ -1584,7 +1584,7 @@ namespace Sales_Tracker
 
             return gunaChart;
         }
-        private void AddStatisticsControls()
+        private void ShowStatisticsControls()
         {
             LoadOrRefreshStatisticsCharts();
 
@@ -1602,11 +1602,22 @@ namespace Sales_Tracker
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
             LoadChart.LoadCountriesOfOriginForProductsIntoChart(_purchase_DataGridView, countriesOfOrigin_Chart, PieChartGrouping.Top12);
+            countriesOfOrigin_Chart.Title.Text = "Countries of origin for purchased products";
+
             LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_purchase_DataGridView, companiesOfOrigin_Chart, PieChartGrouping.Top12);
+            companiesOfOrigin_Chart.Title.Text = "Companies of origin for purchased products";
+
             LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_sale_DataGridView, countriesOfDestination_Chart, PieChartGrouping.Top12);
+            countriesOfDestination_Chart.Title.Text = "Countries of destination for sold products";
+
             LoadChart.LoadAccountantsIntoChart([_purchase_DataGridView, _sale_DataGridView], accountants_Chart, PieChartGrouping.Top12);
+            accountants_Chart.Title.Text = "Transactions managed by accountants";
+
             LoadChart.LoadSalesVsExpensesChart(_purchase_DataGridView, _sale_DataGridView, salesVsExpenses_Chart, isLineChart);
+            salesVsExpenses_Chart.Title.Text = "Total sales vs. total expenses";
+
             LoadChart.LoadAverageOrderValueChart(_sale_DataGridView, averageOrderValue_Chart, isLineChart);
+            averageOrderValue_Chart.Title.Text = "Average order value";
 
             LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart, true);
             LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart, true);

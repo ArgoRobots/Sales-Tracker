@@ -51,14 +51,14 @@ namespace Sales_Tracker.Classes
                 }
             };
 
-            textbox.MouseLeave += delegate
+            textbox.MouseLeave += (_, _) =>
             {
                 isIconHovered = false;
                 textbox.Invalidate();
             };
 
             // Update icon bounds when control resizes
-            textbox.Resize += delegate
+            textbox.Resize += (_, _) =>
             {
                 iconBounds = new Rectangle(
                     textbox.Width - (textbox.IconRightSize.Width + 5 + textbox.IconRightOffset.X),
@@ -68,7 +68,7 @@ namespace Sales_Tracker.Classes
                 );
             };
 
-            textbox.IconRightClick += delegate
+            textbox.IconRightClick += (_, _) =>
             {
                 textbox.Clear();
             };

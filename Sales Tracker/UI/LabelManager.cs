@@ -112,7 +112,7 @@ namespace Sales_Tracker.UI
                     control.Controls.Add(label);
                     CenterNoDataLabelInControl(control);
 
-                    control.Resize += delegate { CenterNoDataLabelInControl(control); };
+                    control.Resize += (_, _) => { CenterNoDataLabelInControl(control); };
 
                     label.BringToFront();
                 }

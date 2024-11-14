@@ -52,15 +52,15 @@ namespace Sales_Tracker.Startup.Menus
             byte searchBoxMaxHeight = 200;
 
             TextBoxManager.Attach(ProjectName_TextBox);
-            ProjectName_TextBox.TextChanged += delegate { ValidateInputs(); };
+            ProjectName_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
 
             TextBoxManager.Attach(Directory_TextBox);
-            Directory_TextBox.TextChanged += delegate { ValidateInputs(); };
+            Directory_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
 
             TextBoxManager.Attach(Currency_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
             SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight);
-            Currency_TextBox.TextChanged += delegate { ValidateInputs(); };
+            Currency_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
         }
         private void SetDefaultTextInTextBoxes()
         {

@@ -135,7 +135,7 @@ namespace Sales_Tracker.Charts
             }
 
             SortAndAddDatasetAndSetBarPercentage(revenueByDate, dateFormat, dataset, isLineChart);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, true);
             return grandTotal;
         }
         public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart, PieChartGrouping grouping)
@@ -257,7 +257,7 @@ namespace Sales_Tracker.Charts
             }
 
             ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, true);
         }
         public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
         {
@@ -350,7 +350,7 @@ namespace Sales_Tracker.Charts
             }
 
             SortAndAddDatasetAndSetBarPercentage(profitByDate, dateFormat, dataset, isLineChart);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, true);
             return grandTotal;
         }
 
@@ -432,7 +432,7 @@ namespace Sales_Tracker.Charts
             }
 
             ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, false);
         }
         public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
@@ -512,7 +512,7 @@ namespace Sales_Tracker.Charts
             }
 
             ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, false);
         }
         public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart, PieChartGrouping grouping)
         {
@@ -591,7 +591,7 @@ namespace Sales_Tracker.Charts
             }
 
             ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, false);
         }
         public static void LoadAccountantsIntoChart(IEnumerable<Guna2DataGridView> dataGridViews, GunaChart chart, PieChartGrouping grouping)
         {
@@ -657,7 +657,7 @@ namespace Sales_Tracker.Charts
             }
 
             ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, false);
         }
         public static void LoadSalesVsExpensesChart(Guna2DataGridView purchasesDataGridView, Guna2DataGridView salesDataGridView, GunaChart chart, bool isLineChart)
         {
@@ -792,6 +792,9 @@ namespace Sales_Tracker.Charts
             chart.Datasets.Add(expensesDataset);
             chart.Datasets.Add(salesDataset);
 
+            ApplyCurrencyFormatToDataset(expensesDataset);
+            ApplyCurrencyFormatToDataset(salesDataset);
+
             chart.Legend.Display = true;
             chart.Legend.Position = LegendPosition.Top;
 
@@ -864,7 +867,7 @@ namespace Sales_Tracker.Charts
             }
 
             SortAndAddDatasetAndSetBarPercentage(averageOrderValueByDate, dateFormat, dataset, isLineChart);
-            UpdateChart(chart, dataset);
+            UpdateChart(chart, dataset, true);
         }
 
         // Methods
@@ -1020,11 +1023,14 @@ namespace Sales_Tracker.Charts
             }
             return (minDate, maxDate);
         }
-        private static void UpdateChart(GunaChart chart, IGunaDataset dataset)
+        private static void UpdateChart(GunaChart chart, IGunaDataset dataset, bool formatCurrency)
         {
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
-            ApplyCurrencyFormatToDataset(dataset);
+            if (formatCurrency)
+            {
+                ApplyCurrencyFormatToDataset(dataset);
+            }
             chart.Update();
         }
         private static void ApplyCurrencyFormatToDataset(object dataset)

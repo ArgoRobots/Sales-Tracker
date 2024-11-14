@@ -37,7 +37,7 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(SaleNumber_TextBox);
 
-            AccountantName_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            TextBoxValidation.OnlyAllowLetters(AccountantName_TextBox);
             TextBoxManager.Attach(AccountantName_TextBox);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
             SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight);
@@ -52,25 +52,25 @@ namespace Sales_Tracker
             SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight);
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
 
-            Quantity_TextBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+            TextBoxValidation.OnlyAllowNumbers(Quantity_TextBox);
             TextBoxManager.Attach(Quantity_TextBox);
 
-            PricePerUnit_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(PricePerUnit_TextBox);
             TextBoxManager.Attach(PricePerUnit_TextBox);
 
-            Shipping_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Shipping_TextBox);
             TextBoxManager.Attach(Shipping_TextBox);
 
-            Tax_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Tax_TextBox);
             TextBoxManager.Attach(Tax_TextBox);
 
-            Fee_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Fee_TextBox);
             TextBoxManager.Attach(Fee_TextBox);
 
-            Discount_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Discount_TextBox);
             TextBoxManager.Attach(Discount_TextBox);
 
-            Credited_TextBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+            TextBoxValidation.OnlyAllowNumbersAndOneDecimal(Credited_TextBox);
             TextBoxManager.Attach(Credited_TextBox);
 
             TextBoxManager.Attach(Notes_TextBox);
@@ -808,20 +808,20 @@ namespace Sales_Tracker
             textBox.FocusedState.BorderColor = CustomColors.AccentBlue;
             textBox.FocusedState.FillColor = CustomColors.ControlBack;
 
-            // Assign the appropriate KeyPress event handler based on the keyPressValidation parameter
+            // Assign the appropriate validation based on the keyPressValidation parameter
             switch (keyPressValidation)
             {
                 case CustomControls.KeyPressValidation.OnlyNumbersAndDecimalAndMinus:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox;
+                    TextBoxValidation.OnlyAllowNumbersAndOneDecimalAndOneMinus(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyNumbersAndDecimal:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersAndOneDecimalInGunaTextBox;
+                    TextBoxValidation.OnlyAllowNumbersAndOneDecimal(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyNumbers:
-                    textBox.KeyPress += Tools.OnlyAllowNumbersInTextBox;
+                    TextBoxValidation.OnlyAllowNumbers(textBox);
                     break;
                 case CustomControls.KeyPressValidation.OnlyLetters:
-                    textBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+                    TextBoxValidation.OnlyAllowLetters(textBox);
                     break;
                 case CustomControls.KeyPressValidation.None:
                     break;
@@ -909,7 +909,7 @@ namespace Sales_Tracker
             {
                 addButton.Image = Resources.AddBlack;
             }
-            addButton.Click += delegate
+            addButton.Click += (_, _) =>
             {
                 CloseAllPanels(null, null);
                 ConstructControlsForMultipleProducts();

@@ -53,8 +53,8 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(Company_TextBox);
 
-            company_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };
-            company_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };
+            company_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };
+            company_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };
         }
         private void SetAccessibleDescriptions()
         {

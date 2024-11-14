@@ -117,44 +117,6 @@ namespace Sales_Tracker.Classes
             }
             return null;
         }
-        public static void OnlyAllowNumbersAndOneDecimalInGunaTextBox(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                (e.KeyChar != '.' || (sender as Guna2TextBox).Text.Contains('.')))
-            {
-                e.Handled = true;
-            }
-        }
-        public static void OnlyAllowNumbersAndOneDecimalAndOneMinusInGunaTextBox(object sender, KeyPressEventArgs e)
-        {
-            // Allow numbers, one period, and one minus sign at the front
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                (e.KeyChar != '.' || (sender as Guna2TextBox).Text.Contains('.')) &&
-                (e.KeyChar != '-' || (sender as Guna2TextBox).SelectionStart != 0))
-            {
-                e.Handled = true;
-            }
-        }
-        public static void OnlyAllowNumbersInTextBox(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
-        public static void OnlyAllowLettersInTextBox(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
-            {
-                e.Handled = true;
-            }
-        }
-        public static void MakeSureTextIsNotSelectedAndCursorIsAtEnd(object sender, EventArgs e)
-        {
-            Guna2TextBox senderTextBox = (Guna2TextBox)sender;
-            senderTextBox.SelectionStart = senderTextBox.Text.Length;
-            senderTextBox.SelectionLength = 0;
-        }
 
         // Strings
         public static string AddNumberForAStringThatAlreadyExists(string name, List<string> list)

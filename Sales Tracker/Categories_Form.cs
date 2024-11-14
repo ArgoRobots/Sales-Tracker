@@ -43,11 +43,11 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(Category_TextBox);
 
-            _purchase_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, _purchase_DataGridView); };
-            _purchase_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, _purchase_DataGridView); };
+            _purchase_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, _purchase_DataGridView); };
+            _purchase_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, _purchase_DataGridView); };
 
-            _sale_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, _sale_DataGridView); };
-            _sale_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, _sale_DataGridView); };
+            _sale_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, _sale_DataGridView); };
+            _sale_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, _sale_DataGridView); };
         }
         private void SetAccessibleDescriptions()
         {

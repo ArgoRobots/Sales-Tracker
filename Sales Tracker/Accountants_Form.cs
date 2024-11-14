@@ -48,11 +48,11 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
-            Accountant_TextBox.KeyPress += Tools.OnlyAllowLettersInTextBox;
+            TextBoxValidation.OnlyAllowLetters(Accountant_TextBox);
             TextBoxManager.Attach(Accountant_TextBox);
 
-            accountant_DataGridView.RowsAdded += delegate { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
-            accountant_DataGridView.RowsRemoved += delegate { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
+            accountant_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
+            accountant_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
         }
         private void SetAccessibleDescriptions()
         {
