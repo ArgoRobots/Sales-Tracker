@@ -37,7 +37,7 @@ namespace Sales_Tracker.UI
             Guna2Panel activePanel = _selectedPanel ?? panel;
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)activePanel.Controls[0];
-            IList results = flowPanel.Controls;
+            Control.ControlCollection results = flowPanel.Controls;
 
             if (results.Count == 0) { return; }
 
@@ -69,7 +69,7 @@ namespace Sales_Tracker.UI
                     break;
             }
         }
-        private static void HandleKeyUp(IList results, Guna2Button button, int buttonIndex)
+        private static void HandleKeyUp(Control.ControlCollection results, Guna2Button button, int buttonIndex)
         {
             UnselectMenuButton(button);
 
@@ -98,7 +98,7 @@ namespace Sales_Tracker.UI
                 }
             }
         }
-        private static void HandleKeyDown(IList results, Guna2Button button, int buttonIndex)
+        private static void HandleKeyDown(Control.ControlCollection results, Guna2Button button, int buttonIndex)
         {
             UnselectMenuButton(button);
 
@@ -128,7 +128,7 @@ namespace Sales_Tracker.UI
                 UnselectMenuButton(button);
 
                 FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
-                IList results = flowPanel.Controls;
+                Control.ControlCollection results = flowPanel.Controls;
 
                 if (results.Count == 0) { return; }
 
@@ -146,7 +146,7 @@ namespace Sales_Tracker.UI
                 UnselectMenuButton(button);
 
                 FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
-                IList results = flowPanel.Controls;
+                Control.ControlCollection results = flowPanel.Controls;
 
                 if (results.Count == 0) { return; }
 
@@ -155,7 +155,7 @@ namespace Sales_Tracker.UI
         }
 
         // Helper methods
-        private static (Guna2Button?, int) GetSelectedButtonInMenu(IList results)
+        private static (Guna2Button?, int) GetSelectedButtonInMenu(Control.ControlCollection results)
         {
             for (int i = 0; i < results.Count; i++)
             {
@@ -175,7 +175,7 @@ namespace Sales_Tracker.UI
                 button.PerformClick();  // Open the cascading menu
             }
         }
-        private static void SelectFirstButton(IList results)
+        private static void SelectFirstButton(Control.ControlCollection results)
         {
             if (results[0] is Guna2Button firstBtn)
             {

@@ -687,10 +687,10 @@ namespace Sales_Tracker.Classes
         public static List<string> GetListOfAllDirectoryNamesInDirectory(string directory)
         {
             return Directory.GetDirectories(directory)
-                          .Select(Path.GetFileName)
-                          .Where(name => name != null)
-                          .Cast<string>()
-                          .ToList();
+                       .Select(Path.GetFileName)
+                       .Where(name => name != null)
+                       .Cast<string>()
+                       .ToList();
         }
 
         /// <summary>

@@ -135,6 +135,7 @@
             Shipping_Label = new Label();
             Tax_Label = new Label();
             Total_Panel = new Guna.UI2.WinForms.Guna2Panel();
+            Discount_Label = new Label();
             ChargedDifference_Label = new Label();
             Fee_Label = new Label();
             Sales_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -148,7 +149,6 @@
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
             TimeRange_Button = new Guna.UI2.WinForms.Guna2Button();
-            Discount_Label = new Label();
             MainTop_Panel.SuspendLayout();
             Top_Panel.SuspendLayout();
             Total_Panel.SuspendLayout();
@@ -528,6 +528,18 @@
             Total_Panel.TabIndex = 2;
             Total_Panel.Click += CloseAllPanels;
             // 
+            // Discount_Label
+            // 
+            Discount_Label.AutoSize = true;
+            Discount_Label.BackColor = Color.Transparent;
+            Discount_Label.Font = new Font("Segoe UI", 11.25F);
+            Discount_Label.Location = new Point(1152, 22);
+            Discount_Label.Name = "Discount_Label";
+            Discount_Label.Size = new Size(104, 31);
+            Discount_Label.TabIndex = 12;
+            Discount_Label.Text = "Discount";
+            Discount_Label.Click += CloseAllPanels;
+            // 
             // ChargedDifference_Label
             // 
             ChargedDifference_Label.AutoSize = true;
@@ -538,6 +550,7 @@
             ChargedDifference_Label.Size = new Size(209, 31);
             ChargedDifference_Label.TabIndex = 11;
             ChargedDifference_Label.Text = "Charged difference";
+            ChargedDifference_Label.Click += CloseAllPanels;
             // 
             // Fee_Label
             // 
@@ -549,6 +562,7 @@
             Fee_Label.Size = new Size(49, 31);
             Fee_Label.TabIndex = 10;
             Fee_Label.Text = "Fee";
+            Fee_Label.Click += CloseAllPanels;
             // 
             // Sales_Button
             // 
@@ -823,17 +837,6 @@
             TimeRange_Button.TabIndex = 17;
             TimeRange_Button.Text = "Time range";
             TimeRange_Button.Click += TimeRange_Button_Click;
-            // 
-            // Discount_Label
-            // 
-            Discount_Label.AutoSize = true;
-            Discount_Label.BackColor = Color.Transparent;
-            Discount_Label.Font = new Font("Segoe UI", 11.25F);
-            Discount_Label.Location = new Point(1152, 22);
-            Discount_Label.Name = "Discount_Label";
-            Discount_Label.Size = new Size(104, 31);
-            Discount_Label.TabIndex = 12;
-            Discount_Label.Text = "Discount";
             // 
             // MainMenu_Form
             // 

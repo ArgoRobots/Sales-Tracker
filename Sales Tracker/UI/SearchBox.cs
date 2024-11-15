@@ -275,6 +275,10 @@ namespace Sales_Tracker.UI
             _searchResultBox.ResumeLayout();
             _searchResultBoxContainer.BringToFront();
 
+            // This fixes the scrollbar thumb size
+            _searchResultBox.AutoScroll = false;
+            _searchResultBox.AutoScroll = true;
+
             // End timer
             long endTime = DateTime.Now.Ticks;
 

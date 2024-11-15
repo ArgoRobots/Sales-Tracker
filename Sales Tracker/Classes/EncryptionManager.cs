@@ -101,7 +101,7 @@ namespace Sales_Tracker.Classes
                 {
                     // Extract the footer content from the identified position
                     string footerContent = Encoding.UTF8.GetString(fileContentBytes, footerStartIndex, fileContentBytes.Length - footerStartIndex);
-                    footerLines = footerContent.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                    footerLines = footerContent.Split([Environment.NewLine], StringSplitOptions.None);
 
                     fileContentBytes = fileContentBytes[..(footerStartIndex - 2)];
                 }
