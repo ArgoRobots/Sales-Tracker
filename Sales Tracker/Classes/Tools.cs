@@ -237,5 +237,16 @@ namespace Sales_Tracker.Classes
                 form.Show();
             }
         }
+        public static void CloseOpenForm<T>() where T : Form
+        {
+            foreach (Form openForm in Application.OpenForms)
+            {
+                if (openForm is T)
+                {
+                    openForm.Close();
+                    return;
+                }
+            }
+        }
     }
 }

@@ -60,6 +60,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Import spreadsheet";
+            TopMost = true;
             ResumeLayout(false);
         }
 

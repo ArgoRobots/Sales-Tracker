@@ -212,8 +212,10 @@ namespace Sales_Tracker.Settings
             Margin = new Padding(6, 5, 6, 5);
             MinimumSize = new Size(1419, 796);
             Name = "Settings_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Settings";
+            TopMost = true;
             FormClosing += Settings_Form_FormClosing;
             Shown += Settings_Form_Shown;
             ResumeLayout(false);

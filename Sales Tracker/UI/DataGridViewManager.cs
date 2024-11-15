@@ -450,21 +450,15 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            byte index = 1;
-            if (itemList.Last().StartsWith(ReadOnlyVariables.CompanyName_text))
-            {
-                index = 2;
-            }
-
-            string selected = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase
+            string transactionType = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase
                 ? "purchase"
                 : "sale";
 
-            if (itemList.Count == index)
+            if (e.Row.DataGridView.Rows.Count == 1)
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Delete the {selected}",
-                    $"Deleting the last item will also delete the {selected}.",
+                    $"Delete the {transactionType}",
+                    $"Deleting the last item will also delete the {transactionType}.",
                     CustomMessageBoxIcon.Info, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
@@ -473,15 +467,16 @@ namespace Sales_Tracker.UI
                     return;
                 }
 
-                itemsInPurchase_Form.Close();
-                Log.Write(2, $"Deleted item '{productName}' in {selected}");
-                return;
+                Tools.CloseOpenForm<ItemsInTransaction_Form>();
+                MainMenu_Form.Instance.SelectedDataGridView.Rows.Remove(_selectedRowInMainMenu);
+            }
+            else
+            {
+                // Remove the row from the tag
+                itemList.RemoveAt(e.Row.Index);
             }
 
-            // Remove the row from the tag
-            itemList.RemoveAt(e.Row.Index);
-
-            LogAndAddThingThatChanged($"Deleted item '{productName}' in {selected}");
+            LogAndAddThingThatChanged($"Deleted item '{productName}' in {transactionType}");
         }
         private static void LogAndAddThingThatChanged(string message)
         {
@@ -1115,7 +1110,6 @@ namespace Sales_Tracker.UI
             CustomControls.CloseAllPanels(null, null);
             Receipts_Form.ExportSelectedReceipts(MainMenu_Form.Instance.SelectedDataGridView);
         }
-        private static ItemsInTransaction_Form itemsInPurchase_Form;
         private static void ShowItems(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels(null, null);
@@ -1132,6 +1126,7 @@ namespace Sales_Tracker.UI
             {
                 DataGridViewRowCancelEventArgs eventArgs = new(item);
                 DataGridView_UserDeletingRow(MainMenu_Form.Instance.SelectedDataGridView, eventArgs);
+                if (item.Index == -1) { continue; }  // This can happen if ItemsInTransaction_Form is closed in DataGridView_UserDeletingRow()
 
                 if (!eventArgs.Cancel)
                 {

@@ -106,6 +106,7 @@
             Name = "Log_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Log";
+            TopMost = true;
             Load += Log_form_Load;
             Shown += Log_form_Shown;
             ResumeLayout(false);

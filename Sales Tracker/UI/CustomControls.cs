@@ -4,6 +4,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Settings;
 using Sales_Tracker.Startup.Menus;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
@@ -455,7 +456,7 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Settings", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                MainMenu_Form.Instance.OpenSettingsMenu();
+                Tools.OpenForm(new Settings_Form());
             };
 
             menuBtn = ConstructBtnForMenu("Share feedback", _panelBtnWidth, true, flowPanel);

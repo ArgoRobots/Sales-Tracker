@@ -1648,18 +1648,6 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
         }
 
-        // Settings
-        private Settings_Form settingsForm;
-        public void OpenSettingsMenu()
-        {
-            if (!Tools.IsFormOpen(typeof(Settings_Form)))
-            {
-                settingsForm = new Settings_Form();
-                settingsForm.Show();
-            }
-            else { settingsForm.BringToFront(); }
-        }
-
         // Misc.
         public static List<Guna2Panel> GetMenus()
         {
