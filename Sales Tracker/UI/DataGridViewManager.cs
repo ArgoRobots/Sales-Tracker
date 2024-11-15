@@ -1009,9 +1009,7 @@ namespace Sales_Tracker.UI
         private static void ModifyRow(object sender, EventArgs e)
         {
             MainMenu_Form.Instance.ClosePanels();
-
-            ModifyRow_Form modifyRow_Form = new(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]);
-            modifyRow_Form.ShowDialog();
+            Tools.OpenForm(new ModifyRow_Form(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]));
         }
         private static void MoveRows(object sender, EventArgs e)
         {
@@ -1121,8 +1119,7 @@ namespace Sales_Tracker.UI
         private static void ShowItems(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels(null, null);
-            itemsInPurchase_Form = new ItemsInTransaction_Form(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]);
-            itemsInPurchase_Form.ShowDialog();
+            Tools.OpenForm(new ItemsInTransaction_Form(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]));
         }
         private static void DeleteRow(object sender, EventArgs e)
         {

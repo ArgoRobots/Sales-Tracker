@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportSpreadsheet_Form));
             ImportSpreadsheet_Label = new Label();
             SelectFile_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -66,7 +66,7 @@
             SelectFile_Button.BorderColor = Color.FromArgb(217, 221, 226);
             SelectFile_Button.BorderRadius = 3;
             SelectFile_Button.BorderThickness = 1;
-            SelectFile_Button.CustomizableEdges = customizableEdges10;
+            SelectFile_Button.CustomizableEdges = customizableEdges1;
             SelectFile_Button.DisabledState.BorderColor = Color.DarkGray;
             SelectFile_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             SelectFile_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -77,7 +77,7 @@
             SelectFile_Button.Location = new Point(454, 110);
             SelectFile_Button.Margin = new Padding(6, 5, 6, 5);
             SelectFile_Button.Name = "SelectFile_Button";
-            SelectFile_Button.ShadowDecoration.CustomizableEdges = customizableEdges11;
+            SelectFile_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             SelectFile_Button.Size = new Size(220, 45);
             SelectFile_Button.TabIndex = 1;
             SelectFile_Button.Text = "Select file";
@@ -89,7 +89,7 @@
             Import_Button.BorderColor = Color.FromArgb(217, 221, 226);
             Import_Button.BorderRadius = 3;
             Import_Button.BorderThickness = 1;
-            Import_Button.CustomizableEdges = customizableEdges12;
+            Import_Button.CustomizableEdges = customizableEdges3;
             Import_Button.DisabledState.BorderColor = Color.DarkGray;
             Import_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Import_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -101,7 +101,7 @@
             Import_Button.Location = new Point(454, 805);
             Import_Button.Margin = new Padding(6, 5, 6, 5);
             Import_Button.Name = "Import_Button";
-            Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges13;
+            Import_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Import_Button.Size = new Size(220, 45);
             Import_Button.TabIndex = 4;
             Import_Button.Text = "Import";
@@ -119,7 +119,7 @@
             RemoveReceipt_ImageButton.Location = new Point(550, 163);
             RemoveReceipt_ImageButton.Name = "RemoveReceipt_ImageButton";
             RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
-            RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges5;
             RemoveReceipt_ImageButton.Size = new Size(38, 38);
             RemoveReceipt_ImageButton.TabIndex = 3;
             RemoveReceipt_ImageButton.Click += RemoveReceipt_ImageButton_Click;
@@ -143,7 +143,7 @@
             OpenTutorial_Button.BorderColor = Color.FromArgb(217, 221, 226);
             OpenTutorial_Button.BorderRadius = 3;
             OpenTutorial_Button.BorderThickness = 1;
-            OpenTutorial_Button.CustomizableEdges = customizableEdges15;
+            OpenTutorial_Button.CustomizableEdges = customizableEdges6;
             OpenTutorial_Button.DisabledState.BorderColor = Color.DarkGray;
             OpenTutorial_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             OpenTutorial_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -154,7 +154,7 @@
             OpenTutorial_Button.Location = new Point(893, 805);
             OpenTutorial_Button.Margin = new Padding(6, 5, 6, 5);
             OpenTutorial_Button.Name = "OpenTutorial_Button";
-            OpenTutorial_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            OpenTutorial_Button.ShadowDecoration.CustomizableEdges = customizableEdges7;
             OpenTutorial_Button.Size = new Size(220, 45);
             OpenTutorial_Button.TabIndex = 5;
             OpenTutorial_Button.Text = "Open tutorial";
@@ -169,10 +169,10 @@
             SkipHeaderRow_CheckBox.CheckedState.BorderRadius = 2;
             SkipHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
             SkipHeaderRow_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            SkipHeaderRow_CheckBox.CustomizableEdges = customizableEdges17;
+            SkipHeaderRow_CheckBox.CustomizableEdges = customizableEdges8;
             SkipHeaderRow_CheckBox.Location = new Point(812, 122);
             SkipHeaderRow_CheckBox.Name = "SkipHeaderRow_CheckBox";
-            SkipHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            SkipHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
             SkipHeaderRow_CheckBox.Size = new Size(20, 20);
             SkipHeaderRow_CheckBox.TabIndex = 2;
             SkipHeaderRow_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -213,6 +213,7 @@
             Name = "ImportSpreadsheet_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            TopMost = true;
             FormClosed += ImportSpreadSheets_Form_FormClosed;
             Shown += ImportSpreadSheets_Form_Shown;
             ResumeLayout(false);

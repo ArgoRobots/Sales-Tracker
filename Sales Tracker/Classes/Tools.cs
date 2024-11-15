@@ -222,5 +222,20 @@ namespace Sales_Tracker.Classes
 
             return $"{len:0.##} {sizes[order]}";
         }
+
+        // Forms
+        public static void OpenForm(Form form)
+        {
+            Form existingForm = Application.OpenForms.OfType<Form>().FirstOrDefault(f => f.GetType() == form.GetType());
+
+            if (existingForm != null)
+            {
+                existingForm.BringToFront();
+            }
+            else
+            {
+                form.Show();
+            }
+        }
     }
 }

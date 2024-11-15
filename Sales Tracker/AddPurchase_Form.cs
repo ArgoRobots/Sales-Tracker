@@ -168,12 +168,12 @@ namespace Sales_Tracker
         }
         private void WarningProduct_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new Products_Form(true).ShowDialog();
+            Tools.OpenForm(new Products_Form(true));
             CheckIfProductsExist();
         }
         private void WarningAccountant_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new Accountants_Form().ShowDialog();
+            Tools.OpenForm(new Accountants_Form());
             CheckIfAccountantsExist();
         }
         private void Receipt_Button_Click(object sender, EventArgs e)

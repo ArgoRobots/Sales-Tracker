@@ -415,6 +415,7 @@
             Name = "Receipts_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            TopMost = true;
             FormClosed += Receipts_Form_FormClosed;
             Shown += Receipts_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).EndInit();

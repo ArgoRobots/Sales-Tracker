@@ -219,6 +219,7 @@ namespace Sales_Tracker
             Name = "Accountants_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            TopMost = true;
             FormClosed += Accountants_Form_FormClosed;
             Shown += Accountants_Form_Shown;
             Click += CloseAllPanels;

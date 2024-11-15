@@ -548,6 +548,7 @@ namespace Sales_Tracker
             Name = "Products_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            TopMost = true;
             FormClosed += Products_Form_FormClosed;
             Shown += Products_Form_Shown;
             Click += CloseAllPanels;

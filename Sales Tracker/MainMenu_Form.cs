@@ -391,11 +391,11 @@ namespace Sales_Tracker
                         break;
 
                     case Keys.E:  // Export
-                        new Export_Form().ShowDialog();
+                        Tools.OpenForm(new Export_Form());
                         break;
 
                     case Keys.L:  // Open logs
-                        OpenLogs();
+                        Tools.OpenForm(new Log_Form());
                         break;
                 }
             }
@@ -701,32 +701,32 @@ namespace Sales_Tracker
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            new AddPurchase_Form().ShowDialog();
+            Tools.OpenForm(new AddPurchase_Form());
         }
         private void AddSale_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            new AddSale_Form().ShowDialog();
+            Tools.OpenForm(new AddSale_Form());
         }
         private void ManageAccountants_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            new Accountants_Form().ShowDialog();
+            Tools.OpenForm(new Accountants_Form());
         }
         private void ManageProducts_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            new Products_Form(true).ShowDialog();
+            Tools.OpenForm(new Products_Form(true));
         }
         private void ManageCompanies_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            new Companies_Form().ShowDialog();
+            Tools.OpenForm(new Companies_Form());
         }
         private void ManageCategories_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            new Categories_Form(true).ShowDialog();
+            Tools.OpenForm(new Categories_Form(true));
         }
         private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
@@ -1658,21 +1658,6 @@ namespace Sales_Tracker
                 settingsForm.Show();
             }
             else { settingsForm.BringToFront(); }
-        }
-
-        // Logs
-        private Log_Form logForm;
-        public void OpenLogs()
-        {
-            if (!Tools.IsFormOpen(typeof(Log_Form)))
-            {
-                logForm = new Log_Form();
-                logForm.Show();
-            }
-            else
-            {
-                logForm.BringToFront();
-            }
         }
 
         // Misc.

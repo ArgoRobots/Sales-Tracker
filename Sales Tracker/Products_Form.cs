@@ -236,12 +236,12 @@ namespace Sales_Tracker
         }
         private void CategoryWarning_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new Categories_Form(Purchase_RadioButton.Checked).ShowDialog();
+            Tools.OpenForm(new Categories_Form(Purchase_RadioButton.Checked));
             ValidateCategoryTextBox();
         }
         private void WarningCompany_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new Companies_Form().ShowDialog();
+            Tools.OpenForm(new Companies_Form());
             ValidateCompanyTextBox();
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)

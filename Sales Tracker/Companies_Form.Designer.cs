@@ -217,6 +217,7 @@ namespace Sales_Tracker
             Name = "Companies_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            TopMost = true;
             FormClosed += Companies_Form_FormClosed;
             Shown += Companies_Form_Shown;
             Resize += Companies_Form_Resize;

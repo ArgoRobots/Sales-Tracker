@@ -264,14 +264,14 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Export as...", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                new Export_Form().ShowDialog();
+                Tools.OpenForm(new Export_Form());
             };
             ConstructKeyShortcut("Ctrl+E", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Export receipts", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                new Receipts_Form().ShowDialog();
+                Tools.OpenForm(new Receipts_Form());
             };
 
             menuBtn = ConstructBtnForMenu("Import spreadsheet", _panelBtnWidth, true, flowPanel);
@@ -279,11 +279,11 @@ namespace Sales_Tracker.UI
             {
                 if (ShouldShowTutorial())
                 {
-                    new Setup_Form().ShowDialog();
+                    Tools.OpenForm(new Setup_Form());
                 }
                 else
                 {
-                    new ImportSpreadsheet_Form().ShowDialog();
+                    Tools.OpenForm(new ImportSpreadsheet_Form());
                 }
             };
 
@@ -410,7 +410,7 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Show logs", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                MainMenu_Form.Instance.OpenLogs();
+                Tools.OpenForm(new Log_Form());
             };
             ConstructKeyShortcut("Ctrl+L", menuBtn);
 
@@ -531,7 +531,7 @@ namespace Sales_Tracker.UI
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
-                new Accountants_Form().ShowDialog();
+                Tools.OpenForm(new Accountants_Form());
             };
 
             ConstructSeperator(btnWidth, flowPanel);
@@ -540,7 +540,7 @@ namespace Sales_Tracker.UI
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
-                new Companies_Form().ShowDialog();
+                Tools.OpenForm(new Companies_Form());
             };
 
             ConstructSeperator(btnWidth, flowPanel);
@@ -549,7 +549,7 @@ namespace Sales_Tracker.UI
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
-                new Categories_Form(true).ShowDialog();
+                Tools.OpenForm(new Categories_Form(true));
             };
 
             ConstructSeperator(btnWidth, flowPanel);
@@ -558,7 +558,7 @@ namespace Sales_Tracker.UI
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
-                new Products_Form(true).ShowDialog();
+                Tools.OpenForm(new Products_Form(true));
             };
 
             ConstructSeperator(btnWidth, flowPanel);
@@ -567,7 +567,7 @@ namespace Sales_Tracker.UI
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
-                new AddSale_Form().ShowDialog();
+                Tools.OpenForm(new AddSale_Form());
             };
 
             ConstructSeperator(btnWidth, flowPanel);
@@ -576,7 +576,7 @@ namespace Sales_Tracker.UI
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
-                new AddPurchase_Form().ShowDialog();
+                Tools.OpenForm(new AddPurchase_Form());
             };
         }
 
