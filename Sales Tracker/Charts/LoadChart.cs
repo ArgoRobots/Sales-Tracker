@@ -679,13 +679,13 @@ namespace Sales_Tracker.Charts
             IGunaDataset salesDataset;
             if (isLineChart)
             {
-                expensesDataset = new GunaLineDataset { Label = "Total expenses" };
-                salesDataset = new GunaLineDataset { Label = "Total sales" };
+                expensesDataset = new GunaLineDataset { Label = LanguageManager.TranslateSingleString("Total expenses") };
+                salesDataset = new GunaLineDataset { Label = LanguageManager.TranslateSingleString("Total sales") };
             }
             else
             {
-                expensesDataset = new GunaBarDataset { Label = "Total expenses" };
-                salesDataset = new GunaBarDataset { Label = "Total sales" };
+                expensesDataset = new GunaBarDataset { Label = LanguageManager.TranslateSingleString("Total expenses") };
+                salesDataset = new GunaBarDataset { Label = LanguageManager.TranslateSingleString("Total sales") };
             }
 
             // Apply styles to the datasets with different colors

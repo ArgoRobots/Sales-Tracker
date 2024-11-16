@@ -40,16 +40,16 @@ namespace Sales_Tracker
             TextBoxValidation.OnlyAllowLetters(AccountantName_TextBox);
             TextBoxManager.Attach(AccountantName_TextBox);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
-            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight);
+            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(ProductName_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames());
-            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, true);
+            SearchBox.Attach(ProductName_TextBox, this, () => searchResult1, searchBoxMaxHeight, true, false);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(CountryOfDestinaion_TextBox);
-            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight);
+            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true);
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
 
             TextBoxValidation.OnlyAllowNumbers(Quantity_TextBox);
@@ -106,6 +106,10 @@ namespace Sales_Tracker
         private void AddSale_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
+        }
+        private void AddSale_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SearchBox.CloseSearchBox();
         }
 
         // Event handlers
@@ -747,7 +751,7 @@ namespace Sales_Tracker
             }
             Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, false, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
-            SearchBox.Attach(textBox, this, () => searchResult, 150, false, true);
+            SearchBox.Attach(textBox, this, () => searchResult, 150, true, false);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             // Price per unit

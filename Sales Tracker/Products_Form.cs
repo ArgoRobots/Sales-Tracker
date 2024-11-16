@@ -62,14 +62,14 @@ namespace Sales_Tracker
         {
             int searchBoxMaxHeight = 300;
 
-            SearchBox.Attach(ProductCategory_TextBox, this, GetListForSearchBox, searchBoxMaxHeight);
+            SearchBox.Attach(ProductCategory_TextBox, this, GetListForSearchBox, searchBoxMaxHeight, false, false);
             ProductCategory_TextBox.TextChanged += ValidateInputs;
 
-            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.countries, searchBoxMaxHeight);
+            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true);
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
 
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.CompanyList);
-            SearchBox.Attach(CompanyOfOrigin_TextBox, this, () => searchResult, searchBoxMaxHeight);
+            SearchBox.Attach(CompanyOfOrigin_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false);
             CompanyOfOrigin_TextBox.TextChanged += ValidateInputs;
         }
         private List<SearchResult> GetListForSearchBox()
@@ -143,6 +143,7 @@ namespace Sales_Tracker
         }
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
+            SearchBox.CloseSearchBox();
             MainMenu_Form.Instance.Selected = oldOption;
             MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
         }

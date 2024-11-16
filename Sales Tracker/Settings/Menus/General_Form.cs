@@ -54,12 +54,12 @@ namespace Sales_Tracker.Settings.Menus
 
             TextBoxManager.Attach(Language_TextBox);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(LanguageManager.GetLanguageNames());
-            SearchBox.Attach(Language_TextBox, this, () => searchResult, searchBoxMaxHeight, false);
+            SearchBox.Attach(Language_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false);
             Language_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
 
             TextBoxManager.Attach(Currency_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
-            SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight, false);
+            SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, false);
             Currency_TextBox.TextChanged += (_, _) => { ValidateInputs(); };
         }
 

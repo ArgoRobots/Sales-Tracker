@@ -664,7 +664,7 @@ namespace Sales_Tracker
 
             _purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
-            Search_TextBox.PlaceholderText = "Search for purchases";
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateSingleString("Search for purchases");
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
@@ -685,7 +685,7 @@ namespace Sales_Tracker
 
             _sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
-            Search_TextBox.PlaceholderText = "Search for sales";
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateSingleString("Search for sales");
         }
         private void Statistics_Button_Click(object sender, EventArgs e)
         {

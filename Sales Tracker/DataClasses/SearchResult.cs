@@ -7,6 +7,7 @@
     {
         // Properties
         private string _name = name;
+        private string _displayName = name;
         private Image _flag = flag;
         private int _score = score;
 
@@ -15,6 +16,11 @@
         {
             get => _name;
             set => _name = value;
+        }
+        public string DisplayName
+        {
+            get => _displayName;
+            set => _displayName = value;
         }
         public Image Flag
         {

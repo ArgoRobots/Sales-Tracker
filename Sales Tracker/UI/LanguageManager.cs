@@ -3,6 +3,7 @@ using Guna.UI2.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using System.Text;
 
 namespace Sales_Tracker.UI
 {
@@ -269,6 +270,84 @@ namespace Sales_Tracker.UI
             }
 
             return englishText;  // Return original text if translation fails
+        }
+        /// <summary>
+        /// Translates a single string to the default language while utilizing the translation cache.
+        /// </summary>
+        /// <returns>The translated text, or the original text if translation fails</returns>
+        public static string TranslateSingleString(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
+            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
+            if (targetLanguageAbbreviation == "en")
+            {
+                return text;
+            }
+
+            // Use the text itself as the cache key
+            string cacheKey = $"single_string_{text}";
+
+            // Check if we have this translation cached
+            if (translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
+                controlTranslations.TryGetValue(cacheKey, out string cachedTranslation))
+            {
+                return cachedTranslation;
+            }
+
+            // Cache the English version if it's not already cached
+            if (!englishCache.ContainsKey(cacheKey))
+            {
+                englishCache[cacheKey] = text;
+                SaveEnglishCacheToFile();
+            }
+
+            try
+            {
+                var body = new[] { new { Text = text } };
+                StringContent requestContent = new(
+                    JsonConvert.SerializeObject(body),
+                    Encoding.UTF8,
+                    "application/json");
+
+                HttpResponseMessage response = httpClient
+                    .PostAsync($"{translationEndpoint}&to={targetLanguageAbbreviation}", requestContent)
+                    .GetAwaiter()
+                    .GetResult();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Log.Error_GetTranslation($"{response.StatusCode}: {response.ReasonPhrase}.");
+                    return text;
+                }
+
+                string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                dynamic result = JsonConvert.DeserializeObject(responseBody);
+                string translatedText = result[0].translations[0].text;
+
+                // Cache the translation
+                if (!translationCache.TryGetValue(targetLanguageAbbreviation, out controlTranslations))
+                {
+                    controlTranslations = [];
+                    translationCache[targetLanguageAbbreviation] = controlTranslations;
+                }
+
+                if (!string.IsNullOrEmpty(translatedText))
+                {
+                    controlTranslations[cacheKey] = translatedText;
+                    SaveCacheToFile();
+                }
+
+                return translatedText;
+            }
+            catch (Exception ex)
+            {
+                Log.Error_GetTranslation(ex.Message);
+                return text;
+            }
         }
 
         // Methods
