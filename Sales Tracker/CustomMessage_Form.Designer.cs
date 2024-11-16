@@ -229,7 +229,6 @@
             Name = "CustomMessage_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            TopMost = true;
             Shown += CustomMessage_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)Icon_PictureBox).EndInit();
             ResumeLayout(false);

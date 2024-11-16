@@ -291,7 +291,6 @@ namespace Sales_Tracker
             Name = "Categories_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            TopMost = true;
             FormClosed += Categories_Form_FormClosed;
             Shown += Categories_Form_Shown;
             Click += CloseAllPanels;

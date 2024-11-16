@@ -49,14 +49,6 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Check if a form of the specified type is already open.
-        /// </summary>
-        public static bool IsFormOpen(Type formType)
-        {
-            return Application.OpenForms.OfType<Form>().Any(f => f.GetType() == formType);
-        }
-
-        /// <summary>
         /// Retrieves the version number of the currently executing assembly.
         /// </summary>
         public static string GetVersionNumber()
@@ -224,16 +216,26 @@ namespace Sales_Tracker.Classes
         }
 
         // Forms
+        /// <summary>
+        /// Check if a form of the specified type is already open.
+        /// </summary>
+        public static bool IsFormOpen(Type formType)
+        {
+            return Application.OpenForms.OfType<Form>().Any(f => f.GetType() == formType);
+        }
         public static void OpenForm(Form form)
         {
             Form existingForm = Application.OpenForms.OfType<Form>().FirstOrDefault(f => f.GetType() == form.GetType());
-
             if (existingForm != null)
             {
                 existingForm.BringToFront();
             }
             else
             {
+                // Set the Owner property to ensure the new form stays on top of the current form
+                // without using TopMost. This creates a parent-child relationship between forms
+                Form callingForm = MainMenu_Form.Instance;
+                form.Owner = callingForm;
                 form.Show();
             }
         }

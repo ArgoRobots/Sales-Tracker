@@ -215,7 +215,6 @@ namespace Sales_Tracker.Settings
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Settings";
-            TopMost = true;
             FormClosing += Settings_Form_FormClosing;
             Shown += Settings_Form_Shown;
             ResumeLayout(false);

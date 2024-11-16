@@ -113,7 +113,6 @@
             Name = "ItemsInTransaction_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            TopMost = true;
             FormClosed += ItemsInTransaction_Form_FormClosed;
             Shown += ItemsInTransaction_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)Items_DataGridView).EndInit();

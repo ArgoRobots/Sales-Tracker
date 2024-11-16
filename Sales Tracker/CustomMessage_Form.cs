@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Passwords;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
 

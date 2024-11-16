@@ -809,7 +809,6 @@ namespace Sales_Tracker
             Name = "AddSale_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            TopMost = true;
             Shown += AddSale_Form_Shown;
             TextChanged += ValidateInputs;
             Click += CloseAllPanels;

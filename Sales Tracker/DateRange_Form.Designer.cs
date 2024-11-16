@@ -596,7 +596,6 @@ namespace Sales_Tracker
             Controls.Add(Main_Panel);
             FormBorderStyle = FormBorderStyle.None;
             Name = "DateRange_Form";
-            TopMost = true;
             Shown += DateRange_Form_Shown;
             Main_Panel.ResumeLayout(false);
             Main_Panel.PerformLayout();

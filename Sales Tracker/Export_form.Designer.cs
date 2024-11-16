@@ -268,7 +268,6 @@
             Name = "Export_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            TopMost = true;
             Load += Export_Form_Load;
             Shown += Export_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();

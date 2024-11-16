@@ -82,11 +82,11 @@ namespace Sales_Tracker.Settings.Menus
             string password = PasswordManager.Password;
             if (password == null)
             {
-                new AddPassword_Form().ShowDialog();
+                Tools.OpenForm(new AddPassword_Form());
             }
             else
             {
-                new PasswordManager_Form().ShowDialog();
+                Tools.OpenForm(new PasswordManager_Form());
             }
             SetPasswordButton();
         }

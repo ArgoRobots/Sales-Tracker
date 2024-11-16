@@ -104,9 +104,9 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(800, 600);
             Name = "Log_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Log";
-            TopMost = true;
             Load += Log_form_Load;
             Shown += Log_form_Shown;
             ResumeLayout(false);
