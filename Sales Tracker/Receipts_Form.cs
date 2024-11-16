@@ -44,6 +44,8 @@ namespace Sales_Tracker
             DataGridViewManager.SortFirstColumnAndSelectFirstRow(Receipts_DataGridView);
 
             CenterControls();
+            AddEventHandlersToTextBoxes();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
         {
@@ -65,11 +67,16 @@ namespace Sales_Tracker
             Theme.MakeGButtonBluePrimary(ExportSelected_Button);
             Theme.MakeGButtonBlueSecondary(ClearFilters_Button);
         }
+        private void AddEventHandlersToTextBoxes()
+        {
+            TextBoxManager.Attach(Search_TextBox);
+        }
 
         // Form event handlers
         private void Receipts_Form_Shown(object sender, EventArgs e)
         {
             CenterControls();
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
         private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
         {

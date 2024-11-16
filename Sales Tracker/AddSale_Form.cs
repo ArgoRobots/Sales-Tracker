@@ -932,6 +932,7 @@ namespace Sales_Tracker
             flowPanel.Anchor = AnchorStyles.None;
             MinimumSize = new Size(Width, flowPanel.Bottom + 200);
             flowPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            flowPanel.Top = topForPanels + labelPanelHeight + CustomControls.SpaceBetweenControls;
             addButton.Top = flowPanel.Bottom + CustomControls.SpaceBetweenControls;
         }
 

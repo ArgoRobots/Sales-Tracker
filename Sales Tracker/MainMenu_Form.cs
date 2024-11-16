@@ -66,6 +66,7 @@ namespace Sales_Tracker
             HideShowingResultsForLabel();
             MouseClickChartManager.InitCharts([Totals_Chart, Distribution_Chart, Profits_Chart]);
             InitTimeRangePanel();
+            AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetToolTips()
@@ -328,6 +329,10 @@ namespace Sales_Tracker
             Discount_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+        }
+        private void AddEventHandlersToTextBoxes()
+        {
+            TextBoxManager.Attach(Search_TextBox);
         }
 
         // Form event handlers

@@ -57,6 +57,8 @@ namespace Sales_Tracker
 
             sale_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
             sale_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
+
+            TextBoxManager.Attach(Search_TextBox);
         }
         private void AddSearchBoxEvents()
         {

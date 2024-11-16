@@ -634,7 +634,7 @@ namespace Sales_Tracker
             Discount_Label.Name = "Discount_Label";
             Discount_Label.Size = new Size(104, 31);
             Discount_Label.TabIndex = 57;
-            Discount_Label.Text = "Dicsount";
+            Discount_Label.Text = "Discount";
             Discount_Label.Click += CloseAllPanels;
             // 
             // Discount_TextBox

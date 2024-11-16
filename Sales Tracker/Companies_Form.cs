@@ -52,6 +52,7 @@ namespace Sales_Tracker
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(Company_TextBox);
+            TextBoxManager.Attach(Search_TextBox);
 
             company_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };
             company_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, company_DataGridView); };

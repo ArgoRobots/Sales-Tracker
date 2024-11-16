@@ -84,6 +84,13 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            // Block the '>' symbol
+            if ((e.KeyCode == Keys.OemPeriod || e.KeyCode == Keys.Decimal) && e.Shift)
+            {
+                e.SuppressKeyPress = true;
+                return;
+            }
+
             if (e.Control && e.KeyCode == Keys.Y)
             {
                 e.SuppressKeyPress = true;
@@ -123,6 +130,7 @@ namespace Sales_Tracker.UI
                 case Keys.End:
                 case Keys.Subtract:
                 case Keys.Decimal:
+                case Keys.OemPeriod:
                     return true;
             }
 
