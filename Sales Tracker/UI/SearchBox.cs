@@ -23,7 +23,7 @@ namespace Sales_Tracker.UI
         private static Guna2TextBox searchTextBox;
         private static List<SearchResult> resultList;
         private static int _maxHeight;
-        private static bool _increaseWidth, _translateText;
+        private static bool _increaseWidth, _translateText, _allowTextBoxEmpty;
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
@@ -33,7 +33,7 @@ namespace Sales_Tracker.UI
         /// Attaches events to a Guna2TextBox to add a SearchBox.
         /// </summary>
         public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results,
-            int maxHeight, bool increaseWidth, bool translateText)
+            int maxHeight, bool increaseWidth, bool translateText, bool allowTextBoxEmpty)
         {
             if (!translateText)
             {
@@ -44,12 +44,12 @@ namespace Sales_Tracker.UI
                 noResults_Label.Text = _translateText ? LanguageManager.TranslateSingleString("No results") : "No results";
             }
 
-            textBox.Click += (_, _) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText); };
+            textBox.Click += (_, _) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty); };
             textBox.GotFocus += (_, _) =>
             {
                 if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
                 {
-                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText);
+                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty);
                     Settings_Form.Instance.IsFormClosing = false;
                 }
             };
@@ -107,12 +107,12 @@ namespace Sales_Tracker.UI
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
-            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, _maxHeight, true, _increaseWidth, _translateText);
+            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty);
         }
 
         // Main methods
         private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc,
-            int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText)
+            int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty)
         {
             // Check if the search box is already shown for the same text box
             if (searchTextBox == textBox && !alwaysShow)
@@ -138,6 +138,7 @@ namespace Sales_Tracker.UI
             _maxHeight = maxHeight;
             _increaseWidth = increaseWidth;
             _translateText = translateText;
+            _allowTextBoxEmpty = allowTextBoxEmpty;
 
             // Start timer
             long startTime = DateTime.Now.Ticks;
@@ -331,7 +332,7 @@ namespace Sales_Tracker.UI
         // Methods
         private static void CheckValidity(Guna2TextBox textBox, HashSet<string> resultNames_set)
         {
-            if (resultNames_set.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text))
+            if (resultNames_set.Contains(textBox.Text) || string.IsNullOrEmpty(textBox.Text) && _allowTextBoxEmpty)
             {
                 SetTextBoxToValid(textBox);
             }

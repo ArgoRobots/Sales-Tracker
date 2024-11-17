@@ -6,7 +6,6 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
-using Sales_Tracker.Settings;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 using System.ComponentModel;

@@ -37,19 +37,19 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(Currency_TextBox);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
-            SearchBox.Attach(Currency_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false);
+            SearchBox.Attach(Currency_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false, false);
 
             TextBoxManager.Attach(OrderNumber_TextBox);
 
             TextBoxValidation.OnlyAllowLetters(AccountantName_TextBox);
             TextBoxManager.Attach(AccountantName_TextBox);
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
-            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, false);
+            SearchBox.Attach(AccountantName_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, false, false);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(ProductName_TextBox);
             List<SearchResult> searchResult2 = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
-            SearchBox.Attach(ProductName_TextBox, this, () => searchResult2, searchBoxMaxHeight, true, false);
+            SearchBox.Attach(ProductName_TextBox, this, () => searchResult2, searchBoxMaxHeight, true, false, false);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxValidation.OnlyAllowNumbers(Quantity_TextBox);
@@ -778,7 +778,7 @@ namespace Sales_Tracker
             }
             Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, false, panel);
             List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
-            SearchBox.Attach(textBox, this, () => searchResult, 150, true, false);
+            SearchBox.Attach(textBox, this, () => searchResult, 150, true, false, false);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             // Price per unit
