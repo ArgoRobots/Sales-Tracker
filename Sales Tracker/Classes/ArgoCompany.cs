@@ -198,13 +198,8 @@ namespace Sales_Tracker.Classes
 
             if (Directory.Exists(directoryPath))
             {
-                string[] files = Directory.GetFiles(directoryPath);
-
-                foreach (string file in files)
-                {
-                    totalSizeInBytes += new FileInfo(file).Length;
-                    Directories.DeleteFile(file);
-                }
+                totalSizeInBytes = Directories.CalculateDirectorySize(directoryPath);
+                Directories.DeleteDirectory(directoryPath, true);
             }
 
             string totalSizeReadable = Tools.ConvertBytesToReadableSize(totalSizeInBytes);

@@ -252,6 +252,7 @@ namespace Sales_Tracker.Classes
             Directory.Delete(directory, recursive);
             return true;
         }
+
         /// <summary>
         /// Rename folders without having to provide the full path for the new name.
         /// </summary>
@@ -262,6 +263,10 @@ namespace Sales_Tracker.Classes
 
             Directory.Move(oldFolderPath, newFolderPath);
         }
+
+        /// <summary>
+        /// Sets the Hidden attribute for the specified directory.
+        /// </summary>
         public static void MakeDirectoryHidden(string directory)
         {
             DirectoryInfo folder = new(directory);
@@ -270,6 +275,23 @@ namespace Sales_Tracker.Classes
             {
                 folder.Attributes |= FileAttributes.Hidden;
             }
+        }
+
+        /// <summary>
+        /// Returns the total size in bytes of all files within a directory and its subdirectories.
+        /// </summary>
+        public static long CalculateDirectorySize(string directoryPath)
+        {
+            long size = 0;
+            DirectoryInfo dirInfo = new(directoryPath);
+
+            // Add size of files
+            foreach (FileInfo file in dirInfo.GetFiles("*", SearchOption.AllDirectories))
+            {
+                size += file.Length;
+            }
+
+            return size;
         }
 
         // Files
@@ -300,15 +322,15 @@ namespace Sales_Tracker.Classes
             File.Copy(source, destination);
             return true;
         }
-        public static bool DeleteFile(string directory)
+        public static bool DeleteFile(string file)
         {
-            if (!File.Exists(directory))
+            if (!File.Exists(file))
             {
-                Log.Error_FileDoesNotExist(directory);
+                Log.Error_FileDoesNotExist(file);
                 return false;
             }
 
-            File.Delete(directory);
+            File.Delete(file);
             return true;
         }
         /// <summary>
