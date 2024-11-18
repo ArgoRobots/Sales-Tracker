@@ -170,7 +170,7 @@ namespace Sales_Tracker.UI
             {
                 foreach (SearchResult result in results)
                 {
-                    if (result.DisplayName == addLine) { continue; }
+                    if (result.Name == addLine) { continue; }
 
                     if (result.DisplayName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase))
                     {
@@ -242,7 +242,7 @@ namespace Sales_Tracker.UI
                         _searchResultBox.Controls.Add(btn);
                         searchResultControls.Add(btn);
                     }
-                    btn.Text = meta.Name;
+                    btn.Text = meta.DisplayName;
                     btn.Width = CalculateControlWidth(metaList.Count, textBox, increaseWidth);
                     btn.Top = yOffset;
                     btn.Image = meta.Flag;

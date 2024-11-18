@@ -2,6 +2,7 @@
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
+using System.IO;
 
 namespace Sales_Tracker.Startup.Menus
 {
@@ -146,7 +147,10 @@ namespace Sales_Tracker.Startup.Menus
             // Create directories and files
             Directories.CreateDirectory(Directories.TempCompany_dir, true);
 
-            Directories.CreateDirectory(Directories.Logs_dir, false);
+            if (!Directory.Exists(Directories.Logs_dir))
+            {
+                Directories.CreateDirectory(Directories.Logs_dir, false);
+            }
             Directories.CreateDirectory(Directories.Receipts_dir, false);
             Directories.CreateFile(Directories.Purchases_file);
             Directories.CreateFile(Directories.Sales_file);

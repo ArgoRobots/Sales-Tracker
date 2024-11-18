@@ -142,8 +142,7 @@ namespace Sales_Tracker.UI
         }
         public static void CenterNoDataLabelInControl(Control control)
         {
-            string text = ReadOnlyVariables.NoData_text;
-            Label label = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == text);
+            Label label = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == ReadOnlyVariables.NoData_text);
 
             if (label != null)
             {

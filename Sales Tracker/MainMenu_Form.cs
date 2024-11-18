@@ -660,10 +660,8 @@ namespace Sales_Tracker
             _selectedDataGridView = _purchase_DataGridView;
             _purchase_DataGridView.Visible = true;
             _sale_DataGridView.Visible = false;
-            LanguageManager.UpdateLanguageForControl(Purchase_DataGridView);
             CenterAndResizeControls();
             RefreshDataGridViewAndCharts();
-
             SelectButton(Purchases_Button);
 
             _purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
@@ -684,7 +682,6 @@ namespace Sales_Tracker
             _purchase_DataGridView.Visible = false;
             CenterAndResizeControls();
             RefreshDataGridViewAndCharts();
-
             SelectButton(Sales_Button);
 
             _sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
