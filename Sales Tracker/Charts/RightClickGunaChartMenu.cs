@@ -10,15 +10,16 @@ namespace Sales_Tracker.Charts
     {
         // Properties
         private static Guna2Panel _rightClickGunaChart_Panel;
+        private static readonly string exportBtn_text = "ExportBtn";
 
         // Getter
         public static Guna2Panel RightClickGunaChart_Panel => _rightClickGunaChart_Panel;
 
-        // Methods
+        // Right click menu methods
         public static void ConstructRightClickGunaChartMenu()
         {
             Guna2Panel panel = CustomControls.ConstructPanelForMenu(
-                new Size(CustomControls.PanelWidth - 50, 2 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickGunaChart_Panel"
             );
 
@@ -30,6 +31,15 @@ namespace Sales_Tracker.Charts
 
             button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
             button.Click += SaveImage;
+
+            // Export buttons are only visible when chart has data
+            button = CustomControls.ConstructBtnForMenu("Export to Microsoft Excel", newBtnWidth, true, flowPanel);
+            button.Click += ExportToMicrosoftExcel;
+            button.Tag = exportBtn_text;
+
+            button = CustomControls.ConstructBtnForMenu("Export to Google Sheets", newBtnWidth, true, flowPanel);
+            button.Click += ExportToGoogleSheets;
+            button.Tag = exportBtn_text;
 
             _rightClickGunaChart_Panel = panel;
         }
@@ -45,8 +55,8 @@ namespace Sales_Tracker.Charts
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
             dialog.FileName = $"{Directories.CompanyName} {chart.Title.Text.ToLower()} {date}";
-            dialog.DefaultExt = "png";
-            dialog.Filter = "PNG Image|*.png";
+            dialog.DefaultExt = ArgoFiles.PngFileExtension;
+            dialog.Filter = $"PNG Image|*{ArgoFiles.PngFileExtension}";
             dialog.Title = "Save Chart Image";
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -54,6 +64,74 @@ namespace Sales_Tracker.Charts
                 chart.Export(dialog.FileName);
             }
         }
+        private static void ExportToMicrosoftExcel(object sender, EventArgs e)
+        {
+            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            string directory = "";
+
+            using SaveFileDialog dialog = new();
+            string date = Tools.FormatDate(DateTime.Now);
+            dialog.FileName = $"{Directories.CompanyName} Total expenses {date}";
+            dialog.DefaultExt = ArgoFiles.XlsxFileExtension;
+            dialog.Filter = $"XLSX spreadsheet|*{ArgoFiles.XlsxFileExtension}";
+            dialog.Title = "Export Chart to XLSX";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                directory = dialog.FileName;
+            }
+
+            Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                ? MainMenu_Form.Instance.Sale_DataGridView
+                : MainMenu_Form.Instance.Purchase_DataGridView;
+
+            bool isLine = MainMenu_Form.Instance.LineGraph_ToggleSwitch.Checked;
+
+            switch (chart.Tag)
+            {
+                case MainMenu_Form.ChartDataType.TotalRevenue:
+                    LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.DistributionOfRevenue:
+                    LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.TotalProfits:
+                    LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.CountriesOfOrigin:
+                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
+                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.CountriesOfDestination:
+                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.Accountants:
+                    LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                    LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.SalesVsExpenses_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.AverageOrderValue:
+                    LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, true, directory);
+                    break;
+            }
+        }
+        private static void ExportToGoogleSheets(object sender, EventArgs e)
+        {
+
+        }
+
+        // Other methods
         public static void ShowMenu(GunaChart chart, Point mousePosition)
         {
             Form form = chart.FindForm();
@@ -62,6 +140,19 @@ namespace Sales_Tracker.Charts
             int formHeight = form.ClientSize.Height;
             byte offset = ReadOnlyVariables.OffsetRightClickPanel;
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
+
+            // Show/hide export buttons based on chart data
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickGunaChart_Panel.Controls[0];
+            bool hasData = chart.Datasets.Count > 0 && chart.Datasets[0].DataPointCount > 0;
+
+            foreach (Control control in flowPanel.Controls)
+            {
+                if (control is Guna2Button btn && btn.Tag?.ToString() == exportBtn_text)
+                {
+                    btn.Visible = hasData;
+                }
+            }
+            CustomControls.SetRightClickMenuHeight(_rightClickGunaChart_Panel);
 
             // Calculate the horizontal position
             bool tooFarRight = false;

@@ -33,12 +33,14 @@
 
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
-    <PackageReference Include="ClosedXML" Version="0.104.1" />
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <PackageReference Include="EPPlus" Version="7.5.0" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
     <PackageReference Include="SharpCompress" Version="0.38.0" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.0" />
     <PackageReference Include="System.IO.Packaging" Version="9.0.0" />
   </ItemGroup>
 

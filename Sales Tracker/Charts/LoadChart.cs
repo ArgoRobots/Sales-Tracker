@@ -1,6 +1,9 @@
 ﻿using Guna.Charts.Interfaces;
 using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
+using OfficeOpenXml;
+using OfficeOpenXml.Drawing.Chart;
+using OfficeOpenXml.Style;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
@@ -73,7 +76,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Main charts
-        public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart)
+        public static double LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -82,17 +85,23 @@ namespace Sales_Tracker.Charts
                 return 0;
             }
 
-            if (isLineChart)
+            if (!exportToExcel)
             {
-                ConfigureChartForLine(chart);
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
             }
-            else { ConfigureChartForBar(chart); }
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+            if (!exportToExcel)
+            {
+                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+            }
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
@@ -134,23 +143,37 @@ namespace Sales_Tracker.Charts
                 return 0;
             }
 
-            SortAndAddDatasetAndSetBarPercentage(revenueByDate, dateFormat, dataset, isLineChart);
-            UpdateChart(chart, dataset, true);
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                    ? "Total revenue"
+                    : "Total expenses";
+
+                ExportDataToExcel(revenueByDate, filePath, eChartType.ColumnClustered, chartTitle);
+            }
+            else
+            {
+                SortAndAddDatasetAndSetBarPercentage(revenueByDate, dateFormat, dataset, isLineChart);
+                UpdateChart(chart, dataset, true);
+            }
+
             return grandTotal;
         }
-        public static void LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart, PieChartGrouping grouping)
+        public static double LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
-            ConfigureChartForPie(chart);
+            if (!exportToExcel)
+            {
+                ConfigureChartForPie(chart);
+            }
 
             GunaPieDataset dataset = new();
-
             double totalTax = 0;
             double totalShipping = 0;
             double totalFee = 0;
@@ -219,14 +242,13 @@ namespace Sales_Tracker.Charts
             if (!anyRowsVisible)
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
             totalTax = Math.Round(totalTax, 2);
             totalShipping = Math.Round(totalShipping, 2);
             totalFee = Math.Round(totalFee, 2);
 
-            // Get total count to calculate percentages
             // Get total count to calculate percentages
             double totalCost = Math.Round(totalTax + totalShipping + totalFee + allData.Values.Sum(), 2);
 
@@ -247,20 +269,36 @@ namespace Sales_Tracker.Charts
             // Sort and group all data together
             Dictionary<string, double> sortedData = SortAndGroupData(allData, grouping);
 
-            // Add all data points with percentage labels
-            foreach (KeyValuePair<string, double> item in sortedData)
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                double roundedValue = Math.Round(item.Value, 2);
-                double percentage = roundedValue / totalCost * 100;
-                dataset.DataPoints.Add(item.Key, roundedValue);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{item.Key} ({percentage:F2}%)";
+                string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                    ? "Distribution of revenue"
+                    : "Distribution of expenses";
+
+                ExportDataToExcel(sortedData, filePath, eChartType.Pie, chartTitle);
+            }
+            else
+            {
+                // Add all data points with percentage labels
+                foreach (KeyValuePair<string, double> item in sortedData)
+                {
+                    double roundedValue = Math.Round(item.Value, 2);
+                    double percentage = roundedValue / totalCost * 100;
+                    dataset.DataPoints.Add(item.Key, roundedValue);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{item.Key} ({percentage:F2}%)";
+                }
+
+                dataset.FillColors = GetChartColors();
+                UpdateChart(chart, dataset, true);
             }
 
-            ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset, true);
+            return totalCost;
         }
-        public static double LoadProfitsIntoChart(Guna2DataGridView salesDataGridView, Guna2DataGridView purchasesDataGridView, GunaChart chart, bool isLineChart)
+        public static double LoadProfitsIntoChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
         {
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -268,22 +306,27 @@ namespace Sales_Tracker.Charts
                 return 0;
             }
 
-            if (isLineChart)
+            if (!exportToExcel)
             {
-                ConfigureChartForLine(chart);
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
             }
-            else { ConfigureChartForBar(chart); }
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+            if (!exportToExcel)
+            {
+                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+            }
 
             double grandTotal = 0;
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows, purchasesDataGridView.Rows);
-
             string dateFormat = GetDateFormat(maxDate - minDate);
 
             // Group and sum the total profit based on the determined date format
@@ -349,22 +392,36 @@ namespace Sales_Tracker.Charts
                 grandTotal += item.Value;
             }
 
-            SortAndAddDatasetAndSetBarPercentage(profitByDate, dateFormat, dataset, isLineChart);
-            UpdateChart(chart, dataset, true);
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
+                ExportDataToExcel(profitByDate, filePath, chartType, "Total profits");
+            }
+            else
+            {
+                SortAndAddDatasetAndSetBarPercentage(profitByDate, dateFormat, dataset, isLineChart);
+                UpdateChart(chart, dataset, true);
+            }
+
             return grandTotal;
         }
 
         // Statistics charts
-        public static void LoadCountriesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart, PieChartGrouping grouping)
+        public static double LoadCountriesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
         {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
-            ConfigureChartForPie(chart);
+            if (!exportToExcel)
+            {
+                ConfigureChartForPie(chart);
+            }
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
@@ -375,7 +432,7 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                // Extarct countries from the Tag
+                // Extract countries from the Tag
                 if (row.Tag is (List<string> items, TagData))
                 {
                     foreach (string item in items)
@@ -414,7 +471,7 @@ namespace Sales_Tracker.Charts
             if (!anyRowsVisible)
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
             // Get total count to calculate percentages
@@ -423,27 +480,41 @@ namespace Sales_Tracker.Charts
             // Group countries if needed
             Dictionary<string, double> groupedCountryCounts = SortAndGroupData(countryCounts, grouping);
 
-            // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> countryCount in groupedCountryCounts)
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                double percentage = countryCount.Value / totalCount * 100;
-                dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
+                ExportDataToExcel(groupedCountryCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.CountriesOfOrigin);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> countryCount in groupedCountryCounts)
+                {
+                    double percentage = countryCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
+                }
+
+                dataset.FillColors = GetChartColors();
+                UpdateChart(chart, dataset, false);
             }
 
-            ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset, false);
+            return totalCount;
         }
-        public static void LoadCompaniesOfOriginForProductsIntoChart(Guna2DataGridView purchasesDataGridView, GunaChart chart, PieChartGrouping grouping)
+        public static double LoadCompaniesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
         {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
-            ConfigureChartForPie(chart);
+            if (!exportToExcel)
+            {
+                ConfigureChartForPie(chart);
+            }
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> companyCounts = [];
@@ -454,7 +525,7 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                // Extarct companies from the Tag
+                // Extract companies from the Tag
                 if (row.Tag is (List<string> items, TagData))
                 {
                     foreach (string item in items)
@@ -490,11 +561,10 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-
             if (!anyRowsVisible)
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
             // Get total count to calculate percentages
@@ -503,27 +573,41 @@ namespace Sales_Tracker.Charts
             // Group companies if needed
             Dictionary<string, double> groupedCompanyCounts = SortAndGroupData(companyCounts, grouping);
 
-            // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> companyCount in groupedCompanyCounts)
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                double percentage = companyCount.Value / totalCount * 100;
-                dataset.DataPoints.Add(companyCount.Key, companyCount.Value);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{companyCount.Key} ({percentage:F2}%)";
+                ExportDataToExcel(groupedCompanyCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.CompaniesOfOrigin);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> companyCount in groupedCompanyCounts)
+                {
+                    double percentage = companyCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(companyCount.Key, companyCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{companyCount.Key} ({percentage:F2}%)";
+                }
+
+                dataset.FillColors = GetChartColors();
+                UpdateChart(chart, dataset, false);
             }
 
-            ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset, false);
+            return totalCount;
         }
-        public static void LoadCountriesOfDestinationForProductsIntoChart(Guna2DataGridView salesDataGridView, GunaChart chart, PieChartGrouping grouping)
+        public static double LoadCountriesOfDestinationForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
         {
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
-            ConfigureChartForPie(chart);
+            if (!exportToExcel)
+            {
+                ConfigureChartForPie(chart);
+            }
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> countryCounts = [];
@@ -534,7 +618,7 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                // Extarct countries from the Tag
+                // Extract countries from the Tag
                 if (row.Tag is (List<string> items, TagData))
                 {
                     foreach (string item in items)
@@ -573,7 +657,7 @@ namespace Sales_Tracker.Charts
             if (!anyRowsVisible)
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
             // Get total count to calculate percentages
@@ -582,27 +666,44 @@ namespace Sales_Tracker.Charts
             // Group countries if needed
             Dictionary<string, double> groupedCountryCounts = SortAndGroupData(countryCounts, grouping);
 
-            // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> countryCount in groupedCountryCounts)
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                double percentage = countryCount.Value / totalCount * 100;
-                dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
+                ExportDataToExcel(groupedCountryCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.CountriesOfDestination);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> countryCount in groupedCountryCounts)
+                {
+                    double percentage = countryCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(countryCount.Key, countryCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
+                }
+
+                dataset.FillColors = GetChartColors();
+                UpdateChart(chart, dataset, false);
             }
 
-            ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset, false);
+            return totalCount;
         }
-        public static void LoadAccountantsIntoChart(IEnumerable<Guna2DataGridView> dataGridViews, GunaChart chart, PieChartGrouping grouping)
+        public static double LoadAccountantsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
         {
-            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews.ToArray());
+            Guna2DataGridView[] dataGridViews = [
+                MainMenu_Form.Instance.Sale_DataGridView,
+                MainMenu_Form.Instance.Purchase_DataGridView
+            ];
+
+            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
-            ConfigureChartForPie(chart);
+            if (!exportToExcel)
+            {
+                ConfigureChartForPie(chart);
+            }
 
             GunaPieDataset dataset = new();
             Dictionary<string, double> accountantCounts = [];
@@ -639,7 +740,7 @@ namespace Sales_Tracker.Charts
             if (!anyRowsVisible)
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
             // Get total count to calculate percentages
@@ -648,31 +749,46 @@ namespace Sales_Tracker.Charts
             // Group accountants if needed
             Dictionary<string, double> groupedAccountantCounts = SortAndGroupData(accountantCounts, grouping);
 
-            // Add data points to the dataset with percentage labels
-            foreach (KeyValuePair<string, double> accountantCount in groupedAccountantCounts)
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                double percentage = accountantCount.Value / totalCount * 100;
-                dataset.DataPoints.Add(accountantCount.Key, accountantCount.Value);
-                dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{accountantCount.Key} ({percentage:F2}%)";
+                ExportDataToExcel(groupedAccountantCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.AccountantsTransactions);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> accountantCount in groupedAccountantCounts)
+                {
+                    double percentage = accountantCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(accountantCount.Key, accountantCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{accountantCount.Key} ({percentage:F2}%)";
+                }
+
+                dataset.FillColors = GetChartColors();
+                UpdateChart(chart, dataset, false);
             }
 
-            ApplyCustomColorsToDataset(dataset);
-            UpdateChart(chart, dataset, false);
+            return totalCount;
         }
-        public static void LoadSalesVsExpensesChart(Guna2DataGridView purchasesDataGridView, Guna2DataGridView salesDataGridView, GunaChart chart, bool isLineChart)
+        public static double LoadSalesVsExpensesChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
         {
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
-            if (isLineChart)
+            if (!exportToExcel)
             {
-                ConfigureChartForLine(chart);
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
             }
-            else { ConfigureChartForBar(chart); }
 
             // Create the datasets for expenses and sales with labels
             IGunaDataset expensesDataset;
@@ -688,9 +804,12 @@ namespace Sales_Tracker.Charts
                 salesDataset = new GunaBarDataset { Label = LanguageManager.TranslateSingleString("Total sales") };
             }
 
-            // Apply styles to the datasets with different colors
-            ApplyStyleToBarOrLineDataSet(expensesDataset, isLineChart, CustomColors.PastelGreen);
-            ApplyStyleToBarOrLineDataSet(salesDataset, isLineChart, CustomColors.PastelBlue);
+            if (!exportToExcel)
+            {
+                // Apply styles to the datasets with different colors
+                ApplyStyleToBarOrLineDataSet(expensesDataset, isLineChart, CustomColors.PastelGreen);
+                ApplyStyleToBarOrLineDataSet(salesDataset, isLineChart, CustomColors.PastelBlue);
+            }
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
@@ -748,90 +867,119 @@ namespace Sales_Tracker.Charts
             if (expensesByDate.Count == 0 && salesByDate.Count == 0)
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
-
 
             // Sort the dates
             List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
 
-            // Add data points to the datasets
-            foreach (string date in sortedDates)
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                // Add data point for sales
-                double salesValue = salesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
-
-                // Add data point for expenses
-                double expensesValue = expensesByDate.TryGetValue(date, out double eValue) ? eValue : 0;
-
-                if (isLineChart)
+                // Create a dictionary with both sales and expenses data
+                Dictionary<string, Dictionary<string, double>> combinedData = [];
+                foreach (string date in sortedDates)
                 {
-                    ((GunaLineDataset)expensesDataset).DataPoints.Add(date, expensesValue);
-                    ((GunaLineDataset)salesDataset).DataPoints.Add(date, salesValue);
-                }
-                else
-                {
-                    ((GunaBarDataset)expensesDataset).DataPoints.Add(date, expensesValue);
-                    ((GunaBarDataset)salesDataset).DataPoints.Add(date, salesValue);
-
-                    if (salesDataset.DataPointCount + expensesDataset.DataPointCount == 1)
+                    combinedData[date] = new Dictionary<string, double>
                     {
-                        ((GunaBarDataset)expensesDataset).BarPercentage = 0.2f;
-                        ((GunaBarDataset)salesDataset).BarPercentage = 0.2f;
+                        { LanguageManager.TranslateSingleString("Total expenses"), expensesByDate.TryGetValue(date, out double eValue) ? eValue : 0 },
+                        { LanguageManager.TranslateSingleString("Total sales"), salesByDate.TryGetValue(date, out double sValue) ? sValue : 0 }
+                    };
+                }
+
+                ExportMultiSeriesDataToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, "Sales vs Expenses");
+            }
+            else
+            {
+                // Add data points to the datasets
+                foreach (string date in sortedDates)
+                {
+                    // Add data point for sales
+                    double salesValue = salesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
+
+                    // Add data point for expenses
+                    double expensesValue = expensesByDate.TryGetValue(date, out double eValue) ? eValue : 0;
+
+                    if (isLineChart)
+                    {
+                        ((GunaLineDataset)expensesDataset).DataPoints.Add(date, expensesValue);
+                        ((GunaLineDataset)salesDataset).DataPoints.Add(date, salesValue);
                     }
                     else
                     {
-                        ((GunaBarDataset)expensesDataset).BarPercentage = 0.4f;
-                        ((GunaBarDataset)salesDataset).BarPercentage = 0.4f;
+                        ((GunaBarDataset)expensesDataset).DataPoints.Add(date, expensesValue);
+                        ((GunaBarDataset)salesDataset).DataPoints.Add(date, salesValue);
+
+                        if (salesDataset.DataPointCount + expensesDataset.DataPointCount == 1)
+                        {
+                            ((GunaBarDataset)expensesDataset).BarPercentage = 0.2f;
+                            ((GunaBarDataset)salesDataset).BarPercentage = 0.2f;
+                        }
+                        else
+                        {
+                            ((GunaBarDataset)expensesDataset).BarPercentage = 0.4f;
+                            ((GunaBarDataset)salesDataset).BarPercentage = 0.4f;
+                        }
                     }
                 }
+
+                // Update the chart with both datasets
+                chart.Datasets.Clear();
+                chart.Datasets.Add(expensesDataset);
+                chart.Datasets.Add(salesDataset);
+
+                ApplyCurrencyFormatToDataset(expensesDataset);
+                ApplyCurrencyFormatToDataset(salesDataset);
+
+                chart.Legend.Display = true;
+                chart.Legend.Position = LegendPosition.Top;
+
+                chart.Update();
             }
 
-            // Update the chart with both datasets
-            chart.Datasets.Clear();
-            chart.Datasets.Add(expensesDataset);
-            chart.Datasets.Add(salesDataset);
-
-            ApplyCurrencyFormatToDataset(expensesDataset);
-            ApplyCurrencyFormatToDataset(salesDataset);
-
-            chart.Legend.Display = true;
-            chart.Legend.Position = LegendPosition.Top;
-
-            chart.Update();
+            // Return total of sales and expenses
+            return salesByDate.Values.Sum() + expensesByDate.Values.Sum();
         }
-        public static void LoadAverageOrderValueChart(Guna2DataGridView salesDataGridView, GunaChart chart, bool isLineChart)
+        public static double LoadAverageOrderValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
         {
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
-            if (isLineChart)
+            if (!exportToExcel)
             {
-                ConfigureChartForLine(chart);
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
             }
-            else { ConfigureChartForBar(chart); }
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+            if (!exportToExcel)
+            {
+                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+            }
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows);
-
             string dateFormat = GetDateFormat(maxDate - minDate);
 
             Dictionary<string, double> totalByDate = [];
             Dictionary<string, int> ordersByDate = [];
+            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
 
@@ -850,21 +998,34 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            if (totalByDate.Count == 0)
+            if (!anyRowsVisible || totalByDate.Count == 0)
             {
                 ClearChart(chart);
-                return;
+                return 0;
             }
 
             Dictionary<string, double> averageOrderValueByDate = [];
+            double totalAverageOrderValue = 0;
 
             foreach (string date in totalByDate.Keys)
             {
-                averageOrderValueByDate[date] = totalByDate[date] / ordersByDate[date];
+                double averageValue = totalByDate[date] / ordersByDate[date];
+                averageOrderValueByDate[date] = averageValue;
+                totalAverageOrderValue += averageValue;
             }
 
-            SortAndAddDatasetAndSetBarPercentage(averageOrderValueByDate, dateFormat, dataset, isLineChart);
-            UpdateChart(chart, dataset, true);
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
+                ExportDataToExcel(averageOrderValueByDate, filePath, chartType, "Average Order Value");
+            }
+            else
+            {
+                SortAndAddDatasetAndSetBarPercentage(averageOrderValueByDate, dateFormat, dataset, isLineChart);
+                UpdateChart(chart, dataset, true);
+            }
+
+            return totalAverageOrderValue / averageOrderValueByDate.Count;
         }
 
         // Methods
@@ -908,10 +1069,9 @@ namespace Sales_Tracker.Charts
                 ((GunaBarDataset)dataset).FillColors = [color];
             }
         }
-        public static void ApplyCustomColorsToDataset(GunaPieDataset dataset)
+        private static ColorCollection GetChartColors()
         {
-            // Define the colors - soft and vibrant palette
-            ColorCollection colors =
+            return
             [
                 CustomColors.PastelBlue,
                 CustomColors.PastelGreen,
@@ -930,7 +1090,6 @@ namespace Sales_Tracker.Charts
                 Color.FromArgb(153, 153, 153),  // Muted gray
                 Color.FromArgb(178, 178, 102),  // Olive gold
             ];
-            dataset.FillColors = colors;
         }
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
         {
@@ -1052,6 +1211,109 @@ namespace Sales_Tracker.Charts
             ClearChartConfig(chart);
             chart.Datasets.Clear();
             chart.Update();
+        }
+
+        // Export charts to Microsoft Excel
+        private static void ExportDataToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage package = new();
+            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
+
+            string translatedChartTitle = LanguageManager.TranslateSingleString(chartTitle);
+
+            // Add headers
+            worksheet.Cells["A1"].Value = LanguageManager.TranslateSingleString("Data 1");
+            worksheet.Cells["B1"].Value = LanguageManager.TranslateSingleString("Data 1");
+
+            // Format headers
+            ExcelRange headerRange = worksheet.Cells["A1:B1"];
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
+
+            // Add data
+            int row = 2;
+            foreach (KeyValuePair<string, double> item in data.OrderBy(x => x.Key))
+            {
+                worksheet.Cells[row, 1].Value = item.Key;
+                worksheet.Cells[row, 2].Value = item.Value;
+                worksheet.Cells[row, 2].Style.Numberformat.Format = "#,##0.00";
+                row++;
+            }
+
+            // Create chart
+            ExcelChart chart = worksheet.Drawings.AddChart(translatedChartTitle, chartType);
+            chart.SetPosition(1, 0, 4, 0);
+            chart.SetSize(800, 400);
+
+            // Configure chart
+            ExcelChartSerie series = chart.Series.Add(worksheet.Cells[$"B2:B{row - 1}"], worksheet.Cells[$"A2:A{row - 1}"]);
+            chart.Title.Text = translatedChartTitle;
+            chart.Legend.Remove();
+
+            worksheet.Columns[1, 2].AutoFit();
+            package.SaveAs(new FileInfo(filePath));
+        }
+        private static void ExportMultiSeriesDataToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage package = new();
+            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
+
+            // Get all series names
+            List<string> seriesNames = data.First().Value.Keys.ToList();
+
+            // Add headers
+            worksheet.Cells[1, 1].Value = LanguageManager.TranslateSingleString("Date");
+            for (int i = 0; i < seriesNames.Count; i++)
+            {
+                worksheet.Cells[1, i + 2].Value = seriesNames[i];
+            }
+
+            // Format headers
+            ExcelRange headerRange = worksheet.Cells[1, 1, 1, seriesNames.Count + 1];
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
+
+            // Add data
+            int row = 2;
+            foreach (KeyValuePair<string, Dictionary<string, double>> dateEntry in data.OrderBy(x => x.Key))
+            {
+                worksheet.Cells[row, 1].Value = dateEntry.Key;
+
+                for (int i = 0; i < seriesNames.Count; i++)
+                {
+                    worksheet.Cells[row, i + 2].Value = dateEntry.Value[seriesNames[i]];
+                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = "#,##0.00";
+                }
+                row++;
+            }
+
+            // Create chart
+            ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
+            chart.SetPosition(1, 0, 4, 0);
+            chart.SetSize(800, 400);
+
+            // Add series to chart
+            for (int i = 0; i < seriesNames.Count; i++)
+            {
+                ExcelChartSerie series = chart.Series.Add(
+                    worksheet.Cells[2, i + 2, row - 1, i + 2], // Y values
+                    worksheet.Cells[2, 1, row - 1, 1]          // X values
+                );
+                series.Header = seriesNames[i];
+            }
+
+            chart.Title.Text = chartTitle;
+            chart.Legend.Position = eLegendPosition.Top;
+
+            worksheet.Columns.AutoFit();
+
+            package.SaveAs(new FileInfo(filePath));
         }
     }
 }

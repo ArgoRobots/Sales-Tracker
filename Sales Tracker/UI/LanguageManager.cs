@@ -228,8 +228,8 @@ namespace Sales_Tracker.UI
             {
                 var body = new[] { new { Text = englishText } };
                 StringContent requestContent = new(
-                    Newtonsoft.Json.JsonConvert.SerializeObject(body),
-                    System.Text.Encoding.UTF8,
+                    JsonConvert.SerializeObject(body),
+                    Encoding.UTF8,
                     "application/json");
 
                 HttpResponseMessage response = httpClient
@@ -244,7 +244,7 @@ namespace Sales_Tracker.UI
                 }
 
                 string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+                dynamic result = JsonConvert.DeserializeObject(responseBody);
                 string translatedText = result[0].translations[0].text;
 
                 // Cache the translation

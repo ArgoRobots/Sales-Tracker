@@ -655,7 +655,7 @@ namespace Sales_Tracker.UI
         public static void SetRightClickMenuHeight(Guna2Panel panel)
         {
             FlowLayoutPanel flowPanel = panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-            int controlCount = flowPanel.Controls.Count;
+            int controlCount = flowPanel.Controls.Cast<Control>().Count(c => c.Visible);
 
             panel.Height = controlCount * PanelButtonHeight + SpaceForPanel;
             flowPanel.Height = controlCount * PanelButtonHeight;

@@ -65,6 +65,7 @@ namespace Sales_Tracker
             HideShowingResultsForLabel();
             MouseClickChartManager.InitCharts([Totals_Chart, Distribution_Chart, Profits_Chart]);
             InitTimeRangePanel();
+            InitChartTags();
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -259,7 +260,7 @@ namespace Sales_Tracker
                     Distribution_Chart.Title.Text = "Distribution of expenses";
                 }
             }
-            total = LoadChart.LoadProfitsIntoChart(_sale_DataGridView, _purchase_DataGridView, Profits_Chart, isLine);
+            total = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
             Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
 
             LanguageManager.UpdateLanguageForControl(Profits_Chart, true);
@@ -328,6 +329,18 @@ namespace Sales_Tracker
             Discount_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+        }
+        private void InitChartTags()
+        {
+            Totals_Chart.Tag = ChartDataType.TotalRevenue;
+            Distribution_Chart.Tag = ChartDataType.DistributionOfRevenue;
+            Profits_Chart.Tag = ChartDataType.TotalProfits;
+            countriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
+            companiesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
+            countriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
+            accountants_Chart.Tag = ChartDataType.Accountants;
+            salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
+            averageOrderValue_Chart.Tag = ChartDataType.AverageOrderValue;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -1526,10 +1539,40 @@ namespace Sales_Tracker
             Directories.WriteLinesToFile(filePath, list);
         }
 
-        // Statistics charts properties
+        // Chart properties
         private List<GunaChart> statisticsCharts;
         private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart,
             accountants_Chart, salesVsExpenses_Chart, averageOrderValue_Chart;
+
+        public enum ChartDataType
+        {
+            TotalRevenue,
+            DistributionOfRevenue,
+            TotalProfits,
+            CountriesOfOrigin,
+            CompaniesOfOrigin,
+            CountriesOfDestination,
+            Accountants,
+            TotalExpensesVsSales,
+            AverageOrderValue
+        }
+        public static class ChartTitles
+        {
+            public const string
+                CountriesOfOrigin = "Countries of origin for purchased products",
+                CompaniesOfOrigin = "Companies of origin for purchased products",
+                CountriesOfDestination = "Countries of destination for sold products",
+                AccountantsTransactions = "Transactions managed by accountants",
+                SalesVsExpenses = "Total expenses vs. total sales",
+                AverageOrderValue = "Average order value";
+        }
+
+        public GunaChart CountriesOfOrigin_Chart => countriesOfOrigin_Chart;
+        public GunaChart CompaniesOfOrigin_Chart => companiesOfOrigin_Chart;
+        public GunaChart CountriesOfDestination_Chart => countriesOfDestination_Chart;
+        public GunaChart Accountants_Chart => accountants_Chart;
+        public GunaChart SalesVsExpenses_Chart => salesVsExpenses_Chart;
+        public GunaChart AverageOrderValue_Chart => averageOrderValue_Chart;
 
         // Statistics charts methods
         private List<Control> GetMainControlsList()
@@ -1623,29 +1666,29 @@ namespace Sales_Tracker
 
             if (!onlyRefreshForLineCharts)
             {
-                LoadChart.LoadCountriesOfOriginForProductsIntoChart(_purchase_DataGridView, countriesOfOrigin_Chart, PieChartGrouping.Top12);
-                countriesOfOrigin_Chart.Title.Text = "Countries of origin for purchased products";
+                LoadChart.LoadCountriesOfOriginForProductsIntoChart(countriesOfOrigin_Chart, PieChartGrouping.Top12);
+                countriesOfOrigin_Chart.Title.Text = ChartTitles.CountriesOfOrigin;
                 LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart);
 
-                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_purchase_DataGridView, companiesOfOrigin_Chart, PieChartGrouping.Top12);
-                companiesOfOrigin_Chart.Title.Text = "Companies of origin for purchased products";
+                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(companiesOfOrigin_Chart, PieChartGrouping.Top12);
+                companiesOfOrigin_Chart.Title.Text = ChartTitles.CompaniesOfOrigin;
                 LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart);
 
-                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_sale_DataGridView, countriesOfDestination_Chart, PieChartGrouping.Top12);
-                countriesOfDestination_Chart.Title.Text = "Countries of destination for sold products";
+                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(countriesOfDestination_Chart, PieChartGrouping.Top12);
+                countriesOfDestination_Chart.Title.Text = ChartTitles.CountriesOfDestination;
                 LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart);
 
-                LoadChart.LoadAccountantsIntoChart([_purchase_DataGridView, _sale_DataGridView], accountants_Chart, PieChartGrouping.Top12);
-                accountants_Chart.Title.Text = "Transactions managed by accountants";
+                LoadChart.LoadAccountantsIntoChart(accountants_Chart, PieChartGrouping.Top12);
+                accountants_Chart.Title.Text = ChartTitles.AccountantsTransactions;
                 LanguageManager.UpdateLanguageForControl(accountants_Chart);
             }
 
-            LoadChart.LoadSalesVsExpensesChart(_purchase_DataGridView, _sale_DataGridView, salesVsExpenses_Chart, isLineChart);
-            salesVsExpenses_Chart.Title.Text = "Total expenses vs. total sales";
+            LoadChart.LoadSalesVsExpensesChart(salesVsExpenses_Chart, isLineChart);
+            salesVsExpenses_Chart.Title.Text = ChartTitles.SalesVsExpenses;
             LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart);
 
-            LoadChart.LoadAverageOrderValueChart(_sale_DataGridView, averageOrderValue_Chart, isLineChart);
-            averageOrderValue_Chart.Title.Text = "Average order value";
+            LoadChart.LoadAverageOrderValueChart(averageOrderValue_Chart, isLineChart);
+            averageOrderValue_Chart.Title.Text = ChartTitles.AverageOrderValue;
             LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
         }
 
