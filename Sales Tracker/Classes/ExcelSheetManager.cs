@@ -24,7 +24,8 @@ namespace Sales_Tracker.Classes
                 string accountantName = row.Cell(1).GetValue<string>();
                 if (MainMenu_Form.Instance.AccountantList.Any(name => name.Equals(accountantName, StringComparison.OrdinalIgnoreCase)))
                 {
-                    CustomMessageBox.Show("Accountant already exists",
+                    CustomMessageBox.Show(
+                        "Accountant already exists",
                         $"The accountant {accountantName} already exists and will not be imported",
                         CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
                 }
@@ -47,7 +48,8 @@ namespace Sales_Tracker.Classes
                 string companyName = row.Cell(1).GetValue<string>();
                 if (MainMenu_Form.Instance.CompanyList.Any(name => name.Equals(companyName, StringComparison.OrdinalIgnoreCase)))
                 {
-                    CustomMessageBox.Show("Company already exists",
+                    CustomMessageBox.Show(
+                        "Company already exists",
                         $"The company {companyName} already exists and will not be imported",
                         CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
                 }
@@ -101,7 +103,8 @@ namespace Sales_Tracker.Classes
 
                     if (!countryExists)
                     {
-                        CustomMessageBoxResult result = CustomMessageBox.Show("Country does not exist",
+                        CustomMessageBoxResult result = CustomMessageBox.Show(
+                            "Country does not exist",
                             $"Country '{countryOfOrigin}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
                             CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
@@ -140,9 +143,10 @@ namespace Sales_Tracker.Classes
                 {
                     string type = purchase ? "purchase" : "sale";
 
-                    CustomMessageBox.Show("Product already exists",
-                    $"The product for {type} '{productName}' already exists and will not be imported",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show(
+                        "Product already exists",
+                        $"The product for {type} '{productName}' already exists and will not be imported",
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
                 }
                 else
                 {
@@ -171,9 +175,10 @@ namespace Sales_Tracker.Classes
                 // Check if this row's purchase number already exists
                 if (purchaseNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
                 {
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists",
-                      $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
-                      CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                    CustomMessageBoxResult result = CustomMessageBox.Show(
+                        "Purchase # already exists",
+                        $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                     if (result != CustomMessageBoxResult.Yes)
                     {
@@ -224,9 +229,10 @@ namespace Sales_Tracker.Classes
                 // Check if this row's sales number already exists
                 if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.ID.ToString(), saleNumber))
                 {
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists",
-                      $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
-                      CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                    CustomMessageBoxResult result = CustomMessageBox.Show(
+                        "Sale # already exists",
+                        $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                     if (result != CustomMessageBoxResult.Yes)
                     {
@@ -763,7 +769,10 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                CustomMessageBox.Show("Cannot import", $"Cannot import because a money value is not in the correct format: {value}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show(
+                    "Cannot import",
+                    $"Cannot import because a money value is not in the correct format: {value}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return -1;
             }
         }

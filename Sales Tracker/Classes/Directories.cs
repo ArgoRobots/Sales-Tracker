@@ -10,11 +10,11 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class Directories
     {
-        // Directories
+        // Directories and files
         private static string _companyName, _tempCompany_dir, _argoCompany_dir, _argoCompany_file, _appData_dir,
             _globalAppDataSettings_file, _appDataSettings_file, _purchases_file, _sales_file, _categoryPurchases_file,
             _categorySales_file, _accountants_file, _companies_file, _receipts_dir, _logs_dir, _desktop_dir, _cache_dir,
-            _translations_file, _englishTexts_file, _config_file;
+            _translations_file, _englishTexts_file, _config_file, _googleCredentials_file;
 
         // Getters and setters
         public static string CompanyName
@@ -117,6 +117,11 @@ namespace Sales_Tracker.Classes
             get => _config_file;
             set => _config_file = value;
         }
+        public static string GoogleCredentials_file
+        {
+            get => _googleCredentials_file;
+            set => _googleCredentials_file = value;
+        }
 
         // Methods
         /// <summary>
@@ -154,6 +159,8 @@ namespace Sales_Tracker.Classes
         {
             // App data
             _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+            _googleCredentials_file = _appData_dir + "googleCredentials" + ArgoFiles.JsonFileExtension;
+            EnsureGoogleCredentialsExist();
 
             // AES encryption
             _config_file = _appData_dir + "config" + ArgoFiles.JsonFileExtension;
@@ -173,6 +180,22 @@ namespace Sales_Tracker.Classes
             if (!Directory.Exists(_appData_dir))
             {
                 CreateDirectory(_appData_dir, false);
+            }
+        }
+        private static void EnsureGoogleCredentialsExist()
+        {
+            if (!File.Exists(GoogleCredentials_file))
+            {
+                Directory.CreateDirectory(AppData_dir);
+
+                string resourcePath = "Sales_Tracker.googleCredentials.json";
+                using Stream stream = typeof(Directories).Assembly
+                    .GetManifestResourceStream(resourcePath)
+                    ?? throw new FileNotFoundException($"Embedded {GoogleCredentials_file} not found");
+
+                // Copy to AppData
+                using FileStream fileStream = File.Create(GoogleCredentials_file);
+                stream.CopyTo(fileStream);
             }
         }
 

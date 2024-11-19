@@ -96,7 +96,7 @@ namespace Sales_Tracker.Charts
                 // Check if the click happened on any of the charts
                 foreach (GunaChart chart in registeredCharts)
                 {
-                    if (chart.Parent == null)
+                    if (chart.Parent == null || !chart.Visible)
                     {
                         // Skip this chart if it has no parent (if the statistics charts are not shown)
                         continue;

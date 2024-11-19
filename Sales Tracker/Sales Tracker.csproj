@@ -30,11 +30,21 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="googleCredentials.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="googleCredentials.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
     <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="EPPlus" Version="7.5.0" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.68.0.3356" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3601" />
+    <PackageReference Include="Google.Apis.Iam.v1" Version="1.68.0.3588" />
+    <PackageReference Include="Google.Apis.ServiceUsage.v1" Version="1.68.0.3585" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.68.0.3568" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />

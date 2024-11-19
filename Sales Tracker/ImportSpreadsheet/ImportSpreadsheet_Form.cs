@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -560,10 +559,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (salesImportFailed) { message += "'Sales'"; }
                 message += " because it looks like you are not connected to the internet. A connection is needed to get the exchange rates. Please check your connection and try again";
 
-                CustomMessageBox.Show("No connection",
-                    message,
-                    CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("No connection", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
             }
 
             MainMenu_Form.IsProgramLoading = false;

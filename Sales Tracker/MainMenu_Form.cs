@@ -235,13 +235,12 @@ namespace Sales_Tracker
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
-            double total;
             bool isLine = LineGraph_ToggleSwitch.Checked;
 
             if (_sale_DataGridView.Visible)
             {
-                total = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, Totals_Chart, isLine);
-                Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{total:N2}";
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, Totals_Chart, isLine);
+                Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
@@ -251,8 +250,8 @@ namespace Sales_Tracker
             }
             else if (_purchase_DataGridView.Visible)
             {
-                total = LoadChart.LoadTotalsIntoChart(_purchase_DataGridView, Totals_Chart, isLine);
-                Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{total:N2}";
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(_purchase_DataGridView, Totals_Chart, isLine);
+                Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
@@ -260,8 +259,9 @@ namespace Sales_Tracker
                     Distribution_Chart.Title.Text = "Distribution of expenses";
                 }
             }
-            total = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
-            Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{total:N2}";
+
+            ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
+            Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
 
             LanguageManager.UpdateLanguageForControl(Profits_Chart, true);
             LanguageManager.UpdateLanguageForControl(Totals_Chart, true);
@@ -573,7 +573,8 @@ namespace Sales_Tracker
         /// <returns>Returns true if the user cancels. Returns false if the user saves.</returns>
         private static bool AskUserToSaveBeforeClosing()
         {
-            CustomMessageBoxResult result = CustomMessageBox.Show("Save changes",
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                "Save changes",
                 "Save changes to the following items?",
                 CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
@@ -871,7 +872,8 @@ namespace Sales_Tracker
 
                 string suggestedCompanyName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
 
-                CustomMessageBoxResult result = CustomMessageBox.Show($"Rename company",
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    $"Rename company",
                     $"Do you want to rename '{name}' to '{suggestedCompanyName}'? There is already a company with the same name.",
                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
 

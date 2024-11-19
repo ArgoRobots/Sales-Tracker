@@ -328,7 +328,8 @@ namespace Sales_Tracker.Startup.Menus
                 string projectDir = btn.Tag.ToString();
                 if (File.Exists(projectDir))
                 {
-                    CustomMessageBoxResult result = CustomMessageBox.Show("Delete company",
+                    CustomMessageBoxResult result = CustomMessageBox.Show(
+                        "Delete company",
                         $"Are you sure you want to delete this company? It will be moved to the recycle bin.",
                         CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 

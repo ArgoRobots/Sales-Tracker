@@ -127,9 +127,191 @@ namespace Sales_Tracker.Charts
                     break;
             }
         }
-        private static void ExportToGoogleSheets(object sender, EventArgs e)
+        private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
+            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                ? MainMenu_Form.Instance.Sale_DataGridView
+                : MainMenu_Form.Instance.Purchase_DataGridView;
+            bool isLine = MainMenu_Form.Instance.LineGraph_ToggleSwitch.Checked;
 
+            try
+            {
+                switch (chart.Tag)
+                {
+                    case MainMenu_Form.ChartDataType.TotalRevenue:
+                        {
+                            ChartData totalsChartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine);
+                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible ? "Total Revenue" : "Total Expenses";
+                            Dictionary<string, double> exportData = totalsChartData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                chartTitle,
+                                chartType
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.DistributionOfRevenue:
+                        {
+                            ChartData distributionChartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited);
+                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                                ? "Distribution of Revenue"
+                                : "Distribution of Expenses";
+                            Dictionary<string, double> exportData = distributionChartData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                chartTitle,
+                                GoogleSheetManager.ChartType.Pie
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.TotalProfits:
+                        {
+                            ChartData profitsChartData = LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine);
+                            Dictionary<string, double> exportData = profitsChartData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                "Total Profits",
+                                chartType
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.CountriesOfOrigin:
+                        {
+                            ChartData countriesChartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited);
+                            Dictionary<string, double> exportData = countriesChartData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                "Countries of Origin",
+                                GoogleSheetManager.ChartType.Pie
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
+                        {
+                            ChartData companiesChartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited);
+                            Dictionary<string, double> exportData = companiesChartData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                "Companies of Origin",
+                                GoogleSheetManager.ChartType.Pie
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.CountriesOfDestination:
+                        {
+                            ChartData destinationsChartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited);
+                            Dictionary<string, double> exportData = destinationsChartData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                "Countries of Destination",
+                                GoogleSheetManager.ChartType.Pie
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.Accountants:
+                        {
+                            ChartData accountantsChartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited);
+                            Dictionary<string, double> exportData = accountantsChartData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                "Accountants Distribution",
+                                GoogleSheetManager.ChartType.Pie
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
+                        {
+                            SalesExpensesChartData salesExpensesData = LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.SalesVsExpenses_Chart, isLine);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in salesExpensesData.DateOrder)
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    ["Total Sales"] = salesExpensesData.GetSalesForDate(date),
+                                    ["Total Expenses"] = salesExpensesData.GetExpensesForDate(date)
+                                };
+                            }
+
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(
+                                combinedData,
+                                "Sales vs Expenses",
+                                chartType
+                            );
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.AverageOrderValue:
+                        {
+                            ChartData averageOrderData = LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine);
+                            Dictionary<string, double> exportData = averageOrderData.GetData().ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value
+                            );
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
+                                exportData,
+                                "Average Order Value",
+                                chartType
+                            );
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show("Export Error", $"Failed to export chart: {ex.Message}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
+                );
+            }
         }
 
         // Other methods
