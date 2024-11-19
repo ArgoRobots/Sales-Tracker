@@ -5,6 +5,7 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Sales_Tracker.UI;
+using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
 {
@@ -102,23 +103,35 @@ namespace Sales_Tracker.Classes
                 string spreadsheetId = spreadsheet.SpreadsheetId;
                 string sheetName = LanguageManager.TranslateSingleString("Chart Data");
 
-                // Share the spreadsheet
-                DriveService driveService = new(new BaseClientService.Initializer
+                try
                 {
-                    HttpClientInitializer = _sheetsService.HttpClientInitializer,
-                    ApplicationName = "Sales Tracker"
-                });
+                    // Create new project if it doesn't exist
+                    DriveService driveService = new(new BaseClientService.Initializer
+                    {
+                        HttpClientInitializer = _sheetsService.HttpClientInitializer,
+                        ApplicationName = "Sales Tracker"
+                    });
 
-                Permission permission = new()
+                    // Set file permissions to be accessible by anyone with the link
+                    Permission permission = new()
+                    {
+                        Type = "anyone",
+                        Role = "writer",
+                        AllowFileDiscovery = false
+                    };
+
+                    await driveService.Permissions
+                        .Create(permission, spreadsheetId)
+                        .ExecuteAsync();
+                }
+                catch (Exception ex)
                 {
-                    Type = "user",
-                    Role = "writer",
-                    EmailAddress = "argorobots@gmail.com"  // The email address to share with
-                };
-
-                await driveService.Permissions
-                    .Create(permission, spreadsheetId)
-                    .ExecuteAsync();
+                    CustomMessageBox.Show(
+                        "Permission Error",
+                        $"Failed to set spreadsheet permissions: {ex.Message}\nYou may need to set sharing permissions manually.",
+                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
+                    );
+                }
 
                 // Prepare the data
                 List<IList<object>> values =
@@ -196,27 +209,12 @@ namespace Sales_Tracker.Classes
                 // Generate and open the spreadsheet URL
                 string spreadsheetUrl = $"https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit";
 
-                try
+                // Open the Google Sheet in the default system browser
+                Process.Start(new ProcessStartInfo
                 {
-                    // First attempt: Try to use default system browser
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = spreadsheetUrl,
-                        UseShellExecute = true
-                    });
-                }
-                catch
-                {
-                    // Fallback: Show URL to user if browser launch fails
-                    CustomMessageBox.Show(
-                        "Spreadsheet Created",
-                        $"Spreadsheet has been created. Please open this URL in your browser:\n\n{spreadsheetUrl}",
-                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok
-                    );
-                }
-
-                // Consider waiting a few seconds to ensure all updates are processed
-                await Task.Delay(2000);
+                    FileName = spreadsheetUrl,
+                    UseShellExecute = true
+                });
             }
             catch (Exception ex)
             {
