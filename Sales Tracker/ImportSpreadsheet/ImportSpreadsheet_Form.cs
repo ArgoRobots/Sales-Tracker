@@ -523,29 +523,29 @@ namespace Sales_Tracker.ImportSpreadsheet
                 switch (worksheetName)
                 {
                     case accountantsName:
-                        wasSomethingImported |= SpreadsheetManager.ImportAccountantsData(worksheet, skipheader);
+                        wasSomethingImported |= ExcelSheetManager.ImportAccountantsData(worksheet, skipheader);
                         break;
 
                     case companiesName:
-                        wasSomethingImported |= SpreadsheetManager.ImportCompaniesData(worksheet, skipheader);
+                        wasSomethingImported |= ExcelSheetManager.ImportCompaniesData(worksheet, skipheader);
                         break;
 
                     case purchaseProductsName:
-                        wasSomethingImported |= SpreadsheetManager.ImportProductsData(worksheet, true, skipheader);
+                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, true, skipheader);
                         break;
 
                     case saleProductsName:
-                        wasSomethingImported |= SpreadsheetManager.ImportProductsData(worksheet, false, skipheader);
+                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, false, skipheader);
                         break;
 
                     case purchasesName:
-                        (bool connection, bool somethingImported) = SpreadsheetManager.ImportPurchaseData(worksheet, skipheader);
+                        (bool connection, bool somethingImported) = ExcelSheetManager.ImportPurchaseData(worksheet, skipheader);
                         if (!connection) { purchaseImportFailed = true; }
                         wasSomethingImported |= somethingImported;
                         break;
 
                     case salesName:
-                        (bool connection1, bool somethingImported2) = SpreadsheetManager.ImportSalesData(worksheet, skipheader);
+                        (bool connection1, bool somethingImported2) = ExcelSheetManager.ImportSalesData(worksheet, skipheader);
                         if (!connection1) { salesImportFailed = true; }
                         wasSomethingImported |= somethingImported2;
                         break;

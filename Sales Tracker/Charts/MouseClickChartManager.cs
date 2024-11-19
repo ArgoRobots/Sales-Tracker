@@ -53,67 +53,69 @@ namespace Sales_Tracker.Charts
             public bool PreFilterMessage(ref Message m)
             {
                 // Detect left or right mouse button down events
-                if (m.Msg == 0x0201 || m.Msg == 0x0204)  // 0x0201 is WM_LBUTTONDOWN, 0x0204 is WM_RBUTTONDOWN
+                if (m.Msg != 0x0201 && m.Msg != 0x0204)  // Not WM_LBUTTONDOWN and not WM_RBUTTONDOWN
                 {
-                    bool isRightClick = m.Msg == 0x0204;
-                    Point mousePosition = Control.MousePosition;
+                    return false;
+                }
 
-                    // Create a list of controls
-                    List<Control> controlsList =
-                    [
-                        CustomControls.FileMenu,
-                        CustomControls.RecentlyOpenedMenu,
-                        CustomControls.HelpMenu,
-                        CustomControls.ControlDropDown_Panel,
-                        RightClickGunaChartMenu.RightClickGunaChart_Panel
-                    ];
-                    Control mainPanel = DateRange_Form.Instance?.Main_Panel;
-                    if (mainPanel != null && MainMenu_Form.Instance.Controls.Contains(mainPanel))
+                bool isRightClick = m.Msg == 0x0204;
+                Point mousePosition = Control.MousePosition;
+
+                // Create a list of controls
+                List<Control> controlsList =
+                [
+                    CustomControls.FileMenu,
+                    CustomControls.RecentlyOpenedMenu,
+                    CustomControls.HelpMenu,
+                    CustomControls.ControlDropDown_Panel,
+                    RightClickGunaChartMenu.RightClickGunaChart_Panel
+                ];
+                Control mainPanel = DateRange_Form.Instance?.Main_Panel;
+                if (mainPanel != null && MainMenu_Form.Instance.Controls.Contains(mainPanel))
+                {
+                    controlsList.Add(mainPanel);
+                }
+
+                // Ignore the click if it happened within a control
+                foreach (Control control in controlsList)
+                {
+                    if (control.Parent == null)
                     {
-                        controlsList.Add(mainPanel);
+                        continue;
                     }
 
-                    // Ignore the click if it happened within a control
-                    foreach (Control control in controlsList)
+                    Point localMousePosition = control.PointToClient(mousePosition);
+
+                    // Check if the mouse click was within the bounds of the control
+                    if (control.ClientRectangle.Contains(localMousePosition))
                     {
-                        if (control == null || control.IsDisposed)
-                        {
-                            continue;
-                        }
+                        return false;
+                    }
+                }
 
-                        Point localMousePosition = control.PointToClient(mousePosition);
-
-                        // Check if the mouse click was within the bounds of the control
-                        if (control.ClientRectangle.Contains(localMousePosition))
-                        {
-                            return false;
-                        }
+                // Check if the click happened on any of the charts
+                foreach (GunaChart chart in registeredCharts)
+                {
+                    if (chart.Parent == null)
+                    {
+                        // Skip this chart if it has no parent (if the statistics charts are not shown)
+                        continue;
                     }
 
-                    // Check if the click happened on any of the charts
-                    foreach (GunaChart chart in registeredCharts)
+                    Point localMousePosition = chart.Parent.PointToClient(mousePosition);
+
+                    // Check if the click is within the bounds of the chart
+                    if (chart.Bounds.Contains(localMousePosition))
                     {
-                        if (chart.Parent == null)
+                        // Trigger the left click action with chart
+                        onLeftClick?.Invoke(chart);
+
+                        if (isRightClick)
                         {
-                            // Skip this chart if it has no parent (if the statistics charts are not shown)
-                            continue;
+                            // Trigger the right click action with chart and mouse position
+                            onRightClick?.Invoke(chart, mousePosition);
                         }
-
-                        Point localMousePosition = chart.Parent.PointToClient(mousePosition);
-
-                        // Check if the click is within the bounds of the chart
-                        if (chart.Bounds.Contains(localMousePosition))
-                        {
-                            // Trigger the left click action with chart
-                            onLeftClick?.Invoke(chart);
-
-                            if (isRightClick)
-                            {
-                                // Trigger the right click action with chart and mouse position
-                                onRightClick?.Invoke(chart, mousePosition);
-                            }
-                            break;
-                        }
+                        break;
                     }
                 }
                 return false;

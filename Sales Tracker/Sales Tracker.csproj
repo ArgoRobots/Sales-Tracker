@@ -35,6 +35,7 @@
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
     <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="EPPlus" Version="7.5.0" />
+    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.68.0.3568" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

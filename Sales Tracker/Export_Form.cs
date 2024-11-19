@@ -125,7 +125,7 @@ namespace Sales_Tracker
                     break;
 
                 case "Excel spreadsheet (.xlsx)":
-                    SpreadsheetManager.ExportSpreadsheet(filePath + ArgoFiles.XlsxFileExtension);
+                    ExcelSheetManager.ExportSpreadsheet(filePath + ArgoFiles.XlsxFileExtension);
                     FinalizeExport($"Successfully created spreadsheet for '{Directories.CompanyName}'");
                     break;
             }

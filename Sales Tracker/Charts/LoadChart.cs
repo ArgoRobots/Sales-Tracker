@@ -1,9 +1,7 @@
 ﻿using Guna.Charts.Interfaces;
 using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
-using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
-using OfficeOpenXml.Style;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
@@ -146,10 +144,11 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                    ? "Total revenue"
-                    : "Total expenses";
+                    ? LanguageManager.TranslateSingleString("Total revenue")
+                    : LanguageManager.TranslateSingleString("Total expenses");
 
-                ExportDataToExcel(revenueByDate, filePath, eChartType.ColumnClustered, chartTitle);
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
+                ExcelSheetManager.ExportChartToExcel(revenueByDate, filePath, chartType, chartTitle);
             }
             else
             {
@@ -272,10 +271,10 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                    ? "Distribution of revenue"
-                    : "Distribution of expenses";
+                    ? LanguageManager.TranslateSingleString("Distribution of revenue")
+                    : LanguageManager.TranslateSingleString("Distribution of expenses");
 
-                ExportDataToExcel(sortedData, filePath, eChartType.Pie, chartTitle);
+                ExcelSheetManager.ExportChartToExcel(sortedData, filePath, eChartType.Pie, chartTitle);
             }
             else
             {
@@ -395,7 +394,7 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                ExportDataToExcel(profitByDate, filePath, chartType, "Total profits");
+                ExcelSheetManager.ExportChartToExcel(profitByDate, filePath, chartType, LanguageManager.TranslateSingleString("Total profits"));
             }
             else
             {
@@ -482,7 +481,8 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                ExportDataToExcel(groupedCountryCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.CountriesOfOrigin);
+                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.CountriesOfOrigin);
+                ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, title);
             }
             else
             {
@@ -575,7 +575,8 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                ExportDataToExcel(groupedCompanyCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.CompaniesOfOrigin);
+                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.CompaniesOfOrigin);
+                ExcelSheetManager.ExportChartToExcel(groupedCompanyCounts, filePath, eChartType.Pie, title);
             }
             else
             {
@@ -668,7 +669,8 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                ExportDataToExcel(groupedCountryCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.CountriesOfDestination);
+                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.CountriesOfDestination);
+                ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, title);
             }
             else
             {
@@ -751,7 +753,8 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                ExportDataToExcel(groupedAccountantCounts, filePath, eChartType.Pie, MainMenu_Form.ChartTitles.AccountantsTransactions);
+                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.AccountantsTransactions);
+                ExcelSheetManager.ExportChartToExcel(groupedAccountantCounts, filePath, eChartType.Pie, title);
             }
             else
             {
@@ -886,7 +889,7 @@ namespace Sales_Tracker.Charts
                     };
                 }
 
-                ExportMultiSeriesDataToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, "Sales vs Expenses");
+                ExcelSheetManager.ExportMultiDataSetChartToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, "Sales vs Expenses");
             }
             else
             {
@@ -1017,7 +1020,8 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                ExportDataToExcel(averageOrderValueByDate, filePath, chartType, "Average Order Value");
+                string title = LanguageManager.TranslateSingleString("Average Order Value");
+                ExcelSheetManager.ExportChartToExcel(averageOrderValueByDate, filePath, chartType, title);
             }
             else
             {
@@ -1211,109 +1215,6 @@ namespace Sales_Tracker.Charts
             ClearChartConfig(chart);
             chart.Datasets.Clear();
             chart.Update();
-        }
-
-        // Export charts to Microsoft Excel
-        private static void ExportDataToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle)
-        {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using ExcelPackage package = new();
-            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
-            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
-
-            string translatedChartTitle = LanguageManager.TranslateSingleString(chartTitle);
-
-            // Add headers
-            worksheet.Cells["A1"].Value = LanguageManager.TranslateSingleString("Data 1");
-            worksheet.Cells["B1"].Value = LanguageManager.TranslateSingleString("Data 1");
-
-            // Format headers
-            ExcelRange headerRange = worksheet.Cells["A1:B1"];
-            headerRange.Style.Font.Bold = true;
-            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-            headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
-
-            // Add data
-            int row = 2;
-            foreach (KeyValuePair<string, double> item in data.OrderBy(x => x.Key))
-            {
-                worksheet.Cells[row, 1].Value = item.Key;
-                worksheet.Cells[row, 2].Value = item.Value;
-                worksheet.Cells[row, 2].Style.Numberformat.Format = "#,##0.00";
-                row++;
-            }
-
-            // Create chart
-            ExcelChart chart = worksheet.Drawings.AddChart(translatedChartTitle, chartType);
-            chart.SetPosition(1, 0, 4, 0);
-            chart.SetSize(800, 400);
-
-            // Configure chart
-            ExcelChartSerie series = chart.Series.Add(worksheet.Cells[$"B2:B{row - 1}"], worksheet.Cells[$"A2:A{row - 1}"]);
-            chart.Title.Text = translatedChartTitle;
-            chart.Legend.Remove();
-
-            worksheet.Columns[1, 2].AutoFit();
-            package.SaveAs(new FileInfo(filePath));
-        }
-        private static void ExportMultiSeriesDataToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle)
-        {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using ExcelPackage package = new();
-            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
-            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
-
-            // Get all series names
-            List<string> seriesNames = data.First().Value.Keys.ToList();
-
-            // Add headers
-            worksheet.Cells[1, 1].Value = LanguageManager.TranslateSingleString("Date");
-            for (int i = 0; i < seriesNames.Count; i++)
-            {
-                worksheet.Cells[1, i + 2].Value = seriesNames[i];
-            }
-
-            // Format headers
-            ExcelRange headerRange = worksheet.Cells[1, 1, 1, seriesNames.Count + 1];
-            headerRange.Style.Font.Bold = true;
-            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-            headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
-
-            // Add data
-            int row = 2;
-            foreach (KeyValuePair<string, Dictionary<string, double>> dateEntry in data.OrderBy(x => x.Key))
-            {
-                worksheet.Cells[row, 1].Value = dateEntry.Key;
-
-                for (int i = 0; i < seriesNames.Count; i++)
-                {
-                    worksheet.Cells[row, i + 2].Value = dateEntry.Value[seriesNames[i]];
-                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = "#,##0.00";
-                }
-                row++;
-            }
-
-            // Create chart
-            ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
-            chart.SetPosition(1, 0, 4, 0);
-            chart.SetSize(800, 400);
-
-            // Add series to chart
-            for (int i = 0; i < seriesNames.Count; i++)
-            {
-                ExcelChartSerie series = chart.Series.Add(
-                    worksheet.Cells[2, i + 2, row - 1, i + 2], // Y values
-                    worksheet.Cells[2, 1, row - 1, 1]          // X values
-                );
-                series.Header = seriesNames[i];
-            }
-
-            chart.Title.Text = chartTitle;
-            chart.Legend.Position = eLegendPosition.Top;
-
-            worksheet.Columns.AutoFit();
-
-            package.SaveAs(new FileInfo(filePath));
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿using ClosedXML.Excel;
+using OfficeOpenXml;
+using OfficeOpenXml.Drawing.Chart;
+using OfficeOpenXml.Style;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
 
@@ -8,7 +11,7 @@ namespace Sales_Tracker.Classes
     /// Handles the import and export of data to and from Excel spreadsheets, including data for 
     /// accountants, companies, products, purchases, and sales in the application.
     /// </summary>
-    internal class SpreadsheetManager
+    internal class ExcelSheetManager
     {
         // Import spreadsheet methods
         public static bool ImportAccountantsData(IXLWorksheet worksheet, bool skipHeader)
@@ -644,6 +647,109 @@ namespace Sales_Tracker.Classes
             }
 
             worksheet.Columns().AdjustToContents();
+        }
+
+        // Export charts to Microsoft Excel
+        public static void ExportChartToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage package = new();
+            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
+
+            string translatedChartTitle = LanguageManager.TranslateSingleString(chartTitle);
+
+            // Add headers
+            worksheet.Cells["A1"].Value = LanguageManager.TranslateSingleString("Data 1");
+            worksheet.Cells["B1"].Value = LanguageManager.TranslateSingleString("Data 1");
+
+            // Format headers
+            ExcelRange headerRange = worksheet.Cells["A1:B1"];
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
+
+            // Add data
+            int row = 2;
+            foreach (KeyValuePair<string, double> item in data.OrderBy(x => x.Key))
+            {
+                worksheet.Cells[row, 1].Value = item.Key;
+                worksheet.Cells[row, 2].Value = item.Value;
+                worksheet.Cells[row, 2].Style.Numberformat.Format = "#,##0.00";
+                row++;
+            }
+
+            // Create chart
+            ExcelChart chart = worksheet.Drawings.AddChart(translatedChartTitle, chartType);
+            chart.SetPosition(1, 0, 4, 0);
+            chart.SetSize(800, 400);
+
+            // Configure chart
+            ExcelChartSerie series = chart.Series.Add(worksheet.Cells[$"B2:B{row - 1}"], worksheet.Cells[$"A2:A{row - 1}"]);
+            chart.Title.Text = translatedChartTitle;
+            chart.Legend.Remove();
+
+            worksheet.Columns[1, 2].AutoFit();
+            package.SaveAs(new FileInfo(filePath));
+        }
+        public static void ExportMultiDataSetChartToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage package = new();
+            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
+
+            // Get all series names
+            List<string> seriesNames = data.First().Value.Keys.ToList();
+
+            // Add headers
+            worksheet.Cells[1, 1].Value = LanguageManager.TranslateSingleString("Date");
+            for (int i = 0; i < seriesNames.Count; i++)
+            {
+                worksheet.Cells[1, i + 2].Value = seriesNames[i];
+            }
+
+            // Format headers
+            ExcelRange headerRange = worksheet.Cells[1, 1, 1, seriesNames.Count + 1];
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
+
+            // Add data
+            int row = 2;
+            foreach (KeyValuePair<string, Dictionary<string, double>> dateEntry in data.OrderBy(x => x.Key))
+            {
+                worksheet.Cells[row, 1].Value = dateEntry.Key;
+
+                for (int i = 0; i < seriesNames.Count; i++)
+                {
+                    worksheet.Cells[row, i + 2].Value = dateEntry.Value[seriesNames[i]];
+                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = "#,##0.00";
+                }
+                row++;
+            }
+
+            // Create chart
+            ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
+            chart.SetPosition(1, 0, 4, 0);
+            chart.SetSize(800, 400);
+
+            // Add series to chart
+            for (int i = 0; i < seriesNames.Count; i++)
+            {
+                ExcelChartSerie series = chart.Series.Add(
+                    worksheet.Cells[2, i + 2, row - 1, i + 2], // Y values
+                    worksheet.Cells[2, 1, row - 1, 1]          // X values
+                );
+                series.Header = seriesNames[i];
+            }
+
+            chart.Title.Text = chartTitle;
+            chart.Legend.Position = eLegendPosition.Top;
+
+            worksheet.Columns.AutoFit();
+
+            package.SaveAs(new FileInfo(filePath));
         }
 
         // Other methods

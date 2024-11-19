@@ -71,7 +71,8 @@ namespace Sales_Tracker.Charts
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
-            dialog.FileName = $"{Directories.CompanyName} Total expenses {date}";
+            string name = chart.Title.Text.Split(':')[0];
+            dialog.FileName = $"{Directories.CompanyName} {name} {date}";
             dialog.DefaultExt = ArgoFiles.XlsxFileExtension;
             dialog.Filter = $"XLSX spreadsheet|*{ArgoFiles.XlsxFileExtension}";
             dialog.Title = "Export Chart to XLSX";
@@ -135,6 +136,7 @@ namespace Sales_Tracker.Charts
         public static void ShowMenu(GunaChart chart, Point mousePosition)
         {
             Form form = chart.FindForm();
+            _rightClickGunaChart_Panel.Tag = chart;
             Point localMousePosition = form.PointToClient(mousePosition);
             int formWidth = form.ClientSize.Width;
             int formHeight = form.ClientSize.Height;
@@ -143,13 +145,12 @@ namespace Sales_Tracker.Charts
 
             // Show/hide export buttons based on chart data
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickGunaChart_Panel.Controls[0];
-            bool hasData = chart.Datasets.Count > 0 && chart.Datasets[0].DataPointCount > 0;
 
             foreach (Control control in flowPanel.Controls)
             {
                 if (control is Guna2Button btn && btn.Tag?.ToString() == exportBtn_text)
                 {
-                    btn.Visible = hasData;
+                    btn.Visible = chart.DatasetCount > 0;
                 }
             }
             CustomControls.SetRightClickMenuHeight(_rightClickGunaChart_Panel);
@@ -182,7 +183,6 @@ namespace Sales_Tracker.Charts
 
             form.Controls.Add(_rightClickGunaChart_Panel);
             _rightClickGunaChart_Panel.BringToFront();
-            _rightClickGunaChart_Panel.Tag = chart;
         }
     }
 }
