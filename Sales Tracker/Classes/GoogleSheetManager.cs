@@ -208,9 +208,9 @@ namespace Sales_Tracker.Classes
 
         // Export multiple dataset charts
         public static async Task ExportMultiDataSetChartToGoogleSheetsAsync(
-       Dictionary<string, Dictionary<string, double>> data,
-       string chartTitle,
-       ChartType chartType)
+            Dictionary<string, Dictionary<string, double>> data,
+            string chartTitle,
+            ChartType chartType)
         {
             if (_sheetsService == null && !await InitializeServiceAsync())
             {
@@ -221,7 +221,7 @@ namespace Sales_Tracker.Classes
             {
                 string sheetName = LanguageManager.TranslateSingleString("Chart Data");
 
-                // Create a new spreadsheet with explicitly defined sheet
+                // Create a new spreadsheet
                 Spreadsheet spreadsheet = new()
                 {
                     Properties = new SpreadsheetProperties
@@ -230,13 +230,13 @@ namespace Sales_Tracker.Classes
                     },
                     Sheets = [
                         new Sheet
-                {
-                    Properties = new SheetProperties
-                    {
-                        Title = sheetName,
-                        SheetId = 0
-                    }
-                }
+                        {
+                            Properties = new SheetProperties
+                            {
+                                Title = sheetName,
+                                SheetId = 0
+                            }
+                        }
                     ]
                 };
 
@@ -297,7 +297,7 @@ namespace Sales_Tracker.Classes
                 List<Request> requests =
                 [
                     CreateHeaderFormatRequest(0, 0, 0, seriesNames.Count),
-        ];
+                ];
 
                 // Format number columns
                 for (int i = 1; i <= seriesNames.Count; i++)

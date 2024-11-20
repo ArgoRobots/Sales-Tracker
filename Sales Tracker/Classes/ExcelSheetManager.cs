@@ -268,6 +268,7 @@ namespace Sales_Tracker.Classes
             }
             return (true, wasSomethingImported);
         }
+
         /// <summary>
         /// This needs to be done after the row has been added to a DataGridView.
         /// </summary>
@@ -663,8 +664,6 @@ namespace Sales_Tracker.Classes
             string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
 
-            string translatedChartTitle = LanguageManager.TranslateSingleString(chartTitle);
-
             // Add headers
             worksheet.Cells["A1"].Value = LanguageManager.TranslateSingleString(column1Text);
             worksheet.Cells["B1"].Value = LanguageManager.TranslateSingleString(column2Text);
@@ -685,14 +684,10 @@ namespace Sales_Tracker.Classes
                 row++;
             }
 
-            // Create chart
-            ExcelChart chart = worksheet.Drawings.AddChart(translatedChartTitle, chartType);
-            chart.SetPosition(0, 0, 3, 0);
-            chart.SetSize(800, 400);
+            ExcelChart chart = CreateChart(worksheet, chartTitle, chartType);
 
             // Configure chart
             ExcelChartSerie series = chart.Series.Add(worksheet.Cells[$"B2:B{row - 1}"], worksheet.Cells[$"A2:A{row - 1}"]);
-            chart.Title.Text = translatedChartTitle;
             chart.Legend.Remove();
 
             worksheet.Columns[1, 2].AutoFit();
@@ -736,9 +731,8 @@ namespace Sales_Tracker.Classes
             }
 
             // Create chart
-            ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
-            chart.SetPosition(0, 0, 3, 0);
-            chart.SetSize(800, 400);
+            ExcelChart chart = CreateChart(worksheet, chartTitle, chartType);
+            chart.Legend.Position = eLegendPosition.Top;
 
             // Add series to chart
             for (int i = 0; i < seriesNames.Count; i++)
@@ -750,12 +744,23 @@ namespace Sales_Tracker.Classes
                 series.Header = seriesNames[i];
             }
 
-            chart.Title.Text = chartTitle;
-            chart.Legend.Position = eLegendPosition.Top;
-
             worksheet.Columns.AutoFit();
 
             package.SaveAs(new FileInfo(filePath));
+        }
+
+        /// <summary>
+        /// Creates and configures an Excel chart with default position and size.
+        /// </summary>
+        /// <returns>The created Excel chart.</returns>
+        public static ExcelChart CreateChart(ExcelWorksheet worksheet, string chartTitle, eChartType chartType)
+        {
+            ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
+            chart.SetPosition(0, 0, 3, 0);
+            chart.SetSize(800, 400);
+            chart.Title.Text = chartTitle;
+
+            return chart;
         }
 
         // Other methods
