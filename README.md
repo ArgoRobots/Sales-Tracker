@@ -6,6 +6,7 @@
 ## Features
 - **Importing data from spreadsheets**: import your existing sales, purchases, products, or other data from a spreadsheet.
 - **Track Sales and Purchases**: Add and manage sales and purchases.
+- **Accept returned products**: Track returned products and the reasons they were returned.
 - **Accountants Integration**: Keep track of accountants working with the sales data.
 - **Product Management**: Add, edit, and organize your products with ease.
 - **Receipts and Exporting**: Export receipts and sales data for your records.
