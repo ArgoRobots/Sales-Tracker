@@ -1558,15 +1558,16 @@ namespace Sales_Tracker
             TotalExpensesVsSales,
             AverageOrderValue
         }
-        public static class ChartTitles
+        public static class TranslatedChartTitles
         {
-            public const string
-                CountriesOfOrigin = "Countries of origin for purchased products",
-                CompaniesOfOrigin = "Companies of origin for purchased products",
-                CountriesOfDestination = "Countries of destination for sold products",
-                AccountantsTransactions = "Transactions managed by accountants",
-                SalesVsExpenses = "Total expenses vs. total sales",
-                AverageOrderValue = "Average order value";
+            private static string Translate(string key) => LanguageManager.TranslateSingleString(key);
+
+            public static string CountriesOfOrigin => Translate("Countries of origin for purchased products");
+            public static string CompaniesOfOrigin => Translate("Companies of origin for purchased products");
+            public static string CountriesOfDestination => Translate("Countries of destination for sold products");
+            public static string AccountantsTransactions => Translate("Transactions managed by accountants");
+            public static string SalesVsExpenses => Translate("Total expenses vs. total sales");
+            public static string AverageOrderValue => Translate("Average order value");
         }
 
         public GunaChart CountriesOfOrigin_Chart => countriesOfOrigin_Chart;
@@ -1669,28 +1670,28 @@ namespace Sales_Tracker
             if (!onlyRefreshForLineCharts)
             {
                 LoadChart.LoadCountriesOfOriginForProductsIntoChart(countriesOfOrigin_Chart, PieChartGrouping.Top12);
-                countriesOfOrigin_Chart.Title.Text = ChartTitles.CountriesOfOrigin;
+                countriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
                 LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart);
 
                 LoadChart.LoadCompaniesOfOriginForProductsIntoChart(companiesOfOrigin_Chart, PieChartGrouping.Top12);
-                companiesOfOrigin_Chart.Title.Text = ChartTitles.CompaniesOfOrigin;
+                companiesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
                 LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart);
 
                 LoadChart.LoadCountriesOfDestinationForProductsIntoChart(countriesOfDestination_Chart, PieChartGrouping.Top12);
-                countriesOfDestination_Chart.Title.Text = ChartTitles.CountriesOfDestination;
+                countriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
                 LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart);
 
                 LoadChart.LoadAccountantsIntoChart(accountants_Chart, PieChartGrouping.Top12);
-                accountants_Chart.Title.Text = ChartTitles.AccountantsTransactions;
+                accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
                 LanguageManager.UpdateLanguageForControl(accountants_Chart);
             }
 
             LoadChart.LoadSalesVsExpensesChart(salesVsExpenses_Chart, isLineChart);
-            salesVsExpenses_Chart.Title.Text = ChartTitles.SalesVsExpenses;
+            salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
             LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart);
 
             LoadChart.LoadAverageOrderValueChart(averageOrderValue_Chart, isLineChart);
-            averageOrderValue_Chart.Title.Text = ChartTitles.AverageOrderValue;
+            averageOrderValue_Chart.Title.Text = TranslatedChartTitles.AverageOrderValue;
             LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
         }
 

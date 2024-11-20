@@ -142,39 +142,41 @@ namespace Sales_Tracker.Charts
                     case MainMenu_Form.ChartDataType.TotalRevenue:
                         {
                             ChartData totalsChartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine);
-                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible ? "Total Revenue" : "Total Expenses";
                             Dictionary<string, double> exportData = totalsChartData.GetData().ToDictionary(
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
+                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                                ? LanguageManager.TranslateSingleString("Total revenue")
+                                : LanguageManager.TranslateSingleString("Total expenses");
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
+                            string first = LanguageManager.TranslateSingleString("Date");
+                            string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                                ? LanguageManager.TranslateSingleString("Revenue")
+                                : LanguageManager.TranslateSingleString("Expenses");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                chartTitle,
-                                chartType
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, chartType, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.DistributionOfRevenue:
                         {
                             ChartData distributionChartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited);
-                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                                ? "Distribution of Revenue"
-                                : "Distribution of Expenses";
                             Dictionary<string, double> exportData = distributionChartData.GetData().ToDictionary(
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
+                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                                ? LanguageManager.TranslateSingleString("Distribution of revenue")
+                                : LanguageManager.TranslateSingleString("Distribution of expenses");
+                            string first = LanguageManager.TranslateSingleString("Category");
+                            string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                               ? LanguageManager.TranslateSingleString("Revenue")
+                               : LanguageManager.TranslateSingleString("Expenses");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                chartTitle,
-                                GoogleSheetManager.ChartType.Pie
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -185,15 +187,14 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
+                            string chartTitle = LanguageManager.TranslateSingleString("Total profits");
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
+                            string first = LanguageManager.TranslateSingleString("Date");
+                            string second = LanguageManager.TranslateSingleString("profits");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                "Total Profits",
-                                chartType
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, chartType, first, second);
                         }
                         break;
 
@@ -204,12 +205,11 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
+                            string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfOrigin;
+                            string first = LanguageManager.TranslateSingleString("Countries");
+                            string second = LanguageManager.TranslateSingleString("Quantity");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                "Countries of Origin",
-                                GoogleSheetManager.ChartType.Pie
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -220,12 +220,11 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
+                            string chartTitle = MainMenu_Form.TranslatedChartTitles.CompaniesOfOrigin;
+                            string first = LanguageManager.TranslateSingleString("Companies");
+                            string second = LanguageManager.TranslateSingleString("Quantity");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                "Companies of Origin",
-                                GoogleSheetManager.ChartType.Pie
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -236,12 +235,11 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
+                            string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfDestination;
+                            string first = LanguageManager.TranslateSingleString("Countries");
+                            string second = LanguageManager.TranslateSingleString("Quantity");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                "Countries of Destination",
-                                GoogleSheetManager.ChartType.Pie
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -252,12 +250,11 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
+                            string chartTitle = MainMenu_Form.TranslatedChartTitles.AccountantsTransactions;
+                            string first = LanguageManager.TranslateSingleString("Accountants");
+                            string second = LanguageManager.TranslateSingleString("Quantity");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                "Accountants Distribution",
-                                GoogleSheetManager.ChartType.Pie
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -275,15 +272,12 @@ namespace Sales_Tracker.Charts
                                 };
                             }
 
+                            string name = MainMenu_Form.TranslatedChartTitles.SalesVsExpenses;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
 
-                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(
-                                combinedData,
-                                "Sales vs Expenses",
-                                chartType
-                            );
+                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, name, chartType);
                         }
                         break;
 
@@ -297,12 +291,11 @@ namespace Sales_Tracker.Charts
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
+                            string chartTitle = MainMenu_Form.TranslatedChartTitles.AverageOrderValue;
+                            string first = LanguageManager.TranslateSingleString("Date");
+                            string second = LanguageManager.TranslateSingleString("Order value");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(
-                                exportData,
-                                "Average Order Value",
-                                chartType
-                            );
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, chartType, first, second);
                         }
                         break;
                 }

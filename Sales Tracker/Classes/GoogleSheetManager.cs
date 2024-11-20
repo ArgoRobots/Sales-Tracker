@@ -65,7 +65,9 @@ namespace Sales_Tracker.Classes
         public static async Task ExportChartToGoogleSheetsAsync(
             Dictionary<string, double> data,
             string chartTitle,
-            ChartType chartType)
+            ChartType chartType,
+            string column1Text,
+            string column2Text)
         {
             if (_sheetsService == null)
             {
@@ -103,42 +105,31 @@ namespace Sales_Tracker.Classes
                 string spreadsheetId = spreadsheet.SpreadsheetId;
                 string sheetName = LanguageManager.TranslateSingleString("Chart Data");
 
-                try
+                // Create new project if it doesn't exist
+                DriveService driveService = new(new BaseClientService.Initializer
                 {
-                    // Create new project if it doesn't exist
-                    DriveService driveService = new(new BaseClientService.Initializer
-                    {
-                        HttpClientInitializer = _sheetsService.HttpClientInitializer,
-                        ApplicationName = "Sales Tracker"
-                    });
+                    HttpClientInitializer = _sheetsService.HttpClientInitializer,
+                    ApplicationName = "Sales Tracker"
+                });
 
-                    // Set file permissions to be accessible by anyone with the link
-                    Permission permission = new()
-                    {
-                        Type = "anyone",
-                        Role = "writer",
-                        AllowFileDiscovery = false
-                    };
-
-                    await driveService.Permissions
-                        .Create(permission, spreadsheetId)
-                        .ExecuteAsync();
-                }
-                catch (Exception ex)
+                // Set file permissions to be accessible by anyone with the link
+                Permission permission = new()
                 {
-                    CustomMessageBox.Show(
-                        "Permission Error",
-                        $"Failed to set spreadsheet permissions: {ex.Message}\nYou may need to set sharing permissions manually.",
-                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
-                    );
-                }
+                    Type = "anyone",
+                    Role = "writer",
+                    AllowFileDiscovery = false
+                };
+
+                await driveService.Permissions
+                    .Create(permission, spreadsheetId)
+                    .ExecuteAsync();
 
                 // Prepare the data
                 List<IList<object>> values =
                 [
                     [
-                        LanguageManager.TranslateSingleString("Data 1"),
-                        LanguageManager.TranslateSingleString("Value")
+                        LanguageManager.TranslateSingleString(column1Text),
+                        LanguageManager.TranslateSingleString(column2Text)
                     ]
                 ];
 
@@ -514,7 +505,7 @@ namespace Sales_Tracker.Classes
                                 new GridRange
                                 {
                                     SheetId = 0,
-                                    StartRowIndex = startRowIndex + 1,
+                                    StartRowIndex = startRowIndex,
                                     EndRowIndex = endRowIndex + 1,
                                     StartColumnIndex = yColumn[0] - 'A',
                                     EndColumnIndex = yColumn[0] - 'A' + 1
@@ -542,7 +533,7 @@ namespace Sales_Tracker.Classes
                                 [
                                     new() {
                                         SheetId = 0,
-                                        StartRowIndex = startRowIndex + 1,
+                                        StartRowIndex = startRowIndex,
                                         EndRowIndex = endRowIndex + 1,
                                         StartColumnIndex = 0,
                                         EndColumnIndex = 1
@@ -574,7 +565,7 @@ namespace Sales_Tracker.Classes
                         [
                             new() {
                                 SheetId = 0,
-                                StartRowIndex = startRowIndex + 1,
+                                StartRowIndex = startRowIndex ,
                                 EndRowIndex = endRowIndex + 1,
                                 StartColumnIndex = 0,
                                 EndColumnIndex = 1
@@ -591,7 +582,7 @@ namespace Sales_Tracker.Classes
                             new GridRange
                             {
                                 SheetId = 0,
-                                StartRowIndex = startRowIndex + 1,
+                                StartRowIndex = startRowIndex ,
                                 EndRowIndex = endRowIndex + 1,
                                 StartColumnIndex = range.YColumn[0] - 'A',
                                 EndColumnIndex = range.YColumn[0] - 'A' + 1

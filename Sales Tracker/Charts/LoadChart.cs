@@ -143,12 +143,16 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                     ? LanguageManager.TranslateSingleString("Total revenue")
                     : LanguageManager.TranslateSingleString("Total expenses");
+                string first = LanguageManager.TranslateSingleString("Date");
+                string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                    ? LanguageManager.TranslateSingleString("Revenue")
+                    : LanguageManager.TranslateSingleString("Expenses");
 
-                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                ExcelSheetManager.ExportChartToExcel(revenueByDate, filePath, chartType, chartTitle);
+                ExcelSheetManager.ExportChartToExcel(revenueByDate, filePath, chartType, chartTitle, first, second);
             }
             else
             {
@@ -273,8 +277,12 @@ namespace Sales_Tracker.Charts
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                     ? LanguageManager.TranslateSingleString("Distribution of revenue")
                     : LanguageManager.TranslateSingleString("Distribution of expenses");
+                string first = LanguageManager.TranslateSingleString("Category");
+                string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
+                    ? LanguageManager.TranslateSingleString("Revenue")
+                    : LanguageManager.TranslateSingleString("Expenses");
 
-                ExcelSheetManager.ExportChartToExcel(sortedData, filePath, eChartType.Pie, chartTitle);
+                ExcelSheetManager.ExportChartToExcel(sortedData, filePath, eChartType.Pie, chartTitle, first, second);
             }
             else
             {
@@ -394,7 +402,12 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                ExcelSheetManager.ExportChartToExcel(profitByDate, filePath, chartType, LanguageManager.TranslateSingleString("Total profits"));
+
+                string chartTitle = LanguageManager.TranslateSingleString("Total profits");
+                string first = LanguageManager.TranslateSingleString("Date");
+                string second = LanguageManager.TranslateSingleString("profits");
+
+                ExcelSheetManager.ExportChartToExcel(profitByDate, filePath, chartType, chartTitle, first, second);
             }
             else
             {
@@ -481,8 +494,11 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.CountriesOfOrigin);
-                ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, title);
+                string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfOrigin;
+                string first = LanguageManager.TranslateSingleString("Countries");
+                string second = LanguageManager.TranslateSingleString("Quantity");
+
+                ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, chartTitle, first, second);
             }
             else
             {
@@ -575,8 +591,11 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.CompaniesOfOrigin);
-                ExcelSheetManager.ExportChartToExcel(groupedCompanyCounts, filePath, eChartType.Pie, title);
+                string chartTitle = MainMenu_Form.TranslatedChartTitles.CompaniesOfOrigin;
+                string first = LanguageManager.TranslateSingleString("Companies");
+                string second = LanguageManager.TranslateSingleString("Quantity");
+
+                ExcelSheetManager.ExportChartToExcel(groupedCompanyCounts, filePath, eChartType.Pie, chartTitle, first, second);
             }
             else
             {
@@ -669,8 +688,11 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.CountriesOfDestination);
-                ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, title);
+                string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfDestination;
+                string first = LanguageManager.TranslateSingleString("Countries");
+                string second = LanguageManager.TranslateSingleString("Quantity");
+
+                ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, chartTitle, first, second);
             }
             else
             {
@@ -753,8 +775,11 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string title = LanguageManager.TranslateSingleString(MainMenu_Form.ChartTitles.AccountantsTransactions);
-                ExcelSheetManager.ExportChartToExcel(groupedAccountantCounts, filePath, eChartType.Pie, title);
+                string chartTitle = MainMenu_Form.TranslatedChartTitles.AccountantsTransactions;
+                string first = LanguageManager.TranslateSingleString("Accountants");
+                string second = LanguageManager.TranslateSingleString("Quantity");
+
+                ExcelSheetManager.ExportChartToExcel(groupedAccountantCounts, filePath, eChartType.Pie, chartTitle, first, second);
             }
             else
             {
@@ -881,8 +906,9 @@ namespace Sales_Tracker.Charts
                         { LanguageManager.TranslateSingleString("Total sales"), salesByDate.TryGetValue(date, out double sValue) ? sValue : 0 }
                     };
                 }
+                string name = MainMenu_Form.TranslatedChartTitles.SalesVsExpenses;
 
-                ExcelSheetManager.ExportMultiDataSetChartToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, "Sales vs Expenses");
+                ExcelSheetManager.ExportMultiDataSetChartToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, name);
             }
             else
             {
@@ -1021,8 +1047,11 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string title = LanguageManager.TranslateSingleString("Average Order Value");
-                ExcelSheetManager.ExportChartToExcel(averageOrderValueByDate, filePath, chartType, title);
+                string chartTitle = MainMenu_Form.TranslatedChartTitles.AverageOrderValue;
+                string first = LanguageManager.TranslateSingleString("Date");
+                string second = LanguageManager.TranslateSingleString("Order value");
+
+                ExcelSheetManager.ExportChartToExcel(averageOrderValueByDate, filePath, chartType, chartTitle, first, second);
             }
             else
             {

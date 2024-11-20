@@ -656,7 +656,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Export charts to Microsoft Excel
-        public static void ExportChartToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle)
+        public static void ExportChartToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle, string column1Text, string column2Text)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new();
@@ -666,8 +666,8 @@ namespace Sales_Tracker.Classes
             string translatedChartTitle = LanguageManager.TranslateSingleString(chartTitle);
 
             // Add headers
-            worksheet.Cells["A1"].Value = LanguageManager.TranslateSingleString("Data 1");
-            worksheet.Cells["B1"].Value = LanguageManager.TranslateSingleString("Data 1");
+            worksheet.Cells["A1"].Value = LanguageManager.TranslateSingleString(column1Text);
+            worksheet.Cells["B1"].Value = LanguageManager.TranslateSingleString(column2Text);
 
             // Format headers
             ExcelRange headerRange = worksheet.Cells["A1:B1"];
