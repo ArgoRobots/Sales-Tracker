@@ -19,7 +19,7 @@ namespace Sales_Tracker
         private static MainMenu_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
-        private static bool _isFullVersion = true, _isProgramLoading;
+        private static bool _isFullVersion = false, _isProgramLoading;
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
@@ -73,6 +73,7 @@ namespace Sales_Tracker
         {
             CustomTooltip.SetToolTip(File_Button, "", "File");
             CustomTooltip.SetToolTip(Save_Button, "", "Save");
+            CustomTooltip.SetToolTip(Upgrade_Button, "", "Upgrade to full version");
             CustomTooltip.SetToolTip(Help_Button, "", "Help");
             CustomTooltip.SetToolTip(Account_Button, "", "Account");
         }
@@ -285,6 +286,7 @@ namespace Sales_Tracker
             Top_Panel.BackColor = CustomColors.Background3;
             File_Button.FillColor = CustomColors.Background3;
             Save_Button.FillColor = CustomColors.Background3;
+            Upgrade_Button.FillColor = CustomColors.Background3;
             Help_Button.FillColor = CustomColors.Background3;
             Account_Button.FillColor = CustomColors.Background3;
 
@@ -298,10 +300,10 @@ namespace Sales_Tracker
                 Distribution_Chart,
                 Profits_Chart,
                 Total_Panel,
-                countriesOfOrigin_Chart,
-                companiesOfOrigin_Chart,
-                countriesOfDestination_Chart,
-                accountants_Chart
+                _countriesOfOrigin_Chart,
+                _companiesOfOrigin_Chart,
+                _countriesOfDestination_Chart,
+                _accountants_Chart
             ]);
         }
         private void ReselectButton()
@@ -335,12 +337,12 @@ namespace Sales_Tracker
             Totals_Chart.Tag = ChartDataType.TotalRevenue;
             Distribution_Chart.Tag = ChartDataType.DistributionOfRevenue;
             Profits_Chart.Tag = ChartDataType.TotalProfits;
-            countriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
-            companiesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
-            countriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
-            accountants_Chart.Tag = ChartDataType.Accountants;
-            salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
-            averageOrderValue_Chart.Tag = ChartDataType.AverageOrderValue;
+            _countriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
+            _companiesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
+            _countriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
+            _accountants_Chart.Tag = ChartDataType.Accountants;
+            _salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
+            _averageOrderValue_Chart.Tag = ChartDataType.AverageOrderValue;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -502,14 +504,14 @@ namespace Sales_Tracker
                 int bottomRowY = topRowY + statChartHeight + spaceBetweenRows;
 
                 // Set positions for top row charts
-                SetChartPosition(countriesOfOrigin_Chart, chartSize, leftX, topRowY);
-                SetChartPosition(companiesOfOrigin_Chart, chartSize, middleX, topRowY);
-                SetChartPosition(countriesOfDestination_Chart, chartSize, rightX, topRowY);
+                SetChartPosition(_countriesOfOrigin_Chart, chartSize, leftX, topRowY);
+                SetChartPosition(_companiesOfOrigin_Chart, chartSize, middleX, topRowY);
+                SetChartPosition(_countriesOfDestination_Chart, chartSize, rightX, topRowY);
 
                 // Set positions for bottom row charts
-                SetChartPosition(accountants_Chart, chartSize, leftX, bottomRowY);
-                SetChartPosition(salesVsExpenses_Chart, chartSize, middleX, bottomRowY);
-                SetChartPosition(averageOrderValue_Chart, chartSize, rightX, bottomRowY);
+                SetChartPosition(_accountants_Chart, chartSize, leftX, bottomRowY);
+                SetChartPosition(_salesVsExpenses_Chart, chartSize, middleX, bottomRowY);
+                SetChartPosition(_averageOrderValue_Chart, chartSize, rightX, bottomRowY);
             }
             else
             {
@@ -627,6 +629,10 @@ namespace Sales_Tracker
         private void Save_Button_MouseUp(object sender, MouseEventArgs e)
         {
             Save_Button.Image = Resources.SaveGray;
+        }
+        private void Upgrade_Button_Click(object sender, EventArgs e)
+        {
+            Tools.OpenForm(new Upgrade_Form());
         }
         private void Help_Button_Click(object sender, EventArgs e)
         {
@@ -1543,8 +1549,8 @@ namespace Sales_Tracker
 
         // Chart properties
         private List<GunaChart> statisticsCharts;
-        private GunaChart countriesOfOrigin_Chart, companiesOfOrigin_Chart, countriesOfDestination_Chart,
-            accountants_Chart, salesVsExpenses_Chart, averageOrderValue_Chart;
+        private GunaChart _countriesOfOrigin_Chart, _companiesOfOrigin_Chart, _countriesOfDestination_Chart,
+            _accountants_Chart, _salesVsExpenses_Chart, _averageOrderValue_Chart;
 
         public enum ChartDataType
         {
@@ -1558,12 +1564,12 @@ namespace Sales_Tracker
             TotalExpensesVsSales,
             AverageOrderValue
         }
-        public GunaChart CountriesOfOrigin_Chart => countriesOfOrigin_Chart;
-        public GunaChart CompaniesOfOrigin_Chart => companiesOfOrigin_Chart;
-        public GunaChart CountriesOfDestination_Chart => countriesOfDestination_Chart;
-        public GunaChart Accountants_Chart => accountants_Chart;
-        public GunaChart SalesVsExpenses_Chart => salesVsExpenses_Chart;
-        public GunaChart AverageOrderValue_Chart => averageOrderValue_Chart;
+        public GunaChart CountriesOfOrigin_Chart => _countriesOfOrigin_Chart;
+        public GunaChart CompaniesOfOrigin_Chart => _companiesOfOrigin_Chart;
+        public GunaChart CountriesOfDestination_Chart => _countriesOfDestination_Chart;
+        public GunaChart Accountants_Chart => _accountants_Chart;
+        public GunaChart SalesVsExpenses_Chart => _salesVsExpenses_Chart;
+        public GunaChart AverageOrderValue_Chart => _averageOrderValue_Chart;
 
         // Statistics charts methods
         private List<Control> GetMainControlsList()
@@ -1596,21 +1602,21 @@ namespace Sales_Tracker
         /// </summary>
         private void ConstructControlsForStatistics()
         {
-            countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products", "countriesOfOrigin_Chart");
-            companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products", "companiesOfOrigin_Chart");
-            countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products", "countriesOfDestination_Chart");
-            accountants_Chart = ConstructStatisticsChart(800, "Transactions managed by accountants", "accountants_Chart");
-            salesVsExpenses_Chart = ConstructStatisticsChart(800, "Total sales vs. total expenses", "salesVsExpenses_Chart");
-            averageOrderValue_Chart = ConstructStatisticsChart(800, "Average order value", "averageOrderValue_Chart");
+            _countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products", "countriesOfOrigin_Chart");
+            _companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products", "companiesOfOrigin_Chart");
+            _countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products", "countriesOfDestination_Chart");
+            _accountants_Chart = ConstructStatisticsChart(800, "Transactions managed by accountants", "accountants_Chart");
+            _salesVsExpenses_Chart = ConstructStatisticsChart(800, "Total sales vs. total expenses", "salesVsExpenses_Chart");
+            _averageOrderValue_Chart = ConstructStatisticsChart(800, "Average order value", "averageOrderValue_Chart");
 
             statisticsCharts =
             [
-                countriesOfOrigin_Chart,
-                companiesOfOrigin_Chart,
-                countriesOfDestination_Chart,
-                accountants_Chart,
-                salesVsExpenses_Chart,
-                averageOrderValue_Chart
+                _countriesOfOrigin_Chart,
+                _companiesOfOrigin_Chart,
+                _countriesOfDestination_Chart,
+                _accountants_Chart,
+                _salesVsExpenses_Chart,
+                _averageOrderValue_Chart
             ];
 
             MouseClickChartManager.InitCharts(statisticsCharts.ToArray());
@@ -1657,30 +1663,30 @@ namespace Sales_Tracker
 
             if (!onlyRefreshForLineCharts)
             {
-                LoadChart.LoadCountriesOfOriginForProductsIntoChart(countriesOfOrigin_Chart, PieChartGrouping.Top12);
-                countriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
-                LanguageManager.UpdateLanguageForControl(countriesOfOrigin_Chart);
+                LoadChart.LoadCountriesOfOriginForProductsIntoChart(_countriesOfOrigin_Chart, PieChartGrouping.Top12);
+                _countriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
+                LanguageManager.UpdateLanguageForControl(_countriesOfOrigin_Chart);
 
-                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(companiesOfOrigin_Chart, PieChartGrouping.Top12);
-                companiesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
-                LanguageManager.UpdateLanguageForControl(companiesOfOrigin_Chart);
+                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_companiesOfOrigin_Chart, PieChartGrouping.Top12);
+                _companiesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
+                LanguageManager.UpdateLanguageForControl(_companiesOfOrigin_Chart);
 
-                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(countriesOfDestination_Chart, PieChartGrouping.Top12);
-                countriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
-                LanguageManager.UpdateLanguageForControl(countriesOfDestination_Chart);
+                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_countriesOfDestination_Chart, PieChartGrouping.Top12);
+                _countriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
+                LanguageManager.UpdateLanguageForControl(_countriesOfDestination_Chart);
 
-                LoadChart.LoadAccountantsIntoChart(accountants_Chart, PieChartGrouping.Top12);
-                accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
-                LanguageManager.UpdateLanguageForControl(accountants_Chart);
+                LoadChart.LoadAccountantsIntoChart(_accountants_Chart, PieChartGrouping.Top12);
+                _accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
+                LanguageManager.UpdateLanguageForControl(_accountants_Chart);
             }
 
-            LoadChart.LoadSalesVsExpensesChart(salesVsExpenses_Chart, isLineChart);
-            salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
-            LanguageManager.UpdateLanguageForControl(salesVsExpenses_Chart);
+            LoadChart.LoadSalesVsExpensesChart(_salesVsExpenses_Chart, isLineChart);
+            _salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
+            LanguageManager.UpdateLanguageForControl(_salesVsExpenses_Chart);
 
-            LoadChart.LoadAverageOrderValueChart(averageOrderValue_Chart, isLineChart);
-            averageOrderValue_Chart.Title.Text = TranslatedChartTitles.AverageOrderValue;
-            LanguageManager.UpdateLanguageForControl(averageOrderValue_Chart);
+            LoadChart.LoadAverageOrderValueChart(_averageOrderValue_Chart, isLineChart);
+            _averageOrderValue_Chart.Title.Text = TranslatedChartTitles.AverageOrderValue;
+            LanguageManager.UpdateLanguageForControl(_averageOrderValue_Chart);
         }
 
         // Misc.

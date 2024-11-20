@@ -91,5 +91,8 @@
     <Compile Update="ImportSpreadsheet\Tutorial_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Upgrade_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
