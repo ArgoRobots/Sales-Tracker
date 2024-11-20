@@ -69,12 +69,9 @@ namespace Sales_Tracker.Classes
             string column1Text,
             string column2Text)
         {
-            if (_sheetsService == null)
+            if (_sheetsService == null && !await InitializeServiceAsync())
             {
-                if (!await InitializeServiceAsync())
-                {
-                    return;
-                }
+                return;
             }
 
             try
@@ -197,19 +194,12 @@ namespace Sales_Tracker.Classes
                     }, spreadsheetId)
                     .ExecuteAsync();
 
-                // Generate and open the spreadsheet URL
-                string spreadsheetUrl = $"https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit";
-
-                // Open the Google Sheet in the default system browser
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = spreadsheetUrl,
-                    UseShellExecute = true
-                });
+                OpenGoogleSheet(spreadsheetId);
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show("Export Error",
+                CustomMessageBox.Show(
+                    "Export Error",
                     $"Failed to export chart to Google Sheets: {ex.Message}",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
                 );
@@ -218,27 +208,36 @@ namespace Sales_Tracker.Classes
 
         // Export multiple dataset charts
         public static async Task ExportMultiDataSetChartToGoogleSheetsAsync(
-            Dictionary<string, Dictionary<string, double>> data,
-            string chartTitle,
-            ChartType chartType)
+       Dictionary<string, Dictionary<string, double>> data,
+       string chartTitle,
+       ChartType chartType)
         {
-            if (_sheetsService == null)
+            if (_sheetsService == null && !await InitializeServiceAsync())
             {
-                if (!await InitializeServiceAsync())
-                {
-                    return;
-                }
+                return;
             }
 
             try
             {
-                // Create a new spreadsheet
+                string sheetName = LanguageManager.TranslateSingleString("Chart Data");
+
+                // Create a new spreadsheet with explicitly defined sheet
                 Spreadsheet spreadsheet = new()
                 {
                     Properties = new SpreadsheetProperties
                     {
                         Title = $"{Directories.CompanyName} - {chartTitle} - {DateTime.Now:yyyy-MM-dd}"
+                    },
+                    Sheets = [
+                        new Sheet
+                {
+                    Properties = new SheetProperties
+                    {
+                        Title = sheetName,
+                        SheetId = 0
                     }
+                }
+                    ]
                 };
 
                 spreadsheet = await _sheetsService.Spreadsheets
@@ -246,11 +245,32 @@ namespace Sales_Tracker.Classes
                     .ExecuteAsync();
 
                 string spreadsheetId = spreadsheet.SpreadsheetId;
-                string sheetName = LanguageManager.TranslateSingleString("Chart Data");
+
+                // Create new project if it doesn't exist
+                DriveService driveService = new(new BaseClientService.Initializer
+                {
+                    HttpClientInitializer = _sheetsService.HttpClientInitializer,
+                    ApplicationName = "Sales Tracker"
+                });
+
+                // Set file permissions to be accessible by anyone with the link
+                Permission permission = new()
+                {
+                    Type = "anyone",
+                    Role = "writer",
+                    AllowFileDiscovery = false
+                };
+
+                await driveService.Permissions
+                    .Create(permission, spreadsheetId)
+                    .ExecuteAsync();
 
                 // Get series names and prepare headers
                 List<string> seriesNames = data.First().Value.Keys.ToList();
-                List<object> headers = [LanguageManager.TranslateSingleString("Date"), .. seriesNames];
+                List<string> orderedSeriesNames = seriesNames
+                    .OrderBy(x => x.Contains("Sales"))  // This puts "Total Sales" last
+                    .ToList();
+                List<object> headers = [LanguageManager.TranslateSingleString("Date"), .. orderedSeriesNames];
 
                 // Prepare the data
                 List<IList<object>> values = [headers];
@@ -258,7 +278,7 @@ namespace Sales_Tracker.Classes
                 foreach (KeyValuePair<string, Dictionary<string, double>> dateEntry in data.OrderBy(x => x.Key))
                 {
                     List<object> row = [dateEntry.Key];
-                    foreach (string seriesName in seriesNames)
+                    foreach (string seriesName in orderedSeriesNames)
                     {
                         row.Add(dateEntry.Value[seriesName]);
                     }
@@ -277,7 +297,7 @@ namespace Sales_Tracker.Classes
                 List<Request> requests =
                 [
                     CreateHeaderFormatRequest(0, 0, 0, seriesNames.Count),
-                ];
+        ];
 
                 // Format number columns
                 for (int i = 1; i <= seriesNames.Count; i++)
@@ -334,14 +354,30 @@ namespace Sales_Tracker.Classes
                         Requests = [autoResizeRequest]
                     }, spreadsheetId)
                     .ExecuteAsync();
+
+                OpenGoogleSheet(spreadsheetId);
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show("Export Error",
+                CustomMessageBox.Show(
+                    "Export Error",
                     $"Failed to export multi-dataset chart to Google Sheets: {ex.Message}",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
                 );
             }
+        }
+
+        /// <summary>
+        /// Opens the specified Google Sheets spreadsheet in the default web browser.
+        /// </summary>
+        private static void OpenGoogleSheet(string spreadsheetId)
+        {
+            string spreadsheetUrl = $"https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit";
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = spreadsheetUrl,
+                UseShellExecute = true
+            });
         }
 
         // Helper methods for creating format requests

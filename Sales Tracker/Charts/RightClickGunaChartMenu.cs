@@ -141,8 +141,7 @@ namespace Sales_Tracker.Charts
                 {
                     case MainMenu_Form.ChartDataType.TotalRevenue:
                         {
-                            ChartData totalsChartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine, canUpdateChart: false);
-                            Dictionary<string, double> exportData = totalsChartData.GetData();
+                            ChartData chartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine, canUpdateChart: false);
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.TotalRevenue
                                 : TranslatedChartTitles.TotalExpenses;
@@ -154,14 +153,13 @@ namespace Sales_Tracker.Charts
                                 ? LanguageManager.TranslateSingleString("Revenue")
                                 : LanguageManager.TranslateSingleString("Expenses");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.DistributionOfRevenue:
                         {
-                            ChartData distributionChartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
-                            Dictionary<string, double> exportData = distributionChartData.GetData();
+                            ChartData chartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.RevenueDistribution
                                 : TranslatedChartTitles.ExpensesDistribution;
@@ -170,14 +168,13 @@ namespace Sales_Tracker.Charts
                                ? LanguageManager.TranslateSingleString("Revenue")
                                : LanguageManager.TranslateSingleString("Expenses");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.TotalProfits:
                         {
-                            ChartData profitsChartData = LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, canUpdateChart: false);
-                            Dictionary<string, double> exportData = profitsChartData.GetData();
+                            ChartData chartData = LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.TotalProfits;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
@@ -185,55 +182,51 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateSingleString("Date");
                             string second = LanguageManager.TranslateSingleString("profits");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.CountriesOfOrigin:
                         {
-                            ChartData countriesChartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
-                            Dictionary<string, double> exportData = countriesChartData.GetData();
+                            ChartData chartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
                             string first = LanguageManager.TranslateSingleString("Countries");
                             string second = LanguageManager.TranslateSingleString("Quantity");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
                         {
-                            ChartData companiesChartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
-                            Dictionary<string, double> exportData = companiesChartData.GetData();
+                            ChartData chartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
                             string first = LanguageManager.TranslateSingleString("Companies");
                             string second = LanguageManager.TranslateSingleString("Quantity");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.CountriesOfDestination:
                         {
-                            ChartData destinationsChartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
-                            Dictionary<string, double> exportData = destinationsChartData.GetData();
+                            ChartData chartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfDestination;
                             string first = LanguageManager.TranslateSingleString("Countries");
                             string second = LanguageManager.TranslateSingleString("Quantity");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.Accountants:
                         {
-                            ChartData accountantsChartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
-                            Dictionary<string, double> exportData = accountantsChartData.GetData();
+                            ChartData chartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.AccountantsTransactions;
                             string first = LanguageManager.TranslateSingleString("Accountants");
                             string second = LanguageManager.TranslateSingleString("Number of transactions");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -262,8 +255,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.AverageOrderValue:
                         {
-                            ChartData averageOrderData = LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, canUpdateChart: false);
-                            Dictionary<string, double> exportData = averageOrderData.GetData();
+                            ChartData chartData = LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, canUpdateChart: false);
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
@@ -271,7 +263,7 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateSingleString("Date");
                             string second = LanguageManager.TranslateSingleString("Order value");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
                         }
                         break;
                 }

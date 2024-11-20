@@ -687,7 +687,7 @@ namespace Sales_Tracker.Classes
 
             // Create chart
             ExcelChart chart = worksheet.Drawings.AddChart(translatedChartTitle, chartType);
-            chart.SetPosition(1, 0, 4, 0);
+            chart.SetPosition(0, 0, 3, 0);
             chart.SetSize(800, 400);
 
             // Configure chart
@@ -737,7 +737,7 @@ namespace Sales_Tracker.Classes
 
             // Create chart
             ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
-            chart.SetPosition(1, 0, 4, 0);
+            chart.SetPosition(0, 0, 3, 0);
             chart.SetSize(800, 400);
 
             // Add series to chart
