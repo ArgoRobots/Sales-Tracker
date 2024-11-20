@@ -145,8 +145,8 @@ namespace Sales_Tracker.Charts
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                    ? LanguageManager.TranslateSingleString("Total revenue")
-                    : LanguageManager.TranslateSingleString("Total expenses");
+                    ? TranslatedChartTitles.TotalRevenue
+                    : TranslatedChartTitles.TotalExpenses;
                 string first = LanguageManager.TranslateSingleString("Date");
                 string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
                     ? LanguageManager.TranslateSingleString("Revenue")
@@ -275,8 +275,8 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                    ? LanguageManager.TranslateSingleString("Distribution of revenue")
-                    : LanguageManager.TranslateSingleString("Distribution of expenses");
+                    ? TranslatedChartTitles.RevenueDistribution
+                    : TranslatedChartTitles.ExpensesDistribution;
                 string first = LanguageManager.TranslateSingleString("Category");
                 string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
                     ? LanguageManager.TranslateSingleString("Revenue")
@@ -403,7 +403,7 @@ namespace Sales_Tracker.Charts
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
 
-                string chartTitle = LanguageManager.TranslateSingleString("Total profits");
+                string chartTitle = TranslatedChartTitles.TotalProfits;
                 string first = LanguageManager.TranslateSingleString("Date");
                 string second = LanguageManager.TranslateSingleString("profits");
 
@@ -494,7 +494,7 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfOrigin;
+                string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
                 string first = LanguageManager.TranslateSingleString("Countries");
                 string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -591,7 +591,7 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string chartTitle = MainMenu_Form.TranslatedChartTitles.CompaniesOfOrigin;
+                string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
                 string first = LanguageManager.TranslateSingleString("Companies");
                 string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -688,7 +688,7 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfDestination;
+                string chartTitle = TranslatedChartTitles.CountriesOfDestination;
                 string first = LanguageManager.TranslateSingleString("Countries");
                 string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -775,7 +775,7 @@ namespace Sales_Tracker.Charts
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string chartTitle = MainMenu_Form.TranslatedChartTitles.AccountantsTransactions;
+                string chartTitle = TranslatedChartTitles.AccountantsTransactions;
                 string first = LanguageManager.TranslateSingleString("Accountants");
                 string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -906,7 +906,7 @@ namespace Sales_Tracker.Charts
                         { LanguageManager.TranslateSingleString("Total sales"), salesByDate.TryGetValue(date, out double sValue) ? sValue : 0 }
                     };
                 }
-                string name = MainMenu_Form.TranslatedChartTitles.SalesVsExpenses;
+                string name = TranslatedChartTitles.SalesVsExpenses;
 
                 ExcelSheetManager.ExportMultiDataSetChartToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, name);
             }
@@ -1047,7 +1047,7 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string chartTitle = MainMenu_Form.TranslatedChartTitles.AverageOrderValue;
+                string chartTitle = TranslatedChartTitles.AverageOrderValue;
                 string first = LanguageManager.TranslateSingleString("Date");
                 string second = LanguageManager.TranslateSingleString("Order value");
 

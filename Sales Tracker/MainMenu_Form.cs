@@ -1558,18 +1558,6 @@ namespace Sales_Tracker
             TotalExpensesVsSales,
             AverageOrderValue
         }
-        public static class TranslatedChartTitles
-        {
-            private static string Translate(string key) => LanguageManager.TranslateSingleString(key);
-
-            public static string CountriesOfOrigin => Translate("Countries of origin for purchased products");
-            public static string CompaniesOfOrigin => Translate("Companies of origin for purchased products");
-            public static string CountriesOfDestination => Translate("Countries of destination for sold products");
-            public static string AccountantsTransactions => Translate("Transactions managed by accountants");
-            public static string SalesVsExpenses => Translate("Total expenses vs. total sales");
-            public static string AverageOrderValue => Translate("Average order value");
-        }
-
         public GunaChart CountriesOfOrigin_Chart => countriesOfOrigin_Chart;
         public GunaChart CompaniesOfOrigin_Chart => companiesOfOrigin_Chart;
         public GunaChart CountriesOfDestination_Chart => countriesOfDestination_Chart;

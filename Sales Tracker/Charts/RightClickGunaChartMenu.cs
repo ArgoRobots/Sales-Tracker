@@ -147,8 +147,8 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Value
                             );
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                                ? LanguageManager.TranslateSingleString("Total revenue")
-                                : LanguageManager.TranslateSingleString("Total expenses");
+                                ? TranslatedChartTitles.TotalRevenue
+                                : TranslatedChartTitles.TotalExpenses;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
@@ -169,8 +169,8 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Value
                             );
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                                ? LanguageManager.TranslateSingleString("Distribution of revenue")
-                                : LanguageManager.TranslateSingleString("Distribution of expenses");
+                                ? TranslatedChartTitles.RevenueDistribution
+                                : TranslatedChartTitles.ExpensesDistribution;
                             string first = LanguageManager.TranslateSingleString("Category");
                             string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                ? LanguageManager.TranslateSingleString("Revenue")
@@ -187,7 +187,7 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
-                            string chartTitle = LanguageManager.TranslateSingleString("Total profits");
+                            string chartTitle = TranslatedChartTitles.TotalProfits;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
@@ -205,7 +205,7 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
-                            string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfOrigin;
+                            string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
                             string first = LanguageManager.TranslateSingleString("Countries");
                             string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -220,7 +220,7 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
-                            string chartTitle = MainMenu_Form.TranslatedChartTitles.CompaniesOfOrigin;
+                            string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
                             string first = LanguageManager.TranslateSingleString("Companies");
                             string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -235,7 +235,7 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
-                            string chartTitle = MainMenu_Form.TranslatedChartTitles.CountriesOfDestination;
+                            string chartTitle = TranslatedChartTitles.CountriesOfDestination;
                             string first = LanguageManager.TranslateSingleString("Countries");
                             string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -250,7 +250,7 @@ namespace Sales_Tracker.Charts
                                 kvp => kvp.Key,
                                 kvp => kvp.Value
                             );
-                            string chartTitle = MainMenu_Form.TranslatedChartTitles.AccountantsTransactions;
+                            string chartTitle = TranslatedChartTitles.AccountantsTransactions;
                             string first = LanguageManager.TranslateSingleString("Accountants");
                             string second = LanguageManager.TranslateSingleString("Quantity");
 
@@ -272,7 +272,7 @@ namespace Sales_Tracker.Charts
                                 };
                             }
 
-                            string name = MainMenu_Form.TranslatedChartTitles.SalesVsExpenses;
+                            string name = TranslatedChartTitles.SalesVsExpenses;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
@@ -291,7 +291,7 @@ namespace Sales_Tracker.Charts
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string chartTitle = MainMenu_Form.TranslatedChartTitles.AverageOrderValue;
+                            string chartTitle = TranslatedChartTitles.AverageOrderValue;
                             string first = LanguageManager.TranslateSingleString("Date");
                             string second = LanguageManager.TranslateSingleString("Order value");
 
