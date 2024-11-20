@@ -74,6 +74,8 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
+            new Loading_Form("Exporting chart to Google Sheets...").Show();
+
             try
             {
                 // Create a new spreadsheet
@@ -204,6 +206,8 @@ namespace Sales_Tracker.Classes
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
                 );
             }
+
+            Tools.CloseOpenForm<Loading_Form>();
         }
 
         // Export multiple dataset charts
@@ -216,6 +220,8 @@ namespace Sales_Tracker.Classes
             {
                 return;
             }
+
+            new Loading_Form("Exporting chart to Google Sheets...").Show();
 
             try
             {
@@ -365,6 +371,8 @@ namespace Sales_Tracker.Classes
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
                 );
             }
+
+            Tools.CloseOpenForm<Loading_Form>();
         }
 
         /// <summary>

@@ -16,7 +16,7 @@
     <Compile Update="Categories_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ExportChart_Form.cs">
+    <Compile Update="Loading_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="UI\CenteredFlowLayoutPanel.cs">
