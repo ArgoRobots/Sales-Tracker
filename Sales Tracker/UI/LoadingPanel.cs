@@ -8,21 +8,63 @@ namespace Sales_Tracker.UI
     /// </summary>
     public class LoadingPanel
     {
-        // Properties
         private static Panel _blankLoadingPanel;
         private static Panel _loadingPanel;
+        private static Label _messageLabel;
 
-        // Getters
         public static Panel BlankLoadingPanelInstance => _blankLoadingPanel;
         public static Panel LoadingPanelInstance => _loadingPanel;
 
-        // blankLoadingPanel
         public static void InitBlankLoadingPanel()
         {
             _blankLoadingPanel = new Panel
             {
                 BackColor = CustomColors.MainBackground
             };
+        }
+        public static void InitLoadingPanel()
+        {
+            _loadingPanel = new Panel
+            {
+                BackColor = CustomColors.MainBackground
+            };
+
+            Guna2WinProgressIndicator progressIndicator = new()
+            {
+                AutoStart = true,
+                ProgressColor = CustomColors.AccentBlue,
+            };
+
+            _messageLabel = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 12, FontStyle.Regular),
+                Text = "Loading...",
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            _loadingPanel.Controls.Add(progressIndicator);
+            _loadingPanel.Controls.Add(_messageLabel);
+        }
+        public static void ShowLoadingScreen(Control control, string message)
+        {
+            _loadingPanel.Size = control.Size;
+            control.Controls.Add(_loadingPanel);
+
+            Guna2WinProgressIndicator progressIndicator = (Guna2WinProgressIndicator)_loadingPanel.Controls[0];
+            progressIndicator.Location = new Point(
+                (_loadingPanel.Width - progressIndicator.Width) / 2,
+                (_loadingPanel.Height - progressIndicator.Height) / 2
+            );
+
+            _messageLabel.Text = message;
+            _messageLabel.Location = new Point(
+                (_loadingPanel.Width - _messageLabel.Width) / 2,
+                progressIndicator.Top - progressIndicator.Height - 20
+            );
+            _messageLabel.ForeColor = CustomColors.Text;
+
+            _loadingPanel.BringToFront();
         }
         public static void ShowBlankLoadingPanel(Control control)
         {
@@ -34,7 +76,6 @@ namespace Sales_Tracker.UI
             {
                 show();
             }
-
             void show()
             {
                 _blankLoadingPanel.Size = control.Size;
@@ -42,39 +83,13 @@ namespace Sales_Tracker.UI
                 _blankLoadingPanel.BringToFront();
             }
         }
-        public static void HideBlankLoadingPanel(Control control)
-        {
-            control.Controls.Remove(_blankLoadingPanel);
-        }
-
-        // loadingPanel
-        public static void InitLoadingPanel()
-        {
-            _loadingPanel = new Panel
-            {
-                BackColor = CustomColors.MainBackground
-            };
-            Guna2WinProgressIndicator progressIndicator = new()
-            {
-                AutoStart = true,
-                ProgressColor = CustomColors.AccentBlue,
-            };
-
-            _loadingPanel.Controls.Add(progressIndicator);
-        }
-        public static void ShowLoadingScreen(Control control)
-        {
-            _loadingPanel.Size = control.Size;
-            control.Controls.Add(_loadingPanel);
-
-            Guna2WinProgressIndicator progressIndicator = (Guna2WinProgressIndicator)_loadingPanel.Controls[0];
-            progressIndicator.Location = new Point((_loadingPanel.Width - progressIndicator.Width) / 2, (_loadingPanel.Height - progressIndicator.Height) / 2);
-
-            _loadingPanel.BringToFront();
-        }
         public static void HideLoadingScreen(Control control)
         {
             control.Controls.Remove(_loadingPanel);
+        }
+        public static void HideBlankLoadingPanel(Control control)
+        {
+            control.Controls.Remove(_blankLoadingPanel);
         }
     }
 }

@@ -110,7 +110,7 @@ namespace Sales_Tracker.Classes
                     .Create(keyRequest, serviceAccount.Name)
                     .ExecuteAsync();
 
-                // Save the private key as googleCredentials.json
+                // Save the private key as GoogleCredentials.json
                 string privateKeyData = Encoding.UTF8.GetString(
                     Convert.FromBase64String(key.PrivateKeyData)
                 );

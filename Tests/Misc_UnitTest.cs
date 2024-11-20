@@ -28,7 +28,7 @@ namespace Tests
             LoadingPanel.InitLoadingPanel();
 
             // Show the loading panel
-            LoadingPanel.ShowLoadingScreen(testForm);
+            LoadingPanel.ShowLoadingScreen(testForm, "Loading...");
             Assert.IsTrue(testForm.Controls.Contains(LoadingPanel.LoadingPanelInstance));
 
             // Hide the loading panel

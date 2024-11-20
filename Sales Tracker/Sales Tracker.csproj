@@ -34,7 +34,7 @@
     <None Remove="googleCredentials.json" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="googleCredentials.json" />
+    <EmbeddedResource Include="GoogleCredentials.json" />
   </ItemGroup>
 
   <ItemGroup>

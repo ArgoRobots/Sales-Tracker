@@ -159,7 +159,7 @@ namespace Sales_Tracker.Classes
         {
             // App data
             _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
-            _googleCredentials_file = _appData_dir + "googleCredentials" + ArgoFiles.JsonFileExtension;
+            _googleCredentials_file = _appData_dir + "GoogleCredentials" + ArgoFiles.JsonFileExtension;
             EnsureGoogleCredentialsExist();
 
             // AES encryption
@@ -188,7 +188,7 @@ namespace Sales_Tracker.Classes
             {
                 Directory.CreateDirectory(AppData_dir);
 
-                string resourcePath = "Sales_Tracker.googleCredentials.json";
+                string resourcePath = "Sales_Tracker.GoogleCredentials.json";
                 using Stream stream = typeof(Directories).Assembly
                     .GetManifestResourceStream(resourcePath)
                     ?? throw new FileNotFoundException($"Embedded {GoogleCredentials_file} not found");

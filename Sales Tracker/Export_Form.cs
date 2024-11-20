@@ -104,8 +104,7 @@ namespace Sales_Tracker
         }
         private async void Export_Button_Click(object sender, EventArgs e)
         {
-            LoadingPanel.InitLoadingPanel();
-            LoadingPanel.ShowLoadingScreen(this);
+            LoadingPanel.ShowLoadingScreen(this, $"Exporting {FileType_ComboBox.Text}...");
 
             string fileType = FileType_ComboBox.Text;
             await Task.Run(() => { Export(fileType); });
