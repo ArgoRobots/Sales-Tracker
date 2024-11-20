@@ -240,7 +240,7 @@ namespace Sales_Tracker
             if (_sale_DataGridView.Visible)
             {
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, Totals_Chart, isLine);
-                Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.Total:N2}";
+                Totals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.GetTotal():N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
@@ -251,7 +251,7 @@ namespace Sales_Tracker
             else if (_purchase_DataGridView.Visible)
             {
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(_purchase_DataGridView, Totals_Chart, isLine);
-                Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.Total:N2}";
+                Totals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.GetTotal():N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
@@ -261,7 +261,7 @@ namespace Sales_Tracker
             }
 
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
-            Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
+            Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.GetTotal():N2}";
 
             LanguageManager.UpdateLanguageForControl(Profits_Chart, true);
             LanguageManager.UpdateLanguageForControl(Totals_Chart, true);

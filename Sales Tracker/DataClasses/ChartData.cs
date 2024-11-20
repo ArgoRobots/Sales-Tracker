@@ -2,69 +2,53 @@
 {
     public record ChartData
     {
-        // Private setters for encapsulation
-        public double Total { get; private init; }
-        public Dictionary<string, double> Data { get; private init; }
+        // Properties
+        private readonly double _total;
+        private readonly Dictionary<string, double> _data;
 
-        // Constructor to ensure proper initialization
+        // Getters
+        public double GetTotal() => _total;
+        public Dictionary<string, double> GetData() => _data;
+
+        // Constructor
         public ChartData(double total, Dictionary<string, double> data)
         {
-            Total = total;
-            Data = new Dictionary<string, double>(data ?? []); // Defensive copy
+            _total = total;
+            _data = new Dictionary<string, double>(data ?? []);  // Defensive copy
         }
 
         // Static factory method for creating empty ChartData
         public static ChartData Empty => new(0, []);
-
-        // Method to safely access the data dictionary
-        public IReadOnlyDictionary<string, double> GetData() => Data;
-
-        // Optional: Add methods to manipulate or query the data if needed
-        public bool HasData => Data.Count > 0;
-
-        public double GetValueForDate(string date) =>
-            Data.TryGetValue(date, out double value) ? value : 0;
     }
 
     public record SalesExpensesChartData
     {
-        // Private setters for encapsulation
-        public double TotalSales { get; private init; }
-        public double TotalExpenses { get; private init; }
-        public Dictionary<string, double> SalesData { get; private init; }
-        public Dictionary<string, double> ExpensesData { get; private init; }
-        public IReadOnlyList<string> DateOrder { get; private init; }
+        // Properties
+        private readonly Dictionary<string, double> _salesData;
+        private readonly Dictionary<string, double> _expensesData;
+        private readonly IReadOnlyList<string> _dateOrder;
 
-        // Constructor to ensure proper initialization
+        // Getter
+        public IReadOnlyList<string> GetDateOrder() => _dateOrder;
+
+        // Constructor
         public SalesExpensesChartData(
-            double totalSales,
-            double totalExpenses,
             Dictionary<string, double> salesData,
             Dictionary<string, double> expensesData,
             IEnumerable<string> dateOrder)
         {
-            TotalSales = totalSales;
-            TotalExpenses = totalExpenses;
-            SalesData = new Dictionary<string, double>(salesData ?? []);
-            ExpensesData = new Dictionary<string, double>(expensesData ?? []);
-            DateOrder = (dateOrder?.ToList() ?? []).AsReadOnly();
+            _salesData = new Dictionary<string, double>(salesData ?? []);
+            _expensesData = new Dictionary<string, double>(expensesData ?? []);
+            _dateOrder = (dateOrder?.ToList() ?? []).AsReadOnly();
         }
 
         // Static factory method for creating empty data
-        public static SalesExpensesChartData Empty => new(0, 0, [], [], []);
+        public static SalesExpensesChartData Empty => new([], [], []);
 
-        // Helper properties
-        public double GrandTotal => TotalSales + TotalExpenses;
-        public bool HasData => SalesData.Count > 0 || ExpensesData.Count > 0;
-
-        // Safe data access methods
-        public IReadOnlyDictionary<string, double> GetSalesData() => SalesData;
-        public IReadOnlyDictionary<string, double> GetExpensesData() => ExpensesData;
-
+        // Query methods
         public double GetSalesForDate(string date) =>
-            SalesData.TryGetValue(date, out double value) ? value : 0;
-
+            _salesData.TryGetValue(date, out double value) ? value : 0;
         public double GetExpensesForDate(string date) =>
-            ExpensesData.TryGetValue(date, out double value) ? value : 0;
+            _expensesData.TryGetValue(date, out double value) ? value : 0;
     }
 }

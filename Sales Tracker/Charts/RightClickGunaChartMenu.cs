@@ -141,11 +141,8 @@ namespace Sales_Tracker.Charts
                 {
                     case MainMenu_Form.ChartDataType.TotalRevenue:
                         {
-                            ChartData totalsChartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine);
-                            Dictionary<string, double> exportData = totalsChartData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData totalsChartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, double> exportData = totalsChartData.GetData();
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.TotalRevenue
                                 : TranslatedChartTitles.TotalExpenses;
@@ -163,11 +160,8 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.DistributionOfRevenue:
                         {
-                            ChartData distributionChartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited);
-                            Dictionary<string, double> exportData = distributionChartData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData distributionChartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            Dictionary<string, double> exportData = distributionChartData.GetData();
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.RevenueDistribution
                                 : TranslatedChartTitles.ExpensesDistribution;
@@ -182,11 +176,8 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.TotalProfits:
                         {
-                            ChartData profitsChartData = LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine);
-                            Dictionary<string, double> exportData = profitsChartData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData profitsChartData = LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, double> exportData = profitsChartData.GetData();
                             string chartTitle = TranslatedChartTitles.TotalProfits;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
@@ -200,11 +191,8 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CountriesOfOrigin:
                         {
-                            ChartData countriesChartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited);
-                            Dictionary<string, double> exportData = countriesChartData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData countriesChartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            Dictionary<string, double> exportData = countriesChartData.GetData();
                             string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
                             string first = LanguageManager.TranslateSingleString("Countries");
                             string second = LanguageManager.TranslateSingleString("Quantity");
@@ -215,11 +203,8 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
                         {
-                            ChartData companiesChartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited);
-                            Dictionary<string, double> exportData = companiesChartData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData companiesChartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            Dictionary<string, double> exportData = companiesChartData.GetData();
                             string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
                             string first = LanguageManager.TranslateSingleString("Companies");
                             string second = LanguageManager.TranslateSingleString("Quantity");
@@ -230,11 +215,8 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CountriesOfDestination:
                         {
-                            ChartData destinationsChartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited);
-                            Dictionary<string, double> exportData = destinationsChartData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData destinationsChartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            Dictionary<string, double> exportData = destinationsChartData.GetData();
                             string chartTitle = TranslatedChartTitles.CountriesOfDestination;
                             string first = LanguageManager.TranslateSingleString("Countries");
                             string second = LanguageManager.TranslateSingleString("Quantity");
@@ -245,14 +227,11 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.Accountants:
                         {
-                            ChartData accountantsChartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited);
-                            Dictionary<string, double> exportData = accountantsChartData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData accountantsChartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            Dictionary<string, double> exportData = accountantsChartData.GetData();
                             string chartTitle = TranslatedChartTitles.AccountantsTransactions;
                             string first = LanguageManager.TranslateSingleString("Accountants");
-                            string second = LanguageManager.TranslateSingleString("Quantity");
+                            string second = LanguageManager.TranslateSingleString("Number of transactions");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(exportData, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
@@ -260,10 +239,10 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
                         {
-                            SalesExpensesChartData salesExpensesData = LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.SalesVsExpenses_Chart, isLine);
+                            SalesExpensesChartData salesExpensesData = LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.SalesVsExpenses_Chart, isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
-                            foreach (string date in salesExpensesData.DateOrder)
+                            foreach (string date in salesExpensesData.GetDateOrder())
                             {
                                 combinedData[date] = new Dictionary<string, double>
                                 {
@@ -283,11 +262,8 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.AverageOrderValue:
                         {
-                            ChartData averageOrderData = LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine);
-                            Dictionary<string, double> exportData = averageOrderData.GetData().ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => kvp.Value
-                            );
+                            ChartData averageOrderData = LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, double> exportData = averageOrderData.GetData();
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;

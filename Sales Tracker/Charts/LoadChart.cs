@@ -74,7 +74,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Main charts
-        public static ChartData LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -83,7 +83,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 if (isLineChart)
                 {
@@ -96,7 +96,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
             }
@@ -154,7 +154,7 @@ namespace Sales_Tracker.Charts
 
                 ExcelSheetManager.ExportChartToExcel(revenueByDate, filePath, chartType, chartTitle, first, second);
             }
-            else
+            else if (canUpdateChart)
             {
                 SortAndAddDatasetAndSetBarPercentage(revenueByDate, dateFormat, dataset, isLineChart);
                 UpdateChart(chart, dataset, true);
@@ -162,7 +162,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(grandTotal, revenueByDate);
         }
-        public static ChartData LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -171,7 +171,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ConfigureChartForPie(chart);
             }
@@ -295,13 +295,16 @@ namespace Sales_Tracker.Charts
                     dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{item.Key} ({percentage:F2}%)";
                 }
 
-                dataset.FillColors = GetChartColors();
-                UpdateChart(chart, dataset, true);
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = GetChartColors();
+                    UpdateChart(chart, dataset, true);
+                }
             }
 
             return new ChartData(totalCost, sortedData);
         }
-        public static ChartData LoadProfitsIntoChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadProfitsIntoChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
@@ -313,7 +316,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 if (isLineChart)
                 {
@@ -326,7 +329,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
             }
@@ -409,7 +412,7 @@ namespace Sales_Tracker.Charts
 
                 ExcelSheetManager.ExportChartToExcel(profitByDate, filePath, chartType, chartTitle, first, second);
             }
-            else
+            else if (canUpdateChart)
             {
                 SortAndAddDatasetAndSetBarPercentage(profitByDate, dateFormat, dataset, isLineChart);
                 UpdateChart(chart, dataset, true);
@@ -419,7 +422,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Statistics charts
-        public static ChartData LoadCountriesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadCountriesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
@@ -430,7 +433,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ConfigureChartForPie(chart);
             }
@@ -510,13 +513,16 @@ namespace Sales_Tracker.Charts
                     dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
                 }
 
-                dataset.FillColors = GetChartColors();
-                UpdateChart(chart, dataset, false);
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = GetChartColors();
+                    UpdateChart(chart, dataset, false);
+                }
             }
 
             return new ChartData(totalCount, groupedCountryCounts);
         }
-        public static ChartData LoadCompaniesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadCompaniesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
@@ -527,7 +533,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ConfigureChartForPie(chart);
             }
@@ -607,13 +613,16 @@ namespace Sales_Tracker.Charts
                     dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{companyCount.Key} ({percentage:F2}%)";
                 }
 
-                dataset.FillColors = GetChartColors();
-                UpdateChart(chart, dataset, false);
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = GetChartColors();
+                    UpdateChart(chart, dataset, false);
+                }
             }
 
             return new ChartData(totalCount, groupedCompanyCounts);
         }
-        public static ChartData LoadCountriesOfDestinationForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadCountriesOfDestinationForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -624,7 +633,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ConfigureChartForPie(chart);
             }
@@ -704,13 +713,16 @@ namespace Sales_Tracker.Charts
                     dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{countryCount.Key} ({percentage:F2}%)";
                 }
 
-                dataset.FillColors = GetChartColors();
-                UpdateChart(chart, dataset, false);
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = GetChartColors();
+                    UpdateChart(chart, dataset, false);
+                }
             }
 
             return new ChartData(totalCount, groupedCountryCounts);
         }
-        public static ChartData LoadAccountantsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadAccountantsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView[] dataGridViews = [
                 MainMenu_Form.Instance.Sale_DataGridView,
@@ -724,7 +736,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ConfigureChartForPie(chart);
             }
@@ -777,7 +789,7 @@ namespace Sales_Tracker.Charts
             {
                 string chartTitle = TranslatedChartTitles.AccountantsTransactions;
                 string first = LanguageManager.TranslateSingleString("Accountants");
-                string second = LanguageManager.TranslateSingleString("Quantity");
+                string second = LanguageManager.TranslateSingleString("Number of transactions");
 
                 ExcelSheetManager.ExportChartToExcel(groupedAccountantCounts, filePath, eChartType.Pie, chartTitle, first, second);
             }
@@ -791,13 +803,16 @@ namespace Sales_Tracker.Charts
                     dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{accountantCount.Key} ({percentage:F2}%)";
                 }
 
-                dataset.FillColors = GetChartColors();
-                UpdateChart(chart, dataset, false);
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = GetChartColors();
+                    UpdateChart(chart, dataset, false);
+                }
             }
 
             return new ChartData(totalCount, groupedAccountantCounts);
         }
-        public static SalesExpensesChartData LoadSalesVsExpensesChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
+        public static SalesExpensesChartData LoadSalesVsExpensesChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
@@ -809,7 +824,7 @@ namespace Sales_Tracker.Charts
                 return SalesExpensesChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 if (isLineChart)
                 {
@@ -832,7 +847,7 @@ namespace Sales_Tracker.Charts
                 salesDataset = new GunaBarDataset { Label = LanguageManager.TranslateSingleString("Total sales") };
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ApplyStyleToBarOrLineDataSet(expensesDataset, isLineChart, CustomColors.PastelGreen);
                 ApplyStyleToBarOrLineDataSet(salesDataset, isLineChart, CustomColors.PastelBlue);
@@ -910,18 +925,12 @@ namespace Sales_Tracker.Charts
 
                 ExcelSheetManager.ExportMultiDataSetChartToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, name);
             }
-            else
+            else if (canUpdateChart)
             {
                 UpdateChartWithData(chart, sortedDates, salesDataset, expensesDataset, salesByDate, expensesByDate, isLineChart);
             }
 
-            return new SalesExpensesChartData(
-                salesByDate.Values.Sum(),
-                expensesByDate.Values.Sum(),
-                salesByDate,
-                expensesByDate,
-                sortedDates
-            );
+            return new SalesExpensesChartData(salesByDate, expensesByDate, sortedDates);
         }
         private static void UpdateChartWithData(
             GunaChart chart,
@@ -965,7 +974,7 @@ namespace Sales_Tracker.Charts
 
             chart.Update();
         }
-        public static ChartData LoadAverageOrderValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null)
+        public static ChartData LoadAverageOrderValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -976,7 +985,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 if (isLineChart)
                 {
@@ -989,7 +998,7 @@ namespace Sales_Tracker.Charts
             if (isLineChart) { dataset = new GunaLineDataset(); }
             else { dataset = new GunaBarDataset(); }
 
-            if (!exportToExcel)
+            if (!exportToExcel && canUpdateChart)
             {
                 ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
             }
@@ -1053,7 +1062,7 @@ namespace Sales_Tracker.Charts
 
                 ExcelSheetManager.ExportChartToExcel(averageOrderValueByDate, filePath, chartType, chartTitle, first, second);
             }
-            else
+            else if (canUpdateChart)
             {
                 SortAndAddDatasetAndSetBarPercentage(averageOrderValueByDate, dateFormat, dataset, isLineChart);
                 UpdateChart(chart, dataset, true);
