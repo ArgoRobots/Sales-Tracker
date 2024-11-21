@@ -396,7 +396,7 @@ namespace Sales_Tracker
                 {
                     if (Controls.Contains(panel))
                     {
-                        MenuKeyShortcutManager.HandlePanelkeyDown(panel, keyData);
+                        MenuKeyShortcutManager.HandlePanelKeyDown(panel, keyData);
                         return true;
                     }
                 }
@@ -633,7 +633,10 @@ namespace Sales_Tracker
         // Event handlers - top bar
         private void File_Button_Click(object sender, EventArgs e)
         {
-            ToggleMenu(CustomControls.FileMenu, File_Button, Resources.FileGray, Resources.FileWhite, false);
+            if (ToggleMenu(CustomControls.FileMenu, File_Button, Resources.FileGray, Resources.FileWhite, false))
+            {
+                Controls.Remove(CustomControls.RecentlyOpenedMenu);
+            }
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
@@ -661,12 +664,20 @@ namespace Sales_Tracker
         {
             ToggleMenu(CustomControls.AccountMenu, Account_Button, Resources.ProfileGray, Resources.ProfileWhite, true);
         }
-        private void ToggleMenu(Control menu, Guna2Button button, Image grayImage, Image whiteImage, bool alignRight)
+
+        /// <summary>
+        /// Toggles the visibility of a menu and updates the button's image accordingly.
+        /// </summary>
+        /// <returns>
+        /// True if the menu was closed; False if the menu was opened.
+        /// </returns>
+        private bool ToggleMenu(Control menu, Guna2Button button, Image grayImage, Image whiteImage, bool alignRight)
         {
             if (Controls.Contains(menu))
             {
                 Controls.Remove(menu);
                 button.Image = grayImage;
+                return true;
             }
             else
             {
@@ -681,6 +692,7 @@ namespace Sales_Tracker
                 menu.Location = new Point(xPosition, Top_Panel.Height);
                 Controls.Add(menu);
                 menu.BringToFront();
+                return false;
             }
         }
 

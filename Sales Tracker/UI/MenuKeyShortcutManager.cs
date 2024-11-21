@@ -1,11 +1,19 @@
 ﻿using Guna.UI2.WinForms;
-using System.Collections;
 
 namespace Sales_Tracker.UI
 {
     /// <summary>
     /// Manages keyboard shortcuts and navigation for menu controls.
     /// </summary>
+    /// <remarks>
+    /// Supports the following keyboard actions:
+    /// - Down/Tab: Moves selection to next button
+    /// - Up: Moves selection to previous button
+    /// - Right: Opens cascading menu if available
+    /// - Enter: Triggers the selected button's click event
+    /// 
+    /// - When reaching the end of the menu, selection wraps around to the beginning and vice versa.
+    /// </remarks>
     public static class MenuKeyShortcutManager
     {
         // Properties
@@ -23,115 +31,85 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Manages navigation between menu buttons using arrow keys, tab, and enter.
         /// </summary>
-        /// <remarks>
-        /// Supports the following keyboard actions:
-        /// - Down/Tab: Moves selection to next button
-        /// - Up: Moves selection to previous button
-        /// - Right: Opens cascading menu if available
-        /// - Enter: Triggers the selected button's click event
-        /// 
-        /// - When reaching the end of the menu, selection wraps around to the beginning and vice versa.
-        /// </remarks>
-        public static void HandlePanelkeyDown(Guna2Panel panel, Keys e)
+        public static void HandlePanelKeyDown(Guna2Panel panel, Keys e)
         {
             Guna2Panel activePanel = _selectedPanel ?? panel;
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)activePanel.Controls[0];
-            Control.ControlCollection results = flowPanel.Controls;
+            // Get the FlowLayoutPanel (which is always controls[0] if it exists)
+            FlowLayoutPanel? flowPanel = activePanel.Controls.Count > 0 ? activePanel.Controls[0] as FlowLayoutPanel : null;
+            if (flowPanel == null) { return; }
 
-            if (results.Count == 0) { return; }
+            // Get buttons from the FlowLayoutPanel
+            IEnumerable<Guna2Button> buttons = flowPanel.Controls.OfType<Guna2Button>();
+            if (!buttons.Any()) { return; }
 
-            (Guna2Button button, int buttonIndex) = GetSelectedButtonInMenu(results);
+            (Guna2Button? selectedButton, int selectedIndex) = GetSelectedButtonInMenu(buttons);
 
-            if (button == null)
+            if (selectedButton == null)
             {
-                SelectFirstButton(results);
+                SelectFirstButton(buttons);
                 return;
             }
 
             switch (e)
             {
                 case Keys.Up:
-                    HandleKeyUp(results, button, buttonIndex);
+                    HandleKeyUp(buttons, selectedButton, selectedIndex);
                     break;
                 case Keys.Down:
                 case Keys.Tab:
-                    HandleKeyDown(results, button, buttonIndex);
+                    HandleKeyDown(buttons, selectedButton, selectedIndex);
                     break;
                 case Keys.Left:
-                    HandleKeyLeft(button, panel);
+                    HandleKeyLeft(selectedButton, panel);
                     break;
                 case Keys.Right:
-                    HandleKeyRight(button);
+                    HandleKeyRight(selectedButton);
                     break;
                 case Keys.Enter:
-                    button.PerformClick();
+                    selectedButton.PerformClick();
                     break;
             }
         }
-        private static void HandleKeyUp(Control.ControlCollection results, Guna2Button button, int buttonIndex)
+        private static void HandleKeyUp(IEnumerable<Guna2Button> buttons, Guna2Button button, int index)
         {
             UnselectMenuButton(button);
 
-            // If it's not the first button
-            if (buttonIndex > 0)
+            Guna2Button? targetButton = index > 0
+                ? buttons.ElementAtOrDefault(index - 1)
+                : buttons.LastOrDefault();
+
+            if (targetButton != null)
             {
-                for (int j = buttonIndex - 1; j >= 0; j--)
-                {
-                    if (results[j] is Guna2Button prevBtn)
-                    {
-                        SelectMenuButton(prevBtn);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                // Select the last button
-                for (int j = results.Count - 1; j >= 0; j--)
-                {
-                    if (results[j] is Guna2Button lastBtn)
-                    {
-                        SelectMenuButton(lastBtn);
-                        break;
-                    }
-                }
+                SelectMenuButton(targetButton);
             }
         }
-        private static void HandleKeyDown(Control.ControlCollection results, Guna2Button button, int buttonIndex)
+        private static void HandleKeyDown(IEnumerable<Guna2Button> buttons, Guna2Button button, int index)
         {
             UnselectMenuButton(button);
 
-            // If it's not the last button
-            if (buttonIndex < results.Count - 1)
+            Guna2Button? targetButton = index < buttons.Count() - 1
+                ? buttons.ElementAtOrDefault(index + 1)
+                : buttons.FirstOrDefault();
+
+            if (targetButton != null)
             {
-                // Find the next button
-                for (int j = buttonIndex + 1; j < results.Count; j++)
-                {
-                    if (results[j] is Guna2Button nextBtn)
-                    {
-                        SelectMenuButton(nextBtn);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                SelectFirstButton(results);
+                SelectMenuButton(targetButton);
             }
         }
         private static void HandleKeyLeft(Guna2Button button, Guna2Panel panel)
         {
             if (_selectedPanel != null)
             {
+                // Get buttons from the FlowLayoutPanel in the panel
+                FlowLayoutPanel? flowPanel = panel.Controls.Count > 0 ? panel.Controls[0] as FlowLayoutPanel : null;
+                if (flowPanel == null) { return; }
+
+                IEnumerable<Guna2Button> buttons = flowPanel.Controls.OfType<Guna2Button>();
+                if (!buttons.Any()) { return; }
+
                 _selectedPanel = null;
                 UnselectMenuButton(button);
-
-                FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
-                Control.ControlCollection results = flowPanel.Controls;
-
-                if (results.Count == 0) { return; }
-
                 SelectMenuButton(buttonThatOpenedCascadingMenu);
                 buttonThatOpenedCascadingMenu = null;
                 CascadingMenu.RemoveCascadingMenus();
@@ -141,30 +119,32 @@ namespace Sales_Tracker.UI
         {
             if (button.Tag is Guna2Panel panel)
             {
+                // Get buttons from the FlowLayoutPanel in the panel
+                FlowLayoutPanel? flowPanel = panel.Controls.Count > 0 ? panel.Controls[0] as FlowLayoutPanel : null;
+                if (flowPanel == null) { return; }
+
+                IEnumerable<Guna2Button> buttons = flowPanel.Controls.OfType<Guna2Button>();
+                if (!buttons.Any()) { return; }
+
                 buttonThatOpenedCascadingMenu = button;
                 _selectedPanel = panel;
+
                 UnselectMenuButton(button);
-
-                FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
-                Control.ControlCollection results = flowPanel.Controls;
-
-                if (results.Count == 0) { return; }
-
-                SelectFirstButton(results);
+                SelectFirstButton(buttons);
             }
         }
 
         // Helper methods
-        private static (Guna2Button?, int) GetSelectedButtonInMenu(Control.ControlCollection results)
+        private static (Guna2Button?, int) GetSelectedButtonInMenu(IEnumerable<Guna2Button> buttons)
         {
-            for (int i = 0; i < results.Count; i++)
+            foreach ((Guna2Button button, int index) in buttons.Select((btn, idx) => (btn, idx)))
             {
-                if (results[i] is Guna2Button btn && IsMenuButtonSelected(btn))
+                if (IsMenuButtonSelected(button))
                 {
-                    return (btn, i);
+                    return (button, index);
                 }
             }
-            return (null, 0);
+            return (null, -1);
         }
         private static void SelectMenuButton(Guna2Button button)
         {
@@ -175,11 +155,12 @@ namespace Sales_Tracker.UI
                 button.PerformClick();  // Open the cascading menu
             }
         }
-        private static void SelectFirstButton(Control.ControlCollection results)
+        private static void SelectFirstButton(IEnumerable<Guna2Button> buttons)
         {
-            if (results[0] is Guna2Button firstBtn)
+            Guna2Button? firstButton = buttons.FirstOrDefault();
+            if (firstButton != null)
             {
-                SelectMenuButton(firstBtn);
+                SelectMenuButton(firstButton);
             }
         }
         private static void UnselectMenuButton(Guna2Button button)
