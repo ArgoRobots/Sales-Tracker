@@ -65,7 +65,7 @@
             CheckMark1_ImageButton.ImageOffset = new Point(0, 0);
             CheckMark1_ImageButton.ImageRotate = 0F;
             CheckMark1_ImageButton.ImageSize = new Size(30, 30);
-            CheckMark1_ImageButton.Location = new Point(27, 63);
+            CheckMark1_ImageButton.Location = new Point(27, 65);
             CheckMark1_ImageButton.Name = "CheckMark1_ImageButton";
             CheckMark1_ImageButton.PressedState.ImageSize = new Size(64, 64);
             CheckMark1_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges1;
@@ -77,7 +77,7 @@
             UnlimitedProducts_Label.Anchor = AnchorStyles.Top;
             UnlimitedProducts_Label.AutoSize = true;
             UnlimitedProducts_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            UnlimitedProducts_Label.Location = new Point(68, 63);
+            UnlimitedProducts_Label.Location = new Point(68, 67);
             UnlimitedProducts_Label.Name = "UnlimitedProducts_Label";
             UnlimitedProducts_Label.Size = new Size(197, 30);
             UnlimitedProducts_Label.TabIndex = 1;
@@ -88,7 +88,7 @@
             WindowsHello_Label.Anchor = AnchorStyles.Top;
             WindowsHello_Label.AutoSize = true;
             WindowsHello_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            WindowsHello_Label.Location = new Point(68, 113);
+            WindowsHello_Label.Location = new Point(68, 117);
             WindowsHello_Label.Name = "WindowsHello_Label";
             WindowsHello_Label.Size = new Size(159, 30);
             WindowsHello_Label.TabIndex = 3;
@@ -103,7 +103,7 @@
             CheckMark2_ImageButton.ImageOffset = new Point(0, 0);
             CheckMark2_ImageButton.ImageRotate = 0F;
             CheckMark2_ImageButton.ImageSize = new Size(30, 30);
-            CheckMark2_ImageButton.Location = new Point(27, 113);
+            CheckMark2_ImageButton.Location = new Point(27, 115);
             CheckMark2_ImageButton.Name = "CheckMark2_ImageButton";
             CheckMark2_ImageButton.PressedState.ImageSize = new Size(64, 64);
             CheckMark2_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -133,7 +133,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 18F);
-            label1.Location = new Point(92, 48);
+            label1.Location = new Point(94, 48);
             label1.Name = "label1";
             label1.Size = new Size(384, 48);
             label1.TabIndex = 7;
@@ -143,7 +143,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(58, 105);
+            label2.Location = new Point(60, 105);
             label2.Name = "label2";
             label2.Size = new Size(453, 30);
             label2.TabIndex = 8;
@@ -153,11 +153,11 @@
             // 
             DollarAmount_Label.AutoSize = true;
             DollarAmount_Label.Font = new Font("Segoe UI", 12F);
-            DollarAmount_Label.Location = new Point(39, 268);
+            DollarAmount_Label.Location = new Point(41, 268);
             DollarAmount_Label.Name = "DollarAmount_Label";
-            DollarAmount_Label.Size = new Size(490, 32);
+            DollarAmount_Label.Size = new Size(491, 32);
             DollarAmount_Label.TabIndex = 9;
-            DollarAmount_Label.Text = "Lifetime access - single payment of $15 USD";
+            DollarAmount_Label.Text = "Lifetime access - single payment of $20 CAD";
             // 
             // Upgrade_Button
             // 
@@ -168,7 +168,7 @@
             Upgrade_Button.FillColor = Color.FromArgb(250, 250, 250);
             Upgrade_Button.Font = new Font("Segoe UI", 10F);
             Upgrade_Button.ForeColor = Color.Black;
-            Upgrade_Button.Location = new Point(159, 317);
+            Upgrade_Button.Location = new Point(161, 317);
             Upgrade_Button.Margin = new Padding(6, 5, 6, 5);
             Upgrade_Button.Name = "Upgrade_Button";
             Upgrade_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -182,7 +182,7 @@
             PriorityCustomerSupport.Anchor = AnchorStyles.Top;
             PriorityCustomerSupport.AutoSize = true;
             PriorityCustomerSupport.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PriorityCustomerSupport.Location = new Point(68, 166);
+            PriorityCustomerSupport.Location = new Point(68, 167);
             PriorityCustomerSupport.Name = "PriorityCustomerSupport";
             PriorityCustomerSupport.Size = new Size(259, 30);
             PriorityCustomerSupport.TabIndex = 12;
@@ -197,7 +197,7 @@
             CheckMark3_ImageButton.ImageOffset = new Point(0, 0);
             CheckMark3_ImageButton.ImageRotate = 0F;
             CheckMark3_ImageButton.ImageSize = new Size(30, 30);
-            CheckMark3_ImageButton.Location = new Point(27, 166);
+            CheckMark3_ImageButton.Location = new Point(27, 165);
             CheckMark3_ImageButton.Name = "CheckMark3_ImageButton";
             CheckMark3_ImageButton.PressedState.ImageSize = new Size(64, 64);
             CheckMark3_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges7;
@@ -213,7 +213,7 @@
             PayPalLogo_ImageButton.ImageOffset = new Point(0, 0);
             PayPalLogo_ImageButton.ImageRotate = 0F;
             PayPalLogo_ImageButton.ImageSize = new Size(100, 25);
-            PayPalLogo_ImageButton.Location = new Point(12, 547);
+            PayPalLogo_ImageButton.Location = new Point(115, 547);
             PayPalLogo_ImageButton.Name = "PayPalLogo_ImageButton";
             PayPalLogo_ImageButton.PressedState.ImageSize = new Size(64, 64);
             PayPalLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges8;
@@ -229,7 +229,7 @@
             StripeLogo_ImageButton.ImageOffset = new Point(0, 0);
             StripeLogo_ImageButton.ImageRotate = 0F;
             StripeLogo_ImageButton.ImageSize = new Size(70, 30);
-            StripeLogo_ImageButton.Location = new Point(128, 547);
+            StripeLogo_ImageButton.Location = new Point(231, 547);
             StripeLogo_ImageButton.Name = "StripeLogo_ImageButton";
             StripeLogo_ImageButton.PressedState.ImageSize = new Size(64, 64);
             StripeLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges9;
@@ -261,7 +261,7 @@
             Square_ImageButton.ImageOffset = new Point(0, 0);
             Square_ImageButton.ImageRotate = 0F;
             Square_ImageButton.ImageSize = new Size(100, 25);
-            Square_ImageButton.Location = new Point(244, 547);
+            Square_ImageButton.Location = new Point(347, 547);
             Square_ImageButton.Name = "Square_ImageButton";
             Square_ImageButton.PressedState.ImageSize = new Size(64, 64);
             Square_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges10;

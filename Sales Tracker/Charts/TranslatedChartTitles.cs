@@ -16,6 +16,9 @@ namespace Sales_Tracker.Charts
         public static string CountriesOfDestination => Translate("Countries of destination for sold products");
         public static string AccountantsTransactions => Translate("Transactions managed by accountants");
         public static string SalesVsExpenses => Translate("Total expenses vs. total sales");
-        public static string AverageOrderValue => Translate("Average order value");
+        public static string AverageOrderValueForSoldProducts => Translate("Average order value");
+        public static string TotalTransactions => Translate("Total transactions");
+        public static string AverageShippingCostsForPurchases => Translate("Average shipping costs for purchases");
+        public static string AverageShippingCostsForSales => Translate("Average shipping costs for sales");
     }
 }

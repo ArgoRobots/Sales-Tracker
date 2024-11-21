@@ -123,7 +123,19 @@ namespace Sales_Tracker.Charts
                     break;
 
                 case MainMenu_Form.ChartDataType.AverageOrderValue:
-                    LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, true, directory);
+                    LoadChart.LoadAverageOrderValueForSoldProductsChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.TotalTransactions:
+                    LoadChart.LoadTotalTransactionsChart(MainMenu_Form.Instance.TotalTransactions_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.AverageShippingForPurchases:
+                    LoadChart.LoadShippingCostsForPurchasesChart(MainMenu_Form.Instance.AverageShippingCostsForPurchases_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.AverageShippingForSales:
+                    LoadChart.LoadShippingCostsForSalesChart(MainMenu_Form.Instance.AverageShippingCostForSales_Chart, isLine, true, directory);
                     break;
             }
         }
@@ -255,11 +267,53 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.AverageOrderValue:
                         {
-                            ChartData chartData = LoadChart.LoadAverageOrderValueChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadAverageOrderValueForSoldProductsChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, canUpdateChart: false);
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string chartTitle = TranslatedChartTitles.AverageOrderValue;
+                            string chartTitle = TranslatedChartTitles.AverageOrderValueForSoldProducts;
+                            string first = LanguageManager.TranslateSingleString("Date");
+                            string second = LanguageManager.TranslateSingleString("Order value");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.TotalTransactions:
+                        {
+                            ChartData chartData = LoadChart.LoadTotalTransactionsChart(MainMenu_Form.Instance.TotalTransactions_Chart, isLine, canUpdateChart: false);
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+                            string chartTitle = TranslatedChartTitles.TotalTransactions;
+                            string first = LanguageManager.TranslateSingleString("Date");
+                            string second = LanguageManager.TranslateSingleString("Order value");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.AverageShippingForPurchases:
+                        {
+                            ChartData chartData = LoadChart.LoadShippingCostsForPurchasesChart(MainMenu_Form.Instance.AverageShippingCostsForPurchases_Chart, isLine, canUpdateChart: false);
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+                            string chartTitle = TranslatedChartTitles.AverageShippingCostsForPurchases;
+                            string first = LanguageManager.TranslateSingleString("Date");
+                            string second = LanguageManager.TranslateSingleString("Order value");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.AverageShippingForSales:
+                        {
+                            ChartData chartData = LoadChart.LoadShippingCostsForSalesChart(MainMenu_Form.Instance.AverageShippingCostForSales_Chart, isLine, canUpdateChart: false);
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+                            string chartTitle = TranslatedChartTitles.AverageShippingCostsForSales;
                             string first = LanguageManager.TranslateSingleString("Date");
                             string second = LanguageManager.TranslateSingleString("Order value");
 

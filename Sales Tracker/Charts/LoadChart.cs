@@ -12,7 +12,8 @@ namespace Sales_Tracker.Charts
     public enum PieChartGrouping
     {
         Unlimited = 0,
-        Top12 = 12
+        Top12 = 12,
+        Top8 = 8
     }
 
     /// <summary>
@@ -974,7 +975,7 @@ namespace Sales_Tracker.Charts
 
             chart.Update();
         }
-        public static ChartData LoadAverageOrderValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadAverageOrderValueForSoldProductsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1056,7 +1057,7 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string chartTitle = TranslatedChartTitles.AverageOrderValue;
+                string chartTitle = TranslatedChartTitles.AverageOrderValueForSoldProducts;
                 string first = LanguageManager.TranslateSingleString("Date");
                 string second = LanguageManager.TranslateSingleString("Order value");
 
@@ -1069,6 +1070,222 @@ namespace Sales_Tracker.Charts
             }
 
             return new ChartData(overallAverage, averageOrderValueByDate);
+        }
+        public static ChartData LoadTotalTransactionsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+
+            Guna2DataGridView[] dataGridViews = [
+                salesDataGridView,
+                purchasesDataGridView
+            ];
+
+            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
+            }
+
+            IGunaDataset dataset;
+            if (isLineChart) { dataset = new GunaLineDataset(); }
+            else { dataset = new GunaBarDataset(); }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+            }
+
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows, purchasesDataGridView.Rows);
+            string dateFormat = GetDateFormat(maxDate - minDate);
+
+            Dictionary<string, double> transactionsByDate = [];
+            bool anyRowsVisible = false;
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible) { continue; }
+                    anyRowsVisible = true;
+
+                    DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                    string formattedDate = date.ToString(dateFormat);
+
+                    if (transactionsByDate.TryGetValue(formattedDate, out double value))
+                    {
+                        transactionsByDate[formattedDate] = ++value;
+                    }
+                    else
+                    {
+                        transactionsByDate[formattedDate] = 1;
+                    }
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            double totalTransactions = transactionsByDate.Values.Sum();
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
+                string chartTitle = TranslatedChartTitles.TotalTransactions;
+                string first = LanguageManager.TranslateSingleString("Date");
+                string second = LanguageManager.TranslateSingleString("Transactions");
+
+                ExcelSheetManager.ExportChartToExcel(transactionsByDate, filePath, chartType, chartTitle, first, second);
+            }
+            else if (canUpdateChart)
+            {
+                SortAndAddDatasetAndSetBarPercentage(transactionsByDate, dateFormat, dataset, isLineChart);
+                UpdateChart(chart, dataset, false);
+            }
+
+            return new ChartData(totalTransactions, transactionsByDate);
+        }
+        public static ChartData LoadShippingCostsForPurchasesChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            return CalculateShippingCosts(
+                chart,
+                MainMenu_Form.Instance.Purchase_DataGridView,
+                isLineChart,
+                CustomColors.PastelGreen,
+                TranslatedChartTitles.AverageShippingCostsForPurchases,
+                exportToExcel,
+                filePath,
+                canUpdateChart
+            );
+        }
+        public static ChartData LoadShippingCostsForSalesChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            return CalculateShippingCosts(
+                chart,
+                MainMenu_Form.Instance.Sale_DataGridView,
+                isLineChart,
+                CustomColors.PastelBlue,
+                TranslatedChartTitles.AverageShippingCostsForSales,
+                exportToExcel,
+                filePath,
+                canUpdateChart
+            );
+        }
+        private static ChartData CalculateShippingCosts(
+            GunaChart chart,
+            Guna2DataGridView dataGridView,
+            bool isLineChart,
+            Color chartColor,
+            string chartTitle,
+            bool exportToExcel = false,
+            string filePath = null,
+            bool canUpdateChart = true)
+        {
+            bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
+            }
+
+            IGunaDataset dataset;
+            if (isLineChart) { dataset = new GunaLineDataset(); }
+            else { dataset = new GunaBarDataset(); }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, chartColor);
+            }
+
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(dataGridView.Rows);
+            string dateFormat = GetDateFormat(maxDate - minDate);
+
+            Dictionary<string, (double totalShipping, int orders)> shippingByDate = [];
+            bool anyRowsVisible = false;
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+                anyRowsVisible = true;
+
+                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Shipping.ToString()], out double shipping)) { continue; }
+
+                // Skip entries with zero shipping costs
+                if (shipping == 0) { continue; }
+
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                string formattedDate = date.ToString(dateFormat);
+
+                if (shippingByDate.TryGetValue(formattedDate, out (double totalShipping, int orders) value))
+                {
+                    (double totalShipping, int orders) = value;
+                    shippingByDate[formattedDate] = (totalShipping + shipping, orders + 1);
+                }
+                else
+                {
+                    shippingByDate[formattedDate] = (shipping, 1);
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            Dictionary<string, double> averageShippingByDate = [];
+            double totalAverageShipping = 0;
+
+            foreach (KeyValuePair<string, (double totalShipping, int orders)> kvp in shippingByDate)
+            {
+                double averageShipping = Math.Round(kvp.Value.totalShipping / kvp.Value.orders, 2);
+                averageShippingByDate[kvp.Key] = averageShipping;
+                totalAverageShipping += averageShipping;
+            }
+
+            double overallAverage = averageShippingByDate.Count > 0
+                ? Math.Round(totalAverageShipping / averageShippingByDate.Count, 2)
+                : 0;
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
+                string first = LanguageManager.TranslateSingleString("Date");
+                string second = LanguageManager.TranslateSingleString("Shipping cost");
+
+                ExcelSheetManager.ExportChartToExcel(averageShippingByDate, filePath, chartType, chartTitle, first, second);
+            }
+            else if (canUpdateChart)
+            {
+                SortAndAddDatasetAndSetBarPercentage(averageShippingByDate, dateFormat, dataset, isLineChart);
+                UpdateChart(chart, dataset, true);
+            }
+
+            return new ChartData(overallAverage, averageShippingByDate);
         }
 
         // Methods

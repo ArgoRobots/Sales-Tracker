@@ -342,7 +342,10 @@ namespace Sales_Tracker
             _countriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
             _accountants_Chart.Tag = ChartDataType.Accountants;
             _salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
-            _averageOrderValue_Chart.Tag = ChartDataType.AverageOrderValue;
+            _averageOrderValueForSoldProducts_Chart.Tag = ChartDataType.AverageOrderValue;
+            _totalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
+            _averageShippingCostsForPurchases_Chart.Tag = ChartDataType.AverageShippingForPurchases;
+            _averageShippingCostForSales_Chart.Tag = ChartDataType.AverageShippingForSales;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -469,14 +472,7 @@ namespace Sales_Tracker
 
             byte spaceBetweenCharts = 20, chartWidthOffset = 35;
 
-            int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
-            int chartHeight = Totals_Chart.Height;
-
-            // Calculate X positions for charts
-            int leftX = (ClientSize.Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2;
-            int middleX = leftX + chartWidth + spaceBetweenCharts;
-            int rightX = middleX + chartWidth + spaceBetweenCharts;
-
+            // Handle dropdown menu for narrow windows
             if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
@@ -490,31 +486,58 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Statistics)
             {
+                // Calculate chart dimensions
+                int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
                 int availableHeight = ClientSize.Height - Purchases_Button.Bottom;
-
-                int statChartHeight = availableHeight / 2 - 50;
+                int statChartHeight = availableHeight / 3 - 20;  // 3 rows with 20px spacing vertically
                 Size chartSize = new(chartWidth, statChartHeight);
 
-                // Calculate the space between the charts
-                int totalChartHeight = statChartHeight * 2;
+                // Calculate total width needed for all charts
+                int totalWidth = (chartWidth * 3) + (spaceBetweenCharts * 2);
+
+                // Calculate left margin to center all charts
+                int leftMargin = (ClientSize.Width - totalWidth) / 2;
+
+                // Calculate X positions for 3 columns
+                int firstX = leftMargin;
+                int secondX = firstX + chartWidth + spaceBetweenCharts;
+                int thirdX = secondX + chartWidth + spaceBetweenCharts;
+
+                // Calculate vertical spacing
+                int totalChartHeight = statChartHeight * 3;
                 int spaceBetweenRows = (availableHeight - totalChartHeight) / 4;
 
-                // Calculate Y positions
+                // Calculate Y positions for 3 rows
                 int topRowY = Purchases_Button.Bottom + spaceBetweenRows;
-                int bottomRowY = topRowY + statChartHeight + spaceBetweenRows;
+                int middleRowY = topRowY + statChartHeight + spaceBetweenRows;
+                int bottomRowY = middleRowY + statChartHeight + spaceBetweenRows;
 
                 // Set positions for top row charts
-                SetChartPosition(_countriesOfOrigin_Chart, chartSize, leftX, topRowY);
-                SetChartPosition(_companiesOfOrigin_Chart, chartSize, middleX, topRowY);
-                SetChartPosition(_countriesOfDestination_Chart, chartSize, rightX, topRowY);
+                SetChartPosition(_countriesOfOrigin_Chart, chartSize, firstX, topRowY);
+                SetChartPosition(_countriesOfDestination_Chart, chartSize, secondX, topRowY);
+                SetChartPosition(_companiesOfOrigin_Chart, chartSize, thirdX, topRowY);
+
+                // Set positions for middle row charts
+                SetChartPosition(_accountants_Chart, chartSize, firstX, middleRowY);
+                SetChartPosition(_salesVsExpenses_Chart, chartSize, secondX, middleRowY);
+                SetChartPosition(_averageOrderValueForSoldProducts_Chart, chartSize, thirdX, middleRowY);
 
                 // Set positions for bottom row charts
-                SetChartPosition(_accountants_Chart, chartSize, leftX, bottomRowY);
-                SetChartPosition(_salesVsExpenses_Chart, chartSize, middleX, bottomRowY);
-                SetChartPosition(_averageOrderValue_Chart, chartSize, rightX, bottomRowY);
+                SetChartPosition(_totalTransactions_Chart, chartSize, firstX, bottomRowY);
+                SetChartPosition(_averageShippingCostsForPurchases_Chart, chartSize, secondX, bottomRowY);
+                SetChartPosition(_averageShippingCostForSales_Chart, chartSize, thirdX, bottomRowY);
             }
             else
             {
+                // Regular view layout remains the same
+                int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
+                int chartHeight = Totals_Chart.Height;
+
+                // Calculate X positions for charts
+                int leftX = (ClientSize.Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2;
+                int middleX = leftX + chartWidth + spaceBetweenCharts;
+                int rightX = middleX + chartWidth + spaceBetweenCharts;
+
                 // Set positions
                 Totals_Chart.Width = chartWidth;
                 Totals_Chart.Left = leftX;
@@ -1549,8 +1572,8 @@ namespace Sales_Tracker
 
         // Chart properties
         private List<GunaChart> statisticsCharts;
-        private GunaChart _countriesOfOrigin_Chart, _companiesOfOrigin_Chart, _countriesOfDestination_Chart,
-            _accountants_Chart, _salesVsExpenses_Chart, _averageOrderValue_Chart;
+        private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
+            _salesVsExpenses_Chart, _averageOrderValueForSoldProducts_Chart, _totalTransactions_Chart, _averageShippingCostsForPurchases_Chart, _averageShippingCostForSales_Chart;
 
         public enum ChartDataType
         {
@@ -1562,14 +1585,20 @@ namespace Sales_Tracker
             CountriesOfDestination,
             Accountants,
             TotalExpensesVsSales,
-            AverageOrderValue
+            AverageOrderValue,
+            TotalTransactions,
+            AverageShippingForPurchases,
+            AverageShippingForSales
         }
         public GunaChart CountriesOfOrigin_Chart => _countriesOfOrigin_Chart;
-        public GunaChart CompaniesOfOrigin_Chart => _companiesOfOrigin_Chart;
         public GunaChart CountriesOfDestination_Chart => _countriesOfDestination_Chart;
+        public GunaChart CompaniesOfOrigin_Chart => _companiesOfOrigin_Chart;
         public GunaChart Accountants_Chart => _accountants_Chart;
         public GunaChart SalesVsExpenses_Chart => _salesVsExpenses_Chart;
-        public GunaChart AverageOrderValue_Chart => _averageOrderValue_Chart;
+        public GunaChart AverageOrderValue_Chart => _averageOrderValueForSoldProducts_Chart;
+        public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
+        public GunaChart AverageShippingCostsForPurchases_Chart => _averageShippingCostsForPurchases_Chart;
+        public GunaChart AverageShippingCostForSales_Chart => _averageShippingCostForSales_Chart;
 
         // Statistics charts methods
         private List<Control> GetMainControlsList()
@@ -1602,12 +1631,15 @@ namespace Sales_Tracker
         /// </summary>
         private void ConstructControlsForStatistics()
         {
-            _countriesOfOrigin_Chart = ConstructStatisticsChart(250, "Countries of origin for purchased products", "countriesOfOrigin_Chart");
-            _companiesOfOrigin_Chart = ConstructStatisticsChart(250, "Companies of origin for purchased products", "companiesOfOrigin_Chart");
-            _countriesOfDestination_Chart = ConstructStatisticsChart(250, "Countries of destination for sold products", "countriesOfDestination_Chart");
-            _accountants_Chart = ConstructStatisticsChart(800, "Transactions managed by accountants", "accountants_Chart");
-            _salesVsExpenses_Chart = ConstructStatisticsChart(800, "Total sales vs. total expenses", "salesVsExpenses_Chart");
-            _averageOrderValue_Chart = ConstructStatisticsChart(800, "Average order value", "averageOrderValue_Chart");
+            _countriesOfOrigin_Chart = ConstructStatisticsChart("Countries of origin for purchased products", "countriesOfOrigin_Chart");
+            _companiesOfOrigin_Chart = ConstructStatisticsChart("Companies of origin for purchased products", "companiesOfOrigin_Chart");
+            _countriesOfDestination_Chart = ConstructStatisticsChart("Countries of destination for sold products", "countriesOfDestination_Chart");
+            _accountants_Chart = ConstructStatisticsChart("Transactions managed by accountants", "accountants_Chart");
+            _salesVsExpenses_Chart = ConstructStatisticsChart("Total sales vs. total expenses", "salesVsExpenses_Chart");
+            _averageOrderValueForSoldProducts_Chart = ConstructStatisticsChart("Average order value", "averageOrderValue_Chart");
+            _totalTransactions_Chart = ConstructStatisticsChart("Total transactions", "totalTransactions_Chart");
+            _averageShippingCostsForPurchases_Chart = ConstructStatisticsChart("Average shipping costs", "averageShippingCosts_Chart");
+            _averageShippingCostForSales_Chart = ConstructStatisticsChart("Returned products", "returnedProducts_Chart");
 
             statisticsCharts =
             [
@@ -1616,16 +1648,18 @@ namespace Sales_Tracker
                 _countriesOfDestination_Chart,
                 _accountants_Chart,
                 _salesVsExpenses_Chart,
-                _averageOrderValue_Chart
+                _averageOrderValueForSoldProducts_Chart,
+                _totalTransactions_Chart,
+                _averageShippingCostsForPurchases_Chart,
+                _averageShippingCostForSales_Chart
             ];
 
             MouseClickChartManager.InitCharts(statisticsCharts.ToArray());
         }
-        private GunaChart ConstructStatisticsChart(int top, string title, string name)
+        private GunaChart ConstructStatisticsChart(string title, string name)
         {
             GunaChart gunaChart = new()
             {
-                Top = top,
                 Name = name,  // This is needed for the language translation
                 Height = 500
             };
@@ -1663,19 +1697,19 @@ namespace Sales_Tracker
 
             if (!onlyRefreshForLineCharts)
             {
-                LoadChart.LoadCountriesOfOriginForProductsIntoChart(_countriesOfOrigin_Chart, PieChartGrouping.Top12);
+                LoadChart.LoadCountriesOfOriginForProductsIntoChart(_countriesOfOrigin_Chart, PieChartGrouping.Top8);
                 _countriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
                 LanguageManager.UpdateLanguageForControl(_countriesOfOrigin_Chart);
 
-                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_companiesOfOrigin_Chart, PieChartGrouping.Top12);
+                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_companiesOfOrigin_Chart, PieChartGrouping.Top8);
                 _companiesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
                 LanguageManager.UpdateLanguageForControl(_companiesOfOrigin_Chart);
 
-                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_countriesOfDestination_Chart, PieChartGrouping.Top12);
+                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_countriesOfDestination_Chart, PieChartGrouping.Top8);
                 _countriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
                 LanguageManager.UpdateLanguageForControl(_countriesOfDestination_Chart);
 
-                LoadChart.LoadAccountantsIntoChart(_accountants_Chart, PieChartGrouping.Top12);
+                LoadChart.LoadAccountantsIntoChart(_accountants_Chart, PieChartGrouping.Top8);
                 _accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
                 LanguageManager.UpdateLanguageForControl(_accountants_Chart);
             }
@@ -1684,9 +1718,21 @@ namespace Sales_Tracker
             _salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
             LanguageManager.UpdateLanguageForControl(_salesVsExpenses_Chart);
 
-            LoadChart.LoadAverageOrderValueChart(_averageOrderValue_Chart, isLineChart);
-            _averageOrderValue_Chart.Title.Text = TranslatedChartTitles.AverageOrderValue;
-            LanguageManager.UpdateLanguageForControl(_averageOrderValue_Chart);
+            LoadChart.LoadAverageOrderValueForSoldProductsChart(_averageOrderValueForSoldProducts_Chart, isLineChart);
+            _averageOrderValueForSoldProducts_Chart.Title.Text = TranslatedChartTitles.AverageOrderValueForSoldProducts;
+            LanguageManager.UpdateLanguageForControl(_averageOrderValueForSoldProducts_Chart);
+
+            LoadChart.LoadTotalTransactionsChart(_totalTransactions_Chart, isLineChart);
+            _totalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
+            LanguageManager.UpdateLanguageForControl(_totalTransactions_Chart);
+
+            LoadChart.LoadShippingCostsForPurchasesChart(_averageShippingCostsForPurchases_Chart, isLineChart);
+            _averageShippingCostsForPurchases_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForPurchases;
+            LanguageManager.UpdateLanguageForControl(_averageShippingCostsForPurchases_Chart);
+
+            LoadChart.LoadShippingCostsForSalesChart(_averageShippingCostForSales_Chart, isLineChart);
+            _averageShippingCostForSales_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForSales;
+            LanguageManager.UpdateLanguageForControl(_averageShippingCostForSales_Chart);
         }
 
         // Misc.
