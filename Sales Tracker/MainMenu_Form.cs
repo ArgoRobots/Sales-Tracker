@@ -633,20 +633,7 @@ namespace Sales_Tracker
         // Event handlers - top bar
         private void File_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(CustomControls.FileMenu))
-            {
-                Controls.Remove(CustomControls.FileMenu);
-                File_Button.Image = Resources.FileGray;
-            }
-            else
-            {
-                CustomControls.CloseAllPanels(null, null);
-                File_Button.Image = Resources.FileWhite;
-                CustomControls.FileMenu.Location = new Point(File_Button.Left, Top_Panel.Height);
-                Controls.Add(CustomControls.FileMenu);
-                CustomControls.FileMenu.BringToFront();
-                Focus();
-            }
+            ToggleMenu(CustomControls.FileMenu, File_Button, Resources.FileGray, Resources.FileWhite, false);
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
@@ -668,34 +655,32 @@ namespace Sales_Tracker
         }
         private void Help_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(CustomControls.HelpMenu))
-            {
-                Controls.Remove(CustomControls.HelpMenu);
-                Help_Button.Image = Resources.HelpGray;
-            }
-            else
-            {
-                CustomControls.CloseAllPanels(null, null);
-                Help_Button.Image = Resources.HelpWhite;
-                CustomControls.HelpMenu.Location = new Point(Help_Button.Left - CustomControls.HelpMenu.Width + Help_Button.Width, Top_Panel.Height);
-                Controls.Add(CustomControls.HelpMenu);
-                CustomControls.HelpMenu.BringToFront();
-            }
+            ToggleMenu(CustomControls.HelpMenu, Help_Button, Resources.HelpGray, Resources.HelpWhite, true);
         }
         private void Account_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(CustomControls.AccountMenu))
+            ToggleMenu(CustomControls.AccountMenu, Account_Button, Resources.ProfileGray, Resources.ProfileWhite, true);
+        }
+        private void ToggleMenu(Control menu, Guna2Button button, Image grayImage, Image whiteImage, bool alignRight)
+        {
+            if (Controls.Contains(menu))
             {
-                Controls.Remove(CustomControls.AccountMenu);
-                Account_Button.Image = Resources.ProfileGray;
+                Controls.Remove(menu);
+                button.Image = grayImage;
             }
             else
             {
                 CustomControls.CloseAllPanels(null, null);
-                Account_Button.Image = Resources.ProfileWhite;
-                CustomControls.AccountMenu.Location = new Point(Account_Button.Left - CustomControls.AccountMenu.Width + Account_Button.Width, Top_Panel.Height);
-                Controls.Add(CustomControls.AccountMenu);
-                CustomControls.AccountMenu.BringToFront();
+                button.Image = whiteImage;
+
+                // Calculate X position based on alignment
+                int xPosition = alignRight ?
+                    button.Left - menu.Width + button.Width :
+                    button.Left;
+
+                menu.Location = new Point(xPosition, Top_Panel.Height);
+                Controls.Add(menu);
+                menu.BringToFront();
             }
         }
 

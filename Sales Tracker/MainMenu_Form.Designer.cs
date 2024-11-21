@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -131,7 +130,6 @@
             Help_Button = new Guna.UI2.WinForms.Guna2Button();
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             File_Button = new Guna.UI2.WinForms.Guna2Button();
-            HideMenu_timer = new System.Windows.Forms.Timer(components);
             Total_Label = new Label();
             Quantity_Label = new Label();
             Price_Label = new Label();
@@ -923,7 +921,6 @@
         public Guna.UI2.WinForms.Guna2Button File_Button;
         public Guna.UI2.WinForms.Guna2Button Save_Button;
         public Guna.UI2.WinForms.Guna2Button Help_Button;
-        public System.Windows.Forms.Timer HideMenu_timer;
         public System.Windows.Forms.Label Saved_Label;
         private Label CompanyName_Label;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
