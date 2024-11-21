@@ -180,6 +180,7 @@
             // ManageCompanies_Button
             // 
             ManageCompanies_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ManageCompanies_Button.Animated = true;
             ManageCompanies_Button.BackColor = Color.Transparent;
             ManageCompanies_Button.BorderColor = Color.LightGray;
             ManageCompanies_Button.BorderRadius = 2;
@@ -199,6 +200,7 @@
             // ManageAccountants_Button
             // 
             ManageAccountants_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ManageAccountants_Button.Animated = true;
             ManageAccountants_Button.BackColor = Color.Transparent;
             ManageAccountants_Button.BorderColor = Color.LightGray;
             ManageAccountants_Button.BorderRadius = 2;
@@ -218,6 +220,7 @@
             // ManageCategories_Button
             // 
             ManageCategories_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ManageCategories_Button.Animated = true;
             ManageCategories_Button.BackColor = Color.Transparent;
             ManageCategories_Button.BorderColor = Color.LightGray;
             ManageCategories_Button.BorderRadius = 2;
@@ -237,6 +240,7 @@
             // AddSale_Button
             // 
             AddSale_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddSale_Button.Animated = true;
             AddSale_Button.BackColor = Color.Transparent;
             AddSale_Button.BorderColor = Color.LightGray;
             AddSale_Button.BorderRadius = 2;
@@ -260,6 +264,7 @@
             // AddPurchase_Button
             // 
             AddPurchase_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            AddPurchase_Button.Animated = true;
             AddPurchase_Button.BackColor = Color.Transparent;
             AddPurchase_Button.BorderColor = Color.LightGray;
             AddPurchase_Button.BorderRadius = 2;
@@ -305,6 +310,7 @@
             // ManageProducts_Button
             // 
             ManageProducts_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ManageProducts_Button.Animated = true;
             ManageProducts_Button.BackColor = Color.Transparent;
             ManageProducts_Button.BorderColor = Color.LightGray;
             ManageProducts_Button.BorderRadius = 2;
@@ -593,6 +599,7 @@
             // 
             // Sales_Button
             // 
+            Sales_Button.Animated = true;
             Sales_Button.BackColor = Color.Transparent;
             Sales_Button.BorderColor = Color.LightGray;
             Sales_Button.BorderRadius = 2;
@@ -615,6 +622,7 @@
             // 
             // Purchases_Button
             // 
+            Purchases_Button.Animated = true;
             Purchases_Button.BackColor = Color.Transparent;
             Purchases_Button.BorderColor = Color.LightGray;
             Purchases_Button.BorderRadius = 2;
@@ -780,6 +788,7 @@
             // 
             // Statistics_Button
             // 
+            Statistics_Button.Animated = true;
             Statistics_Button.BackColor = Color.Transparent;
             Statistics_Button.BorderColor = Color.LightGray;
             Statistics_Button.BorderRadius = 2;
@@ -845,6 +854,7 @@
             // TimeRange_Button
             // 
             TimeRange_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            TimeRange_Button.Animated = true;
             TimeRange_Button.BackColor = Color.Transparent;
             TimeRange_Button.BorderColor = Color.LightGray;
             TimeRange_Button.BorderRadius = 2;

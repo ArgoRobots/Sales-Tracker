@@ -28,9 +28,9 @@ namespace Sales_Tracker
             AddSearchBoxEvents();
             ConstructDataGridViews();
             LoadProducts();
-            CheckRadioButton(checkPurchaseRadioButton);
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
+            CheckRadioButton(checkPurchaseRadioButton);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             ShowingResultsFor_Label.Visible = false;

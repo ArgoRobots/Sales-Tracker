@@ -67,6 +67,7 @@ namespace Sales_Tracker
             InitTimeRangePanel();
             InitChartTags();
             AddEventHandlersToTextBoxes();
+            RemoveUpgradeButtonIfFullVersion();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetToolTips()
@@ -350,6 +351,13 @@ namespace Sales_Tracker
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(Search_TextBox);
+        }
+        private void RemoveUpgradeButtonIfFullVersion()
+        {
+            if (!_isFullVersion)
+            {
+                Controls.Remove(Upgrade_Button);
+            }
         }
 
         // Form event handlers
@@ -655,6 +663,7 @@ namespace Sales_Tracker
         }
         private void Upgrade_Button_Click(object sender, EventArgs e)
         {
+            CustomControls.CloseAllPanels(null, null);
             Tools.OpenForm(new Upgrade_Form());
         }
         private void Help_Button_Click(object sender, EventArgs e)

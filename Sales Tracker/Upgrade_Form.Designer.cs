@@ -28,23 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges27 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             CheckMark1_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             UnlimitedProducts_Label = new Label();
             WindowsHello_Label = new Label();
             CheckMark2_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             LearnMore_Button = new Guna.UI2.WinForms.Guna2Button();
-            label1 = new Label();
-            label2 = new Label();
+            UpgradeTitle_Label = new Label();
+            UpgradeSubTitle_Label = new Label();
             DollarAmount_Label = new Label();
             Upgrade_Button = new Guna.UI2.WinForms.Guna2Button();
             PriorityCustomerSupport = new Label();
@@ -68,7 +68,7 @@
             CheckMark1_ImageButton.Location = new Point(27, 65);
             CheckMark1_ImageButton.Name = "CheckMark1_ImageButton";
             CheckMark1_ImageButton.PressedState.ImageSize = new Size(64, 64);
-            CheckMark1_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges1;
+            CheckMark1_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges21;
             CheckMark1_ImageButton.Size = new Size(35, 35);
             CheckMark1_ImageButton.TabIndex = 0;
             // 
@@ -106,7 +106,7 @@
             CheckMark2_ImageButton.Location = new Point(27, 115);
             CheckMark2_ImageButton.Name = "CheckMark2_ImageButton";
             CheckMark2_ImageButton.PressedState.ImageSize = new Size(64, 64);
-            CheckMark2_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            CheckMark2_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges22;
             CheckMark2_ImageButton.Size = new Size(35, 35);
             CheckMark2_ImageButton.TabIndex = 2;
             // 
@@ -116,62 +116,68 @@
             LearnMore_Button.BorderColor = Color.DimGray;
             LearnMore_Button.BorderRadius = 2;
             LearnMore_Button.BorderThickness = 1;
-            LearnMore_Button.CustomizableEdges = customizableEdges3;
+            LearnMore_Button.CustomizableEdges = customizableEdges23;
             LearnMore_Button.FillColor = Color.FromArgb(250, 250, 250);
             LearnMore_Button.Font = new Font("Segoe UI", 10F);
             LearnMore_Button.ForeColor = Color.Black;
             LearnMore_Button.Location = new Point(77, 535);
             LearnMore_Button.Margin = new Padding(6, 5, 6, 5);
             LearnMore_Button.Name = "LearnMore_Button";
-            LearnMore_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            LearnMore_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             LearnMore_Button.Size = new Size(200, 45);
             LearnMore_Button.TabIndex = 6;
             LearnMore_Button.Text = "learn more";
             LearnMore_Button.Click += LearnMore_Button_Click;
             // 
-            // label1
+            // UpgradeTitle_Label
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 18F);
-            label1.Location = new Point(94, 48);
-            label1.Name = "label1";
-            label1.Size = new Size(384, 48);
-            label1.TabIndex = 7;
-            label1.Text = "Upgrade to full version";
+            UpgradeTitle_Label.Anchor = AnchorStyles.Top;
+            UpgradeTitle_Label.AutoSize = true;
+            UpgradeTitle_Label.Font = new Font("Segoe UI", 18F);
+            UpgradeTitle_Label.Location = new Point(90, 22);
+            UpgradeTitle_Label.Name = "UpgradeTitle_Label";
+            UpgradeTitle_Label.Size = new Size(384, 48);
+            UpgradeTitle_Label.TabIndex = 7;
+            UpgradeTitle_Label.Text = "Upgrade to full version";
             // 
-            // label2
+            // UpgradeSubTitle_Label
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(60, 105);
-            label2.Name = "label2";
-            label2.Size = new Size(453, 30);
-            label2.TabIndex = 8;
-            label2.Text = "Upgrade now to gain access to more features";
+            UpgradeSubTitle_Label.Anchor = AnchorStyles.Top;
+            UpgradeSubTitle_Label.AutoSize = true;
+            UpgradeSubTitle_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            UpgradeSubTitle_Label.Location = new Point(56, 80);
+            UpgradeSubTitle_Label.Name = "UpgradeSubTitle_Label";
+            UpgradeSubTitle_Label.Size = new Size(453, 30);
+            UpgradeSubTitle_Label.TabIndex = 8;
+            UpgradeSubTitle_Label.Text = "Upgrade now to gain access to more features";
             // 
             // DollarAmount_Label
             // 
+            DollarAmount_Label.Anchor = AnchorStyles.Top;
             DollarAmount_Label.AutoSize = true;
-            DollarAmount_Label.Font = new Font("Segoe UI", 12F);
-            DollarAmount_Label.Location = new Point(41, 268);
+            DollarAmount_Label.Font = new Font("Segoe UI", 12.5F);
+            DollarAmount_Label.Location = new Point(123, 229);
             DollarAmount_Label.Name = "DollarAmount_Label";
-            DollarAmount_Label.Size = new Size(491, 32);
+            DollarAmount_Label.Size = new Size(318, 70);
             DollarAmount_Label.TabIndex = 9;
-            DollarAmount_Label.Text = "Lifetime access - single payment of $20 CAD";
+            DollarAmount_Label.Text = "Lifetime access\r\nSingle payment of $20 CAD";
+            DollarAmount_Label.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // Upgrade_Button
             // 
+            Upgrade_Button.Anchor = AnchorStyles.Top;
+            Upgrade_Button.Animated = true;
             Upgrade_Button.BorderColor = Color.DimGray;
             Upgrade_Button.BorderRadius = 2;
             Upgrade_Button.BorderThickness = 1;
-            Upgrade_Button.CustomizableEdges = customizableEdges5;
+            Upgrade_Button.CustomizableEdges = customizableEdges25;
             Upgrade_Button.FillColor = Color.FromArgb(250, 250, 250);
             Upgrade_Button.Font = new Font("Segoe UI", 10F);
             Upgrade_Button.ForeColor = Color.Black;
-            Upgrade_Button.Location = new Point(161, 317);
+            Upgrade_Button.Location = new Point(157, 317);
             Upgrade_Button.Margin = new Padding(6, 5, 6, 5);
             Upgrade_Button.Name = "Upgrade_Button";
-            Upgrade_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Upgrade_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
             Upgrade_Button.Size = new Size(250, 50);
             Upgrade_Button.TabIndex = 10;
             Upgrade_Button.Text = "Upgrade now";
@@ -200,7 +206,7 @@
             CheckMark3_ImageButton.Location = new Point(27, 165);
             CheckMark3_ImageButton.Name = "CheckMark3_ImageButton";
             CheckMark3_ImageButton.PressedState.ImageSize = new Size(64, 64);
-            CheckMark3_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges7;
+            CheckMark3_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges27;
             CheckMark3_ImageButton.Size = new Size(35, 35);
             CheckMark3_ImageButton.TabIndex = 11;
             // 
@@ -216,7 +222,7 @@
             PayPalLogo_ImageButton.Location = new Point(115, 547);
             PayPalLogo_ImageButton.Name = "PayPalLogo_ImageButton";
             PayPalLogo_ImageButton.PressedState.ImageSize = new Size(64, 64);
-            PayPalLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            PayPalLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges28;
             PayPalLogo_ImageButton.Size = new Size(110, 35);
             PayPalLogo_ImageButton.TabIndex = 13;
             // 
@@ -232,7 +238,7 @@
             StripeLogo_ImageButton.Location = new Point(231, 547);
             StripeLogo_ImageButton.Name = "StripeLogo_ImageButton";
             StripeLogo_ImageButton.PressedState.ImageSize = new Size(64, 64);
-            StripeLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges9;
+            StripeLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges29;
             StripeLogo_ImageButton.Size = new Size(110, 35);
             StripeLogo_ImageButton.TabIndex = 14;
             // 
@@ -264,7 +270,7 @@
             Square_ImageButton.Location = new Point(347, 547);
             Square_ImageButton.Name = "Square_ImageButton";
             Square_ImageButton.PressedState.ImageSize = new Size(64, 64);
-            Square_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            Square_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Square_ImageButton.Size = new Size(110, 35);
             Square_ImageButton.TabIndex = 16;
             // 
@@ -279,8 +285,8 @@
             Controls.Add(PayPalLogo_ImageButton);
             Controls.Add(Upgrade_Button);
             Controls.Add(DollarAmount_Label);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(UpgradeSubTitle_Label);
+            Controls.Add(UpgradeTitle_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             MinimumSize = new Size(950, 650);
             Name = "Upgrade_Form";
@@ -299,8 +305,8 @@
         private Label WindowsHello_Label;
         private Guna.UI2.WinForms.Guna2ImageButton CheckMark2_ImageButton;
         public Guna.UI2.WinForms.Guna2Button LearnMore_Button;
-        private Label label1;
-        private Label label2;
+        private Label UpgradeTitle_Label;
+        private Label UpgradeSubTitle_Label;
         private Label DollarAmount_Label;
         public Guna.UI2.WinForms.Guna2Button Upgrade_Button;
         private Label PriorityCustomerSupport;
