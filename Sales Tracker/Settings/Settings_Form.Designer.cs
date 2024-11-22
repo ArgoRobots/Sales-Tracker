@@ -222,12 +222,12 @@ namespace Sales_Tracker.Settings
 
         #endregion
         private Guna.UI2.WinForms.Guna2Panel FormBack_Panel;
-        private Guna.UI2.WinForms.Guna2Button General_Button;
         private Guna.UI2.WinForms.Guna2Button Cancel_Button;
-        private Guna.UI2.WinForms.Guna2Button ResetToDefault_Button;
-        private Guna.UI2.WinForms.Guna2Button Security_Button;
-        private Guna.UI2.WinForms.Guna2Button Updates_Button;
         public Guna.UI2.WinForms.Guna2Button Ok_Button;
         public Guna.UI2.WinForms.Guna2Button Apply_Button;
+        public Guna.UI2.WinForms.Guna2Button General_Button;
+        public Guna.UI2.WinForms.Guna2Button ResetToDefault_Button;
+        public Guna.UI2.WinForms.Guna2Button Security_Button;
+        public Guna.UI2.WinForms.Guna2Button Updates_Button;
     }
 }

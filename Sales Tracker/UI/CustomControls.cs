@@ -673,6 +673,15 @@ namespace Sales_Tracker.UI
             textBox.FocusedState.BorderColor = Color.Red;
         }
 
+        // Animate buttons
+        public static void AnimateButtons(IEnumerable<Guna2Button> buttons, bool animate)
+        {
+            foreach (Guna2Button button in buttons)
+            {
+                button.Animated = animate;
+            }
+        }
+
         // Close all panels
         public static void Rename()
         {

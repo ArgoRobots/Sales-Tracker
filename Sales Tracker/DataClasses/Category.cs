@@ -22,8 +22,7 @@
         }
 
         // Default constructor required for deserialization
-        public Category()
-        { }
+        public Category() { }
 
         public Category(string name)
         {

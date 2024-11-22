@@ -44,6 +44,7 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
             PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
             SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
 
             Language_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
             Currency_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
@@ -119,6 +120,7 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_CheckBox.Checked = Properties.Settings.Default.SendAnonymousInformation;
             PurchaseReceipts_CheckBox.Checked = Properties.Settings.Default.PurchaseReceipts;
             SalesReceipts_CheckBox.Checked = Properties.Settings.Default.SalesReceipts;
+            AnimateButtons_CheckBox.Checked = Properties.Settings.Default.AnimateButtons;
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {

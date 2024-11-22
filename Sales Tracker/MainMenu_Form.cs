@@ -6,6 +6,7 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Settings;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 using System.ComponentModel;
@@ -68,6 +69,7 @@ namespace Sales_Tracker
             InitChartTags();
             AddEventHandlersToTextBoxes();
             RemoveUpgradeButtonIfFullVersion();
+            AnimateButtons();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetToolTips()
@@ -358,6 +360,23 @@ namespace Sales_Tracker
             {
                 Controls.Remove(Upgrade_Button);
             }
+        }
+        public void AnimateButtons()
+        {
+            IEnumerable<Guna2Button> buttons =
+            [
+               Purchases_Button,
+               Sales_Button,
+               Statistics_Button,
+               AddPurchase_Button,
+               AddSale_Button,
+               ManageProducts_Button,
+               ManageCategories_Button,
+               ManageCompanies_Button,
+               ManageAccountants_Button,
+               TimeRange_Button,
+            ];
+            CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
         }
 
         // Form event handlers

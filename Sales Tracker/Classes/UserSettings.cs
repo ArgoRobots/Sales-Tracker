@@ -57,6 +57,17 @@ namespace Sales_Tracker.Classes
                 CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the sales receipts setting");
             }
 
+            // Check if animate buttons setting changed
+            if (Properties.Settings.Default.AnimateButtons != General_Form.Instance.AnimateButtons_CheckBox.Checked)
+            {
+                Properties.Settings.Default.AnimateButtons = General_Form.Instance.AnimateButtons_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the animate buttons setting");
+
+                Settings_Form.Instance.AnimateButtons();
+                MainMenu_Form.Instance.AnimateButtons();
+                Log_Form.Instance.AnimateButtons();
+            }
+
             // Check if currency changed
             string oldCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             if (oldCurrency != General_Form.Instance.Currency_TextBox.Text)

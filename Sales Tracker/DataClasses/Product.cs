@@ -34,8 +34,7 @@
         }
 
         // Default constructor required for deserialization
-        public Product()
-        { }
+        public Product() { }
 
         public Product(string productID, string productName, string countryOfOrigin, string companyOfOrigin)
         {

@@ -35,7 +35,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Log_Form));
             RichTextBox = new RichTextBox();
             AutoScroll_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-            BtnClear = new Guna.UI2.WinForms.Guna2Button();
+            Clear_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
             // RichTextBox
@@ -72,32 +72,32 @@
             AutoScroll_ComboBox.Size = new Size(270, 45);
             AutoScroll_ComboBox.TabIndex = 1;
             // 
-            // BtnClear
+            // Clear_Button
             // 
-            BtnClear.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            BtnClear.BorderThickness = 1;
-            BtnClear.CustomizableEdges = customizableEdges3;
-            BtnClear.DisabledState.BorderColor = Color.DarkGray;
-            BtnClear.DisabledState.CustomBorderColor = Color.DarkGray;
-            BtnClear.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            BtnClear.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            BtnClear.FillColor = Color.White;
-            BtnClear.Font = new Font("Segoe UI", 10F);
-            BtnClear.ForeColor = Color.Black;
-            BtnClear.Location = new Point(1186, 737);
-            BtnClear.Name = "BtnClear";
-            BtnClear.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            BtnClear.Size = new Size(180, 45);
-            BtnClear.TabIndex = 3;
-            BtnClear.Text = "Clear";
-            BtnClear.Click += BtnClear_Click;
+            Clear_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Clear_Button.BorderThickness = 1;
+            Clear_Button.CustomizableEdges = customizableEdges3;
+            Clear_Button.DisabledState.BorderColor = Color.DarkGray;
+            Clear_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Clear_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Clear_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Clear_Button.FillColor = Color.White;
+            Clear_Button.Font = new Font("Segoe UI", 10F);
+            Clear_Button.ForeColor = Color.Black;
+            Clear_Button.Location = new Point(1186, 737);
+            Clear_Button.Name = "Clear_Button";
+            Clear_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            Clear_Button.Size = new Size(180, 45);
+            Clear_Button.TabIndex = 3;
+            Clear_Button.Text = "Clear";
+            Clear_Button.Click += ClearButton_Click;
             // 
             // Log_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1378, 794);
-            Controls.Add(BtnClear);
+            Controls.Add(Clear_Button);
             Controls.Add(AutoScroll_ComboBox);
             Controls.Add(RichTextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
@@ -115,6 +115,6 @@
         #endregion
         public System.Windows.Forms.RichTextBox RichTextBox;
         private Guna.UI2.WinForms.Guna2ComboBox AutoScroll_ComboBox;
-        private Guna.UI2.WinForms.Guna2Button BtnClear;
+        public Guna.UI2.WinForms.Guna2Button Clear_Button;
     }
 }

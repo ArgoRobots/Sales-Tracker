@@ -30,6 +30,7 @@ namespace Sales_Tracker.Settings
 
             UpdateTheme();
             General_Button.PerformClick();
+            AnimateButtons();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -39,6 +40,18 @@ namespace Sales_Tracker.Settings
             Theme.MakeGButtonBluePrimary(Ok_Button);
             Theme.MakeGButtonBlueSecondary(Cancel_Button);
             Theme.MakeGButtonBlueSecondary(Apply_Button);
+        }
+        public void AnimateButtons()
+        {
+            IEnumerable<Guna2Button> buttons =
+            [
+               General_Button,
+               Security_Button,
+               Updates_Button,
+               ResetToDefault_Button,
+               Apply_Button,
+            ];
+            CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
         }
 
         // Form event handlers

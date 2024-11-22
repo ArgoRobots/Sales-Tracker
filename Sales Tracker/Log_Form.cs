@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -31,7 +32,13 @@ namespace Sales_Tracker
             // Select "Enable autoscroll"
             AutoScroll_ComboBox.SelectedIndex = 0;
 
+            AnimateButtons();
+
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        public void AnimateButtons()
+        {
+            CustomControls.AnimateButtons([Clear_Button], Properties.Settings.Default.AnimateButtons);
         }
 
         // Form event handlers
@@ -41,7 +48,7 @@ namespace Sales_Tracker
         }
         private void Log_form_Shown(object sender, EventArgs e)
         {
-            BtnClear.Focus();  // Remove the caret (blinking text cursor)
+            Clear_Button.Focus();  // Remove the caret (blinking text cursor)
 
             LoadingPanel.HideBlankLoadingPanel(this);
         }
@@ -51,19 +58,10 @@ namespace Sales_Tracker
         {
             Tools.OpenLink(e.LinkText);
         }
-
-        // Caret
-        [LibraryImport("user32.dll", EntryPoint = "HideCaret")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool HideCaret(IntPtr hWnd);
-
-        // Controls
-        private void BtnClear_Click(object sender, EventArgs e)
+        private void ClearButton_Click(object sender, EventArgs e)
         {
             RichTextBox.Clear();
         }
-        [GeneratedRegex("<*\\d+:\\d+:\\d+:\\d+>*", RegexOptions.Multiline)]
-        private static partial Regex MyRegex();
         private void RichTextBox_TextChanged(object sender, EventArgs e)
         {
             // Set autoscroll
@@ -127,5 +125,13 @@ namespace Sales_Tracker
             // Remove selection
             RichTextBox.SelectionLength = 0;
         }
+
+        // Caret
+        [LibraryImport("user32.dll", EntryPoint = "HideCaret")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool HideCaret(IntPtr hWnd);
+
+        [GeneratedRegex("<*\\d+:\\d+:\\d+:\\d+>*", RegexOptions.Multiline)]
+        private static partial Regex MyRegex();
     }
 }

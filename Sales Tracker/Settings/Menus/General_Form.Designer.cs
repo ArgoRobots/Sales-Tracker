@@ -47,6 +47,8 @@ namespace Sales_Tracker.Settings.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             General_Label = new Label();
             Language_Label = new Label();
             MoreInformation_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -65,6 +67,8 @@ namespace Sales_Tracker.Settings.Menus
             Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowTooltips_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             ShowTooltips_Label = new Label();
+            AnimateButtons_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
+            AnimateButtons_Label = new Label();
             SuspendLayout();
             // 
             // General_Label
@@ -366,11 +370,45 @@ namespace Sales_Tracker.Settings.Menus
             ShowTooltips_Label.Tag = "";
             ShowTooltips_Label.Text = "Show tooltips";
             // 
+            // AnimateButtons_CheckBox
+            // 
+            AnimateButtons_CheckBox.Anchor = AnchorStyles.Top;
+            AnimateButtons_CheckBox.Animated = true;
+            AnimateButtons_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            AnimateButtons_CheckBox.CheckedState.BorderRadius = 2;
+            AnimateButtons_CheckBox.CheckedState.BorderThickness = 0;
+            AnimateButtons_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            AnimateButtons_CheckBox.CustomizableEdges = customizableEdges19;
+            AnimateButtons_CheckBox.Location = new Point(613, 612);
+            AnimateButtons_CheckBox.Name = "AnimateButtons_CheckBox";
+            AnimateButtons_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            AnimateButtons_CheckBox.Size = new Size(20, 20);
+            AnimateButtons_CheckBox.TabIndex = 253;
+            AnimateButtons_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            AnimateButtons_CheckBox.UncheckedState.BorderRadius = 2;
+            AnimateButtons_CheckBox.UncheckedState.BorderThickness = 0;
+            AnimateButtons_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            // 
+            // AnimateButtons_Label
+            // 
+            AnimateButtons_Label.Anchor = AnchorStyles.Top;
+            AnimateButtons_Label.AutoSize = true;
+            AnimateButtons_Label.Font = new Font("Segoe UI", 10F);
+            AnimateButtons_Label.Location = new Point(404, 603);
+            AnimateButtons_Label.Name = "AnimateButtons_Label";
+            AnimateButtons_Label.Padding = new Padding(5);
+            AnimateButtons_Label.Size = new Size(211, 38);
+            AnimateButtons_Label.TabIndex = 252;
+            AnimateButtons_Label.Tag = "";
+            AnimateButtons_Label.Text = "Animate button clicks";
+            // 
             // General_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
+            Controls.Add(AnimateButtons_CheckBox);
+            Controls.Add(AnimateButtons_Label);
             Controls.Add(ShowTooltips_CheckBox);
             Controls.Add(ShowTooltips_Label);
             Controls.Add(Currency_TextBox);
@@ -416,5 +454,7 @@ namespace Sales_Tracker.Settings.Menus
         public Guna.UI2.WinForms.Guna2TextBox Currency_TextBox;
         public Guna.UI2.WinForms.Guna2CustomCheckBox ShowTooltips_CheckBox;
         private Label ShowTooltips_Label;
+        public Guna.UI2.WinForms.Guna2CustomCheckBox AnimateButtons_CheckBox;
+        private Label AnimateButtons_Label;
     }
 }
