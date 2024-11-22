@@ -65,7 +65,10 @@ namespace Sales_Tracker.Classes
 
                 Settings_Form.Instance.AnimateButtons();
                 MainMenu_Form.Instance.AnimateButtons();
-                Log_Form.Instance.AnimateButtons();
+                if (Tools.IsFormOpen(typeof(Log_Form)))
+                {
+                    Log_Form.Instance.AnimateButtons();
+                }
             }
 
             // Check if currency changed

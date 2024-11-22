@@ -217,7 +217,7 @@ namespace Sales_Tracker.Classes
 
         // Forms
         /// <summary>
-        /// Check if a form of the specified type is already open.
+        /// Returns true if a form of a specified type is already open.
         /// </summary>
         public static bool IsFormOpen(Type formType)
         {

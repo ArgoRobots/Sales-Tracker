@@ -40,7 +40,7 @@
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
     <PackageReference Include="ClosedXML" Version="0.104.2" />
-    <PackageReference Include="EPPlus" Version="7.5.0" />
+    <PackageReference Include="EPPlus" Version="7.5.1" />
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.68.0.3356" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3601" />
     <PackageReference Include="Google.Apis.Iam.v1" Version="1.68.0.3588" />

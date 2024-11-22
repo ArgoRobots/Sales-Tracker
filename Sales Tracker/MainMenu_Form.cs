@@ -20,7 +20,7 @@ namespace Sales_Tracker
         private static MainMenu_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
-        private static bool _isFullVersion = false, _isProgramLoading;
+        private static bool _isFullVersion = true, _isProgramLoading;
         private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
@@ -356,9 +356,9 @@ namespace Sales_Tracker
         }
         private void RemoveUpgradeButtonIfFullVersion()
         {
-            if (!_isFullVersion)
+            if (_isFullVersion)
             {
-                Controls.Remove(Upgrade_Button);
+                Top_Panel.Controls.Remove(Upgrade_Button);
             }
         }
         public void AnimateButtons()
