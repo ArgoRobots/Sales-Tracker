@@ -71,13 +71,13 @@ namespace Sales_Tracker
             {
                 _purchase_DataGridView.Rows.Add(category.Name);
             }
-            Tools.ScrollToTopOfDataGridView(_purchase_DataGridView);
+            DataGridViewManager.ScrollToTopOfDataGridView(_purchase_DataGridView);
 
             foreach (Category category in MainMenu_Form.Instance.CategorySaleList)
             {
                 _sale_DataGridView.Rows.Add(category.Name);
             }
-            Tools.ScrollToTopOfDataGridView(_sale_DataGridView);
+            DataGridViewManager.ScrollToTopOfDataGridView(_sale_DataGridView);
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)
         {
@@ -180,7 +180,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (Tools.SearchSelectedDataGridView(Search_TextBox))
+            if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(Search_TextBox))
             {
                 LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }

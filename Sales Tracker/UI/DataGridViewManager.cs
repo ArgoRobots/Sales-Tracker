@@ -925,6 +925,49 @@ namespace Sales_Tracker.UI
                 visibleRowIndex++;
             }
         }
+        public static void ScrollToTopOfDataGridView(Guna2DataGridView dataGridView)
+        {
+            if (dataGridView.Rows.Count > 0)
+            {
+                dataGridView.FirstDisplayedScrollingRowIndex = 0;
+            }
+        }
+
+        // Search DataGridViews
+        /// <summary>
+        /// Filters a DataGridView row based on search terms separated by spaces.
+        /// </summary>
+        public static bool FilterRowBySearchTerms(DataGridViewRow row, string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText)) { return true; }
+
+            // Split search text into individual words
+            string[] searchTerms = searchText.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+
+            // Check if all search terms are found in at least one cell
+            return searchTerms.All(term =>
+                row.Cells.Cast<DataGridViewCell>()
+                    .Any(cell => cell.Value != null &&
+                        cell.Value.ToString().Contains(term, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>
+        /// Searches a DataGridView for the text in the search_TextBox.
+        /// </summary>
+        /// <returns>True if the searching label should be shown, or false if it should not be shown.</returns>
+        public static bool SearchSelectedDataGridViewAndUpdateRowColors(Guna2TextBox search_TextBox)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.SelectedDataGridView.Rows)
+            {
+                bool isVisible = row.Cells.Cast<DataGridViewCell>()
+                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+                row.Visible = isVisible;
+            }
+
+            UpdateAlternatingRowColors(MainMenu_Form.Instance.SelectedDataGridView);
+
+            return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
+        }
 
         // Other methods
         /// <summary>

@@ -1027,9 +1027,7 @@ namespace Sales_Tracker
                     bool isVisibleByDate = (_sortTimeSpan == TimeSpan.MaxValue ||
                         rowDate >= DateTime.Now - _sortTimeSpan);
 
-                    bool isVisibleBySearch = row.Cells.Cast<DataGridViewCell>()
-                        .Any(cell => cell.Value != null &&
-                            cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+                    bool isVisibleBySearch = DataGridViewManager.FilterRowBySearchTerms(row, Search_TextBox.Text.Trim());
 
                     // Row is visible only if it matches both the date filter and the search filter
                     row.Visible = isVisibleByDate && isVisibleBySearch;

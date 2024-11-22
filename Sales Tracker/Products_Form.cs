@@ -94,7 +94,7 @@ namespace Sales_Tracker
                     purchase_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
                 }
             }
-            Tools.ScrollToTopOfDataGridView(purchase_DataGridView);
+            DataGridViewManager.ScrollToTopOfDataGridView(purchase_DataGridView);
 
             foreach (Category category in MainMenu_Form.Instance.CategorySaleList)
             {
@@ -103,7 +103,7 @@ namespace Sales_Tracker
                     sale_DataGridView.Rows.Add(product.ProductID, product.Name, category.Name, product.CountryOfOrigin, product.CompanyOfOrigin);
                 }
             }
-            Tools.ScrollToTopOfDataGridView(sale_DataGridView);
+            DataGridViewManager.ScrollToTopOfDataGridView(sale_DataGridView);
         }
         private void CheckRadioButton(bool selectPurchaseRadioButton)
         {
@@ -249,15 +249,31 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (Tools.SearchSelectedDataGridView(Search_TextBox))
+            string searchText = Search_TextBox.Text.Trim();
+            Guna2DataGridView dataGridView = MainMenu_Form.Instance.SelectedDataGridView;
+            bool hasVisibleRows = true;
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
+                row.Visible = DataGridViewManager.FilterRowBySearchTerms(row, searchText);
+                if (row.Visible)
+                {
+                    hasVisibleRows = true;
+                }
+            }
+
+            // Update UI based on search results
+            if (hasVisibleRows && !string.IsNullOrEmpty(searchText))
+            {
+                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, searchText, this);
             }
             else
             {
                 ShowingResultsFor_Label.Visible = false;
             }
-            LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
+
+            DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
+            LabelManager.ShowTotalLabel(Total_Label, dataGridView);
         }
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
         {

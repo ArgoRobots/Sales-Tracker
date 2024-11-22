@@ -265,7 +265,7 @@ namespace Sales_Tracker
                 AddReceiptsFromDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, "Purchase");
             }
 
-            Tools.ScrollToTopOfDataGridView(Receipts_DataGridView);
+            DataGridViewManager.ScrollToTopOfDataGridView(Receipts_DataGridView);
 
             // Restore the previous sort order
             if (sortedColumn != null)
@@ -320,9 +320,7 @@ namespace Sales_Tracker
         {
             foreach (DataGridViewRow row in Receipts_DataGridView.Rows)
             {
-                bool visible = row.Cells.Cast<DataGridViewCell>()
-                    .Any(cell => cell.Value != null &&
-                        cell.Value.ToString().Contains(Search_TextBox.Text, StringComparison.OrdinalIgnoreCase));
+                bool visible = DataGridViewManager.FilterRowBySearchTerms(row, Search_TextBox.Text.Trim());
 
                 if (FilterByDate_CheckBox.Checked)
                 {
@@ -335,6 +333,8 @@ namespace Sales_Tracker
 
                 row.Visible = visible;
             }
+
+            DataGridViewManager.UpdateAlternatingRowColors(Receipts_DataGridView);
             LabelManager.ShowTotalLabel(Total_Label, Receipts_DataGridView, true);
         }
     }

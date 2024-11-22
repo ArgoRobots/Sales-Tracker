@@ -46,7 +46,7 @@ namespace Sales_Tracker
             {
                 company_DataGridView.Rows.Add(accountant);
             }
-            Tools.ScrollToTopOfDataGridView(company_DataGridView);
+            DataGridViewManager.ScrollToTopOfDataGridView(company_DataGridView);
             MainMenu_Form.IsProgramLoading = false;
         }
         private void AddEventHandlersToTextBoxes()
@@ -115,7 +115,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (Tools.SearchSelectedDataGridView(Search_TextBox))
+            if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(Search_TextBox))
             {
                 LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }

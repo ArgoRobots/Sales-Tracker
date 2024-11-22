@@ -64,31 +64,6 @@ namespace Sales_Tracker.Classes
             Process.Start("explorer.exe", $"/select,\"{filePath}\"");
         }
 
-        /// <summary>
-        /// Searches a DataGridView for the text in the search_TextBox.
-        /// </summary>
-        /// <returns>True if the searching label should be shown, or false if it should not be shown.</returns>
-        public static bool SearchSelectedDataGridView(Guna2TextBox search_TextBox)
-        {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.SelectedDataGridView.Rows)
-            {
-                bool isVisible = row.Cells.Cast<DataGridViewCell>()
-                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
-                row.Visible = isVisible;
-            }
-
-            DataGridViewManager.UpdateAlternatingRowColors(MainMenu_Form.Instance.SelectedDataGridView);
-
-            return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
-        }
-        public static void ScrollToTopOfDataGridView(Guna2DataGridView dataGridView)
-        {
-            if (dataGridView.Rows.Count > 0)
-            {
-                dataGridView.FirstDisplayedScrollingRowIndex = 0;
-            }
-        }
-
         // TextBoxes
         /// <summary>
         /// Returns the first focused Guna2TextBox found, or null if none are found.
