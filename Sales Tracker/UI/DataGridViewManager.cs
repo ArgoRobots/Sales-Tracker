@@ -942,13 +942,33 @@ namespace Sales_Tracker.UI
             if (string.IsNullOrWhiteSpace(searchText)) { return true; }
 
             // Split search text into individual words
-            string[] searchTerms = searchText.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+            string[] searchTerms = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            // Check if all search terms are found in at least one cell
-            return searchTerms.All(term =>
+            // Check visible cell values first
+            bool visibleCellsMatch = searchTerms.Any(term =>
                 row.Cells.Cast<DataGridViewCell>()
                     .Any(cell => cell.Value != null &&
                         cell.Value.ToString().Contains(term, StringComparison.OrdinalIgnoreCase)));
+
+            // If visible cells match or no tag exists, return the result
+            if (visibleCellsMatch || row.Tag == null) { return visibleCellsMatch; }
+
+            // Check if this is a multiple items purchase (tag contains a tuple with List<string>)
+            if (row.Tag is (List<string> items, TagData tagData))
+            {
+                // Check each item in the list (excluding the last item which is the receipt path if it exists)
+                return searchTerms.Any(term =>
+                    items.Take(items.Count - (items.Last().StartsWith("Receipt:") ? 1 : 0))
+                        .Any(item =>
+                        {
+                            string[] parts = item.Split(',');
+                            // Check the product name, category, country, and company parts of each item
+                            return parts.Take(4).Any(part =>
+                                part.Contains(term, StringComparison.OrdinalIgnoreCase));
+                        }));
+            }
+
+            return false;
         }
 
         /// <summary>
