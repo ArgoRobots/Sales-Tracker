@@ -115,19 +115,16 @@ namespace Sales_Tracker.UI
             int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty)
         {
             // Check if the search box is already shown for the same text box
-            if (searchTextBox == textBox && !alwaysShow)
-            {
-                return;
-            }
+            if (searchTextBox == textBox && !alwaysShow) { return; }
 
             CustomControls.CloseAllPanels(null, null);
+            long startTime = DateTime.Now.Ticks;
 
             List<SearchResult> results = resultsFunc();
             if (translateText)
             {
-                foreach (SearchResult result in results)
+                foreach (SearchResult result in results.Where(r => r.Name != addLine))
                 {
-                    if (result.Name == addLine) { continue; }
                     result.DisplayName = LanguageManager.TranslateSingleString(result.Name);
                 }
             }
@@ -140,9 +137,6 @@ namespace Sales_Tracker.UI
             _translateText = translateText;
             _allowTextBoxEmpty = allowTextBoxEmpty;
 
-            // Start timer
-            long startTime = DateTime.Now.Ticks;
-
             if (results.Count == 0)
             {
                 CloseSearchBox();
@@ -151,32 +145,39 @@ namespace Sales_Tracker.UI
 
             _searchResultBox.SuspendLayout();
             _searchResultBox.VerticalScroll.Value = 0;
-            foreach (Control control in searchResultControls)
-            {
-                control.Visible = false;
-            }
+            searchResultControls.ForEach(c => c.Visible = false);
 
-            List<SearchResult> metaList = [];
             string searchText = textBox.Text;
+            List<SearchResult> metaList = [];
 
             if (string.IsNullOrEmpty(searchText))
             {
-                foreach (SearchResult result in results)
-                {
-                    metaList.Add(new SearchResult(result.DisplayName, result.Flag, 0));
-                }
+                metaList.AddRange(results.Select(r => new SearchResult(r.DisplayName, r.Flag, 0)));
             }
             else
             {
-                foreach (SearchResult result in results)
-                {
-                    if (result.Name == addLine) { continue; }
+                string[] searchTerms = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                   .Select(term => term.Trim().ToLower())
+                   .Where(term => !string.IsNullOrEmpty(term))
+                   .ToArray();
 
-                    if (result.DisplayName.Contains(searchText, StringComparison.CurrentCultureIgnoreCase))
+                if (searchTerms.Length != 0)
+                {
+                    foreach (SearchResult? result in results.Where(r => r.Name != addLine))
                     {
-                        // Increase the score if the first letter is the same
-                        int score = result.DisplayName[0].ToString().Equals(searchText[0].ToString(), StringComparison.CurrentCultureIgnoreCase) ? 2 : 1;
-                        metaList.Add(new SearchResult(result.DisplayName, result.Flag, score));
+                        string displayNameLower = result.DisplayName.ToLower();
+                        int score = 0;
+
+                        foreach (string term in searchTerms)
+                        {
+                            if (!displayNameLower.Contains(term)) { break; }
+                            score += CalculateTermScore(displayNameLower, term);
+                        }
+
+                        if (score > 0)
+                        {
+                            metaList.Add(new SearchResult(result.DisplayName, result.Flag, score));
+                        }
                     }
                 }
             }
@@ -301,6 +302,17 @@ namespace Sales_Tracker.UI
             // Calculate elapsed time in milliseconds
             double elapsedTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
             Log.Write(1, "Elapsed time for updating the SearchBox: " + elapsedTime + " ms");
+        }
+        private static int CalculateTermScore(string source, string term)
+        {
+            int score = 1;
+            string[] words = source.Split(' ');
+
+            if (words.Contains(term)) { score += 2; }
+            if (source.StartsWith(term)) { score += 3; }
+            if (words.Any(word => word.StartsWith(term))) { score += 1; }
+
+            return score;
         }
         private static int CalculateControlWidth(int count, Guna2TextBox textBox, bool increaseWidth)
         {
