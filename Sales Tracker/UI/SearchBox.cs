@@ -115,7 +115,11 @@ namespace Sales_Tracker.UI
             int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty)
         {
             // Check if the search box is already shown for the same text box
-            if (searchTextBox == textBox && !alwaysShow) { return; }
+            if (searchTextBox == textBox && !alwaysShow
+                && _searchBoxParent.Controls.Contains(_searchResultBoxContainer))
+            {
+                return;
+            }
 
             CustomControls.CloseAllPanels(null, null);
             long startTime = DateTime.Now.Ticks;
@@ -332,10 +336,7 @@ namespace Sales_Tracker.UI
         }
         private static void SearchTextBoxChanged(object sender, EventArgs e)
         {
-            if (searchTextBox == null) { return; }
-
-            // In case the user selects the text and changes it without clicking on the TextBox, show the SearchBox
-
+            if (resultList == null) { return; }
 
             HashSet<string> names = new(resultList.Select(result => result.DisplayName));
             CheckValidity(searchTextBox, names);
@@ -483,10 +484,6 @@ namespace Sales_Tracker.UI
 
                 _searchBoxParent.Controls.Remove(_searchResultBoxContainer);
             }
-
-            // Reset
-            _searchBoxParent = null;
-            searchTextBox = null;
         }
     }
 }

@@ -743,7 +743,7 @@ namespace Sales_Tracker
             // 
             // MultipleItems_CheckBox
             // 
-            MultipleItems_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            MultipleItems_CheckBox.Anchor = AnchorStyles.Top;
             MultipleItems_CheckBox.Animated = true;
             MultipleItems_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             MultipleItems_CheckBox.CheckedState.BorderRadius = 2;
