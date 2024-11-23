@@ -334,6 +334,9 @@ namespace Sales_Tracker.UI
         {
             if (searchTextBox == null) { return; }
 
+            // In case the user selects the text and changes it without clicking on the TextBox, show the SearchBox
+
+
             HashSet<string> names = new(resultList.Select(result => result.DisplayName));
             CheckValidity(searchTextBox, names);
 

@@ -64,27 +64,28 @@ namespace Sales_Tracker
         {
             int searchBoxMaxHeight = 300;
 
-            SearchBox.Attach(ProductCategory_TextBox, this, GetListForSearchBox, searchBoxMaxHeight, false, false, false);
+            SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResultsForCategory, searchBoxMaxHeight, false, false, false);
             ProductCategory_TextBox.TextChanged += ValidateInputs;
 
             SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false);
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
 
-            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.CompanyList);
-            SearchBox.Attach(CompanyOfOrigin_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false, false);
+            SearchBox.Attach(CompanyOfOrigin_TextBox, this, GetSearchResultsForCompany, searchBoxMaxHeight, false, false, false);
             CompanyOfOrigin_TextBox.TextChanged += ValidateInputs;
         }
-        private List<SearchResult> GetListForSearchBox()
+        private List<SearchResult> GetSearchResultsForCategory()
         {
-            if (Sale_RadioButton.Checked)
-            {
-                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategorySaleNames());
-            }
-            else
-            {
-                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryPurchaseNames());
-            }
+            List<string> categoryNames = Sale_RadioButton.Checked
+                ? MainMenu_Form.Instance.GetCategorySaleNames()
+                : MainMenu_Form.Instance.GetCategoryPurchaseNames();
+
+            return SearchBox.ConvertToSearchResults(categoryNames);
         }
+        private List<SearchResult> GetSearchResultsForCompany()
+        {
+            return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.CompanyList);
+        }
+
         private void LoadProducts()
         {
             foreach (Category category in MainMenu_Form.Instance.CategoryPurchaseList)

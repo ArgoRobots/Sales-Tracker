@@ -409,11 +409,11 @@ namespace Sales_Tracker
         }
         private List<SearchResult> GetSearchResults()
         {
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
-            {
-                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategorySaleNames());
-            }
-            else { return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryPurchaseNames()); }
+            List<string> categoryNames = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales
+                ? MainMenu_Form.Instance.GetCategorySaleNames()
+                : MainMenu_Form.Instance.GetCategoryPurchaseNames();
+
+            return SearchBox.ConvertToSearchResults(categoryNames);
         }
         private Label SelectedReceipt_Label;
         private Guna2ImageButton RemoveReceipt_ImageButton;
