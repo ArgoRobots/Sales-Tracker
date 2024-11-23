@@ -1000,14 +1000,40 @@ namespace Sales_Tracker.UI
             {
                 if (row.Cells[columnName].Value.ToString() == value)
                 {
-                    CustomMessageBox.Show(
-                        $"Cannot be {action}",
-                        $"This {type} is being used and cannot be {action}",
-                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    ShowInUseMessage(type, action);
                     return true;
+                }
+
+                // Skip if we are not checking a product name
+                if (columnName != MainMenu_Form.Column.Product.ToString()) { continue; }
+
+                // Skip if transaction does not have multiple items
+                if (row.Tag is not (List<string> items, TagData)) { continue; }
+
+                // Do not check receipt if present
+                int itemsToCheck = items[^1].StartsWith(ReadOnlyVariables.Receipt_text)
+                    ? items.Count - 1
+                    : items.Count;
+
+                // Check each product name until match found
+                for (int i = 0; i < itemsToCheck; i++)
+                {
+                    if (items[i].AsSpan(',', 0) == value)
+                    {
+                        ShowInUseMessage(type, action);
+                        return true;
+                    }
                 }
             }
             return false;
+        }
+        private static void ShowInUseMessage(string type, string action)
+        {
+            CustomMessageBox.Show(
+                $"Cannot be {action}",
+                $"This {type} is being used and cannot be {action}",
+                CustomMessageBoxIcon.Exclamation,
+                CustomMessageBoxButtons.Ok);
         }
         /// <summary>
         /// Determines whether a category can be moved or deleted by checking if it contains any products.

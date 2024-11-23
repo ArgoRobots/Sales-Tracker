@@ -288,7 +288,8 @@ namespace Sales_Tracker.Classes
             {
                 FillColor = CustomColors.MainBackground,
                 ThumbColor = CustomColors.PanelBtnHover,
-                BorderColor = CustomColors.ControlPanelBorder
+                BorderColor = CustomColors.ControlPanelBorder,
+                ThumbSize = 40
             };
             vScrollBar.HoverState.ThumbColor = Color.Gray;
             control.Controls.Add(vScrollBar);
@@ -313,29 +314,18 @@ namespace Sales_Tracker.Classes
             if (CurrentTheme == ThemeType.Windows)
             {
                 int? value = (int?)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
-
-                if (value == 0)
-                {
-                    CurrentTheme = ThemeType.Dark;
-                }
-                else if (value == 1)
-                {
-                    CurrentTheme = ThemeType.Light;
-                }
+                CurrentTheme = value == 0
+                    ? ThemeType.Dark
+                    : ThemeType.Light;
             }
         }
 
         // Set RightArrow image
         public static void SetRightArrowImageBasedOnTheme(Guna2Button button)
         {
-            if (CurrentTheme == ThemeType.Dark)
-            {
-                button.Image = Resources.RightArrowWhite;
-            }
-            else
-            {
-                button.Image = Resources.RightArrowBlack;
-            }
+            button.Image = CurrentTheme == ThemeType.Dark
+                ? Resources.RightArrowWhite
+                : Resources.RightArrowBlack;
         }
 
         // Make button blue
