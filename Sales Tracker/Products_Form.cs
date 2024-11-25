@@ -64,13 +64,13 @@ namespace Sales_Tracker
         {
             int searchBoxMaxHeight = 300;
 
-            SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResultsForCategory, searchBoxMaxHeight, false, false, false);
+            SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResultsForCategory, searchBoxMaxHeight, false, false, false, true);
             ProductCategory_TextBox.TextChanged += ValidateInputs;
 
-            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false);
+            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false, false);
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
 
-            SearchBox.Attach(CompanyOfOrigin_TextBox, this, GetSearchResultsForCompany, searchBoxMaxHeight, false, false, false);
+            SearchBox.Attach(CompanyOfOrigin_TextBox, this, GetSearchResultsForCompany, searchBoxMaxHeight, false, false, false, true);
             CompanyOfOrigin_TextBox.TextChanged += ValidateInputs;
         }
         private List<SearchResult> GetSearchResultsForCategory()

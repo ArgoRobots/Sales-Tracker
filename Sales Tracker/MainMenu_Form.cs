@@ -6,7 +6,6 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
-using Sales_Tracker.Settings;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
 using System.ComponentModel;
@@ -141,100 +140,6 @@ namespace Sales_Tracker
             if (loadedCategories != null)
             {
                 categoryList.AddRange(loadedCategories);
-            }
-        }
-        private static void AddRowsFromFile(Guna2DataGridView dataGridView, SelectedOption selected)
-        {
-            string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
-
-            if (!File.Exists(filePath))
-            {
-                Log.Error_FailedToWriteToFile(Directories.CompanyName);
-                return;
-            }
-
-            // Read the JSON content from the file
-            string json = File.ReadAllText(filePath);
-            if (string.IsNullOrEmpty(json))
-            {
-                return;
-            }
-
-            List<Dictionary<string, object>>? rowsData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
-
-            foreach (Dictionary<string, object> rowData in rowsData)
-            {
-                // Extract cell values
-                List<string?> cellValuesList = [];
-                foreach (KeyValuePair<string, object> kv in rowData)
-                {
-                    if (kv.Key != rowTagKey && kv.Key != noteTextKey)
-                    {
-                        cellValuesList.Add(kv.Value?.ToString());
-                    }
-                }
-                string?[] cellValues = cellValuesList.ToArray();
-
-                // Add the row values to the DataGridView
-                int rowIndex = dataGridView.Rows.Add(cellValues);
-
-                // Set the row tag
-                if (rowData.TryGetValue(rowTagKey, out object value) && value is JObject jsonObject)
-                {
-                    Dictionary<string, object>? tagObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonObject.ToString());
-
-                    if (tagObject != null)
-                    {
-                        // If the tagObject is a list of strings and TagData
-                        if (tagObject.TryGetValue(itemsKey, out object? itemsElement) && itemsElement is JArray itemsArray)
-                        {
-                            List<string> itemList = itemsArray.Select(e => e.ToString()).ToList();
-
-                            if (tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement)
-                                && purchaseDataElement is JObject purchaseDataObject)
-                            {
-                                TagData? purchaseData = JsonConvert.DeserializeObject<TagData>(purchaseDataObject.ToString());
-
-                                if (itemList != null && purchaseData != null)
-                                {
-                                    dataGridView.Rows[rowIndex].Tag = (itemList, purchaseData);
-                                }
-                            }
-                        }
-                        // If the tagObject is a string and TagData
-                        else if (tagObject.TryGetValue(tagKey, out object? tagStringElement)
-                            && tagObject.TryGetValue(purchaseDataKey, out object? purchaseData1Element))
-                        {
-                            string? tagString = tagStringElement?.ToString();
-                            TagData? purchaseData1 = JsonConvert.DeserializeObject<TagData>(purchaseData1Element?.ToString());
-
-                            if (tagString != null && purchaseData1 != null)
-                            {
-                                dataGridView.Rows[rowIndex].Tag = (tagString, purchaseData1);
-                            }
-                        }
-                        // If the tagObject is a TagData
-                        else if (rowData.TryGetValue(rowTagKey, out object value1) && value1 is JObject jsonObject1)
-                        {
-                            // Try to deserialize the JObject directly into a TagData object
-                            TagData? tagData = JsonConvert.DeserializeObject<TagData>(jsonObject1.ToString());
-
-                            if (tagData != null)
-                            {
-                                dataGridView.Rows[rowIndex].Tag = tagData;
-                            }
-                        }
-                    }
-                }
-
-                // Set the cell tag for the last cell if note_text key exists
-                if (rowData.TryGetValue(noteTextKey, out object noteValue))
-                {
-                    DataGridViewCell lastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 1];
-                    lastCell.Value = ReadOnlyVariables.Show_text;
-                    lastCell.Tag = noteValue;
-                    DataGridViewManager.AddUnderlineToCell(lastCell);
-                }
             }
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
@@ -377,6 +282,195 @@ namespace Sales_Tracker
                TimeRange_Button,
             ];
             CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
+        }
+
+        // Add rows from file
+        private static void AddRowsFromFile(Guna2DataGridView dataGridView, SelectedOption selected)
+        {
+            string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
+            if (!ValidateFile(filePath))
+            {
+                return;
+            }
+
+            List<Dictionary<string, object>>? rowsData = DeserializeJsonFile(filePath);
+            if (rowsData == null)
+            {
+                return;
+            }
+
+            foreach (Dictionary<string, object> rowData in rowsData)
+            {
+                ProcessRow(dataGridView, rowData);
+            }
+        }
+        private static bool ValidateFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Log.Error_FailedToWriteToFile(Directories.CompanyName);
+                return false;
+            }
+            return true;
+        }
+        private static List<Dictionary<string, object>>? DeserializeJsonFile(string filePath)
+        {
+            string json = File.ReadAllText(filePath);
+            if (string.IsNullOrEmpty(json))
+            {
+                return null;
+            }
+            return JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
+        }
+        private static void ProcessRow(Guna2DataGridView dataGridView, Dictionary<string, object> rowData)
+        {
+            string?[] cellValues = ExtractCellValues(rowData);
+            int rowIndex = dataGridView.Rows.Add(cellValues);
+
+            ProcessRowTag(dataGridView, rowData, rowIndex);
+            ProcessNoteText(dataGridView, rowData, rowIndex);
+            ProcessHasReceipt(dataGridView, rowData, rowIndex);
+        }
+        private static string?[] ExtractCellValues(Dictionary<string, object> rowData)
+        {
+            return rowData
+                .Where(kv => kv.Key != rowTagKey && kv.Key != noteTextKey)
+                .Select(kv => kv.Value?.ToString())
+                .ToArray();
+        }
+        private static void ProcessRowTag(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
+        {
+            if (!rowData.TryGetValue(rowTagKey, out object value) || value is not JObject jsonObject)
+            {
+                return;
+            }
+
+            Dictionary<string, object>? tagObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonObject.ToString());
+            if (tagObject == null)
+            {
+                return;
+            }
+
+            if (TryProcessItemsAndPurchaseData(tagObject, out (List<string>, TagData)? rowTag))
+            {
+                dataGridView.Rows[rowIndex].Tag = rowTag;
+            }
+            else if (TryProcessTagStringAndPurchaseData(tagObject, out (string, TagData)? stringPurchaseTag))
+            {
+                dataGridView.Rows[rowIndex].Tag = stringPurchaseTag;
+            }
+            else
+            {
+                TryProcessTagData(jsonObject, dataGridView.Rows[rowIndex]);
+            }
+        }
+        private static bool TryProcessItemsAndPurchaseData(Dictionary<string, object> tagObject, out (List<string>, TagData)? rowTag)
+        {
+            rowTag = null;
+
+            if (!tagObject.TryGetValue(itemsKey, out object? itemsElement) || itemsElement is not JArray itemsArray)
+            {
+                return false;
+            }
+
+            if (!tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement) || purchaseDataElement is not JObject purchaseDataObject)
+            {
+                return false;
+            }
+
+            List<string> itemList = itemsArray.Select(e => e.ToString()).ToList();
+            TagData? purchaseData = JsonConvert.DeserializeObject<TagData>(purchaseDataObject.ToString());
+
+            if (purchaseData != null)
+            {
+                rowTag = (itemList, purchaseData);
+                return true;
+            }
+
+            return false;
+        }
+        private static bool TryProcessTagStringAndPurchaseData(Dictionary<string, object> tagObject, out (string, TagData)? tag)
+        {
+            tag = null;
+
+            if (!tagObject.TryGetValue(tagKey, out object? tagStringElement) ||
+                !tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement))
+            {
+                return false;
+            }
+
+            string? tagString = tagStringElement?.ToString();
+            TagData? purchaseData = JsonConvert.DeserializeObject<TagData>(purchaseDataElement?.ToString());
+
+            if (tagString != null && purchaseData != null)
+            {
+                tag = (tagString, purchaseData);
+                return true;
+            }
+
+            return false;
+        }
+        private static void TryProcessTagData(JObject jsonObject, DataGridViewRow row)
+        {
+            TagData? tagData = JsonConvert.DeserializeObject<TagData>(jsonObject.ToString());
+            if (tagData != null)
+            {
+                row.Tag = tagData;
+            }
+        }
+        private static void ProcessNoteText(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
+        {
+            if (!rowData.TryGetValue(noteTextKey, out object noteValue))
+            {
+                return;
+            }
+
+            DataGridViewCell secondLastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 2];
+            secondLastCell.Value = ReadOnlyVariables.Show_text;
+            secondLastCell.Tag = noteValue;
+            DataGridViewManager.AddUnderlineToCell(secondLastCell);
+        }
+        private static void ProcessHasReceipt(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
+        {
+            if (!rowData.TryGetValue(rowTagKey, out object value) || value is not JObject jsonObject)
+            {
+                return;
+            }
+
+            string? receiptPath = null;
+
+            // Get receipt path from items list (multiple items)
+            if (jsonObject[itemsKey] != null)
+            {
+                JArray items = (JArray)jsonObject[itemsKey];
+                string lastItem = items.Last.ToString();
+                if (lastItem.StartsWith(ReadOnlyVariables.Receipt_text))
+                {
+                    receiptPath = lastItem;
+                }
+            }
+            // Get receipt path from Tag (single item)
+            else if (jsonObject[tagKey] != null)
+            {
+                receiptPath = jsonObject[tagKey].ToString();
+            }
+
+            DataGridViewCell lastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 1];
+
+            string processedReceipt = ReceiptManager.ProcessReceiptTextFromRowTag(receiptPath);
+
+            if (!string.IsNullOrEmpty(processedReceipt) && File.Exists(processedReceipt))
+            {
+                lastCell.Value = "✓";
+                lastCell.Style.ForeColor = CustomColors.AccentGreen;
+            }
+            else
+            {
+                lastCell.Value = "✗";
+                lastCell.Style.ForeColor = CustomColors.AccentRed;
+            }
+
+            lastCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
         // Form event handlers
@@ -1342,7 +1436,8 @@ namespace Sales_Tracker
             Discount,
             ChargedDifference,
             Total,
-            Note
+            Note,
+            HasReceipt
         }
         public readonly Dictionary<Column, string> PurchaseColumnHeaders = new()
         {
@@ -1361,7 +1456,8 @@ namespace Sales_Tracker
             { Column.Discount, "Discount" },
             { Column.ChargedDifference, "Charged difference" },
             { Column.Total, "Total expenses" },
-            { Column.Note, "Notes" }
+            { Column.Note, "Notes" },
+            { Column.HasReceipt, "Has receipt" }
         };
         public readonly Dictionary<Column, string> SalesColumnHeaders = new()
         {
@@ -1380,7 +1476,8 @@ namespace Sales_Tracker
             { Column.Discount, "Discount" },
             { Column.ChargedDifference, "Charged difference" },
             { Column.Total, "Total revenue" },
-            { Column.Note, "Notes" }
+            { Column.Note, "Notes" },
+            { Column.HasReceipt, "Has receipt" }
         };
         public enum DataGridViewTag
         {

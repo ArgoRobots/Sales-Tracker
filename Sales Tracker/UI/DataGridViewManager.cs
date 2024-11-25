@@ -148,13 +148,11 @@ namespace Sales_Tracker.UI
 
                 if (removedRow.Tag is (List<string> tagList, TagData))
                 {
-                    tagValue = tagList[^1].Replace(ReadOnlyVariables.Receipt_text, "")
-                        .Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName);
+                    tagValue = ReceiptManager.ProcessReceiptTextFromRowTag(tagList[^1]);
                 }
                 else if (removedRow.Tag is (string tagString, TagData))
                 {
-                    tagValue = tagString.Replace(ReadOnlyVariables.Receipt_text, "")
-                        .Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName);
+                    tagValue = ReceiptManager.ProcessReceiptTextFromRowTag(tagString);
                 }
 
                 if (tagValue != "")
@@ -318,7 +316,7 @@ namespace Sales_Tracker.UI
         }
         private static void HandleProductPurchasesDeletion(DataGridViewRowCancelEventArgs e)
         {
-            string type = "product for purchase";
+            string type = "product";
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
@@ -339,7 +337,7 @@ namespace Sales_Tracker.UI
         }
         private static void HandleProductSalesDeletion(DataGridViewRowCancelEventArgs e)
         {
-            string type = "product for sale";
+            string type = "product";
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
@@ -551,43 +549,56 @@ namespace Sales_Tracker.UI
         private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
         {
             FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-            flowPanel.Controls.Clear();
+
+            // First, hide all controls
+            foreach (Control control in flowPanel.Controls)
+            {
+                control.Visible = false;
+            }
+
+            int currentIndex = 0;
 
             // Add ModifyBtn
             if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
             {
-                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ModifyBtn);
+                rightClickDataGridView_ModifyBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(rightClickDataGridView_ModifyBtn, currentIndex++);
             }
 
             // Add MoveBtn
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
-                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to sales");
+                string text = LanguageManager.TranslateSingleString("Move category to sales");
+                rightClickDataGridView_MoveBtn.Visible = true;
+                rightClickDataGridView_MoveBtn.Text = text;
+                flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, currentIndex++);
             }
             else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
             {
-                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_MoveBtn, "Move category to purchases");
-            }
-            else
-            {
-                flowPanel.Controls.Remove(rightClickDataGridView_MoveBtn);
+                string text = LanguageManager.TranslateSingleString("Move category to purchases");
+                rightClickDataGridView_MoveBtn.Visible = true;
+                rightClickDataGridView_MoveBtn.Text = text;
+                flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, currentIndex++);
             }
 
             // Add ShowItemsBtn
             if (grid.SelectedRows[0].Tag is (List<string>, TagData)
                 && MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
             {
-                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ShowItemsBtn);
+                rightClickDataGridView_ShowItemsBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, currentIndex++);
             }
 
             // Add ExportReceiptBtn
             if (AnySelectedRowHasReceipt(grid))
             {
-                AddButtonToFlowPanel(flowPanel, rightClickDataGridView_ExportReceiptBtn);
+                rightClickDataGridView_ExportReceiptBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, currentIndex++);
             }
 
-            // Add DeleteBtn)
-            flowPanel.Controls.Add(_rightClickDataGridView_DeleteBtn);
+            // Add DeleteBtn
+            _rightClickDataGridView_DeleteBtn.Visible = true;
+            flowPanel.Controls.SetChildIndex(_rightClickDataGridView_DeleteBtn, currentIndex);
         }
         private static bool AnySelectedRowHasReceipt(DataGridView grid)
         {
@@ -668,11 +679,9 @@ namespace Sales_Tracker.UI
         // Methods for DataGridView
         private static bool IsLastItemAReceipt(string lastItem)
         {
-            // Check if the last item starts with "receipt:"
             if (lastItem.StartsWith(ReadOnlyVariables.Receipt_text))
             {
-                lastItem = lastItem.Substring(8).Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName);
-
+                lastItem = ReceiptManager.ProcessReceiptTextFromRowTag(lastItem);
                 return File.Exists(lastItem);
             }
             return false;
@@ -1072,19 +1081,19 @@ namespace Sales_Tracker.UI
             _rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickDataGridView_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
 
-            rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, true, flowPanel);
             rightClickDataGridView_ModifyBtn.Click += ModifyRow;
 
-            rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, false, flowPanel);
+            rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, true, flowPanel);
             rightClickDataGridView_MoveBtn.Click += MoveRows;
 
-            rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, true, flowPanel);
             rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
 
-            rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, false, flowPanel);
+            rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
             rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
 
-            _rightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, false, flowPanel);
+            _rightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
             _rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
             _rightClickDataGridView_DeleteBtn.Click += DeleteRow;
 
@@ -1092,12 +1101,10 @@ namespace Sales_Tracker.UI
         }
         private static void ModifyRow(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.ClosePanels();
             Tools.OpenForm(new ModifyRow_Form(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]));
         }
         private static void MoveRows(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
             Guna2DataGridView selectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             List<DataGridViewRow> selectedRows = selectedDataGridView.SelectedRows.Cast<DataGridViewRow>().ToList();
             if (selectedRows.Count == 0) { return; }
@@ -1196,18 +1203,14 @@ namespace Sales_Tracker.UI
         }
         private static void ExportReceipt(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
-            Receipts_Form.ExportSelectedReceipts(MainMenu_Form.Instance.SelectedDataGridView);
+            ReceiptManager.ExportSelectedReceipts(MainMenu_Form.Instance.SelectedDataGridView);
         }
         private static void ShowItems(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
             Tools.OpenForm(new ItemsInTransaction_Form(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]));
         }
         private static void DeleteRow(object sender, EventArgs e)
         {
-            MainMenu_Form.Instance.ClosePanels();
-
             int index = MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[^1].Index;
 
             // Delete all selected rows
@@ -1267,14 +1270,6 @@ namespace Sales_Tracker.UI
             newPath = newPath.Replace(ReadOnlyVariables.Receipt_text, "");
 
             return File.Exists(newPath) ? newPath : "";
-        }
-        private static void AddButtonToFlowPanel(FlowLayoutPanel flowPanel, Guna2Button button, string text = null)
-        {
-            flowPanel.Controls.Add(button);
-            if (text != null)
-            {
-                button.Text = text;
-            }
         }
     }
 }

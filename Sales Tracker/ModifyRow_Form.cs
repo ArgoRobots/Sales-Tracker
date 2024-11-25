@@ -46,6 +46,7 @@ namespace Sales_Tracker
         {
             controlToFocus?.Focus();
             CenterControls();
+            ModifyRow_Label.Focus();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
@@ -379,7 +380,7 @@ namespace Sales_Tracker
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.ProductCategory], left, Panel);
 
                         Guna2TextBox ProductCategory_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
-                        SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResults, searchBoxMaxHeight, false, false, false);
+                        SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResults, searchBoxMaxHeight, false, false, false, true);
                         ProductCategory_TextBox.TextChanged += ValidateInputs;
                         oldCategoryName = cellValue;
                         break;
@@ -389,7 +390,7 @@ namespace Sales_Tracker
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
 
                         Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
-                        SearchBox.Attach(textBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false);
+                        SearchBox.Attach(textBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false, false);
                         textBox.TextChanged += ValidateInputs;
                         break;
 
@@ -399,7 +400,7 @@ namespace Sales_Tracker
 
                         textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
                         List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.CompanyList);
-                        SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, false, false);
+                        SearchBox.Attach(textBox, this, () => searchResult, searchBoxMaxHeight, false, false, false, true);
                         textBox.TextChanged += ValidateInputs;
                         break;
                 }
@@ -460,7 +461,7 @@ namespace Sales_Tracker
 
                         Guna2TextBox Accountant_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
                         searchResult = SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.AccountantList);
-                        SearchBox.Attach(Accountant_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false, false);
+                        SearchBox.Attach(Accountant_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false, false, true);
                         Accountant_TextBox.TextChanged += ValidateInputs;
 
                         left += controlWidth + CustomControls.SpaceBetweenControls;
@@ -472,7 +473,7 @@ namespace Sales_Tracker
                             ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
 
                             Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
-                            SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false);
+                            SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false, true);
                             ProductName_TextBox.TextChanged += ValidateInputs;
 
                             left += controlWidth + CustomControls.SpaceBetweenControls;
@@ -646,7 +647,7 @@ namespace Sales_Tracker
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], 0, Panel);
 
                         Guna2TextBox ProductName_TextBox = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
-                        SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false);
+                        SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false, true);
                         ProductName_TextBox.TextChanged += ValidateInputs;
 
                         left += controlWidth + CustomControls.SpaceBetweenControls;

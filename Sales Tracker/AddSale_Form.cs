@@ -39,15 +39,15 @@ namespace Sales_Tracker
 
             TextBoxValidation.OnlyAllowLetters(AccountantName_TextBox);
             TextBoxManager.Attach(AccountantName_TextBox);
-            SearchBox.Attach(AccountantName_TextBox, this, GetSearchResultsForAccountant, searchBoxMaxHeight, false, false, false);
+            SearchBox.Attach(AccountantName_TextBox, this, GetSearchResultsForAccountant, searchBoxMaxHeight, false, false, false, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(ProductName_TextBox);
-            SearchBox.Attach(ProductName_TextBox, this, GetSearchResultsForProducts, searchBoxMaxHeight, true, false, false);
+            SearchBox.Attach(ProductName_TextBox, this, GetSearchResultsForProducts, searchBoxMaxHeight, true, false, false, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(CountryOfDestinaion_TextBox);
-            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false);
+            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false, false);
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
 
             TextBoxValidation.OnlyAllowNumbers(Quantity_TextBox);
@@ -756,7 +756,7 @@ namespace Sales_Tracker
                 ConstructLabel(ProductName_Label.Text, 0, labelPanel);
             }
             Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, false, panel);
-            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, 150, true, false, false);
+            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, 150, true, false, false, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             // Price per unit

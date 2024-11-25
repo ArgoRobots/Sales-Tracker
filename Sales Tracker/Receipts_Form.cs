@@ -93,65 +93,7 @@ namespace Sales_Tracker
         }
         private void ExportSelected_Button_Click(object sender, EventArgs e)
         {
-            ExportSelectedReceipts(Receipts_DataGridView);
-        }
-        public static void ExportSelectedReceipts(Guna2DataGridView dataGridView)
-        {
-            // Select directory
-            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                string destinationPath = dialog.SelectedPath;
-                int selectedRowCount = dataGridView.SelectedRows.Count;
-
-                if (selectedRowCount > 1)
-                {
-                    // Create a new folder for multiple files
-                    string newFolderPath = Path.Combine(destinationPath, $"Argo Sales Tracker receipts for {Directories.CompanyName} - "
-                        + DateTime.Now.ToString("yyyyMMddHHmmss"));
-
-                    Directory.CreateDirectory(newFolderPath);
-                    destinationPath = newFolderPath;
-                }
-
-                bool isAnyReceiptExported = false, doAllRowsHaveReceipt = true;
-
-                // Iterate through selected rows and copy files
-                foreach (DataGridViewRow row in dataGridView.SelectedRows)
-                {
-                    string receipt = DataGridViewManager.GetFilePathFromRowTag(row.Tag);
-                    if (receipt == "")
-                    {
-                        doAllRowsHaveReceipt = false;
-                        continue;
-                    }
-
-                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
-                        .Replace(ReadOnlyVariables.Receipt_text, "");
-
-                    if (!File.Exists(receipt))
-                    {
-                        Log.Error_FileDoesNotExist(receipt);
-                        continue;
-                    }
-
-                    string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
-                    Directories.CopyFile(receipt, destinationFilePath);
-                    isAnyReceiptExported = true;
-                }
-
-                if (isAnyReceiptExported)
-                {
-                    string message = "Receipts exported successfully";
-
-                    if (!doAllRowsHaveReceipt) { message += " Note: Not all the selected rows contain a receipt."; }
-
-                    CustomMessageBox.Show("Receipts exported",
-                        message,
-                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                }
-            }
+            ReceiptManager.ExportSelectedReceipts(Receipts_DataGridView);
         }
         private void FilterByDate_Label_Click(object sender, EventArgs e)
         {
@@ -277,6 +219,8 @@ namespace Sales_Tracker
         }
         private void AddReceiptsFromDataGridView(Guna2DataGridView sourceDataGridView, string type)
         {
+            string translatedType = LanguageManager.TranslateSingleString(type);
+
             foreach (DataGridViewRow row in sourceDataGridView.Rows)
             {
                 if (row.Tag == null)
@@ -284,8 +228,25 @@ namespace Sales_Tracker
                     continue;
                 }
 
+                // Add receipt filepath to row tag
+                string receipt = "";
+                if (row.Tag is (string dir, TagData))
+                {
+                    receipt = ReceiptManager.ProcessReceiptTextFromRowTag(dir);
+                }
+                else if (row.Tag is (List<string> items, TagData))
+                {
+                    receipt = items[^1];
+                    receipt = ReceiptManager.ProcessReceiptTextFromRowTag(receipt);
+                }
+
+                if (!File.Exists(receipt))
+                {
+                    continue;
+                }
+
                 Receipts_DataGridView.Rows.Add(
-                    type,
+                    translatedType,
                     row.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString(),
@@ -293,19 +254,6 @@ namespace Sales_Tracker
                     row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString(),
                     row.Cells[MainMenu_Form.Column.Total.ToString()].Value.ToString());
 
-                // Add receipt filepath to row tag
-                string receipt = "";
-                if (row.Tag is (string dir, TagData))
-                {
-                    receipt = dir.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
-                        .Replace(ReadOnlyVariables.Receipt_text, "");
-                }
-                else if (row.Tag is (List<string> items, TagData))
-                {
-                    receipt = items[^1];
-                    receipt = receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
-                        .Replace(ReadOnlyVariables.Receipt_text, "");
-                }
                 Receipts_DataGridView.Rows[^1].Tag = receipt;
 
                 // Get oldest date

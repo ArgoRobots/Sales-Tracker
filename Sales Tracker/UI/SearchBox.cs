@@ -23,7 +23,7 @@ namespace Sales_Tracker.UI
         private static Guna2TextBox searchTextBox;
         private static List<SearchResult> resultList;
         private static int _maxHeight;
-        private static bool _increaseWidth, _translateText, _allowTextBoxEmpty;
+        private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
@@ -33,7 +33,7 @@ namespace Sales_Tracker.UI
         /// Attaches events to a Guna2TextBox to add a SearchBox.
         /// </summary>
         public static void Attach(Guna2TextBox textBox, Control searchBoxParent, Func<List<SearchResult>> results,
-            int maxHeight, bool increaseWidth, bool translateText, bool allowTextBoxEmpty)
+            int maxHeight, bool increaseWidth, bool translateText, bool allowTextBoxEmpty, bool sortAlphabetically)
         {
             if (!translateText)
             {
@@ -44,12 +44,12 @@ namespace Sales_Tracker.UI
                 noResults_Label.Text = _translateText ? LanguageManager.TranslateSingleString("No results") : "No results";
             }
 
-            textBox.Click += (_, _) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty); };
+            textBox.Click += (_, _) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically); };
             textBox.GotFocus += (_, _) =>
             {
                 if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
                 {
-                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty);
+                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
                     Settings_Form.Instance.IsFormClosing = false;
                 }
             };
@@ -107,12 +107,12 @@ namespace Sales_Tracker.UI
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
             debounceTimer.Stop();
-            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty);
+            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically);
         }
 
         // Main methods
         private static void ShowSearchBox(Control searchBoxParent, Guna2TextBox textBox, Func<List<SearchResult>> resultsFunc,
-            int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty)
+            int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty, bool sortAlphabetically)
         {
             // Check if the search box is already shown for the same text box
             if (searchTextBox == textBox && !alwaysShow
@@ -140,6 +140,7 @@ namespace Sales_Tracker.UI
             _increaseWidth = increaseWidth;
             _translateText = translateText;
             _allowTextBoxEmpty = allowTextBoxEmpty;
+            _sortAlphabetically = sortAlphabetically;
 
             if (results.Count == 0)
             {
@@ -154,16 +155,26 @@ namespace Sales_Tracker.UI
             string searchText = textBox.Text;
             List<SearchResult> metaList = [];
 
+            // Set scores
             if (string.IsNullOrEmpty(searchText))
             {
-                metaList.AddRange(results.Select(r => new SearchResult(r.DisplayName, r.Flag, 0)));
+                if (sortAlphabetically)
+                {
+                    metaList.AddRange(results
+                       .Select(r => new SearchResult(r.DisplayName, r.Flag, 0))
+                       .OrderBy(r => r.DisplayName));  // Sort alphabetically
+                }
+                else
+                {
+                    metaList.AddRange(results.Select(r => new SearchResult(r.DisplayName, r.Flag, 0)));
+                }
             }
             else
             {
                 string[] searchTerms = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                   .Select(term => term.Trim().ToLower())
-                   .Where(term => !string.IsNullOrEmpty(term))
-                   .ToArray();
+                    .Select(term => term.Trim().ToLower())
+                    .Where(term => !string.IsNullOrEmpty(term))
+                    .ToArray();
 
                 if (searchTerms.Length != 0)
                 {
@@ -193,6 +204,7 @@ namespace Sales_Tracker.UI
             int buttonHeight = 35;
             int controlIndex = 0;
 
+            // Construct buttons
             foreach (SearchResult meta in metaList)
             {
                 if (meta.Name == addLine)
