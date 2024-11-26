@@ -73,5 +73,24 @@ namespace Sales_Tracker.Classes
             return receipt.Replace(ReadOnlyVariables.CompanyName_text, Directories.CompanyName)
                 .Replace(ReadOnlyVariables.Receipt_text, "");
         }
+        public static string? GetReceiptPathFromRow(DataGridViewRow row)
+        {
+            if (row.Tag is (List<string> items, _))
+            {
+                // Handle multiple items case
+                string lastItem = items.LastOrDefault() ?? string.Empty;
+                if (lastItem.StartsWith(ReadOnlyVariables.Receipt_text))
+                {
+                    return ProcessReceiptTextFromRowTag(lastItem);
+                }
+            }
+            else if (row.Tag is (string tagString, _))
+            {
+                // Handle single item case
+                return ProcessReceiptTextFromRowTag(tagString);
+            }
+
+            return null;
+        }
     }
 }

@@ -232,7 +232,8 @@ namespace Sales_Tracker
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
                 && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists",
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Purchase # already exists",
                      $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -281,7 +282,8 @@ namespace Sales_Tracker
             if (chargedDifference != 0)
             {
                 string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different",
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Amount charged is different",
                     $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
@@ -353,6 +355,9 @@ namespace Sales_Tracker
                 noteLabel
             );
 
+            DataGridViewRow row = MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex];
+            MainMenu_Form.SetHasReceiptColumn(row, newFilePath);
+
             if (noteLabel == ReadOnlyVariables.Show_text)
             {
                 DataGridViewManager.AddNoteToCell(newRowIndex, note);
@@ -382,7 +387,8 @@ namespace Sales_Tracker
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
                 && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Purchase # already exists",
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Purchase # already exists",
                     $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -489,7 +495,8 @@ namespace Sales_Tracker
             if (totalPriceDefault != charged)
             {
                 string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-                CustomMessageBoxResult result = CustomMessageBox.Show("Amount charged is different",
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Amount charged is different",
                     $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
@@ -535,6 +542,10 @@ namespace Sales_Tracker
                 charged.ToString("N2"),
                 noteLabel
             );
+
+            DataGridViewRow row = MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex];
+            MainMenu_Form.SetHasReceiptColumn(row, newFilePath);
+
             if (noteLabel == ReadOnlyVariables.Show_text)
             {
                 DataGridViewManager.AddNoteToCell(newRowIndex, note);

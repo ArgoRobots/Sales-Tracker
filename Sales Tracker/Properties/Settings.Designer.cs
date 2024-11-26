@@ -122,12 +122,12 @@ namespace Sales_Tracker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool SalesReceipts {
+        public bool SaleReceipts {
             get {
-                return ((bool)(this["SalesReceipts"]));
+                return ((bool)(this["SaleReceipts"]));
             }
             set {
-                this["SalesReceipts"] = value;
+                this["SaleReceipts"] = value;
             }
         }
         
@@ -152,6 +152,18 @@ namespace Sales_Tracker.Properties {
             }
             set {
                 this["AnimateButtons"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowHasReceiptColumn {
+            get {
+                return ((bool)(this["ShowHasReceiptColumn"]));
+            }
+            set {
+                this["ShowHasReceiptColumn"] = value;
             }
         }
     }

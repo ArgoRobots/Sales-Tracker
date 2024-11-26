@@ -229,8 +229,10 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.ID.ToString(), saleNumber))
             {
-                string message = $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists", message, CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Sale # already exists",
+                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -267,7 +269,8 @@ namespace Sales_Tracker
 
             if (creditedDifference != 0)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different",
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Amount credited is different",
                     $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
@@ -336,6 +339,10 @@ namespace Sales_Tracker
                 credited.ToString("N"),
                 noteLabel
             );
+
+            DataGridViewRow row = MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex];
+            MainMenu_Form.SetHasReceiptColumn(row, newFilePath);
+
             if (noteLabel == ReadOnlyVariables.Show_text)
             {
                 DataGridViewManager.AddNoteToCell(newRowIndex, note);
@@ -364,7 +371,8 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.ID.ToString(), saleNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Sale # already exists",
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Sale # already exists",
                     $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
@@ -462,8 +470,10 @@ namespace Sales_Tracker
 
             if (creditedDifference != 0)
             {
-                string message = $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Amount credited is different", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Amount credited is different",
+                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -509,6 +519,10 @@ namespace Sales_Tracker
                 totalPrice.ToString("N2"),
                 noteLabel
             );
+
+            DataGridViewRow row = MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex];
+            MainMenu_Form.SetHasReceiptColumn(row, newFilePath);
+
             if (noteLabel == ReadOnlyVariables.Show_text)
             {
                 DataGridViewManager.AddNoteToCell(newRowIndex, note);
@@ -981,7 +995,7 @@ namespace Sales_Tracker
                 !string.IsNullOrWhiteSpace(Discount_TextBox.Text) &&
                 !string.IsNullOrWhiteSpace(Credited_TextBox.Text);
 
-            if (Properties.Settings.Default.SalesReceipts)
+            if (Properties.Settings.Default.SaleReceipts)
             {
                 allFieldsFilled &= Controls.Contains(SelectedReceipt_Label);
             }

@@ -84,6 +84,12 @@ namespace Sales_Tracker.UI
             // Add delay to prevent flickering when moving mouse quickly
             Task.Delay(50).ContinueWith(_ =>
             {
+                // Check if control is still valid before invoking
+                if (control.IsDisposed || !control.IsHandleCreated)
+                {
+                    return;
+                }
+
                 control.BeginInvoke(() =>
                 {
                     if (!control.ClientRectangle.Contains(control.PointToClient(Control.MousePosition)))

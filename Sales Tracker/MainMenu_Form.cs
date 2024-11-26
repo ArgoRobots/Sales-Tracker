@@ -20,7 +20,7 @@ namespace Sales_Tracker
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
         private static bool _isFullVersion = true, _isProgramLoading;
-        private static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
+        public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -114,6 +114,8 @@ namespace Sales_Tracker
                 _sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
                 Theme.CustomizeScrollBar(_sale_DataGridView);
             }
+
+            SetHasReceiptColumnVisibilty();
 
             AddRowsFromFile(_purchase_DataGridView, SelectedOption.Purchases);
             AddRowsFromFile(_sale_DataGridView, SelectedOption.Sales);
@@ -329,7 +331,7 @@ namespace Sales_Tracker
 
             ProcessRowTag(dataGridView, rowData, rowIndex);
             ProcessNoteText(dataGridView, rowData, rowIndex);
-            ProcessHasReceipt(dataGridView, rowData, rowIndex);
+            ProcessHasReceipt(dataGridView, rowIndex);
         }
         private static string?[] ExtractCellValues(Dictionary<string, object> rowData)
         {
@@ -430,47 +432,58 @@ namespace Sales_Tracker
             secondLastCell.Tag = noteValue;
             DataGridViewManager.AddUnderlineToCell(secondLastCell);
         }
-        private static void ProcessHasReceipt(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
+
+        // "Has receipt" column
+        private static void ProcessHasReceipt(Guna2DataGridView dataGridView, int rowIndex)
         {
-            if (!rowData.TryGetValue(rowTagKey, out object value) || value is not JObject jsonObject)
+            DataGridViewRow row = dataGridView.Rows[rowIndex];
+            string? receipt = ReceiptManager.GetReceiptPathFromRow(row);
+
+            if (receipt == null)
             {
+                string ID = row.Cells[Column.ID.ToString()].Value.ToString();
+                Log.Write(0, $"Cannot process receipt column for transaction {ID}");
                 return;
             }
 
-            string? receiptPath = null;
+            SetHasReceiptColumn(row, receipt);
+        }
+        public static void SetHasReceiptColumn(DataGridViewRow row, string processedReceipt)
+        {
+            if (!Properties.Settings.Default.ShowHasReceiptColumn) { return; }
 
-            // Get receipt path from items list (multiple items)
-            if (jsonObject[itemsKey] != null)
-            {
-                JArray items = (JArray)jsonObject[itemsKey];
-                string lastItem = items.Last.ToString();
-                if (lastItem.StartsWith(ReadOnlyVariables.Receipt_text))
-                {
-                    receiptPath = lastItem;
-                }
-            }
-            // Get receipt path from Tag (single item)
-            else if (jsonObject[tagKey] != null)
-            {
-                receiptPath = jsonObject[tagKey].ToString();
-            }
-
-            DataGridViewCell lastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 1];
-
-            string processedReceipt = ReceiptManager.ProcessReceiptTextFromRowTag(receiptPath);
-
+            DataGridViewCell lastCell = row.Cells[row.DataGridView.Columns.Count - 1];
+            SetReceiptStatusSymbol(lastCell, processedReceipt);
+        }
+        private static void SetReceiptStatusSymbol(DataGridViewCell cell, string processedReceipt)
+        {
             if (!string.IsNullOrEmpty(processedReceipt) && File.Exists(processedReceipt))
             {
-                lastCell.Value = "✓";
-                lastCell.Style.ForeColor = CustomColors.AccentGreen;
+                cell.Value = "✓";
+                cell.Style.ForeColor = CustomColors.AccentGreen;
             }
             else
             {
-                lastCell.Value = "✗";
-                lastCell.Style.ForeColor = CustomColors.AccentRed;
+                cell.Value = "✗";
+                cell.Style.ForeColor = CustomColors.AccentRed;
             }
 
-            lastCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            cell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        }
+        public void SetHasReceiptColumnVisibilty()
+        {
+            bool showReceipts = Properties.Settings.Default.ShowHasReceiptColumn;
+            Purchase_DataGridView.Columns[Column.HasReceipt.ToString()].Visible = showReceipts;
+            Sale_DataGridView.Columns[Column.HasReceipt.ToString()].Visible = showReceipts;
+
+            if (!showReceipts) { return; }
+
+            foreach (DataGridViewRow row in GetAllRows())
+            {
+                DataGridViewCell lastCell = row.Cells[row.DataGridView.Columns.Count - 1];
+                string? receiptPath = ReceiptManager.GetReceiptPathFromRow(row);
+                SetReceiptStatusSymbol(lastCell, receiptPath);
+            }
         }
 
         // Form event handlers
@@ -1602,8 +1615,10 @@ namespace Sales_Tracker
             {
                 Dictionary<string, object> rowData = [];
 
-                foreach (DataGridViewCell cell in row.Cells)
+                // Iterate through all cells except the last one (Has receipt column)
+                for (int i = 0; i < row.Cells.Count - 1; i++)
                 {
+                    DataGridViewCell cell = row.Cells[i];
                     if (cell.Value?.ToString() == ReadOnlyVariables.Show_text && cell.Tag != null)
                     {
                         rowData[noteTextKey] = cell.Tag;

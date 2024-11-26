@@ -16,52 +16,45 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void SaveUserSettings(bool includeGeneralFormForLanguage)
         {
-            // Check if language changed
             if (Properties.Settings.Default.Language != General_Form.Instance.Language_TextBox.Text)
             {
                 UpdateLanguage(includeGeneralFormForLanguage);
             }
 
-            // Check if show tooltips setting changed
             if (Properties.Settings.Default.ShowTooltips != General_Form.Instance.ShowTooltips_CheckBox.Checked)
             {
                 Properties.Settings.Default.ShowTooltips = General_Form.Instance.ShowTooltips_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the show tooltips setting");
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Show tooltips' setting");
             }
 
-            // Check if debug info setting changed
             if (Properties.Settings.Default.ShowDebugInfo != General_Form.Instance.ShowDebugInfo_CheckBox.Checked)
             {
                 Properties.Settings.Default.ShowDebugInfo = General_Form.Instance.ShowDebugInfo_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the debug info setting");
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Show debug info' setting");
             }
 
-            // Check if anonymous information setting changed
             if (Properties.Settings.Default.SendAnonymousInformation != General_Form.Instance.SendAnonymousInformation_CheckBox.Checked)
             {
                 Properties.Settings.Default.SendAnonymousInformation = General_Form.Instance.SendAnonymousInformation_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the anonymous information setting");
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Send anonymous information' setting");
             }
 
-            // Check if purchase receipts setting changed
             if (Properties.Settings.Default.PurchaseReceipts != General_Form.Instance.PurchaseReceipts_CheckBox.Checked)
             {
                 Properties.Settings.Default.PurchaseReceipts = General_Form.Instance.PurchaseReceipts_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the purchase receipts setting");
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Purchase receipts' setting");
             }
 
-            // Check if sales receipts setting changed
-            if (Properties.Settings.Default.SalesReceipts != General_Form.Instance.SalesReceipts_CheckBox.Checked)
+            if (Properties.Settings.Default.SaleReceipts != General_Form.Instance.SalesReceipts_CheckBox.Checked)
             {
-                Properties.Settings.Default.SalesReceipts = General_Form.Instance.SalesReceipts_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the sales receipts setting");
+                Properties.Settings.Default.SaleReceipts = General_Form.Instance.SalesReceipts_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Sale receipts' setting");
             }
 
-            // Check if animate buttons setting changed
             if (Properties.Settings.Default.AnimateButtons != General_Form.Instance.AnimateButtons_CheckBox.Checked)
             {
                 Properties.Settings.Default.AnimateButtons = General_Form.Instance.AnimateButtons_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the animate buttons setting");
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Animate buttons' setting");
 
                 Settings_Form.Instance.AnimateButtons();
                 MainMenu_Form.Instance.AnimateButtons();
@@ -71,18 +64,24 @@ namespace Sales_Tracker.Classes
                 }
             }
 
-            // Check if currency changed
+            if (Properties.Settings.Default.ShowHasReceiptColumn != General_Form.Instance.ShowHasReceiptColumn_CheckBox.Checked)
+            {
+                Properties.Settings.Default.ShowHasReceiptColumn = General_Form.Instance.ShowHasReceiptColumn_CheckBox.Checked;
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Show has receipt column' setting");
+
+                MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
+            }
+
             string oldCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
             if (oldCurrency != General_Form.Instance.Currency_TextBox.Text)
             {
                 UpdateCurrency(oldCurrency);
             }
 
-            // Check if file encryption setting changed
             if (Properties.Settings.Default.EncryptFiles != Security_Form.Instance.EncryptFiles_CheckBox.Checked)
             {
                 Properties.Settings.Default.EncryptFiles = Security_Form.Instance.EncryptFiles_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed file encryption setting");
+                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed 'file encryption' setting");
             }
         }
 

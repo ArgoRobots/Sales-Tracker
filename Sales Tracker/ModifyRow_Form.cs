@@ -131,8 +131,8 @@ namespace Sales_Tracker
                 }
                 if (addedReceipt)
                 {
-                    ReceiptsManager.SaveReceiptInFile(receiptFilePath);
-                    ReceiptsManager.AddReceiptToTag(selectedRow, receiptFilePath);
+                    (string newPath, bool _) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
+                    ReceiptsManager.AddReceiptToTag(selectedRow, newPath);
                 }
             }
 
@@ -210,7 +210,11 @@ namespace Sales_Tracker
                 SecondPanel.Left = (ClientSize.Width - SecondPanel.Width) / 2;
             }
 
-            if (selectedRow.Tag != null && SelectedReceipt_Label != null)
+            if (receiptFilePath == "")
+            {
+                RemoveReceiptLabel();
+            }
+            else if (selectedRow.Tag != null && SelectedReceipt_Label != null)
             {
                 containsReceipt = true;
                 ShowReceiptLabel(Path.GetFileName(receiptFilePath));
@@ -751,6 +755,171 @@ namespace Sales_Tracker
             Panel.Controls.Remove(Warning_Label);
         }
 
+        // Save in row
+        private void SaveInRow()
+        {
+            IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
+
+            if (SecondPanel != null)
+            {
+                allControls = allControls.Concat(SecondPanel.Controls.Cast<Control>());
+            }
+            if (notes)
+            {
+                allControls = allControls.Concat(Controls.OfType<Guna2TextBox>());
+            }
+
+            foreach (Control control in allControls)
+            {
+                if (control is Guna2TextBox textBox)
+                {
+                    string column = textBox.Name;
+
+                    if (column == MainMenu_Form.Column.PricePerUnit.ToString() ||
+                        column == MainMenu_Form.Column.Shipping.ToString() ||
+                        column == MainMenu_Form.Column.Tax.ToString() ||
+                        column == MainMenu_Form.Column.Fee.ToString() ||
+                        column == MainMenu_Form.Column.Total.ToString())
+                    {
+                        ProcessNumericColumn(textBox, column);
+                    }
+                    else if (column == MainMenu_Form.Column.Product.ToString())
+                    {
+                        ProcessProductColumn(textBox);
+                    }
+                    else if (column == Products_Form.Column.ProductCategory.ToString())
+                    {
+                        ProcessProductCategoryColumn(textBox, allControls);
+                    }
+                    else if (column == MainMenu_Form.Column.Note.ToString())
+                    {
+                        ProcessNoteColumn(textBox);
+                    }
+                    else
+                    {
+                        selectedRow.Cells[column].Value = textBox.Text.Trim();
+                    }
+                }
+                else if (control is Guna2ComboBox comboBox)
+                {
+                    string columnName = comboBox.Name;
+                    selectedRow.Cells[columnName].Value = comboBox.SelectedItem.ToString().Trim();
+                }
+                else if (control is Guna2DateTimePicker datePicker)
+                {
+                    string columnName = datePicker.Name;
+                    selectedRow.Cells[columnName].Value = Tools.FormatDate(datePicker.Value);
+                }
+            }
+            Close();
+        }
+        private void ProcessNumericColumn(Guna2TextBox textBox, string column)
+        {
+            if (decimal.TryParse(textBox.Text.Trim(), out decimal number))
+            {
+                selectedRow.Cells[column].Value = string.Format("{0:N2}", number);
+            }
+        }
+        private void ProcessProductColumn(Guna2TextBox textBox)
+        {
+            string productName = textBox.Text.Contains('>')
+                ? textBox.Text.Split('>')[1].Trim()
+                : textBox.Text.Trim();
+
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases)
+            {
+                UpdateItemsInTransaction(productName, MainMenu_Form.Instance.CategoryPurchaseList, false);
+            }
+            else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
+            {
+                UpdateItemsInTransaction(productName, MainMenu_Form.Instance.CategorySaleList, false);
+            }
+            else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                string productColumn = MainMenu_Form.Column.Product.ToString();
+                selectedRow.Cells[productColumn].Value = productName;
+            }
+        }
+        private void ProcessProductCategoryColumn(Guna2TextBox textBox, IEnumerable<Control> allControls)
+        {
+            List<Category> categoryList = [];
+            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
+            {
+                categoryList = MainMenu_Form.Instance.CategoryPurchaseList;
+            }
+            else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductSales)
+            {
+                categoryList = MainMenu_Form.Instance.CategorySaleList;
+            }
+
+            string newCategoryName = textBox.Text.Trim();
+            string newProductName = allControls.FirstOrDefault(item => item.Name == Products_Form.Column.ProductName.ToString())?.Text;
+
+            Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, newProductName);
+            Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, newProductName);
+
+            if (category.Name != textBox.Text)
+            {
+                // Remove product from old category
+                category.ProductList.Remove(product);
+
+                // Get new category
+                Category newCategory;
+                if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
+                    MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
+                {
+                    newCategory = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == textBox.Text);
+                }
+                else
+                {
+                    newCategory = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == textBox.Text);
+                }
+
+                // Add product to new category
+                newCategory.ProductList.Add(product);
+
+                // Update all instances in DataGridViews
+                string categoryColumn = MainMenu_Form.Column.Category.ToString();
+                string nameColumn = MainMenu_Form.Column.Product.ToString();
+                foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
+                {
+                    if (row.Cells[categoryColumn].Value.ToString() == category.Name
+                        && row.Cells[nameColumn].Value.ToString() == product.Name)
+                    {
+                        row.Cells[categoryColumn].Value = newCategory.Name;
+                    }
+                }
+            }
+
+            MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
+
+            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
+            {
+                UpdateItemsInTransaction(product.Name, MainMenu_Form.Instance.CategoryPurchaseList, true);
+            }
+            else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductSales)
+            {
+                UpdateItemsInTransaction(product.Name, MainMenu_Form.Instance.CategorySaleList, true);
+            }
+        }
+        private void ProcessNoteColumn(Guna2TextBox textBox)
+        {
+            DataGridViewCell cell = selectedRow.Cells[MainMenu_Form.Column.Note.ToString()];
+
+            if (textBox.Text == "")
+            {
+                cell.Value = ReadOnlyVariables.EmptyCell;
+                DataGridViewManager.RemoveUnderlineFromCell(cell);
+            }
+            else
+            {
+                cell.Value = ReadOnlyVariables.Show_text;
+                DataGridViewManager.AddUnderlineToCell(cell);
+            }
+
+            cell.Tag = textBox.Text.Trim();
+        }
+
         // Methods
         private void ValidateInputs(object sender, EventArgs e)
         {
@@ -787,203 +956,50 @@ namespace Sales_Tracker
             }
             Save_Button.Enabled = true;
         }
-        private void SaveInRow()
-        {
-            IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
-
-            // If SecondPanel is not null, concatenate its controls
-            if (SecondPanel != null)
-            {
-                allControls = allControls.Concat(SecondPanel.Controls.Cast<Control>());
-            }
-            if (notes)
-            {
-                allControls = allControls.Concat(Controls.OfType<Guna2TextBox>());
-            }
-
-            foreach (Control control in allControls)
-            {
-                if (control is Guna2TextBox textBox)
-                {
-                    string column = textBox.Name;
-
-                    if (column == MainMenu_Form.Column.PricePerUnit.ToString() ||
-                        column == MainMenu_Form.Column.Shipping.ToString() ||
-                        column == MainMenu_Form.Column.Tax.ToString() ||
-                        column == MainMenu_Form.Column.Fee.ToString() ||
-                        column == MainMenu_Form.Column.Total.ToString())
-                    {
-                        // Format the number with two decimal places
-                        if (decimal.TryParse(textBox.Text.Trim(), out decimal number))
-                        {
-                            selectedRow.Cells[column].Value = string.Format("{0:N2}", number);
-                        }
-                    }
-                    else if (column == MainMenu_Form.Column.Product.ToString())
-                    {
-                        string productName = textBox.Text.Contains('>')
-                            ? textBox.Text.Split('>')[1].Trim()
-                            : textBox.Text.Trim();
-
-                        if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases)
-                        {
-                            UpdateItemsInTransaction(selectedRow, productName, MainMenu_Form.Instance.CategoryPurchaseList, false);
-                        }
-                        else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
-                        {
-                            UpdateItemsInTransaction(selectedRow, productName, MainMenu_Form.Instance.CategorySaleList, false);
-                        }
-                        else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
-                        {
-                            string productColumn = MainMenu_Form.Column.Product.ToString();
-                            selectedRow.Cells[productColumn].Value = productName;
-                        }
-                    }
-                    else if (column == Products_Form.Column.ProductCategory.ToString())
-                    {
-                        List<Category> categoryList = [];
-                        if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
-                        {
-                            categoryList = MainMenu_Form.Instance.CategoryPurchaseList;
-                        }
-                        else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductSales)
-                        {
-                            categoryList = MainMenu_Form.Instance.CategorySaleList;
-                        }
-
-                        string newCategoryName = textBox.Text.Trim();
-                        string newProductName = allControls.FirstOrDefault(item => item.Name == Products_Form.Column.ProductName.ToString())?.Text;
-
-                        Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, newProductName);
-                        Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, newProductName);
-
-                        // If product was moved to a different category
-                        if (category.Name != textBox.Text)
-                        {
-                            // Remove product from old category
-                            category.ProductList.Remove(product);
-
-                            // Get new category
-                            Category newCategory;
-                            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales ||
-                                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ProductSales)
-                            {
-                                newCategory = MainMenu_Form.Instance.CategorySaleList.FirstOrDefault(c => c.Name == textBox.Text);
-                            }
-                            else
-                            {
-                                newCategory = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == textBox.Text);
-                            }
-
-                            // Add product to new category
-                            newCategory.ProductList.Add(product);
-
-                            // Update all instances in DataGridViews
-                            string categoryColumn = MainMenu_Form.Column.Category.ToString();
-                            string nameColumn = MainMenu_Form.Column.Product.ToString();
-                            foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
-                            {
-                                if (row.Cells[categoryColumn].Value.ToString() == category.Name
-                                    && row.Cells[nameColumn].Value.ToString() == product.Name)
-                                {
-                                    row.Cells[categoryColumn].Value = newCategory.Name;
-                                }
-                            }
-                        }
-
-                        MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
-
-                        if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
-                        {
-                            UpdateItemsInTransaction(selectedRow, product.Name, MainMenu_Form.Instance.CategoryPurchaseList, true);
-                        }
-                        else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductSales)
-                        {
-                            UpdateItemsInTransaction(selectedRow, product.Name, MainMenu_Form.Instance.CategorySaleList, true);
-                        }
-                    }
-                    else if (column == MainMenu_Form.Column.Note.ToString())
-                    {
-                        DataGridViewCell cell = selectedRow.Cells[column];
-
-                        if (textBox.Text == "")
-                        {
-                            cell.Value = ReadOnlyVariables.EmptyCell;
-                            DataGridViewManager.RemoveUnderlineFromCell(cell);
-                        }
-                        else
-                        {
-                            cell.Value = ReadOnlyVariables.Show_text;
-                            DataGridViewManager.AddUnderlineToCell(cell);
-                        }
-
-                        cell.Tag = textBox.Text.Trim();
-                    }
-                    else
-                    {
-                        selectedRow.Cells[column].Value = textBox.Text.Trim();
-                    }
-                }
-                else if (control is Guna2ComboBox comboBox)
-                {
-                    string columnName = comboBox.Name;
-                    selectedRow.Cells[columnName].Value = comboBox.SelectedItem.ToString().Trim();
-                }
-                else if (control is Guna2DateTimePicker datePicker)
-                {
-                    string columnName = datePicker.Name;
-                    selectedRow.Cells[columnName].Value = Tools.FormatDate(datePicker.Value);
-                }
-            }
-            Close();
-        }
-        private void UpdateItemsInTransaction(DataGridViewRow row, string productName, List<Category> categoryList, bool isProduct)
+        private void UpdateItemsInTransaction(string productName, List<Category> categoryList, bool isProduct)
         {
             string productColumn = isProduct ? Products_Form.Column.ProductName.ToString() : MainMenu_Form.Column.Product.ToString();
-            row.Cells[productColumn].Value = productName;
+            selectedRow.Cells[productColumn].Value = productName;
 
             string categoryColumn = isProduct ? Products_Form.Column.ProductCategory.ToString() : MainMenu_Form.Column.Category.ToString();
             string category = MainMenu_Form.GetCategoryNameProductIsFrom(categoryList, productName);
-            row.Cells[categoryColumn].Value = category;
+            selectedRow.Cells[categoryColumn].Value = category;
 
             string countryColumn = isProduct ? Products_Form.Column.CountryOfOrigin.ToString() : MainMenu_Form.Column.Country.ToString();
             string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName);
-            row.Cells[countryColumn].Value = country;
+            selectedRow.Cells[countryColumn].Value = country;
 
             string companyColumn = isProduct ? Products_Form.Column.CompanyOfOrigin.ToString() : MainMenu_Form.Column.Company.ToString();
             string company = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName);
-            row.Cells[companyColumn].Value = company;
+            selectedRow.Cells[companyColumn].Value = company;
 
-            foreach (DataGridViewRow mainRow in MainMenu_Form.Instance.GetAllRows())
+            if (selectedRow.Tag is not (List<string> itemList, TagData tagData))
             {
-                if (mainRow.Tag is not (List<string> itemList, TagData tagData))
+                return;
+            }
+
+            for (int i = 0; i < itemList.Count; i++)
+            {
+                string item = itemList[i];
+                if (item.Contains(ReadOnlyVariables.Receipt_text))
                 {
                     continue;
                 }
 
-                for (int i = 0; i < itemList.Count; i++)
+                string[] items = item.Split(',');
+
+                if (items[0] == oldProductName && items[1] == oldCategoryName)
                 {
-                    string item = itemList[i];
-                    if (item.Contains(ReadOnlyVariables.Receipt_text))
-                    {
-                        continue;
-                    }
+                    items[0] = productName;
+                    items[1] = category;
+                    items[2] = country;
+                    items[3] = company;
 
-                    string[] items = item.Split(',');
-
-                    if (items[0] == oldProductName && items[1] == oldCategoryName)
-                    {
-                        items[0] = productName;
-                        items[1] = category;
-                        items[2] = country;
-                        items[3] = company;
-
-                        itemList[i] = string.Join(",", items);
-                    }
+                    itemList[i] = string.Join(",", items);
                 }
-
-                mainRow.Tag = (itemList, tagData);
             }
+
+            selectedRow.Tag = (itemList, tagData);
         }
         private void UpdateRow()
         {
@@ -1001,6 +1017,8 @@ namespace Sales_Tracker
                 {
                     DataGridViewManager.UpdateRowWithNoItems(selectedRow);
                 }
+
+                MainMenu_Form.SetHasReceiptColumn(selectedRow, receiptFilePath);
 
                 MainMenu_Form.IsProgramLoading = false;
             }
