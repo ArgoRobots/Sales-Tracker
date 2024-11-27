@@ -79,64 +79,56 @@ namespace Sales_Tracker.UI
         }
         private static void ValidateNumbersOnly(object sender, EventArgs e)
         {
-            if (sender is Guna2TextBox textBox)
-            {
-                int cursorPosition = textBox.SelectionStart;
-                string cleanedText = new(textBox.Text.Where(char.IsDigit).ToArray());
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+            int cursorPosition = textBox.SelectionStart;
+            string cleanedText = new(textBox.Text.Where(char.IsDigit).ToArray());
 
-                if (textBox.Text != cleanedText)
-                {
-                    textBox.Text = cleanedText;
-                    textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
-                }
+            if (textBox.Text != cleanedText)
+            {
+                textBox.Text = cleanedText;
+                textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
             }
         }
         private static void ValidateDecimalNumbers(object sender, EventArgs e)
         {
-            if (sender is Guna2TextBox textBox)
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+
+            int cursorPosition = textBox.SelectionStart;
+            string text = textBox.Text;
+            string cleanedText = CleanDecimalNumber(text);
+
+            if (text != cleanedText)
             {
-                int cursorPosition = textBox.SelectionStart;
-                string text = textBox.Text;
-
-                string cleanedText = CleanDecimalNumber(text);
-
-                if (text != cleanedText)
-                {
-                    textBox.Text = cleanedText;
-                    textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
-                }
+                textBox.Text = cleanedText;
+                textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
             }
         }
         private static void ValidateDecimalAndNegativeNumbers(object sender, EventArgs e)
         {
-            if (sender is Guna2TextBox textBox)
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+
+            int cursorPosition = textBox.SelectionStart;
+            string text = textBox.Text;
+            string cleanedText = CleanDecimalAndNegativeNumber(text);
+
+            if (text != cleanedText)
             {
-                int cursorPosition = textBox.SelectionStart;
-                string text = textBox.Text;
-
-                string cleanedText = CleanDecimalAndNegativeNumber(text);
-
-                if (text != cleanedText)
-                {
-                    textBox.Text = cleanedText;
-                    textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
-                }
+                textBox.Text = cleanedText;
+                textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
             }
         }
         private static void ValidateLettersOnly(object sender, EventArgs e)
         {
-            if (sender is Guna2TextBox textBox)
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+
+            int cursorPosition = textBox.SelectionStart;
+            string text = textBox.Text;
+            string cleanedText = new(text.Where(c => char.IsLetter(c) || c == ' ').ToArray());
+
+            if (text != cleanedText)
             {
-                int cursorPosition = textBox.SelectionStart;
-                string text = textBox.Text;
-
-                string cleanedText = new(text.Where(c => char.IsLetter(c) || c == ' ').ToArray());
-
-                if (text != cleanedText)
-                {
-                    textBox.Text = cleanedText;
-                    textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
-                }
+                textBox.Text = cleanedText;
+                textBox.SelectionStart = Math.Min(cursorPosition, cleanedText.Length);
             }
         }
         private static string CleanDecimalNumber(string input)

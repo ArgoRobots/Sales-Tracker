@@ -52,8 +52,8 @@ namespace Sales_Tracker
             TextBoxManager.Attach(Accountant_TextBox);
             TextBoxManager.Attach(Search_TextBox);
 
-            accountant_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
-            accountant_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView); };
+            accountant_DataGridView.RowsAdded += (_, _) => LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView);
+            accountant_DataGridView.RowsRemoved += (_, _) => LabelManager.ShowTotalLabel(Total_Label, accountant_DataGridView);
         }
         private void SetAccessibleDescriptions()
         {

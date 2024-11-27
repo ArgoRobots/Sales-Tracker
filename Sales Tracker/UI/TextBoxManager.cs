@@ -26,6 +26,7 @@ namespace Sales_Tracker.UI
             public int CursorPosition => _cursorPosition;
         }
 
+        // Main methods
         /// <summary>
         /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
         /// </summary>
@@ -38,6 +39,7 @@ namespace Sales_Tracker.UI
 
                 InitializeTextBox(textBox);
                 AttachEventHandlers(textBox);
+                TextBoxTooltip.SetOverflowTooltip(textBox);
             }
         }
 
@@ -51,22 +53,34 @@ namespace Sales_Tracker.UI
             isTextChangedByUserFlags[textBox] = true;
             undoStacks[textBox].Push(new TextState(textBox.Text, textBox.SelectionStart));
         }
-
-        /// <summary>
-        /// Attaches all required event handlers to the TextBox.
-        /// </summary>
         private static void AttachEventHandlers(Guna2TextBox textBox)
         {
             textBox.TextChanged += TextBox_TextChanged;
-            textBox.KeyDown += TextBox_KeyDown;
             textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
+            textBox.KeyDown += TextBox_KeyDown;
         }
-
-        /// <summary>
-        /// Checks if the TextBox already has keyboard shortcuts attached.
-        /// </summary>
         private static bool IsAttached(Guna2TextBox textBox) => undoStacks.ContainsKey(textBox);
 
+        // TextBox event handlers
+
+        /// <summary>
+        /// Handles text changes and manages undo/redo stacks.
+        /// </summary>
+        private static void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)sender;
+
+            if (!isTextChangedByUserFlags[textBox]) { return; }
+
+            Stack<TextState> undoStack = undoStacks[textBox];
+            Stack<TextState> redoStack = redoStacks[textBox];
+
+            if (undoStack.Count == 0 || undoStack.Peek().Text != textBox.Text)
+            {
+                UpdateUndoStack(textBox, undoStack);
+                redoStack.Clear();
+            }
+        }
         /// <summary>
         /// Handles PreviewKeyDown event to ensure keyboard shortcuts work properly.
         /// </summary>
@@ -78,7 +92,6 @@ namespace Sales_Tracker.UI
                 e.IsInputKey = true;
             }
         }
-
         /// Handles KeyDown event for keyboard shortcuts and text manipulation.
         /// </summary>
         private static void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -109,9 +122,22 @@ namespace Sales_Tracker.UI
             else
             {
                 Guna2TextBox textBox = (Guna2TextBox)sender;
-                HandleKeyboardShortcut(textBox, e);
+                if (e.Control)
+                {
+                    switch (e.KeyCode)
+                    {
+                        case Keys.Z when e.Shift:
+                            Redo(textBox);
+                            break;
+                        case Keys.Z:
+                            Undo(textBox);
+                            break;
+                    }
+                }
             }
         }
+
+        // Methods
         private static bool IsInputKey(Keys keyData)
         {
             switch (keyData)
@@ -139,43 +165,7 @@ namespace Sales_Tracker.UI
                    char.IsWhiteSpace(keyChar);
         }
 
-        /// <summary>
-        /// Processes keyboard shortcuts for text manipulation operations.
-        /// </summary>
-        private static void HandleKeyboardShortcut(Guna2TextBox textBox, KeyEventArgs e)
-        {
-            if (e.Control)
-            {
-                switch (e.KeyCode)
-                {
-                    case Keys.Z when e.Shift:
-                        Redo(textBox);
-                        break;
-                    case Keys.Z:
-                        Undo(textBox);
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Handles text changes and manages undo/redo stacks.
-        /// </summary>
-        private static void TextBox_TextChanged(object sender, EventArgs e)
-        {
-            Guna2TextBox textBox = (Guna2TextBox)sender;
-            if (!isTextChangedByUserFlags[textBox]) { return; }
-
-            Stack<TextState> undoStack = undoStacks[textBox];
-            Stack<TextState> redoStack = redoStacks[textBox];
-
-            if (undoStack.Count == 0 || undoStack.Peek().Text != textBox.Text)
-            {
-                UpdateUndoStack(textBox, undoStack);
-                redoStack.Clear();
-            }
-        }
-
+        // Stack methods (undo, redo)
         /// <summary>
         /// Updates the undo stack and manages its size.
         /// </summary>

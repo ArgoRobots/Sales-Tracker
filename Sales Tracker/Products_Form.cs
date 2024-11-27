@@ -52,11 +52,11 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(CompanyOfOrigin_TextBox);
 
-            purchase_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
-            purchase_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView); };
+            purchase_DataGridView.RowsAdded += (_, _) => LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView);
+            purchase_DataGridView.RowsRemoved += (_, _) => LabelManager.ShowTotalLabel(Total_Label, purchase_DataGridView);
 
-            sale_DataGridView.RowsAdded += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
-            sale_DataGridView.RowsRemoved += (_, _) => { LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView); };
+            sale_DataGridView.RowsAdded += (_, _) => LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView);
+            sale_DataGridView.RowsRemoved += (_, _) => LabelManager.ShowTotalLabel(Total_Label, sale_DataGridView);
 
             TextBoxManager.Attach(Search_TextBox);
         }

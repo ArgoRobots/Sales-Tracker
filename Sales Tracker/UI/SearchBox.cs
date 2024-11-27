@@ -24,6 +24,7 @@ namespace Sales_Tracker.UI
         private static List<SearchResult> resultList;
         private static int _maxHeight;
         private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
+        private static byte extraWidth = 200;
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
@@ -44,7 +45,7 @@ namespace Sales_Tracker.UI
                 noResults_Label.Text = _translateText ? LanguageManager.TranslateSingleString("No results") : "No results";
             }
 
-            textBox.Click += (_, _) => { ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically); };
+            textBox.Click += (_, _) => ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
             textBox.GotFocus += (_, _) =>
             {
                 if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
@@ -55,7 +56,7 @@ namespace Sales_Tracker.UI
             };
             textBox.TextChanged += SearchTextBoxChanged;
             textBox.PreviewKeyDown += AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-            textBox.KeyDown += (sender, e) => { SearchBoxTextBox_KeyDown(e); };
+            textBox.KeyDown += (sender, e) => SearchBoxTextBox_KeyDown(e);
         }
 
         // List to store and reuse controls
@@ -271,7 +272,7 @@ namespace Sales_Tracker.UI
             }
 
             // Set width to match textBox
-            int containerWidth = textBox.Width + (increaseWidth ? 100 : 0);
+            int containerWidth = textBox.Width + (increaseWidth ? extraWidth : 0);
             _searchResultBoxContainer.Width = containerWidth;
             _searchResultBox.Width = containerWidth - 3;
 
@@ -332,7 +333,7 @@ namespace Sales_Tracker.UI
         }
         private static int CalculateControlWidth(int count, Guna2TextBox textBox, bool increaseWidth)
         {
-            int baseWidth = textBox.Width + (increaseWidth ? 100 : 0);
+            int baseWidth = textBox.Width + (increaseWidth ? extraWidth : 0);
             if (count > 12)
             {
                 return baseWidth - SystemInformation.VerticalScrollBarWidth - 4;

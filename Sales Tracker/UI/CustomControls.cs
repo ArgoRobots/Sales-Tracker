@@ -299,7 +299,7 @@ namespace Sales_Tracker.UI
         private static void ConstructRecentlyOpenedMenu()
         {
             _recentlyOpenedMenu = ConstructPanelForMenu(new Size(_panelWidth, 100), "recentlyOpenedMenu_Panel");
-            _recentlyOpenedMenu.MouseEnter += (_, _) => { CascadingMenu.KeepMenuOpen(); };
+            _recentlyOpenedMenu.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
         }
         private static void SetRecentlyOpenedMenu()
         {
@@ -326,7 +326,7 @@ namespace Sales_Tracker.UI
                     string text = Path.GetFileNameWithoutExtension(projectDir);
                     Guna2Button menuBtn = ConstructBtnForMenu(text, _panelBtnWidth, true, flowPanel);
                     menuBtn.Tag = projectDir;
-                    menuBtn.MouseEnter += (_, _) => { CascadingMenu.KeepMenuOpen(); };
+                    menuBtn.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
                     menuBtn.Click += (sender, e) =>
                     {
                         Guna2Button button = (Guna2Button)sender;

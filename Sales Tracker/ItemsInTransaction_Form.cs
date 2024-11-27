@@ -42,9 +42,9 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
 
             // Attach event handlers to detect changes in DataGridView
-            Items_DataGridView.CellValueChanged += (_, _) => { hasChanges = true; };
-            Items_DataGridView.RowsAdded += (_, _) => { hasChanges = true; };
-            Items_DataGridView.RowsRemoved += (_, _) => { hasChanges = true; };
+            Items_DataGridView.CellValueChanged += (_, _) => hasChanges = true;
+            Items_DataGridView.RowsAdded += (_, _) => hasChanges = true;
+            Items_DataGridView.RowsRemoved += (_, _) => hasChanges = true;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
         }

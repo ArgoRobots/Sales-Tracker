@@ -9,7 +9,6 @@ namespace Sales_Tracker.UI
     {
         // Properties
         private static readonly Dictionary<Control, Guna2HtmlToolTip> tooltips = [];
-        private static Control? lastControl = null;
 
         // Methods
         /// <summary>
@@ -19,20 +18,12 @@ namespace Sales_Tracker.UI
         {
             Guna2HtmlToolTip tooltip = new()
             {
-                // Basic settings
                 TitleFont = new Font("Segoe UI", 10, FontStyle.Bold),
                 TitleForeColor = CustomColors.Text,
                 BackColor = CustomColors.ControlBack,
                 ForeColor = CustomColors.Text,
                 BorderColor = CustomColors.ControlPanelBorder,
                 Font = new Font("Segoe UI", 10),
-
-                // Animation settings
-                UseAnimation = true,
-                UseFading = true,
-
-                // Timing settings
-                AutoPopDelay = 5000,
                 InitialDelay = 500,
                 ReshowDelay = 100
             };
@@ -49,59 +40,14 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static void SetToolTip(Control control, string title, string message)
         {
-            if (!tooltips.TryGetValue(control, out Guna2HtmlToolTip? tooltip))
+            if (!tooltips.TryGetValue(control, out Guna2HtmlToolTip tooltip))
             {
                 tooltip = CreateTooltip();
                 tooltips[control] = tooltip;
-
-                control.MouseEnter += Control_MouseEnter;
-                control.MouseLeave += Control_MouseLeave;
             }
 
             tooltip.ToolTipTitle = title;
             tooltip.SetToolTip(control, message);
-        }
-        private static void Control_MouseEnter(object sender, EventArgs e)
-        {
-            Control control = (Control)sender;
-
-            // Hide the previous tooltip if a new one is shown before it closes naturally
-            if (lastControl != control && lastControl != null && tooltips.TryGetValue(lastControl, out Guna2HtmlToolTip? lastTooltip))
-            {
-                lastTooltip.Hide(lastControl);
-            }
-            lastControl = control;
-        }
-        private static void Control_MouseLeave(object sender, EventArgs e)
-        {
-            Control control = (Control)sender;
-
-            if (!tooltips.TryGetValue(control, out Guna2HtmlToolTip tooltip))
-            {
-                return;
-            }
-
-            // Add delay to prevent flickering when moving mouse quickly
-            Task.Delay(50).ContinueWith(_ =>
-            {
-                // Check if control is still valid before invoking
-                if (control.IsDisposed || !control.IsHandleCreated)
-                {
-                    return;
-                }
-
-                control.BeginInvoke(() =>
-                {
-                    if (!control.ClientRectangle.Contains(control.PointToClient(Control.MousePosition)))
-                    {
-                        tooltip.Hide(control);
-                        if (lastControl == control)
-                        {
-                            lastControl = null;
-                        }
-                    }
-                });
-            });
         }
     }
 }
