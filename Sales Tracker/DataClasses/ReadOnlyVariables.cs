@@ -13,8 +13,7 @@ namespace Sales_Tracker.DataClasses
             _receipt_text = "receipt:",
             _show_text = "show",
             _companyName_text = "CompanyName",
-            _noData_text = "No data",
-            _noResults_text = "No results";
+            _noData_text = "No data";
 
         private static readonly byte _offsetRightClickPanel = 30;
         private static readonly byte _paddingRightClickPanel = 5;
@@ -26,7 +25,6 @@ namespace Sales_Tracker.DataClasses
         public static string Show_text => _show_text;
         public static string CompanyName_text => _companyName_text;
         public static string NoData_text => _noData_text;
-        public static string NoResults_text => _noResults_text;
         public static byte OffsetRightClickPanel => _offsetRightClickPanel;
         public static byte PaddingRightClickPanel => _paddingRightClickPanel;
     }

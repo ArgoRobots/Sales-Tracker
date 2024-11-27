@@ -1615,7 +1615,7 @@ namespace Sales_Tracker
             {
                 Dictionary<string, object> rowData = [];
 
-                // Iterate through all cells except the last one (Has receipt column)
+                // Iterate through all cells except the last one ("Has receipt" column)
                 for (int i = 0; i < row.Cells.Count - 1; i++)
                 {
                     DataGridViewCell cell = row.Cells[i];
@@ -1861,12 +1861,16 @@ namespace Sales_Tracker
             _totalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
             LanguageManager.UpdateLanguageForControl(_totalTransactions_Chart);
 
+            string subTitle = "Excludes transactions with free shipping";
+
             LoadChart.LoadShippingCostsForPurchasesChart(_averageShippingCostsForPurchases_Chart, isLineChart);
             _averageShippingCostsForPurchases_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForPurchases;
+            LabelManager.AddChartSubTitle(_averageShippingCostsForPurchases_Chart, subTitle);
             LanguageManager.UpdateLanguageForControl(_averageShippingCostsForPurchases_Chart);
 
             LoadChart.LoadShippingCostsForSalesChart(_averageShippingCostForSales_Chart, isLineChart);
             _averageShippingCostForSales_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForSales;
+            LabelManager.AddChartSubTitle(_averageShippingCostForSales_Chart, subTitle);
             LanguageManager.UpdateLanguageForControl(_averageShippingCostForSales_Chart);
         }
 

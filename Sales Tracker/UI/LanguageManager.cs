@@ -364,7 +364,8 @@ namespace Sales_Tracker.UI
         }
         private static void AdjustLabelPosition(Label label, Rectangle originalBounds)
         {
-            if (label.Name == LabelManager.NoDataLabelName)
+            if (label.Name == LabelManager.NoDataLabelName ||
+                label.Name == LabelManager.ChartSubTitle)
             {
                 return;
             }
