@@ -448,12 +448,14 @@ namespace Sales_Tracker
 
             SetHasReceiptColumn(row, receipt);
         }
-        public static void SetHasReceiptColumn(DataGridViewRow row, string processedReceipt)
+        public static void SetHasReceiptColumn(DataGridViewRow row, string receipt)
         {
             if (!Properties.Settings.Default.ShowHasReceiptColumn) { return; }
 
+            string newReceipt = ReceiptManager.ProcessReceiptTextFromRowTag(receipt);
+
             DataGridViewCell lastCell = row.Cells[row.DataGridView.Columns.Count - 1];
-            SetReceiptStatusSymbol(lastCell, processedReceipt);
+            SetReceiptStatusSymbol(lastCell, newReceipt);
         }
         private static void SetReceiptStatusSymbol(DataGridViewCell cell, string processedReceipt)
         {
