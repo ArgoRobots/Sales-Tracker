@@ -127,7 +127,6 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.Instance.Sales_Button.PerformClick();
             }
-            MainMenu_Form.Instance.SelectedDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             if (panelsForMultipleProducts_List.Count == 0 || !MultipleItems_CheckBox.Checked)
             {
@@ -345,7 +344,7 @@ namespace Sales_Tracker
 
             if (noteLabel == ReadOnlyVariables.Show_text)
             {
-                DataGridViewManager.AddNoteToCell(newRowIndex, note);
+                DataGridViewManager.AddNoteToCell(MainMenu_Form.Instance.SelectedDataGridView, newRowIndex, note);
             }
 
             // Set the tag
@@ -525,7 +524,7 @@ namespace Sales_Tracker
 
             if (noteLabel == ReadOnlyVariables.Show_text)
             {
-                DataGridViewManager.AddNoteToCell(newRowIndex, note);
+                DataGridViewManager.AddNoteToCell(MainMenu_Form.Instance.SelectedDataGridView, newRowIndex, note);
             }
             if (newFilePath != "")
             {

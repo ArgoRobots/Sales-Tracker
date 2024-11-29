@@ -10,7 +10,6 @@ namespace Sales_Tracker
     {
         // Properties
         private readonly MainMenu_Form.SelectedOption oldOption;
-        private readonly Guna2DataGridView oldSelectedDataGridView;
         private readonly List<MainMenu_Form.Column> columnsToLoad = [
             MainMenu_Form.Column.Product,
             MainMenu_Form.Column.Category,
@@ -26,10 +25,7 @@ namespace Sales_Tracker
         {
             InitializeComponent();
             DataGridViewManager.SelectedRowInMainMenu = row;
-
-
             oldOption = MainMenu_Form.Instance.Selected;
-            oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
 
             SetTitle();
 
@@ -65,13 +61,12 @@ namespace Sales_Tracker
         {
             MainMenu_Form.IsProgramLoading = true;
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
 
             if (hasChanges)
             {
                 if (Items_DataGridView.Rows.Count == 0)
                 {
-                    MainMenu_Form.Instance.SelectedDataGridView.Rows.Remove(DataGridViewManager.SelectedRowInMainMenu);
+                    Items_DataGridView.Rows.Remove(DataGridViewManager.SelectedRowInMainMenu);
                 }
                 else
                 {
@@ -79,7 +74,7 @@ namespace Sales_Tracker
                     DataGridViewManager.UpdateRowWithMultipleItems(DataGridViewManager.SelectedRowInMainMenu);
                 }
 
-                DataGridViewManager.DataGridViewRowChanged(MainMenu_Form.Instance.SelectedDataGridView, MainMenu_Form.Instance.Selected);
+                DataGridViewManager.DataGridViewRowChanged(Items_DataGridView, MainMenu_Form.Instance.Selected);
             }
             MainMenu_Form.IsProgramLoading = false;
         }
@@ -93,7 +88,7 @@ namespace Sales_Tracker
         {
             List<string> items = [];
 
-            if (oldSelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, TagData tagData))
+            if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0].Tag is (List<string> existingItems, TagData tagData))
             {
                 string lastItem = null;
                 if (existingItems.Last().StartsWith(ReadOnlyVariables.Receipt_text))
@@ -118,7 +113,7 @@ namespace Sales_Tracker
                     items.Add(lastItem);
                 }
 
-                oldSelectedDataGridView.SelectedRows[0].Tag = (items, tagData);
+                MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0].Tag = (items, tagData);
             }
         }
         private void SetDataGridView(List<string> itemList)
@@ -136,7 +131,6 @@ namespace Sales_Tracker
 
             LoadAllItemsInDataGridView(itemList);
 
-            MainMenu_Form.Instance.SelectedDataGridView = Items_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales
                 ? MainMenu_Form.SelectedOption.ItemsInSale
                 : MainMenu_Form.SelectedOption.ItemsInPurchase;

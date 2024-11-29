@@ -11,7 +11,6 @@ namespace Sales_Tracker
         private static Accountants_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
-        private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Getters
         public static Accountants_Form Instance => _instance;
@@ -24,9 +23,8 @@ namespace Sales_Tracker
             _instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
-            CenterSelectedDataGridView();
+            CenterDataGridView();
             LoadAccountants();
             Theme.SetThemeForForm(this);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
@@ -71,12 +69,11 @@ namespace Sales_Tracker
         private void Accountants_Form_Resize(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            CenterSelectedDataGridView();
+            CenterDataGridView();
         }
         private void Accountants_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
         }
 
         // Event handlers
@@ -86,7 +83,7 @@ namespace Sales_Tracker
             string name = Accountant_TextBox.Text.Trim();
             MainMenu_Form.Instance.AccountantList.Add(name);
             int newRowIndex = accountant_DataGridView.Rows.Add(name);
-            DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            DataGridViewManager.DataGridViewRowsAdded(accountant_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added accountant '{name}'");
@@ -113,7 +110,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(Search_TextBox))
+            if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(accountant_DataGridView, Search_TextBox))
             {
                 LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }
@@ -139,11 +136,11 @@ namespace Sales_Tracker
         };
         private Guna2DataGridView accountant_DataGridView;
         private const byte topForDataGridView = 250;
-        private void CenterSelectedDataGridView()
+        private void CenterDataGridView()
         {
-            if (MainMenu_Form.Instance.SelectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.SelectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
-            MainMenu_Form.Instance.SelectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.SelectedDataGridView.Width) / 2, topForDataGridView);
+            if (accountant_DataGridView == null) { return; }
+            accountant_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
+            accountant_DataGridView.Location = new Point((ClientSize.Width - accountant_DataGridView.Width) / 2, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {
@@ -156,7 +153,6 @@ namespace Sales_Tracker
             accountant_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Accountant;
 
             Controls.Add(accountant_DataGridView);
-            MainMenu_Form.Instance.SelectedDataGridView = accountant_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Accountants;
         }
 

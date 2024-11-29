@@ -504,7 +504,6 @@ namespace Sales_Tracker
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
-
             Log.Write(2, "Argo Sales Tracker has finished starting");
         }
         private void MainMenu_Form_ResizeBegin(object sender, EventArgs e)
@@ -568,9 +567,7 @@ namespace Sales_Tracker
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
             Log.Write(2, "Closing Argo Sales Tracker");
-
             CustomControls.CloseAllPanels(null, null);
-
             Log.SaveLogs();
 
             if (ArgoCompany.AreAnyChangesMade())
@@ -990,7 +987,6 @@ namespace Sales_Tracker
         {
             searchTimer.Stop();
             timerRunning = false;
-
             RefreshDataGridViewAndCharts();
         }
 
@@ -1079,6 +1075,20 @@ namespace Sales_Tracker
         // Search DataGridView properties
         private DateTime? _sortFromDate = null, _sortToDate = null;
         private TimeSpan? _sortTimeSpan = TimeSpan.MaxValue;
+        private static readonly Dictionary<TimeSpan, string> TimeSpanMappings = new()
+        {
+            { TimeSpan.MaxValue, "All Time" },
+            { TimeSpan.FromDays(1), "1 day" },
+            { TimeSpan.FromDays(2), "2 days" },
+            { TimeSpan.FromDays(3), "3 days" },
+            { TimeSpan.FromDays(5), "5 days" },
+            { TimeSpan.FromDays(10), "10 days" },
+            { TimeSpan.FromDays(30), "30 days" },
+            { TimeSpan.FromDays(100), "100 days" },
+            { TimeSpan.FromDays(365), "1 year" },
+            { TimeSpan.FromDays(365 * 2), "2 years" },
+            { TimeSpan.FromDays(365 * 5), "5 years" }
+        };
 
         // Search DataGridView getters
         public DateTime? SortFromDate
@@ -1225,19 +1235,7 @@ namespace Sales_Tracker
         /// </summary>
         private static string? GetTimeSpanText(TimeSpan timeSpan)
         {
-            if (timeSpan == TimeSpan.MaxValue) { return "All Time"; }
-            if (timeSpan == TimeSpan.FromDays(1)) { return "1 day"; }
-            if (timeSpan == TimeSpan.FromDays(2)) { return "2 days"; }
-            if (timeSpan == TimeSpan.FromDays(3)) { return "3 days"; }
-            if (timeSpan == TimeSpan.FromDays(5)) { return "5 days"; }
-            if (timeSpan == TimeSpan.FromDays(10)) { return "10 days"; }
-            if (timeSpan == TimeSpan.FromDays(30)) { return "30 days"; }
-            if (timeSpan == TimeSpan.FromDays(100)) { return "100 days"; }
-            if (timeSpan == TimeSpan.FromDays(365)) { return "1 year"; }
-            if (timeSpan == TimeSpan.FromDays(365 * 2)) { return "2 years"; }
-            if (timeSpan == TimeSpan.FromDays(365 * 5)) { return "5 years"; }
-
-            return null;
+            return TimeSpanMappings.TryGetValue(timeSpan, out string? text) ? text : null;
         }
         public void HideShowingResultsForLabel()
         {
@@ -1510,7 +1508,6 @@ namespace Sales_Tracker
         public Guna2DataGridView SelectedDataGridView
         {
             get => _selectedDataGridView;
-            set => _selectedDataGridView = value;
         }
 
         // DataGridView methods
@@ -1703,7 +1700,6 @@ namespace Sales_Tracker
         public static void SaveListToFile(List<string> list, SelectedOption selected)
         {
             string filePath = DataGridViewManager.GetFilePathForDataGridView(selected);
-
             Directories.WriteLinesToFile(filePath, list);
         }
 

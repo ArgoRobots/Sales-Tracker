@@ -11,7 +11,6 @@ namespace Sales_Tracker
         private static Companies_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
-        private readonly Guna2DataGridView oldSelectedDataGridView;
 
         // Getters
         public static Companies_Form Instance => _instance;
@@ -24,7 +23,6 @@ namespace Sales_Tracker
             _instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
-            oldSelectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
             ConstructDataGridViews();
             CenterSelectedDataGridView();
             LoadCompanies();
@@ -73,7 +71,6 @@ namespace Sales_Tracker
         private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.Instance.Selected = oldOption;
-            MainMenu_Form.Instance.SelectedDataGridView = oldSelectedDataGridView;
         }
         private void Companies_Form_Shown(object sender, EventArgs e)
         {
@@ -88,7 +85,7 @@ namespace Sales_Tracker
             string name = Company_TextBox.Text.Trim();
             MainMenu_Form.Instance.CompanyList.Add(name);
             int newRowIndex = company_DataGridView.Rows.Add(name);
-            DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            DataGridViewManager.DataGridViewRowsAdded(company_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
             Log.Write(3, $"Added company '{name}'");
@@ -115,7 +112,7 @@ namespace Sales_Tracker
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(Search_TextBox))
+            if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(company_DataGridView, Search_TextBox))
             {
                 LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
             }
@@ -123,7 +120,7 @@ namespace Sales_Tracker
             {
                 ShowingResultsFor_Label.Visible = false;
             }
-            LabelManager.ShowTotalLabel(Total_Label, MainMenu_Form.Instance.SelectedDataGridView);
+            LabelManager.ShowTotalLabel(Total_Label, company_DataGridView);
         }
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
         {
@@ -143,9 +140,9 @@ namespace Sales_Tracker
         private const byte topForDataGridView = 250;
         private void CenterSelectedDataGridView()
         {
-            if (MainMenu_Form.Instance.SelectedDataGridView == null) { return; }
-            MainMenu_Form.Instance.SelectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
-            MainMenu_Form.Instance.SelectedDataGridView.Location = new Point((ClientSize.Width - MainMenu_Form.Instance.SelectedDataGridView.Width) / 2, topForDataGridView);
+            if (company_DataGridView == null) { return; }
+            company_DataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
+            company_DataGridView.Location = new Point((ClientSize.Width - company_DataGridView.Width) / 2, topForDataGridView);
         }
         private void ConstructDataGridViews()
         {
@@ -158,7 +155,6 @@ namespace Sales_Tracker
             company_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Company;
 
             Controls.Add(company_DataGridView);
-            MainMenu_Form.Instance.SelectedDataGridView = company_DataGridView;
             MainMenu_Form.Instance.Selected = MainMenu_Form.SelectedOption.Companies;
         }
 

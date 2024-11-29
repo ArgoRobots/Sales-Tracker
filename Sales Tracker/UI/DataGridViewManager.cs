@@ -131,7 +131,7 @@ namespace Sales_Tracker.UI
 
                 case MainMenu_Form.SelectedOption.ItemsInPurchase:
                 case MainMenu_Form.SelectedOption.ItemsInSale:
-                    HandleItemsDeletion(e);
+                    HandleItemsDeletion(sender, e);
                     break;
             }
         }
@@ -139,7 +139,7 @@ namespace Sales_Tracker.UI
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
-            DataGridViewRowChanged(MainMenu_Form.Instance.SelectedDataGridView, MainMenu_Form.Instance.Selected);
+            DataGridViewRowChanged((Guna2DataGridView)sender, MainMenu_Form.Instance.Selected);
 
             // Remove receipt from file
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales && removedRow?.Tag != null)
@@ -224,8 +224,10 @@ namespace Sales_Tracker.UI
             {
                 MainMenu_Form.Instance.ClosePanels();
 
+                Guna2DataGridView grid = (Guna2DataGridView)sender;
+
                 string message;
-                if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
+                if (grid.SelectedRows.Count == 1)
                 {
                     message = "Are you sure you want to delete this row?";
                 }
@@ -238,7 +240,7 @@ namespace Sales_Tracker.UI
                 if (result != CustomMessageBoxResult.Ok)
                 {
                     _doNotDeleteRows = true;
-                    UnselectAllRowsInCurrentDataGridView();
+                    UnselectAllRowsInCurrentDataGridView(grid);
                 }
             }
         }
@@ -438,7 +440,7 @@ namespace Sales_Tracker.UI
 
             LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
         }
-        private static void HandleItemsDeletion(DataGridViewRowCancelEventArgs e)
+        private static void HandleItemsDeletion(object sender, DataGridViewRowCancelEventArgs e)
         {
             string columnName = MainMenu_Form.Column.Product.ToString();
             string productName = e.Row.Cells[columnName].Value?.ToString();
@@ -466,7 +468,8 @@ namespace Sales_Tracker.UI
                 }
 
                 Tools.CloseOpenForm<ItemsInTransaction_Form>();
-                MainMenu_Form.Instance.SelectedDataGridView.Rows.Remove(_selectedRowInMainMenu);
+                Guna2DataGridView grid = (Guna2DataGridView)sender;
+                grid.Rows.Remove(_selectedRowInMainMenu);
             }
             else
             {
@@ -539,7 +542,7 @@ namespace Sales_Tracker.UI
             }
             if (!grid.Rows[info.RowIndex].Selected)
             {
-                UnselectAllRowsInCurrentDataGridView();
+                UnselectAllRowsInCurrentDataGridView(grid);
             }
 
             // Select current row
@@ -549,6 +552,7 @@ namespace Sales_Tracker.UI
         private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
         {
             FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            _rightClickDataGridView_Panel.Tag = grid;  // This is used for the button events
 
             // First, hide all controls
             foreach (Control control in flowPanel.Controls)
@@ -559,7 +563,7 @@ namespace Sales_Tracker.UI
             int currentIndex = 0;
 
             // Add ModifyBtn
-            if (MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
+            if (grid.SelectedRows.Count == 1)
             {
                 rightClickDataGridView_ModifyBtn.Visible = true;
                 flowPanel.Controls.SetChildIndex(rightClickDataGridView_ModifyBtn, currentIndex++);
@@ -583,7 +587,7 @@ namespace Sales_Tracker.UI
 
             // Add ShowItemsBtn
             if (grid.SelectedRows[0].Tag is (List<string>, TagData)
-                && MainMenu_Form.Instance.SelectedDataGridView.SelectedRows.Count == 1)
+                && grid.SelectedRows.Count == 1)
             {
                 rightClickDataGridView_ShowItemsBtn.Visible = true;
                 flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, currentIndex++);
@@ -686,16 +690,16 @@ namespace Sales_Tracker.UI
             }
             return false;
         }
-        public static void DataGridViewRowsAdded(Guna2DataGridView dataGridView, DataGridViewRowsAddedEventArgs e)
+        public static void DataGridViewRowsAdded(Guna2DataGridView grid, DataGridViewRowsAddedEventArgs e)
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
-            DataGridViewRowChanged(dataGridView, MainMenu_Form.Instance.Selected);
+            DataGridViewRowChanged(grid, MainMenu_Form.Instance.Selected);
             DataGridViewRow row;
 
-            if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
+            if (e.RowIndex >= 0 && e.RowIndex < grid.Rows.Count)
             {
-                row = dataGridView.Rows[e.RowIndex];
+                row = grid.Rows[e.RowIndex];
             }
             else
             {
@@ -703,7 +707,7 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            SortDataGridViewByCurrentDirection(dataGridView);
+            SortDataGridViewByCurrentDirection(grid);
 
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
@@ -711,18 +715,18 @@ namespace Sales_Tracker.UI
             }
 
             // Calculate the middle index
-            int visibleRowCount = dataGridView.DisplayedRowCount(true);
+            int visibleRowCount = grid.DisplayedRowCount(true);
             int middleIndex = Math.Max(0, row.Index - (visibleRowCount / 2) + 1);
 
             // Ensure the row at middleIndex is visible
-            if (middleIndex >= 0 && middleIndex < dataGridView.RowCount && dataGridView.Rows[middleIndex].Visible)
+            if (middleIndex >= 0 && middleIndex < grid.RowCount && grid.Rows[middleIndex].Visible)
             {
-                dataGridView.FirstDisplayedScrollingRowIndex = middleIndex;
+                grid.FirstDisplayedScrollingRowIndex = middleIndex;
             }
 
             // Select the added row
-            UnselectAllRowsInCurrentDataGridView();
-            dataGridView.Rows[row.Index].Selected = true;
+            UnselectAllRowsInCurrentDataGridView(grid);
+            grid.Rows[row.Index].Selected = true;
         }
         private static void LoadColumns<TEnum>(Guna2DataGridView dataGridView, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad = null) where TEnum : Enum
         {
@@ -756,9 +760,9 @@ namespace Sales_Tracker.UI
                 _ => ""
             };
         }
-        private static void UnselectAllRowsInCurrentDataGridView()
+        private static void UnselectAllRowsInCurrentDataGridView(Guna2DataGridView grid)
         {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.SelectedDataGridView.Rows)
+            foreach (DataGridViewRow row in grid.Rows)
             {
                 row.Selected = false;
             }
@@ -857,9 +861,9 @@ namespace Sales_Tracker.UI
             selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value =
                 Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
         }
-        public static void AddNoteToCell(int newRowIndex, string note)
+        public static void AddNoteToCell(Guna2DataGridView grid, int newRowIndex, string note)
         {
-            DataGridViewCell cell = MainMenu_Form.Instance.SelectedDataGridView.Rows[newRowIndex].Cells[^1];
+            DataGridViewCell cell = grid.Rows[newRowIndex].Cells[^1];
             cell.Tag = note;
             AddUnderlineToCell(cell);
         }
@@ -984,16 +988,16 @@ namespace Sales_Tracker.UI
         /// Searches a DataGridView for the text in the search_TextBox.
         /// </summary>
         /// <returns>True if the searching label should be shown, or false if it should not be shown.</returns>
-        public static bool SearchSelectedDataGridViewAndUpdateRowColors(Guna2TextBox search_TextBox)
+        public static bool SearchSelectedDataGridViewAndUpdateRowColors(Guna2DataGridView grid, Guna2TextBox search_TextBox)
         {
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.SelectedDataGridView.Rows)
+            foreach (DataGridViewRow row in grid.Rows)
             {
                 bool isVisible = row.Cells.Cast<DataGridViewCell>()
                                           .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
                 row.Visible = isVisible;
             }
 
-            UpdateAlternatingRowColors(MainMenu_Form.Instance.SelectedDataGridView);
+            UpdateAlternatingRowColors(grid);
 
             return !string.IsNullOrEmpty(search_TextBox.Text.Trim());
         }
@@ -1101,16 +1105,17 @@ namespace Sales_Tracker.UI
         }
         private static void ModifyRow(object sender, EventArgs e)
         {
-            Tools.OpenForm(new ModifyRow_Form(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]));
+            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            Tools.OpenForm(new ModifyRow_Form(grid.SelectedRows[0]));
         }
         private static void MoveRows(object sender, EventArgs e)
         {
-            Guna2DataGridView selectedDataGridView = MainMenu_Form.Instance.SelectedDataGridView;
-            List<DataGridViewRow> selectedRows = selectedDataGridView.SelectedRows.Cast<DataGridViewRow>().ToList();
+            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            List<DataGridViewRow> selectedRows = grid.SelectedRows.Cast<DataGridViewRow>().ToList();
             if (selectedRows.Count == 0) { return; }
 
             // Save scroll position
-            int scrollPosition = selectedDataGridView.FirstDisplayedScrollingRowIndex;
+            int scrollPosition = grid.FirstDisplayedScrollingRowIndex;
             int firstSelectedIndex = selectedRows[0].Index;
 
             // Move rows based on current selection
@@ -1124,7 +1129,7 @@ namespace Sales_Tracker.UI
             }
 
             // Restore selection and scroll position
-            RestoreSelectionAndScroll(selectedDataGridView, firstSelectedIndex, scrollPosition);
+            RestoreSelectionAndScroll(grid, firstSelectedIndex, scrollPosition);
         }
         private static void MoveCategoryRows(List<DataGridViewRow> rowsToMove, bool fromPurchaseToSale)
         {
@@ -1203,40 +1208,43 @@ namespace Sales_Tracker.UI
         }
         private static void ExportReceipt(object sender, EventArgs e)
         {
-            ReceiptManager.ExportSelectedReceipts(MainMenu_Form.Instance.SelectedDataGridView);
+            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            ReceiptManager.ExportSelectedReceipts(grid);
         }
         private static void ShowItems(object sender, EventArgs e)
         {
-            Tools.OpenForm(new ItemsInTransaction_Form(MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[0]));
+            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            Tools.OpenForm(new ItemsInTransaction_Form(grid.SelectedRows[0]));
         }
         private static void DeleteRow(object sender, EventArgs e)
         {
-            int index = MainMenu_Form.Instance.SelectedDataGridView.SelectedRows[^1].Index;
+            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            int index = grid.SelectedRows[^1].Index;
 
             // Delete all selected rows
-            foreach (DataGridViewRow item in MainMenu_Form.Instance.SelectedDataGridView.SelectedRows)
+            foreach (DataGridViewRow item in grid.SelectedRows)
             {
                 DataGridViewRowCancelEventArgs eventArgs = new(item);
-                DataGridView_UserDeletingRow(MainMenu_Form.Instance.SelectedDataGridView, eventArgs);
+                DataGridView_UserDeletingRow(grid, eventArgs);
                 if (item.Index == -1) { continue; }  // This can happen if ItemsInTransaction_Form is closed in DataGridView_UserDeletingRow()
 
                 if (!eventArgs.Cancel)
                 {
-                    MainMenu_Form.Instance.SelectedDataGridView.Rows.Remove(item);
+                    grid.Rows.Remove(item);
                 }
             }
 
             // Select the row under the row that was just deleted
-            if (MainMenu_Form.Instance.SelectedDataGridView.Rows.Count != 0)
+            if (grid.Rows.Count != 0)
             {
                 // If the deleted row was not the last one, select the next row
-                if (index < MainMenu_Form.Instance.SelectedDataGridView.Rows.Count)
+                if (index < grid.Rows.Count)
                 {
-                    MainMenu_Form.Instance.SelectedDataGridView.Rows[index].Selected = true;
+                    grid.Rows[index].Selected = true;
                 }
                 else  // If the deleted row was the last one, select the new last row
                 {
-                    MainMenu_Form.Instance.SelectedDataGridView.Rows[^1].Selected = true;
+                    grid.Rows[^1].Selected = true;
                 }
             }
         }
