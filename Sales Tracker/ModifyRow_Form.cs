@@ -1202,6 +1202,8 @@ namespace Sales_Tracker
             // Update company references in products
             UpdateCompanyInProducts(oldCompany, newCompany, MainMenu_Form.Instance.CategoryPurchaseList);
             UpdateCompanyInProducts(oldCompany, newCompany, MainMenu_Form.Instance.CategorySaleList);
+            MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
+            MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
 
             // Update DataGridViews
             UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany);

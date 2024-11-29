@@ -1764,6 +1764,8 @@ namespace Sales_Tracker
         /// </summary>
         private void ConstructControlsForStatistics()
         {
+            string subTitle = "Excludes transactions with free shipping";
+
             _countriesOfOrigin_Chart = ConstructStatisticsChart("Countries of origin for purchased products", "countriesOfOrigin_Chart");
             _companiesOfOrigin_Chart = ConstructStatisticsChart("Companies of origin for purchased products", "companiesOfOrigin_Chart");
             _countriesOfDestination_Chart = ConstructStatisticsChart("Countries of destination for sold products", "countriesOfDestination_Chart");
@@ -1772,7 +1774,9 @@ namespace Sales_Tracker
             _averageOrderValueForSoldProducts_Chart = ConstructStatisticsChart("Average order value", "averageOrderValue_Chart");
             _totalTransactions_Chart = ConstructStatisticsChart("Total transactions", "totalTransactions_Chart");
             _averageShippingCostsForPurchases_Chart = ConstructStatisticsChart("Average shipping costs", "averageShippingCosts_Chart");
+            LabelManager.AddChartSubTitle(_averageShippingCostsForPurchases_Chart, subTitle);
             _averageShippingCostForSales_Chart = ConstructStatisticsChart("Returned products", "returnedProducts_Chart");
+            LabelManager.AddChartSubTitle(_averageShippingCostForSales_Chart, subTitle);
 
             statisticsCharts =
             [
@@ -1859,16 +1863,12 @@ namespace Sales_Tracker
             _totalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
             LanguageManager.UpdateLanguageForControl(_totalTransactions_Chart);
 
-            string subTitle = "Excludes transactions with free shipping";
-
             LoadChart.LoadShippingCostsForPurchasesChart(_averageShippingCostsForPurchases_Chart, isLineChart);
             _averageShippingCostsForPurchases_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForPurchases;
-            LabelManager.AddChartSubTitle(_averageShippingCostsForPurchases_Chart, subTitle);
             LanguageManager.UpdateLanguageForControl(_averageShippingCostsForPurchases_Chart);
 
             LoadChart.LoadShippingCostsForSalesChart(_averageShippingCostForSales_Chart, isLineChart);
             _averageShippingCostForSales_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForSales;
-            LabelManager.AddChartSubTitle(_averageShippingCostForSales_Chart, subTitle);
             LanguageManager.UpdateLanguageForControl(_averageShippingCostForSales_Chart);
         }
 
