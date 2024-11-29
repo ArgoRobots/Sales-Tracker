@@ -1190,15 +1190,36 @@ namespace Sales_Tracker
         {
             string oldCompany = MainMenu_Form.Instance.CompanyList.FirstOrDefault(a => a == listOfOldValues[0]);
             Guna2TextBox textBox = Panel.Controls.OfType<Guna2TextBox>().FirstOrDefault();
+            string newCompany = textBox.Text;
 
+            // Update company in the company list
             if (oldCompany != null)
             {
                 int index = MainMenu_Form.Instance.CompanyList.IndexOf(oldCompany);
-                MainMenu_Form.Instance.CompanyList[index] = textBox.Text;
+                MainMenu_Form.Instance.CompanyList[index] = newCompany;
             }
 
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Company.ToString(), oldCompany, textBox.Text);
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Company.ToString(), oldCompany, textBox.Text);
+            // Update company references in products
+            UpdateCompanyInProducts(oldCompany, newCompany, MainMenu_Form.Instance.CategoryPurchaseList);
+            UpdateCompanyInProducts(oldCompany, newCompany, MainMenu_Form.Instance.CategorySaleList);
+
+            // Update DataGridViews
+            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany);
+            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany);
+        }
+        private static void UpdateCompanyInProducts(string oldCompany, string newCompany, List<Category> categoryList)
+        {
+            foreach (Category category in categoryList)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    if (product.CompanyOfOrigin == oldCompany)
+                    {
+                        product.CompanyOfOrigin = newCompany;
+                        hasChanges = true;
+                    }
+                }
+            }
         }
         private void UpdateAccountant()
         {
