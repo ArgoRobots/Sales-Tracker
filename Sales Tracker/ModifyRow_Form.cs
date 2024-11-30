@@ -660,11 +660,11 @@ namespace Sales_Tracker
         {
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInSale or MainMenu_Form.SelectedOption.Sales)
             {
-                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductSaleNames());
+                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductSaleNames());
             }
             else
             {
-                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
+                return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
             }
         }
 

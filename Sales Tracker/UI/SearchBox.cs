@@ -24,7 +24,7 @@ namespace Sales_Tracker.UI
         private static List<SearchResult> resultList;
         private static int _maxHeight;
         private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
-        private static byte extraWidth = 200;
+        private static readonly byte extraWidth = 250;
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;

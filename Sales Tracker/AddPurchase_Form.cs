@@ -82,7 +82,7 @@ namespace Sales_Tracker
         }
         private List<SearchResult> GetSearchResultsForProducts()
         {
-            return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames());
+            return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
         }
         private void SetAccessibleDescriptions()
         {
@@ -997,7 +997,7 @@ namespace Sales_Tracker
         }
         private void CheckIfProductsExist()
         {
-            if (MainMenu_Form.Instance.GetCategoryAndProductPurchaseNames().Count == 0)
+            if (MainMenu_Form.Instance.GetProductPurchaseNames().Count == 0)
             {
                 WarningProduct_PictureBox.Visible = true;
                 WarningProduct_LinkLabel.Visible = true;

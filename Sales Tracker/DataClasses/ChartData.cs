@@ -24,8 +24,8 @@
     public record SalesExpensesChartData
     {
         // Properties
-        private readonly Dictionary<string, double> _salesData;
         private readonly Dictionary<string, double> _expensesData;
+        private readonly Dictionary<string, double> _salesData;
         private readonly IReadOnlyList<string> _dateOrder;
 
         // Getter
@@ -33,12 +33,12 @@
 
         // Constructor
         public SalesExpensesChartData(
-            Dictionary<string, double> salesData,
             Dictionary<string, double> expensesData,
+            Dictionary<string, double> salesData,
             IEnumerable<string> dateOrder)
         {
-            _salesData = new Dictionary<string, double>(salesData ?? []);
             _expensesData = new Dictionary<string, double>(expensesData ?? []);
+            _salesData = new Dictionary<string, double>(salesData ?? []);
             _dateOrder = (dateOrder?.ToList() ?? []).AsReadOnly();
         }
 
@@ -46,9 +46,9 @@
         public static SalesExpensesChartData Empty => new([], [], []);
 
         // Query methods
-        public double GetSalesForDate(string date) =>
-            _salesData.TryGetValue(date, out double value) ? value : 0;
         public double GetExpensesForDate(string date) =>
             _expensesData.TryGetValue(date, out double value) ? value : 0;
+        public double GetSalesForDate(string date) =>
+            _salesData.TryGetValue(date, out double value) ? value : 0;
     }
 }

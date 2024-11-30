@@ -1271,32 +1271,6 @@ namespace Sales_Tracker
         {
             return _categoryPurchaseList.Select(p => p.Name).ToList();
         }
-        public List<string> GetCategoryAndProductSaleNames()
-        {
-            List<string> names = [];
-
-            foreach (Category category in _categorySaleList)
-            {
-                foreach (Product product in category.ProductList)
-                {
-                    names.Add($"{category.Name} > {product.Name}");
-                }
-            }
-            return names;
-        }
-        public List<string> GetCategoryAndProductPurchaseNames()
-        {
-            List<string> names = [];
-
-            foreach (Category category in _categoryPurchaseList)
-            {
-                foreach (Product product in category.ProductList)
-                {
-                    names.Add($"{category.Name} > {product.Name}");
-                }
-            }
-            return names;
-        }
         public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
         {
             foreach (Category category in categoryList)
@@ -1412,6 +1386,31 @@ namespace Sales_Tracker
         {
             Category? category = GetCategoryCategoryNameIsFrom(sourceList, categoryName);
             return category != null && category.ProductList.Count > 0;
+        }
+        /// <summary>
+        /// Gets a list of formatted product names for items available for sale.
+        /// Format: "CompanyOfOrigin > CategoryName > ProductName"
+        /// </summary>
+        public List<string> GetProductSaleNames() => GetFormattedProductNames(_categorySaleList);
+        /// <summary>
+        /// Gets a list of formatted product names for items available for purchase.
+        /// Format: "CompanyOfOrigin > CategoryName > ProductName"
+        /// </summary>
+        public List<string> GetProductPurchaseNames() => GetFormattedProductNames(_categoryPurchaseList);
+        /// <summary>
+        /// Helper method to format product names from a category list.
+        /// </summary>
+        private static List<string> GetFormattedProductNames(List<Category> categories)
+        {
+            List<string> names = [];
+            foreach (Category category in categories)
+            {
+                foreach (Product product in category.ProductList)
+                {
+                    names.Add($"{product.CompanyOfOrigin} > {category.Name} > {product.Name}");
+                }
+            }
+            return names;
         }
 
         // DataGridView properties
