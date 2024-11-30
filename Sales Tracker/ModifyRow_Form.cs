@@ -1001,7 +1001,12 @@ namespace Sales_Tracker
                 MainMenu_Form.IsProgramLoading = false;
             }
         }
-        private static void UpdateDataGridViewRows(DataGridView dataGridView, string columnName, string oldValue, string newValue)
+        private static void UpdateAllDataGridViewRows(string columnName, string oldValue, string newValue, bool updateItemsInTransaction = false)
+        {
+            UpdateRowsInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, columnName, oldValue, newValue, updateItemsInTransaction);
+            UpdateRowsInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, columnName, oldValue, newValue, updateItemsInTransaction);
+        }
+        private static void UpdateRowsInDataGridView(DataGridView dataGridView, string columnName, string oldValue, string newValue, bool updateItemsInTransaction)
         {
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
@@ -1009,6 +1014,40 @@ namespace Sales_Tracker
                 {
                     row.Cells[columnName].Value = newValue;
                     hasChanges = true;
+
+                    // Update items in transaction if requested
+                    if (updateItemsInTransaction && row.Tag is (List<string> itemList, TagData tagData))
+                    {
+                        for (int i = 0; i < itemList.Count; i++)
+                        {
+                            string item = itemList[i];
+                            if (item.Contains(ReadOnlyVariables.Receipt_text))
+                            {
+                                continue;
+                            }
+
+                            string[] items = item.Split(',');
+
+                            // Update the relevant field based on the column name
+                            switch (columnName)
+                            {
+                                case nameof(MainMenu_Form.Column.Product):
+                                    items[0] = items[0] == oldValue ? newValue : items[0];
+                                    break;
+                                case nameof(MainMenu_Form.Column.Category):
+                                    items[1] = items[1] == oldValue ? newValue : items[1];
+                                    break;
+                                case nameof(MainMenu_Form.Column.Country):
+                                    items[2] = items[2] == oldValue ? newValue : items[2];
+                                    break;
+                                case nameof(MainMenu_Form.Column.Company):
+                                    items[3] = items[3] == oldValue ? newValue : items[3];
+                                    break;
+                            }
+                            itemList[i] = string.Join(",", items);
+                        }
+                        row.Tag = (itemList, tagData);
+                    }
                 }
             }
         }
@@ -1065,20 +1104,12 @@ namespace Sales_Tracker
                 category = MainMenu_Form.Instance.CategoryPurchaseList.FirstOrDefault(c => c.Name == listOfOldValues[0]);
             }
 
-            string oldName = category.Name;
+            string oldCategory = category.Name;
             Guna2TextBox textBox = Panel.Controls.OfType<Guna2TextBox>().FirstOrDefault();
-            category.Name = textBox.Text;
+            string newCategory = textBox.Text;
+            category.Name = newCategory;
 
-            // Update all instances in DataGridViews
-            string categoryColumn = MainMenu_Form.Column.Category.ToString();
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
-            {
-                if (row.Cells[categoryColumn].Value.ToString() == oldName)
-                {
-                    row.Cells[categoryColumn].Value = category.Name;
-                }
-            }
-
+            UpdateAllDataGridViewRows(MainMenu_Form.Column.Category.ToString(), oldCategory, newCategory, true);
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
         }
         private void UpdateProduct()
@@ -1206,8 +1237,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
 
             // Update DataGridViews
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany);
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany);
+            UpdateAllDataGridViewRows(MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany, true);
         }
         private static void UpdateCompanyInProducts(string oldCompany, string newCompany, List<Category> categoryList)
         {
@@ -1227,15 +1257,15 @@ namespace Sales_Tracker
         {
             string oldAccountant = MainMenu_Form.Instance.AccountantList.FirstOrDefault(a => a == listOfOldValues[0]);
             Guna2TextBox textBox = Panel.Controls.OfType<Guna2TextBox>().FirstOrDefault();
+            string newAccountant = textBox.Text;
 
             if (oldAccountant != null)
             {
                 int index = MainMenu_Form.Instance.AccountantList.IndexOf(oldAccountant);
-                MainMenu_Form.Instance.AccountantList[index] = textBox.Text;
+                MainMenu_Form.Instance.AccountantList[index] = newAccountant;
             }
 
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.Accountant.ToString(), oldAccountant, textBox.Text);
-            UpdateDataGridViewRows(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Column.Accountant.ToString(), oldAccountant, textBox.Text);
+            UpdateAllDataGridViewRows(MainMenu_Form.Column.Accountant.ToString(), oldAccountant, newAccountant, false);
         }
 
         // Construct controls
