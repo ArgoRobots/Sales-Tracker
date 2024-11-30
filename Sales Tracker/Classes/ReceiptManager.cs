@@ -31,6 +31,7 @@ namespace Sales_Tracker.Classes
             }
 
             bool isAnyReceiptExported = false, doAllRowsHaveReceipt = true;
+            int exportedCount = 0;
 
             // Iterate through selected rows and copy files
             foreach (DataGridViewRow row in dataGridView.SelectedRows)
@@ -55,16 +56,18 @@ namespace Sales_Tracker.Classes
                 string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
                 Directories.CopyFile(receipt, destinationFilePath);
                 isAnyReceiptExported = true;
+                exportedCount++;
             }
 
             if (isAnyReceiptExported)
             {
-                string message = "Receipts exported successfully";
+                string message = exportedCount == 1 ? "Receipt exported successfully" : "Receipts exported successfully";
 
                 if (!doAllRowsHaveReceipt) { message += " Note: Not all the selected rows contain a receipt."; }
 
                 CustomMessageBox.Show(
-                    "Receipts exported", message,
+                    exportedCount == 1 ? "Receipt exported" : "Receipts exported",
+                    message,
                     CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
         }
