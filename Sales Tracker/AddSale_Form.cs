@@ -305,13 +305,13 @@ namespace Sales_Tracker
 
             // Save the receipt
             string newFilePath = "";
-            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
+            if (!ReceiptManager.CheckIfReceiptExists(receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
+                (newFilePath, bool saved) = ReceiptManager.SaveReceiptInFile(receiptFilePath);
 
                 if (!saved)
                 {
@@ -482,13 +482,13 @@ namespace Sales_Tracker
             totalPrice += creditedDifference;
 
             string newFilePath = "";
-            if (!ReceiptsManager.CheckIfReceiptExists(receiptFilePath))
+            if (!ReceiptManager.CheckIfReceiptExists(receiptFilePath))
             {
                 return false;
             }
             if (Controls.Contains(SelectedReceipt_Label))
             {
-                (newFilePath, bool saved) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
+                (newFilePath, bool saved) = ReceiptManager.SaveReceiptInFile(receiptFilePath);
 
                 if (!saved)
                 {

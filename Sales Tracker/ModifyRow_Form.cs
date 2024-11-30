@@ -114,12 +114,12 @@ namespace Sales_Tracker
             {
                 if (removedReceipt)
                 {
-                    ReceiptsManager.RemoveReceiptFromFile(selectedRow);
+                    ReceiptManager.RemoveReceiptFromFile(selectedRow);
                 }
                 if (addedReceipt)
                 {
-                    (string newPath, bool _) = ReceiptsManager.SaveReceiptInFile(receiptFilePath);
-                    ReceiptsManager.AddReceiptToTag(selectedRow, newPath);
+                    (string newPath, bool _) = ReceiptManager.SaveReceiptInFile(receiptFilePath);
+                    ReceiptManager.AddReceiptToTag(selectedRow, newPath);
                 }
             }
 
