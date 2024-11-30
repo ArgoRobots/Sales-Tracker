@@ -9,13 +9,18 @@ namespace Sales_Tracker
     public partial class Receipts_Form : Form
     {
         // Properties
+        private static Receipts_Form _instance;
         private DateTime oldestDate;
         private readonly MainMenu_Form.SelectedOption oldOption;
+
+        // Getters and setters
+        public static Receipts_Form Instance => _instance;
 
         // Init.
         public Receipts_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             oldOption = MainMenu_Form.Instance.Selected;
 
@@ -42,6 +47,7 @@ namespace Sales_Tracker
 
             CenterControls();
             AddEventHandlersToTextBoxes();
+            AnimateButtons();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void Receipts_DataGridView_SelectionChanged(object sender, EventArgs e)
@@ -61,12 +67,23 @@ namespace Sales_Tracker
         private void SetTheme()
         {
             Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(ExportSelected_Button);
+            Theme.MakeGButtonBlueSecondary(SelectAll_Button);
             Theme.MakeGButtonBlueSecondary(ClearFilters_Button);
+            Theme.MakeGButtonBluePrimary(ExportSelected_Button);
         }
         private void AddEventHandlersToTextBoxes()
         {
             TextBoxManager.Attach(Search_TextBox);
+        }
+        public void AnimateButtons()
+        {
+            IEnumerable<Guna2Button> buttons =
+            [
+               SelectAll_Button,
+               ClearFilters_Button,
+               ExportSelected_Button
+            ];
+            CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
         }
 
         // Form event handlers
@@ -83,6 +100,9 @@ namespace Sales_Tracker
         // Event handlers
         private void ClearFilters_Button_Click(object sender, EventArgs e)
         {
+            IncludePurchaseReceipts_CheckBox.Checked = true;
+            IncludeSaleReceipts_CheckBox.Checked = true;
+            FilterByDate_CheckBox.Checked = false;
             Search_TextBox.Text = "";
             From_DateTimePicker.Value = oldestDate;
             To_DateTimePicker.Value = DateTime.Now;
@@ -114,6 +134,10 @@ namespace Sales_Tracker
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
         {
             Search_TextBox.Text = "";
+        }
+        private void SelectAll_Button_Click(object sender, EventArgs e)
+        {
+            Receipts_DataGridView.SelectAll();
         }
 
         // DataGridView

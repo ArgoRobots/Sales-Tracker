@@ -47,6 +47,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Receipts_Form));
             ExportReceipts_Label = new Label();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
@@ -65,6 +67,7 @@
             IncludePurchaseReceipts_Label = new Label();
             IncludePurchaseReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             Total_Label = new Label();
+            SelectAll_Button = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)Receipts_DataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -103,7 +106,7 @@
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Search_TextBox.Size = new Size(300, 50);
-            Search_TextBox.TabIndex = 1;
+            Search_TextBox.TabIndex = 6;
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += FilterDataGridView;
             // 
@@ -143,7 +146,7 @@
             From_DateTimePicker.Name = "From_DateTimePicker";
             From_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges4;
             From_DateTimePicker.Size = new Size(300, 50);
-            From_DateTimePicker.TabIndex = 3;
+            From_DateTimePicker.TabIndex = 4;
             From_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             From_DateTimePicker.ValueChanged += FilterDataGridView;
             // 
@@ -161,7 +164,7 @@
             To_DateTimePicker.Name = "To_DateTimePicker";
             To_DateTimePicker.ShadowDecoration.CustomizableEdges = customizableEdges6;
             To_DateTimePicker.Size = new Size(300, 50);
-            To_DateTimePicker.TabIndex = 4;
+            To_DateTimePicker.TabIndex = 5;
             To_DateTimePicker.Value = new DateTime(2024, 6, 6, 19, 37, 49, 128);
             To_DateTimePicker.ValueChanged += FilterDataGridView;
             // 
@@ -248,7 +251,7 @@
             ClearFilters_Button.Name = "ClearFilters_Button";
             ClearFilters_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ClearFilters_Button.Size = new Size(200, 50);
-            ClearFilters_Button.TabIndex = 6;
+            ClearFilters_Button.TabIndex = 8;
             ClearFilters_Button.Text = "Clear filters";
             ClearFilters_Button.Click += ClearFilters_Button_Click;
             // 
@@ -272,7 +275,7 @@
             ExportSelected_Button.Name = "ExportSelected_Button";
             ExportSelected_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ExportSelected_Button.Size = new Size(200, 50);
-            ExportSelected_Button.TabIndex = 7;
+            ExportSelected_Button.TabIndex = 9;
             ExportSelected_Button.Text = "Export selected";
             ExportSelected_Button.Click += ExportSelected_Button_Click;
             // 
@@ -285,7 +288,7 @@
             FilterByDate_Label.Name = "FilterByDate_Label";
             FilterByDate_Label.Padding = new Padding(5);
             FilterByDate_Label.Size = new Size(150, 40);
-            FilterByDate_Label.TabIndex = 20;
+            FilterByDate_Label.TabIndex = 0;
             FilterByDate_Label.Text = "Filter by date";
             FilterByDate_Label.Click += FilterByDate_Label_Click;
             // 
@@ -302,7 +305,7 @@
             FilterByDate_CheckBox.Name = "FilterByDate_CheckBox";
             FilterByDate_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             FilterByDate_CheckBox.Size = new Size(20, 20);
-            FilterByDate_CheckBox.TabIndex = 22;
+            FilterByDate_CheckBox.TabIndex = 3;
             FilterByDate_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             FilterByDate_CheckBox.UncheckedState.BorderRadius = 2;
             FilterByDate_CheckBox.UncheckedState.BorderThickness = 0;
@@ -336,7 +339,7 @@
             IncludeSaleReceipts_CheckBox.Name = "IncludeSaleReceipts_CheckBox";
             IncludeSaleReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             IncludeSaleReceipts_CheckBox.Size = new Size(20, 20);
-            IncludeSaleReceipts_CheckBox.TabIndex = 24;
+            IncludeSaleReceipts_CheckBox.TabIndex = 2;
             IncludeSaleReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             IncludeSaleReceipts_CheckBox.UncheckedState.BorderRadius = 2;
             IncludeSaleReceipts_CheckBox.UncheckedState.BorderThickness = 0;
@@ -370,7 +373,7 @@
             IncludePurchaseReceipts_CheckBox.Name = "IncludePurchaseReceipts_CheckBox";
             IncludePurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
             IncludePurchaseReceipts_CheckBox.Size = new Size(20, 20);
-            IncludePurchaseReceipts_CheckBox.TabIndex = 26;
+            IncludePurchaseReceipts_CheckBox.TabIndex = 1;
             IncludePurchaseReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
             IncludePurchaseReceipts_CheckBox.UncheckedState.BorderRadius = 2;
             IncludePurchaseReceipts_CheckBox.UncheckedState.BorderThickness = 0;
@@ -385,13 +388,37 @@
             Total_Label.Location = new Point(18, 715);
             Total_Label.Name = "Total_Label";
             Total_Label.Size = new Size(68, 31);
-            Total_Label.TabIndex = 51;
+            Total_Label.TabIndex = 0;
             Total_Label.Text = "Total:";
+            // 
+            // SelectAll_Button
+            // 
+            SelectAll_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            SelectAll_Button.BackColor = Color.Transparent;
+            SelectAll_Button.BorderColor = Color.LightGray;
+            SelectAll_Button.BorderRadius = 2;
+            SelectAll_Button.BorderThickness = 1;
+            SelectAll_Button.CustomizableEdges = customizableEdges17;
+            SelectAll_Button.DisabledState.BorderColor = Color.DarkGray;
+            SelectAll_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            SelectAll_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            SelectAll_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            SelectAll_Button.FillColor = Color.White;
+            SelectAll_Button.Font = new Font("Segoe UI", 9F);
+            SelectAll_Button.ForeColor = Color.Black;
+            SelectAll_Button.Location = new Point(794, 732);
+            SelectAll_Button.Name = "SelectAll_Button";
+            SelectAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            SelectAll_Button.Size = new Size(200, 50);
+            SelectAll_Button.TabIndex = 7;
+            SelectAll_Button.Text = "Select all";
+            SelectAll_Button.Click += SelectAll_Button_Click;
             // 
             // Receipts_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(1418, 794);
+            Controls.Add(SelectAll_Button);
             Controls.Add(Total_Label);
             Controls.Add(FilterByDate_CheckBox);
             Controls.Add(IncludePurchaseReceipts_CheckBox);
@@ -442,5 +469,6 @@
         private Label IncludePurchaseReceipts_Label;
         private Guna.UI2.WinForms.Guna2CustomCheckBox IncludePurchaseReceipts_CheckBox;
         public Label Total_Label;
+        public Guna.UI2.WinForms.Guna2Button SelectAll_Button;
     }
 }

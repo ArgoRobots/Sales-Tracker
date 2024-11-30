@@ -62,6 +62,10 @@ namespace Sales_Tracker.Classes
                 {
                     Log_Form.Instance.AnimateButtons();
                 }
+                if (Tools.IsFormOpen(typeof(Receipts_Form)))
+                {
+                    Receipts_Form.Instance.AnimateButtons();
+                }
             }
 
             if (Properties.Settings.Default.ShowHasReceiptColumn != General_Form.Instance.ShowHasReceiptColumn_CheckBox.Checked)
