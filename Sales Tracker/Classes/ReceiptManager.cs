@@ -192,7 +192,7 @@ namespace Sales_Tracker.Classes
             if (row.Tag is (List<string> items, _))
             {
                 // Handle multiple items case
-                string lastItem = items.LastOrDefault() ?? string.Empty;
+                string lastItem = items.LastOrDefault() ?? "";
                 if (lastItem.StartsWith(ReadOnlyVariables.Receipt_text))
                 {
                     return ProcessReceiptTextFromRowTag(lastItem);

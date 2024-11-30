@@ -337,7 +337,7 @@ namespace Sales_Tracker
 
             string category = ProductCategory_TextBox.Text.Trim();
 
-            if (MainMenu_Form.DoesProductExistInCategory(ProductName_TextBox.Text, categories, category))
+            if (MainMenu_Form.DoesProductExistInCategory(ProductName_TextBox.Text, CompanyOfOrigin_TextBox.Text, categories, category))
             {
                 AddProduct_Button.Enabled = false;
                 CustomControls.SetGTextBoxToInvalid(ProductName_TextBox);

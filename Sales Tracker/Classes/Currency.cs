@@ -19,6 +19,7 @@ namespace Sales_Tracker.Classes
             USD,    // United States Dollar
             CAD,    // Canadian Dollar
             EUR,    // Euro
+            AUD,    // Australia
             BRL,    // Brazilian Real
             DKK,    // Danish Krone
             NOK,    // Norwegian Krone
@@ -52,6 +53,7 @@ namespace Sales_Tracker.Classes
             { CurrencyTypes.USD, "$" },
             { CurrencyTypes.CAD, "$" },
             { CurrencyTypes.EUR, "€" },
+            { CurrencyTypes.AUD, "$" },
             { CurrencyTypes.BRL, "R$" },
             { CurrencyTypes.DKK, "kr" },
             { CurrencyTypes.NOK, "kr" },

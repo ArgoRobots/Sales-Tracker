@@ -846,7 +846,7 @@ namespace Sales_Tracker.UI
             totalPrice += shipping + tax - fee;
 
             selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value =
-                Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
+                (Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice).ToString("N2");
         }
         public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
         {
@@ -859,7 +859,7 @@ namespace Sales_Tracker.UI
             decimal totalPrice = quantity * pricePerUnit + shipping + tax - fee;
 
             selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value =
-                Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice;
+                (Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice).ToString("N2");
         }
         public static void AddNoteToCell(Guna2DataGridView grid, int newRowIndex, string note)
         {

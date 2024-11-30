@@ -46,14 +46,9 @@ namespace Sales_Tracker
         }
         private void SetTitle()
         {
-            if (oldOption == MainMenu_Form.SelectedOption.Purchases)
-            {
-                Title_Label.Text = "Items in purchase";
-            }
-            else
-            {
-                Title_Label.Text = "Items in sale";
-            }
+            Title_Label.Text = LanguageManager.TranslateSingleString(
+                oldOption == MainMenu_Form.SelectedOption.Purchases ? "Items in purchase" : "Items in sale"
+            );
         }
 
         // Form event handlers

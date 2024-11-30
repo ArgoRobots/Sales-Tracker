@@ -119,6 +119,7 @@
             Name = "ModifyRow_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += ModifyRow_Form_FormClosed;
             Shown += ModifyRow_Form_Shown;
             Click += CloseSearchBox;
             ResumeLayout(false);

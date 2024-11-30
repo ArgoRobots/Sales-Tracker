@@ -1282,13 +1282,14 @@ namespace Sales_Tracker
                 }
             }
         }
-        public static string? GetCountryProductIsFrom(List<Category> categoryList, string productName)
+        public static string? GetCountryProductIsFrom(List<Category> categoryList, string productName, string companyName)
         {
             foreach (Category category in categoryList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
+                        product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
                     {
                         return product.CountryOfOrigin;
                     }
@@ -1296,13 +1297,14 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static string? GetCompanyProductIsFrom(List<Category> categoryList, string productName)
+        public static string? GetCompanyProductIsFrom(List<Category> categoryList, string productName, string companyName)
         {
             foreach (Category category in categoryList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
+                        product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
                     {
                         return product.CompanyOfOrigin;
                     }
@@ -1310,13 +1312,14 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static string? GetCategoryNameProductIsFrom(List<Category> categoryList, string productName)
+        public static string? GetCategoryNameProductIsFrom(List<Category> categoryList, string productName, string companyName)
         {
             foreach (Category category in categoryList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
+                        product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
                     {
                         return category.Name;
                     }
@@ -1324,7 +1327,7 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static bool DoesProductExistInCategory(string productName, List<Category> categories, string categoryName)
+        public static bool DoesProductExistInCategory(string productName, string companyName, List<Category> categories, string categoryName)
         {
             foreach (Category category in categories)
             {
@@ -1332,7 +1335,8 @@ namespace Sales_Tracker
                 {
                     foreach (Product product in category.ProductList)
                     {
-                        if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                        if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
+                           product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
                         {
                             return true;
                         }
@@ -1354,13 +1358,14 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static Category? GetCategoryProductNameIsFrom(List<Category> categoryList, string productName)
+        public static Category? GetCategoryProductNameIsFrom(List<Category> categoryList, string productName, string companyName)
         {
             foreach (Category category in categoryList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
+                        product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
                     {
                         return category;
                     }
@@ -1368,13 +1373,14 @@ namespace Sales_Tracker
             }
             return null;
         }
-        public static Product? GetProductProductNameIsFrom(List<Category> categoryList, string productName)
+        public static Product? GetProductProductNameIsFrom(List<Category> categoryList, string productName, string companyName)
         {
             foreach (Category category in categoryList)
             {
                 foreach (Product product in category.ProductList)
                 {
-                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase))
+                    if (product.Name.Equals(productName, StringComparison.OrdinalIgnoreCase) &&
+                        product.CompanyOfOrigin.Equals(companyName, StringComparison.OrdinalIgnoreCase))
                     {
                         return product;
                     }

@@ -243,8 +243,9 @@ namespace Sales_Tracker
             string accountant = AccountantName_TextBox.Text;
 
             string[] items = ProductName_TextBox.Text.Split('>');
-            string categoryName = items[0].Trim();
-            string productName = items[1].Trim();
+            string companyName = items[0].Trim();
+            string categoryName = items[1].Trim();
+            string productName = items[2].Trim();
 
             string country = CountryOfDestinaion_TextBox.Text;
             string date = Tools.FormatDate(Date_DateTimePicker.Value);
@@ -254,7 +255,7 @@ namespace Sales_Tracker
             decimal tax = decimal.Parse(Tax_TextBox.Text);
             decimal fee = decimal.Parse(Fee_TextBox.Text);
             decimal discount = decimal.Parse(Discount_TextBox.Text);
-            string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
+            string company = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName, companyName);
             decimal totalPrice = Math.Round(quantity * pricePerUnit - discount, 2);
             string noteLabel = ReadOnlyVariables.EmptyCell;
             string note = Notes_TextBox.Text.Trim();
@@ -409,11 +410,12 @@ namespace Sales_Tracker
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
                 string[] itemsInName = nameTextBox.Text.Split('>');
-                string categoryName = itemsInName[0].Trim();
-                string productName = itemsInName[1].Trim();
+                string companyName = items[0].Trim();
+                string categoryName = itemsInName[1].Trim();
+                string productName = itemsInName[2].Trim();
 
-                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
-                string currentCompany = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName);
+                string currentCountry = MainMenu_Form.GetCountryProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName, companyName);
+                string currentCompany = MainMenu_Form.GetCompanyProductIsFrom(MainMenu_Form.Instance.CategorySaleList, productName, companyName);
 
                 if (firstCategoryName == null)
                 {

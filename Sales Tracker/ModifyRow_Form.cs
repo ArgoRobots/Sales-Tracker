@@ -49,6 +49,10 @@ namespace Sales_Tracker
             ModifyRow_Label.Focus();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void ModifyRow_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SearchBox.CloseSearchBox();
+        }
 
         // Methods for checking if there are changes
         private static bool hasChanges = false;
@@ -105,9 +109,9 @@ namespace Sales_Tracker
         private void Save_Button_Click(object sender, EventArgs e)
         {
             CloseSearchBox(null, null);
-            UpdateRow();
             SaveInListsAndUpdateMainMenuForm();
-            SaveInRow();
+            SaveInMainMenuRow();
+            UpdateRow();
 
             // If the user selected a new receipt
             if (receiptFilePath != null)
@@ -454,7 +458,8 @@ namespace Sales_Tracker
                         {
                             ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], left, Panel);
 
-                            Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                            string fullProductPath = GetFullProductPath(selectedRow, cellValue);
+                            Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
                             SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false, true);
                             ProductName_TextBox.TextChanged += ValidateInputs;
 
@@ -628,7 +633,8 @@ namespace Sales_Tracker
                     case nameof(MainMenu_Form.Column.Product):
                         ConstructLabel(MainMenu_Form.Instance.PurchaseColumnHeaders[MainMenu_Form.Column.Product], 0, Panel);
 
-                        Guna2TextBox ProductName_TextBox = ConstructTextBox(0, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
+                        string fullProductPath = GetFullProductPath(selectedRow, cellValue);
+                        Guna2TextBox ProductName_TextBox = ConstructTextBox(left, columnName, fullProductPath, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
                         SearchBox.Attach(ProductName_TextBox, this, GetProductListForSearchBox, searchBoxMaxHeight, true, false, false, true);
                         ProductName_TextBox.TextChanged += ValidateInputs;
 
@@ -666,6 +672,12 @@ namespace Sales_Tracker
             {
                 return SearchBox.ConvertToSearchResults(MainMenu_Form.Instance.GetProductPurchaseNames());
             }
+        }
+        private static string GetFullProductPath(DataGridViewRow row, string productName)
+        {
+            string company = row.Cells[MainMenu_Form.Column.Company.ToString()].Value.ToString();
+            string category = row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString();
+            return $"{company} > {category} > {productName}";
         }
 
         // Methods for receipts
@@ -734,7 +746,7 @@ namespace Sales_Tracker
         }
 
         // Save in row
-        private void SaveInRow()
+        private void SaveInMainMenuRow()
         {
             IEnumerable<Control> allControls = Panel.Controls.Cast<Control>();
 
@@ -800,23 +812,43 @@ namespace Sales_Tracker
         }
         private void ProcessProductColumn(Guna2TextBox textBox)
         {
-            string productName = textBox.Text.Contains('>')
-                ? textBox.Text.Split('>')[1].Trim()
-                : textBox.Text.Trim();
+            (string productName, string companyName) = ParseProductInfo(textBox.Text);
+            MainMenu_Form.SelectedOption selected = MainMenu_Form.Instance.Selected;
+            List<Category> categoryList = selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.ItemsInPurchase
+                ? MainMenu_Form.Instance.CategoryPurchaseList
+                : MainMenu_Form.Instance.CategorySaleList;
 
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases)
+            if (selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
-                UpdateItemsInTransaction(productName, MainMenu_Form.Instance.CategoryPurchaseList, false);
+                UpdateItemsInTransaction(productName, companyName, categoryList, false);
             }
-            else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
+            else if (selected is MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
             {
-                UpdateItemsInTransaction(productName, MainMenu_Form.Instance.CategorySaleList, false);
+                selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value = productName;
+
+                Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, productName, companyName);
+                Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, productName, companyName);
+
+                DataGridViewCellCollection cells = selectedRow.Cells;
+                cells[MainMenu_Form.Column.Category.ToString()].Value = category.Name;
+                cells[MainMenu_Form.Column.Country.ToString()].Value = product.CountryOfOrigin;
+                cells[MainMenu_Form.Column.Company.ToString()].Value = product.CompanyOfOrigin;
             }
-            else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
+        }
+        private static (string ProductName, string CompanyName) ParseProductInfo(string text)
+        {
+            string[] parts = text.Split('>');
+            if (parts.Length > 2)
             {
-                string productColumn = MainMenu_Form.Column.Product.ToString();
-                selectedRow.Cells[productColumn].Value = productName;
+                return (
+                    ProductName: parts[2].Trim(),
+                    CompanyName: parts[0].Trim()
+                );
             }
+            return (
+                ProductName: text.Trim(),
+                CompanyName: text.Trim()
+            );
         }
         private void ProcessProductCategoryColumn(Guna2TextBox textBox, IEnumerable<Control> allControls)
         {
@@ -832,9 +864,11 @@ namespace Sales_Tracker
 
             string newCategoryName = textBox.Text.Trim();
             string newProductName = allControls.FirstOrDefault(item => item.Name == Products_Form.Column.ProductName.ToString())?.Text;
+            string companyName = allControls.FirstOrDefault(item =>
+                item.Name == Products_Form.Column.CompanyOfOrigin.ToString())?.Text;
 
-            Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, newProductName);
-            Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, newProductName);
+            Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, newProductName, companyName);
+            Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, newProductName, companyName);
 
             if (category.Name != textBox.Text)
             {
@@ -873,11 +907,11 @@ namespace Sales_Tracker
 
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductPurchases)
             {
-                UpdateItemsInTransaction(product.Name, MainMenu_Form.Instance.CategoryPurchaseList, true);
+                UpdateItemsInTransaction(product.Name, companyName, MainMenu_Form.Instance.CategoryPurchaseList, true);
             }
             else if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.ProductSales)
             {
-                UpdateItemsInTransaction(product.Name, MainMenu_Form.Instance.CategorySaleList, true);
+                UpdateItemsInTransaction(product.Name, companyName, MainMenu_Form.Instance.CategorySaleList, true);
             }
         }
         private void ProcessNoteColumn(Guna2TextBox textBox)
@@ -934,21 +968,21 @@ namespace Sales_Tracker
             }
             Save_Button.Enabled = true;
         }
-        private void UpdateItemsInTransaction(string productName, List<Category> categoryList, bool isProduct)
+        private void UpdateItemsInTransaction(string productName, string companyName, List<Category> categoryList, bool isProduct)
         {
             string productColumn = isProduct ? Products_Form.Column.ProductName.ToString() : MainMenu_Form.Column.Product.ToString();
             selectedRow.Cells[productColumn].Value = productName;
 
             string categoryColumn = isProduct ? Products_Form.Column.ProductCategory.ToString() : MainMenu_Form.Column.Category.ToString();
-            string category = MainMenu_Form.GetCategoryNameProductIsFrom(categoryList, productName);
+            string category = MainMenu_Form.GetCategoryNameProductIsFrom(categoryList, productName, companyName);
             selectedRow.Cells[categoryColumn].Value = category;
 
             string countryColumn = isProduct ? Products_Form.Column.CountryOfOrigin.ToString() : MainMenu_Form.Column.Country.ToString();
-            string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName);
+            string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName, companyName);
             selectedRow.Cells[countryColumn].Value = country;
 
             string companyColumn = isProduct ? Products_Form.Column.CompanyOfOrigin.ToString() : MainMenu_Form.Column.Company.ToString();
-            string company = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName);
+            string company = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName, companyName);
             selectedRow.Cells[companyColumn].Value = company;
 
             if (selectedRow.Tag is not (List<string> itemList, TagData tagData))
