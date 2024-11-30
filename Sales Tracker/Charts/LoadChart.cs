@@ -975,15 +975,16 @@ namespace Sales_Tracker.Charts
 
             chart.Update();
         }
-        public static ChartData LoadAverageOrderValueForSoldProductsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadAverageTransactionValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return ChartData.Empty;
+                return SalesExpensesChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
@@ -995,81 +996,148 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset dataset;
-            if (isLineChart) { dataset = new GunaLineDataset(); }
-            else { dataset = new GunaBarDataset(); }
+            // Create the datasets for purchases and sales with labels
+            IGunaDataset purchasesDataset;
+            IGunaDataset salesDataset;
+            if (isLineChart)
+            {
+                purchasesDataset = new GunaLineDataset { Label = LanguageManager.TranslateSingleString("Average purchase value") };
+                salesDataset = new GunaLineDataset { Label = LanguageManager.TranslateSingleString("Average sale value") };
+            }
+            else
+            {
+                purchasesDataset = new GunaBarDataset { Label = LanguageManager.TranslateSingleString("Average purchase value") };
+                salesDataset = new GunaBarDataset { Label = LanguageManager.TranslateSingleString("Average sale value") };
+            }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+                ApplyStyleToBarOrLineDataSet(purchasesDataset, isLineChart, CustomColors.PastelGreen);
+                ApplyStyleToBarOrLineDataSet(salesDataset, isLineChart, CustomColors.PastelBlue);
             }
 
             DateTime minDate, maxDate;
-            (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows);
+            (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, double> totalByDate = [];
-            Dictionary<string, int> ordersByDate = [];
-            bool anyRowsVisible = false;
+            Dictionary<string, (double total, int count)> salesByDate = [];
+            Dictionary<string, (double total, int count)> purchasesByDate = [];
+            HashSet<string> allDates = [];
 
+            // Process sales data
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                anyRowsVisible = true;
-
                 if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
                 string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
 
-                if (totalByDate.ContainsKey(formattedDate))
+                if (salesByDate.TryGetValue(formattedDate, out (double total, int count) value))
                 {
-                    totalByDate[formattedDate] += total;
-                    ordersByDate[formattedDate]++;
+                    (double existingTotal, int existingCount) = value;
+                    salesByDate[formattedDate] = (existingTotal + total, existingCount + 1);
                 }
                 else
                 {
-                    totalByDate[formattedDate] = total;
-                    ordersByDate[formattedDate] = 1;
+                    salesByDate[formattedDate] = (total, 1);
                 }
             }
 
-            if (!anyRowsVisible || totalByDate.Count == 0)
+            // Process purchases data
+            foreach (DataGridViewRow row in purchasesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (purchasesByDate.TryGetValue(formattedDate, out (double total, int count) value))
+                {
+                    (double existingTotal, int existingCount) = value;
+                    purchasesByDate[formattedDate] = (existingTotal + total, existingCount + 1);
+                }
+                else
+                {
+                    purchasesByDate[formattedDate] = (total, 1);
+                }
+            }
+
+            if (salesByDate.Count == 0 && purchasesByDate.Count == 0)
             {
                 ClearChart(chart);
-                return ChartData.Empty;
+                return SalesExpensesChartData.Empty;
             }
 
-            Dictionary<string, double> averageOrderValueByDate = [];
-            double totalAverageOrderValue = 0;
+            // Calculate averages
+            Dictionary<string, double> avgSalesByDate = salesByDate.ToDictionary(
+                kvp => kvp.Key,
+                kvp => Math.Round(kvp.Value.total / kvp.Value.count, 2)
+            );
 
-            // Calculate averages and total
-            foreach (string date in totalByDate.Keys)
-            {
-                double averageValue = Math.Round(totalByDate[date] / ordersByDate[date], 2);
-                averageOrderValueByDate[date] = averageValue;
-                totalAverageOrderValue += averageValue;
-            }
+            Dictionary<string, double> avgPurchasesByDate = purchasesByDate.ToDictionary(
+                kvp => kvp.Key,
+                kvp => Math.Round(kvp.Value.total / kvp.Value.count, 2)
+            );
 
-            // Calculate the overall average
-            double overallAverage = Math.Round(totalAverageOrderValue / averageOrderValueByDate.Count, 2);
+            // Sort the dates
+            List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string chartTitle = TranslatedChartTitles.AverageOrderValueForSoldProducts;
-                string first = LanguageManager.TranslateSingleString("Date");
-                string second = LanguageManager.TranslateSingleString("Order value");
+                Dictionary<string, Dictionary<string, double>> combinedData = [];
+                foreach (string date in sortedDates)
+                {
+                    combinedData[date] = new Dictionary<string, double>
+            {
+                { LanguageManager.TranslateSingleString("Average purchase value"), avgPurchasesByDate.TryGetValue(date, out double pValue) ? pValue : 0 },
+                { LanguageManager.TranslateSingleString("Average sale value"), avgSalesByDate.TryGetValue(date, out double sValue) ? sValue : 0 }
+            };
+                }
+                string name = TranslatedChartTitles.AverageTransactionValue;
 
-                ExcelSheetManager.ExportChartToExcel(averageOrderValueByDate, filePath, chartType, chartTitle, first, second);
+                ExcelSheetManager.ExportMultiDataSetChartToExcel(combinedData, filePath, isLineChart ? eChartType.Line : eChartType.ColumnClustered, name);
             }
             else if (canUpdateChart)
             {
-                SortAndAddDatasetAndSetBarPercentage(averageOrderValueByDate, dateFormat, dataset, isLineChart);
-                UpdateChart(chart, dataset, true);
+                foreach (string date in sortedDates)
+                {
+                    double salesValue = avgSalesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
+                    double purchasesValue = avgPurchasesByDate.TryGetValue(date, out double pValue) ? pValue : 0;
+
+                    if (isLineChart)
+                    {
+                        ((GunaLineDataset)purchasesDataset).DataPoints.Add(date, purchasesValue);
+                        ((GunaLineDataset)salesDataset).DataPoints.Add(date, salesValue);
+                    }
+                    else
+                    {
+                        ((GunaBarDataset)purchasesDataset).DataPoints.Add(date, purchasesValue);
+                        ((GunaBarDataset)salesDataset).DataPoints.Add(date, salesValue);
+
+                        float barPercentage = salesDataset.DataPointCount + purchasesDataset.DataPointCount == 1 ? 0.2f : 0.4f;
+                        ((GunaBarDataset)purchasesDataset).BarPercentage = barPercentage;
+                        ((GunaBarDataset)salesDataset).BarPercentage = barPercentage;
+                    }
+                }
+
+                chart.Datasets.Clear();
+                chart.Datasets.Add(purchasesDataset);
+                chart.Datasets.Add(salesDataset);
+
+                ApplyCurrencyFormatToDataset(purchasesDataset);
+                ApplyCurrencyFormatToDataset(salesDataset);
+
+                chart.Legend.Display = true;
+                chart.Legend.Position = LegendPosition.Top;
+
+                chart.Update();
             }
 
-            return new ChartData(overallAverage, averageOrderValueByDate);
+            return new SalesExpensesChartData(avgSalesByDate, avgPurchasesByDate, sortedDates);
         }
         public static ChartData LoadTotalTransactionsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {

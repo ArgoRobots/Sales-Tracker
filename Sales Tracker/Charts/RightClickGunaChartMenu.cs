@@ -123,7 +123,7 @@ namespace Sales_Tracker.Charts
                     break;
 
                 case MainMenu_Form.ChartDataType.AverageOrderValue:
-                    LoadChart.LoadAverageOrderValueForSoldProductsChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, true, directory);
+                    LoadChart.LoadAverageTransactionValueChart(MainMenu_Form.Instance.AverageTransactionValue_Chart, isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.TotalTransactions:
@@ -267,15 +267,24 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.AverageOrderValue:
                         {
-                            ChartData chartData = LoadChart.LoadAverageOrderValueForSoldProductsChart(MainMenu_Form.Instance.AverageOrderValue_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadAverageTransactionValueChart(MainMenu_Form.Instance.AverageTransactionValue_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateSingleString("Average purchase value")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateSingleString("Average sale value")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
+                            string name = TranslatedChartTitles.AverageTransactionValue;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string chartTitle = TranslatedChartTitles.AverageOrderValueForSoldProducts;
-                            string first = LanguageManager.TranslateSingleString("Date");
-                            string second = LanguageManager.TranslateSingleString("Order value");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, name, chartType);
                         }
                         break;
 

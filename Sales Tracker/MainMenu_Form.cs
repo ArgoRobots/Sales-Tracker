@@ -252,7 +252,7 @@ namespace Sales_Tracker
             _countriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
             _accountants_Chart.Tag = ChartDataType.Accountants;
             _salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
-            _averageOrderValueForSoldProducts_Chart.Tag = ChartDataType.AverageOrderValue;
+            _averageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
             _totalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
             _averageShippingCostsForPurchases_Chart.Tag = ChartDataType.AverageShippingForPurchases;
             _averageShippingCostForSales_Chart.Tag = ChartDataType.AverageShippingForSales;
@@ -653,7 +653,7 @@ namespace Sales_Tracker
                 // Set positions for middle row charts
                 SetChartPosition(_accountants_Chart, chartSize, firstX, middleRowY);
                 SetChartPosition(_salesVsExpenses_Chart, chartSize, secondX, middleRowY);
-                SetChartPosition(_averageOrderValueForSoldProducts_Chart, chartSize, thirdX, middleRowY);
+                SetChartPosition(_averageTransactionValue_Chart, chartSize, thirdX, middleRowY);
 
                 // Set positions for bottom row charts
                 SetChartPosition(_totalTransactions_Chart, chartSize, firstX, bottomRowY);
@@ -1706,7 +1706,7 @@ namespace Sales_Tracker
         // Chart properties
         private List<GunaChart> statisticsCharts;
         private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
-            _salesVsExpenses_Chart, _averageOrderValueForSoldProducts_Chart, _totalTransactions_Chart, _averageShippingCostsForPurchases_Chart, _averageShippingCostForSales_Chart;
+            _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCostsForPurchases_Chart, _averageShippingCostForSales_Chart;
 
         public enum ChartDataType
         {
@@ -1728,7 +1728,7 @@ namespace Sales_Tracker
         public GunaChart CompaniesOfOrigin_Chart => _companiesOfOrigin_Chart;
         public GunaChart Accountants_Chart => _accountants_Chart;
         public GunaChart SalesVsExpenses_Chart => _salesVsExpenses_Chart;
-        public GunaChart AverageOrderValue_Chart => _averageOrderValueForSoldProducts_Chart;
+        public GunaChart AverageTransactionValue_Chart => _averageTransactionValue_Chart;
         public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
         public GunaChart AverageShippingCostsForPurchases_Chart => _averageShippingCostsForPurchases_Chart;
         public GunaChart AverageShippingCostForSales_Chart => _averageShippingCostForSales_Chart;
@@ -1771,7 +1771,7 @@ namespace Sales_Tracker
             _countriesOfDestination_Chart = ConstructStatisticsChart("Countries of destination for sold products", "countriesOfDestination_Chart");
             _accountants_Chart = ConstructStatisticsChart("Transactions managed by accountants", "accountants_Chart");
             _salesVsExpenses_Chart = ConstructStatisticsChart("Total sales vs. total expenses", "salesVsExpenses_Chart");
-            _averageOrderValueForSoldProducts_Chart = ConstructStatisticsChart("Average order value", "averageOrderValue_Chart");
+            _averageTransactionValue_Chart = ConstructStatisticsChart("Average order value", "averageOrderValue_Chart");
             _totalTransactions_Chart = ConstructStatisticsChart("Total transactions", "totalTransactions_Chart");
             _averageShippingCostsForPurchases_Chart = ConstructStatisticsChart("Average shipping costs", "averageShippingCosts_Chart");
             LabelManager.AddChartSubTitle(_averageShippingCostsForPurchases_Chart, subTitle);
@@ -1785,7 +1785,7 @@ namespace Sales_Tracker
                 _countriesOfDestination_Chart,
                 _accountants_Chart,
                 _salesVsExpenses_Chart,
-                _averageOrderValueForSoldProducts_Chart,
+                _averageTransactionValue_Chart,
                 _totalTransactions_Chart,
                 _averageShippingCostsForPurchases_Chart,
                 _averageShippingCostForSales_Chart
@@ -1855,9 +1855,9 @@ namespace Sales_Tracker
             _salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
             LanguageManager.UpdateLanguageForControl(_salesVsExpenses_Chart);
 
-            LoadChart.LoadAverageOrderValueForSoldProductsChart(_averageOrderValueForSoldProducts_Chart, isLineChart);
-            _averageOrderValueForSoldProducts_Chart.Title.Text = TranslatedChartTitles.AverageOrderValueForSoldProducts;
-            LanguageManager.UpdateLanguageForControl(_averageOrderValueForSoldProducts_Chart);
+            LoadChart.LoadAverageTransactionValueChart(_averageTransactionValue_Chart, isLineChart);
+            _averageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
+            LanguageManager.UpdateLanguageForControl(_averageTransactionValue_Chart);
 
             LoadChart.LoadTotalTransactionsChart(_totalTransactions_Chart, isLineChart);
             _totalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
