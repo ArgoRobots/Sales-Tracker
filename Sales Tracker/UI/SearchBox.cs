@@ -24,7 +24,7 @@ namespace Sales_Tracker.UI
         private static List<SearchResult> resultList;
         private static int _maxHeight;
         private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
-        private static readonly byte extraWidth = 250;
+        private static readonly short extraWidth = 350;
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
@@ -271,7 +271,7 @@ namespace Sales_Tracker.UI
                 controlIndex++;
             }
 
-            // Set width to match textBox
+            // Set width
             int containerWidth = textBox.Width + (increaseWidth ? extraWidth : 0);
             _searchResultBoxContainer.Width = containerWidth;
             _searchResultBox.Width = containerWidth - 3;
@@ -474,6 +474,7 @@ namespace Sales_Tracker.UI
             Point location = textBox.Location;
             Control parent = textBox.Parent;
 
+            // Calculate absolute position relative to searchBoxParent
             while (parent != null && parent != _searchBoxParent)
             {
                 location.Offset(parent.Location);
@@ -482,7 +483,29 @@ namespace Sales_Tracker.UI
 
             if (parent == _searchBoxParent)
             {
-                _searchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
+                if (_increaseWidth)
+                {
+                    // Center the panel relative to the textbox
+                    int widthDifference = _searchResultBoxContainer.Width - textBox.Width;
+                    int centeredX = location.X - (widthDifference / 2);
+
+                    // Ensure the panel doesn't extend beyond the parent's bounds
+                    if (centeredX < 0)
+                    {
+                        centeredX = 0;
+                    }
+                    else if (centeredX + _searchResultBoxContainer.Width > _searchBoxParent.Width)
+                    {
+                        centeredX = _searchBoxParent.Width - _searchResultBoxContainer.Width;
+                    }
+
+                    _searchResultBoxContainer.Location = new Point(centeredX, location.Y + textBox.Height);
+                }
+                else
+                {
+                    // Align panel to the left of the TextBox
+                    _searchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
+                }
             }
         }
         public static void CloseSearchBox()
