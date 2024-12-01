@@ -254,8 +254,8 @@ namespace Sales_Tracker
             _salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
             _averageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
             _totalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
-            _averageShippingCostsForPurchases_Chart.Tag = ChartDataType.AverageShippingForPurchases;
-            _averageShippingCostForSales_Chart.Tag = ChartDataType.AverageShippingForSales;
+            _averageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
+            _growthRates_Chart.Tag = ChartDataType.GrowthRates;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -657,8 +657,8 @@ namespace Sales_Tracker
 
                 // Set positions for bottom row charts
                 SetChartPosition(_totalTransactions_Chart, chartSize, firstX, bottomRowY);
-                SetChartPosition(_averageShippingCostsForPurchases_Chart, chartSize, secondX, bottomRowY);
-                SetChartPosition(_averageShippingCostForSales_Chart, chartSize, thirdX, bottomRowY);
+                SetChartPosition(_averageShippingCosts_Chart, chartSize, secondX, bottomRowY);
+                SetChartPosition(_growthRates_Chart, chartSize, thirdX, bottomRowY);
             }
             else
             {
@@ -1711,7 +1711,7 @@ namespace Sales_Tracker
         // Chart properties
         private List<GunaChart> statisticsCharts;
         private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
-            _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCostsForPurchases_Chart, _averageShippingCostForSales_Chart;
+            _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCosts_Chart, _growthRates_Chart;
 
         public enum ChartDataType
         {
@@ -1725,8 +1725,8 @@ namespace Sales_Tracker
             TotalExpensesVsSales,
             AverageOrderValue,
             TotalTransactions,
-            AverageShippingForPurchases,
-            AverageShippingForSales
+            AverageShippingCosts,
+            GrowthRates
         }
         public GunaChart CountriesOfOrigin_Chart => _countriesOfOrigin_Chart;
         public GunaChart CountriesOfDestination_Chart => _countriesOfDestination_Chart;
@@ -1735,8 +1735,8 @@ namespace Sales_Tracker
         public GunaChart SalesVsExpenses_Chart => _salesVsExpenses_Chart;
         public GunaChart AverageTransactionValue_Chart => _averageTransactionValue_Chart;
         public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
-        public GunaChart AverageShippingCostsForPurchases_Chart => _averageShippingCostsForPurchases_Chart;
-        public GunaChart AverageShippingCostForSales_Chart => _averageShippingCostForSales_Chart;
+        public GunaChart AverageShippingCosts_Chart => _averageShippingCosts_Chart;
+        public GunaChart GrowthRates_Chart => _growthRates_Chart;
 
         // Statistics charts methods
         private List<Control> GetMainControlsList()
@@ -1769,19 +1769,16 @@ namespace Sales_Tracker
         /// </summary>
         private void ConstructControlsForStatistics()
         {
-            string subTitle = "Excludes transactions with free shipping";
-
-            _countriesOfOrigin_Chart = ConstructStatisticsChart("Countries of origin for purchased products", "countriesOfOrigin_Chart");
-            _companiesOfOrigin_Chart = ConstructStatisticsChart("Companies of origin for purchased products", "companiesOfOrigin_Chart");
-            _countriesOfDestination_Chart = ConstructStatisticsChart("Countries of destination for sold products", "countriesOfDestination_Chart");
-            _accountants_Chart = ConstructStatisticsChart("Transactions managed by accountants", "accountants_Chart");
-            _salesVsExpenses_Chart = ConstructStatisticsChart("Total sales vs. total expenses", "salesVsExpenses_Chart");
-            _averageTransactionValue_Chart = ConstructStatisticsChart("Average order value", "averageOrderValue_Chart");
-            _totalTransactions_Chart = ConstructStatisticsChart("Total transactions", "totalTransactions_Chart");
-            _averageShippingCostsForPurchases_Chart = ConstructStatisticsChart("Average shipping costs", "averageShippingCosts_Chart");
-            LabelManager.AddChartSubTitle(_averageShippingCostsForPurchases_Chart, subTitle);
-            _averageShippingCostForSales_Chart = ConstructStatisticsChart("Returned products", "returnedProducts_Chart");
-            LabelManager.AddChartSubTitle(_averageShippingCostForSales_Chart, subTitle);
+            _countriesOfOrigin_Chart = ConstructStatisticsChart("countriesOfOrigin_Chart");
+            _companiesOfOrigin_Chart = ConstructStatisticsChart("companiesOfOrigin_Chart");
+            _countriesOfDestination_Chart = ConstructStatisticsChart("countriesOfDestination_Chart");
+            _accountants_Chart = ConstructStatisticsChart("accountants_Chart");
+            _salesVsExpenses_Chart = ConstructStatisticsChart("salesVsExpenses_Chart");
+            _averageTransactionValue_Chart = ConstructStatisticsChart("averageOrderValue_Chart");
+            _totalTransactions_Chart = ConstructStatisticsChart("totalTransactions_Chart");
+            _averageShippingCosts_Chart = ConstructStatisticsChart("averageShippingCosts_Chart");
+            LabelManager.AddChartSubTitle(_averageShippingCosts_Chart, "Excludes transactions with free shipping");
+            _growthRates_Chart = ConstructStatisticsChart("growthRates_Chart");
 
             statisticsCharts =
             [
@@ -1792,13 +1789,13 @@ namespace Sales_Tracker
                 _salesVsExpenses_Chart,
                 _averageTransactionValue_Chart,
                 _totalTransactions_Chart,
-                _averageShippingCostsForPurchases_Chart,
-                _averageShippingCostForSales_Chart
+                _averageShippingCosts_Chart,
+                _growthRates_Chart
             ];
 
             MouseClickChartManager.InitCharts(statisticsCharts.ToArray());
         }
-        private GunaChart ConstructStatisticsChart(string title, string name)
+        private GunaChart ConstructStatisticsChart(string name)
         {
             GunaChart gunaChart = new()
             {
@@ -1808,7 +1805,6 @@ namespace Sales_Tracker
 
             gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.Background4);
             LoadChart.ConfigureChartForPie(gunaChart);
-            gunaChart.Title.Text = title;
             gunaChart.Title.Display = true;
             gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
             gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
@@ -1868,13 +1864,13 @@ namespace Sales_Tracker
             _totalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
             LanguageManager.UpdateLanguageForControl(_totalTransactions_Chart);
 
-            LoadChart.LoadShippingCostsForPurchasesChart(_averageShippingCostsForPurchases_Chart, isLineChart);
-            _averageShippingCostsForPurchases_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForPurchases;
-            LanguageManager.UpdateLanguageForControl(_averageShippingCostsForPurchases_Chart);
+            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart);
+            _averageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
+            LanguageManager.UpdateLanguageForControl(_averageShippingCosts_Chart);
 
-            LoadChart.LoadShippingCostsForSalesChart(_averageShippingCostForSales_Chart, isLineChart);
-            _averageShippingCostForSales_Chart.Title.Text = TranslatedChartTitles.AverageShippingCostsForSales;
-            LanguageManager.UpdateLanguageForControl(_averageShippingCostForSales_Chart);
+            LoadChart.LoadGrowthRateChart(_growthRates_Chart, isLineChart);
+            _growthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
+            LanguageManager.UpdateLanguageForControl(_growthRates_Chart);
         }
 
         // Misc.

@@ -18,7 +18,7 @@ namespace Sales_Tracker.Charts
         public static string SalesVsExpenses => Translate("Total expenses vs. total sales");
         public static string AverageTransactionValue => Translate("Average transaction value");
         public static string TotalTransactions => Translate("Total transactions");
-        public static string AverageShippingCostsForPurchases => Translate("Average shipping costs for purchases");
-        public static string AverageShippingCostsForSales => Translate("Average shipping costs for sales");
+        public static string AverageShippingCosts => Translate("Average shipping costs");
+        public static string GrowthRates => Translate("Expenses and revenue growth rates");
     }
 }
