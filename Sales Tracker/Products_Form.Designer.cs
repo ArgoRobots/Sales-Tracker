@@ -562,13 +562,13 @@ namespace Sales_Tracker
         #endregion
 
         private Label CountryOfOrigin_Label;
-        private Guna.UI2.WinForms.Guna2TextBox CountryOfOrigin_TextBox;
+        public Guna.UI2.WinForms.Guna2TextBox CountryOfOrigin_TextBox;
         private Label AddProduct_Label;
         private Label ProductName_Label;
-        private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
+        public Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
         private Guna.UI2.WinForms.Guna2Button AddProduct_Button;
         private Label ProductCategory_Label;
-        private Guna.UI2.WinForms.Guna2TextBox ProductCategory_TextBox;
+        public Guna.UI2.WinForms.Guna2TextBox ProductCategory_TextBox;
         private Guna.UI2.WinForms.Guna2TextBox ProductID_TextBox;
         private PictureBox WarningProductName_PictureBox;
         private Label WarningProductName_Label;
@@ -578,7 +578,7 @@ namespace Sales_Tracker
         private Label ProductID_Label;
         private Label ShowingResultsFor_Label;
         private Label CompanyOfOrigin_Label;
-        private Guna.UI2.WinForms.Guna2TextBox CompanyOfOrigin_TextBox;
+        public Guna.UI2.WinForms.Guna2TextBox CompanyOfOrigin_TextBox;
         private PictureBox WarningCompany_PictureBox;
         private LinkLabel WarningCompany_LinkLabel;
         private LinkLabel ProductsRemaining_LinkLabel;

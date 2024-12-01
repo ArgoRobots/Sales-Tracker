@@ -833,9 +833,9 @@ namespace Sales_Tracker
         private Label Quantity_Label;
         private Guna.UI2.WinForms.Guna2TextBox Quantity_TextBox;
         private Label ProductName_Label;
-        private Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
+        public Guna.UI2.WinForms.Guna2TextBox ProductName_TextBox;
         private Label AccountantName_Label;
-        private Guna.UI2.WinForms.Guna2TextBox AccountantName_TextBox;
+        public Guna.UI2.WinForms.Guna2TextBox AccountantName_TextBox;
         private Label AddSale_Label;
         private Label SaleNumber_Label;
         private Guna.UI2.WinForms.Guna2TextBox SaleNumber_TextBox;

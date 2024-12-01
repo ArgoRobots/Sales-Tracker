@@ -1086,6 +1086,7 @@ namespace Sales_Tracker
             }
         }
 
+        // Save in lists and update MainMenu_Form
         /// <summary>
         /// When changes are made to Categories_Form, Accountants_Form, etc., the changes are reflected in MainMenu_Form's lists and DataGridViews.
         /// </summary>
@@ -1123,6 +1124,7 @@ namespace Sales_Tracker
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
             }
 
+            UpdateValidationInOpenForms();
             CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {selectedTag} list");
         }
         private void UpdateCategory()
@@ -1264,13 +1266,11 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.CompanyList[index] = newCompany;
             }
 
-            // Update company references in products
             UpdateCompanyInProducts(oldCompany, newCompany, MainMenu_Form.Instance.CategoryPurchaseList);
             UpdateCompanyInProducts(oldCompany, newCompany, MainMenu_Form.Instance.CategorySaleList);
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
 
-            // Update DataGridViews
             UpdateAllDataGridViewRows(MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany, true);
         }
         private static void UpdateCompanyInProducts(string oldCompany, string newCompany, List<Category> categoryList)
@@ -1300,6 +1300,103 @@ namespace Sales_Tracker
             }
 
             UpdateAllDataGridViewRows(MainMenu_Form.Column.Accountant.ToString(), oldAccountant, newAccountant, false);
+        }
+
+        // Validate TextBoxes in other forms
+        private void UpdateValidationInOpenForms()
+        {
+            string newText = GetNewTextValue();
+
+            if (Application.OpenForms[nameof(AddPurchase_Form)] is AddPurchase_Form purchaseForm)
+            {
+                switch (selectedTag)
+                {
+                    case nameof(MainMenu_Form.DataGridViewTag.Product):
+                        UpdateProductTextBox(purchaseForm.ProductName_TextBox, listOfOldValues[1], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Category):
+                        UpdateCategoryInProductPath(purchaseForm.ProductName_TextBox, listOfOldValues[0], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Company):
+                        UpdateCompanyInProductPath(purchaseForm.ProductName_TextBox, listOfOldValues[0], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Accountant):
+                        UpdateTextBox(purchaseForm.AccountantName_TextBox, listOfOldValues[0], newText);
+                        break;
+                }
+            }
+
+            if (Application.OpenForms[nameof(AddSale_Form)] is AddSale_Form saleForm)
+            {
+                switch (selectedTag)
+                {
+                    case nameof(MainMenu_Form.DataGridViewTag.Product):
+                        UpdateProductTextBox(saleForm.ProductName_TextBox, listOfOldValues[1], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Category):
+                        UpdateCategoryInProductPath(saleForm.ProductName_TextBox, listOfOldValues[0], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Company):
+                        UpdateCompanyInProductPath(saleForm.ProductName_TextBox, listOfOldValues[0], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Accountant):
+                        UpdateTextBox(saleForm.AccountantName_TextBox, listOfOldValues[0], newText);
+                        break;
+                }
+            }
+
+            if (Application.OpenForms[nameof(Products_Form)] is Products_Form productsForm)
+            {
+                switch (selectedTag)
+                {
+                    case nameof(MainMenu_Form.DataGridViewTag.Product):
+                        UpdateTextBox(productsForm.ProductName_TextBox, listOfOldValues[1], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Category):
+                        UpdateTextBox(productsForm.ProductCategory_TextBox, listOfOldValues[0], newText);
+                        break;
+                    case nameof(MainMenu_Form.DataGridViewTag.Company):
+                        UpdateTextBox(productsForm.CompanyOfOrigin_TextBox, listOfOldValues[0], newText);
+                        break;
+                }
+            }
+        }
+        private string GetNewTextValue()
+        {
+            if (selectedTag == nameof(MainMenu_Form.DataGridViewTag.Product))
+            {
+                return Panel.Controls.OfType<Guna2TextBox>()
+                    .First(t => t.Name == Products_Form.Column.ProductName.ToString()).Text;
+            }
+            return Panel.Controls.OfType<Guna2TextBox>().First().Text;
+        }
+        private static void UpdateTextBox(Guna2TextBox textBox, string oldValue, string newValue)
+        {
+            if (textBox.Text == oldValue)
+            {
+                textBox.Text = newValue;
+            }
+        }
+        private static void UpdateProductTextBox(Guna2TextBox textBox, string oldProduct, string newProduct)
+        {
+            if (textBox.Text.EndsWith($"> {oldProduct}"))
+            {
+                textBox.Text = textBox.Text.Replace($"> {oldProduct}", $"> {newProduct}");
+            }
+        }
+        private static void UpdateCategoryInProductPath(Guna2TextBox textBox, string oldCategory, string newCategory)
+        {
+            if (textBox.Text.Contains($"> {oldCategory} >"))
+            {
+                textBox.Text = textBox.Text.Replace($"> {oldCategory} >", $"> {newCategory} >");
+            }
+        }
+        private static void UpdateCompanyInProductPath(Guna2TextBox textBox, string oldCompany, string newCompany)
+        {
+            if (textBox.Text.StartsWith($"{oldCompany} >"))
+            {
+                textBox.Text = textBox.Text.Replace($"{oldCompany} >", $"{newCompany} >");
+            }
         }
 
         // Construct controls

@@ -448,14 +448,14 @@ namespace Sales_Tracker.UI
             control.BorderThickness = 1;
             _searchResultBox.ScrollControlIntoView(control);
         }
-        private static void SetTextBoxToInvalid(Guna2TextBox textBox)
+        public static void SetTextBoxToInvalid(Guna2TextBox textBox)
         {
             textBox.BorderColor = CustomColors.AccentRed;
             textBox.HoverState.BorderColor = CustomColors.AccentRed;
             textBox.FocusedState.BorderColor = CustomColors.AccentRed;
             textBox.Tag = "0";
         }
-        private static void SetTextBoxToValid(Guna2TextBox textBox)
+        public static void SetTextBoxToValid(Guna2TextBox textBox)
         {
             textBox.BorderColor = CustomColors.ControlBorder;
             textBox.HoverState.BorderColor = CustomColors.AccentBlue;

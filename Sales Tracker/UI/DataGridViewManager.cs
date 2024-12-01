@@ -18,6 +18,7 @@ namespace Sales_Tracker.UI
         private static bool _doNotDeleteRows;
         private static DataGridViewRow _selectedRowInMainMenu;
         private static readonly byte rowHeight = 35, columnHeaderHeight = 60;
+        private static readonly string deleteAction = "deleted", moveAction = "move";
 
         // Getters
         public static Control ControlRightClickPanelWasAddedTo
@@ -322,7 +323,7 @@ namespace Sales_Tracker.UI
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, "deleted"))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -343,7 +344,7 @@ namespace Sales_Tracker.UI
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, "deleted"))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -364,7 +365,7 @@ namespace Sales_Tracker.UI
             string columnName = Categories_Form.Column.CategoryName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategoryPurchaseList, "deleted"))
+            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategoryPurchaseList, deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -385,7 +386,7 @@ namespace Sales_Tracker.UI
             string columnName = Categories_Form.Column.CategoryName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategorySaleList, "deleted"))
+            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategorySaleList, deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -406,7 +407,7 @@ namespace Sales_Tracker.UI
             string columnName = Accountants_Form.Column.AccountantName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Accountant.ToString(), valueBeingRemoved, "deleted"))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Accountant.ToString(), valueBeingRemoved, deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -426,7 +427,7 @@ namespace Sales_Tracker.UI
             string columnName = Companies_Form.Column.Company.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved, "deleted"))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved, deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -1031,13 +1032,15 @@ namespace Sales_Tracker.UI
                 // Check each product name until match found
                 for (int i = 0; i < itemsToCheck; i++)
                 {
-                    if (items[i].AsSpan(',', 0) == value)
+                    if (items[i].Split(',')[0] == value)
                     {
                         ShowInUseMessage(type, action);
                         return true;
                     }
                 }
             }
+
+            HandleValueDeletion(type, value);
             return false;
         }
         private static void ShowInUseMessage(string type, string action)
@@ -1068,6 +1071,71 @@ namespace Sales_Tracker.UI
                 return false;
             }
             return true;
+        }
+
+        // Validate TextBoxes in other forms
+        private static void HandleValueDeletion(string type, string value)
+        {
+            if (Tools.IsFormOpen(typeof(AddPurchase_Form)) &&
+                Application.OpenForms[nameof(AddPurchase_Form)] is AddPurchase_Form purchaseForm)
+            {
+                switch (type)
+                {
+                    case "product":
+                        ValidateFormTextBox(purchaseForm.ProductName_TextBox, value);
+                        break;
+                    case "accountant":
+                        ValidateFormTextBox(purchaseForm.AccountantName_TextBox, value);
+                        break;
+                    case "company":
+                        ValidateProductPathCompany(purchaseForm.ProductName_TextBox, value);
+                        break;
+                    case "category":
+                        ValidateProductPathCategory(purchaseForm.ProductName_TextBox, value);
+                        break;
+                }
+            }
+
+            if (Tools.IsFormOpen(typeof(AddSale_Form)) &&
+                Application.OpenForms[nameof(AddSale_Form)] is AddSale_Form saleForm)
+            {
+                switch (type)
+                {
+                    case "product":
+                        ValidateFormTextBox(saleForm.ProductName_TextBox, value);
+                        break;
+                    case "accountant":
+                        ValidateFormTextBox(saleForm.AccountantName_TextBox, value);
+                        break;
+                    case "company":
+                        ValidateProductPathCompany(saleForm.ProductName_TextBox, value);
+                        break;
+                    case "category":
+                        ValidateProductPathCategory(saleForm.ProductName_TextBox, value);
+                        break;
+                }
+            }
+        }
+        private static void ValidateFormTextBox(Guna2TextBox textBox, string value)
+        {
+            if (textBox.Text.Contains( value))
+            {
+                textBox.Text = "";
+            }
+        }
+        private static void ValidateProductPathCompany(Guna2TextBox textBox, string company)
+        {
+            if (textBox.Text.StartsWith($"{company} >"))
+            {
+                textBox.Text = textBox.Text;
+            }
+        }
+        private static void ValidateProductPathCategory(Guna2TextBox textBox, string category)
+        {
+            if (textBox.Text.Contains($"> {category} >"))
+            {
+                textBox.Text = textBox.Text;
+            }
         }
 
         // Right click row properties
@@ -1156,7 +1224,7 @@ namespace Sales_Tracker.UI
             {
                 string categoryName = row.Cells[0].Value.ToString();
 
-                if (!CanCategoryBeMovedOrDeleted(categoryName, sourceList, "move"))
+                if (!CanCategoryBeMovedOrDeleted(categoryName, sourceList, moveAction))
                 {
                     continue;
                 }
