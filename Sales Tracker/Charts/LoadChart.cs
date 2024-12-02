@@ -309,8 +309,8 @@ namespace Sales_Tracker.Charts
         }
         public static ChartData LoadProfitsIntoChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
             string label = LanguageManager.TranslateSingleString("Profits");
@@ -822,8 +822,8 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadSalesVsExpensesChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
             string expensesLabel = LanguageManager.TranslateSingleString("Total expenses");
@@ -867,8 +867,7 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, double> expensesByDate = [];
-            Dictionary<string, double> salesByDate = [];
+            Dictionary<string, double> expensesByDate = [], salesByDate = [];
             HashSet<string> allDates = [];
 
             // Calculate expenses totals by date
@@ -1031,8 +1030,7 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, (double total, int count)> salesByDate = [];
-            Dictionary<string, (double total, int count)> purchasesByDate = [];
+            Dictionary<string, (double total, int count)> purchasesByDate = [], salesByDate = [];
             HashSet<string> allDates = [];
 
             // Process sales data
@@ -1084,12 +1082,11 @@ namespace Sales_Tracker.Charts
             }
 
             // Calculate averages
-            Dictionary<string, double> avgSalesByDate = salesByDate.ToDictionary(
+            Dictionary<string, double> avgPurchasesByDate = purchasesByDate.ToDictionary(
                 kvp => kvp.Key,
                 kvp => Math.Round(kvp.Value.total / kvp.Value.count, 2)
             );
-
-            Dictionary<string, double> avgPurchasesByDate = purchasesByDate.ToDictionary(
+            Dictionary<string, double> avgSalesByDate = salesByDate.ToDictionary(
                 kvp => kvp.Key,
                 kvp => Math.Round(kvp.Value.total / kvp.Value.count, 2)
             );
@@ -1116,8 +1113,8 @@ namespace Sales_Tracker.Charts
             {
                 foreach (string date in sortedDates)
                 {
-                    double salesValue = avgSalesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
                     double purchasesValue = avgPurchasesByDate.TryGetValue(date, out double pValue) ? pValue : 0;
+                    double salesValue = avgSalesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
 
                     if (isLineChart)
                     {
@@ -1152,8 +1149,8 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadTotalTransactionsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
             string purchasesLabel = LanguageManager.TranslateSingleString("Purchases");
@@ -1197,8 +1194,7 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows, purchasesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, double> purchasesByDate = [];
-            Dictionary<string, double> salesByDate = [];
+            Dictionary<string, double> purchasesByDate = [], salesByDate = [];
             HashSet<string> allDates = [];
             bool anyRowsVisible = false;
 
@@ -1308,8 +1304,8 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadAverageShippingCostsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
             string purchaseLabel = LanguageManager.TranslateSingleString("Purchases");
@@ -1353,8 +1349,7 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, (double totalShipping, int orders)> purchaseShippingByDate = [];
-            Dictionary<string, (double totalShipping, int orders)> salesShippingByDate = [];
+            Dictionary<string, (double totalShipping, int orders)> purchaseShippingByDate = [], salesShippingByDate = [];
             HashSet<string> allDates = [];
 
             // Process purchase shipping costs
@@ -1412,7 +1407,6 @@ namespace Sales_Tracker.Charts
                 kvp => kvp.Key,
                 kvp => Math.Round(kvp.Value.totalShipping / kvp.Value.orders, 2)
             );
-
             Dictionary<string, double> avgSalesShipping = salesShippingByDate.ToDictionary(
                 kvp => kvp.Key,
                 kvp => Math.Round(kvp.Value.totalShipping / kvp.Value.orders, 2)
@@ -1489,8 +1483,8 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadGrowthRateChart(GunaChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
             string expensesLabel = LanguageManager.TranslateSingleString("Expenses growth %");
@@ -1521,29 +1515,8 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, double> revenueByDate = [];
-            Dictionary<string, double> expensesByDate = [];
+            Dictionary<string, double> expensesByDate = [], revenueByDate = [];
             HashSet<string> allDates = [];
-
-            // Process revenue data
-            foreach (DataGridViewRow row in salesDataGridView.Rows)
-            {
-                if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
-
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
-                string formattedDate = date.ToString(dateFormat);
-                allDates.Add(formattedDate);
-
-                if (revenueByDate.TryGetValue(formattedDate, out double value))
-                {
-                    revenueByDate[formattedDate] = value + total;
-                }
-                else
-                {
-                    revenueByDate[formattedDate] = total;
-                }
-            }
 
             // Process expense data
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
@@ -1565,6 +1538,26 @@ namespace Sales_Tracker.Charts
                 }
             }
 
+            // Process revenue data
+            foreach (DataGridViewRow row in salesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (revenueByDate.TryGetValue(formattedDate, out double value))
+                {
+                    revenueByDate[formattedDate] = value + total;
+                }
+                else
+                {
+                    revenueByDate[formattedDate] = total;
+                }
+            }
+
             if (allDates.Count == 0)
             {
                 ClearChart(chart);
@@ -1575,11 +1568,9 @@ namespace Sales_Tracker.Charts
             List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
 
             // Calculate growth rates
-            Dictionary<string, double> revenueGrowth = [];
-            Dictionary<string, double> expenseGrowth = [];
+            Dictionary<string, double> expenseGrowth = [], revenueGrowth = [];
 
-            double? previousRevenue = null;
-            double? previousExpense = null;
+            double? previousExpense = null, previousRevenue = null; ;
 
             foreach (string date in sortedDates)
             {
@@ -1621,8 +1612,8 @@ namespace Sales_Tracker.Charts
                 {
                     combinedData[date] = new Dictionary<string, double>
                     {
-                        { revenueLabel, revenueGrowth.TryGetValue(date, out double rValue) ? rValue : 0 },
-                        { expensesLabel, expenseGrowth.TryGetValue(date, out double eValue) ? eValue : 0 }
+                        { expensesLabel, expenseGrowth.TryGetValue(date, out double eValue) ? eValue : 0 },
+                        { revenueLabel, revenueGrowth.TryGetValue(date, out double rValue) ? rValue : 0 }
                     };
                 }
 
@@ -1631,18 +1622,19 @@ namespace Sales_Tracker.Charts
                     combinedData,
                     filePath,
                     eChartType.Line,
-                    chartTitle
+                    chartTitle,
+                    true
                 );
             }
             else if (canUpdateChart)
             {
                 foreach (string date in sortedDates)
                 {
-                    double revenueValue = revenueGrowth.TryGetValue(date, out double rValue) ? rValue : 0;
                     double expenseValue = expenseGrowth.TryGetValue(date, out double eValue) ? eValue : 0;
+                    double revenueValue = revenueGrowth.TryGetValue(date, out double rValue) ? rValue : 0;
 
-                    revenueDataset.DataPoints.Add(date, revenueValue);
                     expenseDataset.DataPoints.Add(date, expenseValue);
+                    revenueDataset.DataPoints.Add(date, revenueValue);
                 }
 
                 chart.Datasets.Clear();

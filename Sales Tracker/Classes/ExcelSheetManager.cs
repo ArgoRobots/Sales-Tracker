@@ -657,7 +657,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Export charts to Microsoft Excel
-        public static void ExportChartToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle, string column1Text, string column2Text)
+        public static void ExportChartToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle, string column1Text, string column2Text, bool isSpline = false)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new();
@@ -688,12 +688,16 @@ namespace Sales_Tracker.Classes
 
             // Configure chart
             ExcelChartSerie series = chart.Series.Add(worksheet.Cells[$"B2:B{row - 1}"], worksheet.Cells[$"A2:A{row - 1}"]);
+            if (isSpline && chartType == eChartType.Line)
+            {
+                ((ExcelLineChartSerie)series).Smooth = true;
+            }
             chart.Legend.Remove();
 
             worksheet.Columns[1, 2].AutoFit();
             package.SaveAs(new FileInfo(filePath));
         }
-        public static void ExportMultiDataSetChartToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle)
+        public static void ExportMultiDataSetChartToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle, bool isSpline = false)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new();
@@ -741,6 +745,10 @@ namespace Sales_Tracker.Classes
                     worksheet.Cells[2, i + 2, row - 1, i + 2], // Y values
                     worksheet.Cells[2, 1, row - 1, 1]          // X values
                 );
+                if (isSpline && chartType == eChartType.Line)
+                {
+                    ((ExcelLineChartSerie)series).Smooth = true;
+                }
                 series.Header = seriesNames[i];
             }
 
