@@ -684,7 +684,7 @@ namespace Sales_Tracker.Classes
                 row++;
             }
 
-            ExcelChart chart = CreateChart(worksheet, chartTitle, chartType);
+            ExcelChart chart = CreateChart(worksheet, chartTitle, chartType, false);
 
             // Configure chart
             ExcelChartSerie series = chart.Series.Add(worksheet.Cells[$"B2:B{row - 1}"], worksheet.Cells[$"A2:A{row - 1}"]);
@@ -735,7 +735,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Create chart
-            ExcelChart chart = CreateChart(worksheet, chartTitle, chartType);
+            ExcelChart chart = CreateChart(worksheet, chartTitle, chartType, true);
             chart.Legend.Position = eLegendPosition.Top;
 
             // Add series to chart
@@ -753,7 +753,6 @@ namespace Sales_Tracker.Classes
             }
 
             worksheet.Columns.AutoFit();
-
             package.SaveAs(new FileInfo(filePath));
         }
 
@@ -761,10 +760,10 @@ namespace Sales_Tracker.Classes
         /// Creates and configures an Excel chart with default position and size.
         /// </summary>
         /// <returns>The created Excel chart.</returns>
-        public static ExcelChart CreateChart(ExcelWorksheet worksheet, string chartTitle, eChartType chartType)
+        public static ExcelChart CreateChart(ExcelWorksheet worksheet, string chartTitle, eChartType chartType, bool isMultiDataset)
         {
             ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
-            chart.SetPosition(0, 0, 3, 0);
+            chart.SetPosition(0, 0, isMultiDataset ? 4 : 3, 0);
             chart.SetSize(800, 400);
             chart.Title.Text = chartTitle;
 
