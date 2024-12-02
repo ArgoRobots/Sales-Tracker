@@ -145,7 +145,7 @@ namespace Sales_Tracker.UI
 
             if (results.Count == 0)
             {
-                CloseSearchBox();
+                CustomControls.CloseAllPanels(null, null);
                 return;
             }
 
@@ -250,7 +250,7 @@ namespace Sales_Tracker.UI
                             Guna2Button button = (Guna2Button)sender;
                             searchTextBox.Text = button.Text;
                             debounceTimer.Stop();
-                            CloseSearchBox();
+                            CustomControls.CloseAllPanels(null, null);
                         };
 
                         int padding = btn.Image != null ? 25 : 0;
@@ -426,7 +426,7 @@ namespace Sales_Tracker.UI
                         searchTextBox.Text = btn.Text;
                         debounceTimer.Stop();
                         isResultSelected = true;
-                        CloseSearchBox();
+                        CustomControls.CloseAllPanels(null, null);
                         break;
                     }
                 }

@@ -8,6 +8,7 @@ using Sales_Tracker.Settings;
 using Sales_Tracker.Startup.Menus;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 
 namespace Sales_Tracker.UI
 {
@@ -31,6 +32,7 @@ namespace Sales_Tracker.UI
 
             // Other controls
             DataGridViewManager.ConstructRightClickRowMenu();
+            TextBoxManager.ConstructRightClickTextBoxMenu();
             RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
 
             // Set language
@@ -109,7 +111,7 @@ namespace Sales_Tracker.UI
                 TextAlign = HorizontalAlignment.Left,
                 Font = new Font("Segoe UI", 10),
                 Text = text,
-                Name = text.Replace(" ", "").Replace("...", "") + "_Button",
+                Name = FormatButtonName(text),
                 Margin = new Padding(0),
                 BorderColor = CustomColors.ControlBorder
             };
@@ -660,6 +662,18 @@ namespace Sales_Tracker.UI
             panel.Height = controlCount * PanelButtonHeight + SpaceForPanel;
             flowPanel.Height = controlCount * PanelButtonHeight;
         }
+        private static string FormatButtonName(string text)
+        {
+            // Capitalize first letter of each word
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+            string titleCaseText = textInfo.ToTitleCase(text.ToLower());
+
+            // Remove spaces and ellipses
+            string cleanText = titleCaseText.Replace(" ", "").Replace("...", "");
+
+            // Add "_Button" suffix
+            return cleanText + "_Button";
+        }
 
         // Validity
         public static void SetGTextBoxToValid(Guna2TextBox textBox)
@@ -697,19 +711,21 @@ namespace Sales_Tracker.UI
         public static void CloseAllPanels(object sender, EventArgs? e)
         {
             Rename();
+            SearchBox.CloseSearchBox();
+            TextBoxManager.RightClickTextBox_Panel.Parent?.Controls.Remove(TextBoxManager.RightClickTextBox_Panel);
 
             if (MainMenu_Form.Instance == null) { return; }
 
             MainMenu_Form.Instance.Controls.Remove(_fileMenu);
             MainMenu_Form.Instance.Controls.Remove(_recentlyOpenedMenu);
             MainMenu_Form.Instance.Controls.Remove(_helpMenu);
-            MainMenu_Form.Instance.Controls.Remove(AccountMenu);
+            MainMenu_Form.Instance.Controls.Remove(_accountMenu);
             MainMenu_Form.Instance.CloseDateRangePanel();
             MenuKeyShortcutManager.SelectedPanel = null;
             DeselectAllMenuButtons(_fileMenu);
             DeselectAllMenuButtons(_recentlyOpenedMenu);
             DeselectAllMenuButtons(_helpMenu);
-            DeselectAllMenuButtons(AccountMenu);
+            DeselectAllMenuButtons(_accountMenu);
 
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;

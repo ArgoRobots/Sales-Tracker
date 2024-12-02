@@ -309,7 +309,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs? e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
         }
     }
 }

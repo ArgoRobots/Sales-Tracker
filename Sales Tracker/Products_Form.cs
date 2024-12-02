@@ -144,7 +144,7 @@ namespace Sales_Tracker
         }
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
             MainMenu_Form.Instance.Selected = oldOption;
         }
 
@@ -486,7 +486,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
         }
     }
 }

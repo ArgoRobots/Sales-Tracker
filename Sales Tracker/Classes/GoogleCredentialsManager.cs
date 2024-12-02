@@ -77,7 +77,6 @@ namespace Sales_Tracker.Classes
                 foreach (string api in REQUIRED_APIS)
                 {
                     string serviceName = $"projects/{PROJECT_ID}/services/{api}";
-
                     EnableServiceRequest enableRequest = new();
 
                     await serviceUsageService.Services

@@ -125,7 +125,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
         }
     }
 }

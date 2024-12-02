@@ -14,18 +14,12 @@ namespace Sales_Tracker.UI
     {
         // Properties
         private static DataGridViewRow removedRow;
-        private static Control _controlRightClickPanelWasAddedTo;
         private static bool _doNotDeleteRows;
         private static DataGridViewRow _selectedRowInMainMenu;
         private static readonly byte rowHeight = 35, columnHeaderHeight = 60;
         private static readonly string deleteAction = "deleted", moveAction = "move";
 
         // Getters
-        public static Control ControlRightClickPanelWasAddedTo
-        {
-            get => _controlRightClickPanelWasAddedTo;
-            set => _controlRightClickPanelWasAddedTo = value;
-        }
         public static bool DoNotDeleteRows
         {
             get => _doNotDeleteRows;
@@ -212,9 +206,6 @@ namespace Sales_Tracker.UI
             {
                 return;
             }
-
-            Control controlSender = (Control)sender;
-            _controlRightClickPanelWasAddedTo = controlSender.Parent;
 
             ConfigureRightClickDataGridViewMenuButtons(grid);
             PositionRightClickDataGridViewMenu(grid, e, info);
@@ -630,7 +621,7 @@ namespace Sales_Tracker.UI
             SetVerticalPosition(grid, info, formHeight);
 
             CustomControls.SetRightClickMenuHeight(_rightClickDataGridView_Panel);
-            _controlRightClickPanelWasAddedTo.Controls.Add(_rightClickDataGridView_Panel);
+            grid.Parent.Controls.Add(_rightClickDataGridView_Panel);
             _rightClickDataGridView_Panel.BringToFront();
         }
         private static void SetHorizontalPosition(Guna2DataGridView grid, MouseEventArgs e, int formWidth)
@@ -1118,7 +1109,7 @@ namespace Sales_Tracker.UI
         }
         private static void ValidateFormTextBox(Guna2TextBox textBox, string value)
         {
-            if (textBox.Text.Contains( value))
+            if (textBox.Text.Contains(value))
             {
                 textBox.Text = "";
             }
@@ -1150,7 +1141,11 @@ namespace Sales_Tracker.UI
         // Right click row methods
         public static void ConstructRightClickRowMenu()
         {
-            _rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel), "rightClickDataGridView_Panel");
+            _rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
+                new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                "rightClickDataGridView_Panel"
+            );
+
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
 
             rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, true, flowPanel);

@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.DataClasses;
 
 namespace Sales_Tracker.UI
 {
@@ -58,11 +59,11 @@ namespace Sales_Tracker.UI
             textBox.TextChanged += TextBox_TextChanged;
             textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
             textBox.KeyDown += TextBox_KeyDown;
+            textBox.MouseClick += TextBox_MouseClick;
         }
         private static bool IsAttached(Guna2TextBox textBox) => undoStacks.ContainsKey(textBox);
 
         // TextBox event handlers
-
         /// <summary>
         /// Handles text changes and manages undo/redo stacks.
         /// </summary>
@@ -81,6 +82,7 @@ namespace Sales_Tracker.UI
                 redoStack.Clear();
             }
         }
+
         /// <summary>
         /// Handles PreviewKeyDown event to ensure keyboard shortcuts work properly.
         /// </summary>
@@ -92,6 +94,7 @@ namespace Sales_Tracker.UI
                 e.IsInputKey = true;
             }
         }
+
         /// Handles KeyDown event for keyboard shortcuts and text manipulation.
         /// </summary>
         private static void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -136,8 +139,16 @@ namespace Sales_Tracker.UI
                 }
             }
         }
+        private static void TextBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                Guna2TextBox textBox = (Guna2TextBox)sender;
+                ShowRightClickMenu(textBox, e.Location);
+            }
+        }
 
-        // Methods
+        // Methods for event handlers
         private static bool IsInputKey(Keys keyData)
         {
             switch (keyData)
@@ -236,6 +247,133 @@ namespace Sales_Tracker.UI
             textBox.Text = newText;
             textBox.SelectionStart = cursorPosition;
             isTextChangedByUserFlags[textBox] = true;
+        }
+
+        // Right click menu
+        private static Guna2Panel _rightClickTextBox_Panel;
+        public static Guna2Panel RightClickTextBox_Panel => _rightClickTextBox_Panel;
+        public static void ConstructRightClickTextBoxMenu()
+        {
+            _rightClickTextBox_Panel = CustomControls.ConstructPanelForMenu(
+                new Size(CustomControls.PanelWidth, 6 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                "rightClickTextBox_Panel"
+            );
+
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickTextBox_Panel.Controls[0];
+
+            Guna2Button selectAllBtn = CustomControls.ConstructBtnForMenu("Select all", CustomControls.PanelBtnWidth, false, flowPanel);
+            selectAllBtn.Click += HandleSelectAll;
+            CustomControls.ConstructKeyShortcut("Ctrl+A", selectAllBtn);
+
+            Guna2Button copyBtn = CustomControls.ConstructBtnForMenu("Copy", CustomControls.PanelBtnWidth, false, flowPanel);
+            copyBtn.Click += HandleCopy;
+            CustomControls.ConstructKeyShortcut("Ctrl+C", copyBtn);
+
+            Guna2Button pasteBtn = CustomControls.ConstructBtnForMenu("Paste", CustomControls.PanelBtnWidth, false, flowPanel);
+            pasteBtn.Click += HandlePaste;
+            CustomControls.ConstructKeyShortcut("Ctrl+V", pasteBtn);
+
+            Guna2Button cutBtn = CustomControls.ConstructBtnForMenu("Cut", CustomControls.PanelBtnWidth, false, flowPanel);
+            cutBtn.Click += HandleCut;
+            CustomControls.ConstructKeyShortcut("Ctrl+X", cutBtn);
+
+            Guna2Button undoBtn = CustomControls.ConstructBtnForMenu("Undo", CustomControls.PanelBtnWidth, false, flowPanel);
+            undoBtn.Click += HandleUndo;
+            CustomControls.ConstructKeyShortcut("Ctrl+Z", undoBtn);
+
+            Guna2Button redoBtn = CustomControls.ConstructBtnForMenu("Redo", CustomControls.PanelBtnWidth, false, flowPanel);
+            redoBtn.Click += HandleRedo;
+            CustomControls.ConstructKeyShortcut("Ctrl+Y", redoBtn);
+        }
+        private static void HandleCopy(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            if (textBox.SelectedText != "")
+            {
+                Clipboard.SetText(textBox.SelectedText);
+            }
+            CustomControls.CloseAllPanels(null, null);
+        }
+        private static void HandlePaste(object sender, EventArgs e)
+        {
+            string clipboardText = Clipboard.GetText();
+            if (string.IsNullOrEmpty(clipboardText)) { return; }
+
+            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            int cursorPosition = textBox.SelectionStart;
+            string text = textBox.Text;
+
+            if (textBox.SelectionLength > 0)
+            {
+                // Replace selected text
+                text = text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+            }
+
+            text = text.Insert(cursorPosition, clipboardText);
+            textBox.Text = text;
+            textBox.SelectionStart = cursorPosition + clipboardText.Length;
+
+            CustomControls.CloseAllPanels(null, null);
+        }
+        private static void HandleCut(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            if (textBox.SelectedText == "") { return; }
+
+            Clipboard.SetText(textBox.SelectedText);
+            int cursorPosition = textBox.SelectionStart;
+            textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+            textBox.SelectionStart = cursorPosition;
+
+            CustomControls.CloseAllPanels(null, null);
+        }
+        private static void HandleSelectAll(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            textBox.SelectAll();
+            CustomControls.CloseAllPanels(null, null);
+        }
+        private static void HandleUndo(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Undo(textBox);
+            CustomControls.CloseAllPanels(null, null);
+        }
+        private static void HandleRedo(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Redo(textBox);
+            CustomControls.CloseAllPanels(null, null);
+        }
+
+        // Methods for right click menu
+        private static void ShowRightClickMenu(Guna2TextBox textBox, Point mouseLocation)
+        {
+            if (_rightClickTextBox_Panel == null)
+            {
+                ConstructRightClickTextBoxMenu();
+            }
+
+            // Convert mouse coordinates to screen coordinates
+            Point screenPoint = textBox.PointToScreen(mouseLocation);
+            screenPoint.X -= ReadOnlyVariables.OffsetRightClickPanel;
+
+            // Ensure the panel doesn't go off screen
+            Rectangle screenBounds = Screen.FromControl(textBox).Bounds;
+            if (screenPoint.X + _rightClickTextBox_Panel.Width > screenBounds.Right)
+            {
+                screenPoint.X = screenBounds.Right - _rightClickTextBox_Panel.Width - ReadOnlyVariables.OffsetRightClickPanel;
+            }
+            if (screenPoint.Y + _rightClickTextBox_Panel.Height > screenBounds.Bottom)
+            {
+                screenPoint.Y = screenBounds.Bottom - _rightClickTextBox_Panel.Height;
+            }
+
+            // Show the panel at the calculated position
+            _rightClickTextBox_Panel.Tag = textBox;
+            textBox.FindForm().Controls.Add(_rightClickTextBox_Panel);
+            _rightClickTextBox_Panel.Location = textBox.Parent.PointToClient(screenPoint);
+            _rightClickTextBox_Panel.BringToFront();
         }
     }
 }

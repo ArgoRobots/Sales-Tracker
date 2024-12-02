@@ -61,7 +61,7 @@ namespace Sales_Tracker.Settings
         }
         private void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
             _isFormClosing = true;
         }
 
@@ -83,7 +83,7 @@ namespace Sales_Tracker.Settings
         // Bottom buttons
         private void ResetToDefault_Button_Click(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
 
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Reset settings", "All settings will be reset to default.",
@@ -97,7 +97,7 @@ namespace Sales_Tracker.Settings
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
             ApplyChanges(false);
             Close();
         }
@@ -107,7 +107,7 @@ namespace Sales_Tracker.Settings
         }
         private void Apply_Button_Click(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
             ApplyChanges(true);
         }
         private void ApplyChanges(bool includeGeneralForm)
@@ -180,7 +180,7 @@ namespace Sales_Tracker.Settings
         // Misc.
         private void SwitchForm(Form form, object btnSender)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
             Guna2Button btn = (Guna2Button)btnSender;
 
             // If btn is already selected

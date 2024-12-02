@@ -251,11 +251,11 @@ namespace Sales_Tracker
             _companiesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
             _countriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
             _accountants_Chart.Tag = ChartDataType.Accountants;
-            _salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
-            _averageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
-            _totalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
-            _averageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
             _growthRates_Chart.Tag = ChartDataType.GrowthRates;
+            _salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
+            _totalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
+            _averageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
+            _averageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -652,13 +652,13 @@ namespace Sales_Tracker
 
                 // Set positions for middle row charts
                 SetChartPosition(_accountants_Chart, chartSize, firstX, middleRowY);
-                SetChartPosition(_salesVsExpenses_Chart, chartSize, secondX, middleRowY);
-                SetChartPosition(_averageTransactionValue_Chart, chartSize, thirdX, middleRowY);
+                SetChartPosition(_growthRates_Chart, chartSize, secondX, middleRowY);
+                SetChartPosition(_salesVsExpenses_Chart, chartSize, thirdX, middleRowY);
 
                 // Set positions for bottom row charts
                 SetChartPosition(_totalTransactions_Chart, chartSize, firstX, bottomRowY);
-                SetChartPosition(_averageShippingCosts_Chart, chartSize, secondX, bottomRowY);
-                SetChartPosition(_growthRates_Chart, chartSize, thirdX, bottomRowY);
+                SetChartPosition(_averageTransactionValue_Chart, chartSize, secondX, bottomRowY);
+                SetChartPosition(_averageShippingCosts_Chart, chartSize, thirdX, bottomRowY);
             }
             else
             {
@@ -1711,7 +1711,7 @@ namespace Sales_Tracker
         // Chart properties
         private List<GunaChart> statisticsCharts;
         private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
-            _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCosts_Chart, _growthRates_Chart;
+            _growthRates_Chart, _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCosts_Chart;
 
         public enum ChartDataType
         {
@@ -1732,11 +1732,11 @@ namespace Sales_Tracker
         public GunaChart CountriesOfDestination_Chart => _countriesOfDestination_Chart;
         public GunaChart CompaniesOfOrigin_Chart => _companiesOfOrigin_Chart;
         public GunaChart Accountants_Chart => _accountants_Chart;
+        public GunaChart GrowthRates_Chart => _growthRates_Chart;
         public GunaChart SalesVsExpenses_Chart => _salesVsExpenses_Chart;
         public GunaChart AverageTransactionValue_Chart => _averageTransactionValue_Chart;
         public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
         public GunaChart AverageShippingCosts_Chart => _averageShippingCosts_Chart;
-        public GunaChart GrowthRates_Chart => _growthRates_Chart;
 
         // Statistics charts methods
         private List<Control> GetMainControlsList()
@@ -1852,25 +1852,25 @@ namespace Sales_Tracker
                 LanguageManager.UpdateLanguageForControl(_accountants_Chart);
             }
 
+            LoadChart.LoadGrowthRateChart(_growthRates_Chart);
+            _growthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
+            LanguageManager.UpdateLanguageForControl(_growthRates_Chart);
+
             LoadChart.LoadSalesVsExpensesChart(_salesVsExpenses_Chart, isLineChart);
             _salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
             LanguageManager.UpdateLanguageForControl(_salesVsExpenses_Chart);
-
-            LoadChart.LoadAverageTransactionValueChart(_averageTransactionValue_Chart, isLineChart);
-            _averageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
-            LanguageManager.UpdateLanguageForControl(_averageTransactionValue_Chart);
 
             LoadChart.LoadTotalTransactionsChart(_totalTransactions_Chart, isLineChart);
             _totalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
             LanguageManager.UpdateLanguageForControl(_totalTransactions_Chart);
 
+            LoadChart.LoadAverageTransactionValueChart(_averageTransactionValue_Chart, isLineChart);
+            _averageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
+            LanguageManager.UpdateLanguageForControl(_averageTransactionValue_Chart);
+
             LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart);
             _averageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
             LanguageManager.UpdateLanguageForControl(_averageShippingCosts_Chart);
-
-            LoadChart.LoadGrowthRateChart(_growthRates_Chart, isLineChart);
-            _growthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
-            LanguageManager.UpdateLanguageForControl(_growthRates_Chart);
         }
 
         // Misc.
@@ -1893,7 +1893,7 @@ namespace Sales_Tracker
         }
         public void ClosePanels()
         {
-            DataGridViewManager.ControlRightClickPanelWasAddedTo?.Controls.Remove(DataGridViewManager.RightClickDataGridView_Panel);
+            DataGridViewManager.RightClickDataGridView_Panel.Parent?.Controls.Remove(DataGridViewManager.RightClickDataGridView_Panel);
             Controls.Remove(RightClickGunaChartMenu.RightClickGunaChart_Panel);
             DataGridViewManager.DoNotDeleteRows = false;
         }

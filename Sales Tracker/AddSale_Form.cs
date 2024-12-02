@@ -115,7 +115,7 @@ namespace Sales_Tracker
         }
         private void AddSale_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
         }
 
         // Event handlers
@@ -1019,7 +1019,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            SearchBox.CloseSearchBox();
+            CustomControls.CloseAllPanels(null, null);
         }
     }
 }
