@@ -25,6 +25,7 @@ namespace Sales_Tracker.Classes
         public enum ChartType
         {
             Line,
+            Spline,
             Column,
             Pie
         }
@@ -74,7 +75,7 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            new Loading_Form("Exporting chart to Google Sheets...").Show();
+            Tools.OpenForm(new Loading_Form("Exporting chart to Google Sheets..."));
 
             try
             {
@@ -221,7 +222,7 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            new Loading_Form("Exporting chart to Google Sheets...").Show();
+            Tools.OpenForm(new Loading_Form("Exporting chart to Google Sheets..."));
 
             try
             {
@@ -478,11 +479,13 @@ namespace Sales_Tracker.Classes
             switch (chartType)
             {
                 case ChartType.Line:
+                case ChartType.Spline:
                     chartSpec.BasicChart = CreateBasicChartSpec(
                         seriesRanges,
                         startRowIndex,
                         endRowIndex,
-                        "LINE"
+                        "LINE",
+                        chartType == ChartType.Spline
                     );
                     break;
 
@@ -491,7 +494,8 @@ namespace Sales_Tracker.Classes
                         seriesRanges,
                         startRowIndex,
                         endRowIndex,
-                        "COLUMN"
+                        "COLUMN",
+                        false
                     );
                     break;
 
@@ -532,11 +536,12 @@ namespace Sales_Tracker.Classes
             (string XColumn, string YColumn)[] seriesRanges,
             int startRowIndex,
             int endRowIndex,
-            string chartType)
+            string chartType,
+            bool isSpline = false)
         {
             List<BasicChartSeries> series = [];
 
-            foreach ((string _, string yColumn) in seriesRanges) // Using discard for unused xColumn
+            foreach ((string _, string yColumn) in seriesRanges)
             {
                 series.Add(new BasicChartSeries
                 {
@@ -564,6 +569,7 @@ namespace Sales_Tracker.Classes
             return new BasicChartSpec
             {
                 ChartType = chartType,
+                LineSmoothing = isSpline,
                 LegendPosition = "TOP_LEGEND",
                 Domains =
                 [

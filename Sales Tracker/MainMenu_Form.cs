@@ -1510,10 +1510,7 @@ namespace Sales_Tracker
         // DataGridView getters and setters
         public Guna2DataGridView Purchase_DataGridView => _purchase_DataGridView;
         public Guna2DataGridView Sale_DataGridView => _sale_DataGridView;
-        public Guna2DataGridView SelectedDataGridView
-        {
-            get => _selectedDataGridView;
-        }
+        public Guna2DataGridView SelectedDataGridView => _selectedDataGridView;
 
         // DataGridView methods
         public IEnumerable<DataGridViewRow> GetAllRows()
@@ -1850,11 +1847,11 @@ namespace Sales_Tracker
                 LoadChart.LoadAccountantsIntoChart(_accountants_Chart, PieChartGrouping.Top8);
                 _accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
                 LanguageManager.UpdateLanguageForControl(_accountants_Chart);
-            }
 
-            LoadChart.LoadGrowthRateChart(_growthRates_Chart);
-            _growthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
-            LanguageManager.UpdateLanguageForControl(_growthRates_Chart);
+                LoadChart.LoadGrowthRateChart(_growthRates_Chart);
+                _growthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
+                LanguageManager.UpdateLanguageForControl(_growthRates_Chart);
+            }
 
             LoadChart.LoadSalesVsExpensesChart(_salesVsExpenses_Chart, isLineChart);
             _salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;

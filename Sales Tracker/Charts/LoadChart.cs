@@ -845,8 +845,7 @@ namespace Sales_Tracker.Charts
             }
 
             // Create the datasets for expenses and sales with labels
-            IGunaDataset expensesDataset;
-            IGunaDataset salesDataset;
+            IGunaDataset expensesDataset, salesDataset;
             if (isLineChart)
             {
                 expensesDataset = new GunaLineDataset { Label = expensesLabel };
@@ -941,7 +940,7 @@ namespace Sales_Tracker.Charts
                 UpdateChartWithData(chart, sortedDates, salesDataset, expensesDataset, salesByDate, expensesByDate, isLineChart);
             }
 
-            return new SalesExpensesChartData(salesByDate, expensesByDate, sortedDates);
+            return new SalesExpensesChartData(expensesByDate, salesByDate, sortedDates);
         }
         private static void UpdateChartWithData(
             GunaChart chart,
@@ -1010,8 +1009,7 @@ namespace Sales_Tracker.Charts
             }
 
             // Create the datasets for purchases and sales with labels
-            IGunaDataset purchasesDataset;
-            IGunaDataset salesDataset;
+            IGunaDataset purchasesDataset, salesDataset;
             if (isLineChart)
             {
                 purchasesDataset = new GunaLineDataset { Label = purchaseLabel };
@@ -1150,25 +1148,21 @@ namespace Sales_Tracker.Charts
                 chart.Update();
             }
 
-            return new SalesExpensesChartData(avgSalesByDate, avgPurchasesByDate, sortedDates);
+            return new SalesExpensesChartData(avgPurchasesByDate, avgSalesByDate, sortedDates);
         }
-        public static ChartData LoadTotalTransactionsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadTotalTransactionsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
-            Guna2DataGridView[] dataGridViews = [
-                salesDataGridView,
-                purchasesDataGridView
-            ];
-
-            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
-            string label = LanguageManager.TranslateSingleString("# of transactions");
+            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
+            string purchasesLabel = LanguageManager.TranslateSingleString("Purchases");
+            string salesLabel = LanguageManager.TranslateSingleString("Sales");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return ChartData.Empty;
+                return SalesExpensesChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
@@ -1180,66 +1174,137 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset dataset;
-            if (isLineChart) { dataset = new GunaLineDataset { Label = label }; }
-            else { dataset = new GunaBarDataset { Label = label }; }
+            // Create datasets for purchases and sales
+            IGunaDataset purchasesDataset, salesDataset;
+            if (isLineChart)
+            {
+                purchasesDataset = new GunaLineDataset { Label = purchasesLabel };
+                salesDataset = new GunaLineDataset { Label = salesLabel };
+            }
+            else
+            {
+                purchasesDataset = new GunaBarDataset { Label = purchasesLabel };
+                salesDataset = new GunaBarDataset { Label = salesLabel };
+            }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.PastelBlue);
+                ApplyStyleToBarOrLineDataSet(purchasesDataset, isLineChart, CustomColors.PastelGreen);
+                ApplyStyleToBarOrLineDataSet(salesDataset, isLineChart, CustomColors.PastelBlue);
             }
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows, purchasesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            Dictionary<string, double> transactionsByDate = [];
+            Dictionary<string, double> purchasesByDate = [];
+            Dictionary<string, double> salesByDate = [];
+            HashSet<string> allDates = [];
             bool anyRowsVisible = false;
 
-            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            // Process purchase transactions
+            foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                foreach (DataGridViewRow row in dataGridView.Rows)
+                if (!row.Visible) { continue; }
+                anyRowsVisible = true;
+
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (purchasesByDate.TryGetValue(formattedDate, out double value))
                 {
-                    if (!row.Visible) { continue; }
-                    anyRowsVisible = true;
+                    purchasesByDate[formattedDate] = ++value;
+                }
+                else
+                {
+                    purchasesByDate[formattedDate] = 1;
+                }
+            }
 
-                    DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
-                    string formattedDate = date.ToString(dateFormat);
+            // Process sale transactions
+            foreach (DataGridViewRow row in salesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+                anyRowsVisible = true;
 
-                    if (transactionsByDate.TryGetValue(formattedDate, out double value))
-                    {
-                        transactionsByDate[formattedDate] = ++value;
-                    }
-                    else
-                    {
-                        transactionsByDate[formattedDate] = 1;
-                    }
+                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (salesByDate.TryGetValue(formattedDate, out double value))
+                {
+                    salesByDate[formattedDate] = ++value;
+                }
+                else
+                {
+                    salesByDate[formattedDate] = 1;
                 }
             }
 
             if (!anyRowsVisible)
             {
                 ClearChart(chart);
-                return ChartData.Empty;
+                return SalesExpensesChartData.Empty;
             }
 
-            double totalTransactions = transactionsByDate.Values.Sum();
+            // Sort dates chronologically
+            List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string chartTitle = TranslatedChartTitles.TotalTransactions;
-                string date = LanguageManager.TranslateSingleString("Date");
+                Dictionary<string, Dictionary<string, double>> combinedData = [];
+                foreach (string date in sortedDates)
+                {
+                    combinedData[date] = new Dictionary<string, double>
+                    {
+                        { purchasesLabel, purchasesByDate.TryGetValue(date, out double pValue) ? pValue : 0 },
+                        { salesLabel, salesByDate.TryGetValue(date, out double sValue) ? sValue : 0 }
+                    };
+                }
 
-                ExcelSheetManager.ExportChartToExcel(transactionsByDate, filePath, chartType, chartTitle, date, label);
+                string chartTitle = TranslatedChartTitles.TotalTransactions;
+                ExcelSheetManager.ExportMultiDataSetChartToExcel(
+                    combinedData,
+                    filePath,
+                    isLineChart ? eChartType.Line : eChartType.ColumnClustered,
+                    chartTitle
+                );
             }
             else if (canUpdateChart)
             {
-                SortAndAddDatasetAndSetBarPercentage(transactionsByDate, dateFormat, dataset, isLineChart);
-                UpdateChart(chart, dataset, false);
+                foreach (string date in sortedDates)
+                {
+                    double purchaseValue = purchasesByDate.TryGetValue(date, out double pValue) ? pValue : 0;
+                    double salesValue = salesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
+
+                    if (isLineChart)
+                    {
+                        ((GunaLineDataset)purchasesDataset).DataPoints.Add(date, purchaseValue);
+                        ((GunaLineDataset)salesDataset).DataPoints.Add(date, salesValue);
+                    }
+                    else
+                    {
+                        ((GunaBarDataset)purchasesDataset).DataPoints.Add(date, purchaseValue);
+                        ((GunaBarDataset)salesDataset).DataPoints.Add(date, salesValue);
+
+                        float barPercentage = purchasesDataset.DataPointCount + salesDataset.DataPointCount == 1 ? 0.2f : 0.4f;
+                        ((GunaBarDataset)purchasesDataset).BarPercentage = barPercentage;
+                        ((GunaBarDataset)salesDataset).BarPercentage = barPercentage;
+                    }
+                }
+
+                chart.Datasets.Clear();
+                chart.Datasets.Add(purchasesDataset);
+                chart.Datasets.Add(salesDataset);
+
+                chart.Legend.Display = true;
+                chart.Legend.Position = LegendPosition.Top;
+
+                chart.Update();
             }
 
-            return new ChartData(totalTransactions, transactionsByDate);
+            return new SalesExpensesChartData(purchasesByDate, salesByDate, sortedDates);
         }
         public static SalesExpensesChartData LoadAverageShippingCostsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -1266,8 +1331,7 @@ namespace Sales_Tracker.Charts
             }
 
             // Create datasets for purchases and sales shipping costs
-            IGunaDataset purchasesDataset;
-            IGunaDataset salesDataset;
+            IGunaDataset purchasesDataset, salesDataset;
             if (isLineChart)
             {
                 purchasesDataset = new GunaLineDataset { Label = purchaseLabel };
@@ -1421,7 +1485,7 @@ namespace Sales_Tracker.Charts
                 ? avgSalesShipping.Values.Average()
                 : 0;
 
-            return new SalesExpensesChartData(avgSalesShipping, avgPurchaseShipping, sortedDates);
+            return new SalesExpensesChartData(avgPurchaseShipping, avgSalesShipping, sortedDates);
         }
         public static SalesExpensesChartData LoadGrowthRateChart(GunaChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -1595,7 +1659,7 @@ namespace Sales_Tracker.Charts
                 chart.Update();
             }
 
-            return new SalesExpensesChartData(revenueGrowth, expenseGrowth, sortedDates);
+            return new SalesExpensesChartData(expenseGrowth, revenueGrowth, sortedDates);
         }
 
         // Methods

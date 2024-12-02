@@ -37,6 +37,7 @@
             ClientSize = new Size(800, 450);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Name = "Loading_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += Loading_Form_FormClosed;
             ResumeLayout(false);

@@ -290,15 +290,24 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.TotalTransactions:
                         {
-                            ChartData chartData = LoadChart.LoadTotalTransactionsChart(MainMenu_Form.Instance.TotalTransactions_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadTotalTransactionsChart(MainMenu_Form.Instance.TotalTransactions_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateSingleString("Purchases")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateSingleString("Sales")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
+                            string name = TranslatedChartTitles.TotalTransactions;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string chartTitle = TranslatedChartTitles.TotalTransactions;
-                            string first = LanguageManager.TranslateSingleString("Date");
-                            string second = LanguageManager.TranslateSingleString("# of transactions");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, name, chartType);
                         }
                         break;
 
@@ -340,7 +349,7 @@ namespace Sales_Tracker.Charts
                             }
 
                             string name = TranslatedChartTitles.GrowthRates;
-                            GoogleSheetManager.ChartType chartType = GoogleSheetManager.ChartType.Line; // Always line for growth rates
+                            GoogleSheetManager.ChartType chartType = GoogleSheetManager.ChartType.Spline;
 
                             await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, name, chartType);
                         }
