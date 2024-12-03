@@ -17,86 +17,24 @@ namespace Sales_Tracker.Classes
             _translations_file, _englishTexts_file, _config_file, _googleCredentials_file;
 
         // Getters and setters
-        public static string CompanyName
-        {
-            get => _companyName;
-            set => _companyName = value;
-        }
-        public static string TempCompany_dir
-        {
-            get => _tempCompany_dir;
-            set => _tempCompany_dir = value;
-        }
-        public static string ArgoCompany_dir
-        {
-            get => _argoCompany_dir;
-            set => _argoCompany_dir = value;
-        }
-        public static string ArgoCompany_file
-        {
-            get => _argoCompany_file;
-            set => _argoCompany_file = value;
-        }
-        public static string AppData_dir
-        {
-            get => _appData_dir;
-            set => _appData_dir = value;
-        }
-        public static string GlobalAppDataSettings_file
-        {
-            get => _globalAppDataSettings_file;
-            set => _globalAppDataSettings_file = value;
-        }
-        public static string AppDataSettings_file
-        {
-            get => _appDataSettings_file;
-            set => _appDataSettings_file = value;
-        }
-        public static string Purchases_file
-        {
-            get => _purchases_file;
-            set => _purchases_file = value;
-        }
-        public static string Sales_file
-        {
-            get => _sales_file;
-            set => _sales_file = value;
-        }
-        public static string CategoryPurchases_file
-        {
-            get => _categoryPurchases_file;
-            set => _categoryPurchases_file = value;
-        }
-        public static string CategorySales_file
-        {
-            get => _categorySales_file;
-            set => _categorySales_file = value;
-        }
-        public static string Accountants_file
-        {
-            get => _accountants_file;
-            set => _accountants_file = value;
-        }
-        public static string Companies_file
-        {
-            get => _companies_file;
-            set => _companies_file = value;
-        }
-        public static string Receipts_dir
-        {
-            get => _receipts_dir;
-            set => _receipts_dir = value;
-        }
-        public static string Logs_dir
-        {
-            get => _logs_dir;
-            set => _logs_dir = value;
-        }
-        public static string Desktop_dir
-        {
-            get => _desktop_dir;
-            set => _desktop_dir = value;
-        }
+        public static string CompanyName => _companyName;
+        public static string TempCompany_dir => _tempCompany_dir;
+        public static string ArgoCompany_dir => _argoCompany_dir;
+        public static string ArgoCompany_file => _argoCompany_file;
+        public static string AppData_dir => _appData_dir;
+        public static string GlobalAppDataSettings_file => _globalAppDataSettings_file;
+        public static string AppDataSettings_file => _appDataSettings_file;
+        public static string Purchases_file => _purchases_file;
+        public static string Sales_file => _sales_file;
+        public static string CategoryPurchases_file => _categoryPurchases_file;
+        public static string CategorySales_file => _categorySales_file;
+        public static string Accountants_file => _accountants_file;
+        public static string Companies_file => _companies_file;
+        public static string Receipts_dir => _receipts_dir;
+        public static string Logs_dir => _logs_dir;
+        public static string Desktop_dir => _desktop_dir;
+        public static string Config_file => _config_file;
+        public static string GoogleCredentials_file => _googleCredentials_file;
         public static string Cache_dir
         {
             get => _cache_dir;
@@ -111,16 +49,6 @@ namespace Sales_Tracker.Classes
         {
             get => _englishTexts_file;
             set => _englishTexts_file = value;
-        }
-        public static string Config_file
-        {
-            get => _config_file;
-            set => _config_file = value;
-        }
-        public static string GoogleCredentials_file
-        {
-            get => _googleCredentials_file;
-            set => _googleCredentials_file = value;
         }
 
         // Methods

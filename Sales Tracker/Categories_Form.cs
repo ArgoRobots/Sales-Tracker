@@ -179,7 +179,7 @@ namespace Sales_Tracker
         {
             if (DataGridViewManager.SearchSelectedDataGridViewAndUpdateRowColors(selectedDataGridView, Search_TextBox))
             {
-                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, Search_TextBox.Text.Trim(), this);
+                LabelManager.ShowLabelWithBaseText(ShowingResultsFor_Label, Search_TextBox.Text.Trim());
             }
             else
             {

@@ -262,7 +262,7 @@ namespace Sales_Tracker
             // Update UI based on search results
             if (hasVisibleRows && !string.IsNullOrEmpty(searchText))
             {
-                LabelManager.ShowShowingResultsLabel(ShowingResultsFor_Label, searchText, this);
+                LabelManager.ShowLabelWithBaseText(ShowingResultsFor_Label, searchText);
             }
             else
             {

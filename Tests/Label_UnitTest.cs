@@ -1,5 +1,4 @@
-﻿using Sales_Tracker;
-using Sales_Tracker.UI;
+﻿using Sales_Tracker.UI;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -57,7 +56,7 @@ namespace Tests
             label.Text = initialText;
 
             // Act
-            LabelManager.ShowShowingResultsLabel(label, newResults, parentControl);
+            LabelManager.ShowLabelWithBaseText(label, newResults);
 
             // Assert
             Assert.AreEqual($"Showing Results: {newResults}", label.Text);
@@ -71,7 +70,7 @@ namespace Tests
             string results = "1-10 of 100";
 
             // Act
-            LabelManager.ShowShowingResultsLabel(label, results, parentControl);
+            LabelManager.ShowLabelWithBaseText(label, results);
 
             // Assert
             int expectedLeft = (parentControl.ClientSize.Width - label.Width) / 2;
@@ -87,7 +86,7 @@ namespace Tests
             string results = "1-10 of 100";
 
             // Act
-            LabelManager.ShowShowingResultsLabel(label, results, parentControl);
+            LabelManager.ShowLabelWithBaseText(label, results);
 
             // Assert
             Assert.AreEqual($"{translatedPrefix}: {results}", label.Text);

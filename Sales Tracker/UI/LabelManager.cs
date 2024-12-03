@@ -25,7 +25,7 @@ namespace Sales_Tracker.UI
         /// This method ensures that the label’s prefix remains consistent even if the application language changes.
         /// The label is then centered horizontally within the specified parent control.
         /// </summary>
-        public static void ShowShowingResultsLabel(Label label, string text, Control parentControl)
+        public static void ShowLabelWithBaseText(Label label, string text)
         {
             // Keep the first part (before ":") the same in case it's been translated
             string[] parts = label.Text.Split(':');
@@ -33,7 +33,7 @@ namespace Sales_Tracker.UI
             label.Text = $"{baseText}: {text}";
 
             // Center the label horizontally
-            label.Left = (parentControl.ClientSize.Width - label.Width) / 2;
+            label.Left = (label.Parent.ClientSize.Width - label.Width) / 2;
 
             label.Visible = true;
         }
