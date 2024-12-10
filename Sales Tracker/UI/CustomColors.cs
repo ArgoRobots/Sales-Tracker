@@ -26,10 +26,12 @@ namespace Sales_Tracker.UI
         // DataGridView theme
         private static DataGridViewPresetThemes _dataGridViewTheme;
 
+        // Accent colors
+        private static Color _accentGreen;
+
         // Read-only accent colors that don't change with theme
         public static readonly Color AccentBlue = Color.FromArgb(25, 117, 197),
             AccentRed = Color.FromArgb(238, 89, 81),
-            AccentGreen = Color.FromArgb(168, 233, 203),
             PastelBlue = Color.FromArgb(102, 153, 204),
             PastelGreen = Color.FromArgb(153, 204, 102);
 
@@ -61,6 +63,8 @@ namespace Sales_Tracker.UI
 
         // Theme Property
         public static DataGridViewPresetThemes DataGridViewTheme => _dataGridViewTheme;
+
+        public static Color AccentGreen => _accentGreen;
 
         /// <summary>
         /// Sets all color values based on the current theme (Dark or Light).
@@ -108,6 +112,9 @@ namespace Sales_Tracker.UI
 
             // Theme
             _dataGridViewTheme = DataGridViewPresetThemes.Dark;
+
+            // Accent colors
+            _accentGreen = Color.FromArgb(168, 233, 203);
         }
         private static void SetLightThemeColors()
         {
@@ -139,6 +146,9 @@ namespace Sales_Tracker.UI
 
             // Theme
             _dataGridViewTheme = DataGridViewPresetThemes.White;
+
+            // Accent colors
+            _accentGreen = Color.FromArgb(73, 186, 142);
         }
     }
 }

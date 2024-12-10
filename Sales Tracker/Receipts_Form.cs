@@ -288,7 +288,7 @@ namespace Sales_Tracker
         {
             foreach (DataGridViewRow row in Receipts_DataGridView.Rows)
             {
-                bool visible = DataGridViewManager.FilterRowBySearchTerms(row, Search_TextBox.Text.Trim());
+                bool visible = SearchDataGridView.FilterRowByAdvancedSearch(row, Search_TextBox.Text.Trim());
 
                 if (FilterByDate_CheckBox.Checked)
                 {

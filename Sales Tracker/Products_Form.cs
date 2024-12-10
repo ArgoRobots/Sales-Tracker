@@ -10,6 +10,7 @@ namespace Sales_Tracker
         // Properties
         private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private static Products_Form _instance;
+        private static bool isProgramLoading;
 
         // Getters and setters
         public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
@@ -24,8 +25,12 @@ namespace Sales_Tracker
 
             oldOption = MainMenu_Form.Instance.Selected;
             AddSearchBoxEvents();
+
+            isProgramLoading = true;
             ConstructDataGridViews();
             LoadProducts();
+            isProgramLoading = false;
+
             ValidateCompanyTextBox();
             Theme.SetThemeForForm(this);
             CheckRadioButton(checkPurchaseRadioButton);
@@ -252,7 +257,7 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in selectedDataGridView.Rows)
             {
-                row.Visible = DataGridViewManager.FilterRowBySearchTerms(row, searchText);
+                row.Visible = SearchDataGridView.FilterRowByAdvancedSearch(row, searchText);
                 if (row.Visible)
                 {
                     hasVisibleRows = true;
@@ -459,8 +464,9 @@ namespace Sales_Tracker
             sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
             Theme.CustomizeScrollBar(sale_DataGridView);
         }
-        void Sale_DataGridView_RowsChanged(object sender, EventArgs e)
+        private void Sale_DataGridView_RowsChanged(object sender, EventArgs e)
         {
+            if (isProgramLoading) { return; }
             SetProductsRemainingLabel();
         }
         private void CenterSelectedDataGridView()

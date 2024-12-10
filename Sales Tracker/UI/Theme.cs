@@ -154,6 +154,7 @@ namespace Sales_Tracker.Classes
                         UpdateDataGridViewHeaderTheme(guna2DataGridView);
                         CustomizeScrollBar(guna2DataGridView);
                         guna2DataGridView.ClearSelection();
+                        DataGridViewManager.UpdateAlternatingRowColors(guna2DataGridView);
                         break;
 
                     case Guna2CircleButton guna2CircleButton:
@@ -284,6 +285,15 @@ namespace Sales_Tracker.Classes
         }
         public static void CustomizeScrollBar(Control control)
         {
+            // Remove any existing Guna2VScrollBar
+            List<Guna2VScrollBar> existingScrollBars = control.Controls.OfType<Guna2VScrollBar>().ToList();
+            foreach (Guna2VScrollBar scrollBar in existingScrollBars)
+            {
+                control.Controls.Remove(scrollBar);
+                scrollBar.Dispose();
+            }
+
+            // Add new scrollbar
             Guna2VScrollBar vScrollBar = new()
             {
                 FillColor = CustomColors.MainBackground,

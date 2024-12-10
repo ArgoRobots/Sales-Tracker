@@ -19,7 +19,7 @@ namespace Sales_Tracker
         private static MainMenu_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
-        private static bool _isFullVersion = true, _isProgramLoading;
+        private static bool _isFullVersion = false, _isProgramLoading;
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
@@ -52,7 +52,7 @@ namespace Sales_Tracker
             CurrencySymbol = Currency.GetSymbol();
 
             CustomControls.ConstructControls();
-            ConstructControlsForStatistics();
+            ConstructControlsForAnalytics();
             InitiateSearchTimer();
             SetCompanyLabel();
             LoadData();
@@ -112,7 +112,6 @@ namespace Sales_Tracker
                 _sale_DataGridView = new();
                 DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", size, SalesColumnHeaders, null, this);
                 _sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
-                Theme.CustomizeScrollBar(_sale_DataGridView);
             }
 
             SetHasReceiptColumnVisibilty();
@@ -226,9 +225,9 @@ namespace Sales_Tracker
             {
                 Sales_Button.BorderColor = CustomColors.AccentBlue;
             }
-            else if (Statistics_Button.BorderThickness == 2)
+            else if (Analytics_Button.BorderThickness == 2)
             {
-                Statistics_Button.BorderColor = CustomColors.AccentBlue;
+                Analytics_Button.BorderColor = CustomColors.AccentBlue;
             }
         }
         private void SetAccessibleDescriptions()
@@ -274,7 +273,7 @@ namespace Sales_Tracker
             [
                Purchases_Button,
                Sales_Button,
-               Statistics_Button,
+               Analytics_Button,
                AddPurchase_Button,
                AddSale_Button,
                ManageProducts_Button,
@@ -617,7 +616,7 @@ namespace Sales_Tracker
                 wasControlsDropDownAdded = false;
             }
 
-            if (Selected == SelectedOption.Statistics)
+            if (Selected == SelectedOption.Analytics)
             {
                 // Calculate chart dimensions
                 int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
@@ -862,16 +861,16 @@ namespace Sales_Tracker
             AlignTotalLabels();
             Search_TextBox.PlaceholderText = LanguageManager.TranslateSingleString("Search for sales");
         }
-        private void Statistics_Button_Click(object sender, EventArgs e)
+        private void Analytics_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            if (Selected == SelectedOption.Statistics) { return; }
+            if (Selected == SelectedOption.Analytics) { return; }
 
-            Selected = SelectedOption.Statistics;
-            ShowStatisticsControls();
+            Selected = SelectedOption.Analytics;
+            ShowAnalyticsControls();
             CenterAndResizeControls();
 
-            SelectButton(Statistics_Button);
+            SelectButton(Analytics_Button);
         }
         private void AddPurchase_Button_Click(object sender, EventArgs e)
         {
@@ -907,7 +906,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
             LoadOrRefreshMainCharts(true);
-            LoadOrRefreshStatisticsCharts(true);
+            LoadOrRefreshAnalyticsCharts(true);
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -1001,10 +1000,10 @@ namespace Sales_Tracker
         {
             Purchases_Button.BorderThickness = 1;
             Sales_Button.BorderThickness = 1;
-            Statistics_Button.BorderThickness = 1;
+            Analytics_Button.BorderThickness = 1;
             Purchases_Button.BorderColor = CustomColors.ControlBorder;
             Sales_Button.BorderColor = CustomColors.ControlBorder;
-            Statistics_Button.BorderColor = CustomColors.ControlBorder;
+            Analytics_Button.BorderColor = CustomColors.ControlBorder;
         }
 
         // Company label
@@ -1112,9 +1111,9 @@ namespace Sales_Tracker
         {
             ApplyFiltersToDataGridView();
 
-            if (Selected == SelectedOption.Statistics)
+            if (Selected == SelectedOption.Analytics)
             {
-                LoadOrRefreshStatisticsCharts(false);
+                LoadOrRefreshAnalyticsCharts(false);
             }
             else
             {
@@ -1146,7 +1145,7 @@ namespace Sales_Tracker
                     bool isVisibleByDate = (_sortTimeSpan == TimeSpan.MaxValue ||
                         rowDate >= DateTime.Now - _sortTimeSpan);
 
-                    bool isVisibleBySearch = DataGridViewManager.FilterRowBySearchTerms(row, Search_TextBox.Text.Trim());
+                    bool isVisibleBySearch = SearchDataGridView.FilterRowByAdvancedSearch(row, Search_TextBox.Text.Trim());
 
                     // Row is visible only if it matches both the date filter and the search filter
                     row.Visible = isVisibleByDate && isVisibleBySearch;
@@ -1433,7 +1432,7 @@ namespace Sales_Tracker
             Accountants,
             Receipts,
             Companies,
-            Statistics,
+            Analytics,
             ItemsInPurchase,
             ItemsInSale
         }
@@ -1547,13 +1546,13 @@ namespace Sales_Tracker
 
             if (_selectedDataGridView == _purchase_DataGridView)
             {
-                Total_Panel.Controls.Add(ChargedDifference_Label);
+                ChargedDifference_Label.Visible = true;
                 ChargedDifference_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
                 ChargedDifference_Label.Width = _selectedDataGridView.Columns[chargedDifference].Width;
             }
             else
             {
-                Total_Panel.Controls.Remove(ChargedDifference_Label);
+                ChargedDifference_Label.Visible = false;
             }
 
             Price_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
@@ -1706,7 +1705,7 @@ namespace Sales_Tracker
         }
 
         // Chart properties
-        private List<GunaChart> statisticsCharts;
+        private List<GunaChart> analyticsCharts;
         private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
             _growthRates_Chart, _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCosts_Chart;
 
@@ -1735,7 +1734,7 @@ namespace Sales_Tracker
         public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
         public GunaChart AverageShippingCosts_Chart => _averageShippingCosts_Chart;
 
-        // Statistics charts methods
+        // Analytics charts methods
         private List<Control> GetMainControlsList()
         {
             return [
@@ -1749,35 +1748,35 @@ namespace Sales_Tracker
         }
         private void ShowMainControls()
         {
-            if (statisticsCharts == null) { return; }
+            if (analyticsCharts == null) { return; }
 
             foreach (Control control in GetMainControlsList())
             {
                 control.Visible = true;
             }
-            foreach (Control control in statisticsCharts)
+            foreach (Control control in analyticsCharts)
             {
                 control.Visible = false;
             }
         }
 
         /// <summary>
-        /// Constructs statistics charts if they have not been constructed already.
+        /// Constructs analytics charts if they have not been constructed already.
         /// </summary>
-        private void ConstructControlsForStatistics()
+        private void ConstructControlsForAnalytics()
         {
-            _countriesOfOrigin_Chart = ConstructStatisticsChart("countriesOfOrigin_Chart");
-            _companiesOfOrigin_Chart = ConstructStatisticsChart("companiesOfOrigin_Chart");
-            _countriesOfDestination_Chart = ConstructStatisticsChart("countriesOfDestination_Chart");
-            _accountants_Chart = ConstructStatisticsChart("accountants_Chart");
-            _salesVsExpenses_Chart = ConstructStatisticsChart("salesVsExpenses_Chart");
-            _averageTransactionValue_Chart = ConstructStatisticsChart("averageOrderValue_Chart");
-            _totalTransactions_Chart = ConstructStatisticsChart("totalTransactions_Chart");
-            _averageShippingCosts_Chart = ConstructStatisticsChart("averageShippingCosts_Chart");
+            _countriesOfOrigin_Chart = ConstructAnalyticsChart("countriesOfOrigin_Chart");
+            _companiesOfOrigin_Chart = ConstructAnalyticsChart("companiesOfOrigin_Chart");
+            _countriesOfDestination_Chart = ConstructAnalyticsChart("countriesOfDestination_Chart");
+            _accountants_Chart = ConstructAnalyticsChart("accountants_Chart");
+            _salesVsExpenses_Chart = ConstructAnalyticsChart("salesVsExpenses_Chart");
+            _averageTransactionValue_Chart = ConstructAnalyticsChart("averageOrderValue_Chart");
+            _totalTransactions_Chart = ConstructAnalyticsChart("totalTransactions_Chart");
+            _averageShippingCosts_Chart = ConstructAnalyticsChart("averageShippingCosts_Chart");
             LabelManager.AddChartSubTitle(_averageShippingCosts_Chart, "Excludes transactions with free shipping");
-            _growthRates_Chart = ConstructStatisticsChart("growthRates_Chart");
+            _growthRates_Chart = ConstructAnalyticsChart("growthRates_Chart");
 
-            statisticsCharts =
+            analyticsCharts =
             [
                 _countriesOfOrigin_Chart,
                 _companiesOfOrigin_Chart,
@@ -1790,9 +1789,9 @@ namespace Sales_Tracker
                 _growthRates_Chart
             ];
 
-            MouseClickChartManager.InitCharts(statisticsCharts.ToArray());
+            MouseClickChartManager.InitCharts(analyticsCharts.ToArray());
         }
-        private GunaChart ConstructStatisticsChart(string name)
+        private GunaChart ConstructAnalyticsChart(string name)
         {
             GunaChart gunaChart = new()
             {
@@ -1813,11 +1812,11 @@ namespace Sales_Tracker
 
             return gunaChart;
         }
-        private void ShowStatisticsControls()
+        private void ShowAnalyticsControls()
         {
-            LoadOrRefreshStatisticsCharts(false);
+            LoadOrRefreshAnalyticsCharts(false);
 
-            foreach (Control control in statisticsCharts)
+            foreach (Control control in analyticsCharts)
             {
                 control.Visible = true;
             }
@@ -1826,7 +1825,7 @@ namespace Sales_Tracker
                 control.Visible = false;
             }
         }
-        private void LoadOrRefreshStatisticsCharts(bool onlyRefreshForLineCharts)
+        private void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts)
         {
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
