@@ -175,6 +175,8 @@ namespace Sales_Tracker.Settings
 
             SearchBox.SearchResultBoxContainer.FillColor = CustomColors.ControlBack;
             SearchBox.SearchResultBox.FillColor = CustomColors.ControlBack;
+
+            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'color theme' setting");
         }
 
         // Misc.

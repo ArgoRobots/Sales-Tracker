@@ -69,17 +69,17 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void SaveAs()
         {
-            // Select folder
-            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
+            using SaveFileDialog dialog = new();
+            dialog.FileName = Directories.CompanyName;
+            dialog.DefaultExt = ArgoFiles.ArgoCompanyFileExtension.TrimStart('.');
+            dialog.Filter = $"Argo Company Files|*{ArgoFiles.ArgoCompanyFileExtension}";
+            dialog.Title = "Save Company As";
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                // Save normally
-                SaveAll();
-
-                // Copy the project to a new location
-                string newFilePath = dialog.SelectedPath + Directories.CompanyName + ArgoFiles.ArgoCompanyFileExtension;
-                Directories.CopyFile(Directories.ArgoCompany_file, newFilePath);
+                // Create a tar file from the temp directory directly to the new location
+                Directories.CreateArgoTarFileFromDirectory(Directories.TempCompany_dir, dialog.FileName, true);
+                Log.Write(2, $"Saved '{Path.GetFileNameWithoutExtension(dialog.FileName)}' to new location");
             }
         }
 

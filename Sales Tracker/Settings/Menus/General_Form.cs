@@ -54,7 +54,7 @@ namespace Sales_Tracker.Settings.Menus
             byte searchBoxMaxHeight = 255;
 
             TextBoxManager.Attach(Language_TextBox);
-            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(LanguageManager.GetLanguageNames());
+            List<SearchResult> searchResult = LanguageManager.GetLanguageSearchResults();
             SearchBox.Attach(Language_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false, false, false);
             Language_TextBox.TextChanged += (_, _) => ValidateInputs();
 

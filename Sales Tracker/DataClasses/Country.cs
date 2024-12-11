@@ -10,7 +10,7 @@ namespace Sales_Tracker.DataClasses
     {
         // https://ofac.treasury.gov/sanctions-programs-and-country-information
 
-        public static readonly List<SearchResult> countries =
+        public static readonly List<SearchResult> CountrySearchResults =
         [
             new SearchResult("Unkown", null, 0),
             new SearchResult("United States", Properties.Flags.United_States_of_America, 0),

@@ -47,7 +47,7 @@ namespace Sales_Tracker
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(CountryOfDestinaion_TextBox);
-            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false, false);
+            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
 
             TextBoxValidation.OnlyAllowNumbers(Quantity_TextBox);

@@ -636,6 +636,44 @@ namespace Sales_Tracker.UI
         }
 
         // Misc. methods
+        public static List<SearchResult> GetLanguageSearchResults()
+        {
+            // Get all languages from existing method
+            List<KeyValuePair<string, string>> allLanguages = GetLanguages();
+
+            // Define priority languages that should appear at the top
+            HashSet<string> priorityLanguages =
+            [
+                "English",
+                "French",
+                "German",
+                "Italian",
+            ];
+
+            List<SearchResult> searchResults = [];
+
+            // Add priority languages first
+            foreach (string lang in priorityLanguages)
+            {
+                KeyValuePair<string, string> language = allLanguages.First(l => l.Key == lang);
+                searchResults.Add(new SearchResult(language.Key, null, 0));
+            }
+
+            // Add line
+            searchResults.Add(new SearchResult(SearchBox.addLine, null, 0));
+
+            // Add remaining languages in alphabetical order
+            IOrderedEnumerable<KeyValuePair<string, string>> remainingLanguages = allLanguages
+                .Where(l => !priorityLanguages.Contains(l.Key))
+                .OrderBy(l => l.Key);
+
+            foreach (KeyValuePair<string, string> language in remainingLanguages)
+            {
+                searchResults.Add(new SearchResult(language.Key, null, 0));
+            }
+
+            return searchResults;
+        }
         private static string GetControlKey(Control control, string section = null)
         {
             List<string> parentNames = [];

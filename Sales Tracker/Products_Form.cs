@@ -70,7 +70,7 @@ namespace Sales_Tracker
             SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResultsForCategory, searchBoxMaxHeight, false, false, false, true);
             ProductCategory_TextBox.TextChanged += ValidateInputs;
 
-            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false, false);
+            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
 
             SearchBox.Attach(CompanyOfOrigin_TextBox, this, GetSearchResultsForCompany, searchBoxMaxHeight, false, false, false, true);

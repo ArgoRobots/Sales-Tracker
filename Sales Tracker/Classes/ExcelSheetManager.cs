@@ -99,7 +99,7 @@ namespace Sales_Tracker.Classes
                 }
                 else
                 {
-                    bool countryExists = Country.countries.Any(c => c.Name.Equals(countryOfOrigin, StringComparison.OrdinalIgnoreCase));
+                    bool countryExists = Country.CountrySearchResults.Any(c => c.Name.Equals(countryOfOrigin, StringComparison.OrdinalIgnoreCase));
 
                     if (!countryExists)
                     {

@@ -37,7 +37,6 @@ namespace Sales_Tracker.Classes
             set
             {
                 Properties.Settings.Default.ColorTheme = value.ToString();
-                Properties.Settings.Default.Save();
             }
         }
         public static void SetThemeForControl(List<Control> list)

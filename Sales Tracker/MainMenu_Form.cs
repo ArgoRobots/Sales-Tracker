@@ -304,6 +304,13 @@ namespace Sales_Tracker
             {
                 ProcessRow(dataGridView, rowData);
             }
+
+            bool hasVisibleRows = false;
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                hasVisibleRows = true;
+            }
+            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
         }
         private static bool ValidateFile(string filePath)
         {

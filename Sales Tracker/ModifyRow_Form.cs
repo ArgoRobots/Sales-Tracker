@@ -376,7 +376,7 @@ namespace Sales_Tracker
                         ConstructLabel(Products_Form.Instance.ColumnHeaders[Products_Form.Column.CountryOfOrigin], left, Panel);
 
                         Guna2TextBox textBox = ConstructTextBox(left, columnName, cellValue, 50, CustomControls.KeyPressValidation.None, false, false, false, Panel);
-                        SearchBox.Attach(textBox, this, () => Country.countries, searchBoxMaxHeight, false, true, false, false);
+                        SearchBox.Attach(textBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
                         textBox.TextChanged += ValidateInputs;
                         break;
 

@@ -134,7 +134,7 @@
             UpgradeTitle_Label.Anchor = AnchorStyles.Top;
             UpgradeTitle_Label.AutoSize = true;
             UpgradeTitle_Label.Font = new Font("Segoe UI", 18F);
-            UpgradeTitle_Label.Location = new Point(90, 22);
+            UpgradeTitle_Label.Location = new Point(115, 22);
             UpgradeTitle_Label.Name = "UpgradeTitle_Label";
             UpgradeTitle_Label.Size = new Size(384, 48);
             UpgradeTitle_Label.TabIndex = 7;
@@ -145,7 +145,7 @@
             UpgradeSubTitle_Label.Anchor = AnchorStyles.Top;
             UpgradeSubTitle_Label.AutoSize = true;
             UpgradeSubTitle_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            UpgradeSubTitle_Label.Location = new Point(56, 80);
+            UpgradeSubTitle_Label.Location = new Point(81, 80);
             UpgradeSubTitle_Label.Name = "UpgradeSubTitle_Label";
             UpgradeSubTitle_Label.Size = new Size(453, 30);
             UpgradeSubTitle_Label.TabIndex = 8;
@@ -156,7 +156,7 @@
             DollarAmount_Label.Anchor = AnchorStyles.Top;
             DollarAmount_Label.AutoSize = true;
             DollarAmount_Label.Font = new Font("Segoe UI", 12.5F);
-            DollarAmount_Label.Location = new Point(123, 229);
+            DollarAmount_Label.Location = new Point(148, 229);
             DollarAmount_Label.Name = "DollarAmount_Label";
             DollarAmount_Label.Size = new Size(318, 70);
             DollarAmount_Label.TabIndex = 9;
@@ -173,7 +173,7 @@
             Upgrade_Button.FillColor = Color.FromArgb(250, 250, 250);
             Upgrade_Button.Font = new Font("Segoe UI", 10F);
             Upgrade_Button.ForeColor = Color.Black;
-            Upgrade_Button.Location = new Point(157, 317);
+            Upgrade_Button.Location = new Point(182, 317);
             Upgrade_Button.Margin = new Padding(6, 5, 6, 5);
             Upgrade_Button.Name = "Upgrade_Button";
             Upgrade_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -211,14 +211,14 @@
             // 
             // PayPalLogo_ImageButton
             // 
-            PayPalLogo_ImageButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            PayPalLogo_ImageButton.Anchor = AnchorStyles.Bottom;
             PayPalLogo_ImageButton.CheckedState.ImageSize = new Size(64, 64);
             PayPalLogo_ImageButton.HoverState.ImageSize = new Size(0, 0);
             PayPalLogo_ImageButton.Image = Properties.Resources.PayPalLogo;
             PayPalLogo_ImageButton.ImageOffset = new Point(0, 0);
             PayPalLogo_ImageButton.ImageRotate = 0F;
             PayPalLogo_ImageButton.ImageSize = new Size(100, 25);
-            PayPalLogo_ImageButton.Location = new Point(115, 547);
+            PayPalLogo_ImageButton.Location = new Point(140, 547);
             PayPalLogo_ImageButton.Name = "PayPalLogo_ImageButton";
             PayPalLogo_ImageButton.PressedState.ImageSize = new Size(0, 0);
             PayPalLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges8;
@@ -227,14 +227,14 @@
             // 
             // StripeLogo_ImageButton
             // 
-            StripeLogo_ImageButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            StripeLogo_ImageButton.Anchor = AnchorStyles.Bottom;
             StripeLogo_ImageButton.CheckedState.ImageSize = new Size(64, 64);
             StripeLogo_ImageButton.HoverState.ImageSize = new Size(0, 0);
             StripeLogo_ImageButton.Image = Properties.Resources.StripeLogo;
             StripeLogo_ImageButton.ImageOffset = new Point(0, 0);
             StripeLogo_ImageButton.ImageRotate = 0F;
             StripeLogo_ImageButton.ImageSize = new Size(70, 30);
-            StripeLogo_ImageButton.Location = new Point(231, 547);
+            StripeLogo_ImageButton.Location = new Point(256, 547);
             StripeLogo_ImageButton.Name = "StripeLogo_ImageButton";
             StripeLogo_ImageButton.PressedState.ImageSize = new Size(0, 0);
             StripeLogo_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges9;
@@ -252,21 +252,21 @@
             Benifits_Panel.Controls.Add(WindowsHello_Label);
             Benifits_Panel.Controls.Add(LearnMore_Button);
             Benifits_Panel.Dock = DockStyle.Right;
-            Benifits_Panel.Location = new Point(573, 0);
+            Benifits_Panel.Location = new Point(623, 0);
             Benifits_Panel.Name = "Benifits_Panel";
             Benifits_Panel.Size = new Size(355, 594);
             Benifits_Panel.TabIndex = 15;
             // 
             // Square_ImageButton
             // 
-            Square_ImageButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Square_ImageButton.Anchor = AnchorStyles.Bottom;
             Square_ImageButton.CheckedState.ImageSize = new Size(64, 64);
             Square_ImageButton.HoverState.ImageSize = new Size(0, 0);
             Square_ImageButton.Image = Properties.Resources.SquareLogoBlack;
             Square_ImageButton.ImageOffset = new Point(0, 0);
             Square_ImageButton.ImageRotate = 0F;
             Square_ImageButton.ImageSize = new Size(100, 25);
-            Square_ImageButton.Location = new Point(347, 547);
+            Square_ImageButton.Location = new Point(372, 547);
             Square_ImageButton.Name = "Square_ImageButton";
             Square_ImageButton.PressedState.ImageSize = new Size(0, 0);
             Square_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges10;
@@ -277,7 +277,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(928, 594);
+            ClientSize = new Size(978, 594);
             Controls.Add(Square_ImageButton);
             Controls.Add(Benifits_Panel);
             Controls.Add(StripeLogo_ImageButton);
