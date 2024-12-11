@@ -1096,7 +1096,7 @@ namespace Sales_Tracker
             {
                 string type = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale";
                 string id = selectedRow.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString();
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {type} '{id}'");
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, $"Modified {type} '{id}'");
                 return;
             }
 
@@ -1125,7 +1125,7 @@ namespace Sales_Tracker
             }
 
             UpdateValidationInOpenForms();
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Modified {selectedTag} list");
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, $"Modified {selectedTag} list");
         }
         private void UpdateCategory()
         {

@@ -193,8 +193,8 @@ namespace Sales_Tracker
                 DataGridViewManager.DataGridViewRowsAdded(selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
-            Log.Write(3, $"Added product '{name}'");
+            string message = $"Added product '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 4, message);
 
             ProductName_TextBox.Clear();
             ProductID_TextBox.Clear();

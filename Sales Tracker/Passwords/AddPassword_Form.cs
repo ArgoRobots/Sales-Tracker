@@ -53,7 +53,7 @@ namespace Sales_Tracker.Passwords
         private void SetPassword()
         {
             PasswordManager.Password = Password_TextBox.Text;
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Added password");
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 4, $"Added password");
             CustomMessageBox.Show("Password set", "Password set successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             Close();
         }

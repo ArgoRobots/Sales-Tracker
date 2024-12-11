@@ -303,12 +303,14 @@ namespace Sales_Tracker
             decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
             decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
 
-            // Convert default currency to USD
-            decimal exchangeRateToUSD1 = Currency.GetExchangeRate(DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), "USD", date);
-            decimal chargedDifferenceUSD = Math.Round(chargedDifference * exchangeRateToUSD1, 2);
-            decimal chargedUSD = Math.Round(charged * exchangeRateToUSD1, 2);
+            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
 
-            // Store the USD values in the tag
+            // Convert default currency to USD
+            decimal deafultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);
+            decimal chargedDifferenceUSD = Math.Round(chargedDifference * deafultToUSD, 2);
+            decimal chargedUSD = Math.Round(charged * deafultToUSD, 2);
+
+            // Store the USD and default values in the tag
             TagData purchaseData = new()
             {
                 PricePerUnitUSD = pricePerUnitUSD,
@@ -317,7 +319,15 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                ChargedOrCreditedUSD = chargedUSD
+                ChargedOrCreditedUSD = chargedUSD,
+                OriginalCurrency = defaultCurrency,
+                OriginalPricePerUnit = pricePerUnitDefault,
+                OriginalShipping = shippingDefault,
+                OriginalTax = taxDefault,
+                OriginalFee = feeDefault,
+                OriginalDiscount = discountDefault,
+                OriginalChargedDifference = chargedDifference,
+                OriginalChargedOrCredited = charged
             };
 
             // Save the receipt
@@ -372,8 +382,7 @@ namespace Sales_Tracker
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             string logMessage = $"Added purchase '{purchaseNumber}'";
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, logMessage);
-            Log.Write(3, logMessage);
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 3, logMessage);
 
             return true;
         }
@@ -429,7 +438,7 @@ namespace Sales_Tracker
             {
                 Guna2TextBox nameTextBox = (Guna2TextBox)panel.Controls.Find(TextBoxnames.name.ToString(), false).FirstOrDefault();
                 string[] itemsInName = nameTextBox.Text.Split('>');
-                string companyName = items[0].Trim();
+                string companyName = itemsInName[0].Trim();
                 string categoryName = itemsInName[1].Trim();
                 string productName = itemsInName[2].Trim();
 
@@ -562,12 +571,14 @@ namespace Sales_Tracker
             decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
             decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
 
-            // Convert default currency to USD
-            decimal exchangeRateToUSD1 = Currency.GetExchangeRate(DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), "USD", date);
-            decimal chargedDifferenceUSD = Math.Round(chargedDifference * exchangeRateToUSD1, 2);
-            decimal chargedUSD = Math.Round(charged * exchangeRateToUSD1, 2);
+            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
 
-            // Store the money values in the tag
+            // Convert default currency to USD
+            decimal DefaultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);
+            decimal chargedDifferenceUSD = Math.Round(chargedDifference * DefaultToUSD, 2);
+            decimal chargedUSD = Math.Round(charged * DefaultToUSD, 2);
+
+            // Store the USD and default values in the tag
             TagData tagData = new()
             {
                 ShippingUSD = shippingUSD,
@@ -575,7 +586,14 @@ namespace Sales_Tracker
                 FeeUSD = feeUSD,
                 DiscountUSD = discountUSD,
                 ChargedDifferenceUSD = chargedDifferenceUSD,
-                ChargedOrCreditedUSD = chargedUSD
+                ChargedOrCreditedUSD = chargedUSD,
+                OriginalCurrency = defaultCurrency,
+                OriginalShipping = shippingDefault,
+                OriginalTax = taxDefault,
+                OriginalFee = feeDefault,
+                OriginalDiscount = discountDefault,
+                OriginalChargedDifference = chargedDifference,
+                OriginalChargedOrCredited = charged
             };
 
             // Set the tag
@@ -584,8 +602,7 @@ namespace Sales_Tracker
             DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.SelectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             string logMessage = $"Added purchase '{purchaseNumber}' with '{totalQuantity}' items";
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, logMessage);
-            Log.Write(3, logMessage);
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 3, logMessage);
 
             return true;
         }

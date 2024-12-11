@@ -298,7 +298,8 @@ namespace Sales_Tracker.UI
             string columnName = MainMenu_Form.Column.ID.ToString();
             string name = e.Row.Cells[columnName].Value?.ToString();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{name}'");
+            string message = $"Deleted {type} '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleSalesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -306,7 +307,8 @@ namespace Sales_Tracker.UI
             string columnName = MainMenu_Form.Column.ID.ToString();
             string name = e.Row.Cells[columnName].Value?.ToString();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{name}'");
+            string message = $"Deleted {type} '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleProductPurchasesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -327,7 +329,8 @@ namespace Sales_Tracker.UI
             // In case the product name that is being deleted is in the TextBox
             Products_Form.Instance.ValidateProductNameTextBox();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
+            string message = $"Deleted {type} '{valueBeingRemoved}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleProductSalesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -348,7 +351,8 @@ namespace Sales_Tracker.UI
             // In case the product name that is being deleted is in the TextBox
             Products_Form.Instance.ValidateProductNameTextBox();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
+            string message = $"Deleted {type} '{valueBeingRemoved}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleCategoryPurchasesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -369,7 +373,8 @@ namespace Sales_Tracker.UI
             // In case the category name that is being deleted is in the TextBox
             Categories_Form.Instance.VaidateCategoryTextBox();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
+            string message = $"Deleted {type} '{valueBeingRemoved}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleCategorySalesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -390,7 +395,8 @@ namespace Sales_Tracker.UI
             // In case the category name that is being deleted is in the TextBox
             Categories_Form.Instance.VaidateCategoryTextBox();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
+            string message = $"Deleted {type} '{valueBeingRemoved}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleAccountantsDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -410,7 +416,8 @@ namespace Sales_Tracker.UI
             // In case the accountant name that is being deleted is in the TextBox
             Accountants_Form.Instance.VaidateAccountantTextBox();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
+            string message = $"Deleted {type} '{valueBeingRemoved}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleCompaniesDeletion(DataGridViewRowCancelEventArgs e)
         {
@@ -430,7 +437,8 @@ namespace Sales_Tracker.UI
             // In case the company name that is being deleted is in the TextBox
             Companies_Form.Instance.ValidateCompanyTextBox();
 
-            LogAndAddThingThatChanged($"Deleted {type} '{valueBeingRemoved}'");
+            string message = $"Deleted {type} '{valueBeingRemoved}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
         private static void HandleItemsDeletion(object sender, DataGridViewRowCancelEventArgs e)
         {
@@ -469,12 +477,8 @@ namespace Sales_Tracker.UI
                 itemList.RemoveAt(e.Row.Index);
             }
 
-            LogAndAddThingThatChanged($"Deleted item '{productName}' in {transactionType}");
-        }
-        private static void LogAndAddThingThatChanged(string message)
-        {
-            Log.Write(2, message);
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, message);
+            string message = $"Deleted item '{productName}' in {transactionType}";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
         }
 
         // Methods for DataGridView for event handlers
@@ -1205,7 +1209,7 @@ namespace Sales_Tracker.UI
                 string message = successfulMoves == 1
                     ? $"Moved {successfulMoves} category to {direction}"
                     : $"Moved {successfulMoves} categories to {direction}";
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, message);
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
             }
 
             // Update UI

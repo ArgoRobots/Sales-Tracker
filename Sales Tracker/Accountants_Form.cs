@@ -85,8 +85,8 @@ namespace Sales_Tracker
             int newRowIndex = accountant_DataGridView.Rows.Add(name);
             DataGridViewManager.DataGridViewRowsAdded(accountant_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
-            Log.Write(3, $"Added accountant '{name}'");
+            string message = $"Added accountant '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 2, message);
 
             Accountant_TextBox.Clear();
             CustomControls.SetGTextBoxToValid(Accountant_TextBox);

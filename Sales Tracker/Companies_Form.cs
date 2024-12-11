@@ -87,8 +87,8 @@ namespace Sales_Tracker
             int newRowIndex = company_DataGridView.Rows.Add(name);
             DataGridViewManager.DataGridViewRowsAdded(company_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
-            CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, name);
-            Log.Write(3, $"Added company '{name}'");
+            string message = $"Added company '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 2, message);
 
             Company_TextBox.Clear();
             CustomControls.SetGTextBoxToValid(Company_TextBox);

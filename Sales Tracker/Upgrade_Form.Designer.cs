@@ -287,7 +287,7 @@
             Controls.Add(UpgradeSubTitle_Label);
             Controls.Add(UpgradeTitle_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimumSize = new Size(950, 650);
+            MinimumSize = new Size(1000, 650);
             Name = "Upgrade_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Shown += Upgrade_Form_Shown;

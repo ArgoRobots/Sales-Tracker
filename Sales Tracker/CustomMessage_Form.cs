@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.Passwords;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
 
@@ -268,7 +267,7 @@ namespace Sales_Tracker
 
             return top;
         }
-        public static void AddThingThatHasChanged(List<string> list, string thing)
+        private static void AddThingThatHasChanged(List<string> list, string thing)
         {
             bool isChanged = false;
 
@@ -279,6 +278,11 @@ namespace Sales_Tracker
             }
 
             DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, isChanged.ToString());
+        }
+        public static void AddThingThatHasChangedAndLogMessage(List<string> list, byte logIndex, string thing)
+        {
+            AddThingThatHasChanged(list, thing);
+            Log.Write(logIndex, thing);
         }
 
         // Event handlers

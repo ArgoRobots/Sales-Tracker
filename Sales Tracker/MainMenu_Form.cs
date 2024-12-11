@@ -1064,9 +1064,10 @@ namespace Sales_Tracker
             CustomControls.Rename_TextBox.Clear();
             MoveEditButton();
             CenterAndResizeControls();
-
             UpdateMainMenuFormText(this);
-            CustomMessage_Form.AddThingThatHasChanged(_thingsThatHaveChangedInFile, $"Renamed program: {CompanyName_Label.Text}");
+
+            string message = $"Renamed program to: {CompanyName_Label.Text}";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 3, message);
         }
         public void SetCompanyLabel()
         {

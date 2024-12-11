@@ -71,7 +71,7 @@ namespace Sales_Tracker.Passwords
                 }
 
                 PasswordManager.Password = NewPassword_TextBox.Text;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Removed updated");
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 4, $"Removed updated");
                 CustomMessageBox.Show("Password updated", "Password updated successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 Close();
             }
@@ -93,7 +93,7 @@ namespace Sales_Tracker.Passwords
                 }
 
                 PasswordManager.Password = null;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.ThingsThatHaveChangedInFile, $"Removed password");
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 4, $"Removed password");
                 CustomMessageBox.Show("Password removed", "Password removed successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 Close();
             }

@@ -124,8 +124,8 @@ namespace Sales_Tracker
                 DataGridViewManager.DataGridViewRowsAdded(selectedDataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
-            CustomMessage_Form.AddThingThatHasChanged(ThingsThatHaveChangedInFile, name);
-            Log.Write(3, $"Added category '{name}'");
+            string message = $"Added category '{name}'";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 3, message);
 
             Category_TextBox.Text = "";
             Category_TextBox.Focus();

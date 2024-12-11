@@ -16,45 +16,32 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void SaveUserSettings(bool includeGeneralFormForLanguage)
         {
-            if (Properties.Settings.Default.Language != General_Form.Instance.Language_TextBox.Text)
+            Properties.Settings settings = Properties.Settings.Default;
+            General_Form form = General_Form.Instance;
+
+            // Handle language change
+            if (settings.Language != form.Language_TextBox.Text)
             {
                 UpdateLanguage(includeGeneralFormForLanguage);
             }
 
-            if (Properties.Settings.Default.ShowTooltips != General_Form.Instance.ShowTooltips_CheckBox.Checked)
-            {
-                Properties.Settings.Default.ShowTooltips = General_Form.Instance.ShowTooltips_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Show tooltips' setting");
-            }
+            // Update checkbox settings
+            UpdateSetting("Show tooltips", settings.ShowTooltips, form.ShowTooltips_CheckBox.Checked,
+                value => settings.ShowTooltips = value);
+            UpdateSetting("Show debug info", settings.ShowDebugInfo, form.ShowDebugInfo_CheckBox.Checked,
+                value => settings.ShowDebugInfo = value);
+            UpdateSetting("Send anonymous information", settings.SendAnonymousInformation, form.SendAnonymousInformation_CheckBox.Checked,
+                value => settings.SendAnonymousInformation = value);
+            UpdateSetting("Purchase receipts", settings.PurchaseReceipts, form.PurchaseReceipts_CheckBox.Checked,
+                value => settings.PurchaseReceipts = value);
+            UpdateSetting("Sale receipts", settings.SaleReceipts, form.SalesReceipts_CheckBox.Checked,
+                value => settings.SaleReceipts = value);
 
-            if (Properties.Settings.Default.ShowDebugInfo != General_Form.Instance.ShowDebugInfo_CheckBox.Checked)
+            // Handle animate buttons
+            if (settings.AnimateButtons != form.AnimateButtons_CheckBox.Checked)
             {
-                Properties.Settings.Default.ShowDebugInfo = General_Form.Instance.ShowDebugInfo_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Show debug info' setting");
-            }
-
-            if (Properties.Settings.Default.SendAnonymousInformation != General_Form.Instance.SendAnonymousInformation_CheckBox.Checked)
-            {
-                Properties.Settings.Default.SendAnonymousInformation = General_Form.Instance.SendAnonymousInformation_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Send anonymous information' setting");
-            }
-
-            if (Properties.Settings.Default.PurchaseReceipts != General_Form.Instance.PurchaseReceipts_CheckBox.Checked)
-            {
-                Properties.Settings.Default.PurchaseReceipts = General_Form.Instance.PurchaseReceipts_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Purchase receipts' setting");
-            }
-
-            if (Properties.Settings.Default.SaleReceipts != General_Form.Instance.SalesReceipts_CheckBox.Checked)
-            {
-                Properties.Settings.Default.SaleReceipts = General_Form.Instance.SalesReceipts_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Sale receipts' setting");
-            }
-
-            if (Properties.Settings.Default.AnimateButtons != General_Form.Instance.AnimateButtons_CheckBox.Checked)
-            {
-                Properties.Settings.Default.AnimateButtons = General_Form.Instance.AnimateButtons_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Animate buttons' setting");
+                UpdateSetting("Animate buttons", settings.AnimateButtons, form.AnimateButtons_CheckBox.Checked,
+                    value => settings.AnimateButtons = value);
 
                 Settings_Form.Instance.AnimateButtons();
                 MainMenu_Form.Instance.AnimateButtons();
@@ -68,24 +55,32 @@ namespace Sales_Tracker.Classes
                 }
             }
 
-            if (Properties.Settings.Default.ShowHasReceiptColumn != General_Form.Instance.ShowHasReceiptColumn_CheckBox.Checked)
+            // Handle receipt column visibility
+            if (settings.ShowHasReceiptColumn != form.ShowHasReceiptColumn_CheckBox.Checked)
             {
-                Properties.Settings.Default.ShowHasReceiptColumn = General_Form.Instance.ShowHasReceiptColumn_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the 'Show has receipt column' setting");
-
+                UpdateSetting("Show has receipt column", settings.ShowHasReceiptColumn, form.ShowHasReceiptColumn_CheckBox.Checked,
+                    value => settings.ShowHasReceiptColumn = value);
                 MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
             }
 
+            // Handle currency change
             string oldCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-            if (oldCurrency != General_Form.Instance.Currency_TextBox.Text)
+            if (oldCurrency != form.Currency_TextBox.Text)
             {
                 UpdateCurrency(oldCurrency);
             }
 
-            if (Properties.Settings.Default.EncryptFiles != Security_Form.Instance.EncryptFiles_CheckBox.Checked)
+            // Handle encryption setting
+            UpdateSetting("file encryption", settings.EncryptFiles, Security_Form.Instance.EncryptFiles_CheckBox.Checked,
+                value => settings.EncryptFiles = value);
+        }
+        private static void UpdateSetting(string settingName, bool currentValue, bool newValue, Action<bool> setter)
+        {
+            if (currentValue != newValue)
             {
-                Properties.Settings.Default.EncryptFiles = Security_Form.Instance.EncryptFiles_CheckBox.Checked;
-                CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed 'file encryption' setting");
+                setter(newValue);
+                string message = $"Changed the '{settingName}' setting";
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, message);
             }
         }
 
@@ -133,7 +128,8 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the language to"));
 
             // Add the new language change message
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"Changed the language to {Properties.Settings.Default.Language}");
+            string fullMessage = $"Changed the language to {Properties.Settings.Default.Language}";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
         }
 
         /// <summary>
@@ -147,8 +143,8 @@ namespace Sales_Tracker.Classes
 
             MainMenu_Form.IsProgramLoading = true;
 
-            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Purchase_DataGridView);
-            UpdateCurrencyValuesInGridView(MainMenu_Form.Instance.Sale_DataGridView);
+            UpdateCurrencyValuesInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView);
+            UpdateCurrencyValuesInDataGridView(MainMenu_Form.Instance.Sale_DataGridView);
 
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.UpdateTotalLabels();
@@ -162,87 +158,126 @@ namespace Sales_Tracker.Classes
             string message = "Changed the currency from";
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
 
+            string fullMessage = $"{message} {oldCurrency} to {newCurrency}";
+
             // Add the new currency change message
-            CustomMessage_Form.AddThingThatHasChanged(MainMenu_Form.SettingsThatHaveChangedInFile, $"{message} {oldCurrency} to {newCurrency}");
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
         }
 
         /// <summary>
-        /// Updates currency values in a specified DataGridView based on the current exchange rate.
+        /// Updates currency values in a specified DataGridView based on the default currency.
         /// </summary>
-        private static void UpdateCurrencyValuesInGridView(Guna2DataGridView dataGridView)
+        private static void UpdateCurrencyValuesInDataGridView(Guna2DataGridView dataGridView)
         {
             if (dataGridView.Rows.Count == 0) { return; }
 
-            // Get the current exchange rate from USD to the default currency
-            string currentCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
-            decimal exchangeRateToDefault;
-            decimal pricePerUnit, shipping, tax, fee, chargedDifference, chargedorCredited;
+            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                // Get exchange rate from the row's date column
-                string rowDate = row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString();
-                exchangeRateToDefault = Currency.GetExchangeRate("USD", currentCurrency, rowDate);
-                if (exchangeRateToDefault == -1) { return; }
-
                 if (row.Tag is (string, TagData tagData))
                 {
-                    // Convert the USD values to the current currency
-                    pricePerUnit = tagData.PricePerUnitUSD * exchangeRateToDefault;
-                    shipping = tagData.ShippingUSD * exchangeRateToDefault;
-                    tax = tagData.TaxUSD * exchangeRateToDefault;
-                    fee = tagData.FeeUSD * exchangeRateToDefault;
-                    chargedDifference = tagData.ChargedDifferenceUSD * exchangeRateToDefault;
-                    chargedorCredited = tagData.ChargedOrCreditedUSD * exchangeRateToDefault;
+                    // Skip conversion if currencies match
+                    if (defaultCurrency == tagData.OriginalCurrency)
+                    {
+                        UpdateRowWithOriginalValues(row, tagData);
+                    }
+                    else
+                    {
+                        // Only get exchange rate when needed
+                        string rowDate = row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString();
+                        decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate);
+                        if (USDToDefault == -1) { return; }
 
-                    // Update the row values with the converted amounts
-                    row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = pricePerUnit.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = shipping.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tax.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value = chargedorCredited.ToString("N2");
+                        UpdateRowWithConvertedValues(row, tagData, USDToDefault);
+                    }
                 }
                 else if (row.Tag is (List<string> itemList, TagData tagData1))
                 {
-                    // Check for receipt and set offset
-                    bool hasReceipt = itemList.Last().StartsWith(ReadOnlyVariables.Receipt_text);
-
-                    // Convert the USD values to the default currency
-                    shipping = tagData1.ShippingUSD * exchangeRateToDefault;
-                    tax = tagData1.TaxUSD * exchangeRateToDefault;
-                    fee = tagData1.FeeUSD * exchangeRateToDefault;
-                    chargedDifference = tagData1.ChargedDifferenceUSD * exchangeRateToDefault;
-                    chargedorCredited = tagData1.ChargedOrCreditedUSD * exchangeRateToDefault;
-
-                    row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = shipping.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tax.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = fee.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
-                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value = chargedorCredited.ToString("N2");
-
-                    // Set the price per unit for items in the transaction
-                    List<string> valuesList = [];
-                    for (int i = 0; i < itemList.Count - (hasReceipt ? 1 : 0); i++)
+                    // Skip conversion if currencies match
+                    if (defaultCurrency == tagData1.OriginalCurrency)
                     {
-                        string[] values = itemList[i].Split(',');
-                        decimal itemQuantity = decimal.Parse(values[4]);
-                        decimal itemPricePerUnitUSD = decimal.Parse(values[6]);
-
-                        values[5] = (itemPricePerUnitUSD * exchangeRateToDefault).ToString("N2");
-                        valuesList.Add(string.Join(",", values));
+                        UpdateMultiItemRowWithOriginalValues(row, tagData1, itemList);
                     }
-
-                    // Add the receipt file path if it exists
-                    if (hasReceipt)
+                    else
                     {
-                        valuesList.Add(itemList.Last());
-                    }
+                        // Only get exchange rate when needed
+                        string rowDate = row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString();
+                        decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate);
+                        if (USDToDefault == -1) { return; }
 
-                    // Save
-                    row.Tag = (valuesList, tagData1);
+                        UpdateMultiItemRowWithConvertedValues(row, tagData1, itemList, USDToDefault);
+                    }
                 }
             }
+        }
+        private static void UpdateRowWithOriginalValues(DataGridViewRow row, TagData tagData)
+        {
+            row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = tagData.OriginalPricePerUnit.ToString("N2");
+            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = tagData.OriginalShipping.ToString("N2");
+            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tagData.OriginalTax.ToString("N2");
+            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = tagData.OriginalFee.ToString("N2");
+            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = tagData.OriginalChargedDifference.ToString("N2");
+            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = tagData.OriginalChargedOrCredited.ToString("N2");
+        }
+        private static void UpdateRowWithConvertedValues(DataGridViewRow row, TagData tagData, decimal USDToDefault)
+        {
+            row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = (tagData.PricePerUnitUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = (tagData.ShippingUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
+        }
+        private static void UpdateMultiItemRowWithOriginalValues(DataGridViewRow row, TagData tagData, List<string> itemList)
+        {
+            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = tagData.OriginalShipping.ToString("N2");
+            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tagData.OriginalTax.ToString("N2");
+            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = tagData.OriginalFee.ToString("N2");
+            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = tagData.OriginalChargedDifference.ToString("N2");
+            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = tagData.OriginalChargedOrCredited.ToString("N2");
+
+            UpdateItemList(row, itemList, useOriginalPrice: true, tagData);
+        }
+        private static void UpdateMultiItemRowWithConvertedValues(DataGridViewRow row, TagData tagData, List<string> itemList, decimal USDToDefault)
+        {
+            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = (tagData.ShippingUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
+            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
+
+            UpdateItemList(row, itemList, useOriginalPrice: false, tagData, USDToDefault);
+        }
+        private static void UpdateItemList(DataGridViewRow row, List<string> itemList, bool useOriginalPrice, TagData tagData, decimal USDToDefault = 1m)
+        {
+            bool hasReceipt = itemList.Last().StartsWith(ReadOnlyVariables.Receipt_text);
+            List<string> valuesList = [];
+
+            for (int i = 0; i < itemList.Count - (hasReceipt ? 1 : 0); i++)
+            {
+                string[] values = itemList[i].Split(',');
+
+                if (useOriginalPrice)
+                {
+                    decimal originalItemPrice = decimal.Parse(values[5]);
+                    values[5] = originalItemPrice.ToString("N2");
+                }
+                else
+                {
+                    decimal itemPricePerUnitUSD = decimal.Parse(values[6]);
+                    values[5] = (itemPricePerUnitUSD * USDToDefault).ToString("N2");
+                }
+
+                valuesList.Add(string.Join(",", values));
+            }
+
+            if (hasReceipt)
+            {
+                valuesList.Add(itemList.Last());
+            }
+
+            row.Tag = (valuesList, tagData);
         }
 
         /// <summary>

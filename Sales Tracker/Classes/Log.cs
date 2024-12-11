@@ -86,7 +86,7 @@ namespace Sales_Tracker.Classes
         // Writing to log methods
         /// <summary>
         /// Writes a log entry with a specified log level and message.
-        /// Log level index: 0 = [Error], 1 = [Debug], 2 = [General], 3 = [Robot Programmer].
+        /// Log level index: 0 = [Error], 1 = [Debug], 2 = [General], 3 = [Product manager], 4 = [Password manager].
         /// </summary>
         public static void Write(byte index, string text)
         {
@@ -113,6 +113,10 @@ namespace Sales_Tracker.Classes
 
                 case 3:
                     newText += "[Product manager] ";
+                    break;
+
+                case 4:
+                    newText += "[Password manager] ";
                     break;
             }
             newText += text + "\n";
