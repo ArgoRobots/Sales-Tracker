@@ -277,7 +277,7 @@ namespace Sales_Tracker
                 isChanged = true;
             }
 
-            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, isChanged.ToString());
+            DataFileManager.SetValue(AppDataSettings.ChangesMade, isChanged.ToString());
         }
         public static void AddThingThatHasChangedAndLogMessage(List<string> list, byte logIndex, string thing)
         {

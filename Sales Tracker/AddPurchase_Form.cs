@@ -27,7 +27,7 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
-            Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType)})";
+            Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType)})";
             LoadingPanel.ShowBlankLoadingPanel(this);
             Currency_TextBox.Text = "CAD";
         }
@@ -267,7 +267,7 @@ namespace Sales_Tracker
             }
 
             // Convert selected currency to default
-            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_TextBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_TextBox.Text, DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType), date);
             if (exchangeRateToDefault == -1) { return false; }
 
             decimal pricePerUnitDefault = pricePerUnit * exchangeRateToDefault;
@@ -281,7 +281,7 @@ namespace Sales_Tracker
 
             if (chargedDifference != 0)
             {
-                string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+                string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     "Amount charged is different",
                     $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
@@ -303,7 +303,7 @@ namespace Sales_Tracker
             decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
             decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
 
-            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             // Convert default currency to USD
             decimal deafultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);
@@ -421,7 +421,7 @@ namespace Sales_Tracker
             }
 
             // Convert selected currency to default
-            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_TextBox.Text, DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType), date);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(Currency_TextBox.Text, DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType), date);
             if (exchangeRateToDefault == -1) { return false; }
 
             List<string> items = [];
@@ -504,7 +504,7 @@ namespace Sales_Tracker
 
             if (totalPriceDefault != charged)
             {
-                string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+                string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     "Amount charged is different",
                     $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
@@ -571,7 +571,7 @@ namespace Sales_Tracker
             decimal feeUSD = Math.Round(fee * exchangeRateToUSD, 2);
             decimal discountUSD = Math.Round(discount * exchangeRateToUSD, 2);
 
-            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             // Convert default currency to USD
             decimal DefaultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);

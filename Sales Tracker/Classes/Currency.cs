@@ -93,7 +93,7 @@ namespace Sales_Tracker.Classes
         /// <returns>Currency symbol as a string.</returns>
         public static string GetSymbol()
         {
-            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             if (Enum.TryParse(currency, out CurrencyTypes currencyType))
             {

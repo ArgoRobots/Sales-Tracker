@@ -138,11 +138,11 @@ namespace Sales_Tracker.Startup.Menus
             }
 
             string filePath = newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension;
-            DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, filePath);
+            DataFileManager.AppendValue(GlobalAppDataSettings.RecentProjects, filePath);
 
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
             Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
-            DataFileManager.SetValue(DataFileManager.AppDataSettings.ChangesMade, false.ToString());
+            DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
 
             ShowMainMenu();
         }
@@ -307,12 +307,12 @@ namespace Sales_Tracker.Startup.Menus
                 string projectDir = btn.Tag.ToString();
 
                 // Remove from recent project in file
-                string? value = DataFileManager.GetValue(DataFileManager.GlobalAppDataSettings.RecentProjects);
+                string? value = DataFileManager.GetValue(GlobalAppDataSettings.RecentProjects);
                 if (value != null)
                 {
                     List<string> projectDirs = value.Split(',').ToList();
                     projectDirs.RemoveAll(dir => dir == projectDir);
-                    DataFileManager.SetValue(DataFileManager.GlobalAppDataSettings.RecentProjects, string.Join(",", projectDirs));
+                    DataFileManager.SetValue(GlobalAppDataSettings.RecentProjects, string.Join(",", projectDirs));
                 }
 
                 // Remove the button from the FlowLayoutPanel

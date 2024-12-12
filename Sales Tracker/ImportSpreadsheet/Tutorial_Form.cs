@@ -30,7 +30,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Event handlers
         private void Next_Button_Click(object sender, EventArgs e)
         {
-            DataFileManager.SetValue(DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.FalseString);
+            DataFileManager.SetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.FalseString);
 
             Setup_Form.Instance.FormImport.BringToFront();
         }

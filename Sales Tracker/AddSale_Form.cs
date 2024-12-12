@@ -27,7 +27,7 @@ namespace Sales_Tracker
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
-            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             Credited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({currency})";
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -280,7 +280,7 @@ namespace Sales_Tracker
                 }
             }
 
-            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             // Convert default currency to USD
             decimal defaultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);
@@ -410,7 +410,7 @@ namespace Sales_Tracker
             decimal totalPrice = 0;
             int totalQuantity = 0;
 
-            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             // Convert default currency to USD
             decimal defaultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);

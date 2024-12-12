@@ -14,7 +14,7 @@ namespace Sales_Tracker.Classes
         private static string _companyName, _tempCompany_dir, _argoCompany_dir, _argoCompany_file, _appData_dir,
             _globalAppDataSettings_file, _appDataSettings_file, _purchases_file, _sales_file, _categoryPurchases_file,
             _categorySales_file, _accountants_file, _companies_file, _receipts_dir, _logs_dir, _desktop_dir, _cache_dir,
-            _translations_file, _englishTexts_file, _config_file, _googleCredentials_file;
+            _translations_file, _englishTexts_file, _config_file, _googleCredentials_file, _anonymousDataFile;
 
         // Getters and setters
         public static string CompanyName => _companyName;
@@ -35,6 +35,7 @@ namespace Sales_Tracker.Classes
         public static string Desktop_dir => _desktop_dir;
         public static string Config_file => _config_file;
         public static string GoogleCredentials_file => _googleCredentials_file;
+        public static string AnonymousDataFile => _anonymousDataFile;
         public static string Cache_dir
         {
             get => _cache_dir;
@@ -98,6 +99,7 @@ namespace Sales_Tracker.Classes
             _translations_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
             _globalAppDataSettings_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
             _logs_dir = _cache_dir + @"logs\";
+            _anonymousDataFile = _cache_dir + "anonymous_data" + ArgoFiles.JsonFileExtension;
 
             // Other
             _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;

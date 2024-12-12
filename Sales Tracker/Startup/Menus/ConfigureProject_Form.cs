@@ -160,10 +160,10 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.Companies_file);
 
             // Set recently opened projects
-            DataFileManager.AppendValue(DataFileManager.GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+            DataFileManager.AppendValue(GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
 
             // Set default currency
-            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
+            DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
 
             ArgoCompany.SaveAll();
 

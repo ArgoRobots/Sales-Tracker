@@ -348,7 +348,7 @@ namespace Sales_Tracker.UI
         }
         public static bool ShouldShowTutorial()
         {
-            string value = DataFileManager.GetValue(DataFileManager.GlobalAppDataSettings.ImportSpreadsheetTutorial);
+            string value = DataFileManager.GetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial);
             return bool.TryParse(value, out bool boolResult) && boolResult;
         }
         public static void SaveAll()

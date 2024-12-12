@@ -132,7 +132,7 @@ namespace Sales_Tracker
         }
         private void LoadAllItemsInDataGridView(List<string> itemList)
         {
-            string defaultCurrencyType = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string defaultCurrencyType = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             string receiptFilePath = null;
             int index = 0;
 

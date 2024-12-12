@@ -64,7 +64,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Handle currency change
-            string oldCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string oldCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             if (oldCurrency != form.Currency_TextBox.Text)
             {
                 UpdateCurrency(oldCurrency);
@@ -138,7 +138,7 @@ namespace Sales_Tracker.Classes
         private static void UpdateCurrency(string oldCurrency)
         {
             string newCurrency = General_Form.Instance.Currency_TextBox.Text;
-            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, newCurrency);
+            DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, newCurrency);
             MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
 
             MainMenu_Form.IsProgramLoading = true;
@@ -171,7 +171,7 @@ namespace Sales_Tracker.Classes
         {
             if (dataGridView.Rows.Count == 0) { return; }
 
-            string defaultCurrency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
@@ -287,7 +287,7 @@ namespace Sales_Tracker.Classes
         {
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();
-            DataFileManager.SetValue(DataFileManager.AppDataSettings.DefaultCurrencyType, "USD");
+            DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, "USD");
 
             General_Form.Instance.UpdateControls();
             Security_Form.Instance.UpdateControls();

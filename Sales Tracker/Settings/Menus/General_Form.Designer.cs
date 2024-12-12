@@ -51,6 +51,8 @@ namespace Sales_Tracker.Settings.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             General_Label = new Label();
             Language_Label = new Label();
             MoreInformation_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -73,6 +75,7 @@ namespace Sales_Tracker.Settings.Menus
             AnimateButtons_Label = new Label();
             ShowHasReceiptColumn_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             ShowHasReceiptColumn_Label = new Label();
+            ExportData_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
             // General_Label
@@ -438,11 +441,30 @@ namespace Sales_Tracker.Settings.Menus
             ShowHasReceiptColumn_Label.Tag = "";
             ShowHasReceiptColumn_Label.Text = "Show \"Has receipt\" column for transactions";
             // 
+            // ExportData_Button
+            // 
+            ExportData_Button.Anchor = AnchorStyles.Top;
+            ExportData_Button.BorderColor = Color.LightGray;
+            ExportData_Button.BorderRadius = 2;
+            ExportData_Button.BorderThickness = 1;
+            ExportData_Button.CustomizableEdges = customizableEdges23;
+            ExportData_Button.FillColor = Color.FromArgb(250, 250, 250);
+            ExportData_Button.Font = new Font("Segoe UI", 9F);
+            ExportData_Button.ForeColor = Color.Black;
+            ExportData_Button.Location = new Point(874, 451);
+            ExportData_Button.Name = "ExportData_Button";
+            ExportData_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            ExportData_Button.Size = new Size(220, 45);
+            ExportData_Button.TabIndex = 256;
+            ExportData_Button.Text = "Export data";
+            ExportData_Button.Click += ExportData_Button_Click;
+            // 
             // General_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
+            Controls.Add(ExportData_Button);
             Controls.Add(ShowHasReceiptColumn_CheckBox);
             Controls.Add(ShowHasReceiptColumn_Label);
             Controls.Add(AnimateButtons_CheckBox);
@@ -496,5 +518,6 @@ namespace Sales_Tracker.Settings.Menus
         private Label AnimateButtons_Label;
         public Guna.UI2.WinForms.Guna2CustomCheckBox ShowHasReceiptColumn_CheckBox;
         private Label ShowHasReceiptColumn_Label;
+        private Guna.UI2.WinForms.Guna2Button ExportData_Button;
     }
 }

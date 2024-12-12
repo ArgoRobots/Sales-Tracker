@@ -1,35 +1,30 @@
 ﻿namespace Sales_Tracker.Classes
 {
+    // Enums for categorizing settings
+    public enum GlobalAppDataSettings
+    {
+        ImportSpreadsheetTutorial,  // bool
+        RecentProjects  // string[]
+    }
+    public enum AppDataSettings
+    {
+        ChangesMade,  // bool
+        DefaultCurrencyType  // string
+    }
+
     /// <summary>
     /// Manages file operations for application settings, supporting read, write, and append functionalities.
     /// </summary>
     public static class DataFileManager
     {
-        // Enums for categorizing settings
-        public enum GlobalAppDataSettings
-        {
-            ImportSpreadsheetTutorial,  // bool
-            RecentProjects  // string[]
-        }
-        public enum AppDataSettings
-        {
-            ChangesMade,  // bool
-            DefaultCurrencyType  // string
-        }
-
         // Dictionary to hold settings loaded from files, with file path as key.
         private static readonly Dictionary<string, Dictionary<string, string>> data = [];
 
         /// <summary>
         /// Determines the file path based on the enum type.
         /// </summary>
-        private static string GetFilePath<TEnum>(string? filePath = null) where TEnum : Enum
+        private static string GetFilePath<TEnum>() where TEnum : Enum
         {
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                return filePath;
-            }
-
             return typeof(TEnum) switch
             {
                 _ when typeof(TEnum) == typeof(GlobalAppDataSettings) => Directories.GlobalAppDataSettings_file,
@@ -69,10 +64,9 @@
         /// <summary>
         /// Sets a value for a given key in the settings file.
         /// </summary>
-        /// <param name="filePath">Optional file path. If not provided, it will use the default based on the enum type.</param>
-        public static void SetValue<TEnum>(TEnum key, string value, string? filePath = null) where TEnum : Enum
+        public static void SetValue<TEnum>(TEnum key, string value) where TEnum : Enum
         {
-            string finalFilePath = GetFilePath<TEnum>(filePath);
+            string finalFilePath = GetFilePath<TEnum>();
             Dictionary<string, string> values = EnsureSettingsLoaded(finalFilePath);
             string? keyString = Enum.GetName(typeof(TEnum), key);
 
@@ -90,10 +84,9 @@
         /// <summary>
         /// Appends a value to a setting. If the value already exists, it is moved to the front of the list.
         /// </summary>
-        /// <param name="filePath">Optional file path. If not provided, it will use the default based on the enum type.</param>
-        public static void AppendValue<TEnum>(TEnum key, string appendValue, string? filePath = null) where TEnum : Enum
+        public static void AppendValue<TEnum>(TEnum key, string appendValue) where TEnum : Enum
         {
-            string finalFilePath = GetFilePath<TEnum>(filePath);
+            string finalFilePath = GetFilePath<TEnum>();
             Dictionary<string, string> settings = EnsureSettingsLoaded(finalFilePath);
             string? keyString = Enum.GetName(typeof(TEnum), key) ?? throw new ArgumentException("Invalid enum key", nameof(key));
             byte maxValue = GetMaxValueForSetting(key);
@@ -140,9 +133,9 @@
         /// Generic method to get values for any enum type key.
         /// </summary>
         /// <param name="filePath">Optional file path. If not provided, it will use the default based on the enum type.</param>
-        public static string? GetValue<TEnum>(TEnum key, string? filePath = null) where TEnum : Enum
+        public static string? GetValue<TEnum>(TEnum key) where TEnum : Enum
         {
-            string finalFilePath = GetFilePath<TEnum>(filePath);
+            string finalFilePath = GetFilePath<TEnum>();
             string? keyString = Enum.GetName(typeof(TEnum), key);
             EnsureSettingsLoaded(finalFilePath);
 

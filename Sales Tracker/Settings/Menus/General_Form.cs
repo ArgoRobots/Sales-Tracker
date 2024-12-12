@@ -67,11 +67,8 @@ namespace Sales_Tracker.Settings.Menus
         // Form event handlers
         private void General_form_Shown(object sender, EventArgs e)
         {
-            // Deselect controls
-            General_Label.Focus();
-
+            General_Label.Focus();  // Deselect controls
             LoadingPanel.HideBlankLoadingPanel(this);
-
         }
 
         // Event handlers
@@ -100,6 +97,10 @@ namespace Sales_Tracker.Settings.Menus
             CloseAllPanels(null, null);
             Tools.OpenLink("");
         }
+        private void ExportData_Button_Click(object sender, EventArgs e)
+        {
+
+        }
 
         // Methods
         private void ValidateInputs()
@@ -113,7 +114,7 @@ namespace Sales_Tracker.Settings.Menus
         public void UpdateControls()
         {
             Language_TextBox.Text = Properties.Settings.Default.Language;
-            Currency_TextBox.Text = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            Currency_TextBox.Text = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             ColorTheme_ComboBox.Text = Theme.CurrentTheme.ToString();
             ShowTooltips_CheckBox.Checked = Properties.Settings.Default.ShowTooltips;
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;

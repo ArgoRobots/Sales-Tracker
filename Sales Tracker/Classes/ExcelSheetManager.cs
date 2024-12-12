@@ -288,7 +288,7 @@ namespace Sales_Tracker.Classes
 
             // Get exchange rate
             string date = row.Cell(7).GetValue<string>();
-            string currency = DataFileManager.GetValue(DataFileManager.AppDataSettings.DefaultCurrencyType);
+            string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", currency, date, false);
             if (exchangeRateToDefault == -1) { return false; }
 
