@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.UI;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -12,19 +11,47 @@ namespace Sales_Tracker.Classes
     {
         // Formatting
         /// <summary>
-        /// Formats a DateTime into a time format.
+        /// Formats a DateTime into a readable time format (HH:mm:ss.ff).
         /// </summary>
-        public static string FormatTime(DateTime dateTime)
-        {
-            return $@"{dateTime:hh\:mm\:ss\.ff}";
-        }
+        public static string FormatTime(DateTime dateTime) => dateTime.ToString("HH:mm:ss.ff");
 
         /// <summary>
-        /// Formats a DateTime into a date format.
+        /// Formats a DateTime into a readable date format (yyyy-MM-dd).
         /// </summary>
         public static string FormatDate(DateTime dateTime)
         {
             return dateTime.ToString("yyyy-MM-dd");
+        }
+
+        /// <summary>
+        /// Formats a DateTime into a readable date and time format (yyyy-MM-dd HH:mm:ss.ff).
+        /// </summary>
+        public static string FormatDateTime(DateTime dateTime)
+        {
+            return $"{FormatDate(dateTime)} {FormatTime(dateTime)}";
+        }
+
+        /// <summary>
+        /// Formats milliseconds into a readable duration string
+        /// </summary>
+        public static string FormatDuration(long milliseconds)
+        {
+            TimeSpan timespan = TimeSpan.FromMilliseconds(milliseconds);
+
+            // For durations less than 1 second
+            if (timespan.TotalSeconds < 1)
+            {
+                return $"{milliseconds}ms";
+            }
+
+            // For durations less than 1 minute
+            if (timespan.TotalMinutes < 1)
+            {
+                return $"{timespan.TotalSeconds:F2}s";
+            }
+
+            // For longer durations
+            return $"{timespan.Minutes}m {timespan.Seconds}s";
         }
 
         // General

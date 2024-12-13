@@ -75,6 +75,7 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
             Tools.OpenForm(new Loading_Form("Exporting chart to Google Sheets..."));
 
             try
@@ -198,6 +199,7 @@ namespace Sales_Tracker.Classes
                     .ExecuteAsync();
 
                 OpenGoogleSheet(spreadsheetId);
+                TrackGoogleSheetsExport(stopwatch, chartType == ChartType.Spline);
             }
             catch (Exception ex)
             {
@@ -222,6 +224,7 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
             Tools.OpenForm(new Loading_Form("Exporting chart to Google Sheets..."));
 
             try
@@ -363,6 +366,7 @@ namespace Sales_Tracker.Classes
                     .ExecuteAsync();
 
                 OpenGoogleSheet(spreadsheetId);
+                TrackGoogleSheetsExport(stopwatch, chartType == ChartType.Spline);
             }
             catch (Exception ex)
             {
@@ -374,6 +378,19 @@ namespace Sales_Tracker.Classes
             }
 
             Tools.CloseOpenForm<Loading_Form>();
+        }
+        private static void TrackGoogleSheetsExport(Stopwatch stopwatch, bool isSpline)
+        {
+            stopwatch.Stop();
+
+            Dictionary<ExportDataField, object> exportData = new()
+            {
+                { ExportDataField.ExportType,  ExportType.GoogleSheetsChart  },
+                { ExportDataField.DurationMS, stopwatch.ElapsedMilliseconds },
+                { ExportDataField.FileSize, "N/A" }
+            };
+
+            AnonymousDataManager.AddExportData(exportData);
         }
 
         /// <summary>

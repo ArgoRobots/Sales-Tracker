@@ -13,7 +13,8 @@ namespace Sales_Tracker.Classes
                                       TxtFileExtension = ".txt",
                                       JsonFileExtension = ".json",
                                       XlsxFileExtension = ".xlsx",
-                                      PngFileExtension = ".png";
+                                      PngFileExtension = ".png",
+                                      ZipExtension = ".zip";
 
         /// <summary>
         /// Import for the Windows Shell32 API function to notify the system of association changes.

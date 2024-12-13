@@ -32,7 +32,6 @@ namespace Sales_Tracker.UI
 
             // Other controls
             DataGridViewManager.ConstructRightClickRowMenu();
-            TextBoxManager.ConstructRightClickTextBoxMenu();
             RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
 
             // Set language

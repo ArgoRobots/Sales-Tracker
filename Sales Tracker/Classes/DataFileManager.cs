@@ -23,8 +23,13 @@
         /// <summary>
         /// Determines the file path based on the enum type.
         /// </summary>
-        private static string GetFilePath<TEnum>() where TEnum : Enum
+        private static string GetFilePath<TEnum>(string? filePath = null) where TEnum : Enum
         {
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                return filePath;
+            }
+
             return typeof(TEnum) switch
             {
                 _ when typeof(TEnum) == typeof(GlobalAppDataSettings) => Directories.GlobalAppDataSettings_file,
@@ -133,9 +138,9 @@
         /// Generic method to get values for any enum type key.
         /// </summary>
         /// <param name="filePath">Optional file path. If not provided, it will use the default based on the enum type.</param>
-        public static string? GetValue<TEnum>(TEnum key) where TEnum : Enum
+        public static string? GetValue<TEnum>(TEnum key, string? filePath = null) where TEnum : Enum
         {
-            string finalFilePath = GetFilePath<TEnum>();
+            string finalFilePath = GetFilePath<TEnum>(filePath);
             string? keyString = Enum.GetName(typeof(TEnum), key);
             EnsureSettingsLoaded(finalFilePath);
 

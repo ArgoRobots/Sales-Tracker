@@ -71,7 +71,7 @@ namespace Sales_Tracker.Classes
         {
             using SaveFileDialog dialog = new();
             dialog.FileName = Directories.CompanyName;
-            dialog.DefaultExt = ArgoFiles.ArgoCompanyFileExtension.TrimStart('.');
+            dialog.DefaultExt = ArgoFiles.ArgoCompanyFileExtension;
             dialog.Filter = $"Argo Company Files|*{ArgoFiles.ArgoCompanyFileExtension}";
             dialog.Title = "Save Company As";
 
@@ -374,7 +374,7 @@ namespace Sales_Tracker.Classes
                 if (project + @"\" == Directories.Cache_dir) { continue; }
 
                 // Check if there are any changes
-                string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade);
+                string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade, project + @"\info" + ArgoFiles.TxtFileExtension);
                 if (bool.TryParse(value, out bool boolResult) && !boolResult)
                 {
                     // Delete the temp folder

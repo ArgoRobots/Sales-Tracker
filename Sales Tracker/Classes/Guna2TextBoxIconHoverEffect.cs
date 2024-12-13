@@ -3,6 +3,9 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Provides hover effect functionality for the right icon in Guna2TextBox controls because Guna has not implemented it yet.
+    /// </summary>
     public static class Guna2TextBoxIconHoverEffect
     {
         private static bool isIconHovered = false;

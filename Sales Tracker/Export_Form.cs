@@ -1,6 +1,7 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
+using System.Diagnostics;
 
 namespace Sales_Tracker
 {
@@ -108,26 +109,53 @@ namespace Sales_Tracker
 
             string fileType = FileType_ComboBox.Text;
             await Task.Run(() => { Export(fileType); });
-            Close();
         }
 
         // Methods
         private void Export(string fileType)
         {
             string filePath = Directory_TextBox.Text + "\\" + Name_TextBox.Text;
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            ExportType exportType;
 
             switch (fileType)
             {
                 case "ArgoSales (.zip)":
                     Directories.CreateBackup(filePath);
+                    exportType = ExportType.Backup;
+                    TrackExport(stopwatch, filePath + ArgoFiles.ZipExtension, exportType);
                     FinalizeExport($"Successfully backed up '{Directories.CompanyName}'");
                     break;
 
                 case "Excel spreadsheet (.xlsx)":
-                    ExcelSheetManager.ExportSpreadsheet(filePath + ArgoFiles.XlsxFileExtension);
+                    string xlsxPath = filePath + ArgoFiles.XlsxFileExtension;
+                    ExcelSheetManager.ExportSpreadsheet(xlsxPath);
+                    exportType = ExportType.XLSX;
+                    TrackExport(stopwatch, xlsxPath, exportType);
                     FinalizeExport($"Successfully created spreadsheet for '{Directories.CompanyName}'");
                     break;
             }
+        }
+        private static void TrackExport(Stopwatch stopwatch, string filePath, ExportType exportType)
+        {
+            stopwatch.Stop();
+            string readableSize = "0 Bytes";
+
+            if (File.Exists(filePath))
+            {
+                FileInfo fileInfo = new(filePath);
+                long fileSizeBytes = fileInfo.Length;
+                readableSize = Tools.ConvertBytesToReadableSize(fileSizeBytes);
+            }
+
+            Dictionary<ExportDataField, object> exportData = new()
+            {
+                { ExportDataField.ExportType, exportType },
+                { ExportDataField.DurationMS, stopwatch.ElapsedMilliseconds },
+                { ExportDataField.FileSize, readableSize }
+            };
+
+            AnonymousDataManager.AddExportData(exportData);
         }
         private void FinalizeExport(string message)
         {

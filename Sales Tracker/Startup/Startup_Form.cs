@@ -29,6 +29,8 @@ namespace Sales_Tracker.Startup
             }
             else { SwitchMainForm(formGetStarted); }
 
+            TextBoxManager.ConstructRightClickTextBoxMenu();
+
             Theme.UseImmersiveDarkMode(Handle, Theme.CurrentTheme == Theme.ThemeType.Dark);
 
             // TO DO: make this only run once, during progam installation

@@ -4,6 +4,7 @@ using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Style;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
+using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
 {
@@ -659,6 +660,8 @@ namespace Sales_Tracker.Classes
         // Export charts to Microsoft Excel
         public static void ExportChartToExcel(Dictionary<string, double> data, string filePath, eChartType chartType, string chartTitle, string column1Text, string column2Text, bool isSpline = false)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new();
             string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
@@ -696,9 +699,13 @@ namespace Sales_Tracker.Classes
 
             worksheet.Columns[1, 2].AutoFit();
             package.SaveAs(new FileInfo(filePath));
+
+            TrackChartExport(stopwatch, filePath, isSpline ? ExportType.GoogleSheetsChart : ExportType.ExcelSheetsChart);
         }
         public static void ExportMultiDataSetChartToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle, bool isSpline = false)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new();
             string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
@@ -754,6 +761,29 @@ namespace Sales_Tracker.Classes
 
             worksheet.Columns.AutoFit();
             package.SaveAs(new FileInfo(filePath));
+
+            TrackChartExport(stopwatch, filePath, isSpline ? ExportType.GoogleSheetsChart : ExportType.ExcelSheetsChart);
+        }
+        private static void TrackChartExport(Stopwatch stopwatch, string filePath, ExportType exportType)
+        {
+            stopwatch.Stop();
+            string readableSize = "0 Bytes";
+
+            if (File.Exists(filePath))
+            {
+                FileInfo fileInfo = new(filePath);
+                long fileSizeBytes = fileInfo.Length;
+                readableSize = Tools.ConvertBytesToReadableSize(fileSizeBytes);
+            }
+
+            Dictionary<ExportDataField, object> exportData = new()
+            {
+                { ExportDataField.ExportType, exportType },
+                { ExportDataField.DurationMS, stopwatch.ElapsedMilliseconds },
+                { ExportDataField.FileSize, readableSize }
+            };
+
+            AnonymousDataManager.AddExportData(exportData);
         }
 
         /// <summary>

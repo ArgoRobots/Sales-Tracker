@@ -99,7 +99,31 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
         {
+            if (!File.Exists(Directories.AnonymousDataFile))
+            {
+                CustomMessageBox.Show("No user data",
+                    "No user data exists. Either the setting was disabled or the cache was cleared",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
 
+            using SaveFileDialog dialog = new();
+            dialog.FileName = Path.GetFileName(Directories.AnonymousDataFile);
+            dialog.DefaultExt = ArgoFiles.JsonFileExtension;
+            dialog.Filter = $"JSON files|*{ArgoFiles.JsonFileExtension}";
+            dialog.Title = "Export user data";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = Directories.GetNewFileNameIfItAlreadyExists(dialog.FileName);
+                Directories.CopyFile(Directories.AnonymousDataFile, filePath);
+
+                Log.Write(2, $"Exported anonymous user data to '{Path.GetFileName(filePath)}'");
+
+                CustomMessageBox.Show("Export Successful",
+                    "Successfully exported anonymous user data.",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            }
         }
 
         // Methods

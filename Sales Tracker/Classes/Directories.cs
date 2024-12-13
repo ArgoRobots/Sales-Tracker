@@ -99,7 +99,7 @@ namespace Sales_Tracker.Classes
             _translations_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
             _globalAppDataSettings_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
             _logs_dir = _cache_dir + @"logs\";
-            _anonymousDataFile = _cache_dir + "anonymous_data" + ArgoFiles.JsonFileExtension;
+            _anonymousDataFile = _cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other
             _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;
@@ -616,7 +616,7 @@ namespace Sales_Tracker.Classes
             string uniqueBasePath = Path.Combine(backupDir, uniqueName);
             string tempDirPath = uniqueBasePath;
             string tempFilePath = Path.Combine(tempDirPath, projectName + fileExtension);
-            string finalZipPath = uniqueBasePath + ".zip";
+            string finalZipPath = uniqueBasePath + ArgoFiles.ZipExtension;
 
             // Create initial backup file
             CopyFile(ArgoCompany_file, uniqueBasePath + fileExtension);

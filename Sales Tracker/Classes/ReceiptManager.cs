@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
+using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
 {
@@ -119,8 +120,10 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
+            var stopwatch = Stopwatch.StartNew();
             string destinationPath = dialog.SelectedPath;
             int selectedRowCount = dataGridView.SelectedRows.Count;
+            List<string> exportedFiles = [];
 
             if (selectedRowCount > 1)
             {
@@ -158,14 +161,18 @@ namespace Sales_Tracker.Classes
 
                 string destinationFilePath = Path.Combine(destinationPath, Path.GetFileName(receipt));
                 Directories.CopyFile(receipt, destinationFilePath);
+                exportedFiles.Add(destinationFilePath);
+
                 isAnyReceiptExported = true;
                 exportedCount++;
             }
 
             if (isAnyReceiptExported)
             {
-                string message = exportedCount == 1 ? "Receipt exported successfully" : "Receipts exported successfully";
+                TrackReceiptExport(stopwatch, exportedFiles);
 
+                // Show success message
+                string message = exportedCount == 1 ? "Receipt exported successfully" : "Receipts exported successfully";
                 if (!doAllRowsHaveReceipt) { message += " Note: Not all the selected rows contain a receipt."; }
 
                 CustomMessageBox.Show(
@@ -173,6 +180,30 @@ namespace Sales_Tracker.Classes
                     message,
                     CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
+        }
+        private static void TrackReceiptExport(Stopwatch stopwatch, List<string> exportedFiles)
+        {
+            stopwatch.Stop();
+            long totalSizeBytes = 0;
+
+            // Calculate total size of all exported files
+            foreach (string filePath in exportedFiles)
+            {
+                if (File.Exists(filePath))
+                {
+                    FileInfo fileInfo = new(filePath);
+                    totalSizeBytes += fileInfo.Length;
+                }
+            }
+
+            Dictionary<ExportDataField, object> exportData = new()
+            {
+                { ExportDataField.ExportType, ExportType.Receipts },
+                { ExportDataField.DurationMS, stopwatch.ElapsedMilliseconds },
+                { ExportDataField.FileSize, Tools. ConvertBytesToReadableSize(totalSizeBytes) }
+            };
+
+            AnonymousDataManager.AddExportData(exportData);
         }
 
         /// <summary>
