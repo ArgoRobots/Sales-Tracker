@@ -45,7 +45,13 @@ namespace Sales_Tracker.UI
                 noResults_Label.Text = _translateText ? LanguageManager.TranslateSingleString("No results") : "No results";
             }
 
-            textBox.Click += (_, _) => ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
+            textBox.MouseDown += (sender, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
+                }
+            };
             textBox.GotFocus += (_, _) =>
             {
                 if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug

@@ -40,7 +40,7 @@ namespace Sales_Tracker.Classes
             };
 
             string jsonLine = JsonConvert.SerializeObject(dataPoint, Formatting.Indented) + Environment.NewLine;
-            File.AppendAllText(Directories.AnonymousDataFile, jsonLine);
+            File.AppendAllText(Directories.AnonymousUserDataFile, jsonLine);
         }
     }
 }

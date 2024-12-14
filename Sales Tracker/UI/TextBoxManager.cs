@@ -350,11 +350,6 @@ namespace Sales_Tracker.UI
         // Methods for right click menu
         private static void ShowRightClickMenu(Guna2TextBox textBox, Point mouseLocation)
         {
-            if (_rightClickTextBox_Panel == null)
-            {
-                ConstructRightClickTextBoxMenu();
-            }
-
             // Convert mouse coordinates to screen coordinates
             Point screenPoint = textBox.PointToScreen(mouseLocation);
             screenPoint.X -= ReadOnlyVariables.OffsetRightClickPanel;
