@@ -19,7 +19,7 @@ namespace Sales_Tracker
         private static MainMenu_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
-        private static bool _isFullVersion = false, _isProgramLoading;
+        private static bool _isFullVersion, _isProgramLoading;
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
@@ -31,10 +31,14 @@ namespace Sales_Tracker
             get => _currencySymbol;
             set => _currencySymbol = value;
         }
-        public static bool IsFullVersion
+        public bool IsFullVersion
         {
             get => _isFullVersion;
-            set => _isFullVersion = value;
+            set
+            {
+                _isFullVersion = value;
+                RemoveUpgradeButtonIfFullVersion();
+            }
         }
         public static bool IsProgramLoading
         {
@@ -69,6 +73,7 @@ namespace Sales_Tracker
             AddEventHandlersToTextBoxes();
             RemoveUpgradeButtonIfFullVersion();
             AnimateButtons();
+            CheckIfLicenseIsValid();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetToolTips()
@@ -283,6 +288,15 @@ namespace Sales_Tracker
                TimeRange_Button,
             ];
             CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
+        }
+        private static void CheckIfLicenseIsValid()
+        {
+            bool isLicenseValid = false;
+
+            // VERIFY THE LICENSE HERE
+
+
+            _isFullVersion = isLicenseValid;
         }
 
         // Add rows from file

@@ -128,7 +128,10 @@
     <value>..\Resources\Argo - color.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="BackArrowBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Back arrow - black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\BackArrowBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BackArrowWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BackArrowWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Checkmark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Checkmark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

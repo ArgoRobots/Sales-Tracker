@@ -93,7 +93,7 @@ namespace Sales_Tracker.Passwords
         }
         private async void SetWindowsHelloControls()
         {
-            if (MainMenu_Form.IsFullVersion)
+            if (MainMenu_Form.Instance.IsFullVersion)
             {
                 ConstructWindowsHelloButton();
 

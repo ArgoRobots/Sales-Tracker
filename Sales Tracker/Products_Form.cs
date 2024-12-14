@@ -301,7 +301,7 @@ namespace Sales_Tracker
         }
         private void SetProductsRemainingLabel()
         {
-            if (MainMenu_Form.IsFullVersion)
+            if (MainMenu_Form.Instance.IsFullVersion)
             {
                 ProductsRemaining_LinkLabel.Visible = false;
                 return;
@@ -484,7 +484,7 @@ namespace Sales_Tracker
                                    !string.IsNullOrWhiteSpace(CountryOfOrigin_TextBox.Text) && CountryOfOrigin_TextBox.Tag.ToString() != "0" &&
                                    !string.IsNullOrWhiteSpace(CompanyOfOrigin_TextBox.Text) && CompanyOfOrigin_TextBox.Tag.ToString() != "0";
 
-            if (!MainMenu_Form.IsFullVersion)
+            if (!MainMenu_Form.Instance.IsFullVersion)
             {
                 allFieldsFilled &= GetProductsRemaining() > 0;
             }

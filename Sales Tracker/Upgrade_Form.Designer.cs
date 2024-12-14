@@ -38,6 +38,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             CheckMark1_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             UnlimitedProducts_Label = new Label();
             WindowsHello_Label = new Label();
@@ -53,6 +55,7 @@
             StripeLogo_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             Benifits_Panel = new Panel();
             Square_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
+            EnterKey_Button = new Guna.UI2.WinForms.Guna2Button();
             Benifits_Panel.SuspendLayout();
             SuspendLayout();
             // 
@@ -60,14 +63,14 @@
             // 
             CheckMark1_ImageButton.Anchor = AnchorStyles.Top;
             CheckMark1_ImageButton.CheckedState.ImageSize = new Size(64, 64);
-            CheckMark1_ImageButton.HoverState.ImageSize = new Size(64, 64);
+            CheckMark1_ImageButton.HoverState.ImageSize = new Size(0, 0);
             CheckMark1_ImageButton.Image = Properties.Resources.Checkmark;
             CheckMark1_ImageButton.ImageOffset = new Point(0, 0);
             CheckMark1_ImageButton.ImageRotate = 0F;
             CheckMark1_ImageButton.ImageSize = new Size(30, 30);
             CheckMark1_ImageButton.Location = new Point(27, 65);
             CheckMark1_ImageButton.Name = "CheckMark1_ImageButton";
-            CheckMark1_ImageButton.PressedState.ImageSize = new Size(64, 64);
+            CheckMark1_ImageButton.PressedState.ImageSize = new Size(0, 0);
             CheckMark1_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges1;
             CheckMark1_ImageButton.Size = new Size(35, 35);
             CheckMark1_ImageButton.TabIndex = 0;
@@ -98,14 +101,14 @@
             // 
             CheckMark2_ImageButton.Anchor = AnchorStyles.Top;
             CheckMark2_ImageButton.CheckedState.ImageSize = new Size(64, 64);
-            CheckMark2_ImageButton.HoverState.ImageSize = new Size(64, 64);
+            CheckMark2_ImageButton.HoverState.ImageSize = new Size(0, 0);
             CheckMark2_ImageButton.Image = Properties.Resources.Checkmark;
             CheckMark2_ImageButton.ImageOffset = new Point(0, 0);
             CheckMark2_ImageButton.ImageRotate = 0F;
             CheckMark2_ImageButton.ImageSize = new Size(30, 30);
             CheckMark2_ImageButton.Location = new Point(27, 115);
             CheckMark2_ImageButton.Name = "CheckMark2_ImageButton";
-            CheckMark2_ImageButton.PressedState.ImageSize = new Size(64, 64);
+            CheckMark2_ImageButton.PressedState.ImageSize = new Size(0, 0);
             CheckMark2_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges2;
             CheckMark2_ImageButton.Size = new Size(35, 35);
             CheckMark2_ImageButton.TabIndex = 2;
@@ -197,14 +200,14 @@
             // 
             CheckMark3_ImageButton.Anchor = AnchorStyles.Top;
             CheckMark3_ImageButton.CheckedState.ImageSize = new Size(64, 64);
-            CheckMark3_ImageButton.HoverState.ImageSize = new Size(64, 64);
+            CheckMark3_ImageButton.HoverState.ImageSize = new Size(0, 0);
             CheckMark3_ImageButton.Image = Properties.Resources.Checkmark;
             CheckMark3_ImageButton.ImageOffset = new Point(0, 0);
             CheckMark3_ImageButton.ImageRotate = 0F;
             CheckMark3_ImageButton.ImageSize = new Size(30, 30);
             CheckMark3_ImageButton.Location = new Point(27, 165);
             CheckMark3_ImageButton.Name = "CheckMark3_ImageButton";
-            CheckMark3_ImageButton.PressedState.ImageSize = new Size(64, 64);
+            CheckMark3_ImageButton.PressedState.ImageSize = new Size(0, 0);
             CheckMark3_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges7;
             CheckMark3_ImageButton.Size = new Size(35, 35);
             CheckMark3_ImageButton.TabIndex = 11;
@@ -273,11 +276,31 @@
             Square_ImageButton.Size = new Size(110, 35);
             Square_ImageButton.TabIndex = 16;
             // 
+            // EnterKey_Button
+            // 
+            EnterKey_Button.Anchor = AnchorStyles.Top;
+            EnterKey_Button.BorderColor = Color.DimGray;
+            EnterKey_Button.BorderRadius = 2;
+            EnterKey_Button.BorderThickness = 1;
+            EnterKey_Button.CustomizableEdges = customizableEdges11;
+            EnterKey_Button.FillColor = Color.FromArgb(250, 250, 250);
+            EnterKey_Button.Font = new Font("Segoe UI", 10F);
+            EnterKey_Button.ForeColor = Color.Black;
+            EnterKey_Button.Location = new Point(182, 377);
+            EnterKey_Button.Margin = new Padding(6, 5, 6, 5);
+            EnterKey_Button.Name = "EnterKey_Button";
+            EnterKey_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            EnterKey_Button.Size = new Size(250, 50);
+            EnterKey_Button.TabIndex = 17;
+            EnterKey_Button.Text = "I already have a key";
+            EnterKey_Button.Click += EnterKey_Button_Click;
+            // 
             // Upgrade_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(978, 594);
+            Controls.Add(EnterKey_Button);
             Controls.Add(Square_ImageButton);
             Controls.Add(Benifits_Panel);
             Controls.Add(StripeLogo_ImageButton);
@@ -289,6 +312,7 @@
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             MinimumSize = new Size(1000, 650);
             Name = "Upgrade_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Shown += Upgrade_Form_Shown;
             Benifits_Panel.ResumeLayout(false);
@@ -314,5 +338,6 @@
         private Guna.UI2.WinForms.Guna2ImageButton StripeLogo_ImageButton;
         private Panel Benifits_Panel;
         private Guna.UI2.WinForms.Guna2ImageButton Square_ImageButton;
+        public Guna.UI2.WinForms.Guna2Button EnterKey_Button;
     }
 }
