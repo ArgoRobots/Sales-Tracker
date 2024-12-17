@@ -68,7 +68,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void SetAccessibleDescriptions()
         {
-            ArgoSalesTracker_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            ArgoSalesTracker_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
 
         // Form event handlers
@@ -100,7 +100,7 @@ namespace Sales_Tracker.Startup.Menus
                     Text = Path.GetFileNameWithoutExtension(projectDir),
                     Font = new Font("Segoe UI", 11),
                     Tag = projectDir,
-                    AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
+                    AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate
                 };
                 btn.MouseDown += Btn_MouseDown;
                 btn.MouseUp += Btn_MouseUp;

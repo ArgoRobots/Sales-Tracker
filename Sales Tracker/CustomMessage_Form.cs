@@ -35,11 +35,11 @@ namespace Sales_Tracker
         {
             if (translateMessage)
             {
-                Message_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+                Message_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             }
             else
             {
-                Message_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+                Message_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             }
         }
 
@@ -198,7 +198,7 @@ namespace Sales_Tracker
                 Text = Message_Label.Text,
                 Name = "SaveChanges_Label",
                 AutoSize = true,
-                AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
                 Anchor = AnchorStyles.Top,
                 Font = new Font("Segoe UI", 11),
                 ForeColor = CustomColors.Text,
@@ -239,7 +239,7 @@ namespace Sales_Tracker
             Label label = new()
             {
                 Text = title,
-                AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
                 AutoSize = true,
                 Location = new Point(10, top),
                 Font = new Font("Segoe UI", 11),
@@ -254,7 +254,7 @@ namespace Sales_Tracker
                 label = new()
                 {
                     Text = item,
-                    AccessibleDescription = AccessibleDescriptionStrings.DoNotCache,
+                    AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
                     AutoSize = true,
                     Location = new Point(25, top),
                     Font = new Font("Segoe UI", 11),

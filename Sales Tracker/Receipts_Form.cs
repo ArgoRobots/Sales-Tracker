@@ -56,13 +56,13 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            Search_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            FilterByDate_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            From_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            Search_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            FilterByDate_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            From_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            To_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            IncludePurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
         private void SetTheme()
         {

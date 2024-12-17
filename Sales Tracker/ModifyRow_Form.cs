@@ -1447,7 +1447,7 @@ namespace Sales_Tracker
                 BorderRadius = 3,
                 Cursor = Cursors.Hand,
                 ShortcutsEnabled = false,
-                AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate
+                AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate
             };
             textBox.FocusedState.FillColor = CustomColors.ControlBack;
             textBox.HoverState.BorderColor = CustomColors.AccentBlue;

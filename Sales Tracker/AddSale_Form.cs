@@ -102,10 +102,10 @@ namespace Sales_Tracker
 
             foreach (Label label in labelsToAlignLeftCenter)
             {
-                label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+                label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
             }
 
-            SelectedReceipt_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            SelectedReceipt_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
         }
 
         // Form event handlers

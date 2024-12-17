@@ -237,14 +237,14 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            CompanyName_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Quantity_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Shipping_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Tax_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Fee_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Discount_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Price_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            CompanyName_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Quantity_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Shipping_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Tax_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Fee_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Discount_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Price_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
         private void InitChartTags()
         {

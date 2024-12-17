@@ -44,9 +44,9 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void SetAccessibleDescriptions()
         {
-            ProjectName_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Directory_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Currency_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            ProjectName_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            Directory_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
         private void AddEventHandlersToTextBoxes()
         {

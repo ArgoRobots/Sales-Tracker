@@ -38,7 +38,7 @@ namespace Sales_Tracker.UI
         {
             if (!translateText)
             {
-                textBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+                textBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             }
             else
             {

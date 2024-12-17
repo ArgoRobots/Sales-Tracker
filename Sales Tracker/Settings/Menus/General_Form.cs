@@ -36,18 +36,18 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void SetAccessibleDescription()
         {
-            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            Language_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            Currency_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            ColorTheme_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            ShowDebugInfo_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            Language_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            Currency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            ColorTheme_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            ShowDebugInfo_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
 
-            Language_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
-            Currency_TextBox.AccessibleDescription = AccessibleDescriptionStrings.DoNotTranslate;
+            Language_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
         private void AddEventHandlersToTextBoxes()
         {

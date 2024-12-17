@@ -14,7 +14,7 @@ namespace Sales_Tracker
             Theme.SetThemeForForm(this);
             Theme.MakeGButtonBluePrimary(Continue_Button);
             LanguageManager.UpdateLanguageForControl(this);
-            DontShowAgain_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
+            DontShowAgain_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
 

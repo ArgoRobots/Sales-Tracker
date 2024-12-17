@@ -376,26 +376,26 @@ namespace Sales_Tracker.UI
             }
             else if (label.Anchor == AnchorStyles.Top || label.Anchor == AnchorStyles.Bottom)
             {
-                if (label.AccessibleDescription == AccessibleDescriptionStrings.AlignRightCenter)
+                if (AccessibleDescriptionManager.HasTag(label, AccessibleDescriptionManager.AlignRightCenter))
                 {
                     label.Left = originalBounds.Right - label.Width;
                 }
-                else if (label.AccessibleDescription != AccessibleDescriptionStrings.AlignLeftCenter)
+                else if (!AccessibleDescriptionManager.HasTag(label, AccessibleDescriptionManager.AlignLeftCenter))
                 {
                     // Center
                     int originalCenterX = originalBounds.Left + originalBounds.Width / 2;
                     label.Left = originalCenterX - label.Width / 2;
                 }
-                // If it is AlignLeftCenter, do nothing
+                // If it's AlignLeftCenter, do nothing
             }
         }
         private static bool CanControlCache(Control control)
         {
-            return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotCache;
+            return !AccessibleDescriptionManager.HasTag(control, AccessibleDescriptionManager.DoNotCache);
         }
         private static bool CanControlTranslate(Control control)
         {
-            return control.AccessibleDescription != AccessibleDescriptionStrings.DoNotTranslate;
+            return !AccessibleDescriptionManager.HasTag(control, AccessibleDescriptionManager.DoNotTranslate);
         }
         private static void TranslateLinkLabel(LinkLabel linkLabel, string targetLanguageAbbreviation)
         {

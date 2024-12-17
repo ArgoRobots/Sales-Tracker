@@ -160,7 +160,7 @@ namespace Sales_Tracker.UI
                 Top = 1,
                 Name = text.Replace(" ", "") + "_Label",
                 Text = text,
-                AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter,
+                AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter,
                 Anchor = AnchorStyles.Top
             };
 

@@ -55,9 +55,9 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            AccountantName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
-            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            AccountantName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
         // Form event handlers

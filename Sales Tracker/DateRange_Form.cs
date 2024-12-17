@@ -54,8 +54,8 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            From_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            To_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
+            From_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            To_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
         }
         private void InitializeTimeSpanOptions()
         {

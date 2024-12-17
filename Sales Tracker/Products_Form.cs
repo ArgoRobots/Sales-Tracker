@@ -122,18 +122,18 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            ProductsRemaining_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignRightCenter;
-            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            ForSale_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            ProductID_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            ProductName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            ProductCategory_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            CountryOfOrigin_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            CompanyOfOrigin_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            WarningProductName_Label.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            WarningCategory_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            WarningCompany_LinkLabel.AccessibleDescription = AccessibleDescriptionStrings.AlignLeftCenter;
-            Total_Label.AccessibleDescription = AccessibleDescriptionStrings.DoNotCache;
+            ProductsRemaining_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            ForSale_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            ProductID_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            ProductName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            ProductCategory_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            CountryOfOrigin_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            CompanyOfOrigin_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            WarningProductName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            WarningCategory_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            WarningCompany_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
         // Form event handlers
