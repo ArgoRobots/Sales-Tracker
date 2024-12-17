@@ -48,6 +48,7 @@ namespace Sales_Tracker.Classes
                 Directories.CreateFile(Directories.GlobalAppDataSettings_file);
 
                 DataFileManager.SetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.TrueString);
+                DataFileManager.SetValue(GlobalAppDataSettings.ShowWelcomeForm, bool.TrueString);
             }
         }
 

@@ -3,6 +3,7 @@
     // Enums for categorizing settings
     public enum GlobalAppDataSettings
     {
+        ShowWelcomeForm,  // bool
         ImportSpreadsheetTutorial,  // bool
         RecentProjects  // string[]
     }

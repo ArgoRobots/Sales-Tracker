@@ -31,7 +31,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         private void Next_Button_Click(object sender, EventArgs e)
         {
             DataFileManager.SetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.FalseString);
-
             Setup_Form.Instance.FormImport.BringToFront();
         }
         private void YouTube_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

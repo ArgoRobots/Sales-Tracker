@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
@@ -71,7 +72,6 @@ namespace Sales_Tracker
             InitTimeRangePanel();
             InitChartTags();
             AddEventHandlersToTextBoxes();
-            RemoveUpgradeButtonIfFullVersion();
             AnimateButtons();
             CheckIfLicenseIsValid();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -525,6 +525,12 @@ namespace Sales_Tracker
         {
             LoadingPanel.HideBlankLoadingPanel(this);
             Log.Write(2, "Argo Sales Tracker has finished starting");
+
+            string value = DataFileManager.GetValue(GlobalAppDataSettings.ShowWelcomeForm);
+            if (bool.TryParse(value, out bool boolResult) && boolResult)
+            {
+                new Welcome_Form().ShowDialog();
+            }
         }
         private void MainMenu_Form_ResizeBegin(object sender, EventArgs e)
         {
@@ -600,7 +606,6 @@ namespace Sales_Tracker
                 }
             }
 
-            // Delete hidden directory
             Directories.DeleteDirectory(Directories.TempCompany_dir, true);
         }
 

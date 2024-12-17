@@ -789,6 +789,8 @@ namespace Sales_Tracker.UI
                         dataGrid.Rows[0].Selected = true;
                     }
                 }
+
+                UpdateAlternatingRowColors(dataGrid);
             }
         }
         public static void UpdateRowWithMultipleItems(DataGridViewRow selectedRow)
