@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.UI;
@@ -32,7 +31,7 @@ namespace Sales_Tracker
             get => _currencySymbol;
             set => _currencySymbol = value;
         }
-        public bool IsFullVersion
+        public static bool IsFullVersion
         {
             get => _isFullVersion;
             set
@@ -265,11 +264,11 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(Search_TextBox);
         }
-        private void RemoveUpgradeButtonIfFullVersion()
+        private static void RemoveUpgradeButtonIfFullVersion()
         {
             if (_isFullVersion)
             {
-                Top_Panel.Controls.Remove(Upgrade_Button);
+                Instance.Top_Panel.Controls.Remove(Instance.Upgrade_Button);
             }
         }
         public void AnimateButtons()

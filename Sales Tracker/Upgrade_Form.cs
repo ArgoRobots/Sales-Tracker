@@ -223,7 +223,7 @@ namespace Sales_Tracker
                 }
                 await Task.Delay(500);
 
-                MainMenu_Form.Instance.IsFullVersion = true;
+                MainMenu_Form.IsFullVersion = true;
 
                 progressCircle.Visible = false;
                 successLabel.Visible = true;
