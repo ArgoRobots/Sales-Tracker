@@ -7,7 +7,7 @@ namespace Sales_Tracker.Classes
     /// symbols, and exchange rate calculations. Supports multiple international currencies and
     /// provides real-time exchange rate data through the OpenExchangeRates API.
     /// </summary>
-    internal static class Currency
+    public static class Currency
     {
         /// <summary>
         /// Enumeration of supported currency types, ordered by relative western geographic location.
