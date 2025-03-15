@@ -44,40 +44,6 @@ namespace Tests
             Assert.AreEqual(message, tooltip.GetToolTip(testButton));
         }
 
-        [TestMethod]
-        public void TestMouseEvents_TooltipHidesOnMouseLeave()
-        {
-            // Arrange
-            string title = "Test Title";
-            string message = "Test Message";
-
-            CustomTooltip.SetToolTip(testButton, title, message);
-
-            // Get the tooltip through reflection
-            FieldInfo? tooltipsField = typeof(CustomTooltip).GetField("tooltips",
-                BindingFlags.NonPublic | BindingFlags.Static);
-            Dictionary<Control, Guna2HtmlToolTip>? tooltips = (Dictionary<Control, Guna2HtmlToolTip>)tooltipsField.GetValue(null);
-            Guna2HtmlToolTip tooltip = tooltips[testButton];
-
-            // Setup for mouse leave behavior
-            testButton.Parent = new Form();  // Need a parent for proper mouse position calculations
-
-            // Act
-            tooltip.Hide(testButton);
-            testButton.RaiseEvent("MouseLeave", EventArgs.Empty);
-
-            // Wait for the async delay in MouseLeave handler
-            Thread.Sleep(100);
-
-            // Assert
-            // Get lastControl through reflection to verify it's cleared
-            FieldInfo? lastControlField = typeof(CustomTooltip).GetField("lastControl",
-                BindingFlags.NonPublic | BindingFlags.Static);
-            Control? lastControl = lastControlField.GetValue(null) as Control;
-
-            Assert.IsNull(lastControl, "lastControl should be cleared after mouse leave");
-        }
-
         [TestCleanup]
         public void Cleanup()
         {

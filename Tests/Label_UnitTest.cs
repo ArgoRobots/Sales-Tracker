@@ -26,6 +26,7 @@ namespace Tests
                 Width = 500,
                 Height = 400
             };
+            parentControl.Controls.Add(label);
 
             dataGridView = new DataGridView
             {

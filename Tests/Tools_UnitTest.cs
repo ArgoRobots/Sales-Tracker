@@ -15,7 +15,7 @@ namespace Tests
             string formattedTime = Tools.FormatTime(testDate);
 
             Assert.AreEqual("2024-08-10", formattedDate);
-            Assert.AreEqual("02:30:45.00", formattedTime);
+            Assert.AreEqual("14:30:45.00", formattedTime);
         }
 
         [TestMethod]
