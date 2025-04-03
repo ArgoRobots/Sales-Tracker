@@ -128,7 +128,6 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            CustomControls.CloseAllPanels(null, null);
             long startTime = DateTime.Now.Ticks;
 
             List<SearchResult> results = resultsFunc();
