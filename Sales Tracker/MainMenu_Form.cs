@@ -73,8 +73,8 @@ namespace Sales_Tracker
             InitChartTags();
             AddEventHandlersToTextBoxes();
             AnimateButtons();
-            CheckIfLicenseIsValid();
             InitializeAISearch();
+            RemoveUpgradeButtonIfFullVersion();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetToolTips()
@@ -290,14 +290,10 @@ namespace Sales_Tracker
             ];
             CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
         }
-        private static void CheckIfLicenseIsValid()
+        public static void CheckIfLicenseIsValid()
         {
-            bool isLicenseValid = false;
-
             // VERIFY THE LICENSE HERE
-
-
-            _isFullVersion = isLicenseValid;
+            _isFullVersion = true;
         }
         private static void InitializeAISearch()
         {
@@ -971,6 +967,7 @@ namespace Sales_Tracker
             if (_isProgramLoading) { return; }
 
             bool isAIQuery = Properties.Settings.Default.EnableAISearch
+                && _isFullVersion
                 && Search_TextBox.Text.StartsWith('!');
 
             // Start timer for regular searches
@@ -983,13 +980,22 @@ namespace Sales_Tracker
             // Process AI search on Enter key
             else if (e.KeyCode == Keys.Enter && isAIQuery)
             {
+                ShowingResultsFor_Label.Text = "AI search in progress...";
+                CenterShowingResultsLabel();
                 await Search_TextBox.EnhanceSearchAsync();
+            }
+            else if (isAIQuery)
+            {
+                ShowingResultsFor_Label.Text = "Press enter to begin AI search";
+                CenterShowingResultsLabel();
             }
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)
         {
             if (Search_TextBox.Text == "")
             {
+                AISearchExtensions.ResetQuery();
+
                 // Start timer for regular searches
                 if (!timerRunning)
                 {
@@ -1272,7 +1278,7 @@ namespace Sales_Tracker
                 {
                     text += $" '{searchDisplay}'";
                 }
-                else if (!displayedSearchText.StartsWith('!'))
+                else
                 {
                     text += $" '{searchDisplay}'";
                 }
@@ -1311,12 +1317,16 @@ namespace Sales_Tracker
 
             // Update label text and location
             ShowingResultsFor_Label.Text = text;
+            CenterShowingResultsLabel();
+            ShowingResultsFor_Label.Visible = true;
+        }
+        private void CenterShowingResultsLabel()
+        {
             ShowingResultsFor_Label.Location = new Point(
                 (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
                 MainTop_Panel.Bottom + (Distribution_Chart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
-
-            ShowingResultsFor_Label.Visible = true;
         }
+
         /// <summary>
         /// Helper function to convert TimeSpan into human-readable text
         /// </summary>

@@ -18,7 +18,6 @@ namespace Sales_Tracker.UI
         /// - Regular terms for fuzzy matching
         /// </summary>
         /// <returns>True if the row matches the search criteria; otherwise, false.</returns>
-        // In SearchDataGridView.cs, update the FilterRowByAdvancedSearch method to handle AI search
         public static bool FilterRowByAdvancedSearch(DataGridViewRow row, string searchText, SearchOptions searchOptions = null)
         {
             ArgumentNullException.ThrowIfNull(row);

@@ -146,6 +146,7 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_CheckBox.Checked = Properties.Settings.Default.SaleReceipts;
             AnimateButtons_CheckBox.Checked = Properties.Settings.Default.AnimateButtons;
             ShowHasReceiptColumn_CheckBox.Checked = Properties.Settings.Default.ShowHasReceiptColumn;
+            EnableAISearch_CheckBox.Checked = Properties.Settings.Default.EnableAISearch;
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {

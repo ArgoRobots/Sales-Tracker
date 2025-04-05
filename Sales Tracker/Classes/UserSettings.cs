@@ -36,6 +36,8 @@ namespace Sales_Tracker.Classes
                 value => settings.PurchaseReceipts = value);
             UpdateSetting("Sale receipts", settings.SaleReceipts, form.SalesReceipts_CheckBox.Checked,
                 value => settings.SaleReceipts = value);
+            UpdateSetting("AI search", settings.EnableAISearch, form.EnableAISearch_CheckBox.Checked,
+              value => settings.EnableAISearch = value);
 
             // Handle animate buttons
             if (settings.AnimateButtons != form.AnimateButtons_CheckBox.Checked)

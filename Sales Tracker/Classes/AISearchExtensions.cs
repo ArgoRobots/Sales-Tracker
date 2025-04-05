@@ -30,42 +30,31 @@ namespace Sales_Tracker.Classes
             try
             {
                 string userQuery = searchBox.Text;
+                string naturalLanguageQuery = userQuery.Substring(1).Trim();
 
-                // If the search starts with ! we'll process it as a natural language query
-                if (userQuery.StartsWith('!'))
-                {
-                    string naturalLanguageQuery = userQuery.Substring(1).Trim();
+                // Store the original query (for display in the results label)
+                _originalQuery = naturalLanguageQuery;
 
-                    // Store the original query (for display in the results label)
-                    _originalQuery = naturalLanguageQuery;
+                // Translate the query
+                _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery);
+                IsUsingAIQuery = true;
 
-                    // Show a loading indicator or status using the placeholder text
-                    string originalPlaceholder = searchBox.PlaceholderText;
-                    searchBox.PlaceholderText = "Interpreting your search...";
+                Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}'");
+                TriggerSearchWithTranslatedQuery();
 
-                    // Translate the query
-                    _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery);
-                    IsUsingAIQuery = true;
-
-                    // Restore the original placeholder text
-                    searchBox.PlaceholderText = originalPlaceholder;
-
-                    Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}'");
-                    TriggerSearchWithTranslatedQuery();
-                }
-                else
-                {
-                    // Reset the AI query flag if the user is doing a normal search
-                    IsUsingAIQuery = false;
-                    _originalQuery = "";
-                    _translatedQuery = "";
-                }
             }
             catch (Exception ex)
             {
                 Log.Write(0, $"Error enhancing search: {ex.Message}");
                 IsUsingAIQuery = false;
             }
+        }
+        public static void ResetQuery()
+        {
+            // Reset the AI query flag if the user is doing a normal search
+            IsUsingAIQuery = false;
+            _originalQuery = "";
+            _translatedQuery = "";
         }
 
         /// <summary>
