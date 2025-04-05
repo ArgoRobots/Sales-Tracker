@@ -8,7 +8,7 @@ namespace Sales_Tracker.UI
     /// Provides advanced search functionality for DataGridView controls with support for exact phrases,
     /// exclusions, required terms, and fuzzy matching.
     /// </summary>
-    public static class SearchDataGridView
+    public static partial class SearchDataGridView
     {
         /// <summary>
         /// Filters a DataGridView row based on advanced search criteria.
@@ -449,6 +449,14 @@ namespace Sales_Tracker.UI
 
             return remainingText.Trim();
         }
+        private static readonly string[]
+            CountryAliases = ["Country of origin", "Country of destination"],
+            CompanyAliases = ["Company of origin"],
+            PriceAliases = ["Price per unit", "Total"],
+            TotalAliases = ["Total"],
+            DiscountAliases = ["Discount"],
+            ShippingAliases = ["Shipping"],
+            DateAliases = ["Date"];
         private static DataGridViewColumn? FindColumnByName(DataGridView dataGridView, string fieldName)
         {
             // Try to find column by name or header text (case insensitive)
@@ -465,14 +473,14 @@ namespace Sales_Tracker.UI
             // This helps match AI-translated queries to the actual column names
             Dictionary<string, string[]> fieldAliases = new()
             {
-                {"country", new[] {"Country of origin", "Country of destination"}},
-                {"company", new[] {"Company of origin"}},
-                {"price", new[] {"Price per unit", "Total"}},
-                {"expensive", new[] {"Total"}},
-                {"cheap", new[] {"Total"}},
-                {"discount", new[] {"Discount"}},
-                {"shipping", new[] {"Shipping"}},
-                {"date", new[] {"Date"}}
+                {"country", CountryAliases},
+                {"company", CompanyAliases},
+                {"price", PriceAliases},
+                {"expensive", TotalAliases},
+                {"cheap", TotalAliases},
+                {"discount", DiscountAliases},
+                {"shipping", ShippingAliases},
+                {"date", DateAliases}
             };
 
             if (fieldAliases.TryGetValue(fieldName.ToLower(), out string[] aliases))
@@ -587,6 +595,8 @@ namespace Sales_Tracker.UI
 
             return false;
         }
+        [GeneratedRegex(@"([\+\-])?(\w+[\s\w]*?):([<>=]*)([^:]+?)(?=\s+[\+\-]?\w+:|\s*$)", RegexOptions.Compiled)]
+        private static partial Regex StructuredSearchTermRegex();
         private static List<StructuredSearchTerm> ParseStructuredSearchTerms(string searchText)
         {
             List<StructuredSearchTerm> terms = [];
@@ -596,10 +606,7 @@ namespace Sales_Tracker.UI
             // Field:>Value, Field:<Value
             // +Field:>Value, -Field:<Value, etc.
             // Field:Value1|Value2|Value3 (OR condition)
-            MatchCollection matches = Regex.Matches(
-                searchText,
-                @"([\+\-])?(\w+[\s\w]*?):([<>=]*)([^:]+?)(?=\s+[\+\-]?\w+:|\s*$)"
-            );
+            MatchCollection matches = StructuredSearchTermRegex().Matches(searchText);
 
             foreach (Match match in matches)
             {

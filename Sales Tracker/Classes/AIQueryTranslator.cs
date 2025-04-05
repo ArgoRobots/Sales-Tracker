@@ -200,7 +200,6 @@ namespace Sales_Tracker.Classes
                 throw;
             }
         }
-
         private static string ParseResponse(string response)
         {
             // Extract just the query part (strip explanations)
@@ -354,13 +353,12 @@ namespace Sales_Tracker.Classes
     }
 
     /// <summary>
-    /// Supporting classes for the AI Query Translator
+    /// Supporting classes for the AI Query Translator.
     /// </summary>
     public class DataGridViewSchemaInfo
     {
         public List<FieldInfo> Fields { get; set; } = [];
     }
-
     public class FieldInfo
     {
         public string Name { get; set; }
@@ -368,7 +366,6 @@ namespace Sales_Tracker.Classes
         public FieldType Type { get; set; }
         public List<string> CommonValues { get; set; } = [];
     }
-
     public enum FieldType
     {
         String,

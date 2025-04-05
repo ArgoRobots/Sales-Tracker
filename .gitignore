@@ -10,6 +10,11 @@
 Sales Tracker\bin/
 Sales Tracker\obj/
 
+# Environment variables
+.env
+.env.local
+.env.*
+
 # User-specific files
 *.rsuser
 *.suo

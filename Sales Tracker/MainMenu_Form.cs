@@ -21,7 +21,6 @@ namespace Sales_Tracker
         private static string _currencySymbol;
         private static bool _isFullVersion, _isProgramLoading;
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
-        private bool _aiSearchEnabled = false;
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -56,6 +55,7 @@ namespace Sales_Tracker
             _isProgramLoading = true;
             CurrencySymbol = Currency.GetSymbol();
 
+            DotEnv.Load();
             CustomControls.ConstructControls();
             ConstructControlsForAnalytics();
             InitiateSearchTimer();
@@ -299,24 +299,18 @@ namespace Sales_Tracker
 
             _isFullVersion = isLicenseValid;
         }
-        private void InitializeAISearch()
+        private static void InitializeAISearch()
         {
-            // Check if AI search is enabled in settings
-            _aiSearchEnabled = Properties.Settings.Default.EnableAISearch;
-
-            if (_aiSearchEnabled)
+            if (Properties.Settings.Default.EnableAISearch)
             {
-                // Get the API key from a secure location
-                string apiKey = "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"; ;
-
-                if (!string.IsNullOrEmpty(apiKey))
+                string _chatGptApiKey = DotEnv.Get("CHATGPT_API_KEY");
+                if (!string.IsNullOrEmpty(_chatGptApiKey))
                 {
-                    AISearchExtensions.InitializeAISearch(apiKey);
+                    AISearchExtensions.InitializeAISearch(_chatGptApiKey);
                 }
                 else
                 {
                     Log.Write(1, "AI Search disabled: No API key found");
-                    _aiSearchEnabled = false;
                 }
             }
         }
@@ -976,7 +970,8 @@ namespace Sales_Tracker
         {
             if (_isProgramLoading) { return; }
 
-            bool isAIQuery = _aiSearchEnabled && Search_TextBox.Text.StartsWith('!');
+            bool isAIQuery = Properties.Settings.Default.EnableAISearch
+                && Search_TextBox.Text.StartsWith('!');
 
             // Start timer for regular searches
             if (!timerRunning && !isAIQuery)

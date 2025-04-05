@@ -3,7 +3,7 @@
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Extension to the existing search functionality to add AI capabilities
+    /// Extension to the existing search functionality to add AI capabilities.
     /// </summary>
     public static class AISearchExtensions
     {
@@ -16,9 +16,6 @@ namespace Sales_Tracker.Classes
         // Flag to indicate if we're currently using an AI-translated query
         public static bool IsUsingAIQuery { get; private set; } = false;
 
-        /// <summary>
-        /// Initializes the AI search functionality with the given API key
-        /// </summary>
         public static void InitializeAISearch(string apiKey)
         {
             _queryTranslator = new AIQueryTranslator(apiKey);
@@ -26,18 +23,12 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Enhances the search box with AI query translation without replacing the input text
+        /// Enhances the search box with AI query translation without replacing the input text.
         /// </summary>
         public static async Task EnhanceSearchAsync(this Guna2TextBox searchBox)
         {
             try
             {
-                if (_queryTranslator == null)
-                {
-                    Log.Write(0, "AI Search not initialized. Call InitializeAISearch first.");
-                    return;
-                }
-
                 string userQuery = searchBox.Text;
 
                 // If the search starts with ! we'll process it as a natural language query
@@ -54,17 +45,12 @@ namespace Sales_Tracker.Classes
 
                     // Translate the query
                     _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery);
-
-                    // Set the flag to indicate we're using an AI query
                     IsUsingAIQuery = true;
 
                     // Restore the original placeholder text
                     searchBox.PlaceholderText = originalPlaceholder;
 
-                    // Log the translation for debugging purposes
                     Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}'");
-
-                    // Trigger the search without changing the text box content
                     TriggerSearchWithTranslatedQuery();
                 }
                 else
@@ -83,7 +69,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Returns the translated query if using AI search, otherwise returns the original query
+        /// Returns the translated query if using AI search, otherwise returns the original query.
         /// </summary>
         public static string GetEffectiveSearchQuery(string displayedQuery)
         {
@@ -96,7 +82,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Returns the query that should be displayed in the "Showing results for" label
+        /// Returns the query that should be displayed in the "Showing results for" label.
         /// </summary>
         public static string GetDisplayQuery(string displayedQuery)
         {
@@ -107,10 +93,6 @@ namespace Sales_Tracker.Classes
 
             return displayedQuery;
         }
-
-        /// <summary>
-        /// Trigger the search with the translated query
-        /// </summary>
         private static void TriggerSearchWithTranslatedQuery()
         {
             // Get the MainMenu_Form instance

@@ -120,9 +120,8 @@ namespace Sales_Tracker.Classes
         {
             if (sourceCurrency == targetCurrency) { return 1; }
 
-            // Your API key
-            string appId = "beb7bee9c266473297d93c2132da637f";
-            string url = $"https://openexchangerates.org/api/historical/{date}.json?app_id={appId}";
+            string _openExchangeRateApiKey = DotEnv.Get("OPEN_EXCHANGE_RATE_API_KEY");
+            string url = $"https://openexchangerates.org/api/historical/{date}.json?app_id={_openExchangeRateApiKey}";
 
             try
             {
