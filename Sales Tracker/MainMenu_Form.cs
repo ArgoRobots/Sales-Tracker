@@ -1080,6 +1080,13 @@ namespace Sales_Tracker
                 return;
             }
 
+            // If the name did not change
+            if (CustomControls.Rename_TextBox.Text == CompanyName_Label.Text)
+            {
+                CloseRenameCompany();
+                return;
+            }
+
             // If the company name already exists in this directory
             string parentDir = Directory.GetParent(Directories.ArgoCompany_file).FullName;
             string filePath = parentDir + @"\" + CustomControls.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension;
@@ -1108,15 +1115,7 @@ namespace Sales_Tracker
                 else { return; }
             }
 
-            Controls.Remove(CustomControls.Rename_TextBox);
-            MainTop_Panel.Controls.Add(Edit_Button);
-            MainTop_Panel.Controls.Add(CompanyName_Label);
-
-            // If the name did not change
-            if (CustomControls.Rename_TextBox.Text == CompanyName_Label.Text)
-            {
-                return;
-            }
+            CloseRenameCompany();
 
             CompanyName_Label.Text = CustomControls.Rename_TextBox.Text;
             ArgoCompany.Rename(CustomControls.Rename_TextBox.Text);
@@ -1127,6 +1126,12 @@ namespace Sales_Tracker
 
             string message = $"Renamed program to: {CompanyName_Label.Text}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 3, message);
+        }
+        private void CloseRenameCompany()
+        {
+            Controls.Remove(CustomControls.Rename_TextBox);
+            MainTop_Panel.Controls.Add(Edit_Button);
+            MainTop_Panel.Controls.Add(CompanyName_Label);
         }
         public void SetCompanyLabel()
         {

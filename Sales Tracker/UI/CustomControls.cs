@@ -647,6 +647,9 @@ namespace Sales_Tracker.UI
                 if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
                 {
                     Rename();
+
+                    // Remove Windows "ding" noise when user presses enter
+                    e.SuppressKeyPress = true;
                 }
             };
             TextBoxManager.Attach(_rename_TextBox);

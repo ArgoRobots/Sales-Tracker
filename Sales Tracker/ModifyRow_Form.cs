@@ -1484,6 +1484,7 @@ namespace Sales_Tracker
                 {
                     // Remove Windows "ding" noise when user presses enter
                     e.SuppressKeyPress = true;
+
                     if (pressSaveButton)
                     {
                         if (Save_Button.Tag is bool tag && tag == true)
