@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.DataClasses;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Sales_Tracker.UI
 {
@@ -17,16 +18,22 @@ namespace Sales_Tracker.UI
         /// - Regular terms for fuzzy matching
         /// </summary>
         /// <returns>True if the row matches the search criteria; otherwise, false.</returns>
+        // In SearchDataGridView.cs, update the FilterRowByAdvancedSearch method to handle AI search
         public static bool FilterRowByAdvancedSearch(DataGridViewRow row, string searchText, SearchOptions searchOptions = null)
         {
             ArgumentNullException.ThrowIfNull(row);
-
-            SearchOptions options = searchOptions ?? new SearchOptions();
 
             if (string.IsNullOrWhiteSpace(searchText))
             {
                 return true;
             }
+
+            if (searchText.Contains(':'))
+            {
+                return FilterRowByStructuredSearch(row, searchText, searchOptions);
+            }
+
+            SearchOptions options = searchOptions ?? new SearchOptions();
 
             List<SearchTerm> searchTerms;
             try
@@ -74,6 +81,7 @@ namespace Sales_Tracker.UI
             });
         }
 
+        // Normal search
         private static List<SearchTerm> ParseSearchTerms(string searchText)
         {
             List<SearchTerm> terms = [];
@@ -287,6 +295,358 @@ namespace Sales_Tracker.UI
             }
 
             return matrix[source.Length, target.Length];
+        }
+
+        // AI search
+        private static bool FilterRowByStructuredSearch(DataGridViewRow row, string searchText, SearchOptions searchOptions = null)
+        {
+            // Parse the search text into structured terms
+            List<StructuredSearchTerm> structuredTerms = ParseStructuredSearchTerms(searchText);
+
+            // Parse any remaining free-text terms that aren't in field:value format
+            string remainingText = ExtractRemainingText(searchText, structuredTerms);
+            List<SearchTerm> freeTextTerms = !string.IsNullOrWhiteSpace(remainingText)
+                ? ParseSearchTerms(remainingText)
+                : [];
+
+            // If no terms found, consider it a match
+            if (structuredTerms.Count == 0 && freeTextTerms.Count == 0)
+            {
+                return true;
+            }
+
+            // Get all searchable content from the row
+            List<string> searchableContent = GetSearchableContent(row);
+
+            // Check structured field-specific terms
+            bool structuredTermsMatch = structuredTerms.All(term =>
+            {
+                // Match against specific column/field
+                DataGridViewColumn column = FindColumnByName(row.DataGridView, term.Field);
+                if (column == null)
+                {
+                    // Field not found, can't be a match unless it's an exclusion
+                    return term.IsExclusion;
+                }
+
+                // Get cell value
+                object cellValue = row.Cells[column.Index].Value;
+                if (cellValue == null)
+                {
+                    // No value means exclusion matches, required fails
+                    return term.IsExclusion;
+                }
+
+                string stringValue = cellValue.ToString();
+
+                // Handle OR conditions
+                if (term.HasOrCondition)
+                {
+                    bool anyMatch = term.OrValues.Any(orValue =>
+                    {
+                        if (!string.IsNullOrEmpty(term.ComparisonOperator))
+                        {
+                            // Handle numeric comparisons with OR
+                            if (IsNumericComparison(stringValue, orValue, term.ComparisonOperator, out bool comparisonResult))
+                            {
+                                return comparisonResult;
+                            }
+
+                            // Handle date comparisons with OR
+                            if (IsDateField(column) && IsDateComparison(stringValue, orValue, term.ComparisonOperator, out bool dateComparisonResult))
+                            {
+                                return dateComparisonResult;
+                            }
+                        }
+
+                        // Regular string comparison for OR values
+                        StringComparison comparison = searchOptions?.GetStringComparison() ?? StringComparison.OrdinalIgnoreCase;
+                        return stringValue.Contains(orValue, comparison);
+                    });
+
+                    // Flip result if it's an exclusion
+                    return term.IsExclusion ? !anyMatch : anyMatch;
+                }
+
+                // Handle numeric comparisons
+                if (!string.IsNullOrEmpty(term.ComparisonOperator))
+                {
+                    if (IsNumericComparison(stringValue, term.Value, term.ComparisonOperator, out bool comparisonResult))
+                    {
+                        // Flip result if it's an exclusion
+                        return term.IsExclusion ? !comparisonResult : comparisonResult;
+                    }
+                }
+
+                // Handle date comparisons
+                if (IsDateField(column) && !string.IsNullOrEmpty(term.ComparisonOperator))
+                {
+                    if (IsDateComparison(stringValue, term.Value, term.ComparisonOperator, out bool dateComparisonResult))
+                    {
+                        return term.IsExclusion ? !dateComparisonResult : dateComparisonResult;
+                    }
+                }
+
+                // Handle string matching with exact phrases
+                StringComparison comparison = searchOptions?.GetStringComparison() ?? StringComparison.OrdinalIgnoreCase;
+                bool isExactMatch = term.Value.StartsWith('\"') && term.Value.EndsWith('\"');
+
+                if (isExactMatch)
+                {
+                    string exactValue = term.Value.Trim('"');
+                    bool exactMatch = stringValue.Equals(exactValue, comparison);
+                    return term.IsExclusion ? !exactMatch : exactMatch;
+                }
+
+                // Regular string contains
+                bool match = stringValue.Contains(term.Value, comparison);
+                return term.IsExclusion ? !match : match;
+            });
+
+            // Check free text terms against all content
+            bool freeTextTermsMatch = freeTextTerms.All(term =>
+            {
+                if (term.IsExactPhrase)
+                {
+                    return searchableContent.Any(content =>
+                        content.Contains(term.Text, searchOptions?.GetStringComparison() ?? StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (term.IsExclusion)
+                {
+                    return !searchableContent.Any(content =>
+                        content.Contains(term.Text, searchOptions?.GetStringComparison() ?? StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (term.IsRequired)
+                {
+                    return searchableContent.Any(content =>
+                        content.Contains(term.Text, searchOptions?.GetStringComparison() ?? StringComparison.OrdinalIgnoreCase));
+                }
+
+                // Fuzzy match for normal terms
+                return searchableContent.Any(content =>
+                    IsFuzzyMatch(content, term.Text, searchOptions?.GetMaxLevenshteinDistance() ?? 2));
+            });
+
+            // Both structured and free-text terms must match
+            return structuredTermsMatch && freeTextTermsMatch;
+        }
+        private static string ExtractRemainingText(string searchText, List<StructuredSearchTerm> structuredTerms)
+        {
+            // Remove all structured terms from the original search text to get remaining free text
+            string remainingText = searchText;
+
+            foreach (StructuredSearchTerm term in structuredTerms)
+            {
+                string valuePattern = term.HasOrCondition
+                    ? string.Join("\\|", term.OrValues.Select(v => Regex.Escape(v)))
+                    : Regex.Escape(term.Value);
+
+                string termPattern = $"{(term.IsRequired ? "\\+" : "")}{(term.IsExclusion ? "-" : "")}{Regex.Escape(term.Field)}:{Regex.Escape(term.ComparisonOperator)}{valuePattern}";
+                remainingText = Regex.Replace(remainingText, termPattern, " ", RegexOptions.IgnoreCase);
+            }
+
+            return remainingText.Trim();
+        }
+        private static DataGridViewColumn? FindColumnByName(DataGridView dataGridView, string fieldName)
+        {
+            // Try to find column by name or header text (case insensitive)
+            foreach (DataGridViewColumn column in dataGridView.Columns)
+            {
+                if (column.Name.Equals(fieldName, StringComparison.OrdinalIgnoreCase) ||
+                    column.HeaderText.Equals(fieldName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return column;
+                }
+            }
+
+            // Handle special cases for field names that might be translated or have variations
+            // This helps match AI-translated queries to the actual column names
+            Dictionary<string, string[]> fieldAliases = new()
+            {
+                {"country", new[] {"Country of origin", "Country of destination"}},
+                {"company", new[] {"Company of origin"}},
+                {"price", new[] {"Price per unit", "Total"}},
+                {"expensive", new[] {"Total"}},
+                {"cheap", new[] {"Total"}},
+                {"discount", new[] {"Discount"}},
+                {"shipping", new[] {"Shipping"}},
+                {"date", new[] {"Date"}}
+            };
+
+            if (fieldAliases.TryGetValue(fieldName.ToLower(), out string[] aliases))
+            {
+                foreach (string alias in aliases)
+                {
+                    foreach (DataGridViewColumn column in dataGridView.Columns)
+                    {
+                        if (column.Name.Equals(alias, StringComparison.OrdinalIgnoreCase) ||
+                            column.HeaderText.Equals(alias, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return column;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+        private static bool IsNumericComparison(string cellValue, string compareValue, string comparisonOperator, out bool result)
+        {
+            result = false;
+
+            // Clean up the comparison value - remove any quote characters
+            compareValue = compareValue.Trim('"', '\'');
+
+            if (decimal.TryParse(cellValue, out decimal numericCellValue) &&
+                decimal.TryParse(compareValue, out decimal numericCompareValue))
+            {
+                if (comparisonOperator == ">")
+                {
+                    result = numericCellValue > numericCompareValue;
+                    return true;
+                }
+                else if (comparisonOperator == "<")
+                {
+                    result = numericCellValue < numericCompareValue;
+                    return true;
+                }
+                else if (comparisonOperator == "=")
+                {
+                    result = numericCellValue == numericCompareValue;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        private static bool IsDateField(DataGridViewColumn column)
+        {
+            return column.Name.Equals("Date", StringComparison.OrdinalIgnoreCase) ||
+                   column.HeaderText.Equals("Date", StringComparison.OrdinalIgnoreCase);
+        }
+        private static bool IsDateComparison(string cellValue, string compareValue, string comparisonOperator, out bool result)
+        {
+            result = false;
+
+            if (DateTime.TryParse(cellValue, out DateTime dateCell))
+            {
+                // Handle relative date values like "2025-12-01" from AI translations
+                if (DateTime.TryParse(compareValue, out DateTime dateCompare))
+                {
+                    if (comparisonOperator == ">")
+                    {
+                        result = dateCell > dateCompare;
+                        return true;
+                    }
+                    else if (comparisonOperator == "<")
+                    {
+                        result = dateCell < dateCompare;
+                        return true;
+                    }
+                }
+
+                // Handle special date keywords
+                DateTime now = DateTime.Now;
+                if (compareValue.Equals("today", StringComparison.OrdinalIgnoreCase))
+                {
+                    dateCompare = now.Date;
+                }
+                else if (compareValue.Equals("yesterday", StringComparison.OrdinalIgnoreCase))
+                {
+                    dateCompare = now.Date.AddDays(-1);
+                }
+                else if (compareValue.Equals("this month", StringComparison.OrdinalIgnoreCase) ||
+                        compareValue.Equals("thismonth", StringComparison.OrdinalIgnoreCase))
+                {
+                    dateCompare = new DateTime(now.Year, now.Month, 1);
+                }
+                else if (compareValue.Equals("last month", StringComparison.OrdinalIgnoreCase) ||
+                        compareValue.Equals("lastmonth", StringComparison.OrdinalIgnoreCase))
+                {
+                    dateCompare = new DateTime(now.Year, now.Month, 1).AddMonths(-1);
+                }
+                else
+                {
+                    // Couldn't parse as a date
+                    return false;
+                }
+
+                if (comparisonOperator == ">")
+                {
+                    result = dateCell > dateCompare;
+                    return true;
+                }
+                else if (comparisonOperator == "<")
+                {
+                    result = dateCell < dateCompare;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        private static List<StructuredSearchTerm> ParseStructuredSearchTerms(string searchText)
+        {
+            List<StructuredSearchTerm> terms = [];
+
+            // Match patterns like:
+            // +Field:Value, -Field:Value, Field:Value
+            // Field:>Value, Field:<Value
+            // +Field:>Value, -Field:<Value, etc.
+            // Field:Value1|Value2|Value3 (OR condition)
+            MatchCollection matches = Regex.Matches(
+                searchText,
+                @"([\+\-])?(\w+[\s\w]*?):([<>=]*)([^:]+?)(?=\s+[\+\-]?\w+:|\s*$)"
+            );
+
+            foreach (Match match in matches)
+            {
+                string prefix = match.Groups[1].Value;
+                string field = match.Groups[2].Value.Trim();
+                string comparisonOp = match.Groups[3].Value;
+                string value = match.Groups[4].Value;
+
+                bool isRequired = prefix == "+";
+                bool isExclusion = prefix == "-";
+
+                terms.Add(new StructuredSearchTerm(field, value, isRequired, isExclusion, comparisonOp));
+            }
+
+            return terms;
+        }
+
+        private class StructuredSearchTerm
+        {
+            public string Field { get; }
+            public string Value { get; }
+            public bool IsRequired { get; }
+            public bool IsExclusion { get; }
+            public string ComparisonOperator { get; }
+            public bool HasOrCondition { get; }
+            public List<string> OrValues { get; }
+
+            public StructuredSearchTerm(string field, string value, bool isRequired, bool isExclusion, string comparisonOperator)
+            {
+                Field = field;
+                Value = value;
+                IsRequired = isRequired;
+                IsExclusion = isExclusion;
+                ComparisonOperator = comparisonOperator;
+
+                // Check if this is an OR condition (contains pipe character)
+                HasOrCondition = value.Contains('|');
+                if (HasOrCondition)
+                {
+                    // Split the value by pipe character to get individual values
+                    OrValues = value.Split('|').Select(v => v.Trim()).Where(v => !string.IsNullOrEmpty(v)).ToList();
+                }
+                else
+                {
+                    OrValues = [];
+                }
+            }
         }
 
         public sealed class SearchOptions

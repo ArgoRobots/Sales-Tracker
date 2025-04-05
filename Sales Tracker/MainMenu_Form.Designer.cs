@@ -814,9 +814,8 @@
             Search_TextBox.IconRightSize = new Size(22, 22);
             Search_TextBox.Location = new Point(1853, 146);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
-            Search_TextBox.MaxLength = 32;
+            Search_TextBox.MaxLength = 100;
             Search_TextBox.Name = "Search_TextBox";
-            Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for sales";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
@@ -826,6 +825,7 @@
             Search_TextBox.IconRightClick += Search_TextBox_IconRightClick;
             Search_TextBox.TextChanged += Search_TextBox_TextChanged;
             Search_TextBox.Click += CloseAllPanels;
+            Search_TextBox.KeyDown += Search_TextBox_KeyDown;
             // 
             // ShowingResultsFor_Label
             // 

@@ -21,6 +21,7 @@ namespace Sales_Tracker
         private static string _currencySymbol;
         private static bool _isFullVersion, _isProgramLoading;
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
+        private bool _aiSearchEnabled = false;
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -73,6 +74,7 @@ namespace Sales_Tracker
             AddEventHandlersToTextBoxes();
             AnimateButtons();
             CheckIfLicenseIsValid();
+            InitializeAISearch();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetToolTips()
@@ -296,6 +298,27 @@ namespace Sales_Tracker
 
 
             _isFullVersion = isLicenseValid;
+        }
+        private void InitializeAISearch()
+        {
+            // Check if AI search is enabled in settings
+            _aiSearchEnabled = Properties.Settings.Default.EnableAISearch;
+
+            if (_aiSearchEnabled)
+            {
+                // Get the API key from a secure location
+                string apiKey = "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"; ;
+
+                if (!string.IsNullOrEmpty(apiKey))
+                {
+                    AISearchExtensions.InitializeAISearch(apiKey);
+                }
+                else
+                {
+                    Log.Write(1, "AI Search disabled: No API key found");
+                    _aiSearchEnabled = false;
+                }
+            }
         }
 
         // Add rows from file
@@ -731,7 +754,8 @@ namespace Sales_Tracker
             foreach (Control button in GetMainTopButtons())
             {
                 button.Visible = false;
-            };
+            }
+            ;
         }
         private void RemoveControlsDropDown()
         {
@@ -740,7 +764,8 @@ namespace Sales_Tracker
             foreach (Control button in GetMainTopButtons())
             {
                 button.Visible = true;
-            };
+            }
+            ;
         }
         private Control[] GetMainTopButtons()
         {
@@ -947,14 +972,35 @@ namespace Sales_Tracker
             MainTop_Panel.Controls.Remove(Edit_Button);
             MainTop_Panel.Controls.Remove(CompanyName_Label);
         }
-        private void Search_TextBox_TextChanged(object sender, EventArgs e)
+        private async void Search_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (_isProgramLoading) { return; }
 
-            if (!timerRunning)
+            bool isAIQuery = _aiSearchEnabled && Search_TextBox.Text.StartsWith('!');
+
+            // Start timer for regular searches
+            if (!timerRunning && !isAIQuery)
             {
                 timerRunning = true;
                 searchTimer.Start();
+            }
+
+            // Process AI search on Enter key
+            else if (e.KeyCode == Keys.Enter && isAIQuery)
+            {
+                await Search_TextBox.EnhanceSearchAsync();
+            }
+        }
+        private void Search_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (Search_TextBox.Text == "")
+            {
+                // Start timer for regular searches
+                if (!timerRunning)
+                {
+                    timerRunning = true;
+                    searchTimer.Start();
+                }
             }
         }
         private void Search_TextBox_IconRightClick(object sender, EventArgs e)
@@ -1155,8 +1201,12 @@ namespace Sales_Tracker
                 FilterDataGridViewByDateRange(_selectedDataGridView);
             }
 
+            // Get the effective search text, which might be AI-translated
+            string displayedSearchText = Search_TextBox.Text.Trim();
+            string effectiveSearchText = AISearchExtensions.GetEffectiveSearchQuery(displayedSearchText);
+
             bool filterExists = _sortTimeSpan != TimeSpan.MaxValue ||
-                !string.IsNullOrEmpty(Search_TextBox.Text.Trim());
+                !string.IsNullOrEmpty(effectiveSearchText);
 
             bool hasVisibleRows = false;
 
@@ -1171,7 +1221,8 @@ namespace Sales_Tracker
                     bool isVisibleByDate = (_sortTimeSpan == TimeSpan.MaxValue ||
                         rowDate >= DateTime.Now - _sortTimeSpan);
 
-                    bool isVisibleBySearch = SearchDataGridView.FilterRowByAdvancedSearch(row, Search_TextBox.Text.Trim());
+                    bool isVisibleBySearch = string.IsNullOrEmpty(effectiveSearchText) ||
+                        SearchDataGridView.FilterRowByAdvancedSearch(row, effectiveSearchText);
 
                     // Row is visible only if it matches both the date filter and the search filter
                     row.Visible = isVisibleByDate && isVisibleBySearch;
@@ -1208,12 +1259,23 @@ namespace Sales_Tracker
         private void ShowShowingResultsForLabel()
         {
             string text = "Showing results for";
-            string searchText = Search_TextBox.Text.Trim();
+
+            // Get the appropriate display text for the search
+            string displayedSearchText = Search_TextBox.Text.Trim();
+            string searchDisplay = AISearchExtensions.GetDisplayQuery(displayedSearchText);
 
             // Append search text if available
-            if (!string.IsNullOrEmpty(searchText))
+            if (!string.IsNullOrEmpty(searchDisplay))
             {
-                text += $" '{searchText}'";
+                // Remove the ! prefix if using AI search
+                if (displayedSearchText.StartsWith('!') && AISearchExtensions.IsUsingAIQuery)
+                {
+                    text += $" '{searchDisplay}'";
+                }
+                else if (!displayedSearchText.StartsWith('!'))
+                {
+                    text += $" '{searchDisplay}'";
+                }
             }
 
             // Handle time span case
@@ -1221,7 +1283,7 @@ namespace Sales_Tracker
             {
                 string timeSpanText = GetTimeSpanText(_sortTimeSpan.Value);
 
-                if (!string.IsNullOrEmpty(searchText))
+                if (!string.IsNullOrEmpty(searchDisplay))
                 {
                     text += $"\nin the last {timeSpanText}";
                 }
@@ -1237,7 +1299,7 @@ namespace Sales_Tracker
                 string fromDate = Tools.FormatDate((DateTime)_sortFromDate);
                 string toDate = Tools.FormatDate((DateTime)_sortToDate);
 
-                if (!string.IsNullOrEmpty(searchText))
+                if (!string.IsNullOrEmpty(searchDisplay))
                 {
                     text += $"\nfrom {fromDate} to {toDate}";
                 }
