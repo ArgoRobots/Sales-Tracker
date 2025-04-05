@@ -16,7 +16,7 @@ namespace Tests
             Assert.IsTrue(currencyTypes.Count > 0);
 
             // Verify that all enum values are present
-            var enumValues = Enum.GetNames(typeof(Currency.CurrencyTypes));
+            string[] enumValues = Enum.GetNames(typeof(Currency.CurrencyTypes));
             CollectionAssert.AreEquivalent(enumValues, currencyTypes.ToArray());
 
             // Verify specific currencies are included
@@ -35,6 +35,7 @@ namespace Tests
         [TestMethod]
         public void TestGetExchangeRateRealAPI()
         {
+            DotEnv.Load();
             decimal rate = Currency.GetExchangeRate("USD", "EUR", "2025-01-10", false);
 
             // Just check if the result is a valid positive number
