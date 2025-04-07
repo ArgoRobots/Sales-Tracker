@@ -194,12 +194,24 @@ namespace Sales_Tracker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool EnableAISearch {
+        public bool AISearchEnabled {
             get {
-                return ((bool)(this["EnableAISearch"]));
+                return ((bool)(this["AISearchEnabled"]));
             }
             set {
-                this["EnableAISearch"] = value;
+                this["AISearchEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool WindowsHelloEnabled {
+            get {
+                return ((bool)(this["WindowsHelloEnabled"]));
+            }
+            set {
+                this["WindowsHelloEnabled"] = value;
             }
         }
     }

@@ -297,7 +297,7 @@ namespace Sales_Tracker
         }
         private static void InitializeAISearch()
         {
-            if (Properties.Settings.Default.EnableAISearch)
+            if (Properties.Settings.Default.AISearchEnabled)
             {
                 string _chatGptApiKey = DotEnv.Get("CHATGPT_API_KEY");
                 if (!string.IsNullOrEmpty(_chatGptApiKey))
@@ -966,7 +966,7 @@ namespace Sales_Tracker
         {
             if (_isProgramLoading) { return; }
 
-            bool isAIQuery = Properties.Settings.Default.EnableAISearch
+            bool isAIQuery = Properties.Settings.Default.AISearchEnabled
                 && _isFullVersion
                 && Search_TextBox.Text.StartsWith('!');
 

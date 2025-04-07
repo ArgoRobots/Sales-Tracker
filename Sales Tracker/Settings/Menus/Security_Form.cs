@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Passwords;
 using Sales_Tracker.UI;
@@ -10,6 +11,7 @@ namespace Sales_Tracker.Settings.Menus
         // Properties
         private static Security_Form _instance;
         private readonly bool isFormLoading;
+        private Guna2WinProgressIndicator progressIndicator;
 
         // Getters
         public static Security_Form Instance => _instance;
@@ -30,6 +32,7 @@ namespace Sales_Tracker.Settings.Menus
             LanguageManager.UpdateLanguageForControl(this);
             CenterEncryptControls();
             LoadingPanel.ShowBlankLoadingPanel(this);
+            SetWindowsHelloButton();
         }
         public void UpdateTheme()
         {
@@ -48,6 +51,26 @@ namespace Sales_Tracker.Settings.Menus
 
             EncryptFiles_Label.Left = startX;
             EncryptFiles_CheckBox.Left = EncryptFiles_Label.Left + EncryptFiles_Label.Width + spacing;
+        }
+        private void SetWindowsHelloButton()
+        {
+            if (PasswordManager.Password == null)
+            {
+                Controls.Remove(EnableWindowsHello_Button);
+            }
+
+            if (Properties.Settings.Default.WindowsHelloEnabled)
+            {
+                EnableWindowsHello_Button.Tag = "Enabled";
+                string newText = LanguageManager.TranslateSingleString("Disable Windows Hello");
+                EnableWindowsHello_Button.Text = newText;
+            }
+            else
+            {
+                EnableWindowsHello_Button.Tag = "Disabled";
+                string newText = LanguageManager.TranslateSingleString("Enable Windows Hello");
+                EnableWindowsHello_Button.Text = newText;
+            }
         }
 
         // Form event handlers
@@ -90,6 +113,71 @@ namespace Sales_Tracker.Settings.Menus
             }
             SetPasswordButton();
         }
+        private async void EnableWindowsHello_Button_Click(object sender, EventArgs e)
+        {
+            bool result = false;
+
+            if (EnableWindowsHello_Button.Tag.ToString() == "Enabled")
+            {
+                if (PasswordManager.EnterPassword(false))
+                {
+                    Properties.Settings.Default.WindowsHelloEnabled = false;
+                    CustomMessageBox.Show("Windows Hello disabled", "Windows Hello has been disabled", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    string newText = LanguageManager.TranslateSingleString("Enable Windows Hello");
+                    EnableWindowsHello_Button.Text = newText;
+                    EnableWindowsHello_Button.Tag = "Disabled";
+                }
+            }
+            else
+            {
+                AddPassword_Button.Enabled = false;
+                EnableWindowsHello_Button.Enabled = false;
+
+                if (PasswordManager.EnterPassword(false))
+                {
+                    PlayLoadingAnimation();
+
+                    result = await EnterPassword_Form.RunWindowsHello();
+                    if (result)
+                    {
+                        Properties.Settings.Default.WindowsHelloEnabled = true;
+                        StopPlayingLoadingAnimation();
+                        CustomMessageBox.Show("Windows Hello enabled", "Windows Hello has been enabled. You can now log in with your biometrics", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                        string newText = LanguageManager.TranslateSingleString("Disable Windows Hello");
+                        EnableWindowsHello_Button.Text = newText;
+                        EnableWindowsHello_Button.Tag = "Enabled";
+                    }
+                    else
+                    {
+                        CustomMessageBox.Show("Windows Hello error", "Windows Hello failed to initiate. Please try again or contact support", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                    }
+                }
+
+                AddPassword_Button.Enabled = true;
+                EnableWindowsHello_Button.Enabled = true;
+            }
+
+            UserSettings.UpdateSetting("Windows Hello", Properties.Settings.Default.WindowsHelloEnabled, result,
+                   value => Properties.Settings.Default.WindowsHelloEnabled = value);
+        }
+        private void PlayLoadingAnimation()
+        {
+            progressIndicator = new()
+            {
+                AutoStart = true,
+                ProgressColor = CustomColors.AccentBlue,
+            };
+            progressIndicator.Location = new Point(
+                (Width - progressIndicator.Width) / 2,
+                EnableWindowsHello_Button.Bottom + 50
+            );
+            Controls.Add(progressIndicator);
+        }
+        private void StopPlayingLoadingAnimation()
+        {
+            progressIndicator = null;
+            Controls.Remove(progressIndicator);
+        }
 
         // Methods
         private void SetPasswordButton()
@@ -102,6 +190,7 @@ namespace Sales_Tracker.Settings.Menus
             else
             {
                 AddPassword_Button.Text = "Manage password";
+                Controls.Add(EnableWindowsHello_Button);
             }
         }
         public void UpdateControls()

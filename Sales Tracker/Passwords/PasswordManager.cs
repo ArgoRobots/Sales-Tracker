@@ -78,11 +78,11 @@ namespace Sales_Tracker.Passwords
         /// If a password is set, the user is prompted to enter it.
         /// </summary>
         /// <returns>True if the password is entered correctly or if a password is not set. False if the password is incorrect.</returns>
-        public static bool EnterPassword()
+        public static bool EnterPassword(bool allowWindowsHello = true)
         {
             if (Password != null)
             {
-                new EnterPassword_Form().ShowDialog();
+                new EnterPassword_Form(allowWindowsHello).ShowDialog();
                 return _isPasswordValid;
             }
             return true;

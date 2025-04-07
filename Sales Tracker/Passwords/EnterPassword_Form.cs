@@ -8,14 +8,15 @@ namespace Sales_Tracker.Passwords
     public partial class EnterPassword_Form : Form
     {
         // Init.
-        public EnterPassword_Form()
+        public EnterPassword_Form(bool allowWindowsHello = true)
         {
             InitializeComponent();
 
+            PasswordManager.IsPasswordValid = false;
             AddEventHandlersToTextBoxes();
             Theme.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
-            SetWindowsHelloControls();
+            SetWindowsHelloControls(allowWindowsHello);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AddEventHandlersToTextBoxes()
@@ -76,11 +77,8 @@ namespace Sales_Tracker.Passwords
             SetMessageText("Authorizing...");
             DisableControlsForAuthentication();
 
-            KeyCredentialRetrievalResult result =
-                await KeyCredentialManager.RequestCreateAsync("login",
-                KeyCredentialCreationOption.ReplaceExisting);
-
-            if (result.Status == KeyCredentialStatus.Success)
+            bool result = await RunWindowsHello();
+            if (result)
             {
                 PasswordManager.IsPasswordValid = true;
                 Close();
@@ -91,8 +89,22 @@ namespace Sales_Tracker.Passwords
                 Controls.Remove(Message_LinkLabel);
             }
         }
-        private async void SetWindowsHelloControls()
+        public static async Task<bool> RunWindowsHello()
         {
+            KeyCredentialRetrievalResult result =
+                 await KeyCredentialManager.RequestCreateAsync("login",
+                 KeyCredentialCreationOption.ReplaceExisting);
+
+            return result.Status == KeyCredentialStatus.Success;
+        }
+        private async void SetWindowsHelloControls(bool allowWindowsHello)
+        {
+            if (!Properties.Settings.Default.WindowsHelloEnabled || !allowWindowsHello)
+            {
+                Controls.Remove(Message_LinkLabel);
+                return;
+            }
+
             if (MainMenu_Form.IsFullVersion)
             {
                 ConstructWindowsHelloButton();

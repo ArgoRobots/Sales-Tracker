@@ -33,10 +33,13 @@ namespace Sales_Tracker.Settings.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Security_Label = new Label();
             EncryptFiles_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             AddPassword_Button = new Guna.UI2.WinForms.Guna2Button();
             EncryptFiles_Label = new Label();
+            EnableWindowsHello_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
             // Security_Label
@@ -59,7 +62,7 @@ namespace Sales_Tracker.Settings.Menus
             EncryptFiles_CheckBox.CheckedState.BorderThickness = 0;
             EncryptFiles_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             EncryptFiles_CheckBox.CustomizableEdges = customizableEdges1;
-            EncryptFiles_CheckBox.Location = new Point(760, 384);
+            EncryptFiles_CheckBox.Location = new Point(760, 354);
             EncryptFiles_CheckBox.Name = "EncryptFiles_CheckBox";
             EncryptFiles_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             EncryptFiles_CheckBox.Size = new Size(20, 20);
@@ -80,7 +83,7 @@ namespace Sales_Tracker.Settings.Menus
             AddPassword_Button.FillColor = Color.FromArgb(250, 250, 250);
             AddPassword_Button.Font = new Font("Segoe UI", 9F);
             AddPassword_Button.ForeColor = Color.Black;
-            AddPassword_Button.Location = new Point(475, 445);
+            AddPassword_Button.Location = new Point(475, 415);
             AddPassword_Button.Margin = new Padding(4, 7, 4, 7);
             AddPassword_Button.Name = "AddPassword_Button";
             AddPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -94,7 +97,7 @@ namespace Sales_Tracker.Settings.Menus
             EncryptFiles_Label.Anchor = AnchorStyles.Top;
             EncryptFiles_Label.AutoSize = true;
             EncryptFiles_Label.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            EncryptFiles_Label.Location = new Point(471, 375);
+            EncryptFiles_Label.Location = new Point(471, 345);
             EncryptFiles_Label.Margin = new Padding(0);
             EncryptFiles_Label.Name = "EncryptFiles_Label";
             EncryptFiles_Label.Padding = new Padding(5);
@@ -103,11 +106,32 @@ namespace Sales_Tracker.Settings.Menus
             EncryptFiles_Label.Text = "Encrypt Argo Sales Tracker files";
             EncryptFiles_Label.Click += EncryptFiles_Label_Click;
             // 
+            // EnableWindowsHello_Button
+            // 
+            EnableWindowsHello_Button.Anchor = AnchorStyles.Top;
+            EnableWindowsHello_Button.BorderColor = Color.LightGray;
+            EnableWindowsHello_Button.BorderRadius = 2;
+            EnableWindowsHello_Button.BorderThickness = 1;
+            EnableWindowsHello_Button.CustomizableEdges = customizableEdges5;
+            EnableWindowsHello_Button.FillColor = Color.FromArgb(250, 250, 250);
+            EnableWindowsHello_Button.Font = new Font("Segoe UI", 9F);
+            EnableWindowsHello_Button.ForeColor = Color.Black;
+            EnableWindowsHello_Button.Location = new Point(475, 474);
+            EnableWindowsHello_Button.Margin = new Padding(4, 7, 4, 7);
+            EnableWindowsHello_Button.Name = "EnableWindowsHello_Button";
+            EnableWindowsHello_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            EnableWindowsHello_Button.Size = new Size(300, 45);
+            EnableWindowsHello_Button.TabIndex = 330;
+            EnableWindowsHello_Button.Tag = "Enabled";
+            EnableWindowsHello_Button.Text = "Enable Windows Hello";
+            EnableWindowsHello_Button.Click += EnableWindowsHello_Button_Click;
+            // 
             // Security_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
+            Controls.Add(EnableWindowsHello_Button);
             Controls.Add(EncryptFiles_CheckBox);
             Controls.Add(AddPassword_Button);
             Controls.Add(Security_Label);
@@ -125,5 +149,6 @@ namespace Sales_Tracker.Settings.Menus
         private Guna.UI2.WinForms.Guna2Button AddPassword_Button;
         private Label EncryptFiles_Label;
         public Guna.UI2.WinForms.Guna2CustomCheckBox EncryptFiles_CheckBox;
+        private Guna.UI2.WinForms.Guna2Button EnableWindowsHello_Button;
     }
 }

@@ -36,8 +36,8 @@ namespace Sales_Tracker.Classes
                 value => settings.PurchaseReceipts = value);
             UpdateSetting("Sale receipts", settings.SaleReceipts, form.SalesReceipts_CheckBox.Checked,
                 value => settings.SaleReceipts = value);
-            UpdateSetting("AI search", settings.EnableAISearch, form.EnableAISearch_CheckBox.Checked,
-              value => settings.EnableAISearch = value);
+            UpdateSetting("AI search", settings.AISearchEnabled, form.EnableAISearch_CheckBox.Checked,
+              value => settings.AISearchEnabled = value);
 
             // Handle animate buttons
             if (settings.AnimateButtons != form.AnimateButtons_CheckBox.Checked)
@@ -76,7 +76,7 @@ namespace Sales_Tracker.Classes
             UpdateSetting("file encryption", settings.EncryptFiles, Security_Form.Instance.EncryptFiles_CheckBox.Checked,
                 value => settings.EncryptFiles = value);
         }
-        private static void UpdateSetting(string settingName, bool currentValue, bool newValue, Action<bool> setter)
+        public static void UpdateSetting(string settingName, bool currentValue, bool newValue, Action<bool> setter)
         {
             if (currentValue != newValue)
             {
