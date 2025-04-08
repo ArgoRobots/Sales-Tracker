@@ -13,6 +13,7 @@ namespace Sales_Tracker.Startup.Menus
         // Properties
         private static GetStarted_Form _instance;
         private readonly Dictionary<string, FileSystemWatcher> fileWatchers;
+        private LicenseManager _licenseManager;
 
         // Getters
         public static GetStarted_Form Instance => _instance;
@@ -23,6 +24,7 @@ namespace Sales_Tracker.Startup.Menus
             InitializeComponent();
             _instance = this;
             fileWatchers = [];
+            _licenseManager = new LicenseManager();
 
             LoadingPanel.InitBlankLoadingPanel();
             LoadingPanel.InitLoadingPanel();
@@ -40,6 +42,7 @@ namespace Sales_Tracker.Startup.Menus
             LoadListOfRecentProjects();
             SetFlowLayoutPanel();
             SetTheme();
+            MainMenu_Form.CheckIfLicenseIsValid();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetFlowLayoutPanel()
