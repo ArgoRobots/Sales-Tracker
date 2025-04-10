@@ -24,7 +24,7 @@ namespace Tests
 
             // Set up test directories
             Directories.Cache_dir = tempCacheDir;
-            Directories.Translations_file = Path.Combine(tempCacheDir, "translations.json");
+            Directories.TranslationsCache_file = Path.Combine(tempCacheDir, "translations.json");
             Directories.EnglishTexts_file = Path.Combine(tempCacheDir, "english_texts.json");
 
             // Initialize test controls
@@ -100,7 +100,7 @@ namespace Tests
                 }
             };
             string translationsJson = JsonConvert.SerializeObject(translationCache, Formatting.Indented);
-            File.WriteAllText(Directories.Translations_file, translationsJson);
+            File.WriteAllText(Directories.TranslationsCache_file, translationsJson);
         }
 
         [TestMethod]

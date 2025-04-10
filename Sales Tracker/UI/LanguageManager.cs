@@ -34,9 +34,9 @@ namespace Sales_Tracker.UI
             englishCache = [];
 
             // Load translation cache
-            if (File.Exists(Directories.Translations_file))
+            if (File.Exists(Directories.TranslationsCache_file))
             {
-                string cacheContent = File.ReadAllText(Directories.Translations_file);
+                string cacheContent = File.ReadAllText(Directories.TranslationsCache_file);
 
                 if (!string.IsNullOrWhiteSpace(cacheContent))
                 {
@@ -623,7 +623,7 @@ namespace Sales_Tracker.UI
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
             }
-            Directories.WriteTextToFile(Directories.Translations_file, jsonContent);
+            Directories.WriteTextToFile(Directories.TranslationsCache_file, jsonContent);
         }
         private static void SaveEnglishCacheToFile()
         {

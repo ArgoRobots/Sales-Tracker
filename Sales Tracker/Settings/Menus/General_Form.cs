@@ -99,7 +99,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(Directories.AnonymousUserDataFile))
+            if (!File.Exists(Directories.AnonymousUserDataCache_file))
             {
                 CustomMessageBox.Show("No user data",
                     "No user data exists. Either the setting was disabled or the cache was cleared",
@@ -108,14 +108,14 @@ namespace Sales_Tracker.Settings.Menus
             }
 
             using SaveFileDialog dialog = new();
-            dialog.FileName = Path.GetFileName(Directories.AnonymousUserDataFile);
+            dialog.FileName = Path.GetFileName(Directories.AnonymousUserDataCache_file);
             dialog.DefaultExt = ArgoFiles.JsonFileExtension;
             dialog.Filter = $"JSON files|*{ArgoFiles.JsonFileExtension}";
             dialog.Title = "Export user data";
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Directories.CopyFile(Directories.AnonymousUserDataFile, dialog.FileName, true);
+                Directories.CopyFile(Directories.AnonymousUserDataCache_file, dialog.FileName, true);
 
                 Log.Write(2, $"Exported anonymous user data to '{Path.GetFileName(dialog.FileName)}'");
 

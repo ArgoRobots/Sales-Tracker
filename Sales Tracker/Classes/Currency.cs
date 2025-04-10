@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Sales_Tracker.Classes
 {
@@ -79,6 +80,20 @@ namespace Sales_Tracker.Classes
         };
 
         /// <summary>
+        /// In-memory cache for exchange rates to minimize API calls.
+        /// Key format: "date_sourceCurrency_targetCurrency" (e.g., "2023-04-01_USD_EUR").
+        /// </summary>
+        private static readonly Dictionary<string, decimal> ExchangeRateCache = [];
+
+        /// <summary>
+        /// Initializes the currency cache by loading saved exchange rates from disk.
+        /// </summary>
+        static Currency()
+        {
+            LoadExchangeRateCache();
+        }
+
+        /// <summary>
         /// Gets a list of all supported currency type names.
         /// </summary>
         /// <returns>List of currency type names as strings.</returns>
@@ -107,6 +122,7 @@ namespace Sales_Tracker.Classes
 
         /// <summary>
         /// Retrieves the exchange rate between two currencies for a specific date using the OpenExchangeRates API.
+        /// Uses a caching mechanism to minimize API calls.
         /// </summary>
         /// <returns>
         /// The exchange rate as a decimal value. Returns
@@ -114,12 +130,30 @@ namespace Sales_Tracker.Classes
         /// -1 if an error occurs and the rate cannot be retrieved
         /// </returns>
         /// <remarks>
-        /// Requires an internet connection to access the OpenExchangeRates API.
+        /// Requires an internet connection to access the OpenExchangeRates API if data is not in cache.
         /// </remarks>
         public static decimal GetExchangeRate(string sourceCurrency, string targetCurrency, string date, bool showErrorMessage = true)
         {
             if (sourceCurrency == targetCurrency) { return 1; }
 
+            // Check in-memory cache first
+            string cacheKey = $"{date}_{sourceCurrency}_{targetCurrency}";
+            if (ExchangeRateCache.TryGetValue(cacheKey, out decimal cachedRate))
+            {
+                return cachedRate;
+            }
+
+            // Check if we have the inverse rate (e.g., USD to EUR instead of EUR to USD)
+            string inverseCacheKey = $"{date}_{targetCurrency}_{sourceCurrency}";
+            if (ExchangeRateCache.TryGetValue(inverseCacheKey, out decimal inverseRate) && inverseRate != 0)
+            {
+                decimal calculatedRate = 1 / inverseRate;
+                ExchangeRateCache[cacheKey] = calculatedRate;  // Cache the calculated rate
+                SaveExchangeRateCache();
+                return calculatedRate;
+            }
+
+            // If not in cache, fetch from API
             string _openExchangeRateApiKey = DotEnv.Get("OPEN_EXCHANGE_RATE_API_KEY");
             string url = $"https://openexchangerates.org/api/historical/{date}.json?app_id={_openExchangeRateApiKey}";
 
@@ -129,19 +163,26 @@ namespace Sales_Tracker.Classes
                 HttpResponseMessage response = httpClient.GetAsync(url).GetAwaiter().GetResult();
 
                 string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                using JsonDocument jsonDocument = JsonDocument.Parse(responseBody);
-                JsonElement root = jsonDocument.RootElement;
+                JObject responseJson = JObject.Parse(responseBody);
 
                 // Access the "rates" property and get the value for source and target currencies
-                if (root.TryGetProperty("rates", out JsonElement rates))
+                if (responseJson["rates"] != null)
                 {
-                    if (rates.TryGetProperty(sourceCurrency, out JsonElement sourceRateElement) && rates.TryGetProperty(targetCurrency, out JsonElement targetRateElement))
+                    JObject rates = (JObject)responseJson["rates"];
+                    if (rates[sourceCurrency] != null && rates[targetCurrency] != null)
                     {
-                        decimal sourceRate = sourceRateElement.GetDecimal();
-                        decimal targetRate = targetRateElement.GetDecimal();
+                        decimal sourceRate = rates[sourceCurrency].Value<decimal>();
+                        decimal targetRate = rates[targetCurrency].Value<decimal>();
 
                         // Calculate the exchange rate from sourceCurrency to targetCurrency
-                        return targetRate / sourceRate;
+                        decimal exchangeRate = targetRate / sourceRate;
+
+                        // Cache both the rate and its inverse
+                        ExchangeRateCache[cacheKey] = exchangeRate;
+                        ExchangeRateCache[inverseCacheKey] = 1 / exchangeRate;
+                        SaveExchangeRateCache();
+
+                        return exchangeRate;
                     }
                     else
                     {
@@ -173,6 +214,52 @@ namespace Sales_Tracker.Classes
             {
                 Log.Error_GetExchangeRate(ex.Message);
                 return -1;
+            }
+        }
+        private static void LoadExchangeRateCache()
+        {
+            try
+            {
+                // If cache file exists, load it
+                if (File.Exists(Directories.ExchangeRateCache_file))
+                {
+                    string json = File.ReadAllText(Directories.ExchangeRateCache_file);
+                    Dictionary<string, decimal>? cacheData = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(json);
+
+                    if (cacheData != null)
+                    {
+                        foreach (KeyValuePair<string, decimal> item in cacheData)
+                        {
+                            ExchangeRateCache[item.Key] = item.Value;
+                        }
+                        Log.Write(1, $"Loaded {cacheData.Count} exchange rates from cache");
+                    }
+                }
+            }
+            catch
+            {
+                Log.Error_FailedToReadFile(Directories.ExchangeRateCache_file);
+                ExchangeRateCache.Clear();
+            }
+        }
+        private static void SaveExchangeRateCache()
+        {
+            try
+            {
+                // Create cache directory if it doesn't exist
+                if (!Directory.Exists(Directories.Cache_dir))
+                {
+                    Directory.CreateDirectory(Directories.Cache_dir);
+                }
+
+                // Serialize the cache to JSON using a cached JsonSerializerSettings for better performance
+                string json = JsonConvert.SerializeObject(ExchangeRateCache, Formatting.Indented);
+                File.WriteAllText(Directories.ExchangeRateCache_file, json);
+            }
+            catch (Exception ex)
+            {
+                // If there's an error saving the cache, log it but continue
+                Log.Error_FailedToWriteToFile($"Failed to save exchange rate cache: {ex.Message}");
             }
         }
     }

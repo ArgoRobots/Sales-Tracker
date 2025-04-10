@@ -109,7 +109,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (await Task.Run(ImportSpreadsheet))
                 {
                     MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
-
+                    HideLoadingIndicator();
                     string message = $"Imported '{Path.GetFileName(spreadsheetFilePath)}'";
                     CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
                     CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
@@ -246,7 +246,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     AutoSize = false,
                     AutoEllipsis = true,
                     Text = items[i],
-                    Size = new Size(flowPanel.Width - flowPanel.Padding.Left - 5, 30)  // Fixed height for single line
+                    Size = new Size(flowPanel.Width - flowPanel.Padding.Left - 5, 30)
                 };
 
                 flowPanel.Controls.Add(itemLabel);
@@ -298,8 +298,6 @@ namespace Sales_Tracker.ImportSpreadsheet
 
         // Loading controls
         private Guna2WinProgressIndicator loadingIndicator;
-        private Timer loadingTimer;
-        private bool canRemoveLoader;
         private const string accountantsName = "Accountants", companiesName = "Companies", purchaseProductsName = "Purchase products",
             saleProductsName = "Sale products", purchasesName = "Purchases", salesName = "Sales";
         private void InitLoadingComponents()
@@ -310,32 +308,14 @@ namespace Sales_Tracker.ImportSpreadsheet
                 ProgressColor = CustomColors.AccentBlue,
                 Anchor = AnchorStyles.Top
             };
-
-            loadingTimer = new Timer()
-            {
-                Interval = 300
-            };
-            loadingTimer.Tick += (sender, args) =>
-            {
-                canRemoveLoader = true;
-                loadingTimer.Stop();
-            };
         }
         private void ShowLoadingIndicator()
         {
-            loadingTimer.Start();
-            canRemoveLoader = false;
-
             Controls.Add(loadingIndicator);
             loadingIndicator.Location = new Point((ClientSize.Width - loadingIndicator.Width) / 2, 350);
         }
-        private async void HideLoadingIndicator()
+        private void HideLoadingIndicator()
         {
-            while (!canRemoveLoader)
-            {
-                await Task.Delay(10);
-            }
-
             centeredFlowPanel.SuspendLayout();  // This prevenets the horizontal scroll bar from flashing
 
             Controls.Remove(loadingIndicator);
@@ -441,7 +421,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         private List<string> ExtractFirstCells(IXLWorksheet worksheet)
         {
             List<string> firstCells = [];
-
             IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
 
             foreach (IXLRow row in rows)
