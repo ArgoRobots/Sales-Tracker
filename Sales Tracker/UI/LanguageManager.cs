@@ -17,7 +17,6 @@ namespace Sales_Tracker.UI
     {
         // Properties
         private static readonly HttpClient httpClient = new();
-        private static readonly string apiKey = "4e5f9ad96540482591a49028553e146c";
         private static readonly string translationEndpoint = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
         private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column",
             before_text = "before", link_text = "link", after_text = "after", full_text = "full";
@@ -67,8 +66,10 @@ namespace Sales_Tracker.UI
                 }
             }
 
+            string APIKey = DotEnv.Get("MICROSOFT_TRANSLATOR_API_KEY");
+
             // Add headers for the API request
-            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey);
+            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKey);
             httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Region", "canadacentral");
         }
 
