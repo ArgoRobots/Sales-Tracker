@@ -66,6 +66,7 @@ namespace Sales_Tracker.UI
             dataGridView.CellMouseMove += DataGridView_CellMouseMove;
             dataGridView.CellMouseLeave += DataGridView_CellMouseLeave;
             dataGridView.ColumnHeaderMouseClick += DataGridView_ColumnHeaderMouseClick;
+            dataGridView.SortCompare += DataGridView_SortCompare;
 
             LoadColumns(dataGridView, columnHeaders, columnsToLoad);
             Theme.UpdateDataGridViewHeaderTheme(dataGridView);
@@ -289,6 +290,30 @@ namespace Sales_Tracker.UI
         private static void DataGridView_ColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
         {
             UpdateAlternatingRowColors((DataGridView)sender);
+        }
+        private static void DataGridView_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            // Check if this is a money column
+            if (IsMoneyColumn(((DataGridView)sender).Columns[e.Column.Index].Name))
+            {
+                // Parse values as decimals for proper numeric comparison
+                if (decimal.TryParse(e.CellValue1?.ToString().Replace(MainMenu_Form.CurrencySymbol, "").Replace(",", ""), out decimal num1) &&
+                    decimal.TryParse(e.CellValue2?.ToString().Replace(MainMenu_Form.CurrencySymbol, "").Replace(",", ""), out decimal num2))
+                {
+                    e.SortResult = num1.CompareTo(num2);
+                    e.Handled = true;
+                }
+            }
+        }
+        private static bool IsMoneyColumn(string columnName)
+        {
+            return columnName == MainMenu_Form.Column.PricePerUnit.ToString() ||
+                   columnName == MainMenu_Form.Column.Shipping.ToString() ||
+                   columnName == MainMenu_Form.Column.Tax.ToString() ||
+                   columnName == MainMenu_Form.Column.Fee.ToString() ||
+                   columnName == MainMenu_Form.Column.Discount.ToString() ||
+                   columnName == MainMenu_Form.Column.ChargedDifference.ToString() ||
+                   columnName == MainMenu_Form.Column.Total.ToString();
         }
 
         // Methods for DataGridView_UserDeletingRow
