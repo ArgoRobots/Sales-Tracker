@@ -81,10 +81,9 @@ namespace Sales_Tracker
         private Panel EnterKey_Panel;
         private Guna2Button verifyLicense_Button, backButton;
         private Label errorLabel;
+        private Guna2TextBox license_TextBox;
         private void ConstructIEnterKeyPanel()
         {
-            if (EnterKey_Panel != null) { return; }
-
             EnterKey_Panel = new()
             {
                 BackColor = CustomColors.MainBackground,
@@ -106,7 +105,7 @@ namespace Sales_Tracker
             };
             EnterKey_Panel.Controls.Add(title_Label);
 
-            Guna2TextBox license_TextBox = new()
+            license_TextBox = new()
             {
                 Anchor = AnchorStyles.Top,
                 Size = new Size(350, 50),
@@ -146,16 +145,16 @@ namespace Sales_Tracker
 
             title_Label.Left = (EnterKey_Panel.Width - title_Label.Width) / 2;
         }
-        private void VerifyLicense_Button_Click(object sender, EventArgs e)
+        private async void VerifyLicense_Button_Click(object sender, EventArgs e)
         {
-            bool isLicenseValid = true;
+            string key = license_TextBox.Text.Trim().ToUpper();
+            LicenseManager licenseManager = new();
+            bool iskeyValid = await licenseManager.ValidateKeyAsync(key);
 
-            // VERIFY THE LICENSE HERE
-
-
-            if (isLicenseValid)
+            if (iskeyValid)
             {
                 SetLicenseValid();
+                Log.Write(2, "Enabled full version!");
             }
             else { SetLicenseInvalid(); }
         }
@@ -223,7 +222,7 @@ namespace Sales_Tracker
                 }
                 await Task.Delay(500);
 
-                MainMenu_Form.IsFullVersion = true;
+                MainMenu_Form.RemoveUpgradeButtonIfFullVersion();
 
                 progressCircle.Visible = false;
                 successLabel.Visible = true;
@@ -273,27 +272,29 @@ namespace Sales_Tracker
             verifyLicense_Button.Enabled = false;
             verifyLicense_Button.Text = LanguageManager.TranslateSingleString("Invalid License");
 
-            // Shake animation and error message timing
-            async Task ShowErrorAndShake()
-            {
-                int originalX = verifyLicense_Button.Left;
-                for (int i = 0; i < 6; i++)
-                {
-                    verifyLicense_Button.Left = originalX + (i % 2 == 0 ? -5 : 5);
-                    await Task.Delay(50);
-                }
-                verifyLicense_Button.Left = originalX;
-
-                // Wait before hiding error message
-                await Task.Delay(3000);
-
-                // Hide error message and reset button
-                errorLabel.Visible = false;
-                verifyLicense_Button.Enabled = true;
-                verifyLicense_Button.Text = LanguageManager.TranslateSingleString("Verify License");
-            }
-
             _ = ShowErrorAndShake();
+
+            // Reset to allow user to try again
+            verifyLicense_Button.Enabled = true;
+            errorLabel.Visible = false;
+        }
+        private async Task ShowErrorAndShake()
+        {
+            int originalX = verifyLicense_Button.Left;
+            for (int i = 0; i < 6; i++)
+            {
+                verifyLicense_Button.Left = originalX + (i % 2 == 0 ? -5 : 5);
+                await Task.Delay(50);
+            }
+            verifyLicense_Button.Left = originalX;
+
+            // Wait before hiding error message
+            await Task.Delay(3000);
+
+            // Hide error message and reset button
+            errorLabel.Visible = false;
+            verifyLicense_Button.Enabled = true;
+            verifyLicense_Button.Text = LanguageManager.TranslateSingleString("Verify License");
         }
         private void BackButton_Click(object sender, EventArgs e)
         {

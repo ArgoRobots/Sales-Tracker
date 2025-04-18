@@ -19,7 +19,7 @@ namespace Sales_Tracker
         private static MainMenu_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         private static string _currencySymbol;
-        private static bool _isFullVersion, _isProgramLoading;
+        private static bool _isProgramLoading;
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
@@ -30,15 +30,6 @@ namespace Sales_Tracker
         {
             get => _currencySymbol;
             set => _currencySymbol = value;
-        }
-        public static bool IsFullVersion
-        {
-            get => _isFullVersion;
-            set
-            {
-                _isFullVersion = value;
-                RemoveUpgradeButtonIfFullVersion();
-            }
         }
         public static bool IsProgramLoading
         {
@@ -266,9 +257,9 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(Search_TextBox);
         }
-        private static void RemoveUpgradeButtonIfFullVersion()
+        public static void RemoveUpgradeButtonIfFullVersion()
         {
-            if (_isFullVersion)
+            if (Properties.Settings.Default.LicenseActivated)
             {
                 Instance.Top_Panel.Controls.Remove(Instance.Upgrade_Button);
             }
@@ -289,11 +280,6 @@ namespace Sales_Tracker
                TimeRange_Button,
             ];
             CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
-        }
-        public static void CheckIfLicenseIsValid()
-        {
-            // VERIFY THE LICENSE HERE
-            _isFullVersion = true;
         }
         private static void InitializeAISearch()
         {
@@ -967,7 +953,7 @@ namespace Sales_Tracker
             if (_isProgramLoading) { return; }
 
             bool isAIQuery = Properties.Settings.Default.AISearchEnabled
-                && _isFullVersion
+                && Properties.Settings.Default.LicenseActivated
                 && Search_TextBox.Text.StartsWith('!');
 
             // Start timer for regular searches

@@ -105,7 +105,7 @@ namespace Sales_Tracker.Passwords
                 return;
             }
 
-            if (MainMenu_Form.IsFullVersion)
+            if (Properties.Settings.Default.LicenseActivated)
             {
                 ConstructWindowsHelloButton();
 
