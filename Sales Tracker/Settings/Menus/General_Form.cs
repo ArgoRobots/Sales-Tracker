@@ -95,7 +95,7 @@ namespace Sales_Tracker.Settings.Menus
         private void MoreInformation_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Tools.OpenLink("");
+            Tools.OpenLink("https://argorobots.com/documentation/index.html");
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
         {

@@ -39,7 +39,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void Documentation_LinkLabel_Click(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Tools.OpenLink("");
+            Tools.OpenLink("https://argorobots.com/documentation/index.html");
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Sales_Tracker
         // Event handlers
         private void Upgrade_Button_Click(object sender, EventArgs e)
         {
-            Tools.OpenLink("");
+            Tools.OpenLink("https://argorobots.com/upgrade/index.html");
         }
         private void EnterKey_Button_Click(object sender, EventArgs e)
         {
@@ -74,7 +74,7 @@ namespace Sales_Tracker
         }
         private void LearnMore_Button_Click(object sender, EventArgs e)
         {
-            Tools.OpenLink("");
+            Tools.OpenLink("https://argorobots.com/documentation/index.html#version-comparison");
         }
 
         // EnterKey_Panel

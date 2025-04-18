@@ -283,7 +283,7 @@ namespace Sales_Tracker
         }
         private void ProductsRemaining_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Tools.OpenLink("");
+            Tools.OpenLink("https://argorobots.com/upgrade/index.html");
         }
         private void ForPurchase_Label_Click(object sender, EventArgs e)
         {
