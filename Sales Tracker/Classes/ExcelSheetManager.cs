@@ -785,6 +785,7 @@ namespace Sales_Tracker.Classes
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new();
             string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
@@ -828,6 +829,7 @@ namespace Sales_Tracker.Classes
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new();
             string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);

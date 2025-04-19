@@ -40,19 +40,19 @@
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
     <PackageReference Include="ClosedXML" Version="0.104.2" />
-    <PackageReference Include="EPPlus" Version="8.0.1" />
+    <PackageReference Include="EPPlus" Version="8.0.2" />
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.69.0.3713" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3703" />
-    <PackageReference Include="Google.Apis.Iam.v1" Version="1.69.0.3724" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3740" />
+    <PackageReference Include="Google.Apis.Iam.v1" Version="1.69.0.3731" />
     <PackageReference Include="Google.Apis.ServiceUsage.v1" Version="1.69.0.3724" />
-    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.69.0.3694" />
+    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.69.0.3743" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
     <PackageReference Include="SharpCompress" Version="0.39.0" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.3" />
-    <PackageReference Include="System.IO.Packaging" Version="9.0.3" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.4" />
+    <PackageReference Include="System.IO.Packaging" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
