@@ -74,7 +74,6 @@ namespace Sales_Tracker
             CustomTooltip.SetToolTip(Save_Button, "", "Save");
             CustomTooltip.SetToolTip(Upgrade_Button, "", "Upgrade to full version");
             CustomTooltip.SetToolTip(Help_Button, "", "Help");
-            CustomTooltip.SetToolTip(Account_Button, "", "Account");
         }
         public void ResetData()
         {
@@ -194,7 +193,6 @@ namespace Sales_Tracker
             Save_Button.FillColor = CustomColors.Background3;
             Upgrade_Button.FillColor = CustomColors.Background3;
             Help_Button.FillColor = CustomColors.Background3;
-            Account_Button.FillColor = CustomColors.Background3;
 
             ShowingResultsFor_Label.ForeColor = CustomColors.Text;
             ReselectButton();
@@ -809,10 +807,6 @@ namespace Sales_Tracker
         private void Help_Button_Click(object sender, EventArgs e)
         {
             ToggleMenu(CustomControls.HelpMenu, Help_Button, Resources.HelpGray, Resources.HelpWhite, true);
-        }
-        private void Account_Button_Click(object sender, EventArgs e)
-        {
-            ToggleMenu(CustomControls.AccountMenu, Account_Button, Resources.ProfileGray, Resources.ProfileWhite, true);
         }
 
         /// <summary>
@@ -1960,7 +1954,6 @@ namespace Sales_Tracker
                 CustomControls.FileMenu,
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
-                CustomControls.AccountMenu,
                 CustomControls.ControlDropDown_Panel,
                 GetStarted_Form.RightClickOpenRecent_Panel,
                 DataGridViewManager.RightClickDataGridView_Panel,

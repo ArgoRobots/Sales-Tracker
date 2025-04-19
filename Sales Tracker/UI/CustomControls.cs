@@ -26,7 +26,6 @@ namespace Sales_Tracker.UI
             ConstructRecentlyOpenedMenu();
             ConstructFileMenu();
             ConstructHelpMenu();
-            ConstructAccountMenu();
             ContructControlsDropDownButton();
             ConstructControlsDropDownMenu();
 
@@ -38,7 +37,6 @@ namespace Sales_Tracker.UI
             LanguageManager.UpdateLanguageForControl(_fileMenu);
             LanguageManager.UpdateLanguageForControl(_recentlyOpenedMenu);
             LanguageManager.UpdateLanguageForControl(_helpMenu);
-            LanguageManager.UpdateLanguageForControl(_accountMenu);
             LanguageManager.UpdateLanguageForControl(_controlsDropDown_Button);
             LanguageManager.UpdateLanguageForControl(_controlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(DataGridViewManager.RightClickDataGridView_Panel);
@@ -388,21 +386,26 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructHelpMenu()
         {
-            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 6 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "helpMenu_Panel");
+            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "helpMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_helpMenu.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("Documentaion", _panelBtnWidth, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("Settings", _panelBtnWidth, true, flowPanel);
+            menuBtn.Click += (_, _) =>
+            {
+                Tools.OpenForm(new Settings_Form());
+            };
+
+            menuBtn = ConstructBtnForMenu("What's new", _panelBtnWidth, true, flowPanel);
+            menuBtn.Click += (_, _) =>
+            {
+                Tools.OpenLink("https://argorobots.com/whats-new/index.html");
+            };
+
+            menuBtn = ConstructBtnForMenu("Documentaion", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/documentation/index.html");
             };
-            menuBtn = ConstructBtnForMenu("Contact us", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
-            {
-                Tools.OpenLink("https://argorobots.com/contact-us/index.php");
-            };
-
-            ConstructSeperator(_panelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Show logs", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
@@ -411,48 +414,32 @@ namespace Sales_Tracker.UI
             };
             ConstructKeyShortcut("Ctrl+L", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Clear cache", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
-            {
-                ArgoCompany.ClearCache();
-            };
-
             ConstructSeperator(_panelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("What's new", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Contact us", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                Tools.OpenLink("https://argorobots.com/whats-new/index.html");
+                Tools.OpenLink("https://argorobots.com/contact-us/index.php");
             };
+
             menuBtn = ConstructBtnForMenu("About", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/about-us/index.html");
-            };
-        }
-
-        // accountMenu
-        private static Guna2Panel _accountMenu;
-        public static Guna2Panel AccountMenu
-        {
-            get => _accountMenu;
-            set => _accountMenu = value;
-        }
-        private static void ConstructAccountMenu()
-        {
-            AccountMenu = ConstructPanelForMenu(new Size(_panelWidth, 2 * _panelButtonHeight + spaceForSeperator + _spaceForPanel), "accountMenu_Panel");
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)AccountMenu.Controls[0];
-
-            Guna2Button menuBtn = ConstructBtnForMenu("Settings", _panelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
-            {
-                Tools.OpenForm(new Settings_Form());
             };
 
             menuBtn = ConstructBtnForMenu("Share feedback", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/contact-us/index.php");
+            };
+
+            ConstructKeyShortcut("Ctrl+L", menuBtn);
+
+            menuBtn = ConstructBtnForMenu("Clear cache", _panelBtnWidth, true, flowPanel);
+            menuBtn.Click += (_, _) =>
+            {
+                ArgoCompany.ClearCache();
             };
         }
 
@@ -702,17 +689,14 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Controls.Remove(_fileMenu);
             MainMenu_Form.Instance.Controls.Remove(_recentlyOpenedMenu);
             MainMenu_Form.Instance.Controls.Remove(_helpMenu);
-            MainMenu_Form.Instance.Controls.Remove(_accountMenu);
             MainMenu_Form.Instance.CloseDateRangePanel();
             MenuKeyShortcutManager.SelectedPanel = null;
             DeselectAllMenuButtons(_fileMenu);
             DeselectAllMenuButtons(_recentlyOpenedMenu);
             DeselectAllMenuButtons(_helpMenu);
-            DeselectAllMenuButtons(_accountMenu);
 
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
-            MainMenu_Form.Instance.Account_Button.Image = Resources.ProfileGray;
             MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
             MainMenu_Form.Instance.ClosePanels();
         }

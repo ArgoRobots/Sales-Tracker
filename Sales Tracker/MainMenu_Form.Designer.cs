@@ -58,8 +58,6 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges28 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges29 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges30 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.Charts.WinForms.ChartFont chartFont1 = new Guna.Charts.WinForms.ChartFont();
             Guna.Charts.WinForms.ChartFont chartFont2 = new Guna.Charts.WinForms.ChartFont();
             Guna.Charts.WinForms.ChartFont chartFont3 = new Guna.Charts.WinForms.ChartFont();
@@ -105,14 +103,14 @@
             Guna.Charts.WinForms.ChartFont chartFont23 = new Guna.Charts.WinForms.ChartFont();
             Guna.Charts.WinForms.Tick tick9 = new Guna.Charts.WinForms.Tick();
             Guna.Charts.WinForms.ChartFont chartFont24 = new Guna.Charts.WinForms.ChartFont();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges31 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges32 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges33 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges34 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges35 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges36 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges37 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges38 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges39 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges40 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu_Form));
             MainTop_Panel = new Guna.UI2.WinForms.Guna2Panel();
             ManageCompanies_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -125,7 +123,6 @@
             CompanyName_Label = new Label();
             Top_Panel = new Panel();
             Upgrade_Button = new Guna.UI2.WinForms.Guna2Button();
-            Account_Button = new Guna.UI2.WinForms.Guna2Button();
             Saved_Label = new Label();
             Help_Button = new Guna.UI2.WinForms.Guna2Button();
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -335,7 +332,6 @@
             Top_Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Top_Panel.BackColor = Color.FromArgb(204, 204, 204);
             Top_Panel.Controls.Add(Upgrade_Button);
-            Top_Panel.Controls.Add(Account_Button);
             Top_Panel.Controls.Add(Saved_Label);
             Top_Panel.Controls.Add(Help_Button);
             Top_Panel.Controls.Add(Save_Button);
@@ -361,35 +357,13 @@
             Upgrade_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
             Upgrade_Button.Image = Properties.Resources.Upgrade;
             Upgrade_Button.ImageSize = new Size(32, 32);
-            Upgrade_Button.Location = new Point(2269, 0);
+            Upgrade_Button.Location = new Point(2314, 0);
             Upgrade_Button.Name = "Upgrade_Button";
             Upgrade_Button.PressedColor = Color.Empty;
             Upgrade_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
             Upgrade_Button.Size = new Size(45, 45);
             Upgrade_Button.TabIndex = 19;
             Upgrade_Button.Click += Upgrade_Button_Click;
-            // 
-            // Account_Button
-            // 
-            Account_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Account_Button.CustomizableEdges = customizableEdges19;
-            Account_Button.DisabledState.BorderColor = Color.DarkGray;
-            Account_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            Account_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            Account_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            Account_Button.FillColor = Color.FromArgb(204, 204, 204);
-            Account_Button.Font = new Font("Segoe UI", 9F);
-            Account_Button.ForeColor = Color.White;
-            Account_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
-            Account_Button.Image = Properties.Resources.ProfileGray;
-            Account_Button.ImageSize = new Size(37, 37);
-            Account_Button.Location = new Point(2359, 0);
-            Account_Button.Name = "Account_Button";
-            Account_Button.PressedColor = Color.Empty;
-            Account_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            Account_Button.Size = new Size(45, 45);
-            Account_Button.TabIndex = 18;
-            Account_Button.Click += Account_Button_Click;
             // 
             // Saved_Label
             // 
@@ -408,7 +382,7 @@
             // 
             Help_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             Help_Button.BackColor = Color.Transparent;
-            Help_Button.CustomizableEdges = customizableEdges21;
+            Help_Button.CustomizableEdges = customizableEdges19;
             Help_Button.DisabledState.BorderColor = Color.DarkGray;
             Help_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Help_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -419,10 +393,10 @@
             Help_Button.HoverState.FillColor = Color.FromArgb(187, 187, 187);
             Help_Button.Image = Properties.Resources.HelpGray;
             Help_Button.ImageSize = new Size(32, 32);
-            Help_Button.Location = new Point(2314, 0);
+            Help_Button.Location = new Point(2359, 0);
             Help_Button.Name = "Help_Button";
             Help_Button.PressedColor = Color.Empty;
-            Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
+            Help_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
             Help_Button.Size = new Size(45, 45);
             Help_Button.TabIndex = 5;
             Help_Button.Click += Help_Button_Click;
@@ -431,7 +405,7 @@
             // 
             Save_Button.BackColor = Color.Transparent;
             Save_Button.BorderColor = Color.Empty;
-            Save_Button.CustomizableEdges = customizableEdges23;
+            Save_Button.CustomizableEdges = customizableEdges21;
             Save_Button.DisabledState.BorderColor = Color.DarkGray;
             Save_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Save_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -444,7 +418,7 @@
             Save_Button.ImageSize = new Size(27, 27);
             Save_Button.Location = new Point(63, 0);
             Save_Button.Name = "Save_Button";
-            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            Save_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             Save_Button.Size = new Size(45, 45);
             Save_Button.TabIndex = 4;
             Save_Button.Click += Save_Button_Click;
@@ -455,7 +429,7 @@
             // 
             File_Button.BackColor = Color.Transparent;
             File_Button.BorderColor = Color.Empty;
-            File_Button.CustomizableEdges = customizableEdges25;
+            File_Button.CustomizableEdges = customizableEdges23;
             File_Button.DisabledState.BorderColor = Color.DarkGray;
             File_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             File_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -468,7 +442,7 @@
             File_Button.ImageSize = new Size(52, 37);
             File_Button.Location = new Point(0, 0);
             File_Button.Name = "File_Button";
-            File_Button.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            File_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             File_Button.Size = new Size(63, 45);
             File_Button.TabIndex = 3;
             File_Button.Click += File_Button_Click;
@@ -545,10 +519,10 @@
             Total_Panel.Controls.Add(Price_Label);
             Total_Panel.Controls.Add(Quantity_Label);
             Total_Panel.Controls.Add(Total_Label);
-            Total_Panel.CustomizableEdges = customizableEdges27;
+            Total_Panel.CustomizableEdges = customizableEdges25;
             Total_Panel.Location = new Point(228, 1446);
             Total_Panel.Name = "Total_Panel";
-            Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges28;
+            Total_Panel.ShadowDecoration.CustomizableEdges = customizableEdges26;
             Total_Panel.Size = new Size(1948, 75);
             Total_Panel.TabIndex = 2;
             Total_Panel.Click += CloseAllPanels;
@@ -595,7 +569,7 @@
             Sales_Button.BorderColor = Color.LightGray;
             Sales_Button.BorderRadius = 2;
             Sales_Button.BorderThickness = 1;
-            Sales_Button.CustomizableEdges = customizableEdges29;
+            Sales_Button.CustomizableEdges = customizableEdges27;
             Sales_Button.DisabledState.BorderColor = Color.DarkGray;
             Sales_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Sales_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -605,7 +579,7 @@
             Sales_Button.ForeColor = Color.Black;
             Sales_Button.Location = new Point(204, 144);
             Sales_Button.Name = "Sales_Button";
-            Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
+            Sales_Button.ShadowDecoration.CustomizableEdges = customizableEdges28;
             Sales_Button.Size = new Size(180, 50);
             Sales_Button.TabIndex = 7;
             Sales_Button.Text = "Sales";
@@ -617,7 +591,7 @@
             Purchases_Button.BorderColor = Color.LightGray;
             Purchases_Button.BorderRadius = 2;
             Purchases_Button.BorderThickness = 1;
-            Purchases_Button.CustomizableEdges = customizableEdges31;
+            Purchases_Button.CustomizableEdges = customizableEdges29;
             Purchases_Button.DisabledState.BorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Purchases_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -627,7 +601,7 @@
             Purchases_Button.ForeColor = Color.Black;
             Purchases_Button.Location = new Point(18, 144);
             Purchases_Button.Name = "Purchases_Button";
-            Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            Purchases_Button.ShadowDecoration.CustomizableEdges = customizableEdges30;
             Purchases_Button.Size = new Size(180, 50);
             Purchases_Button.TabIndex = 6;
             Purchases_Button.Text = "Purchases";
@@ -761,10 +735,10 @@
             LineGraph_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
             LineGraph_ToggleSwitch.CheckedState.InnerBorderRadius = 10;
             LineGraph_ToggleSwitch.CheckedState.InnerColor = Color.White;
-            LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges33;
+            LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges31;
             LineGraph_ToggleSwitch.Location = new Point(1786, 156);
             LineGraph_ToggleSwitch.Name = "LineGraph_ToggleSwitch";
-            LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges34;
+            LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges32;
             LineGraph_ToggleSwitch.Size = new Size(60, 30);
             LineGraph_ToggleSwitch.TabIndex = 15;
             LineGraph_ToggleSwitch.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -781,7 +755,7 @@
             Analytics_Button.BorderColor = Color.LightGray;
             Analytics_Button.BorderRadius = 2;
             Analytics_Button.BorderThickness = 1;
-            Analytics_Button.CustomizableEdges = customizableEdges35;
+            Analytics_Button.CustomizableEdges = customizableEdges33;
             Analytics_Button.DisabledState.BorderColor = Color.DarkGray;
             Analytics_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Analytics_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -791,7 +765,7 @@
             Analytics_Button.ForeColor = Color.Black;
             Analytics_Button.Location = new Point(390, 144);
             Analytics_Button.Name = "Analytics_Button";
-            Analytics_Button.ShadowDecoration.CustomizableEdges = customizableEdges36;
+            Analytics_Button.ShadowDecoration.CustomizableEdges = customizableEdges34;
             Analytics_Button.Size = new Size(180, 50);
             Analytics_Button.TabIndex = 18;
             Analytics_Button.Text = "Analytics";
@@ -800,7 +774,7 @@
             // Search_TextBox
             // 
             Search_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Search_TextBox.CustomizableEdges = customizableEdges37;
+            Search_TextBox.CustomizableEdges = customizableEdges35;
             Search_TextBox.DefaultText = "";
             Search_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Search_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -818,7 +792,7 @@
             Search_TextBox.Name = "Search_TextBox";
             Search_TextBox.PlaceholderText = "Search for sales";
             Search_TextBox.SelectedText = "";
-            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges38;
+            Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges36;
             Search_TextBox.ShortcutsEnabled = false;
             Search_TextBox.Size = new Size(300, 50);
             Search_TextBox.TabIndex = 55;
@@ -846,7 +820,7 @@
             TimeRange_Button.BorderColor = Color.LightGray;
             TimeRange_Button.BorderRadius = 2;
             TimeRange_Button.BorderThickness = 1;
-            TimeRange_Button.CustomizableEdges = customizableEdges39;
+            TimeRange_Button.CustomizableEdges = customizableEdges37;
             TimeRange_Button.DisabledState.BorderColor = Color.DarkGray;
             TimeRange_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             TimeRange_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -856,7 +830,7 @@
             TimeRange_Button.ForeColor = Color.Black;
             TimeRange_Button.Location = new Point(2160, 146);
             TimeRange_Button.Name = "TimeRange_Button";
-            TimeRange_Button.ShadowDecoration.CustomizableEdges = customizableEdges40;
+            TimeRange_Button.ShadowDecoration.CustomizableEdges = customizableEdges38;
             TimeRange_Button.Size = new Size(225, 50);
             TimeRange_Button.TabIndex = 17;
             TimeRange_Button.Text = "Time range";
@@ -928,7 +902,6 @@
         public Guna.UI2.WinForms.Guna2Button ManageCategories_Button;
         public Guna.UI2.WinForms.Guna2Button ManageAccountants_Button;
         public Guna.UI2.WinForms.Guna2Button ManageCompanies_Button;
-        public Guna.UI2.WinForms.Guna2Button Account_Button;
         public Guna.UI2.WinForms.Guna2Button Analytics_Button;
         public Label ChargedDifference_Label;
         public Label Fee_Label;
