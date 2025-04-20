@@ -141,6 +141,10 @@ namespace Sales_Tracker.Settings.Menus
                     if (result)
                     {
                         Properties.Settings.Default.WindowsHelloEnabled = true;
+
+                        string message = $"Changed the 'Windows Hello' setting";
+                        CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, message);
+
                         StopPlayingLoadingAnimation();
                         CustomMessageBox.Show("Windows Hello enabled", "Windows Hello has been enabled. You can now log in with your biometrics", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                         string newText = LanguageManager.TranslateSingleString("Disable Windows Hello");
@@ -175,8 +179,8 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void StopPlayingLoadingAnimation()
         {
-            progressIndicator = null;
             Controls.Remove(progressIndicator);
+            progressIndicator = null;
         }
 
         // Methods

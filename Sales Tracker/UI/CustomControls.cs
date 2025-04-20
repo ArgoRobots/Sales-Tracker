@@ -434,8 +434,6 @@ namespace Sales_Tracker.UI
                 Tools.OpenLink("https://argorobots.com/contact-us/index.php");
             };
 
-            ConstructKeyShortcut("Ctrl+L", menuBtn);
-
             menuBtn = ConstructBtnForMenu("Clear cache", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {

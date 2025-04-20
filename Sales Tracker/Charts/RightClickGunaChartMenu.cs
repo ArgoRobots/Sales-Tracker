@@ -19,17 +19,17 @@ namespace Sales_Tracker.Charts
         public static void ConstructRightClickGunaChartMenu()
         {
             Guna2Panel panel = CustomControls.ConstructPanelForMenu(
-                new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                new Size(CustomControls.PanelWidth - 50, 3 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickGunaChart_Panel"
             );
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
             int newBtnWidth = CustomControls.PanelBtnWidth - 50;
 
-            Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
-            button.Click += ResetZoom;
+            //Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
+            //button.Click += ResetZoom;
 
-            button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
+            Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
             button.Click += SaveImage;
 
             // Export buttons are only visible when chart has data
