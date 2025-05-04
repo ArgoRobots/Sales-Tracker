@@ -227,8 +227,8 @@ namespace Sales_Tracker.UI
                         continue;
                     }
 
-                    int distance = CalculateLevenshteinDistance(sourceWord, targetWord);
-                    if (distance <= maxDistance)
+                    double similarity = CalculateNormalizedSimilarity(sourceWord, targetWord);
+                    if (similarity >= 0.6) // Using the threshold of 0.6
                     {
                         wordMatched = true;
                         break;
@@ -242,6 +242,25 @@ namespace Sales_Tracker.UI
             }
 
             return true;
+        }
+        private static double CalculateNormalizedSimilarity(string source, string target)
+        {
+            // Handle empty strings
+            if (string.IsNullOrEmpty(source))
+            {
+                return string.IsNullOrEmpty(target) ? 1.0 : 0.0;
+            }
+
+            if (string.IsNullOrEmpty(target))
+            {
+                return 0.0;
+            }
+
+            int distance = CalculateLevenshteinDistance(source, target);
+            int maxDistance = Math.Max(source.Length, target.Length);
+
+            // Normalize to similarity (1.0 means identical, 0.0 means completely different)
+            return 1.0 - ((double)distance / maxDistance);
         }
         private static int CalculateLevenshteinDistance(string source, string target)
         {
