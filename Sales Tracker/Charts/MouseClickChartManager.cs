@@ -61,6 +61,12 @@ namespace Sales_Tracker.Charts
                 bool isRightClick = m.Msg == 0x0204;
                 Point mousePosition = Control.MousePosition;
 
+                // Check if any other form is over the click position
+                if (IsAnotherFormAtPosition(mousePosition))
+                {
+                    return false; // Ignore click when another form is over it
+                }
+
                 // Create a list of controls
                 List<Control> controlsList =
                 [
@@ -119,6 +125,46 @@ namespace Sales_Tracker.Charts
                         break;
                     }
                 }
+                return false;
+            }
+
+            /// <summary>
+            /// Checks if there is another form at the specified position
+            /// </summary>
+            private static bool IsAnotherFormAtPosition(Point screenPosition)
+            {
+                // Get the chart form (parent form of any visible registered chart)
+                Form chartForm = null;
+                foreach (GunaChart chart in registeredCharts)
+                {
+                    if (chart.Visible && chart.Parent != null)
+                    {
+                        chartForm = chart.FindForm();
+                        if (chartForm != null && chartForm.Visible)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                // If no chart form found, or there's only one form in the application, then there can't be another form on top
+                if (chartForm == null || Application.OpenForms.Count <= 1)
+                    return false;
+
+                // Check if any other visible form contains the position
+                foreach (Form form in Application.OpenForms)
+                {
+                    if (form != chartForm && form.Visible)
+                    {
+                        // Check if the form contains the screen position
+                        Point clientPoint = form.PointToClient(screenPosition);
+                        if (form.ClientRectangle.Contains(clientPoint))
+                        {
+                            return true; // Another form is at this position
+                        }
+                    }
+                }
+
                 return false;
             }
         }
