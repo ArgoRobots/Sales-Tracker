@@ -1302,7 +1302,7 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(purchasesByDate, salesByDate, sortedDates);
         }
-        public static SalesExpensesChartData LoadAverageShippingCostsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadAverageShippingCostsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, bool includeZeroShipping = false)
         {
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
@@ -1357,7 +1357,8 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
                 if (!TryGetValue(row.Cells[MainMenu_Form.Column.Shipping.ToString()], out double shipping)) { continue; }
-                if (shipping == 0) { continue; }
+                // Only skip free shipping if includeZeroShipping is false
+                if (shipping == 0 && !includeZeroShipping) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
                 string formattedDate = date.ToString(dateFormat);
@@ -1379,7 +1380,8 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
                 if (!TryGetValue(row.Cells[MainMenu_Form.Column.Shipping.ToString()], out double shipping)) { continue; }
-                if (shipping == 0) { continue; }
+                // Only skip free shipping if includeZeroShipping is false
+                if (shipping == 0 && !includeZeroShipping) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
                 string formattedDate = date.ToString(dateFormat);

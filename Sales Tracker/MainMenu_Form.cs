@@ -46,7 +46,6 @@ namespace Sales_Tracker
             _isProgramLoading = true;
             CurrencySymbol = Currency.GetSymbol();
 
-            DotEnv.Load();
             CustomControls.ConstructControls();
             ConstructControlsForAnalytics();
             InitiateSearchTimer();
@@ -67,6 +66,7 @@ namespace Sales_Tracker
             InitializeAISearch();
             RemoveUpgradeButtonIfFullVersion();
             LoadingPanel.ShowBlankLoadingPanel(this);
+            IncludeFreeShippingCheckBox.Checked = Properties.Settings.Default.IncludeFreeShipping;
         }
         private void SetToolTips()
         {
@@ -643,7 +643,7 @@ namespace Sales_Tracker
                 // Calculate chart dimensions
                 int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
                 int availableHeight = ClientSize.Height - Purchases_Button.Bottom;
-                int statChartHeight = availableHeight / 3 - 20;  // 3 rows with 20px spacing vertically
+                int statChartHeight = availableHeight / 3 - 20 - 20;  // 3 rows with 20px spacing vertically, 20px for checkbox on bottom
                 Size chartSize = new(chartWidth, statChartHeight);
 
                 // Calculate total width needed for all charts
@@ -663,8 +663,8 @@ namespace Sales_Tracker
 
                 // Calculate Y positions for 3 rows
                 int topRowY = Purchases_Button.Bottom + spaceBetweenRows;
-                int middleRowY = topRowY + statChartHeight + spaceBetweenRows;
-                int bottomRowY = middleRowY + statChartHeight + spaceBetweenRows;
+                int middleRowY = topRowY + statChartHeight + spaceBetweenRows - 10;  // 10px to make space for checkbox on bottom
+                int bottomRowY = middleRowY + statChartHeight + spaceBetweenRows - 10;
 
                 // Set positions for top row charts
                 SetChartPosition(_countriesOfOrigin_Chart, chartSize, firstX, topRowY);
@@ -680,6 +680,10 @@ namespace Sales_Tracker
                 SetChartPosition(_totalTransactions_Chart, chartSize, firstX, bottomRowY);
                 SetChartPosition(_averageTransactionValue_Chart, chartSize, secondX, bottomRowY);
                 SetChartPosition(_averageShippingCosts_Chart, chartSize, thirdX, bottomRowY);
+
+                // Set position for free shipping checkbox
+                _includeFreeShipping_CheckBox.Location = new Point(_averageShippingCosts_Chart.Left, _averageShippingCosts_Chart.Bottom + 8);
+                _includeFreeShipping_Label.Location = new Point(_includeFreeShipping_CheckBox.Right - 2, _includeFreeShipping_CheckBox.Top - 9);
             }
             else
             {
@@ -1783,9 +1787,11 @@ namespace Sales_Tracker
         }
 
         // Chart properties
-        private List<GunaChart> analyticsCharts;
+        private List<Control> analyticsControls;
         private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
             _growthRates_Chart, _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCosts_Chart;
+        private Guna2CustomCheckBox _includeFreeShipping_CheckBox;
+        private Label _includeFreeShipping_Label;
 
         public enum ChartDataType
         {
@@ -1811,6 +1817,8 @@ namespace Sales_Tracker
         public GunaChart AverageTransactionValue_Chart => _averageTransactionValue_Chart;
         public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
         public GunaChart AverageShippingCosts_Chart => _averageShippingCosts_Chart;
+        public Guna2CustomCheckBox IncludeFreeShippingCheckBox => _includeFreeShipping_CheckBox;
+        public Label IncludeFreeShipping_Label => _includeFreeShipping_Label;
 
         // Analytics charts methods
         private List<Control> GetMainControlsList()
@@ -1826,13 +1834,13 @@ namespace Sales_Tracker
         }
         private void ShowMainControls()
         {
-            if (analyticsCharts == null) { return; }
+            if (analyticsControls == null) { return; }
 
             foreach (Control control in GetMainControlsList())
             {
                 control.Visible = true;
             }
-            foreach (Control control in analyticsCharts)
+            foreach (Control control in analyticsControls)
             {
                 control.Visible = false;
             }
@@ -1851,10 +1859,28 @@ namespace Sales_Tracker
             _averageTransactionValue_Chart = ConstructAnalyticsChart("averageOrderValue_Chart");
             _totalTransactions_Chart = ConstructAnalyticsChart("totalTransactions_Chart");
             _averageShippingCosts_Chart = ConstructAnalyticsChart("averageShippingCosts_Chart");
-            LabelManager.AddChartSubTitle(_averageShippingCosts_Chart, "Excludes transactions with free shipping");
             _growthRates_Chart = ConstructAnalyticsChart("growthRates_Chart");
 
-            analyticsCharts =
+            _includeFreeShipping_CheckBox = new Guna2CustomCheckBox
+            {
+                Size = new Size(20, 20)
+            };
+            _includeFreeShipping_CheckBox.CheckedChanged += IncludeFreeShippingCheckBox_CheckedChanged;
+            Controls.Add(_includeFreeShipping_CheckBox);
+
+            _includeFreeShipping_Label = new Label
+            {
+                Text = "Include transactions with free shipping",
+                Name = "IncludeFreeShipping_Label",  // This is needed for language translation
+                AutoSize = true,
+                Font = new Font("Segoe UI", 10),
+                Padding = new Padding(5),
+                AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter
+            };
+            _includeFreeShipping_Label.Click += IncludeFreeShipping_Label_Click;
+            Controls.Add(_includeFreeShipping_Label);
+
+            analyticsControls =
             [
                 _countriesOfOrigin_Chart,
                 _companiesOfOrigin_Chart,
@@ -1864,17 +1890,33 @@ namespace Sales_Tracker
                 _averageTransactionValue_Chart,
                 _totalTransactions_Chart,
                 _averageShippingCosts_Chart,
-                _growthRates_Chart
+                _growthRates_Chart,
+                _includeFreeShipping_CheckBox,
+                _includeFreeShipping_Label
             ];
 
-            MouseClickChartManager.InitCharts(analyticsCharts.ToArray());
+            MouseClickChartManager.InitCharts(analyticsControls.OfType<GunaChart>().ToArray());
+        }
+        private void IncludeFreeShipping_Label_Click(object? sender, EventArgs e)
+        {
+            IncludeFreeShippingCheckBox.Checked = !IncludeFreeShippingCheckBox.Checked;
+        }
+        private void IncludeFreeShippingCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            bool isLineChart = LineGraph_ToggleSwitch.Checked;
+            bool zeroShipping = IncludeFreeShippingCheckBox.Checked;
+
+            UserSettings.UpdateSetting("Include free shipping in chart", Properties.Settings.Default.IncludeFreeShipping, zeroShipping,
+             value => Properties.Settings.Default.IncludeFreeShipping = value);
+
+            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart, includeZeroShipping: zeroShipping);
         }
         private GunaChart ConstructAnalyticsChart(string name)
         {
             GunaChart gunaChart = new()
             {
                 Name = name,  // This is needed for the language translation
-                Height = 500
+                Height = 490
             };
 
             gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.Background4);
@@ -1894,7 +1936,7 @@ namespace Sales_Tracker
         {
             LoadOrRefreshAnalyticsCharts(false);
 
-            foreach (Control control in analyticsCharts)
+            foreach (Control control in analyticsControls)
             {
                 control.Visible = true;
             }
@@ -1942,7 +1984,8 @@ namespace Sales_Tracker
             _averageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
             LanguageManager.UpdateLanguageForControl(_averageTransactionValue_Chart);
 
-            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart);
+            bool zeroShipping = IncludeFreeShippingCheckBox.Checked;
+            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart, includeZeroShipping: zeroShipping);
             _averageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
             LanguageManager.UpdateLanguageForControl(_averageShippingCosts_Chart);
         }

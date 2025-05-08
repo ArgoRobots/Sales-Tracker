@@ -27,6 +27,10 @@ namespace Sales_Tracker.Classes
         public async Task<bool> ValidateKeyAsync(string licenseKey = null)
         {
             licenseKey ??= Properties.Settings.Default.LicenseKey;
+            if ( licenseKey == "")
+            {
+                return false;
+            }
 
             try
             {

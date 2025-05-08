@@ -1,5 +1,4 @@
-﻿using Guna.Charts.WinForms;
-using Sales_Tracker.DataClasses;
+﻿using Sales_Tracker.DataClasses;
 
 namespace Sales_Tracker.UI
 {
@@ -10,10 +9,7 @@ namespace Sales_Tracker.UI
     public class LabelManager
     {
         // Properties
-        private static readonly string
-            _noDataLabelName = "NoData_Label",
-            _chartSubTitleName = "ChartSubTitle_Label",
-            _chartSubTitleTag = "ChartSubTitle";
+        private static readonly string _noDataLabelName = "NoData_Label", _chartSubTitleName = "ChartSubTitle_Label";
 
         // Getter
         public static string NoDataLabelName => _noDataLabelName;
@@ -164,34 +160,6 @@ namespace Sales_Tracker.UI
                 ForeColor = CustomColors.Text,
             };
             parent.Controls.Add(noProjectsLabel);
-        }
-        public static void AddChartSubTitle(GunaChart chart, string text)
-        {
-            Label label = new()
-            {
-                Text = text,
-                Font = new Font("Segoe UI", 8),
-                ForeColor = CustomColors.Text,
-                AutoSize = true,
-                BackColor = Color.Transparent,
-                Tag = _chartSubTitleTag,
-                Anchor = AnchorStyles.Top,
-                Name = _chartSubTitleName  // This is needed for the language translation
-            };
-            chart.Controls.Add(label);
-            CenterChartSubTitleLabelInControl(chart);
-
-            chart.Resize += (_, _) => CenterChartSubTitleLabelInControl(chart);
-            label.BringToFront();
-        }
-        private static void CenterChartSubTitleLabelInControl(GunaChart chart)
-        {
-            Label label = chart.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == _chartSubTitleTag);
-
-            if (label != null)
-            {
-                label.Location = new Point((chart.Width - label.Width) / 2, chart.Height - label.Height - 5);
-            }
         }
     }
 }

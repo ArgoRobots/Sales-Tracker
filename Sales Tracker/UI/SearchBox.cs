@@ -515,9 +515,7 @@ namespace Sales_Tracker.UI
         }
         public static void CloseSearchBox()
         {
-            if (_searchBoxParent == null) { return; }
-
-            if (_searchBoxParent.Controls.Contains(_searchResultBoxContainer))
+            if (IsSearchBoxOpen())
             {
                 // Set focus to another control to avoid reopening the search box
                 Label firstLabel = _searchBoxParent.Controls.OfType<Label>().FirstOrDefault();
@@ -525,6 +523,11 @@ namespace Sales_Tracker.UI
 
                 _searchBoxParent.Controls.Remove(_searchResultBoxContainer);
             }
+        }
+        public static bool IsSearchBoxOpen()
+        {
+            if (_searchBoxParent == null) { return false; }
+            return _searchBoxParent.Controls.Contains(_searchResultBoxContainer);
         }
     }
 }

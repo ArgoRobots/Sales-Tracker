@@ -33,6 +33,7 @@ namespace Sales_Tracker.Startup.Menus
             CustomControls.ConstructRightClickRename();
 
             SetAccessibleDescriptions();
+            DotEnv.Load();
             LanguageManager.InitLanguageManager();
             LanguageManager.UpdateLanguageForControl(this);
 

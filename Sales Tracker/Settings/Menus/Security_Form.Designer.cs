@@ -46,7 +46,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             Security_Label.AutoSize = true;
             Security_Label.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold);
-            Security_Label.Location = new Point(57, 37);
+            Security_Label.Location = new Point(564, 37);
             Security_Label.Margin = new Padding(6, 0, 6, 0);
             Security_Label.Name = "Security_Label";
             Security_Label.Size = new Size(123, 40);

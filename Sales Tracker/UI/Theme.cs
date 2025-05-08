@@ -99,6 +99,7 @@ namespace Sales_Tracker.Classes
                         guna2TextBox.HoverState.BorderColor = CustomColors.AccentBlue;
                         guna2TextBox.FocusedState.BorderColor = CustomColors.AccentBlue;
                         guna2TextBox.FocusedState.FillColor = CustomColors.ControlBack;
+                        guna2TextBox.PlaceholderForeColor = CustomColors.ControlBorder;
                         break;
 
                     case Guna2CustomCheckBox guna2CustomCheckBox:

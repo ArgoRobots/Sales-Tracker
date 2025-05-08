@@ -36,15 +36,17 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void SetAccessibleDescription()
         {
-            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             Language_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             Currency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             ColorTheme_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             ShowDebugInfo_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
             AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            ShowHasReceiptColumn_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            EnableAISearch_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
 
             Language_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;

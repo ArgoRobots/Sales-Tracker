@@ -531,8 +531,7 @@ namespace Sales_Tracker.Classes
                     }
                     if (result == CustomMessageBoxResult.Yes || !askUserToRename)
                     {
-                        // Extract the tab to a temp folder because there is already a thing with the same name,
-                        // that way the thing can be renamed.
+                        // Extract the tab to a temp folder because there is already a thing with the same name, that way the thing can be renamed
                         CreateDirectory(tempDir, true);
                         TarFile.ExtractToDirectory(sourceFile, tempDir, false);
 

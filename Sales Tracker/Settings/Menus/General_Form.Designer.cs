@@ -86,7 +86,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             General_Label.AutoSize = true;
             General_Label.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold);
-            General_Label.Location = new Point(57, 37);
+            General_Label.Location = new Point(566, 37);
             General_Label.Name = "General_Label";
             General_Label.Size = new Size(118, 40);
             General_Label.TabIndex = 249;
@@ -120,6 +120,7 @@ namespace Sales_Tracker.Settings.Menus
             MoreInformation_Button.Size = new Size(220, 45);
             MoreInformation_Button.TabIndex = 6;
             MoreInformation_Button.Text = "More information";
+            MoreInformation_Button.Visible = false;
             MoreInformation_Button.Click += MoreInformation_Button_Click;
             // 
             // Currency_Label
@@ -139,13 +140,13 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_Label.Anchor = AnchorStyles.Top;
             ShowDebugInfo_Label.AutoSize = true;
             ShowDebugInfo_Label.Font = new Font("Segoe UI", 10F);
-            ShowDebugInfo_Label.Location = new Point(444, 397);
+            ShowDebugInfo_Label.Location = new Point(381, 397);
             ShowDebugInfo_Label.Name = "ShowDebugInfo_Label";
             ShowDebugInfo_Label.Padding = new Padding(5);
-            ShowDebugInfo_Label.Size = new Size(171, 38);
+            ShowDebugInfo_Label.Size = new Size(234, 38);
             ShowDebugInfo_Label.TabIndex = 0;
             ShowDebugInfo_Label.Tag = "";
-            ShowDebugInfo_Label.Text = "Show debug info";
+            ShowDebugInfo_Label.Text = "Show debug info in logs";
             ShowDebugInfo_Label.Click += ShowDebugInfo_Label_Click;
             // 
             // SendAnonymousInformation_Label
@@ -160,6 +161,7 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_Label.TabIndex = 0;
             SendAnonymousInformation_Label.Tag = "";
             SendAnonymousInformation_Label.Text = "Send anonymous statistics and usage data";
+            SendAnonymousInformation_Label.Visible = false;
             SendAnonymousInformation_Label.Click += SendAnonymousInformation_Label_Click;
             // 
             // PurchaseReceipts_Label
@@ -167,7 +169,7 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_Label.Anchor = AnchorStyles.Top;
             PurchaseReceipts_Label.AutoSize = true;
             PurchaseReceipts_Label.Font = new Font("Segoe UI", 10F);
-            PurchaseReceipts_Label.Location = new Point(288, 473);
+            PurchaseReceipts_Label.Location = new Point(288, 435);
             PurchaseReceipts_Label.Name = "PurchaseReceipts_Label";
             PurchaseReceipts_Label.Padding = new Padding(5);
             PurchaseReceipts_Label.Size = new Size(327, 38);
@@ -181,7 +183,7 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_Label.Anchor = AnchorStyles.Top;
             SalesReceipts_Label.AutoSize = true;
             SalesReceipts_Label.Font = new Font("Segoe UI", 10F);
-            SalesReceipts_Label.Location = new Point(325, 511);
+            SalesReceipts_Label.Location = new Point(325, 473);
             SalesReceipts_Label.Name = "SalesReceipts_Label";
             SalesReceipts_Label.Padding = new Padding(5);
             SalesReceipts_Label.Size = new Size(290, 38);
@@ -211,7 +213,7 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_CheckBox.CheckedState.BorderThickness = 0;
             SalesReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             SalesReceipts_CheckBox.CustomizableEdges = customizableEdges3;
-            SalesReceipts_CheckBox.Location = new Point(613, 520);
+            SalesReceipts_CheckBox.Location = new Point(613, 482);
             SalesReceipts_CheckBox.Name = "SalesReceipts_CheckBox";
             SalesReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             SalesReceipts_CheckBox.Size = new Size(20, 20);
@@ -231,7 +233,7 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox.CheckedState.BorderThickness = 0;
             PurchaseReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             PurchaseReceipts_CheckBox.CustomizableEdges = customizableEdges5;
-            PurchaseReceipts_CheckBox.Location = new Point(613, 482);
+            PurchaseReceipts_CheckBox.Location = new Point(613, 444);
             PurchaseReceipts_CheckBox.Name = "PurchaseReceipts_CheckBox";
             PurchaseReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             PurchaseReceipts_CheckBox.Size = new Size(20, 20);
@@ -280,6 +282,7 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_CheckBox.UncheckedState.BorderRadius = 2;
             SendAnonymousInformation_CheckBox.UncheckedState.BorderThickness = 0;
             SendAnonymousInformation_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            SendAnonymousInformation_CheckBox.Visible = false;
             SendAnonymousInformation_CheckBox.Click += CloseAllPanels;
             // 
             // Language_TextBox
@@ -388,7 +391,7 @@ namespace Sales_Tracker.Settings.Menus
             AnimateButtons_CheckBox.CheckedState.BorderThickness = 0;
             AnimateButtons_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             AnimateButtons_CheckBox.CustomizableEdges = customizableEdges19;
-            AnimateButtons_CheckBox.Location = new Point(613, 558);
+            AnimateButtons_CheckBox.Location = new Point(613, 520);
             AnimateButtons_CheckBox.Name = "AnimateButtons_CheckBox";
             AnimateButtons_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             AnimateButtons_CheckBox.Size = new Size(20, 20);
@@ -403,7 +406,7 @@ namespace Sales_Tracker.Settings.Menus
             AnimateButtons_Label.Anchor = AnchorStyles.Top;
             AnimateButtons_Label.AutoSize = true;
             AnimateButtons_Label.Font = new Font("Segoe UI", 10F);
-            AnimateButtons_Label.Location = new Point(404, 549);
+            AnimateButtons_Label.Location = new Point(404, 511);
             AnimateButtons_Label.Name = "AnimateButtons_Label";
             AnimateButtons_Label.Padding = new Padding(5);
             AnimateButtons_Label.Size = new Size(211, 38);
@@ -420,7 +423,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowHasReceiptColumn_CheckBox.CheckedState.BorderThickness = 0;
             ShowHasReceiptColumn_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             ShowHasReceiptColumn_CheckBox.CustomizableEdges = customizableEdges21;
-            ShowHasReceiptColumn_CheckBox.Location = new Point(613, 596);
+            ShowHasReceiptColumn_CheckBox.Location = new Point(613, 558);
             ShowHasReceiptColumn_CheckBox.Name = "ShowHasReceiptColumn_CheckBox";
             ShowHasReceiptColumn_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
             ShowHasReceiptColumn_CheckBox.Size = new Size(20, 20);
@@ -435,7 +438,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowHasReceiptColumn_Label.Anchor = AnchorStyles.Top;
             ShowHasReceiptColumn_Label.AutoSize = true;
             ShowHasReceiptColumn_Label.Font = new Font("Segoe UI", 10F);
-            ShowHasReceiptColumn_Label.Location = new Point(217, 587);
+            ShowHasReceiptColumn_Label.Location = new Point(217, 549);
             ShowHasReceiptColumn_Label.Name = "ShowHasReceiptColumn_Label";
             ShowHasReceiptColumn_Label.Padding = new Padding(5);
             ShowHasReceiptColumn_Label.Size = new Size(398, 38);
@@ -459,6 +462,7 @@ namespace Sales_Tracker.Settings.Menus
             ExportData_Button.Size = new Size(220, 45);
             ExportData_Button.TabIndex = 256;
             ExportData_Button.Text = "Export data";
+            ExportData_Button.Visible = false;
             ExportData_Button.Click += ExportData_Button_Click;
             // 
             // EnableAISearch_CheckBox
@@ -470,7 +474,7 @@ namespace Sales_Tracker.Settings.Menus
             EnableAISearch_CheckBox.CheckedState.BorderThickness = 0;
             EnableAISearch_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             EnableAISearch_CheckBox.CustomizableEdges = customizableEdges25;
-            EnableAISearch_CheckBox.Location = new Point(613, 634);
+            EnableAISearch_CheckBox.Location = new Point(613, 596);
             EnableAISearch_CheckBox.Name = "EnableAISearch_CheckBox";
             EnableAISearch_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges26;
             EnableAISearch_CheckBox.Size = new Size(20, 20);
@@ -485,7 +489,7 @@ namespace Sales_Tracker.Settings.Menus
             EnableAISearch_Label.Anchor = AnchorStyles.Top;
             EnableAISearch_Label.AutoSize = true;
             EnableAISearch_Label.Font = new Font("Segoe UI", 10F);
-            EnableAISearch_Label.Location = new Point(297, 625);
+            EnableAISearch_Label.Location = new Point(297, 587);
             EnableAISearch_Label.Name = "EnableAISearch_Label";
             EnableAISearch_Label.Padding = new Padding(5);
             EnableAISearch_Label.Size = new Size(318, 38);
@@ -518,11 +522,11 @@ namespace Sales_Tracker.Settings.Menus
             Controls.Add(Language_Label);
             Controls.Add(ShowDebugInfo_Label);
             Controls.Add(MoreInformation_Button);
-            Controls.Add(SendAnonymousInformation_Label);
             Controls.Add(PurchaseReceipts_Label);
             Controls.Add(SalesReceipts_Label);
             Controls.Add(ColorTheme_Label);
             Controls.Add(Currency_Label);
+            Controls.Add(SendAnonymousInformation_Label);
             FormBorderStyle = FormBorderStyle.None;
             Name = "General_Form";
             Shown += General_form_Shown;

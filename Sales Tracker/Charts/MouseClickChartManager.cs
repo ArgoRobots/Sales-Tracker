@@ -4,7 +4,7 @@ using Sales_Tracker.UI;
 namespace Sales_Tracker.Charts
 {
     /// <summary>
-    /// Manages mouse click detection for GunaChart controls and invokes specific actions.
+    /// Manages mouse click detection for GunaChart controls and invokes specific actions, because unfortunately Guna does not support this.
     /// </summary>
     public static class MouseClickChartManager
     {
@@ -76,7 +76,7 @@ namespace Sales_Tracker.Charts
                     controlsList.Add(mainPanel);
                 }
 
-                // Ignore the click if it happened within a control
+                // Ignore the click for certain cases
                 foreach (Control control in controlsList)
                 {
                     if (control.Parent == null)
@@ -84,9 +84,10 @@ namespace Sales_Tracker.Charts
                         continue;
                     }
 
-                    Point localMousePosition = control.PointToClient(mousePosition);
+                    if (SearchBox.IsSearchBoxOpen()) { return false; }
 
                     // Check if the mouse click was within the bounds of the control
+                    Point localMousePosition = control.PointToClient(mousePosition);
                     if (control.ClientRectangle.Contains(localMousePosition))
                     {
                         return false;

@@ -71,7 +71,6 @@ namespace Sales_Tracker.Classes
                         }
                         catch (Exception ex)
                         {
-                            // Log the error but continue with other files
                             Log.LogText += $"Failed to delete old log file {file.FullName}: {ex.Message}\n";
                         }
                     }
