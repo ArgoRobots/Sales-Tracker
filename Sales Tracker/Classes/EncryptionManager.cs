@@ -1,13 +1,13 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
+using System.Management;
 
 namespace Sales_Tracker.Classes
 {
     /// <summary>
     /// The EncryptionManager class provides functionality for encrypting and decrypting data, 
-    /// including streams and strings, using AES encryption. This class also manages encryption keys 
-    /// and initialization vectors (IVs), and includes methods for secure storage and retrieval.
+    /// including streams and strings, using AES encryption. This class derives encryption keys 
+    /// from hardcoded secrets and machine-specific information.
     /// </summary>
     public static class EncryptionManager
     {
@@ -21,13 +21,14 @@ namespace Sales_Tracker.Classes
         public static byte[] AesIV => _aesIV;
 
         /// <summary>
-        /// Initializes the encryption manager by ensuring encryption key and IV configurations exist.
+        /// Initializes the encryption manager by deriving encryption keys from hardcoded secrets
+        /// and machine-specific information.
         /// </summary>
         public static void Initialize()
         {
             try
             {
-                (_aesKey, _aesIV) = EnsureConfigurationExists();
+                (_aesKey, _aesIV) = DeriveKeysFromSecrets();
             }
             catch (Exception ex)
             {
@@ -258,114 +259,91 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Generates a random cryptographic key of the specified size.
+        /// Derives encryption keys from hardcoded secrets and machine-specific information.
         /// </summary>
-        /// <returns>A byte array containing the generated key.</returns>
-        public static byte[] GenerateRandomKey(int size)
+        /// <returns>A tuple containing the derived key and IV.</returns>
+        private static (byte[] Key, byte[] IV) DeriveKeysFromSecrets()
         {
-            byte[] key = new byte[size];
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            // Get hardcoded secrets
+            byte[] salt = SecretConstants.GetSalt();
+            byte[] pepper = SecretConstants.GetPepper();
+            string appSpecificString = SecretConstants.GetAppSpecificString();
+
+            // Get machine-specific information to ensure keys are unique per installation
+            string machineId = GetMachineSpecificId();
+
+            // Combine the secrets with the machine ID
+            using var hmac = new HMACSHA256(pepper);
+            byte[] combinedData = Encoding.UTF8.GetBytes(appSpecificString + machineId);
+            byte[] keyMaterial = hmac.ComputeHash(combinedData);
+
+            // Use a key derivation function to generate the key and IV
+            byte[] derivedKey;
+            byte[] derivedIV;
+
+            using (var pbkdf2 = new Rfc2898DeriveBytes(keyMaterial, salt, 10000, HashAlgorithmName.SHA256))
             {
-                rng.GetBytes(key);
+                derivedKey = pbkdf2.GetBytes(32); // 256 bits for AES-256
+                derivedIV = pbkdf2.GetBytes(16);  // 128 bits for AES IV
             }
-            return key;
+
+            return (derivedKey, derivedIV);
         }
 
         /// <summary>
-        /// Generates a random cryptographic initialization vector (IV) of the specified size.
+        /// Gets a unique identifier for the current machine based on hardware information.
         /// </summary>
-        /// <returns>A byte array containing the generated IV.</returns>
-        public static byte[] GenerateRandomIV(int size)
+        /// <returns>A string containing a unique identifier for the machine.</returns>
+        private static string GetMachineSpecificId()
         {
-            byte[] iv = new byte[size];
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            // Collect hardware identifiers that don't change frequently
+            StringBuilder sb = new();
+
+            try
             {
-                rng.GetBytes(iv);
+                // Get processor ID
+                using (ManagementClass mc = new("Win32_Processor"))
+                using (ManagementObjectCollection moc = mc.GetInstances())
+                {
+                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
+                    {
+                        sb.Append(mo["ProcessorId"]?.ToString() ?? "");
+                        break; // Just use the first processor
+                    }
+                }
+
+                // Get motherboard serial number
+                using (ManagementClass mc = new("Win32_BaseBoard"))
+                using (ManagementObjectCollection moc = mc.GetInstances())
+                {
+                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
+                    {
+                        sb.Append(mo["SerialNumber"]?.ToString() ?? "");
+                        break;
+                    }
+                }
+
+                // Get BIOS serial number
+                using (ManagementClass mc = new("Win32_BIOS"))
+                using (ManagementObjectCollection moc = mc.GetInstances())
+                {
+                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
+                    {
+                        sb.Append(mo["SerialNumber"]?.ToString() ?? "");
+                        break;
+                    }
+                }
             }
-            return iv;
-        }
-
-        /// <summary>
-        /// Ensures that the cryptographic configuration exists. If it does not, generates a new key and IV, stores them, and returns them.
-        /// </summary>
-        /// <returns>A tuple containing the cryptographic key and IV.</returns>
-        private static (byte[] Key, byte[] IV) EnsureConfigurationExists()
-        {
-            if (!File.Exists(Directories.Config_file))
+            catch
             {
-                byte[] key = GenerateRandomKey(32);
-                byte[] iv = GenerateRandomIV(16);
-                StoreKeys(key, iv);
-                return (key, iv);
+                // Fallback to machine name and current user if WMI queries fail
+                sb.Append(Environment.MachineName);
+                sb.Append(Environment.UserName);
             }
-            else
-            {
-                return RetrieveKeys();
-            }
-        }
 
-        /// <summary>
-        /// Stores the provided cryptographic key and IV in a configuration file after encrypting them.
-        /// </summary>
-        private static void StoreKeys(byte[] key, byte[] iv)
-        {
-            Config config = new()
-            {
-                EncryptedKey = ProtectData(key),
-                EncryptedIV = ProtectData(iv)
-            };
-
-            string configText = JsonSerializer.Serialize(config);
-            File.WriteAllText(Directories.Config_file, configText);
-        }
-
-        /// <summary>
-        /// Retrieves the stored cryptographic key and IV from the configuration file, decrypting them in the process.
-        /// </summary>
-        /// <returns>A tuple containing the decrypted cryptographic key and IV.</returns>
-        private static (byte[] Key, byte[] IV) RetrieveKeys()
-        {
-            string configText = File.ReadAllText(Directories.Config_file);
-            Config config = JsonSerializer.Deserialize<Config>(configText);
-
-            return (UnprotectData(config.EncryptedKey), UnprotectData(config.EncryptedIV));
-        }
-
-        /// <summary>
-        /// Encrypts the provided data for storage.
-        /// </summary>
-        /// <returns>A byte array containing the encrypted data.</returns>
-        private static byte[] ProtectData(byte[] data)
-        {
-            return ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
-        }
-
-        /// <summary>
-        /// Decrypts the provided encrypted data.
-        /// </summary>
-        /// <returns>A byte array containing the decrypted data.</returns>
-        private static byte[] UnprotectData(byte[] data)
-        {
-            return ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
-        }
-
-        private class Config
-        {
-            // Properties
-            private byte[] _encryptedKey;
-            private byte[] _encryptedIV;
-
-            // Getters and setters
-            public byte[] EncryptedKey
-            {
-                get => _encryptedKey;
-                set => _encryptedKey = value;
-            }
-            public byte[] EncryptedIV
-            {
-                get => _encryptedIV;
-                set => _encryptedIV = value;
-            }
+            // Hash the collected information to get a consistent identifier
+            byte[] hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString()));
+            return Convert.ToBase64String(hashBytes);
         }
     }
 }

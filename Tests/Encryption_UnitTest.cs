@@ -70,31 +70,21 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestGenerateRandomKeyAndIV()
+        public void TestDerivedKeyConsistency()
         {
-            byte[] key = EncryptionManager.GenerateRandomKey(32);
-            byte[] iv = EncryptionManager.GenerateRandomIV(16);
+            // Initialize EncryptionManager twice and check if keys remain consistent
+            EncryptionManager.Initialize();
+            byte[] firstKey = EncryptionManager.AesKey;
+            byte[] firstIV = EncryptionManager.AesIV;
 
-            // Validate key and IV sizes
-            Assert.AreEqual(32, key.Length, "Key size is incorrect.");
-            Assert.AreEqual(16, iv.Length, "IV size is incorrect.");
-        }
+            // Re-initialize
+            EncryptionManager.Initialize();
+            byte[] secondKey = EncryptionManager.AesKey;
+            byte[] secondIV = EncryptionManager.AesIV;
 
-        [TestMethod]
-        public void TestEncryptDecryptWithGeneratedKeys()
-        {
-            string originalText = "RandomKeyAndIVTest";
-            byte[] key = EncryptionManager.GenerateRandomKey(32);
-            byte[] iv = EncryptionManager.GenerateRandomIV(16);
-
-            // Encrypt the string
-            string encryptedText = EncryptionManager.EncryptString(originalText, key, iv);
-
-            // Decrypt the string
-            string? decryptedText = EncryptionManager.DecryptString(encryptedText, key, iv);
-
-            // Validate the result
-            Assert.AreEqual(originalText, decryptedText, "Encryption and decryption with generated keys failed.");
+            // Keys should be the same after re-initialization on the same machine
+            CollectionAssert.AreEqual(firstKey, secondKey, "Key derivation is not consistent.");
+            CollectionAssert.AreEqual(firstIV, secondIV, "IV derivation is not consistent.");
         }
     }
 }
