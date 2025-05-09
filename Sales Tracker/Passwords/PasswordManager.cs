@@ -29,49 +29,64 @@ namespace Sales_Tracker.Passwords
         /// <returns>True if the password meets all the requirements, otherwise false.</returns>
         public static bool ValidatePassword(Label length, Label uppercase, Label digit, Label specialChar, string password)
         {
-            bool isValid = true;
+            (bool isValid, bool _, bool _, bool _, bool _) = ValidatePasswordWithFlags(length, uppercase, digit, specialChar, password);
+            return isValid;
+        }
+
+        /// <summary>
+        /// Validates the password based on specified requirements, updates the label colors, and returns flags for each requirement.
+        /// </summary>
+        /// <returns>A tuple containing: (overall validity, length valid, uppercase valid, digit valid, special char valid)</returns>
+        public static (bool isValid, bool lengthValid, bool uppercaseValid, bool digitValid, bool specialCharValid)
+            ValidatePasswordWithFlags(Label length, Label uppercase, Label digit, Label specialChar, string password)
+        {
+            bool lengthValid = false;
+            bool uppercaseValid = false;
+            bool digitValid = false;
+            bool specialCharValid = false;
 
             if (password.Length >= 8)
             {
                 length.ForeColor = CustomColors.AccentGreen;
+                lengthValid = true;
             }
             else
             {
                 length.ForeColor = CustomColors.Text;
-                isValid = false;
             }
 
             if (password.Any(char.IsUpper))
             {
                 uppercase.ForeColor = CustomColors.AccentGreen;
+                uppercaseValid = true;
             }
             else
             {
                 uppercase.ForeColor = CustomColors.Text;
-                isValid = false;
             }
 
             if (password.Any(char.IsDigit))
             {
                 digit.ForeColor = CustomColors.AccentGreen;
+                digitValid = true;
             }
             else
             {
                 digit.ForeColor = CustomColors.Text;
-                isValid = false;
             }
 
             if (password.Any(ch => !char.IsLetterOrDigit(ch)))
             {
                 specialChar.ForeColor = CustomColors.AccentGreen;
+                specialCharValid = true;
             }
             else
             {
                 specialChar.ForeColor = CustomColors.Text;
-                isValid = false;
             }
 
-            return isValid;
+            bool isValid = lengthValid && uppercaseValid && digitValid && specialCharValid;
+            return (isValid, lengthValid, uppercaseValid, digitValid, specialCharValid);
         }
 
         /// <summary>

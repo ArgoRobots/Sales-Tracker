@@ -371,16 +371,16 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            if (label.Anchor.HasFlag(AnchorStyles.Right))
+            if (AccessibleDescriptionManager.HasTag(label, AccessibleDescriptionManager.AlignRightCenter))
             {
                 label.Left = originalBounds.Right - label.Width;
             }
-            else if (label.Anchor == AnchorStyles.Top || label.Anchor == AnchorStyles.Bottom)
+            else if (!AccessibleDescriptionManager.HasTag(label, AccessibleDescriptionManager.AlignLeftCenter)
+                && !label.Anchor.HasFlag(AnchorStyles.Left))
             {
-                if (AccessibleDescriptionManager.HasTag(label, AccessibleDescriptionManager.AlignRightCenter))
-                {
-                    label.Left = originalBounds.Right - label.Width;
-                }
+                // Center
+                int originalCenterX = originalBounds.Left + originalBounds.Width / 2;
+                label.Left = originalCenterX - label.Width / 2;
             }
         }
         private static bool CanControlCache(Control control)

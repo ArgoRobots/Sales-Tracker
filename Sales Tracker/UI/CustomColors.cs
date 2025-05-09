@@ -148,7 +148,7 @@ namespace Sales_Tracker.UI
             _dataGridViewTheme = DataGridViewPresetThemes.White;
 
             // Accent colors
-            _accentGreen = Color.FromArgb(73, 186, 142);
+            _accentGreen = Color.FromArgb(60, 160, 120);
         }
     }
 }
