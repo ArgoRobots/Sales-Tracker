@@ -162,7 +162,7 @@ namespace Sales_Tracker
             Invoke(() =>
             {
                 LoadingPanel.HideLoadingScreen(this);
-                CustomMessageBox.Show("Successfully exported", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Successfully exported", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             });
         }
     }

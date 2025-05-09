@@ -359,8 +359,7 @@ namespace Sales_Tracker.Charts
             catch (Exception ex)
             {
                 CustomMessageBox.Show(
-                    "Export Error",
-                    $"Failed to export chart: {ex.Message}",
+                    "Export Error", $"Failed to export chart: {ex.Message}",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
         }

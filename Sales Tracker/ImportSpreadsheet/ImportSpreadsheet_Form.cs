@@ -112,7 +112,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     HideLoadingIndicator();
                     string message = $"Imported '{Path.GetFileName(spreadsheetFilePath)}'";
                     CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
-                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 }
                 else
                 {

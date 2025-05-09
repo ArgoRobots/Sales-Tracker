@@ -79,6 +79,9 @@ namespace Sales_Tracker
                 case CustomMessageBoxIcon.Info:
                     Icon_PictureBox.BackgroundImage = Resources.Info;
                     break;
+                case CustomMessageBoxIcon.Success:
+                    Icon_PictureBox.BackgroundImage = Resources.Checkmark;
+                    break;
                 case CustomMessageBoxIcon.None:
                     Icon_PictureBox.BackgroundImage = null;
                     Controls.Remove(Icon_PictureBox);
@@ -328,6 +331,7 @@ namespace Sales_Tracker
         Exclamation,
         Error,
         Info,
+        Success,
         None
     }
     public enum CustomMessageBoxButtons

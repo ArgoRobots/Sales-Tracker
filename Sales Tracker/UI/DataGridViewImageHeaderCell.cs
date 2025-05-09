@@ -123,8 +123,7 @@
                 if (imgBounds.Contains(clickLocation))
                 {
                     CustomMessageBox.Show(
-                        "Argo Sales Tracker",
-                        _messageBoxText,
+                        "Argo Sales Tracker", _messageBoxText,
                         CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             }

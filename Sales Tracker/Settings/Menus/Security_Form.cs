@@ -122,7 +122,7 @@ namespace Sales_Tracker.Settings.Menus
                 if (PasswordManager.EnterPassword(false))
                 {
                     Properties.Settings.Default.WindowsHelloEnabled = false;
-                    CustomMessageBox.Show("Windows Hello disabled", "Windows Hello has been disabled", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Windows Hello disabled", "Windows Hello has been disabled", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                     string newText = LanguageManager.TranslateSingleString("Enable Windows Hello");
                     EnableWindowsHello_Button.Text = newText;
                     EnableWindowsHello_Button.Tag = "Disabled";
@@ -146,7 +146,8 @@ namespace Sales_Tracker.Settings.Menus
                         CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, message);
 
                         StopPlayingLoadingAnimation();
-                        CustomMessageBox.Show("Windows Hello enabled", "Windows Hello has been enabled. You can now log in with your biometrics", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                        CustomMessageBox.Show("Windows Hello enabled", "Windows Hello has been enabled. You can now log in with your biometrics",
+                            CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                         string newText = LanguageManager.TranslateSingleString("Disable Windows Hello");
                         EnableWindowsHello_Button.Text = newText;
                         EnableWindowsHello_Button.Tag = "Enabled";

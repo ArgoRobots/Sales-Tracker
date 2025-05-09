@@ -209,11 +209,13 @@ namespace Sales_Tracker.Classes
 
             if (totalSizeInBytes > 0)
             {
-                CustomMessageBox.Show("Cleared cache", $"Cleared {totalSizeReadable} of cached data", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Cleared cache", $"Cleared {totalSizeReadable} of cached data",
+                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             }
             else
             {
-                CustomMessageBox.Show("No cache to clear", $"No cache to clear", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("No cache to clear", $"No cache to clear",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
         }
 
@@ -243,22 +245,24 @@ namespace Sales_Tracker.Classes
             // Validate the file path
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
-                CustomMessageBox.Show("Project does not exist", "The specified project file does not exist.", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Project does not exist", "The specified project file does not exist.",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
 
             // If this project is already open
             if (Directories.ArgoCompany_file == filePath)
             {
-                CustomMessageBox.Show("Project already open", "This project is already open", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Project already open", "This project is already open",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
 
             // Save current project
             if (AreAnyChangesMade())
             {
-                string message = "Would you like to save your changes before opening a new project?";
-                CustomMessageBoxResult result = CustomMessageBox.Show("Save changes", message, CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
+                CustomMessageBoxResult result = CustomMessageBox.Show("Save changes", "Would you like to save your changes before opening a new project?",
+                    CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
                 switch (result)
                 {

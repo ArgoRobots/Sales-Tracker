@@ -123,7 +123,7 @@ namespace Sales_Tracker.Settings.Menus
 
                 CustomMessageBox.Show("Export Successful",
                     "Successfully exported anonymous user data.",
-                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             }
         }
 

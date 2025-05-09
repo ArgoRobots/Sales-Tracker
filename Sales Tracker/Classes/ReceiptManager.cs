@@ -99,8 +99,7 @@ namespace Sales_Tracker.Classes
             if (receiptFilePath != null && !File.Exists(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, "")))
             {
                 CustomMessageBox.Show(
-                    "Receipt does not exist",
-                    $"The receipt you selected no longer exists",
+                    "Receipt does not exist", $"The receipt you selected no longer exists",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return false;
             }
@@ -178,7 +177,7 @@ namespace Sales_Tracker.Classes
                 CustomMessageBox.Show(
                     exportedCount == 1 ? "Receipt exported" : "Receipts exported",
                     message,
-                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             }
         }
         private static void TrackReceiptExport(Stopwatch stopwatch, List<string> exportedFiles)

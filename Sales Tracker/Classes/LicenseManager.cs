@@ -27,7 +27,7 @@ namespace Sales_Tracker.Classes
         public async Task<bool> ValidateKeyAsync(string licenseKey = null)
         {
             licenseKey ??= Properties.Settings.Default.LicenseKey;
-            if ( licenseKey == "")
+            if (licenseKey == "")
             {
                 return false;
             }
@@ -129,7 +129,7 @@ namespace Sales_Tracker.Classes
                 // The server already activated the license for this device 
                 CustomMessageBox.Show("Activation Successful",
                     "License has been successfully transferred to this device.",
-                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             }
             else
             {
