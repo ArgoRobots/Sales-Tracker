@@ -54,7 +54,6 @@ namespace Sales_Tracker.Passwords
         {
             ValidateButton();
         }
-
         private void CurrentPassword_TextBox_TextChanged(object sender, EventArgs e)
         {
             Update_Button.Enabled = CurrentPassword_TextBox.Text != "";

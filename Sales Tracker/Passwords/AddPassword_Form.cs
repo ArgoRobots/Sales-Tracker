@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Passwords
@@ -53,6 +54,7 @@ namespace Sales_Tracker.Passwords
         private void SetPassword()
         {
             PasswordManager.Password = Password_TextBox.Text;
+            Security_Form.Instance.SetPasswordButton();
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 4, $"Added password");
             CustomMessageBox.Show("Password set", "Password set successfully", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             Close();

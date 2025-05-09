@@ -259,7 +259,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Derives encryption keys from hardcoded secrets and machine-specific information.
+        /// Derives encryption keys from hardcoded secrets.
         /// </summary>
         /// <returns>A tuple containing the derived key and IV.</returns>
         private static (byte[] Key, byte[] IV) DeriveKeysFromSecrets()
@@ -269,81 +269,22 @@ namespace Sales_Tracker.Classes
             byte[] pepper = SecretConstants.GetPepper();
             string appSpecificString = SecretConstants.GetAppSpecificString();
 
-            // Get machine-specific information to ensure keys are unique per installation
-            string machineId = GetMachineSpecificId();
-
-            // Combine the secrets with the machine ID
-            using var hmac = new HMACSHA256(pepper);
-            byte[] combinedData = Encoding.UTF8.GetBytes(appSpecificString + machineId);
+            // Use only application-specific constants to ensure keys are the same across installations
+            using HMACSHA256 hmac = new(pepper);
+            byte[] combinedData = Encoding.UTF8.GetBytes(appSpecificString);
             byte[] keyMaterial = hmac.ComputeHash(combinedData);
 
             // Use a key derivation function to generate the key and IV
             byte[] derivedKey;
             byte[] derivedIV;
 
-            using (var pbkdf2 = new Rfc2898DeriveBytes(keyMaterial, salt, 10000, HashAlgorithmName.SHA256))
+            using (Rfc2898DeriveBytes pbkdf2 = new(keyMaterial, salt, 10000, HashAlgorithmName.SHA256))
             {
                 derivedKey = pbkdf2.GetBytes(32); // 256 bits for AES-256
                 derivedIV = pbkdf2.GetBytes(16);  // 128 bits for AES IV
             }
 
             return (derivedKey, derivedIV);
-        }
-
-        /// <summary>
-        /// Gets a unique identifier for the current machine based on hardware information.
-        /// </summary>
-        /// <returns>A string containing a unique identifier for the machine.</returns>
-        private static string GetMachineSpecificId()
-        {
-            // Collect hardware identifiers that don't change frequently
-            StringBuilder sb = new();
-
-            try
-            {
-                // Get processor ID
-                using (ManagementClass mc = new("Win32_Processor"))
-                using (ManagementObjectCollection moc = mc.GetInstances())
-                {
-                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
-                    {
-                        sb.Append(mo["ProcessorId"]?.ToString() ?? "");
-                        break; // Just use the first processor
-                    }
-                }
-
-                // Get motherboard serial number
-                using (ManagementClass mc = new("Win32_BaseBoard"))
-                using (ManagementObjectCollection moc = mc.GetInstances())
-                {
-                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
-                    {
-                        sb.Append(mo["SerialNumber"]?.ToString() ?? "");
-                        break;
-                    }
-                }
-
-                // Get BIOS serial number
-                using (ManagementClass mc = new("Win32_BIOS"))
-                using (ManagementObjectCollection moc = mc.GetInstances())
-                {
-                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
-                    {
-                        sb.Append(mo["SerialNumber"]?.ToString() ?? "");
-                        break;
-                    }
-                }
-            }
-            catch
-            {
-                // Fallback to machine name and current user if WMI queries fail
-                sb.Append(Environment.MachineName);
-                sb.Append(Environment.UserName);
-            }
-
-            // Hash the collected information to get a consistent identifier
-            byte[] hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString()));
-            return Convert.ToBase64String(hashBytes);
         }
     }
 }

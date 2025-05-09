@@ -184,7 +184,7 @@ namespace Sales_Tracker.Settings.Menus
         }
 
         // Methods
-        private void SetPasswordButton()
+        public void SetPasswordButton()
         {
             string password = PasswordManager.Password;
             if (password == null)
