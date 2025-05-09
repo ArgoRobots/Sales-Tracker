@@ -54,7 +54,7 @@ namespace Sales_Tracker.Charts
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
-            dialog.FileName = $"{Directories.CompanyName} {chart.Title.Text.ToLower()} {date}";
+            dialog.FileName = $"{Directories.CompanyName} {chart.Name} {date}";
             dialog.DefaultExt = ArgoFiles.PngFileExtension;
             dialog.Filter = $"PNG Image|*{ArgoFiles.PngFileExtension}";
             dialog.Title = "Save Chart Image";
@@ -367,6 +367,8 @@ namespace Sales_Tracker.Charts
         // Other methods
         public static void ShowMenu(GunaChart chart, Point mousePosition)
         {
+            if (chart.DatasetCount == 0) { return; }
+
             Form form = chart.FindForm();
             _rightClickGunaChart_Panel.Tag = chart;
             Point localMousePosition = form.PointToClient(mousePosition);
@@ -375,16 +377,6 @@ namespace Sales_Tracker.Charts
             byte offset = ReadOnlyVariables.OffsetRightClickPanel;
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
-            // Show/hide export buttons based on chart data
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickGunaChart_Panel.Controls[0];
-
-            foreach (Control control in flowPanel.Controls)
-            {
-                if (control is Guna2Button btn && btn.Tag?.ToString() == exportBtn_text)
-                {
-                    btn.Visible = chart.DatasetCount > 0;
-                }
-            }
             CustomControls.SetRightClickMenuHeight(_rightClickGunaChart_Panel);
 
             // Calculate the horizontal position
