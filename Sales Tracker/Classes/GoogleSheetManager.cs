@@ -15,13 +15,7 @@ namespace Sales_Tracker.Classes
     internal class GoogleSheetManager
     {
         // Properties
-        private static readonly string[] Scopes =
-        [
-            SheetsService.Scope.Spreadsheets,
-            DriveService.Scope.Drive
-        ];
         private static SheetsService? _sheetsService;
-
         public enum ChartType
         {
             Line,
@@ -31,17 +25,14 @@ namespace Sales_Tracker.Classes
         }
 
         // Initialize the Google Sheets service
-        private static async Task<bool> InitializeServiceAsync()
+        private static bool InitializeServiceAsync()
         {
             try
             {
-                await GoogleCredentialsManager.CreateCredentialsIfNeeded();
+                // Get credentials from environment variables
+                GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
 
-                await using FileStream stream = new(Directories.GoogleCredentials_file, FileMode.Open, FileAccess.Read);
-                using CancellationTokenSource cts = new();
-                GoogleCredential credential = await GoogleCredential.FromStreamAsync(stream, cts.Token).ConfigureAwait(false);
-                credential = credential.CreateScoped(Scopes);
-
+                // Create the sheets service with proper scopes
                 _sheetsService = new SheetsService(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = credential,
@@ -52,12 +43,8 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show(
-                    "Service Initialization Error",
-                    $"Failed to initialize Google Sheets service: {ex.Message}",
-                    CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.Ok
-                );
+                // Use thread-safe message box
+                ShowErrorMessageOnUIThread("Service Initialization Error", $"Failed to initialize Google Sheets service: {ex.Message}");
                 return false;
             }
         }
@@ -70,13 +57,15 @@ namespace Sales_Tracker.Classes
             string column1Text,
             string column2Text)
         {
-            if (_sheetsService == null && !await InitializeServiceAsync())
+            if (_sheetsService == null && !InitializeServiceAsync())
             {
                 return;
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Tools.OpenForm(new Loading_Form("Exporting chart to Google Sheets..."));
+
+            // Show loading form on UI thread
+            ShowLoadingForm("Exporting chart to Google Sheets...");
 
             try
             {
@@ -106,7 +95,7 @@ namespace Sales_Tracker.Classes
                 string spreadsheetId = spreadsheet.SpreadsheetId;
                 string sheetName = LanguageManager.TranslateSingleString("Chart Data");
 
-                // Create new project if it doesn't exist
+                // Create drive service
                 DriveService driveService = new(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = _sheetsService.HttpClientInitializer,
@@ -199,18 +188,17 @@ namespace Sales_Tracker.Classes
                     .ExecuteAsync();
 
                 OpenGoogleSheet(spreadsheetId);
-                TrackGoogleSheetsExport(stopwatch, chartType == ChartType.Spline);
+                TrackGoogleSheetsExport(stopwatch);
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show(
-                    "Export Error",
-                    $"Failed to export chart to Google Sheets: {ex.Message}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
-                );
+                ShowErrorMessageOnUIThread("Export Error", $"Failed to export chart to Google Sheets: {ex.Message}");
             }
-
-            Tools.CloseOpenForm<Loading_Form>();
+            finally
+            {
+                // Close loading form on UI thread
+                CloseLoadingForm();
+            }
         }
 
         // Export multiple dataset charts
@@ -219,13 +207,15 @@ namespace Sales_Tracker.Classes
             string chartTitle,
             ChartType chartType)
         {
-            if (_sheetsService == null && !await InitializeServiceAsync())
+            if (_sheetsService == null && !InitializeServiceAsync())
             {
                 return;
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Tools.OpenForm(new Loading_Form("Exporting chart to Google Sheets..."));
+
+            // Show loading form on UI thread
+            ShowLoadingForm("Exporting chart to Google Sheets...");
 
             try
             {
@@ -256,7 +246,7 @@ namespace Sales_Tracker.Classes
 
                 string spreadsheetId = spreadsheet.SpreadsheetId;
 
-                // Create new project if it doesn't exist
+                // Create drive service
                 DriveService driveService = new(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = _sheetsService.HttpClientInitializer,
@@ -366,26 +356,91 @@ namespace Sales_Tracker.Classes
                     .ExecuteAsync();
 
                 OpenGoogleSheet(spreadsheetId);
-                TrackGoogleSheetsExport(stopwatch, chartType == ChartType.Spline);
+                TrackGoogleSheetsExport(stopwatch);
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show(
-                    "Export Error",
-                    $"Failed to export multi-dataset chart to Google Sheets: {ex.Message}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
-                );
+                ShowErrorMessageOnUIThread("Export Error", $"Failed to export multi-dataset chart to Google Sheets: {ex.Message}");
             }
-
-            Tools.CloseOpenForm<Loading_Form>();
+            finally
+            {
+                // Close loading form on UI thread
+                CloseLoadingForm();
+            }
         }
-        private static void TrackGoogleSheetsExport(Stopwatch stopwatch, bool isSpline)
+
+        // Helper methods for thread-safe UI operations
+        private static void ShowLoadingForm(string message)
+        {
+            if (Application.OpenForms.Count > 0)
+            {
+                Form mainForm = Application.OpenForms[0];
+                if (mainForm.InvokeRequired)
+                {
+                    mainForm.Invoke(new Action(() =>
+                    {
+                        Tools.OpenForm(new Loading_Form(message));
+                    }));
+                }
+                else
+                {
+                    Tools.OpenForm(new Loading_Form(message));
+                }
+            }
+            else
+            {
+                // Fallback if no forms are open
+                Tools.OpenForm(new Loading_Form(message));
+            }
+        }
+        private static void CloseLoadingForm()
+        {
+            if (Application.OpenForms.Count > 0)
+            {
+                Form mainForm = Application.OpenForms[0];
+                if (mainForm.InvokeRequired)
+                {
+                    mainForm.Invoke(new Action(() =>
+                    {
+                        Tools.CloseOpenForm<Loading_Form>();
+                    }));
+                }
+                else
+                {
+                    Tools.CloseOpenForm<Loading_Form>();
+                }
+            }
+            else
+            {
+                // Fallback if no forms are open
+                Tools.CloseOpenForm<Loading_Form>();
+            }
+        }
+        private static void ShowErrorMessageOnUIThread(string title, string message)
+        {
+            if (Application.OpenForms.Count > 0)
+            {
+                Form mainForm = Application.OpenForms[0];
+                if (mainForm.InvokeRequired)
+                {
+                    mainForm.Invoke(new Action(() =>
+                    {
+                        CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                    }));
+                }
+                else
+                {
+                    CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                }
+            }
+        }
+        private static void TrackGoogleSheetsExport(Stopwatch stopwatch)
         {
             stopwatch.Stop();
 
             Dictionary<ExportDataField, object> exportData = new()
             {
-                { ExportDataField.ExportType,  ExportType.GoogleSheetsChart  },
+                { ExportDataField.ExportType, ExportType.GoogleSheetsChart },
                 { ExportDataField.DurationMS, stopwatch.ElapsedMilliseconds },
                 { ExportDataField.FileSize, "N/A" }
             };
@@ -632,7 +687,7 @@ namespace Sales_Tracker.Classes
                         [
                             new() {
                                 SheetId = 0,
-                                StartRowIndex = startRowIndex ,
+                                StartRowIndex = startRowIndex,
                                 EndRowIndex = endRowIndex + 1,
                                 StartColumnIndex = 0,
                                 EndColumnIndex = 1
@@ -649,7 +704,7 @@ namespace Sales_Tracker.Classes
                             new GridRange
                             {
                                 SheetId = 0,
-                                StartRowIndex = startRowIndex ,
+                                StartRowIndex = startRowIndex,
                                 EndRowIndex = endRowIndex + 1,
                                 StartColumnIndex = range.YColumn[0] - 'A',
                                 EndColumnIndex = range.YColumn[0] - 'A' + 1

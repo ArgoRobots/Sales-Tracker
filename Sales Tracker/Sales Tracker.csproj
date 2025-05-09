@@ -30,12 +30,6 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="googleCredentials.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="GoogleCredentials.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->

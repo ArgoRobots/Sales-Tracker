@@ -1,127 +1,64 @@
-﻿using Google;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1;
-using Google.Apis.CloudResourceManager.v1.Data;
-using Google.Apis.Iam.v1;
-using Google.Apis.Iam.v1.Data;
-using Google.Apis.Services;
-using Google.Apis.ServiceUsage.v1;
-using Google.Apis.ServiceUsage.v1.Data;
-using System.Text;
+﻿using Google.Apis.Auth.OAuth2;
+using System.Text.Json;
 
 namespace Sales_Tracker.Classes
 {
     public class GoogleCredentialsManager
     {
-        private const string PROJECT_ID = "argp-1653327700137";
-        private const string SERVICE_ACCOUNT_NAME = "argo-sales-tracker";
-        private static readonly string[] REQUIRED_APIS =
-        [
-            "sheets.googleapis.com",
-            "drive.googleapis.com"
-        ];
-
-        public static async Task CreateCredentialsIfNeeded()
+        /// <summary>
+        /// Gets Google credentials from environment variables with the appropriate scopes
+        /// </summary>
+        public static GoogleCredential GetCredentialsFromEnvironment()
         {
-            string credentialsPath = Path.Combine(Directories.GoogleCredentials_file);
-            if (File.Exists(credentialsPath))
-            {
-                return;
-            }
-
             try
             {
-                GoogleCredential userCredential;
+                // Ensure environment variables are loaded
+                DotEnv.Load();
 
-                // Load from your credentials file
-                using (FileStream stream = new(credentialsPath, FileMode.Open, FileAccess.Read))
+                string projectId = DotEnv.Get("GOOGLE_PROJECT_ID");
+                string privateKey = DotEnv.Get("GOOGLE_PRIVATE_KEY")?.Replace("\\n", "\n");
+                string clientEmail = DotEnv.Get("GOOGLE_CLIENT_EMAIL");
+
+                if (string.IsNullOrEmpty(projectId) || string.IsNullOrEmpty(privateKey) || string.IsNullOrEmpty(clientEmail))
                 {
-                    userCredential = GoogleCredential.FromStream(stream)
-                        .CreateScoped(
+                    throw new Exception("Missing required Google credentials in .env file");
+                }
+
+                // Create credentials JSON from environment variables
+                var credentialJson = new
+                {
+                    type = DotEnv.Get("GOOGLE_TYPE"),
+                    project_id = projectId,
+                    private_key_id = DotEnv.Get("GOOGLE_PRIVATE_KEY_ID"),
+                    private_key = privateKey,
+                    client_email = clientEmail,
+                    client_id = DotEnv.Get("GOOGLE_CLIENT_ID"),
+                    auth_uri = DotEnv.Get("GOOGLE_AUTH_URI"),
+                    token_uri = DotEnv.Get("GOOGLE_TOKEN_URI"),
+                    auth_provider_x509_cert_url = DotEnv.Get("GOOGLE_AUTH_PROVIDER_CERT_URL"),
+                    client_x509_cert_url = DotEnv.Get("GOOGLE_CLIENT_CERT_URL"),
+                    universe_domain = DotEnv.Get("GOOGLE_UNIVERSE_DOMAIN")
+                };
+
+                // Convert to JSON string
+                string json = JsonSerializer.Serialize(credentialJson);
+
+                // Create credential from JSON string with only needed scopes for Sheets and Drive
+                GoogleCredential credential = GoogleCredential.FromJson(json)
+                    .CreateScoped(
                         [
                             "https://www.googleapis.com/auth/spreadsheets",
                             "https://www.googleapis.com/auth/drive"
-                        ]);
-                }
+                        ]
+                    );
 
-                // Create new project if it doesn't exist
-                using CloudResourceManagerService resourceManagerService = new(new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = userCredential,
-                    ApplicationName = "Sales Tracker"
-                });
-
-                // Check if project exists
-                try
-                {
-                    await resourceManagerService.Projects.Get(PROJECT_ID).ExecuteAsync();
-                }
-                catch (GoogleApiException)
-                {
-                    // Create project if it doesn't exist
-                    Project project = new()
-                    {
-                        ProjectId = PROJECT_ID,
-                        Name = "Sales Tracker"
-                    };
-                    await resourceManagerService.Projects.Create(project).ExecuteAsync();
-                }
-
-                // Enable required APIs
-                ServiceUsageService serviceUsageService = new(new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = userCredential,
-                    ApplicationName = "Sales Tracker"
-                });
-
-                foreach (string api in REQUIRED_APIS)
-                {
-                    string serviceName = $"projects/{PROJECT_ID}/services/{api}";
-                    EnableServiceRequest enableRequest = new();
-
-                    await serviceUsageService.Services
-                        .Enable(enableRequest, serviceName)
-                        .ExecuteAsync();
-                }
-
-                // Create service account
-                IamService iamService = new(new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = userCredential
-                });
-
-                CreateServiceAccountRequest createRequest = new()
-                {
-                    AccountId = SERVICE_ACCOUNT_NAME,
-                    ServiceAccount = new ServiceAccount
-                    {
-                        DisplayName = "Sales Tracker Service Account"
-                    }
-                };
-
-                ServiceAccount serviceAccount = await iamService.Projects.ServiceAccounts
-                     .Create(createRequest, $"projects/{PROJECT_ID}")
-                     .ExecuteAsync();
-
-                // Create key for service account
-                CreateServiceAccountKeyRequest keyRequest = new();
-                ServiceAccountKey key = await iamService.Projects.ServiceAccounts.Keys
-                    .Create(keyRequest, serviceAccount.Name)
-                    .ExecuteAsync();
-
-                // Save the private key as GoogleCredentials.json
-                string privateKeyData = Encoding.UTF8.GetString(
-                    Convert.FromBase64String(key.PrivateKeyData)
-                );
-
-                Directory.CreateDirectory(Directories.AppData_dir);
-                await File.WriteAllTextAsync(credentialsPath, privateKeyData);
+                return credential;
             }
             catch (Exception ex)
             {
                 CustomMessageBox.Show(
-                    "Credentials Creation Error",
-                    $"Failed to create Google credentials: {ex.Message}",
+                    "Credentials Error",
+                    $"Failed to load Google credentials from environment: {ex.Message}",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
                 );
                 throw;
