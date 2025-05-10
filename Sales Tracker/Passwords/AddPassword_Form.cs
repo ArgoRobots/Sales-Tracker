@@ -195,7 +195,7 @@ namespace Sales_Tracker.Passwords
 
             // Show warning message about not losing the password
             CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Warning", "IMPORTANT: This password cannot be recovered if lost. Are you sure you want to set this password?",
+                "Warning", "IMPORTANT: This company and all its data cannot be recovered if the password is lost. Are you sure you want to set this password?",
                 CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
             if (result == CustomMessageBoxResult.Yes)

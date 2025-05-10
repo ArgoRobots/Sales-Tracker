@@ -379,18 +379,19 @@ namespace Sales_Tracker.Classes
                 {
                     mainForm.Invoke(new Action(() =>
                     {
-                        Tools.OpenForm(new Loading_Form(message));
+                        // Use the singleton pattern instead of creating a new form
+                        Loading_Form.ShowLoading(message);
                     }));
                 }
                 else
                 {
-                    Tools.OpenForm(new Loading_Form(message));
+                    Loading_Form.ShowLoading(message);
                 }
             }
             else
             {
                 // Fallback if no forms are open
-                Tools.OpenForm(new Loading_Form(message));
+                Loading_Form.ShowLoading(message);
             }
         }
         private static void CloseLoadingForm()
@@ -402,18 +403,19 @@ namespace Sales_Tracker.Classes
                 {
                     mainForm.Invoke(new Action(() =>
                     {
-                        Tools.CloseOpenForm<Loading_Form>();
+                        // Instead of closing the form, complete the operation
+                        Loading_Form.CompleteOperation();
                     }));
                 }
                 else
                 {
-                    Tools.CloseOpenForm<Loading_Form>();
+                    Loading_Form.CompleteOperation();
                 }
             }
             else
             {
                 // Fallback if no forms are open
-                Tools.CloseOpenForm<Loading_Form>();
+                Loading_Form.CompleteOperation();
             }
         }
         private static void ShowErrorMessageOnUIThread(string title, string message)

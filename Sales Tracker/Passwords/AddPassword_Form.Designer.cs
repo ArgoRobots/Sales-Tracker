@@ -113,7 +113,7 @@
             SetPassword_Button.Name = "SetPassword_Button";
             SetPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             SetPassword_Button.Size = new Size(250, 50);
-            SetPassword_Button.TabIndex = 5;
+            SetPassword_Button.TabIndex = 3;
             SetPassword_Button.Tag = "";
             SetPassword_Button.Text = "Set password";
             SetPassword_Button.Click += SetPassword_Button_Click;
@@ -201,7 +201,7 @@
             ConfirmPassword_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ConfirmPassword_TextBox.ShortcutsEnabled = false;
             ConfirmPassword_TextBox.Size = new Size(350, 50);
-            ConfirmPassword_TextBox.TabIndex = 3;
+            ConfirmPassword_TextBox.TabIndex = 2;
             ConfirmPassword_TextBox.TextChanged += ConfirmPassword_TextBox_TextChanged;
             ConfirmPassword_TextBox.KeyDown += ConfirmPassword_TextBox_KeyDown;
             // 
@@ -235,7 +235,7 @@
             PasswordEye_Button.ShadowDecoration.CustomizableEdges = customizableEdges7;
             PasswordEye_Button.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             PasswordEye_Button.Size = new Size(34, 34);
-            PasswordEye_Button.TabIndex = 2;
+            PasswordEye_Button.TabIndex = 0;
             PasswordEye_Button.Click += PasswordEye_Button_Click;
             // 
             // ConfirmPasswordEye_Button
@@ -255,7 +255,7 @@
             ConfirmPasswordEye_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ConfirmPasswordEye_Button.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             ConfirmPasswordEye_Button.Size = new Size(34, 34);
-            ConfirmPasswordEye_Button.TabIndex = 6;
+            ConfirmPasswordEye_Button.TabIndex = 0;
             ConfirmPasswordEye_Button.Click += ConfirmPasswordEye_Button_Click;
             // 
             // Length_Checkmark

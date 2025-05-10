@@ -12,9 +12,6 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                // Ensure environment variables are loaded
-                DotEnv.Load();
-
                 string projectId = DotEnv.Get("GOOGLE_PROJECT_ID");
                 string privateKey = DotEnv.Get("GOOGLE_PRIVATE_KEY")?.Replace("\\n", "\n");
                 string clientEmail = DotEnv.Get("GOOGLE_CLIENT_EMAIL");

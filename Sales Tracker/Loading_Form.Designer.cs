@@ -39,6 +39,7 @@
             Name = "Loading_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
+            TopMost = true;
             FormClosed += Loading_Form_FormClosed;
             ResumeLayout(false);
         }
