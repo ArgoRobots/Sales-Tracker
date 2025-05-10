@@ -1,4 +1,6 @@
-﻿using Guna.UI2.WinForms;
+﻿using Guna.Charts.WinForms;
+using Guna.UI2.WinForms;
+using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
@@ -146,6 +148,7 @@ namespace Sales_Tracker.Settings
             UpdateTheme();
 
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+            MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts(false);
 
             List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
 
@@ -173,8 +176,20 @@ namespace Sales_Tracker.Settings
             CustomControls.Rename_TextBox.FocusedState.BorderColor = CustomColors.Text;
             CustomControls.Rename_TextBox.BorderColor = CustomColors.Text;
 
+            // Update the SearchBox
             SearchBox.SearchResultBoxContainer.FillColor = CustomColors.ControlBack;
             SearchBox.SearchResultBox.FillColor = CustomColors.ControlBack;
+
+            List<Guna2Button> searchResultButtons = SearchBox.SearchResultControls.OfType<Guna2Button>().ToList();
+
+            foreach (Guna2Button button in searchResultButtons)
+            {
+                button.FillColor = CustomColors.ControlBack;
+                button.BorderColor = CustomColors.ControlPanelBorder;
+                button.ForeColor = CustomColors.Text;
+            }
+
+            Theme.CustomizeScrollBar(SearchBox.SearchResultBox);
 
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"Changed the 'color theme' setting");
         }

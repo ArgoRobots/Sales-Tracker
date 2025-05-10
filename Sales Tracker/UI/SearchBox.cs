@@ -66,7 +66,8 @@ namespace Sales_Tracker.UI
         }
 
         // List to store and reuse controls
-        private readonly static List<Control> searchResultControls = [];
+        private readonly static List<Control> _searchResultControls = [];
+        public static List<Control> SearchResultControls => _searchResultControls;
 
         // Init.
         public static void ConstructSearchBox()
@@ -156,7 +157,7 @@ namespace Sales_Tracker.UI
 
             _searchResultBox.SuspendLayout();
             _searchResultBox.VerticalScroll.Value = 0;
-            searchResultControls.ForEach(c => c.Visible = false);
+            _searchResultControls.ForEach(c => c.Visible = false);
 
             string searchText = textBox.Text;
             List<SearchResult> metaList = [];
@@ -216,7 +217,7 @@ namespace Sales_Tracker.UI
                 if (meta.Name == addLine)
                 {
                     Guna2Separator separator;
-                    if (controlIndex < searchResultControls.Count && searchResultControls[controlIndex] is Guna2Separator existingSeparator)
+                    if (controlIndex < _searchResultControls.Count && _searchResultControls[controlIndex] is Guna2Separator existingSeparator)
                     {
                         separator = existingSeparator;
                     }
@@ -224,7 +225,7 @@ namespace Sales_Tracker.UI
                     {
                         separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count, textBox, increaseWidth), _searchResultBox);
                         _searchResultBox.Controls.Add(separator);
-                        searchResultControls.Add(separator);
+                        _searchResultControls.Add(separator);
                     }
                     separator.Visible = true;
                     separator.Location = new Point(10, yOffset + 12);
@@ -232,7 +233,7 @@ namespace Sales_Tracker.UI
                 else
                 {
                     Guna2Button btn;
-                    if (controlIndex < searchResultControls.Count && searchResultControls[controlIndex] is Guna2Button existingButton)
+                    if (controlIndex < _searchResultControls.Count && _searchResultControls[controlIndex] is Guna2Button existingButton)
                     {
                         btn = existingButton;
                     }
@@ -263,7 +264,7 @@ namespace Sales_Tracker.UI
                         btn.Text = Tools.AddEllipsisToString(btn.Text, btn.Font, availableWidth);
 
                         _searchResultBox.Controls.Add(btn);
-                        searchResultControls.Add(btn);
+                        _searchResultControls.Add(btn);
                     }
                     btn.Text = meta.DisplayName;
                     btn.Width = CalculateControlWidth(metaList.Count, textBox, increaseWidth);

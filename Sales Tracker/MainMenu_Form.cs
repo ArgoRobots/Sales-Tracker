@@ -198,16 +198,10 @@ namespace Sales_Tracker
             ReselectButton();
 
             Theme.SetThemeForControl([
-                _sale_DataGridView,
-                _purchase_DataGridView,
                 Totals_Chart,
                 Distribution_Chart,
                 Profits_Chart,
-                Total_Panel,
-                _countriesOfOrigin_Chart,
-                _companiesOfOrigin_Chart,
-                _countriesOfDestination_Chart,
-                _accountants_Chart
+                Total_Panel
             ]);
         }
         private void ReselectButton()
@@ -1818,7 +1812,6 @@ namespace Sales_Tracker
         public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
         public GunaChart AverageShippingCosts_Chart => _averageShippingCosts_Chart;
         public Guna2CustomCheckBox IncludeFreeShippingCheckBox => _includeFreeShipping_CheckBox;
-        public Label IncludeFreeShipping_Label => _includeFreeShipping_Label;
 
         // Analytics charts methods
         private List<Control> GetMainControlsList()
@@ -1945,7 +1938,7 @@ namespace Sales_Tracker
                 control.Visible = false;
             }
         }
-        private void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts)
+        public void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts)
         {
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 

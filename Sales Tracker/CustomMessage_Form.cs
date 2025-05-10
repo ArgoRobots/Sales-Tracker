@@ -282,6 +282,9 @@ namespace Sales_Tracker
 
             DataFileManager.SetValue(AppDataSettings.ChangesMade, isChanged.ToString());
         }
+        /// <summary>
+        /// Log level index: 0 = [Error], 1 = [Debug], 2 = [General], 3 = [Product manager], 4 = [Password manager].
+        /// </summary>
         public static void AddThingThatHasChangedAndLogMessage(List<string> list, byte logIndex, string thing)
         {
             AddThingThatHasChanged(list, thing);

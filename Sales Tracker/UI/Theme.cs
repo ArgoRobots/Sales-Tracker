@@ -359,7 +359,7 @@ namespace Sales_Tracker.Classes
             return button.FillColor == CustomColors.AccentBlue || button.ForeColor == CustomColors.AccentBlue;
         }
 
-        // Set the header to dark
+        // Set the form header to dark
         // https://stackoverflow.com/questions/57124243/winforms-dark-title-bar-on-windows-10
 
         [LibraryImport("dwmapi.dll", EntryPoint = "DwmSetWindowAttribute")]

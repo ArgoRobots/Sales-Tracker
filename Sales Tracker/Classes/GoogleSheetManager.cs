@@ -29,7 +29,6 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                // Get credentials from environment variables
                 GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
 
                 // Create the sheets service with proper scopes
@@ -379,7 +378,6 @@ namespace Sales_Tracker.Classes
                 {
                     mainForm.Invoke(new Action(() =>
                     {
-                        // Use the singleton pattern instead of creating a new form
                         Loading_Form.ShowLoading(message);
                     }));
                 }
@@ -403,7 +401,6 @@ namespace Sales_Tracker.Classes
                 {
                     mainForm.Invoke(new Action(() =>
                     {
-                        // Instead of closing the form, complete the operation
                         Loading_Form.CompleteOperation();
                     }));
                 }
