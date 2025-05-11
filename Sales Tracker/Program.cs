@@ -13,7 +13,10 @@ namespace Sales_Tracker
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.Run(new Startup_Form(args));
+
+            Startup_Form startupForm = new(args);
+            startupForm.Show();
+            Application.Run();
         }
     }
 }

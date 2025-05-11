@@ -236,8 +236,7 @@ namespace Sales_Tracker.Classes
             {
                 // Set the Owner property to ensure the new form stays on top of the current form
                 // without using TopMost. This creates a parent-child relationship between forms
-                Form callingForm = MainMenu_Form.Instance;
-                form.Owner = callingForm;
+                form.Owner = MainMenu_Form.Instance;
                 form.Show();
             }
         }

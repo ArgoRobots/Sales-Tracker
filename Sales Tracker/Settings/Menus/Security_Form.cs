@@ -34,7 +34,7 @@ namespace Sales_Tracker.Settings.Menus
             LoadingPanel.ShowBlankLoadingPanel(this);
             SetWindowsHelloButton();
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
         }

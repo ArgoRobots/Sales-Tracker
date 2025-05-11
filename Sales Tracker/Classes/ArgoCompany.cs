@@ -143,7 +143,7 @@ namespace Sales_Tracker.Classes
                 {
                     return;
                 }
-                GetStarted_Form.Instance.ShowMainMenu();
+                GetStarted_Form.ShowMainMenu();
             }
         }
 
@@ -291,9 +291,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.LoadData();
             MainMenu_Form.IsProgramLoading = false;
 
-            MainMenu_Form.UpdateMainMenuFormText(MainMenu_Form.Instance);
             MainMenu_Form.Instance.SetCompanyLabel();
-
             MainMenu_Form.Instance.UpdateTotalLabels();
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.HideShowingResultsForLabel();

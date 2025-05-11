@@ -57,7 +57,6 @@ namespace Sales_Tracker.Classes
                 string className = $"ArgoSalesTracker{extension.Replace(".", "")}";
 
                 // Registry path for user-specific file associations
-                // Use HKEY_CURRENT_USER because it doesn't require admin access
                 string userClassesRoot = @"Software\Classes";
 
                 // Create file extension association

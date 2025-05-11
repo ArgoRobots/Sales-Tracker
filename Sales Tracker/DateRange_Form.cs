@@ -45,7 +45,7 @@ namespace Sales_Tracker
 
             SetCustomRangeControls();
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
             Bottom_Separator.FillColor = CustomColors.ControlBorder;

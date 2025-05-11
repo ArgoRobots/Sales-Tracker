@@ -29,7 +29,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             AlignControls();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
             Theme.MakeGButtonBluePrimary(Import_Button);

@@ -5,8 +5,8 @@ using Sales_Tracker.DataClasses;
 using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
+using Sales_Tracker.Startup;
 using Sales_Tracker.Startup.Menus;
-using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 
@@ -216,7 +216,7 @@ namespace Sales_Tracker.UI
             Guna2Button menuBtn = ConstructBtnForMenu("New company", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                Process.Start(Application.ExecutablePath, "autoClickButton");
+                Tools.OpenForm(new Startup_Form(["autoClickButton"]));
             };
 
             menuBtn = ConstructBtnForMenu("Open company", _panelBtnWidth, true, flowPanel);
@@ -549,28 +549,23 @@ namespace Sales_Tracker.UI
         }
 
         // Init hover effect for Guna2ImageButton
-        public static void InitHoverEffectForImageButton(Guna2ImageButton control, bool forSearchBox)
+        public static void InitHoverEffectForImageButton(Guna2ImageButton control)
         {
-            Color hoverColor = CustomColors.FileHover;
-            Color defaultColor = forSearchBox ? CustomColors.ControlBack : CustomColors.MainBackground;
-
-            control.Tag = (hoverColor, defaultColor);
-
             control.MouseEnter += Control_MouseEnter;
             control.MouseLeave += Control_MouseLeave;
         }
         private static void Control_MouseEnter(object sender, EventArgs e)
         {
-            if (sender is Guna2ImageButton button && button.Tag is ValueTuple<Color, Color> colors)
+            if (sender is Guna2ImageButton button)
             {
-                button.BackColor = colors.Item1;  // hoverColor
+                button.BackColor = CustomColors.FileHover;
             }
         }
         private static void Control_MouseLeave(object sender, EventArgs e)
         {
-            if (sender is Guna2ImageButton button && button.Tag is ValueTuple<Color, Color> colors)
+            if (sender is Guna2ImageButton button)
             {
-                button.BackColor = colors.Item2;  // defaultColor
+                button.BackColor = CustomColors.MainBackground;
             }
         }
 

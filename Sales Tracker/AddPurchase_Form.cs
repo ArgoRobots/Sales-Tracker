@@ -114,7 +114,7 @@ namespace Sales_Tracker
         private void SetTheme()
         {
             Theme.SetThemeForForm(this);
-            CustomControls.InitHoverEffectForImageButton(RemoveReceipt_ImageButton, false);
+            CustomControls.InitHoverEffectForImageButton(RemoveReceipt_ImageButton);
         }
 
         // Form event handlers

@@ -30,7 +30,7 @@ namespace Sales_Tracker.Startup.Menus
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
             if (Theme.CurrentTheme == Theme.ThemeType.Dark)
@@ -138,9 +138,6 @@ namespace Sales_Tracker.Startup.Menus
 
             projectName = ProjectName_TextBox.Text;
 
-            // Hide current form. Don't close it or both forms will close
-            Parent.Hide();
-
             Directories.SetDirectories(selectedDirectory, projectName);
             ArgoCompany.InitThings();
 
@@ -166,14 +163,11 @@ namespace Sales_Tracker.Startup.Menus
             DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
 
             ArgoCompany.SaveAll();
-
             ArgoCompany.CreateMutex(projectName);
 
-            // Add event to close FormStartup when FormMainMenu is closed
-            MainMenu_Form FormMainMenu = new();
-            FormMainMenu.FormClosed += (s, args) => Startup_Form.Instance.Close();
+            Startup_Form.Instance.Close();
 
-            MainMenu_Form.UpdateMainMenuFormText(FormMainMenu);
+            MainMenu_Form FormMainMenu = new();
             FormMainMenu.Show();
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)

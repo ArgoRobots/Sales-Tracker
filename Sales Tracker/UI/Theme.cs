@@ -236,27 +236,25 @@ namespace Sales_Tracker.Classes
 
                 foreach (Control control in list)
                 {
-                    switch (control)
+                    if (control is Guna2Separator guna2Separator)
                     {
-                        case Guna2Separator guna2Separator:
-                            guna2Separator.FillColor = CustomColors.ControlPanelBorder;
-                            guna2Separator.BackColor = CustomColors.PanelBtn;
-                            break;
+                        guna2Separator.FillColor = CustomColors.ControlPanelBorder;
+                        guna2Separator.BackColor = CustomColors.PanelBtn;
+                    }
+                    else if (control is Guna2Button guna2Button)
+                    {
+                        guna2Button.FillColor = CustomColors.PanelBtn;
+                        guna2Button.ForeColor = CustomColors.Text;
+                        guna2Button.BorderColor = CustomColors.ControlBorder;
+                        guna2Button.HoverState.BorderColor = CustomColors.ControlBorder;
+                        guna2Button.HoverState.FillColor = CustomColors.PanelBtnHover;
+                        guna2Button.PressedColor = CustomColors.PanelBtnHover;
 
-                        case Guna2Button guna2Button:
-                            guna2Button.FillColor = CustomColors.PanelBtn;
-                            guna2Button.ForeColor = CustomColors.Text;
-                            guna2Button.BorderColor = CustomColors.ControlBorder;
-                            guna2Button.HoverState.BorderColor = CustomColors.ControlBorder;
-                            guna2Button.HoverState.FillColor = CustomColors.PanelBtnHover;
-                            guna2Button.PressedColor = CustomColors.PanelBtnHover;
-
-                            foreach (Label label in guna2Button.Controls)
-                            {
-                                label.ForeColor = CustomColors.Text;
-                                label.BackColor = CustomColors.PanelBtn;
-                            }
-                            break;
+                        foreach (Label label in guna2Button.Controls)
+                        {
+                            label.ForeColor = CustomColors.Text;
+                            label.BackColor = CustomColors.PanelBtn;
+                        }
                     }
                 }
             }
@@ -308,6 +306,7 @@ namespace Sales_Tracker.Classes
         }
         public static void SetThemeForForm(Form form)
         {
+            FormThemeManager.RegisterForm(form);
             form.BackColor = CustomColors.MainBackground;
 
             List<Control> list = [];
@@ -364,18 +363,14 @@ namespace Sales_Tracker.Classes
 
         [LibraryImport("dwmapi.dll", EntryPoint = "DwmSetWindowAttribute")]
         private static partial int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-
-        private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
-        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
-
         public static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
         {
             if (Environment.OSVersion.Version.Major >= 10)
             {
-                int attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
+                int attribute = 19;
                 if (Environment.OSVersion.Version.Build >= 18985)
                 {
-                    attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+                    attribute = 20;
                 }
 
                 int useImmersiveDarkMode = enabled ? 1 : 0;

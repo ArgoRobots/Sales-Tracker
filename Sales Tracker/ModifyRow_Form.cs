@@ -33,7 +33,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this, true);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
             Theme.MakeGButtonBluePrimary(Save_Button);

@@ -8,8 +8,8 @@ namespace Sales_Tracker.Startup
     {
         // Properties
         private static Startup_Form _instance;
-        public readonly Form formGetStarted = new GetStarted_Form();
-        public readonly Form FormConfigureProject = new ConfigureProject_Form();
+        public readonly GetStarted_Form formGetStarted = new();
+        public readonly ConfigureProject_Form FormConfigureProject = new();
 
         // Getters
         public static Startup_Form Instance => _instance;
@@ -20,8 +20,6 @@ namespace Sales_Tracker.Startup
             InitializeComponent();
             _instance = this;
 
-            BackColor = CustomColors.MainBackground;
-
             if (args.Contains("autoClickButton"))
             {
                 SwitchMainForm(FormConfigureProject);
@@ -29,14 +27,15 @@ namespace Sales_Tracker.Startup
             }
             else { SwitchMainForm(formGetStarted); }
 
-            TextBoxManager.ConstructRightClickTextBoxMenu();
-
+            BackColor = CustomColors.MainBackground;
             Theme.UseImmersiveDarkMode(Handle, Theme.CurrentTheme == Theme.ThemeType.Dark);
+            FormThemeManager.RegisterForm(this);
+
+            TextBoxManager.ConstructRightClickTextBoxMenu();
 
             // TO DO: make this only run once, during progam installation
             ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.ArgoColor, 0);
         }
-
         public void SwitchMainForm(Form mainForm)
         {
             Controls.Clear();

@@ -20,7 +20,7 @@ namespace Sales_Tracker.Settings.Menus
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
             CheckForUpdates_Button.FillColor = CustomColors.AccentBlue;

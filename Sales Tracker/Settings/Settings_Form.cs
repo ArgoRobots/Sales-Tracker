@@ -1,6 +1,4 @@
-﻿using Guna.Charts.WinForms;
-using Guna.UI2.WinForms;
-using Sales_Tracker.Charts;
+﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
@@ -112,13 +110,13 @@ namespace Sales_Tracker.Settings
             CustomControls.CloseAllPanels(null, null);
             ApplyChanges(true);
         }
-        private void ApplyChanges(bool includeGeneralForm)
+        private static void ApplyChanges(bool includeGeneralForm)
         {
             UpdateColorTheme();
             UserSettings.SaveUserSettings(includeGeneralForm);
             Security_Form.Instance.CenterEncryptControls();
         }
-        private void UpdateColorTheme()
+        private static void UpdateColorTheme()
         {
             // If the theme did not change
             if (General_Form.Instance.ColorTheme_ComboBox.Text == Theme.CurrentTheme.ToString())
@@ -140,12 +138,7 @@ namespace Sales_Tracker.Settings
             }
 
             CustomColors.SetColors();
-
-            General_Form.Instance.UpdateTheme();
-            Security_Form.Instance.UpdateTheme();
-            Updates_Form.Instance.UpdateTheme();
-            MainMenu_Form.Instance.UpdateTheme();
-            UpdateTheme();
+            FormThemeManager.UpdateAllForms();
 
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts(false);

@@ -17,7 +17,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
             Theme.MakeGButtonBluePrimary(Export_Button);

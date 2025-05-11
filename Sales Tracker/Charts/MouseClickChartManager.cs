@@ -53,7 +53,7 @@ namespace Sales_Tracker.Charts
             public bool PreFilterMessage(ref Message m)
             {
                 // Detect left or right mouse button down events
-                if (m.Msg != 0x0201 && m.Msg != 0x0204)  // Not WM_LBUTTONDOWN and not WM_RBUTTONDOWN
+                if (m.Msg != 0x0201 && m.Msg != 0x0204)
                 {
                     return false;
                 }
@@ -64,7 +64,7 @@ namespace Sales_Tracker.Charts
                 // Check if any other form is over the click position
                 if (IsAnotherFormAtPosition(mousePosition))
                 {
-                    return false; // Ignore click when another form is over it
+                    return false;
                 }
 
                 // Create a list of controls
@@ -82,15 +82,13 @@ namespace Sales_Tracker.Charts
                     controlsList.Add(mainPanel);
                 }
 
-                // Ignore the click for certain cases
+                // Ignore the click if it was over any of the controls
                 foreach (Control control in controlsList)
                 {
                     if (control.Parent == null)
                     {
                         continue;
                     }
-
-                    if (SearchBox.IsSearchBoxOpen()) { return false; }
 
                     // Check if the mouse click was within the bounds of the control
                     Point localMousePosition = control.PointToClient(mousePosition);
@@ -103,9 +101,9 @@ namespace Sales_Tracker.Charts
                 // Check if the click happened on any of the charts
                 foreach (GunaChart chart in registeredCharts)
                 {
-                    if (chart.Parent == null || !chart.Visible)
+                    if (!chart.Visible)
                     {
-                        // Skip this chart if it has no parent (if the analytics charts are not shown)
+                        // For the analyticss charts if they are not shown
                         continue;
                     }
 
@@ -133,34 +131,22 @@ namespace Sales_Tracker.Charts
             /// </summary>
             private static bool IsAnotherFormAtPosition(Point screenPosition)
             {
-                // Get the chart form (parent form of any visible registered chart)
-                Form chartForm = null;
-                foreach (GunaChart chart in registeredCharts)
+                // If there's only one form in the application, then there can't be another form on top
+                if (Application.OpenForms.Count <= 1)
                 {
-                    if (chart.Visible && chart.Parent != null)
-                    {
-                        chartForm = chart.FindForm();
-                        if (chartForm != null && chartForm.Visible)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                // If no chart form found, or there's only one form in the application, then there can't be another form on top
-                if (chartForm == null || Application.OpenForms.Count <= 1)
                     return false;
+                }
 
                 // Check if any other visible form contains the position
                 foreach (Form form in Application.OpenForms)
                 {
-                    if (form != chartForm && form.Visible)
+                    if (form != MainMenu_Form.Instance && form.Visible)
                     {
                         // Check if the form contains the screen position
                         Point clientPoint = form.PointToClient(screenPosition);
                         if (form.ClientRectangle.Contains(clientPoint))
                         {
-                            return true; // Another form is at this position
+                            return true;  // Another form is at this position
                         }
                     }
                 }

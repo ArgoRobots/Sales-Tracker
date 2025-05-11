@@ -383,17 +383,12 @@ namespace Sales_Tracker.Startup.Menus
 
             CustomControls.Rename_TextBox.Clear();
         }
-        public void ShowMainMenu()
+        public static void ShowMainMenu()
         {
-            // Hide current form. Don't close it or both forms will close
-            Parent?.Hide();
+            Startup_Form.Instance.Close();
 
-            // Add event to close FormStartup when FormMainMenu is closed
-            MainMenu_Form FormMainMenu = new();
-            FormMainMenu.FormClosed += (_, _) => Startup_Form.Instance.Close();
-
-            MainMenu_Form.UpdateMainMenuFormText(FormMainMenu);
-            FormMainMenu.Show();
+            MainMenu_Form formMainMenu = new();
+            formMainMenu.Show();
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {

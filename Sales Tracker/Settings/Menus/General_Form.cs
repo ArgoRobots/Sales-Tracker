@@ -30,7 +30,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(Theme.ThemeType));
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
         }

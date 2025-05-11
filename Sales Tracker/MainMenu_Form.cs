@@ -65,8 +65,9 @@ namespace Sales_Tracker
             AnimateButtons();
             InitializeAISearch();
             RemoveUpgradeButtonIfFullVersion();
+            UpdateMainMenuFormText();
             LoadingPanel.ShowBlankLoadingPanel(this);
-            IncludeFreeShippingCheckBox.Checked = Properties.Settings.Default.IncludeFreeShipping;
+            IncludeFreeShipping_CheckBox.Checked = Properties.Settings.Default.IncludeFreeShipping;
         }
         private void SetToolTips()
         {
@@ -173,7 +174,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(Totals_Chart, true);
             LanguageManager.UpdateLanguageForControl(Distribution_Chart, true);
         }
-        public void UpdateTheme()
+        private void UpdateTheme()
         {
             Theme.SetThemeForForm(this);
 
@@ -1106,7 +1107,7 @@ namespace Sales_Tracker
             CustomControls.Rename_TextBox.Clear();
             MoveEditButton();
             CenterAndResizeControls();
-            UpdateMainMenuFormText(this);
+            UpdateMainMenuFormText();
 
             string message = $"Renamed program to: {CompanyName_Label.Text}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 3, message);
@@ -1811,7 +1812,7 @@ namespace Sales_Tracker
         public GunaChart AverageTransactionValue_Chart => _averageTransactionValue_Chart;
         public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
         public GunaChart AverageShippingCosts_Chart => _averageShippingCosts_Chart;
-        public Guna2CustomCheckBox IncludeFreeShippingCheckBox => _includeFreeShipping_CheckBox;
+        public Guna2CustomCheckBox IncludeFreeShipping_CheckBox => _includeFreeShipping_CheckBox;
 
         // Analytics charts methods
         private List<Control> GetMainControlsList()
@@ -1892,12 +1893,12 @@ namespace Sales_Tracker
         }
         private void IncludeFreeShipping_Label_Click(object? sender, EventArgs e)
         {
-            IncludeFreeShippingCheckBox.Checked = !IncludeFreeShippingCheckBox.Checked;
+            IncludeFreeShipping_CheckBox.Checked = !IncludeFreeShipping_CheckBox.Checked;
         }
         private void IncludeFreeShippingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
-            bool zeroShipping = IncludeFreeShippingCheckBox.Checked;
+            bool zeroShipping = IncludeFreeShipping_CheckBox.Checked;
 
             UserSettings.UpdateSetting("Include free shipping in chart", Properties.Settings.Default.IncludeFreeShipping, zeroShipping,
              value => Properties.Settings.Default.IncludeFreeShipping = value);
@@ -1977,8 +1978,7 @@ namespace Sales_Tracker
             _averageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
             LanguageManager.UpdateLanguageForControl(_averageTransactionValue_Chart);
 
-            bool zeroShipping = IncludeFreeShippingCheckBox.Checked;
-            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart, includeZeroShipping: zeroShipping);
+            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart, includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
             _averageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
             LanguageManager.UpdateLanguageForControl(_averageShippingCosts_Chart);
         }
@@ -1996,9 +1996,9 @@ namespace Sales_Tracker
                 RightClickGunaChartMenu.RightClickGunaChart_Panel
             ];
         }
-        public static void UpdateMainMenuFormText(Form instance)
+        private void UpdateMainMenuFormText()
         {
-            instance.Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
+            Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
         }
         public void ClosePanels()
         {
