@@ -13,9 +13,8 @@ namespace Sales_Tracker.Classes
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly string _apiEndpoint;
-
-        // Configuration for query translation
         private readonly DataGridViewSchemaInfo _schemaInfo;
+        public int LastTokenUsage { get; private set; }
 
         public AIQueryTranslator(string apiKey, string apiEndpoint = "https://api.openai.com/v1/chat/completions")
         {
@@ -192,11 +191,23 @@ namespace Sales_Tracker.Classes
                 // Parse the response
                 dynamic? responseObject = JsonConvert.DeserializeObject<dynamic>(responseBody);
 
+                // Extract token usage
+                if (responseObject?.usage != null)
+                {
+                    LastTokenUsage = responseObject.usage.total_tokens;
+                    Log.Write(2, $"Token usage for query translation: {LastTokenUsage}");
+                }
+                else
+                {
+                    LastTokenUsage = 0;
+                }
+
                 return responseObject.choices[0].message.content.ToString();
             }
             catch (Exception ex)
             {
                 Log.Write(0, $"API request failed: {ex.Message}");
+                LastTokenUsage = 0;
                 throw;
             }
         }

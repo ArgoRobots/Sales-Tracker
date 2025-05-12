@@ -8,14 +8,6 @@ namespace Sales_Tracker.UI
     /// </summary>
     public class LabelManager
     {
-        // Properties
-        private static readonly string _noDataLabelName = "NoData_Label", _chartSubTitleName = "ChartSubTitle_Label";
-
-        // Getter
-        public static string NoDataLabelName => _noDataLabelName;
-        public static string ChartSubTitle => _chartSubTitleName;
-
-        // Methods
         /// <summary>
         /// Updates the label text to show the specified results message while preserving the original base text.
         /// This method ensures that the label’s prefix remains consistent even if the application language changes.
@@ -99,12 +91,15 @@ namespace Sales_Tracker.UI
         public static bool ManageNoDataLabelOnControl(bool hasData, Control control)
         {
             string text = ReadOnlyVariables.NoData_text;
-            Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == text);
+
+            // Get the translated version of the text
+            string translatedText = LanguageManager.TranslateSingleString(text);
+
+            Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label =>
+                label.Tag != null && label.Tag.ToString() == text);
 
             if (!hasData)
             {
-                string textWithoutWhitespace = string.Concat(text.Where(c => !char.IsWhiteSpace(c)));
-
                 // If there's no data and the label doesn't exist, create and add it
                 if (existingLabel == null)
                 {
@@ -112,12 +107,12 @@ namespace Sales_Tracker.UI
                     {
                         Font = new Font("Segoe UI", 12),
                         ForeColor = CustomColors.Text,
-                        Text = text,
+                        Text = translatedText,  // Use translated text here
                         AutoSize = true,
                         BackColor = Color.Transparent,
-                        Tag = text,
+                        Tag = text,             // Keep original text as Tag for identification
                         Anchor = AnchorStyles.Top,
-                        Name = _noDataLabelName  // This is needed for the language translation
+                        Name = "NoData_Label"
                     };
 
                     control.Controls.Add(label);
@@ -125,6 +120,11 @@ namespace Sales_Tracker.UI
 
                     control.Resize += (_, _) => CenterNoDataLabelInControl(control);
                     label.BringToFront();
+                }
+                else
+                {
+                    // If the label exists, ensure it has the translated text
+                    existingLabel.Text = translatedText;
                 }
                 return false;
             }
@@ -141,10 +141,12 @@ namespace Sales_Tracker.UI
         }
         public static void CenterNoDataLabelInControl(Control control)
         {
-            Label label = control.Controls.OfType<Label>().FirstOrDefault(label => label.Tag.ToString() == ReadOnlyVariables.NoData_text);
+            Label label = control.Controls.OfType<Label>().FirstOrDefault(label =>
+                label.Tag != null && label.Tag.ToString() == ReadOnlyVariables.NoData_text);
 
             if (label != null)
             {
+                label.Text = LanguageManager.TranslateSingleString(ReadOnlyVariables.NoData_text);
                 label.Location = new Point((control.Width - label.Width) / 2, (control.Height - label.Height) / 2);
             }
         }

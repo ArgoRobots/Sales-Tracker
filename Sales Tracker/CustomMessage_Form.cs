@@ -210,7 +210,7 @@ namespace Sales_Tracker
             Controls.Add(label);
             label.Left = (ClientSize.Width - label.Width) / 2;
 
-            // Add list of things that has changed to panel
+            // Add list of things that have changed to panel
             int top = 5;
 
             top = AddListForThingsChanged("General", MainMenu_Form.ThingsThatHaveChangedInFile, top);

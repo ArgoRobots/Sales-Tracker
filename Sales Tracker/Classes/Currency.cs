@@ -159,11 +159,20 @@ namespace Sales_Tracker.Classes
 
             try
             {
+                // Start tracking API call duration
+                DateTime startTime = DateTime.Now;
+
                 using HttpClient httpClient = new();
                 HttpResponseMessage response = httpClient.GetAsync(url).GetAwaiter().GetResult();
 
+                // Calculate API call duration
+                long durationMs = (long)(DateTime.Now - startTime).TotalMilliseconds;
+
                 string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 JObject responseJson = JObject.Parse(responseBody);
+
+                // Track the API usage data
+                AnonymousDataManager.AddOpenExchangeRatesData(durationMs);
 
                 // Access the "rates" property and get the value for source and target currencies
                 if (responseJson["rates"] != null)

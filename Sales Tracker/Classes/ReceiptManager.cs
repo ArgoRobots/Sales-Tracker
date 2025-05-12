@@ -119,7 +119,7 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             string destinationPath = dialog.SelectedPath;
             int selectedRowCount = dataGridView.SelectedRows.Count;
             List<string> exportedFiles = [];

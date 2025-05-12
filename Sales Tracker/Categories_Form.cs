@@ -50,10 +50,10 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            CategoryName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            WarningCategoryName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            ForSale_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            CategoryName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            WarningCategoryName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            ForSale_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }

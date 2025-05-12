@@ -30,7 +30,7 @@ namespace Sales_Tracker
             ConstructControls();
             AttachChangeHandlers();
             UpdateTheme();
-            LanguageManager.UpdateLanguageForControl(this, true);
+            LanguageManager.UpdateLanguageForControl(this, false);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void UpdateTheme()

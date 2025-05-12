@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
 {
@@ -7,15 +8,16 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class AISearchExtensions
     {
+        // Properties
         private static AIQueryTranslator _queryTranslator;
-
-        // Store the original query and its translation
         private static string _originalQuery = "";
         private static string _translatedQuery = "";
+        private static bool _isUsingAIQuery = false;
 
-        // Flag to indicate if we're currently using an AI-translated query
-        public static bool IsUsingAIQuery { get; private set; } = false;
+        // Getters
+        public static bool IsUsingAIQuery => _isUsingAIQuery;
 
+        // Init.
         public static void InitializeAISearch(string apiKey)
         {
             _queryTranslator = new AIQueryTranslator(apiKey);
@@ -31,28 +33,29 @@ namespace Sales_Tracker.Classes
             {
                 string userQuery = searchBox.Text;
                 string naturalLanguageQuery = userQuery.Substring(1).Trim();
-
-                // Store the original query (for display in the results label)
                 _originalQuery = naturalLanguageQuery;
 
-                // Translate the query
+                Stopwatch stopwatch = Stopwatch.StartNew();
                 _translatedQuery = await _queryTranslator.TranslateQueryAsync(naturalLanguageQuery);
-                IsUsingAIQuery = true;
+                stopwatch.Stop();
 
-                Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}'");
+                // Track the API usage data
+                AnonymousDataManager.AddOpenAIUsageData("gpt-3.5-turbo", stopwatch.ElapsedMilliseconds, _queryTranslator.LastTokenUsage);
+
+                _isUsingAIQuery = true;
+                Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}' (Used {_queryTranslator.LastTokenUsage} tokens)");
                 TriggerSearchWithTranslatedQuery();
-
             }
             catch (Exception ex)
             {
                 Log.Write(0, $"Error enhancing search: {ex.Message}");
-                IsUsingAIQuery = false;
+                _isUsingAIQuery = false;
             }
         }
         public static void ResetQuery()
         {
             // Reset the AI query flag if the user is doing a normal search
-            IsUsingAIQuery = false;
+            _isUsingAIQuery = false;
             _originalQuery = "";
             _translatedQuery = "";
         }
@@ -62,11 +65,10 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string GetEffectiveSearchQuery(string displayedQuery)
         {
-            if (IsUsingAIQuery && displayedQuery.StartsWith('!'))
+            if (_isUsingAIQuery && displayedQuery.StartsWith('!'))
             {
                 return _translatedQuery;
             }
-
             return displayedQuery;
         }
 
@@ -75,11 +77,10 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string GetDisplayQuery(string displayedQuery)
         {
-            if (IsUsingAIQuery && displayedQuery.StartsWith('!'))
+            if (_isUsingAIQuery && displayedQuery.StartsWith('!'))
             {
                 return _originalQuery;
             }
-
             return displayedQuery;
         }
         private static void TriggerSearchWithTranslatedQuery()
@@ -91,7 +92,6 @@ namespace Sales_Tracker.Classes
                 Log.Write(0, "Could not find MainMenu_Form instance to trigger search.");
                 return;
             }
-
             // Trigger the search directly
             mainForm.RefreshDataGridViewAndCharts();
         }

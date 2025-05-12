@@ -230,6 +230,7 @@ namespace Sales_Tracker
             Discount_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             Price_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            LineGraph_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
         }
         private void InitChartTags()
         {
@@ -1869,7 +1870,7 @@ namespace Sales_Tracker
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10),
                 Padding = new Padding(5),
-                AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter
+                AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
             _includeFreeShipping_Label.Click += IncludeFreeShipping_Label_Click;
             Controls.Add(_includeFreeShipping_Label);

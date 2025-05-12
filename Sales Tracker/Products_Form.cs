@@ -122,17 +122,17 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
-            ProductsRemaining_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            ForSale_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            ProductID_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            ProductName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            ProductCategory_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            CountryOfOrigin_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            CompanyOfOrigin_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            WarningProductName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            WarningCategory_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
-            WarningCompany_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            ProductsRemaining_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            ForPurchase_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            ForSale_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            ProductID_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            ProductName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            ProductCategory_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            CountryOfOrigin_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            CompanyOfOrigin_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            WarningProductName_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            WarningCategory_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            WarningCompany_LinkLabel.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 

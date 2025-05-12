@@ -45,7 +45,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void SetAccessibleDescriptions()
         {
-            SkipHeaderRow_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeftCenter;
+            SkipHeaderRow_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
         }
 
         // Form event handlers

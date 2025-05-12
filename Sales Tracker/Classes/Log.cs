@@ -311,5 +311,15 @@ namespace Sales_Tracker.Classes
                 "https://www.google.com",
                 lineNumber);
         }
+
+        // Anonymous usage data
+        public static void Error_AnonymousDataCollection(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: Error collecting anonymous usage data. {info}.",
+                "https://www.google.com",
+                lineNumber);
+        }
     }
 }

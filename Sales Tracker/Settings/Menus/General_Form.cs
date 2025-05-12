@@ -36,17 +36,17 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void SetAccessibleDescription()
         {
-            Language_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            Currency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            ColorTheme_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            ShowDebugInfo_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            ShowHasReceiptColumn_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
-            EnableAISearch_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRightCenter;
+            Language_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            Currency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            ColorTheme_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            ShowDebugInfo_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            ShowHasReceiptColumn_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            EnableAISearch_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
 
             Language_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
@@ -101,29 +101,54 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(Directories.AnonymousUserDataCache_file))
+            if (!File.Exists(Directories.AnonymousUserDataCache_file) || AnonymousDataManager.GetDataCacheSize() == 0)
             {
                 CustomMessageBox.Show("No user data",
-                    "No user data exists. Either the setting was disabled or the cache was cleared",
+                    "No user data exists. Either the setting was disabled or the cache was cleared.",
                     CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
             }
 
             using SaveFileDialog dialog = new();
-            dialog.FileName = Path.GetFileName(Directories.AnonymousUserDataCache_file);
+            dialog.FileName = $"AnonymousUsageData_{DateTime.Now:yyyyMMdd}{ArgoFiles.JsonFileExtension}";
             dialog.DefaultExt = ArgoFiles.JsonFileExtension;
             dialog.Filter = $"JSON files|*{ArgoFiles.JsonFileExtension}";
             dialog.Title = "Export user data";
+            dialog.OverwritePrompt = false;
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                Directories.CopyFile(Directories.AnonymousUserDataCache_file, dialog.FileName, true);
+                try
+                {
+                    // Use the AnonymousDataManager.ExportOrganizedData method to export organized data
+                    AnonymousDataManager.ExportOrganizedData(dialog.FileName);
 
-                Log.Write(2, $"Exported anonymous user data to '{Path.GetFileName(dialog.FileName)}'");
+                    Log.Write(2, $"Exported organized anonymous usage data to '{Path.GetFileName(dialog.FileName)}'");
+
+                    CustomMessageBox.Show("Export Successful",
+                        "Successfully exported anonymous usage data.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error_AnonymousDataCollection($"Failed to export organized user data: {ex.Message}");
+                }
+            }
+        }
+        private void DeleteData_Button_Click(object sender, EventArgs e)
+        {
+            CustomMessageBoxResult result = CustomMessageBox.Show(
+                     "Delete anonymous usage data",
+                     $"Are you sure you want to delete your anonymous usage data?",
+                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+            if (result == CustomMessageBoxResult.Yes)
+            {
+                AnonymousDataManager.ClearDataCache();
 
                 CustomMessageBox.Show("Export Successful",
-                    "Successfully exported anonymous user data.",
-                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                        "Successfully deleted anonymous usage data.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             }
         }
 
