@@ -140,29 +140,35 @@ namespace Sales_Tracker.UI
                 case Form form:
                     if (!string.IsNullOrEmpty(form.Text))
                     {
-                        form.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, form.Text);
+                        form.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, form.Text,
+                            ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     }
                     break;
 
                 case LinkLabel linkLabel:
-                    TranslateLinkLabel(linkLabel, targetLanguageAbbreviation);
+                    TranslateLinkLabel(linkLabel, targetLanguageAbbreviation,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     AdjustLabelSizeAndPosition(linkLabel);
                     break;
 
                 case Label label:
-                    label.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, label.Text);
+                    label.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, label.Text,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     AdjustLabelSizeAndPosition(label);
                     break;
 
                 case Guna2Button guna2Button:
-                    string newText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2Button.Text);
+                    string newText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2Button.Text,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     AdjustButtonFontSize(guna2Button, newText);
                     break;
 
                 case Guna2TextBox guna2TextBox:
-                    guna2TextBox.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2TextBox.Text);
+                    guna2TextBox.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2TextBox.Text,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     string placeholderKey = $"{controlKey}_{placeholder_text}";
-                    guna2TextBox.PlaceholderText = TranslateAndCacheText(targetLanguageAbbreviation, placeholderKey, control, guna2TextBox.PlaceholderText);
+                    guna2TextBox.PlaceholderText = TranslateAndCacheText(targetLanguageAbbreviation, placeholderKey, control, guna2TextBox.PlaceholderText,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     break;
 
                 case Guna2ComboBox guna2ComboBox:
@@ -174,7 +180,8 @@ namespace Sales_Tracker.UI
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
                             string itemKey = $"{controlKey}_{item_text}_{i}";
-                            translatedItems.Add(TranslateAndCacheText(targetLanguageAbbreviation, itemKey, control, guna2ComboBox.Items[i].ToString()));
+                            translatedItems.Add(TranslateAndCacheText(targetLanguageAbbreviation, itemKey, control, guna2ComboBox.Items[i].ToString(),
+                                ref charactersTranslated, ref cacheHits, ref totalTranslations));
                         }
 
                         guna2ComboBox.Items.Clear();
@@ -188,7 +195,8 @@ namespace Sales_Tracker.UI
                     break;
 
                 case GunaChart gunaChart:
-                    gunaChart.Title.Text = TranslateAndCacheText(targetLanguageAbbreviation, $"{controlKey}_{title_text}", control, gunaChart.Title.Text);
+                    gunaChart.Title.Text = TranslateAndCacheText(targetLanguageAbbreviation, $"{controlKey}_{title_text}", control, gunaChart.Title.Text,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     break;
 
                 case Guna2DataGridView gunaDataGridView:
@@ -200,7 +208,8 @@ namespace Sales_Tracker.UI
                         if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
                         {
                             // Translate the HeaderText property
-                            string translatedHeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, imageHeaderCell.HeaderText);
+                            string translatedHeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, imageHeaderCell.HeaderText,
+                                ref charactersTranslated, ref cacheHits, ref totalTranslations);
                             imageHeaderCell.HeaderText = translatedHeaderText;
 
                             // Show the updated text
@@ -209,7 +218,8 @@ namespace Sales_Tracker.UI
                         else
                         {
                             // Translate regular column headers
-                            column.HeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, column.HeaderText);
+                            column.HeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, column.HeaderText,
+                                ref charactersTranslated, ref cacheHits, ref totalTranslations);
                         }
                     }
                     break;
@@ -224,10 +234,12 @@ namespace Sales_Tracker.UI
                     ref charactersTranslated, ref cacheHits, ref totalTranslations);
             }
         }
+
         /// <summary>
         /// Translates text using cache or Microsoft Translator API.
         /// </summary>
-        private static string? TranslateAndCacheText(string targetLanguageAbbreviation, string controlKey, Control control, string text)
+        private static string? TranslateAndCacheText(string targetLanguageAbbreviation, string controlKey, Control control, string text,
+            ref int charactersTranslated, ref int cacheHits, ref int totalTranslations)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -237,12 +249,14 @@ namespace Sales_Tracker.UI
             if (!CanControlTranslate(control)) { return text; }
 
             bool canCache = CanControlCache(control);
+            totalTranslations++;
 
             // Get the cached translation for this control if it already exists
             if (targetLanguageAbbreviation != "en" && canCache &&
                 _translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
                 controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
             {
+                cacheHits++;
                 return cachedTranslation;
             }
 
@@ -290,6 +304,9 @@ namespace Sales_Tracker.UI
                 dynamic result = JsonConvert.DeserializeObject(responseBody);
                 string translatedText = result[0].translations[0].text;
 
+                // Update character count
+                charactersTranslated += englishText.Length;
+
                 // Cache the translation
                 if (canCache)
                 {
@@ -314,6 +331,7 @@ namespace Sales_Tracker.UI
 
             return englishText;  // Return original text if translation fails
         }
+
         /// <summary>
         /// Translates a single string to the default language while utilizing the translation cache.
         /// </summary>
@@ -427,7 +445,8 @@ namespace Sales_Tracker.UI
         {
             return !AccessibleDescriptionManager.HasTag(control, AccessibleDescriptionManager.DoNotTranslate);
         }
-        private static void TranslateLinkLabel(LinkLabel linkLabel, string targetLanguageAbbreviation)
+        private static void TranslateLinkLabel(LinkLabel linkLabel, string targetLanguageAbbreviation,
+            ref int charactersTranslated, ref int cacheHits, ref int totalTranslations)
         {
             // Normalize the fullText by replacing "\r\n" with "\n" to handle both cases
             string fullText = linkLabel.Text.Replace("\r\n", "\n");
@@ -452,9 +471,12 @@ namespace Sales_Tracker.UI
                 string controlKeyAfter = GetControlKey(linkLabel, after_text);
 
                 // Translate the text
-                string translatedTextBefore = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyBefore, linkLabel, textBeforeLink);
-                string translatedLink = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyLink, linkLabel, linkText);
-                string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, linkLabel, textAfterLink);
+                string translatedTextBefore = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyBefore, linkLabel, textBeforeLink,
+                    ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                string translatedLink = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyLink, linkLabel, linkText,
+                    ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                string translatedTextAfter = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyAfter, linkLabel, textAfterLink,
+                    ref charactersTranslated, ref cacheHits, ref totalTranslations);
 
                 // Combine the translated text, adding back the new line before the link if necessary
                 string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) + " " +
@@ -468,7 +490,8 @@ namespace Sales_Tracker.UI
             {
                 // Translate and cache the entire text when no link is present
                 string controlKeyFull = GetControlKey(linkLabel, full_text);
-                string translatedFullText = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyFull, linkLabel, fullText.Trim());
+                string translatedFullText = TranslateAndCacheText(targetLanguageAbbreviation, controlKeyFull, linkLabel, fullText.Trim(),
+                    ref charactersTranslated, ref cacheHits, ref totalTranslations);
 
                 // Set the translated text
                 linkLabel.Text = translatedFullText;
@@ -795,8 +818,7 @@ namespace Sales_Tracker.UI
         {
             string fullLanguageName = Properties.Settings.Default.Language;
 
-            string defaultLanguageAbbreviation = GetLanguages()
-                 .FirstOrDefault(l => l.Key == fullLanguageName).Value;
+            string defaultLanguageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == fullLanguageName).Value;
 
             if (string.IsNullOrEmpty(defaultLanguageAbbreviation))
             {

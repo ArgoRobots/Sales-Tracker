@@ -7,7 +7,9 @@ namespace Sales_Tracker.Classes
     public enum DataPointType
     {
         Export,
-        ApiUsage,
+        OpenAI,
+        OpenExchangeRates,
+        GoogleSheets,
         Language
     }
     public enum ExportDataField
@@ -70,7 +72,7 @@ namespace Sales_Tracker.Classes
             Dictionary<string, object> dataPoint = new()
             {
                 ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.ApiUsage.ToString(),
+                ["dataType"] = DataPointType.OpenAI.ToString(),
                 ["Model"] = model,
                 ["DurationMS"] = durationMs,
                 ["TokensUsed"] = tokensUsed
@@ -88,7 +90,7 @@ namespace Sales_Tracker.Classes
             Dictionary<string, object> dataPoint = new()
             {
                 ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.ApiUsage.ToString(),
+                ["dataType"] = DataPointType.OpenExchangeRates.ToString(),
                 ["DurationMS"] = durationMs
             };
 
@@ -105,7 +107,7 @@ namespace Sales_Tracker.Classes
             Dictionary<string, object> dataPoint = new()
             {
                 ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.ApiUsage.ToString(),
+                ["dataType"] = DataPointType.GoogleSheets.ToString(),
                 ["DurationMS"] = durationMs
             };
 
@@ -183,6 +185,8 @@ namespace Sales_Tracker.Classes
         /// <returns>Status message or the exported JSON if no file path provided</returns>
         public static void ExportOrganizedData(string outputFilePath)
         {
+            if (string.IsNullOrEmpty(outputFilePath)) { return; }
+
             // Read all data points
             string[] lines = File.ReadAllLines(Directories.AnonymousUserDataCache_file);
             List<JObject> allDataPoints = [];
@@ -207,18 +211,17 @@ namespace Sales_Tracker.Classes
                 ["dataPoints"] = new JObject
                 {
                     ["Export"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Export.ToString())),
-                    ["ApiUsage"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.ApiUsage.ToString())),
+                    ["OpenAI"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenAI.ToString())),
+                    ["OpenExchangeRates"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenExchangeRates.ToString())),
+                    ["GoogleSheets"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.GoogleSheets.ToString())),
                     ["Language"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Language.ToString()))
                 }
             };
 
             // Write organized data to file or return as string
             string organizedJson = JsonConvert.SerializeObject(organizedData, Formatting.Indented);
-
-            if (!string.IsNullOrEmpty(outputFilePath))
-            {
-                File.WriteAllText(outputFilePath, organizedJson);
-            }
+            outputFilePath = Directories.GetNewFileNameIfItAlreadyExists(outputFilePath);
+            File.WriteAllText(outputFilePath, organizedJson);
         }
 
         /// <summary>
@@ -230,7 +233,6 @@ namespace Sales_Tracker.Classes
             Directories.DeleteFile(Directories.AnonymousUserDataCache_file);
             LanguageManager.TranslationCache = [];
             LanguageManager.EnglishCache = [];
-
         }
 
         /// <summary>
