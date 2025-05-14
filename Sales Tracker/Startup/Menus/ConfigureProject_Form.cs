@@ -130,6 +130,7 @@ namespace Sales_Tracker.Startup.Menus
             }
 
             projectName = ProjectName_TextBox.Text;
+            string oldTempDir = Directories.TempCompany_dir;
 
             Directories.SetDirectories(selectedDirectory, projectName);
             ArgoCompany.InitThings();
@@ -159,7 +160,23 @@ namespace Sales_Tracker.Startup.Menus
             ArgoCompany.CreateMutex(projectName);
 
             Startup_Form.Instance.Close();
-            ArgoCompany.OpenCompanyWhenACompanyIsAlreadyOpenFromPath(Directories.ArgoCompany_file, true);
+
+            // The user is starting Argo Sales Tracker
+            if (MainMenu_Form.Instance == null)
+            {
+                MainMenu_Form FormMainMenu = new();
+                FormMainMenu.Show();
+            }
+            else  // The user is creating a new company from the "New company" button
+            {
+                Directories.DeleteDirectory(oldTempDir, true);
+
+                MainMenu_Form.Instance.SetCompanyLabel();
+                MainMenu_Form.Instance.UpdateTotalLabels();
+                MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+                MainMenu_Form.Instance.HideShowingResultsForLabel();
+                MainMenu_Form.Instance.Search_TextBox.Text = "";
+            }
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {

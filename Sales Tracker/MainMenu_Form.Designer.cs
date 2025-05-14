@@ -905,7 +905,6 @@
         public Guna.UI2.WinForms.Guna2Button Analytics_Button;
         public Label ChargedDifference_Label;
         public Label Fee_Label;
-        private Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
         private Label ShowingResultsFor_Label;
         public Guna.UI2.WinForms.Guna2Button TimeRange_Button;
         public Guna.Charts.WinForms.GunaChart Totals_Chart;
@@ -914,5 +913,6 @@
         public Guna.UI2.WinForms.Guna2Panel Total_Panel;
         public Label Discount_Label;
         public Guna.UI2.WinForms.Guna2Button Upgrade_Button;
+        public Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
     }
 }
