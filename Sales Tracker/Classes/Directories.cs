@@ -93,7 +93,7 @@ namespace Sales_Tracker.Classes
             _config_file = _appData_dir + "config" + ArgoFiles.JsonFileExtension;
 
             // Cache
-            _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueProjectIdentifier("Argo Sales Tracker") + @"\";
+            _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueCompanyIdentifier("Argo Sales Tracker") + @"\";
             _translationsCache_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
             _globalAppDataSettingsCache_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
             _logsCache_dir = _cache_dir + @"logs\";
@@ -471,7 +471,7 @@ namespace Sales_Tracker.Classes
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, ImportType importType, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
-            string tempDir = destinationDirectory + ArgoCompany.GetUniqueProjectIdentifier(AppData_dir);
+            string tempDir = destinationDirectory + ArgoCompany.GetUniqueCompanyIdentifier(AppData_dir);
             string decryptedTempFile = null;
             string extractedDir;
 

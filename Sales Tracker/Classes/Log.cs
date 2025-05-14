@@ -164,7 +164,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-3vknm9: File does not exist:" +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_DirectoryDoesNotExist(
@@ -173,7 +173,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-tq45ek: Directory does not exist:" +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_FileAlreadyExists(
@@ -182,7 +182,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-djrr3r: File already exists:" +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_DirectoryAlreadyExists(
@@ -191,7 +191,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-cmr45a: Directory already exists:" +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_DestinationFileAlreadyExists(
@@ -200,7 +200,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-8g8we7: The destination file already exists:" +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_TheSourceAndDestinationAreTheSame(
@@ -210,7 +210,7 @@ namespace Sales_Tracker.Classes
             Error("Error-h88tzd: The source and destination files are the same." +
                 $"\nSource: '{source}'." +
                 $"\nDestination: '{destination}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_FailedToWriteToFile(
@@ -219,7 +219,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-h88tzd: Failed to write to file:" +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_FailedToReadFile(
@@ -228,7 +228,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-h88tzd: Failed to read the file:" +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_FailedToSave(
@@ -237,7 +237,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-5knt54: Failed to save. {info}." +
                 $"\n'{filePath}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
 
@@ -247,14 +247,14 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Cell is empty in DataGridView:'{dataGridViewName}'.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_RowIsOutOfRange(
             [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-5knt54: Row is out of range.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
 
@@ -264,7 +264,7 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error initializing EncryptionHelper. {info}.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_Encryption(
@@ -272,7 +272,7 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error during encryption. {info}.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_Decryption(
@@ -280,7 +280,7 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error during decryption. {info}.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
 
@@ -290,7 +290,7 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error getting exchange rates. {info}.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
         public static void Error_GetTranslation(
@@ -298,7 +298,7 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error getting the translation. {info}.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
 
@@ -308,7 +308,7 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error getting the English cache with the value: {controlKey}",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
 
@@ -318,7 +318,7 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-7kp3xz: Error collecting anonymous usage data. {info}.",
-                "https://www.google.com",
+                "",
                 lineNumber);
         }
     }

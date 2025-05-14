@@ -2,24 +2,18 @@
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
-using System.IO;
 
 namespace Sales_Tracker.Startup.Menus
 {
     public partial class ConfigureProject_Form : Form
     {
         // Properties
-        private static ConfigureProject_Form _instance;
         public string selectedDirectory, projectName;
-
-        // Getters
-        public static ConfigureProject_Form Instance => _instance;
 
         // Init.
         public ConfigureProject_Form()
         {
             InitializeComponent();
-            _instance = this;
 
             SearchBox.ConstructSearchBox();
             UpdateTheme();
@@ -107,7 +101,6 @@ namespace Sales_Tracker.Startup.Menus
         private void ConfigureProject_Form_Shown(object sender, EventArgs e)
         {
             ProjectName_TextBox.Focus();
-
             LoadingPanel.HideBlankLoadingPanel(this);
         }
         private void ConfigureProject_Form_Click(object sender, EventArgs e)
@@ -120,7 +113,7 @@ namespace Sales_Tracker.Startup.Menus
         private void Back_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.formGetStarted);
+            Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormGetStarted);
         }
         private void Create_Button_Click(object sender, EventArgs e)
         {
@@ -157,7 +150,7 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.Companies_file);
 
             // Set recently opened projects
-            DataFileManager.AppendValue(GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+            DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, Directories.ArgoCompany_file);
 
             // Set default currency
             DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
@@ -166,9 +159,7 @@ namespace Sales_Tracker.Startup.Menus
             ArgoCompany.CreateMutex(projectName);
 
             Startup_Form.Instance.Close();
-
-            MainMenu_Form FormMainMenu = new();
-            FormMainMenu.Show();
+            ArgoCompany.OpenCompanyWhenACompanyIsAlreadyOpenFromPath(Directories.ArgoCompany_file, true);
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {

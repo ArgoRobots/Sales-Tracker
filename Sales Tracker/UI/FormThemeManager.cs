@@ -1,7 +1,12 @@
-﻿using System.Reflection;
+﻿using Sales_Tracker.Classes;
+using System.Reflection;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.UI
 {
+    /// <summary>
+    /// Allows the theme of all open forms to be updated without having to reinitiate the form 
+    /// or manually calling the 'UpdateTheme' method for every form.
+    /// </summary>
     public static class FormThemeManager
     {
         private static readonly List<Form> _openForms = [];
@@ -15,6 +20,9 @@ namespace Sales_Tracker.Classes
             }
         }
 
+        /// <summary>
+        /// Updates the theme of all registered and open forms.
+        /// </summary>
         public static void UpdateAllForms()
         {
             foreach (Form form in _openForms)
@@ -29,10 +37,8 @@ namespace Sales_Tracker.Classes
                         // Form has UpdateTheme method, so use it
                         updateMethod.Invoke(form, null);
                     else
-                    {
                         // Form doesn't have UpdateTheme, so apply theme directly
                         Theme.SetThemeForForm(form);
-                    }
                 }
             }
         }

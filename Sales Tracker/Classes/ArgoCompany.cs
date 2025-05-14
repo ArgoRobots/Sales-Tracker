@@ -6,14 +6,14 @@ using System.Text;
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Static class responsible for managing company data files, project state, and file operations.
+    /// Static class responsible for managing company data files, company state, and file operations.
     /// </summary>
     public static class ArgoCompany
     {
         private static Mutex? _applicationMutex = null;
 
         /// <summary>
-        /// Static mutex used to ensure only one instance of a project can be open at a time.
+        /// Static mutex used to ensure only one instance of a company can be open at a time.
         /// </summary>
         public static Mutex? ApplicationMutex
         {
@@ -123,7 +123,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Opens a dialog for selecting and opening an existing company file.
         /// </summary>
-        public static void OpenCompany()
+        public static void OpenCompanyFromDialog()
         {
             // Select file
             OpenFileDialog dialog = new()
@@ -133,13 +133,13 @@ namespace Sales_Tracker.Classes
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                if (!OnlyAllowOneInstanceOfAProject(Path.GetFileNameWithoutExtension(dialog.FileName)))
+                if (!OnlyAllowOneInstanceOfACompany(Path.GetFileNameWithoutExtension(dialog.FileName)))
                 {
                     _applicationMutex?.Dispose();  // Reset
                     return;
                 }
 
-                if (!Open(Directory.GetParent(dialog.FileName).FullName, dialog.FileName))
+                if (!OpenCompanyFromPath(Directory.GetParent(dialog.FileName).FullName, dialog.FileName))
                 {
                     return;
                 }
@@ -151,7 +151,7 @@ namespace Sales_Tracker.Classes
         /// Opens a company file at the specified location.
         /// </summary>
         /// <returns>True if successfully opened, false otherwise</returns>
-        private static bool Open(string filePath, string name)
+        private static bool OpenCompanyFromPath(string filePath, string name)
         {
             Directories.SetDirectories(filePath, Path.GetFileNameWithoutExtension(name));
             InitThings();
@@ -162,8 +162,8 @@ namespace Sales_Tracker.Classes
                 return false;
             }
 
-            // Save recently opened projects
-            DataFileManager.AppendValue(GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+            // Save recently opened companies
+            DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, Directories.ArgoCompany_file);
 
             // Import company data
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
@@ -174,7 +174,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Renames the company project and updates all associated files and directories.
+        /// Renames the company company and updates all associated files and directories.
         /// </summary>
         public static void Rename(string name)
         {
@@ -187,8 +187,8 @@ namespace Sales_Tracker.Classes
 
             Directories.SetDirectories(Directories.ArgoCompany_dir, name);
 
-            // Update recently opened projects
-            DataFileManager.AppendValue(GlobalAppDataSettings.RecentProjects, Directories.ArgoCompany_file);
+            // Update recently opened companies
+            DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, Directories.ArgoCompany_file);
         }
 
         /// <summary>
@@ -220,9 +220,9 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Opens a new project when another project is already open. Handles saving current project changes if necessary.
+        /// Opens a new company when another company is already open. Handles saving current company's changes if necessary.
         /// </summary>
-        public static void OpenProjectWhenAProgramIsAlreadyOpen()
+        public static void OpenCompanyWhenACompanyIsAlreadyOpen()
         {
             // Select file
             OpenFileDialog dialog = new()
@@ -232,36 +232,37 @@ namespace Sales_Tracker.Classes
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                OpenProject(dialog.FileName);
+                OpenCompanyWhenACompanyIsAlreadyOpenFromPath(dialog.FileName);
             }
         }
 
         /// <summary>
-        /// Opens a new project from the specified file path when another project is already open.
-        /// Handles saving current project changes if necessary.
+        /// Opens a new company from the specified file path when another company is already open.
+        /// Handles saving current company's changes if necessary.
         /// </summary>
-        public static void OpenProject(string filePath)
+        public static void OpenCompanyWhenACompanyIsAlreadyOpenFromPath(string filePath, bool overrideCompanyAlreadyOpen = false)
         {
             // Validate the file path
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
-                CustomMessageBox.Show("Project does not exist", "The specified project file does not exist.",
+                CustomMessageBox.Show("Company does not exist", "The specified company file does not exist.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
 
-            // If this project is already open
-            if (Directories.ArgoCompany_file == filePath)
+            // If this company is already open
+            if (Directories.ArgoCompany_file == filePath && !overrideCompanyAlreadyOpen)
             {
-                CustomMessageBox.Show("Project already open", "This project is already open",
+                CustomMessageBox.Show("Company already open", "This company is already open",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
 
-            // Save current project
+            // Save current company
             if (AreAnyChangesMade())
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Save changes", "Would you like to save your changes before opening a new project?",
+                CustomMessageBoxResult result = CustomMessageBox.Show("Save changes",
+                    "Would you like to save your changes before opening a new company?",
                     CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
                 switch (result)
@@ -281,7 +282,7 @@ namespace Sales_Tracker.Classes
 
             Directories.DeleteDirectory(Directories.TempCompany_dir, true);
 
-            if (!Open(Directory.GetParent(filePath).FullName, filePath))
+            if (!OpenCompanyFromPath(Directory.GetParent(filePath).FullName, filePath))
             {
                 return;
             }
@@ -319,15 +320,15 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Ensures only one instance of a project can be open at a time.
+        /// Ensures only one instance of a company can be open at a time.
         /// </summary>
         /// <returns>True if this is the only instance, false if another instance exists</returns>
-        public static bool OnlyAllowOneInstanceOfAProject(string projectFilePath)
+        public static bool OnlyAllowOneInstanceOfACompany(string companyFilePath)
         {
-            if (!CreateMutex(projectFilePath))
+            if (!CreateMutex(companyFilePath))
             {
                 CustomMessageBox.Show("Already open",
-                    "This project is already open in another instance of Argo Sales Tracker",
+                    "This company is already open",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 _applicationMutex?.Dispose();  // Reset
                 return false;
@@ -336,14 +337,14 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Only allow one instance of a project to be open at a time
+        /// Only allow one instance of a company to be open at a time
         /// </summary>
         /// <returns>
         /// True if a mutex is created. False if a mutex already exists.
         /// </returns>
-        public static bool CreateMutex(string projectFilePath)
+        public static bool CreateMutex(string companyFilePath)
         {
-            string uniqueMutexName = "Global\\MyApplication_" + GetUniqueProjectIdentifier(projectFilePath);
+            string uniqueMutexName = "Global\\MyApplication_" + GetUniqueCompanyIdentifier(companyFilePath);
             _applicationMutex = new Mutex(initiallyOwned: true, name: uniqueMutexName, out bool createdNew);
 
             if (createdNew)
@@ -355,12 +356,12 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Generates a unique identifier for a project based on its file path.
+        /// Generates a unique identifier for a company based on its file path.
         /// </summary>
         /// <returns>Base64 encoded unique identifier</returns>
-        public static string GetUniqueProjectIdentifier(string projectFilePath)
+        public static string GetUniqueCompanyIdentifier(string companyFilePath)
         {
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(projectFilePath));
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(companyFilePath));
         }
 
         /// <summary>
@@ -371,23 +372,23 @@ namespace Sales_Tracker.Classes
         /// </returns>
         public static void RecoverUnsavedWork()
         {
-            List<string> projects = Directories.GetListOfAllDirectoriesInDirectory(Directories.AppData_dir);
+            List<string> companies = Directories.GetListOfAllDirectoriesInDirectory(Directories.AppData_dir);
 
-            foreach (string project in projects)
+            foreach (string company in companies)
             {
-                if (project + @"\" == Directories.Cache_dir) { continue; }
+                if (company + @"\" == Directories.Cache_dir) { continue; }
 
                 // Check if there are any changes
-                string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade, project + @"\info" + ArgoFiles.TxtFileExtension);
+                string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade, company + @"\info" + ArgoFiles.TxtFileExtension);
                 if (bool.TryParse(value, out bool boolResult) && !boolResult)
                 {
                     // Delete the temp folder
-                    Directories.DeleteDirectory(project, true);
+                    Directories.DeleteDirectory(company, true);
                     return;
                 }
 
                 CustomMessageBoxResult result = CustomMessageBox.Show("Unsaved work found",
-                    $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(project)}",
+                    $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(company)}",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
                 if (result == CustomMessageBoxResult.Yes)
@@ -401,37 +402,37 @@ namespace Sales_Tracker.Classes
 
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        Directories.SetDirectories(dialog.SelectedPath, Path.GetFileNameWithoutExtension(project));
+                        Directories.SetDirectories(dialog.SelectedPath, Path.GetFileNameWithoutExtension(company));
 
                         InitThings();
                         SaveAll();
 
                         // Delete the temp folder
-                        Directories.DeleteDirectory(project, true);
+                        Directories.DeleteDirectory(company, true);
                     }
                 }
                 else if (result == CustomMessageBoxResult.No)
                 {
                     // Delete the temp folder
-                    Directories.DeleteDirectory(project, true);
+                    Directories.DeleteDirectory(company, true);
                 }
             }
         }
 
         /// <summary>
-        /// Retrieves a list of valid recent project paths from the global application data settings.
+        /// Retrieves a list of valid recent company paths from the global application data settings.
         /// </summary>
-        /// <returns>A list of valid project file paths.</returns>
-        public static List<string> GetValidRecentProjectPaths(bool excludeCurrentCompany)
+        /// <returns>A list of valid company file paths.</returns>
+        public static List<string> GetValidRecentCompanyPaths(bool excludeCurrentCompany)
         {
-            string? value = DataFileManager.GetValue(GlobalAppDataSettings.RecentProjects);
+            string? value = DataFileManager.GetValue(GlobalAppDataSettings.RecentCompanies);
             if (string.IsNullOrEmpty(value))
             {
                 return [];
             }
 
-            string[] projectPaths = value.Split(',');
-            Array.Reverse(projectPaths);  // Reverse the array so it loads in the correct order
+            string[] companyPaths = value.Split(',');
+            Array.Reverse(companyPaths);  // Reverse the array so it loads in the correct order
 
             string? currentCompanyPath = null;
             if (excludeCurrentCompany)
@@ -440,13 +441,13 @@ namespace Sales_Tracker.Classes
             }
 
             // Remove duplicates (case-insensitive), filter valid paths, and optionally exclude the current company
-            List<string> validProjectPaths = projectPaths
+            List<string> validCompanyPaths = companyPaths
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .Where(File.Exists)
                 .Where(path => !excludeCurrentCompany || !string.Equals(path, currentCompanyPath, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            return validProjectPaths;
+            return validCompanyPaths;
         }
     }
 }

@@ -5,7 +5,7 @@
     {
         ShowWelcomeForm,  // bool
         ImportSpreadsheetTutorial,  // bool
-        RecentProjects  // string[]
+        RecentCompanies  // string[]
     }
     public enum AppDataSettings
     {
@@ -130,7 +130,7 @@
         {
             return key switch
             {
-                GlobalAppDataSettings.RecentProjects => 10,
+                GlobalAppDataSettings.RecentCompanies => 10,
                 _ => throw new ArgumentException("Unsupported setting key", nameof(key)),
             };
         }

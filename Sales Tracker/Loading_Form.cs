@@ -17,8 +17,8 @@ namespace Sales_Tracker
         private Loading_Form(string message)
         {
             InitializeComponent();
-            Theme.SetThemeForForm(this);
             LoadingPanel.ShowLoadingScreen(this, message);
+            Theme.SetThemeForForm(this);
         }
 
         // Form event handlers

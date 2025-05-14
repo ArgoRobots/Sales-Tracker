@@ -8,11 +8,13 @@ namespace Sales_Tracker.Startup
     {
         // Properties
         private static Startup_Form _instance;
-        public readonly GetStarted_Form formGetStarted = new();
-        public readonly ConfigureProject_Form FormConfigureProject = new();
+        private readonly GetStarted_Form _formGetStarted = new();
+        private readonly ConfigureProject_Form _formConfigureProject = new();
 
         // Getters
         public static Startup_Form Instance => _instance;
+        public GetStarted_Form FormGetStarted => _formGetStarted;
+        public ConfigureProject_Form FormConfigureProject => _formConfigureProject;
 
         // Init.
         public Startup_Form(string[] args)
@@ -22,10 +24,10 @@ namespace Sales_Tracker.Startup
 
             if (args.Contains("autoClickButton"))
             {
-                SwitchMainForm(FormConfigureProject);
-                ConfigureProject_Form.Instance.Controls.Remove(ConfigureProject_Form.Instance.Back_Button);
+                SwitchMainForm(_formConfigureProject);
+                _formConfigureProject.Controls.Remove(_formConfigureProject.Back_Button);
             }
-            else { SwitchMainForm(formGetStarted); }
+            else { SwitchMainForm(_formGetStarted); }
 
             BackColor = CustomColors.MainBackground;
             Theme.UseImmersiveDarkMode(Handle, Theme.CurrentTheme == Theme.ThemeType.Dark);

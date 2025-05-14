@@ -222,7 +222,7 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Open company", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                ArgoCompany.OpenProjectWhenAProgramIsAlreadyOpen();
+                ArgoCompany.OpenCompanyWhenACompanyIsAlreadyOpen();
             };
 
             menuBtn = ConstructBtnForMenu("Open recent company", _panelBtnWidth, false, flowPanel);
@@ -311,7 +311,7 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = _recentlyOpenedMenu.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             flowPanel.Controls.Clear();
 
-            List<string> validProjectDirs = ArgoCompany.GetValidRecentProjectPaths(true);
+            List<string> validProjectDirs = ArgoCompany.GetValidRecentCompanyPaths(true);
 
             if (validProjectDirs.Count == 0)
             {
@@ -330,7 +330,7 @@ namespace Sales_Tracker.UI
                     {
                         Guna2Button button = (Guna2Button)sender;
                         string path = button.Tag.ToString();
-                        ArgoCompany.OpenProject(path);
+                        ArgoCompany.OpenCompanyWhenACompanyIsAlreadyOpenFromPath(path);
                     };
                 }
             }
@@ -386,7 +386,7 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructHelpMenu()
         {
-            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "helpMenu_Panel");
+            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + spaceForSeperator + _spaceForPanel), "helpMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)_helpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Settings", _panelBtnWidth, true, flowPanel);
