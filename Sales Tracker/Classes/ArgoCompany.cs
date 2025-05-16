@@ -48,8 +48,9 @@ namespace Sales_Tracker.Classes
                 Directories.CreateFile(Directories.GlobalAppDataSettingsCache_file);
                 Directories.CreateFile(Directories.ExchangeRateCache_file);
 
-                DataFileManager.SetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.TrueString);
-                DataFileManager.SetValue(GlobalAppDataSettings.ShowWelcomeForm, bool.TrueString);
+                // TEMPORARILY DISABLE TUTORIAL VIDEOS BECAUSE THEY DO NOT EXIST YET
+                DataFileManager.SetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.FalseString);
+                DataFileManager.SetValue(GlobalAppDataSettings.ShowWelcomeForm, bool.FalseString);
             }
         }
 
