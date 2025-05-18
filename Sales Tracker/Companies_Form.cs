@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -26,7 +27,7 @@ namespace Sales_Tracker
             ConstructDataGridViews();
             CenterSelectedDataGridView();
             LoadCompanies();
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);

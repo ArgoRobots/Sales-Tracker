@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using Windows.Security.Credentials;
 
@@ -14,7 +15,7 @@ namespace Sales_Tracker.Passwords
 
             PasswordManager.IsPasswordValid = false;
             AddEventHandlersToTextBoxes();
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
             SetWindowsHelloControls(allowWindowsHello);
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -68,7 +69,7 @@ namespace Sales_Tracker.Passwords
             WindowsHello_Button.Left = (ClientSize.Width - WindowsHello_Button.Width) / 2;
             WindowsHello_Button.Click += WindowsHello_Button_Click;
             Controls.Add(WindowsHello_Button);
-            Theme.SetThemeForControl([WindowsHello_Button]);
+            ThemeManager.SetThemeForControl([WindowsHello_Button]);
         }
         private async void WindowsHello_Button_Click(object sender, EventArgs e)
         {

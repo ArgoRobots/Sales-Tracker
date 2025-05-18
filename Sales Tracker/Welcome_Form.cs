@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -11,8 +12,8 @@ namespace Sales_Tracker
         {
             InitializeComponent();
 
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(Continue_Button);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.MakeGButtonBluePrimary(Continue_Button);
             LanguageManager.UpdateLanguageForControl(this);
             DontShowAgain_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
             LoadingPanel.ShowBlankLoadingPanel(this);

@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -59,7 +60,7 @@ namespace Sales_Tracker
         }
         private void SetTheme()
         {
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
         }
 
         // Methods
@@ -246,7 +247,7 @@ namespace Sales_Tracker
             _sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             _sale_DataGridView.Location = new Point((ClientSize.Width - _sale_DataGridView.Width) / 2, topForDataGridView);
             _sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
-            Theme.CustomizeScrollBar(_sale_DataGridView);
+            ThemeManager.CustomizeScrollBar(_sale_DataGridView);
         }
 
         // Validate category name

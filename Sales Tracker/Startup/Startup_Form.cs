@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Startup.Menus;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup
@@ -30,7 +31,7 @@ namespace Sales_Tracker.Startup
             else { SwitchMainForm(_formGetStarted); }
 
             BackColor = CustomColors.MainBackground;
-            Theme.UseImmersiveDarkMode(Handle, Theme.CurrentTheme == Theme.ThemeType.Dark);
+            ThemeManager.UseImmersiveDarkMode(Handle, ThemeManager.IsDarkTheme());
             FormThemeManager.RegisterForm(this);
 
             TextBoxManager.ConstructRightClickTextBoxMenu();

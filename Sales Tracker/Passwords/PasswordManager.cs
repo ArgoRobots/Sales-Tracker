@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.UI;
+﻿using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.Passwords
 {

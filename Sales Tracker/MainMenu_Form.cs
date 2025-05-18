@@ -7,6 +7,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Startup.Menus;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.ComponentModel;
 using Timer = System.Windows.Forms.Timer;
@@ -176,9 +177,9 @@ namespace Sales_Tracker
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
 
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            if (ThemeManager.IsDarkTheme())
             {
                 Edit_Button.Image = Resources.EditWhite;
             }
@@ -187,18 +188,18 @@ namespace Sales_Tracker
                 Edit_Button.Image = Resources.EditBlack;
             }
 
-            MainTop_Panel.FillColor = CustomColors.Background4;
-            Edit_Button.FillColor = CustomColors.Background4;
-            Top_Panel.BackColor = CustomColors.Background3;
-            File_Button.FillColor = CustomColors.Background3;
-            Save_Button.FillColor = CustomColors.Background3;
-            Upgrade_Button.FillColor = CustomColors.Background3;
-            Help_Button.FillColor = CustomColors.Background3;
+            MainTop_Panel.FillColor = CustomColors.ContentPanelBackground;
+            Edit_Button.FillColor = CustomColors.ContentPanelBackground;
+            Top_Panel.BackColor = CustomColors.ToolbarBackground;
+            File_Button.FillColor = CustomColors.ToolbarBackground;
+            Save_Button.FillColor = CustomColors.ToolbarBackground;
+            Upgrade_Button.FillColor = CustomColors.ToolbarBackground;
+            Help_Button.FillColor = CustomColors.ToolbarBackground;
 
             ShowingResultsFor_Label.ForeColor = CustomColors.Text;
             ReselectButton();
 
-            Theme.SetThemeForControl([
+            ThemeManager.SetThemeForControl([
                 Totals_Chart,
                 Distribution_Chart,
                 Profits_Chart,
@@ -584,9 +585,8 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Log.Write(2, "Closing Argo Sales Tracker");
             CustomControls.CloseAllPanels(null, null);
-            Log.SaveLogs();
+            Log.Write(2, "Closing Argo Sales Tracker");
 
             if (ArgoCompany.AreAnyChangesMade())
             {
@@ -598,6 +598,8 @@ namespace Sales_Tracker
                 }
             }
 
+            Log.SaveLogs();
+            ThemeChangeDetector.StopListeningForThemeChanges();
             Directories.DeleteDirectory(Directories.TempCompany_dir, true);
         }
 
@@ -1914,7 +1916,7 @@ namespace Sales_Tracker
                 Height = 490
             };
 
-            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.Background4);
+            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.ContentPanelBackground);
             LoadChart.ConfigureChartForPie(gunaChart);
             gunaChart.Title.Display = true;
             gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);

@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.Reflection;
 using System.Windows.Forms;
@@ -39,7 +40,6 @@ namespace Tests
             Guna2HtmlToolTip tooltip = tooltips[testButton];
 
             // Assert
-            Assert.IsNotNull(tooltip);
             Assert.AreEqual(title, tooltip.ToolTipTitle);
             Assert.AreEqual(message, tooltip.GetToolTip(testButton));
         }

@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.Classes;
+﻿using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Passwords
@@ -12,7 +12,7 @@ namespace Sales_Tracker.Passwords
 
             AddEventHandlersToTextBoxes();
             Modify_RadioButton.Checked = true;
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
             Message_Label.MaximumSize = new Size(ClientSize.Width - 40, 0);
             LoadingPanel.ShowBlankLoadingPanel(this);

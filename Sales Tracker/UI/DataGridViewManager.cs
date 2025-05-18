@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using System.ComponentModel;
 
 namespace Sales_Tracker.UI
@@ -69,7 +70,7 @@ namespace Sales_Tracker.UI
             dataGridView.SortCompare += DataGridView_SortCompare;
 
             LoadColumns(dataGridView, columnHeaders, columnsToLoad);
-            Theme.UpdateDataGridViewHeaderTheme(dataGridView);
+            ThemeManager.UpdateDataGridViewHeaderTheme(dataGridView);
             parent.Controls.Add(dataGridView);
         }
 

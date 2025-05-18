@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms.Enums;
-using Sales_Tracker.Classes;
 
-namespace Sales_Tracker.UI
+namespace Sales_Tracker.Theme
 {
     /// <summary>
     /// Manages the custom colors, providing different color settings for dark and light themes.
@@ -15,13 +14,13 @@ namespace Sales_Tracker.UI
         private static Color _text, _grayText, _linkColor;
 
         // File colors
-        private static Color _fileHover;
+        private static Color _mouseHover;
 
         // Panel colors
         private static Color _panelBtn, _panelBtnHover;
 
         // Background colors
-        private static Color _mainBackground, _background2, _background3, _background4;
+        private static Color _mainBackground, _headerBackground, _toolbarBackground, _contentPanelBackground;
 
         // DataGridView theme
         private static DataGridViewPresetThemes _dataGridViewTheme;
@@ -49,7 +48,7 @@ namespace Sales_Tracker.UI
         public static Color LinkColor => _linkColor;
 
         // File Properties
-        public static Color FileHover => _fileHover;
+        public static Color MouseHover => _mouseHover;
 
         // Panel Properties
         public static Color PanelBtn => _panelBtn;
@@ -57,9 +56,9 @@ namespace Sales_Tracker.UI
 
         // Background Properties
         public static Color MainBackground => _mainBackground;
-        public static Color Background2 => _background2;
-        public static Color Background3 => _background3;
-        public static Color Background4 => _background4;
+        public static Color HeaderBackground => _headerBackground;
+        public static Color ToolbarBackground => _toolbarBackground;
+        public static Color ContentPanelBackground => _contentPanelBackground;
 
         // Theme Property
         public static DataGridViewPresetThemes DataGridViewTheme => _dataGridViewTheme;
@@ -67,20 +66,14 @@ namespace Sales_Tracker.UI
         public static Color AccentGreen => _accentGreen;
 
         /// <summary>
-        /// Sets all color values based on the current theme (Dark or Light).
+        /// Sets all color values based on the current theme.
         /// </summary>
         public static void SetColors()
         {
-            Theme.MakeSureThemeIsNotWindows();
-
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
-            {
+            if (ThemeManager.IsDarkTheme())
                 SetDarkThemeColors();
-            }
             else
-            {
                 SetLightThemeColors();
-            }
         }
         private static void SetDarkThemeColors()
         {
@@ -98,7 +91,7 @@ namespace Sales_Tracker.UI
             _linkColor = Color.FromArgb(71, 157, 250);
 
             // File colors
-            _fileHover = Color.FromArgb(77, 77, 77);
+            _mouseHover = Color.FromArgb(77, 77, 77);
 
             // Panel colors
             _panelBtn = Color.FromArgb(62, 62, 66);
@@ -106,9 +99,9 @@ namespace Sales_Tracker.UI
 
             // Background colors
             _mainBackground = Color.FromArgb(40, 40, 40);
-            _background2 = Color.FromArgb(30, 30, 30);
-            _background3 = Color.FromArgb(20, 20, 20);
-            _background4 = Color.FromArgb(50, 50, 50);
+            _headerBackground = Color.FromArgb(30, 30, 30);
+            _toolbarBackground = Color.FromArgb(20, 20, 20);
+            _contentPanelBackground = Color.FromArgb(50, 50, 50);
 
             // Theme
             _dataGridViewTheme = DataGridViewPresetThemes.Dark;
@@ -132,7 +125,7 @@ namespace Sales_Tracker.UI
             _linkColor = Color.FromArgb(71, 157, 250);
 
             // File colors
-            _fileHover = Color.FromArgb(229, 243, 255);
+            _mouseHover = Color.FromArgb(229, 243, 255);
 
             // Panel colors
             _panelBtn = Color.FromArgb(246, 246, 246);
@@ -140,9 +133,9 @@ namespace Sales_Tracker.UI
 
             // Background colors
             _mainBackground = Color.FromArgb(240, 240, 240);
-            _background2 = Color.FromArgb(250, 250, 250);
-            _background3 = Color.FromArgb(204, 204, 204);
-            _background4 = Color.FromArgb(250, 250, 250);
+            _headerBackground = Color.FromArgb(250, 250, 250);
+            _toolbarBackground = Color.FromArgb(204, 204, 204);
+            _contentPanelBackground = Color.FromArgb(250, 250, 250);
 
             // Theme
             _dataGridViewTheme = DataGridViewPresetThemes.White;

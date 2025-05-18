@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -23,7 +24,7 @@ namespace Sales_Tracker
             Date_DateTimePicker.Value = DateTime.Now;
             CheckIfProductsExist();
             CheckIfAccountantsExist();
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
@@ -196,7 +197,7 @@ namespace Sales_Tracker
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.MouseHover;
         }
         private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
         {
@@ -886,7 +887,7 @@ namespace Sales_Tracker
                 ImageSize = new Size(32, 32),
                 PressedColor = CustomColors.ControlBack
             };
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            if (ThemeManager.IsDarkTheme())
             {
                 minusButton.Image = Resources.MinusWhite;
             }
@@ -924,7 +925,7 @@ namespace Sales_Tracker
                 Padding = new Padding(spaceOnSidesOfPanel / 2, 0, spaceOnSidesOfPanel / 2, 0),
                 Visible = false
             };
-            Theme.CustomizeScrollBar(flowPanel);
+            ThemeManager.CustomizeScrollBar(flowPanel);
             flowPanel.Click += CloseAllPanels;
             Controls.Add(flowPanel);
         }
@@ -942,7 +943,7 @@ namespace Sales_Tracker
                 Visible = false,
                 Anchor = AnchorStyles.Top
             };
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            if (ThemeManager.IsDarkTheme())
             {
                 addButton.Image = Resources.AddWhite;
             }

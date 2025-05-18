@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.Diagnostics;
 
@@ -19,10 +20,10 @@ namespace Sales_Tracker
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(Export_Button);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.MakeGButtonBluePrimary(Export_Button);
 
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            if (ThemeManager.IsDarkTheme())
             {
                 ThreeDots_Button.Image = Resources.ThreeDotsWhite;
             }

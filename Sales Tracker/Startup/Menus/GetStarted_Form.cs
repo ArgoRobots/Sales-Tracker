@@ -4,6 +4,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Passwords;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup.Menus
@@ -57,11 +58,11 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void SetTheme()
         {
-            Theme.SetThemeForForm(this);
-            Theme.UpdateThemeForPanel([_rightClickOpenRecent_Panel]);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.UpdateThemeForPanel([_rightClickOpenRecent_Panel]);
             rightClickOpenRecent_DeleteBtn.ForeColor = CustomColors.AccentRed;
 
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            if (ThemeManager.IsDarkTheme())
             {
                 CreateCompany_Button.Image = Resources.CreateFileWhite;
                 OpenCompany_Button.Image = Resources.OpenFolderWhite;

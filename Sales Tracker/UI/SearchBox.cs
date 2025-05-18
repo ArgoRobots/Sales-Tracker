@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Settings;
+using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
 
@@ -89,7 +90,7 @@ namespace Sales_Tracker.UI
             _searchResultBox.HorizontalScroll.Enabled = false;
             _searchResultBox.HorizontalScroll.Maximum = 0;
             _searchResultBoxContainer.Controls.Add(_searchResultBox);
-            Theme.CustomizeScrollBar(_searchResultBox);
+            ThemeManager.CustomizeScrollBar(_searchResultBox);
 
             debounceTimer = new Timer
             {

@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -20,7 +21,7 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
 
             // Hide caret

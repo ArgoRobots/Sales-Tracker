@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.ComponentModel;
 
@@ -66,10 +67,10 @@ namespace Sales_Tracker
         }
         private void SetTheme()
         {
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBlueSecondary(SelectAll_Button);
-            Theme.MakeGButtonBlueSecondary(ClearFilters_Button);
-            Theme.MakeGButtonBluePrimary(ExportSelected_Button);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.MakeGButtonBlueSecondary(SelectAll_Button);
+            ThemeManager.MakeGButtonBlueSecondary(ClearFilters_Button);
+            ThemeManager.MakeGButtonBluePrimary(ExportSelected_Button);
         }
         private void AddEventHandlersToTextBoxes()
         {

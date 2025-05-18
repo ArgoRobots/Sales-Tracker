@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.ImportSpreadsheet
@@ -16,8 +17,8 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(Next_Button);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.MakeGButtonBluePrimary(Next_Button);
         }
 
         // Form event handlers

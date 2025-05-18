@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -32,7 +33,7 @@ namespace Sales_Tracker
             isProgramLoading = false;
 
             ValidateCompanyTextBox();
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             CheckRadioButton(checkPurchaseRadioButton);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
@@ -462,7 +463,7 @@ namespace Sales_Tracker
             sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             sale_DataGridView.Location = new Point((ClientSize.Width - sale_DataGridView.Width) / 2, topForDataGridView);
             sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
-            Theme.CustomizeScrollBar(sale_DataGridView);
+            ThemeManager.CustomizeScrollBar(sale_DataGridView);
         }
         private void Sale_DataGridView_RowsChanged(object sender, EventArgs e)
         {

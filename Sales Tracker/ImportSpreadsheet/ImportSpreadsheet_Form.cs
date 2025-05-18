@@ -2,6 +2,7 @@
 using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using Timer = System.Windows.Forms.Timer;
 
@@ -31,8 +32,8 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(Import_Button);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.MakeGButtonBluePrimary(Import_Button);
         }
         private void AlignControls()
         {
@@ -153,7 +154,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
+            RemoveReceipt_ImageButton.BackColor = CustomColors.MouseHover;
         }
         private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
         {
@@ -198,7 +199,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             Panel outerPanel = new()
             {
                 Size = new Size(panelWidth, panelHeight),
-                BackColor = CustomColors.Background4,
+                BackColor = CustomColors.ContentPanelBackground,
                 BorderStyle = BorderStyle.FixedSingle,
                 Tag = worksheetName
             };
@@ -223,7 +224,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 Location = new Point(outerPanel.Width - 30, 10),
                 Animated = true
             };
-            Theme.SetThemeForControl([customCheckBox]);
+            ThemeManager.SetThemeForControl([customCheckBox]);
             outerPanel.Controls.Add(customCheckBox);
 
             // FlowLayoutPanel to hold items
@@ -321,7 +322,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             Controls.Remove(loadingIndicator);
             Controls.Add(centeredFlowPanel);
 
-            Theme.CustomizeScrollBar(centeredFlowPanel);
+            ThemeManager.CustomizeScrollBar(centeredFlowPanel);
             centeredFlowPanel.ResumeLayout();
             centeredFlowPanel.Left = (ClientSize.Width - centeredFlowPanel.Width) / 2;
         }

@@ -1,4 +1,5 @@
 using Sales_Tracker.Startup;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker
 {
@@ -13,6 +14,8 @@ namespace Sales_Tracker
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
+
+            ThemeChangeDetector.StartListeningForThemeChanges();
 
             Startup_Form startupForm = new(args);
             startupForm.Show();

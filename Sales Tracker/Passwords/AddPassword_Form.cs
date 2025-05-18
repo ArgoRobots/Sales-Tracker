@@ -1,6 +1,6 @@
-﻿using Sales_Tracker.Classes;
-using Sales_Tracker.Properties;
+﻿using Sales_Tracker.Properties;
 using Sales_Tracker.Settings.Menus;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Passwords
@@ -13,7 +13,7 @@ namespace Sales_Tracker.Passwords
             InitializeComponent();
 
             AddEventHandlersToTextBoxes();
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
 

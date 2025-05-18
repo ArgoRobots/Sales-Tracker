@@ -26,8 +26,8 @@ namespace Sales_Tracker.UI
         {
             Guna2Button btn = (Guna2Button)sender;
             menuToHide = (Guna2Panel)btn.Tag;
+            menuToHide.Parent?.Controls.Remove(menuToHide);
             HideMenu_timer.Enabled = false;
-            HideMenu_timer.Enabled = true;
         }
         public static void KeepMenuOpen()
         {

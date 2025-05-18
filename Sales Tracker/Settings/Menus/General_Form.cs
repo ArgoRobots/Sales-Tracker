@@ -1,5 +1,6 @@
 ﻿using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
@@ -28,11 +29,11 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void InitComboBoxDataSources()
         {
-            ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(Theme.ThemeType));
+            ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(ThemeManager.ThemeType));
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
         }
         private void SetAccessibleDescription()
         {
@@ -165,7 +166,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             Language_TextBox.Text = Properties.Settings.Default.Language;
             Currency_TextBox.Text = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
-            ColorTheme_ComboBox.Text = Theme.CurrentTheme.ToString();
+            ColorTheme_ComboBox.Text = ThemeManager.CurrentTheme.ToString();
             ShowTooltips_CheckBox.Checked = Properties.Settings.Default.ShowTooltips;
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;
             SendAnonymousInformation_CheckBox.Checked = Properties.Settings.Default.SendAnonymousInformation;

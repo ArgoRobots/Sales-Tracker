@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.Classes;
+﻿using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ImportSpreadsheet
 {
@@ -20,7 +20,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             FormTutorial = new Tutorial_Form();
             FormImport = new ImportSpreadsheet_Form();
 
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             AddForms();
         }
         private void AddForms()

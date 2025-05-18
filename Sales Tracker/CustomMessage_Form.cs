@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -17,7 +18,7 @@ namespace Sales_Tracker
             InitializeComponent();
             DoubleBuffered = true;
 
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
 
             SetMessageBox(title, message, icon, buttons);
             SetAccessibleDescriptions(translateMessage);
@@ -188,7 +189,7 @@ namespace Sales_Tracker
             };
             changedBackground_Panel.Left = (ClientSize.Width - changed_Panel.Width) / 2;  // Center
             changedBackground_Panel.Controls.Add(changed_Panel);
-            Theme.CustomizeScrollBar(changed_Panel);
+            ThemeManager.CustomizeScrollBar(changed_Panel);
 
             Controls.Add(changedBackground_Panel);
             Controls.Remove(Icon_PictureBox);

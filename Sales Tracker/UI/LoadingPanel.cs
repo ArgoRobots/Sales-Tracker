@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.UI
 {
@@ -46,6 +47,7 @@ namespace Sales_Tracker.UI
             _loadingPanel.Controls.Add(progressIndicator);
             _loadingPanel.Controls.Add(_messageLabel);
         }
+
         /// <summary>
         /// Displays a loading screen with a progress indicator and a message over a specified control.
         /// </summary>
@@ -98,6 +100,11 @@ namespace Sales_Tracker.UI
         public static void HideBlankLoadingPanel(Control control)
         {
             control.Controls.Remove(_blankLoadingPanel);
+        }
+        public static void UpdateTheme()
+        {
+            _loadingPanel.BackColor = CustomColors.MainBackground;
+            _blankLoadingPanel.BackColor = CustomColors.MainBackground;
         }
     }
 }

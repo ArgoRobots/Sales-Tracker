@@ -1,5 +1,5 @@
 ﻿using Guna.UI2.WinForms;
-using Sales_Tracker.UI;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.Classes
 {
@@ -33,7 +33,7 @@ namespace Sales_Tracker.Classes
                         iconBounds.Height + 4
                     );
 
-                    using (SolidBrush brush = new(CustomColors.FileHover))
+                    using (SolidBrush brush = new(CustomColors.MouseHover))
                     {
                         e.Graphics.FillRectangle(brush, hoverEffectBounds);
                     }

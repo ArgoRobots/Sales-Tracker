@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -47,10 +48,10 @@ namespace Sales_Tracker
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             Bottom_Separator.FillColor = CustomColors.ControlBorder;
-            Theme.MakeGButtonBluePrimary(Apply_Button);
-            Theme.MakeGButtonBlueSecondary(Cancel_Button);
+            ThemeManager.MakeGButtonBluePrimary(Apply_Button);
+            ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
         }
         private void SetAccessibleDescriptions()
         {

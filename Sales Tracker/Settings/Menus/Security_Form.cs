@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Passwords;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
@@ -36,7 +37,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
         }
         private void SetAccessibleDescriptions()
         {

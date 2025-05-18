@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -35,16 +36,16 @@ namespace Sales_Tracker
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
-            Benifits_Panel.BackColor = CustomColors.Background2;
-            Theme.MakeGButtonBluePrimary(Upgrade_Button);
-            Theme.MakeGButtonBlueSecondary(EnterKey_Button);
+            ThemeManager.SetThemeForForm(this);
+            Benifits_Panel.BackColor = CustomColors.HeaderBackground;
+            ThemeManager.MakeGButtonBluePrimary(Upgrade_Button);
+            ThemeManager.MakeGButtonBlueSecondary(EnterKey_Button);
 
             // For EnterKey_Panel
-            Theme.MakeGButtonBluePrimary(verifyLicense_Button);
+            ThemeManager.MakeGButtonBluePrimary(verifyLicense_Button);
             backButton.FillColor = CustomColors.MainBackground;
 
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            if (ThemeManager.IsDarkTheme())
             {
                 Square_ImageButton.Image = Resources.SquareLogoWhite;
                 backButton.Image = Resources.BackArrowWhite;
@@ -201,7 +202,7 @@ namespace Sales_Tracker
                 BorderThickness = 1,
                 Visible = false
             };
-            Theme.MakeGButtonBluePrimary(closeButton);
+            ThemeManager.MakeGButtonBluePrimary(closeButton);
             animationPanel.Controls.Add(closeButton);
 
             closeButton.Click += (_, _) => Close();

@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Settings.Menus;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings
@@ -36,10 +37,10 @@ namespace Sales_Tracker.Settings
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(Ok_Button);
-            Theme.MakeGButtonBlueSecondary(Cancel_Button);
-            Theme.MakeGButtonBlueSecondary(Apply_Button);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.MakeGButtonBluePrimary(Ok_Button);
+            ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
+            ThemeManager.MakeGButtonBlueSecondary(Apply_Button);
         }
         public void AnimateButtons()
         {
@@ -118,83 +119,42 @@ namespace Sales_Tracker.Settings
         }
         private static void UpdateColorTheme()
         {
+            string selectedTheme = General_Form.Instance.ColorTheme_ComboBox.Text;
+
             // If the theme did not change
-            if (General_Form.Instance.ColorTheme_ComboBox.Text == Theme.CurrentTheme.ToString())
+            if (selectedTheme == ThemeManager.CurrentTheme.ToString())
             {
                 return;
             }
 
-            if (General_Form.Instance.ColorTheme_ComboBox.Text == Theme.ThemeType.Dark.ToString())
+            if (selectedTheme == ThemeManager.ThemeType.Dark.ToString())
             {
-                Theme.CurrentTheme = Theme.ThemeType.Dark;
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Dark;
             }
-            else if (General_Form.Instance.ColorTheme_ComboBox.Text == Theme.ThemeType.Light.ToString())
+            else if (selectedTheme == ThemeManager.ThemeType.Light.ToString())
             {
-                Theme.CurrentTheme = Theme.ThemeType.Light;
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Light;
             }
-            else
+            else // Windows theme
             {
-                Theme.CurrentTheme = Theme.ThemeType.Windows;
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Windows;
             }
 
             CustomColors.SetColors();
             FormThemeManager.UpdateAllForms();
+            ThemeManager.UpdateOtherControls();
 
-            MainMenu_Form.Instance.LoadOrRefreshMainCharts();
-            MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts(false);
-
-            List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
-
-            foreach (Guna2Panel guna2Panel in listOfPanels)
-            {
-                guna2Panel.FillColor = CustomColors.PanelBtn;
-                guna2Panel.BorderColor = CustomColors.ControlPanelBorder;
-
-                if (guna2Panel.Controls[0] is FlowLayoutPanel flowLayoutPanel)
-                {
-                    flowLayoutPanel.BackColor = CustomColors.MainBackground;
-                }
-            }
-
-            Theme.UpdateThemeForPanel(listOfPanels);
-            Theme.SetRightArrowImageBasedOnTheme(CustomControls.OpenRecentCompany_Button);
-
-            // Update other controls
-            Theme.SetThemeForControl([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
-
-            DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
-
-            // Set the border to white or black, depending on the theme
-            CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.Text;
-            CustomControls.Rename_TextBox.FocusedState.BorderColor = CustomColors.Text;
-            CustomControls.Rename_TextBox.BorderColor = CustomColors.Text;
-
-            // Update the SearchBox
-            SearchBox.SearchResultBoxContainer.FillColor = CustomColors.ControlBack;
-            SearchBox.SearchResultBox.FillColor = CustomColors.ControlBack;
-
-            List<Guna2Button> searchResultButtons = SearchBox.SearchResultControls.OfType<Guna2Button>().ToList();
-
-            foreach (Guna2Button button in searchResultButtons)
-            {
-                button.FillColor = CustomColors.ControlBack;
-                button.BorderColor = CustomColors.ControlPanelBorder;
-                button.ForeColor = CustomColors.Text;
-            }
-
-            Theme.CustomizeScrollBar(SearchBox.SearchResultBox);
-
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"Changed the 'color theme' setting");
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"Changed the 'color theme' setting to {selectedTheme}");
         }
 
         // Misc.
         private void SwitchForm(Form form, object btnSender)
         {
             CustomControls.CloseAllPanels(null, null);
-            Guna2Button btn = (Guna2Button)btnSender;
+            Guna2Button button = (Guna2Button)btnSender;
 
-            // If btn is already selected
-            if (btn.FillColor == CustomColors.AccentBlue)
+            // If button is already selected
+            if (button.FillColor == CustomColors.AccentBlue)
             {
                 return;
             }
@@ -203,7 +163,7 @@ namespace Sales_Tracker.Settings
             if (selectedButton != null)
             {
                 selectedButton.FillColor = CustomColors.ControlBack;
-                if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+                if (ThemeManager.IsDarkTheme())
                 {
                     selectedButton.ForeColor = Color.White;
                 }
@@ -214,8 +174,8 @@ namespace Sales_Tracker.Settings
             }
 
             // Select new button
-            btn.FillColor = CustomColors.AccentBlue;
-            btn.ForeColor = Color.White;
+            button.FillColor = CustomColors.AccentBlue;
+            button.ForeColor = Color.White;
             form.BringToFront();
 
             // Show form
@@ -228,7 +188,7 @@ namespace Sales_Tracker.Settings
             form.BringToFront();
 
             // Save
-            selectedButton = btn;
+            selectedButton = button;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Timer = System.Windows.Forms.Timer;
+﻿using Sales_Tracker.Theme;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.UI
 {

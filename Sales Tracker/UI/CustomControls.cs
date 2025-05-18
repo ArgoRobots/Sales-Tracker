@@ -7,6 +7,7 @@ using Sales_Tracker.Properties;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Startup;
 using Sales_Tracker.Startup.Menus;
+using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 
@@ -229,7 +230,7 @@ namespace Sales_Tracker.UI
             menuBtn.ImageSize = new Size(11, 11);
             menuBtn.ImageOffset = new Point((menuBtn.Width - menuBtn.ImageSize.Width - offsetForKeyboardShortcutOrArrow) - (menuBtn.Width / 2), 0);
             menuBtn.Tag = _recentlyOpenedMenu;
-            Theme.SetRightArrowImageBasedOnTheme(menuBtn);
+            ThemeManager.SetRightArrowImageBasedOnTheme(menuBtn);
             menuBtn.Click += (sender, e) =>
             {
                 Guna2Button btn = (Guna2Button)sender;
@@ -558,7 +559,7 @@ namespace Sales_Tracker.UI
         {
             if (sender is Guna2ImageButton button)
             {
-                button.BackColor = CustomColors.FileHover;
+                button.BackColor = CustomColors.MouseHover;
             }
         }
         private static void Control_MouseLeave(object sender, EventArgs e)
@@ -590,7 +591,7 @@ namespace Sales_Tracker.UI
                 BorderThickness = 1,
                 ShortcutsEnabled = false
             };
-            if (Theme.CurrentTheme == Theme.ThemeType.Dark)
+            if (ThemeManager.IsDarkTheme())
             {
                 _rename_TextBox.BorderColor = Color.White;
                 _rename_TextBox.HoverState.BorderColor = Color.White;

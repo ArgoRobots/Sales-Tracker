@@ -1,6 +1,6 @@
-﻿using Guna.UI2.WinForms;
-using Sales_Tracker.Classes;
+﻿using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.Text;
 
@@ -34,7 +34,7 @@ namespace Sales_Tracker
                 SetDataGridView(itemList);
             }
 
-            Theme.SetThemeForForm(this);
+            ThemeManager.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
 
             // Attach event handlers to detect changes in DataGridView

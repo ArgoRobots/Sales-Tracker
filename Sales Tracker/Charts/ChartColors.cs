@@ -1,5 +1,5 @@
 ﻿using Guna.Charts.WinForms;
-using Sales_Tracker.UI;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.Charts
 {

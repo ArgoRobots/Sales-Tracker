@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker
@@ -35,9 +36,9 @@ namespace Sales_Tracker
         }
         private void UpdateTheme()
         {
-            Theme.SetThemeForForm(this);
-            Theme.MakeGButtonBluePrimary(Save_Button);
-            Theme.MakeGButtonBlueSecondary(Cancel_Button);
+            ThemeManager.SetThemeForForm(this);
+            ThemeManager.MakeGButtonBluePrimary(Save_Button);
+            ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
         }
 
         // Form event handlers
@@ -517,7 +518,7 @@ namespace Sales_Tracker
                         };
                         RemoveReceipt_ImageButton.MouseEnter += (_, _) =>
                         {
-                            RemoveReceipt_ImageButton.BackColor = CustomColors.FileHover;
+                            RemoveReceipt_ImageButton.BackColor = CustomColors.MouseHover;
                         };
                         RemoveReceipt_ImageButton.MouseLeave += (_, _) =>
                         {

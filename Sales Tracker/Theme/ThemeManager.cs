@@ -1,18 +1,20 @@
 ﻿using Guna.Charts.WinForms;
 using Guna.UI2.WinForms;
+using Microsoft.Win32;
 using Sales_Tracker.Charts;
+using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
 using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.Theme
 {
     /// <summary>
     /// Manages dark and light mode themes, and custom colors.
     /// This class provides methods for setting theme attributes on various UI controls and forms, including custom scrollbars, button colors, and DataGridView header styling.
     /// The class also supports Windows system theme detection and immersive dark mode integration on supported systems.
     /// </summary>
-    internal static partial class Theme
+    internal static partial class ThemeManager
     {
         public enum ThemeType
         {
@@ -38,6 +40,21 @@ namespace Sales_Tracker.Classes
             {
                 Properties.Settings.Default.ColorTheme = value.ToString();
             }
+        }
+
+        // Other methods
+        public static bool IsDarkTheme()
+        {
+            return CurrentTheme == ThemeType.Dark ||
+                   (CurrentTheme == ThemeType.Windows && !IsWindowsThemeLight());
+        }
+        public static bool IsWindowsThemeLight()
+        {
+            int? value = (int?)Registry.GetValue(
+                @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
+                "AppsUseLightTheme", -1);
+
+            return value != 0; // If value is 0, Windows is using dark theme
         }
         public static void SetThemeForControl(List<Control> list)
         {
@@ -176,30 +193,37 @@ namespace Sales_Tracker.Classes
                         break;
 
                     case GunaChart gunaChart:
-                        gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.Background4);
-
-                        if (gunaChart.Datasets.Count > 0)
+                        try
                         {
-                            if (gunaChart.Datasets[0] is GunaBarDataset)
-                            {
-                                LoadChart.ConfigureChartForBar(gunaChart);
-                            }
-                            else if (gunaChart.Datasets[0] is GunaLineDataset)
-                            {
-                                LoadChart.ConfigureChartForLine(gunaChart);
-                            }
-                            else if (gunaChart.Datasets[0] is GunaPieDataset)
-                            {
-                                LoadChart.ConfigureChartForPie(gunaChart);
-                            }
-                        }
+                            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.ContentPanelBackground);
 
-                        gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
-                        gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
-                        gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
-                        gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
-                        gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
-                        gunaChart.YAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
+                            if (gunaChart.Datasets.Count > 0)
+                            {
+                                if (gunaChart.Datasets[0] is GunaBarDataset)
+                                {
+                                    LoadChart.ConfigureChartForBar(gunaChart);
+                                }
+                                else if (gunaChart.Datasets[0] is GunaLineDataset)
+                                {
+                                    LoadChart.ConfigureChartForLine(gunaChart);
+                                }
+                                else if (gunaChart.Datasets[0] is GunaPieDataset)
+                                {
+                                    LoadChart.ConfigureChartForPie(gunaChart);
+                                }
+                            }
+
+                            gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
+                            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
+                            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
+                            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
+                            gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
+                            gunaChart.YAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Write(1, $"Did not apply theme to chart: {ex.Message}");
+                        }
                         break;
                 }
 
@@ -263,8 +287,8 @@ namespace Sales_Tracker.Classes
         {
             foreach (DataGridViewColumn column in dataGridView.Columns)
             {
-                column.HeaderCell.Style.BackColor = CustomColors.Background2;
-                column.HeaderCell.Style.SelectionBackColor = CustomColors.Background2;
+                column.HeaderCell.Style.BackColor = CustomColors.HeaderBackground;
+                column.HeaderCell.Style.SelectionBackColor = CustomColors.HeaderBackground;
             }
         }
         private static void Guna2Button_GotFocus(object sender, EventArgs e)
@@ -306,6 +330,16 @@ namespace Sales_Tracker.Classes
         }
         public static void SetThemeForForm(Form form)
         {
+            // Check if we need to invoke on UI thread
+            if (form.InvokeRequired)
+            {
+                form.Invoke(new Action(() =>
+                {
+                    SetThemeForForm(form);
+                }));
+                return;
+            }
+
             FormThemeManager.RegisterForm(form);
             form.BackColor = CustomColors.MainBackground;
 
@@ -316,25 +350,76 @@ namespace Sales_Tracker.Classes
             }
 
             SetThemeForControl(list);
-            UseImmersiveDarkMode(form.Handle, CurrentTheme == ThemeType.Dark);
+            UseImmersiveDarkMode(form.Handle, IsDarkTheme());
         }
-        public static void MakeSureThemeIsNotWindows()
-        {
-            if (CurrentTheme == ThemeType.Windows)
-            {
-                int? value = (int?)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
-                CurrentTheme = value == 0
-                    ? ThemeType.Dark
-                    : ThemeType.Light;
-            }
-        }
-
-        // Set RightArrow image
         public static void SetRightArrowImageBasedOnTheme(Guna2Button button)
         {
-            button.Image = CurrentTheme == ThemeType.Dark
+            bool isDarkMode = CurrentTheme == ThemeType.Dark ||
+                            (CurrentTheme == ThemeType.Windows && !IsWindowsThemeLight());
+
+            button.Image = isDarkMode
                 ? Resources.RightArrowWhite
                 : Resources.RightArrowBlack;
+        }
+        public static void UpdateOtherControls()
+        {
+            if (MainMenu_Form.Instance == null) { return; }
+
+            // Check if we need to invoke on UI thread
+            if (MainMenu_Form.Instance.InvokeRequired)
+            {
+                MainMenu_Form.Instance.Invoke(new Action(() =>
+                {
+                    UpdateOtherControls();
+                }));
+                return;
+            }
+
+            // Update charts and other controls
+            MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+            MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts(false);
+
+            List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
+
+            foreach (Guna2Panel guna2Panel in listOfPanels)
+            {
+                guna2Panel.FillColor = CustomColors.PanelBtn;
+                guna2Panel.BorderColor = CustomColors.ControlPanelBorder;
+
+                if (guna2Panel.Controls[0] is FlowLayoutPanel flowLayoutPanel)
+                {
+                    flowLayoutPanel.BackColor = CustomColors.MainBackground;
+                }
+            }
+
+            UpdateThemeForPanel(listOfPanels);
+            SetRightArrowImageBasedOnTheme(CustomControls.OpenRecentCompany_Button);
+
+            // Update other controls
+            SetThemeForControl([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
+
+            DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
+
+            // Set the border to white or black, depending on the theme
+            CustomControls.Rename_TextBox.HoverState.BorderColor = CustomColors.Text;
+            CustomControls.Rename_TextBox.FocusedState.BorderColor = CustomColors.Text;
+            CustomControls.Rename_TextBox.BorderColor = CustomColors.Text;
+
+            // Update the SearchBox
+            SearchBox.SearchResultBoxContainer.FillColor = CustomColors.ControlBack;
+            SearchBox.SearchResultBox.FillColor = CustomColors.ControlBack;
+
+            List<Guna2Button> searchResultButtons = SearchBox.SearchResultControls.OfType<Guna2Button>().ToList();
+
+            foreach (Guna2Button button in searchResultButtons)
+            {
+                button.FillColor = CustomColors.ControlBack;
+                button.BorderColor = CustomColors.ControlPanelBorder;
+                button.ForeColor = CustomColors.Text;
+            }
+
+            CustomizeScrollBar(SearchBox.SearchResultBox);
+            LoadingPanel.UpdateTheme();
         }
 
         // Make button blue
@@ -363,7 +448,7 @@ namespace Sales_Tracker.Classes
 
         [LibraryImport("dwmapi.dll", EntryPoint = "DwmSetWindowAttribute")]
         private static partial int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
-        public static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
+        public static bool UseImmersiveDarkMode(IntPtr handle, bool useDarkMode)
         {
             if (Environment.OSVersion.Version.Major >= 10)
             {
@@ -373,7 +458,7 @@ namespace Sales_Tracker.Classes
                     attribute = 20;
                 }
 
-                int useImmersiveDarkMode = enabled ? 1 : 0;
+                int useImmersiveDarkMode = useDarkMode ? 1 : 0;
                 return DwmSetWindowAttribute(handle, attribute, ref useImmersiveDarkMode, sizeof(int)) == 0;
             }
             return false;
