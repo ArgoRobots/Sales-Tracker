@@ -172,6 +172,7 @@ namespace Sales_Tracker.Settings
             Updates_Button.TabIndex = 3;
             Updates_Button.Text = "Updates";
             Updates_Button.TextAlign = HorizontalAlignment.Left;
+            Updates_Button.Visible = false;
             Updates_Button.Click += UpdatesButton_Click;
             // 
             // Apply_Button

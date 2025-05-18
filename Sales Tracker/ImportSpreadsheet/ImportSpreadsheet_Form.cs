@@ -4,7 +4,6 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
-using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.ImportSpreadsheet
 {

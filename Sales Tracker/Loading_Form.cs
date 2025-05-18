@@ -10,9 +10,6 @@ namespace Sales_Tracker
         private static int _activeOperations = 0;
         private static readonly List<string> _activeMessages = [];
 
-        // Get the current instance or create a new one
-        public static Loading_Form Instance => _instance ??= new Loading_Form("Loading...");
-
         // Init for first creation
         private Loading_Form(string message)
         {

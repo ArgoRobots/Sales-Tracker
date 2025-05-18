@@ -425,11 +425,11 @@ namespace Sales_Tracker.UI
         }
         private static void AdjustLabelPosition(Label label, Rectangle originalBounds)
         {
-            if (AccessibleDescriptionManager.HasTag(label, AccessibleDescriptionManager.AlignRight))
+            if (label.AccessibleDescription == AccessibleDescriptionManager.AlignRight)
             {
                 label.Left = originalBounds.Right - label.Width;
             }
-            else if (!AccessibleDescriptionManager.HasTag(label, AccessibleDescriptionManager.AlignLeft)
+            else if (label.AccessibleDescription != AccessibleDescriptionManager.AlignLeft
                 && !label.Anchor.HasFlag(AnchorStyles.Left))
             {
                 // Center
@@ -439,11 +439,11 @@ namespace Sales_Tracker.UI
         }
         private static bool CanControlCache(Control control)
         {
-            return !AccessibleDescriptionManager.HasTag(control, AccessibleDescriptionManager.DoNotCache);
+            return control.AccessibleDescription != AccessibleDescriptionManager.DoNotCache;
         }
         private static bool CanControlTranslate(Control control)
         {
-            return !AccessibleDescriptionManager.HasTag(control, AccessibleDescriptionManager.DoNotTranslate);
+            return control.AccessibleDescription != AccessibleDescriptionManager.DoNotTranslate;
         }
         private static void TranslateLinkLabel(LinkLabel linkLabel, string targetLanguageAbbreviation,
             ref int charactersTranslated, ref int cacheHits, ref int totalTranslations)
