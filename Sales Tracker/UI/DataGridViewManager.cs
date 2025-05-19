@@ -1061,7 +1061,7 @@ namespace Sales_Tracker.UI
         // Validate TextBoxes in other forms
         private static void HandleValueDeletion(string type, string value)
         {
-            if (Tools.IsFormOpen(typeof(AddPurchase_Form)) &&
+            if (Tools.IsFormOpen<AddPurchase_Form>() &&
                 Application.OpenForms[nameof(AddPurchase_Form)] is AddPurchase_Form purchaseForm)
             {
                 switch (type)
@@ -1081,7 +1081,7 @@ namespace Sales_Tracker.UI
                 }
             }
 
-            if (Tools.IsFormOpen(typeof(AddSale_Form)) &&
+            if (Tools.IsFormOpen<AddSale_Form>() &&
                 Application.OpenForms[nameof(AddSale_Form)] is AddSale_Form saleForm)
             {
                 switch (type)

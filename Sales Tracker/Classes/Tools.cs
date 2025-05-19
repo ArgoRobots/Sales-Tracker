@@ -4,6 +4,22 @@ using System.Reflection;
 
 namespace Sales_Tracker.Classes
 {
+    // Thread-safe UI extensions
+    public static class UIExtensions
+    {
+        public static void InvokeIfRequired(this Control control, Action action)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+    }
+
     /// <summary>
     /// Provides a collection of utility methods for various formatting, file management, and input validation tasks.
     /// </summary>
@@ -18,18 +34,12 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Formats a DateTime into a readable date format (yyyy-MM-dd).
         /// </summary>
-        public static string FormatDate(DateTime dateTime)
-        {
-            return dateTime.ToString("yyyy-MM-dd");
-        }
+        public static string FormatDate(DateTime dateTime) => dateTime.ToString("yyyy-MM-dd");
 
         /// <summary>
         /// Formats a DateTime into a readable date and time format (yyyy-MM-dd HH:mm:ss.ff).
         /// </summary>
-        public static string FormatDateTime(DateTime dateTime)
-        {
-            return $"{FormatDate(dateTime)} {FormatTime(dateTime)}";
-        }
+        public static string FormatDateTime(DateTime dateTime) => dateTime.ToString("yyyy-MM-dd HH:mm:ss.ff");
 
         /// <summary>
         /// Formats milliseconds into a readable duration string
@@ -66,13 +76,7 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            new Process
-            {
-                StartInfo = new ProcessStartInfo(URL)
-                {
-                    UseShellExecute = true
-                }
-            }.Start();
+            Process.Start(new ProcessStartInfo(URL) { UseShellExecute = true });
         }
 
         /// <summary>
@@ -99,7 +103,7 @@ namespace Sales_Tracker.Classes
         {
             foreach (Control childControl in control.Controls)
             {
-                if (childControl is Guna2TextBox { Focused: true } textBox)
+                if (control is Guna2TextBox textBox && textBox.Focused)
                 {
                     return textBox;
                 }
@@ -117,31 +121,18 @@ namespace Sales_Tracker.Classes
         {
             name = RemoveNumAfterString(name);
 
-            // Add a new " (num)"
+            // Use HashSet for faster lookups
+            HashSet<string> existingNames = [.. list];
+
             int count = 2;
-            while (true)
+            string newName;
+
+            while (existingNames.Contains(newName = $"{name} ({count})"))
             {
-                bool pass2 = false;
-                foreach (string item in list)
-                {
-                    if (item == name + $" ({count})")
-                    {
-                        pass2 = true;
-                        break;
-                    }
-                }
-                // If this name already exists
-                if (pass2)
-                {
-                    count++;
-                }
-                else
-                {
-                    name += $" ({count})";
-                    break;
-                }
+                count++;
             }
-            return name;
+
+            return newName;
         }
 
         /// <summary>
@@ -152,9 +143,10 @@ namespace Sales_Tracker.Classes
             if (name.EndsWith(')'))
             {
                 int lastOpenParenthesisIndex = name.LastIndexOf('(');
-                if (lastOpenParenthesisIndex != -1 && int.TryParse(name.AsSpan(lastOpenParenthesisIndex + 1, name.Length - lastOpenParenthesisIndex - 2), out _))
+                if (lastOpenParenthesisIndex > 0
+                    && int.TryParse(name.AsSpan(lastOpenParenthesisIndex + 1, name.Length - lastOpenParenthesisIndex - 2), out _))
                 {
-                    return name.Substring(0, lastOpenParenthesisIndex).TrimEnd();  // Remove the " (num)"
+                    return name[..lastOpenParenthesisIndex].TrimEnd();  // Remove the " (num)"
                 }
             }
             return name;
@@ -221,13 +213,15 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Returns true if a form of a specified type is already open.
         /// </summary>
-        public static bool IsFormOpen(Type formType)
+        public static bool IsFormOpen<T>() where T : Form
         {
-            return Application.OpenForms.OfType<Form>().Any(f => f.GetType() == formType);
+            return Application.OpenForms.OfType<T>().Any();
         }
         public static void OpenForm(Form form)
         {
-            Form existingForm = Application.OpenForms.OfType<Form>().FirstOrDefault(f => f.GetType() == form.GetType());
+            Form existingForm = Application.OpenForms.OfType<Form>()
+                .FirstOrDefault(f => f.GetType() == form.GetType());
+
             if (existingForm != null)
             {
                 existingForm.BringToFront();
@@ -242,14 +236,7 @@ namespace Sales_Tracker.Classes
         }
         public static void CloseOpenForm<T>() where T : Form
         {
-            foreach (Form openForm in Application.OpenForms)
-            {
-                if (openForm is T)
-                {
-                    openForm.Close();
-                    return;
-                }
-            }
+            Application.OpenForms.OfType<T>().FirstOrDefault()?.Close();
         }
     }
 }

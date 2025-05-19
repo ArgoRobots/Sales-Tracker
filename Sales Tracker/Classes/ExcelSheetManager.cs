@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using Guna.UI2.WinForms;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Style;
@@ -14,66 +15,71 @@ namespace Sales_Tracker.Classes
     /// </summary>
     internal class ExcelSheetManager
     {
+        // Constants
+        private const string DecimalFormatPattern = "#,##0.00";
+
         // Import spreadsheet methods
         public static bool ImportAccountantsData(IXLWorksheet worksheet, bool skipHeader)
         {
-            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
-            bool wasSomethingImported = false;
-
-            HashSet<string> existingAccountants = [.. MainMenu_Form.Instance.AccountantList.Select(name => name.ToLowerInvariant())];
-            HashSet<string> addedDuringImport = [];
-
-            foreach (IXLRow row in rowsToProcess)
-            {
-                string accountantName = row.Cell(1).GetValue<string>();
-                string accountantNameLower = accountantName.ToLowerInvariant();
-
-                // Check if it exists in original list or was added during this import
-                if (existingAccountants.Contains(accountantNameLower))
-                {
-                    CustomMessageBox.Show(
-                        "Accountant already exists",
-                        $"The accountant {accountantName} already exists and will not be imported",
-                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
-                }
-                else
-                {
-                    MainMenu_Form.Instance.AccountantList.Add(accountantName);
-                    addedDuringImport.Add(accountantNameLower);
-                    wasSomethingImported = true;
-                }
-            }
-            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.AccountantList, MainMenu_Form.SelectedOption.Accountants);
-            return wasSomethingImported;
+            return ImportSimpleListData(
+                worksheet,
+                skipHeader,
+                MainMenu_Form.Instance.AccountantList,
+                MainMenu_Form.SelectedOption.Accountants,
+                "Accountant");
         }
         public static bool ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
+        {
+            return ImportSimpleListData(
+                worksheet,
+                skipHeader,
+                MainMenu_Form.Instance.CompanyList,
+                MainMenu_Form.SelectedOption.Companies,
+                "Company");
+        }
+
+        /// <summary>
+        /// Generic method to import simple list data like accountants or companies
+        /// </summary>
+        private static bool ImportSimpleListData(
+            IXLWorksheet worksheet,
+            bool skipHeader,
+            List<string> existingList,
+            MainMenu_Form.SelectedOption optionType,
+            string itemTypeName)
         {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
             bool wasSomethingImported = false;
 
-            HashSet<string> existingCompanies = [.. MainMenu_Form.Instance.CompanyList.Select(name => name.ToLowerInvariant())];
+            HashSet<string> existingItems = new(existingList.Count);
+            foreach (string item in existingList)
+            {
+                existingItems.Add(item.ToLowerInvariant());
+            }
+
             HashSet<string> addedDuringImport = [];
 
             foreach (IXLRow row in rowsToProcess)
             {
-                string companyName = row.Cell(1).GetValue<string>();
-                string companyNameLower = companyName.ToLowerInvariant();
+                string itemName = row.Cell(1).GetValue<string>();
+                string itemNameLower = itemName.ToLowerInvariant();
 
-                if (existingCompanies.Contains(companyNameLower))
+                if (existingItems.Contains(itemNameLower))
                 {
                     CustomMessageBox.Show(
-                        "Company already exists",
-                        $"The company {companyName} already exists and will not be imported",
+                        $"{itemTypeName} already exists",
+                        $"The {itemTypeName.ToLowerInvariant()} {itemName} already exists and will not be imported",
                         CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
                 }
                 else
                 {
-                    MainMenu_Form.Instance.CompanyList.Add(companyName);
-                    addedDuringImport.Add(companyNameLower);
+                    existingList.Add(itemName);
+                    addedDuringImport.Add(itemNameLower);
                     wasSomethingImported = true;
                 }
             }
-            MainMenu_Form.SaveListToFile(MainMenu_Form.Instance.CompanyList, MainMenu_Form.SelectedOption.Companies);
+
+            MainMenu_Form.SaveListToFile(existingList, optionType);
             return wasSomethingImported;
         }
         public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
@@ -81,15 +87,9 @@ namespace Sales_Tracker.Classes
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
             bool wasSomethingImported = false;
 
-            List<Category> list;
-            if (purchase)
-            {
-                list = MainMenu_Form.Instance.CategoryPurchaseList;
-            }
-            else
-            {
-                list = MainMenu_Form.Instance.CategorySaleList;
-            }
+            List<Category> list = purchase
+                ? MainMenu_Form.Instance.CategoryPurchaseList
+                : MainMenu_Form.Instance.CategorySaleList;
 
             Dictionary<string, HashSet<string>> existingProducts = [];
             foreach (Category category in list)
@@ -114,94 +114,50 @@ namespace Sales_Tracker.Classes
                     continue;
                 }
 
-                List<string> unitedStatesVariants =
-                [
-                    "US", "USA", "U.S.", "U.S.A.", "United States of America", "America", "States", "The States"
-                ];
+                // Process US country variants
+                countryOfOrigin = NormalizeCountryName(countryOfOrigin);
 
-                // Convert any variant to "United States"
-                if (unitedStatesVariants.Any(variant => variant.Equals(countryOfOrigin, StringComparison.OrdinalIgnoreCase)))
+                // Validate country exists in system
+                if (!ValidateCountry(countryOfOrigin))
                 {
-                    countryOfOrigin = "United States";
-                }
-                else
-                {
-                    bool countryExists = Country.CountrySearchResults.Any(c => c.Name.Equals(countryOfOrigin, StringComparison.OrdinalIgnoreCase));
-
-                    if (!countryExists)
-                    {
-                        CustomMessageBoxResult result = CustomMessageBox.Show(
-                            "Country does not exist",
-                            $"Country '{countryOfOrigin}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
-                            CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
-
-                        if (result == CustomMessageBoxResult.Yes)
-                        {
-                            continue;
-                        }
-                    }
+                    continue;
                 }
 
-                // Check if the company exists in companyList
-                bool companyExists = MainMenu_Form.Instance.CompanyList.Contains(companyOfOrigin);
-                if (!companyExists)
-                {
-                    MainMenu_Form.Instance.CompanyList.Add(companyOfOrigin);
-                }
+                // Ensure company exists
+                EnsureCompanyExists(companyOfOrigin);
 
                 // Find or create the category
-                Category category = list.FirstOrDefault(c => c.Name == categoryName);
-
-                if (category == null)
-                {
-                    category = new Category { Name = categoryName };
-                    list.Add(category);
-                    existingProducts[categoryName] = [];
-                    addedDuringImport[categoryName] = [];
-                }
-                else if (!addedDuringImport.ContainsKey(categoryName))
-                {
-                    addedDuringImport[categoryName] = [];
-                }
+                Category category = FindOrCreateCategory(
+                    list,
+                    categoryName,
+                    existingProducts,
+                    addedDuringImport);
 
                 string productNameLower = productName.ToLowerInvariant();
 
                 // Check if product already exists
-                bool existingProductsContainsCategory = existingProducts.TryGetValue(categoryName, out HashSet<string> existingCategoryProducts);
-                bool addedDuringImportContainsCategory = addedDuringImport.TryGetValue(categoryName, out HashSet<string> addedCategoryProducts);
-
-                if (existingProductsContainsCategory && existingCategoryProducts.Contains(productNameLower))
+                if (ProductExists(
+                    existingProducts,
+                    categoryName,
+                    productNameLower,
+                    productName,
+                    purchase))
                 {
-                    string type = purchase ? "purchase" : "sale";
-
-                    CustomMessageBox.Show(
-                        "Product already exists",
-                        $"The product for {type} '{productName}' already exists and will not be imported",
-                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                    continue;
                 }
-                else
-                {
-                    // Create the product and add it to the category's ProductList
-                    Product product = new()
-                    {
-                        ProductID = productId,
-                        Name = productName,
-                        CountryOfOrigin = countryOfOrigin,
-                        CompanyOfOrigin = companyOfOrigin
-                    };
 
-                    category.ProductList.Add(product);
+                // Create the product and add it to the category's ProductList
+                AddProductToCategory(
+                    category,
+                    productId,
+                    productName,
+                    productNameLower,
+                    countryOfOrigin,
+                    companyOfOrigin,
+                    addedDuringImport,
+                    categoryName);
 
-                    // Track that we've added this product
-                    if (!addedDuringImport.TryGetValue(categoryName, out HashSet<string> productsSet))
-                    {
-                        productsSet = [];
-                        addedDuringImport[categoryName] = productsSet;
-                    }
-                    productsSet.Add(productNameLower);
-
-                    wasSomethingImported = true;
-                }
+                wasSomethingImported = true;
             }
 
             MainMenu_Form.Instance.SaveCategoriesToFile(purchase
@@ -210,187 +166,237 @@ namespace Sales_Tracker.Classes
 
             return wasSomethingImported;
         }
+        private static string NormalizeCountryName(string countryOfOrigin)
+        {
+            HashSet<string> unitedStatesVariants = new(StringComparer.OrdinalIgnoreCase)
+            {
+                "US", "USA", "U.S.", "U.S.A.", "United States of America", "America", "States", "The States"
+            };
+
+            if (unitedStatesVariants.Contains(countryOfOrigin))
+            {
+                return "United States";
+            }
+
+            return countryOfOrigin;
+        }
+        private static bool ValidateCountry(string countryName)
+        {
+            bool countryExists = Country.CountrySearchResults.Any(
+                c => c.Name.Equals(countryName, StringComparison.OrdinalIgnoreCase));
+
+            if (!countryExists)
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    "Country does not exist",
+                    $"Country '{countryName}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
+                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+
+                return result != CustomMessageBoxResult.Yes;
+            }
+
+            return true;
+        }
+        private static void EnsureCompanyExists(string companyName)
+        {
+            if (!MainMenu_Form.Instance.CompanyList.Contains(companyName))
+            {
+                MainMenu_Form.Instance.CompanyList.Add(companyName);
+            }
+        }
+
+        private static Category FindOrCreateCategory(
+            List<Category> list,
+            string categoryName,
+            Dictionary<string, HashSet<string>> existingProducts,
+            Dictionary<string, HashSet<string>> addedDuringImport)
+        {
+            Category category = list.FirstOrDefault(c => c.Name == categoryName);
+
+            if (category == null)
+            {
+                category = new Category { Name = categoryName };
+                list.Add(category);
+                existingProducts[categoryName] = [];
+                addedDuringImport[categoryName] = [];
+            }
+            else if (!addedDuringImport.ContainsKey(categoryName))
+            {
+                addedDuringImport[categoryName] = [];
+            }
+
+            return category;
+        }
+
+        private static bool ProductExists(
+            Dictionary<string, HashSet<string>> existingProducts,
+            string categoryName,
+            string productNameLower,
+            string productName,
+            bool purchase)
+        {
+            if (existingProducts.TryGetValue(categoryName, out HashSet<string> existingCategoryProducts) &&
+                existingCategoryProducts.Contains(productNameLower))
+            {
+                string type = purchase ? "purchase" : "sale";
+
+                CustomMessageBox.Show(
+                    "Product already exists",
+                    $"The product for {type} '{productName}' already exists and will not be imported",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void AddProductToCategory(
+            Category category,
+            string productId,
+            string productName,
+            string productNameLower,
+            string countryOfOrigin,
+            string companyOfOrigin,
+            Dictionary<string, HashSet<string>> addedDuringImport,
+            string categoryName)
+        {
+            Product product = new()
+            {
+                ProductID = productId,
+                Name = productName,
+                CountryOfOrigin = countryOfOrigin,
+                CompanyOfOrigin = companyOfOrigin
+            };
+
+            category.ProductList.Add(product);
+
+            // Track that we've added this product
+            if (!addedDuringImport.TryGetValue(categoryName, out HashSet<string> productsSet))
+            {
+                productsSet = [];
+                addedDuringImport[categoryName] = productsSet;
+            }
+            productsSet.Add(productNameLower);
+        }
+
         public static (bool, bool) ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
         {
-            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
-            bool wasSomethingImported = false;
-            int newRowIndex = -1;
-
-            // Get existing purchase numbers before we start importing
-            HashSet<string> existingPurchaseNumbers = [];
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchase_DataGridView.Rows)
-            {
-                if (row.Cells[MainMenu_Form.Column.ID.ToString()].Value != null)
-                {
-                    existingPurchaseNumbers.Add(row.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString());
-                }
-            }
-
-            HashSet<string> addedDuringImport = [];
-
-            foreach (IXLRow row in rowsToProcess)
-            {
-                string purchaseNumber = row.Cell(1).GetValue<string>();
-
-                if (string.IsNullOrEmpty(purchaseNumber)) { continue; }
-
-                // Check if this row's purchase number already exists
-                if (purchaseNumber != ReadOnlyVariables.EmptyCell)
-                {
-                    bool alreadyExistsInSystem = existingPurchaseNumbers.Contains(purchaseNumber);
-                    bool alreadyAddedDuringImport = addedDuringImport.Contains(purchaseNumber);
-
-                    if (alreadyExistsInSystem)
-                    {
-                        CustomMessageBoxResult result = CustomMessageBox.Show(
-                            "Purchase # already exists",
-                            $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
-                            CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
-
-                        if (result != CustomMessageBoxResult.Yes)
-                        {
-                            continue;
-                        }
-                    }
-                    else if (alreadyAddedDuringImport)
-                    {
-                        // If it's a duplicate within this import, ask if they want to add it anyway
-                        CustomMessageBoxResult result = CustomMessageBox.Show(
-                            "Duplicate Purchase # in Spreadsheet",
-                            $"The purchase #{purchaseNumber} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?",
-                            CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
-
-                        if (result != CustomMessageBoxResult.Yes)
-                        {
-                            continue;
-                        }
-                    }
-                }
-
-                // Create a new row
-                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Purchase_DataGridView.RowTemplate.Clone();
-                newRow.CreateCells(MainMenu_Form.Instance.Purchase_DataGridView);
-
-                if (!ImportTransaction(row, newRow)) { return (false, wasSomethingImported); }
-
-                ImportItemsInTransaction(row, newRow);
-
-                // Add the row to the DataGridView
-                if (MainMenu_Form.Instance.Purchase_DataGridView.InvokeRequired)
-                {
-                    MainMenu_Form.Instance.Purchase_DataGridView.Invoke(new Action(() =>
-                    {
-                        newRowIndex = MainMenu_Form.Instance.Purchase_DataGridView.Rows.Add(newRow);
-                    }));
-                }
-                else
-                {
-                    newRowIndex = MainMenu_Form.Instance.Purchase_DataGridView.Rows.Add(newRow);
-                }
-
-                FormatNoteCell(newRow);
-
-                // Track that we've added this purchase number
-                if (!string.IsNullOrEmpty(purchaseNumber) && purchaseNumber != ReadOnlyVariables.EmptyCell)
-                {
-                    addedDuringImport.Add(purchaseNumber);
-                }
-
-                wasSomethingImported = true;
-                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Purchase_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
-            }
-            return (true, wasSomethingImported);
+            return ImportTransactionData(worksheet, skipHeader, true);
         }
         public static (bool, bool) ImportSalesData(IXLWorksheet worksheet, bool skipHeader)
         {
+            return ImportTransactionData(worksheet, skipHeader, false);
+        }
+
+        /// <summary>
+        /// Common method for importing purchase and sales data
+        /// </summary>
+        private static (bool, bool) ImportTransactionData(IXLWorksheet worksheet, bool skipHeader, bool isPurchase)
+        {
             IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
             bool wasSomethingImported = false;
             int newRowIndex = -1;
 
-            // Get existing sale numbers before we start importing
-            HashSet<string> existingSaleNumbers = [];
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sale_DataGridView.Rows)
+            Guna2DataGridView targetGridView = isPurchase
+                ? MainMenu_Form.Instance.Purchase_DataGridView
+                : MainMenu_Form.Instance.Sale_DataGridView;
+
+            // Get existing transaction numbers
+            HashSet<string> existingTransactionNumbers = new(targetGridView.Rows.Count);
+            string idColumn = MainMenu_Form.Column.ID.ToString();
+
+            foreach (DataGridViewRow row in targetGridView.Rows)
             {
-                if (row.Cells[MainMenu_Form.Column.ID.ToString()].Value != null)
+                if (row.Cells[idColumn].Value != null)
                 {
-                    existingSaleNumbers.Add(row.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString());
+                    existingTransactionNumbers.Add(row.Cells[idColumn].Value.ToString());
                 }
             }
 
             HashSet<string> addedDuringImport = [];
+            string itemType = isPurchase ? "Purchase" : "Sale";
 
             foreach (IXLRow row in rowsToProcess)
             {
-                string saleNumber = row.Cell(1).GetValue<string>();
+                string transactionNumber = row.Cell(1).GetValue<string>();
 
-                if (string.IsNullOrEmpty(saleNumber)) { continue; }
+                if (string.IsNullOrEmpty(transactionNumber)) { continue; }
 
-                // Check if this row's sales number already exists
-                if (saleNumber != ReadOnlyVariables.EmptyCell)
+                // Check if this row's transaction number already exists
+                if (transactionNumber != ReadOnlyVariables.EmptyCell)
                 {
-                    bool alreadyExistsInSystem = existingSaleNumbers.Contains(saleNumber);
-                    bool alreadyAddedDuringImport = addedDuringImport.Contains(saleNumber);
+                    bool shouldContinue = CheckIfItemExists(
+                        transactionNumber,
+                        existingTransactionNumbers,
+                        addedDuringImport,
+                        itemType);
 
-                    if (alreadyExistsInSystem)
-                    {
-                        CustomMessageBoxResult result = CustomMessageBox.Show(
-                            "Sale # already exists",
-                            $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
-                            CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
-
-                        if (result != CustomMessageBoxResult.Yes)
-                        {
-                            continue;
-                        }
-                    }
-                    else if (alreadyAddedDuringImport)
-                    {
-                        // If it's a duplicate within this import, ask if they want to add it anyway
-                        CustomMessageBoxResult result = CustomMessageBox.Show(
-                            "Duplicate Sale # in Spreadsheet",
-                            $"The sale #{saleNumber} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?",
-                            CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
-
-                        if (result != CustomMessageBoxResult.Yes)
-                        {
-                            continue;
-                        }
-                    }
+                    if (!shouldContinue) { continue; }
                 }
 
                 // Create a new row
-                DataGridViewRow newRow = (DataGridViewRow)MainMenu_Form.Instance.Sale_DataGridView.RowTemplate.Clone();
-                newRow.CreateCells(MainMenu_Form.Instance.Sale_DataGridView);
+                DataGridViewRow newRow = (DataGridViewRow)targetGridView.RowTemplate.Clone();
+                newRow.CreateCells(targetGridView);
 
                 if (!ImportTransaction(row, newRow)) { return (false, wasSomethingImported); }
 
                 ImportItemsInTransaction(row, newRow);
 
                 // Add the row to the DataGridView
-                if (MainMenu_Form.Instance.Sale_DataGridView.InvokeRequired)
+                targetGridView.InvokeIfRequired(() =>
                 {
-                    MainMenu_Form.Instance.Sale_DataGridView.Invoke(new Action(() =>
-                    {
-                        newRowIndex = MainMenu_Form.Instance.Sale_DataGridView.Rows.Add(newRow);
-                    }));
-                }
-                else
-                {
-                    newRowIndex = MainMenu_Form.Instance.Sale_DataGridView.Rows.Add(newRow);
-                }
+                    newRowIndex = targetGridView.Rows.Add(newRow);
+                });
 
                 FormatNoteCell(newRow);
 
-                // Track that we've added this sale number
-                if (!string.IsNullOrEmpty(saleNumber) && saleNumber != ReadOnlyVariables.EmptyCell)
+                // Track that we've added this transaction number
+                if (!string.IsNullOrEmpty(transactionNumber) && transactionNumber != ReadOnlyVariables.EmptyCell)
                 {
-                    addedDuringImport.Add(saleNumber);
+                    addedDuringImport.Add(transactionNumber);
                 }
 
                 wasSomethingImported = true;
-                DataGridViewManager.DataGridViewRowsAdded(MainMenu_Form.Instance.Sale_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+                DataGridViewManager.DataGridViewRowsAdded(targetGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
+
             return (true, wasSomethingImported);
+        }
+
+        /// <summary>
+        /// Checks if an item already exists and asks the user if they want to add it anyway
+        /// </summary>
+        /// <returns>True if the item should be added, false if it should be skipped</returns>
+        private static bool CheckIfItemExists(
+            string itemNumber,
+            HashSet<string> existingItems,
+            HashSet<string> addedDuringImport,
+            string itemTypeName)
+        {
+            bool alreadyExistsInSystem = existingItems.Contains(itemNumber);
+            bool alreadyAddedDuringImport = addedDuringImport.Contains(itemNumber);
+
+            if (alreadyExistsInSystem)
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    $"{itemTypeName} # already exists",
+                    $"The {itemTypeName.ToLowerInvariant()} #{itemNumber} already exists. Would you like to add this {itemTypeName.ToLowerInvariant()} anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                return result == CustomMessageBoxResult.Yes;
+            }
+            else if (alreadyAddedDuringImport)
+            {
+                CustomMessageBoxResult result = CustomMessageBox.Show(
+                    $"Duplicate {itemTypeName} # in Spreadsheet",
+                    $"The {itemTypeName.ToLowerInvariant()} #{itemNumber} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?",
+                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                return result == CustomMessageBoxResult.Yes;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -596,37 +602,39 @@ namespace Sales_Tracker.Classes
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                // Handle receipts and adding new rows
-                if (row.Tag is (List<string> itemList, TagData tagData1) && itemList.Count > 0)
+                // Handle receipts and adding new rows using pattern matching
+                switch (row.Tag)
                 {
-                    // Is there a receipt
-                    byte receiptOffset = 0;
-                    string receipt = itemList[^1];
-                    if (receipt.StartsWith(ReadOnlyVariables.Receipt_text))
-                    {
-                        receiptOffset = 1;
-                        receiptFileName = Path.GetFileName(receipt);
-                    }
-                    else
-                    {
-                        worksheet.Cell(currentRow, receiptCellIndex).Value = ReadOnlyVariables.EmptyCell;
-                    }
+                    case (List<string> itemList, TagData tagData) when itemList.Count > 0:
+                        // Is there a receipt
+                        byte receiptOffset = 0;
+                        string receipt = itemList[^1];
+                        if (receipt.StartsWith(ReadOnlyVariables.Receipt_text))
+                        {
+                            receiptOffset = 1;
+                            receiptFileName = Path.GetFileName(receipt);
+                        }
+                        else
+                        {
+                            worksheet.Cell(currentRow, receiptCellIndex).Value = ReadOnlyVariables.EmptyCell;
+                        }
 
-                    AddRowToWorksheet(worksheet, row, currentRow, tagData1);
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData);
 
-                    // Add additional rows if they exist in itemList
-                    for (int j = 0; j < itemList.Count - receiptOffset; j++)
-                    {
-                        currentRow++;
-                        string[] values = itemList[j].Split(',');
+                        // Add additional rows if they exist in itemList
+                        for (int j = 0; j < itemList.Count - receiptOffset; j++)
+                        {
+                            currentRow++;
+                            string[] values = itemList[j].Split(',');
 
-                        AddItemRowToWorksheet(worksheet, values, currentRow);
-                    }
-                }
-                else if (row.Tag is (string tagString, TagData tagData2))
-                {
-                    AddRowToWorksheet(worksheet, row, currentRow, tagData2);
-                    receiptFileName = Path.GetFileName(tagString);
+                            AddItemRowToWorksheet(worksheet, values, currentRow);
+                        }
+                        break;
+
+                    case (string tagString, TagData tagData):
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData);
+                        receiptFileName = Path.GetFileName(tagString);
+                        break;
                 }
 
                 // Add receipt to the last cell
@@ -646,40 +654,22 @@ namespace Sales_Tracker.Classes
 
                 if (tagData != null && i >= 8 && i <= 14)
                 {
-                    decimal usdValue = 0;
-                    bool useEmpty = false;
+                    decimal usdValue;
+                    bool useEmpty;
 
-                    switch (i)
+                    // Use a switch expression for cleaner code
+                    (usdValue, useEmpty) = i switch
                     {
-                        case 8:
-                            if (tagData.PricePerUnitUSD == 0)
-                            {
-                                useEmpty = true;
-                            }
-                            else
-                            {
-                                usdValue = tagData.PricePerUnitUSD;
-                            }
-                            break;
-                        case 9:
-                            usdValue = tagData.ShippingUSD;
-                            break;
-                        case 10:
-                            usdValue = tagData.TaxUSD;
-                            break;
-                        case 11:
-                            usdValue = tagData.FeeUSD;
-                            break;
-                        case 12:
-                            usdValue = tagData.DiscountUSD;
-                            break;
-                        case 13:
-                            usdValue = tagData.ChargedDifferenceUSD;
-                            break;
-                        case 14:
-                            usdValue = tagData.ChargedOrCreditedUSD;
-                            break;
-                    }
+                        8 => (tagData.PricePerUnitUSD, tagData.PricePerUnitUSD == 0),
+                        9 => (tagData.ShippingUSD, false),
+                        10 => (tagData.TaxUSD, false),
+                        11 => (tagData.FeeUSD, false),
+                        12 => (tagData.DiscountUSD, false),
+                        13 => (tagData.ChargedDifferenceUSD, false),
+                        14 => (tagData.ChargedOrCreditedUSD, false),
+                        _ => (0, false)
+                    };
+
                     excelCell.Value = useEmpty ? ReadOnlyVariables.EmptyCell : usdValue.ToString("N5");
                 }
                 else
@@ -691,26 +681,22 @@ namespace Sales_Tracker.Classes
 
             // Set the note in the last cell
             DataGridViewCell lastCell = row.Cells[^1];
-            string lastCellValue = lastCell.Value?.ToString();
+            string? lastCellValue = lastCell.Value?.ToString();
             IXLCell lastExcelCell = worksheet.Cell(currentRow, row.Cells.Count);
 
-            if (lastCellValue == ReadOnlyVariables.EmptyCell)
-            {
-                lastExcelCell.Value = ReadOnlyVariables.EmptyCell;
-            }
-            else if (lastCellValue == ReadOnlyVariables.Show_text && lastCell.Tag != null)
-            {
-                lastExcelCell.Value = lastCell.Tag.ToString();
-            }
+            // Use ternary operators for cleaner code
+            lastExcelCell.Value = lastCellValue == ReadOnlyVariables.EmptyCell
+                ? ReadOnlyVariables.EmptyCell
+                : (lastCellValue == ReadOnlyVariables.Show_text && lastCell.Tag != null)
+                    ? lastCell.Tag.ToString()
+                    : lastCellValue;
         }
         private static void AddItemRowToWorksheet(IXLWorksheet worksheet, string[] row, int currentRow)
         {
-            int dateColumnIndex = 4;
-
             for (int i = 0; i < row.Length - 1; i++)  // Skip the total value with - 1
             {
                 // Shift the data one column to the right after the date column
-                int columnIndex = i < dateColumnIndex ? i : i + 1;
+                int columnIndex = i < 4 ? i : i + 1;
 
                 IXLCell excelCell = worksheet.Cell(currentRow, columnIndex + 3);
 
@@ -806,7 +792,7 @@ namespace Sales_Tracker.Classes
             {
                 worksheet.Cells[row, 1].Value = item.Key;
                 worksheet.Cells[row, 2].Value = item.Value;
-                worksheet.Cells[row, 2].Style.Numberformat.Format = "#,##0.00";
+                worksheet.Cells[row, 2].Style.Numberformat.Format = DecimalFormatPattern;
                 row++;
             }
 
@@ -859,7 +845,7 @@ namespace Sales_Tracker.Classes
                 for (int i = 0; i < seriesNames.Count; i++)
                 {
                     worksheet.Cells[row, i + 2].Value = dateEntry.Value[seriesNames[i]];
-                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = "#,##0.00";
+                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = DecimalFormatPattern;
                 }
                 row++;
             }

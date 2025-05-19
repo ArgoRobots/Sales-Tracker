@@ -121,16 +121,11 @@ namespace Sales_Tracker.Classes
             newText += text + "\n";
             _logText += newText;
 
-            if (Tools.IsFormOpen(typeof(Log_Form)))
+            if (Tools.IsFormOpen<Log_Form>())
             {
-                if (Log_Form.Instance.RichTextBox.InvokeRequired)
-                {
-                    Log_Form.Instance.RichTextBox.Invoke(new Action(() =>
-                    {
-                        Log_Form.Instance.RichTextBox.AppendText(newText);
-                    }));
-                }
-                else { Log_Form.Instance.RichTextBox.AppendText(newText); }
+                Log_Form.Instance.RichTextBox.InvokeIfRequired(() =>
+                    Log_Form.Instance.RichTextBox.AppendText(newText)
+                );
             }
         }
         private static void Error(

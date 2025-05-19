@@ -360,7 +360,7 @@ namespace Sales_Tracker.UI
                 ArgoCompany.SaveAll();
                 MainMenu_Form.Instance.Saved_Label.Text = "Saved";
             }
-            else if (Tools.IsFormOpen(typeof(MainMenu_Form)))
+            else if (Tools.IsFormOpen<MainMenu_Form>())
             {
                 MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.Text;
                 MainMenu_Form.Instance.Saved_Label.Text = "No changes found";
@@ -663,11 +663,11 @@ namespace Sales_Tracker.UI
         // Close all panels
         public static void Rename()
         {
-            if (Tools.IsFormOpen(typeof(MainMenu_Form)))
+            if (Tools.IsFormOpen<MainMenu_Form>())
             {
                 MainMenu_Form.Instance.RenameCompany();
             }
-            else if (Tools.IsFormOpen(typeof(GetStarted_Form)))
+            else if (Tools.IsFormOpen<GetStarted_Form>())
             {
                 GetStarted_Form.Instance.RenameCompany();
             }

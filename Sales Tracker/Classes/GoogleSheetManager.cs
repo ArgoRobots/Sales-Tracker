@@ -25,7 +25,7 @@ namespace Sales_Tracker.Classes
         }
 
         // Initialize the Google Sheets service
-        private static bool InitializeServiceAsync()
+        private static bool InitializeService()
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Sales_Tracker.Classes
             string column1Text,
             string column2Text)
         {
-            if (_sheetsService == null && !InitializeServiceAsync())
+            if (_sheetsService == null && !InitializeService())
             {
                 return;
             }
@@ -206,7 +206,7 @@ namespace Sales_Tracker.Classes
             string chartTitle,
             ChartType chartType)
         {
-            if (_sheetsService == null && !InitializeServiceAsync())
+            if (_sheetsService == null && !InitializeService())
             {
                 return;
             }
@@ -374,17 +374,7 @@ namespace Sales_Tracker.Classes
             if (Application.OpenForms.Count > 0)
             {
                 Form mainForm = Application.OpenForms[0];
-                if (mainForm.InvokeRequired)
-                {
-                    mainForm.Invoke(new Action(() =>
-                    {
-                        Loading_Form.ShowLoading(message);
-                    }));
-                }
-                else
-                {
-                    Loading_Form.ShowLoading(message);
-                }
+                mainForm.InvokeIfRequired(() => Loading_Form.ShowLoading(message));
             }
             else
             {
@@ -397,17 +387,7 @@ namespace Sales_Tracker.Classes
             if (Application.OpenForms.Count > 0)
             {
                 Form mainForm = Application.OpenForms[0];
-                if (mainForm.InvokeRequired)
-                {
-                    mainForm.Invoke(new Action(() =>
-                    {
-                        Loading_Form.CompleteOperation();
-                    }));
-                }
-                else
-                {
-                    Loading_Form.CompleteOperation();
-                }
+                mainForm.InvokeIfRequired(() => Loading_Form.CompleteOperation());
             }
             else
             {
@@ -420,17 +400,9 @@ namespace Sales_Tracker.Classes
             if (Application.OpenForms.Count > 0)
             {
                 Form mainForm = Application.OpenForms[0];
-                if (mainForm.InvokeRequired)
-                {
-                    mainForm.Invoke(new Action(() =>
-                    {
-                        CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-                    }));
-                }
-                else
-                {
-                    CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-                }
+                mainForm.InvokeIfRequired(() =>
+                    CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
+                );
             }
         }
         private static void TrackGoogleSheetsExport(Stopwatch stopwatch)

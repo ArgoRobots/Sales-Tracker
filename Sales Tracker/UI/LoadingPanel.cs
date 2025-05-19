@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.UI
@@ -78,20 +79,12 @@ namespace Sales_Tracker.UI
         }
         public static void ShowBlankLoadingPanel(Control control)
         {
-            if (_blankLoadingPanel.InvokeRequired)
-            {
-                _blankLoadingPanel.Invoke(new Action(show));
-            }
-            else
-            {
-                show();
-            }
-            void show()
+            _blankLoadingPanel.InvokeIfRequired(() =>
             {
                 _blankLoadingPanel.Size = control.Size;
                 control.Controls.Add(_blankLoadingPanel);
                 _blankLoadingPanel.BringToFront();
-            }
+            });
         }
         public static void HideLoadingScreen(Control control)
         {

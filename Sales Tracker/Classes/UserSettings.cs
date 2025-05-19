@@ -47,11 +47,11 @@ namespace Sales_Tracker.Classes
 
                 Settings_Form.Instance.AnimateButtons();
                 MainMenu_Form.Instance.AnimateButtons();
-                if (Tools.IsFormOpen(typeof(Log_Form)))
+                if (Tools.IsFormOpen<Log_Form>())
                 {
                     Log_Form.Instance.AnimateButtons();
                 }
-                if (Tools.IsFormOpen(typeof(Receipts_Form)))
+                if (Tools.IsFormOpen<Receipts_Form>())
                 {
                     Receipts_Form.Instance.AnimateButtons();
                 }
@@ -106,7 +106,7 @@ namespace Sales_Tracker.Classes
                     Updates_Form.Instance
                 ]);
             }
-            if (Tools.IsFormOpen(typeof(Log_Form)))
+            if (Tools.IsFormOpen<Log_Form>())
             {
                 controlsList.Add(Log_Form.Instance);
             }
