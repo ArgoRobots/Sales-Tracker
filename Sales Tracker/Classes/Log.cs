@@ -123,8 +123,8 @@ namespace Sales_Tracker.Classes
 
             if (Tools.IsFormOpen<Log_Form>())
             {
-                Log_Form.Instance.RichTextBox.InvokeIfRequired(() =>
-                    Log_Form.Instance.RichTextBox.AppendText(newText)
+                Log_Form.Instance.Log_RichTextBox.InvokeIfRequired(() =>
+                    Log_Form.Instance.Log_RichTextBox.AppendText(newText)
                 );
             }
         }

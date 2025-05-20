@@ -5,7 +5,8 @@
     {
         ShowWelcomeForm,  // bool
         ImportSpreadsheetTutorial,  // bool
-        RecentCompanies  // string[]
+        RecentCompanies,  // string[]
+        EULAAccepted  // bool 
     }
     public enum AppDataSettings
     {

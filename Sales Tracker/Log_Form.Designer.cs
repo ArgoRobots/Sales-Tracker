@@ -33,25 +33,25 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Log_Form));
-            RichTextBox = new RichTextBox();
+            Log_RichTextBox = new RichTextBox();
             AutoScroll_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Clear_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
             // RichTextBox
             // 
-            RichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            RichTextBox.BackColor = Color.FromArgb(250, 250, 250);
-            RichTextBox.BorderStyle = BorderStyle.None;
-            RichTextBox.Font = new Font("Segoe UI", 12F);
-            RichTextBox.Location = new Point(18, 18);
-            RichTextBox.Name = "RichTextBox";
-            RichTextBox.ReadOnly = true;
-            RichTextBox.Size = new Size(1342, 690);
-            RichTextBox.TabIndex = 0;
-            RichTextBox.Text = "";
-            RichTextBox.LinkClicked += RichTextBox_LinkClicked;
-            RichTextBox.TextChanged += RichTextBox_TextChanged;
+            Log_RichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Log_RichTextBox.BackColor = Color.FromArgb(250, 250, 250);
+            Log_RichTextBox.BorderStyle = BorderStyle.None;
+            Log_RichTextBox.Font = new Font("Segoe UI", 12F);
+            Log_RichTextBox.Location = new Point(18, 18);
+            Log_RichTextBox.Name = "RichTextBox";
+            Log_RichTextBox.ReadOnly = true;
+            Log_RichTextBox.Size = new Size(1342, 690);
+            Log_RichTextBox.TabIndex = 0;
+            Log_RichTextBox.Text = "";
+            Log_RichTextBox.LinkClicked += RichTextBox_LinkClicked;
+            Log_RichTextBox.TextChanged += RichTextBox_TextChanged;
             // 
             // AutoScroll_ComboBox
             // 
@@ -99,7 +99,7 @@
             ClientSize = new Size(1378, 794);
             Controls.Add(Clear_Button);
             Controls.Add(AutoScroll_ComboBox);
-            Controls.Add(RichTextBox);
+            Controls.Add(Log_RichTextBox);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(800, 600);
@@ -113,7 +113,7 @@
         }
 
         #endregion
-        public System.Windows.Forms.RichTextBox RichTextBox;
+        public System.Windows.Forms.RichTextBox Log_RichTextBox;
         private Guna.UI2.WinForms.Guna2ComboBox AutoScroll_ComboBox;
         public Guna.UI2.WinForms.Guna2Button Clear_Button;
     }
