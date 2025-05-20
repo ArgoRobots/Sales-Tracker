@@ -71,9 +71,13 @@ namespace Sales_Tracker.Theme
         public static void SetColors()
         {
             if (ThemeManager.IsDarkTheme())
+            {
                 SetDarkThemeColors();
+            }
             else
+            {
                 SetLightThemeColors();
+            }
         }
         private static void SetDarkThemeColors()
         {

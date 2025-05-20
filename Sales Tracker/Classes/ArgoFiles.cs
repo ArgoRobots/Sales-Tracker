@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Sales_Tracker.Classes
@@ -31,13 +30,9 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void RegisterFileIcon(string extension, Icon icon, int iconIndex)
         {
-            // Get the path of the currently running executable
-            string applicationPath = Assembly.GetExecutingAssembly().Location;
             if (icon != null)
             {
                 // Create a persistent copy of the icon in local app data
-                // This ensures Windows can always access the icon, even during application updates
-                // and without requiring the application to be running
                 string tempIconPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ArgoSalesTracker",
@@ -80,7 +75,7 @@ namespace Sales_Tracker.Classes
                 // Set up command to open files with this application
                 using (RegistryKey commandKey = Registry.CurrentUser.CreateSubKey($@"{userClassesRoot}\{className}\shell\open\command"))
                 {
-                    commandKey.SetValue("", $"\"{applicationPath}\" \"%1\"");
+                    commandKey.SetValue("", $"\"{Application.ExecutablePath}\" \"%1\"");
                 }
 
                 // Notify Windows to refresh icon cache and file associations

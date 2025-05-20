@@ -1,9 +1,15 @@
 ﻿namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Provides functionality to load environment variables from a .env file and access them throughout the application.
+    /// </summary>
     public static class DotEnv
     {
         private static readonly Dictionary<string, string> _envVars = [];
 
+        /// <summary>
+        /// Loads environment variables from a .env file into memory.
+        /// </summary>
         public static void Load()
         {
             string envFileName = ".env";
@@ -33,6 +39,10 @@
                 _envVars[key] = value;
             }
         }
+
+        /// <summary>
+        /// Retrieves the value of an environment variable by its key.
+        /// </summary>
         public static string? Get(string key)
         {
             if (_envVars.TryGetValue(key, out string value))
@@ -43,6 +53,10 @@
             Log.Write(0, $"{key} not found.");
             return null;
         }
+
+        /// <summary>
+        /// Locates a file by searching up through the directory hierarchy from the current directory.
+        /// </summary>
         private static string? FindFileRelativeToSolution(string fileName)
         {
             string currentDir = Directory.GetCurrentDirectory();

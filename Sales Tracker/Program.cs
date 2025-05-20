@@ -1,5 +1,4 @@
 using Sales_Tracker.Startup;
-using Sales_Tracker.Theme;
 
 namespace Sales_Tracker
 {
@@ -11,12 +10,16 @@ namespace Sales_Tracker
         [STAThread]
         private static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            ApplicationStartup.InitializeApplication();
 
-            ThemeChangeDetector.StartListeningForThemeChanges();
+            // Handle .ArgoSales file association - opens file if launched via double-click
+            if (ApplicationStartup.TryOpenFileFromCommandLine(args))
+            {
+                Application.Run();
+                return;
+            }
 
+            // Otherwise, normal application startup
             Startup_Form startupForm = new(args);
             startupForm.Show();
             Application.Run();

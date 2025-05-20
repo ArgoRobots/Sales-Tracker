@@ -1,5 +1,4 @@
-﻿using Sales_Tracker.Classes;
-using Sales_Tracker.Startup.Menus;
+﻿using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
@@ -35,9 +34,6 @@ namespace Sales_Tracker.Startup
             FormThemeManager.RegisterForm(this);
 
             TextBoxManager.ConstructRightClickTextBoxMenu();
-
-            // TO DO: make this only run once, during progam installation
-            ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.ArgoColor, 0);
         }
         public void SwitchMainForm(Form mainForm)
         {
