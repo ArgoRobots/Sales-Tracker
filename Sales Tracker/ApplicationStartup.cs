@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Passwords;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
@@ -22,6 +23,19 @@ namespace Sales_Tracker
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
 
+            TextBoxManager.ConstructRightClickTextBoxMenu();
+            SearchBox.ConstructSearchBox();
+            LoadingPanel.InitBlankLoadingPanel();
+            LoadingPanel.InitLoadingPanel();
+
+            CustomColors.SetColors();
+            Directories.SetUniversalDirectories();
+            Directories.EnsureAppDataDirectoriesExist();
+            CustomControls.ConstructRightClickRename();
+
+            DotEnv.Load();
+            LanguageManager.InitLanguageManager();
+
             ThemeChangeDetector.StartListeningForThemeChanges();
             RegisterFileAssociationOnFirstRun();
         }
@@ -33,28 +47,21 @@ namespace Sales_Tracker
         {
             try
             {
-                // Force re-registration for testing
-                bool forceRegistration = true;  // Set to true for testing, then change back to false
+                string subKey = @"Software\ArgoSalesTracker";
                 bool hasRegistered = false;
 
-                if (!forceRegistration)
+                using RegistryKey key = Registry.CurrentUser.OpenSubKey(subKey, false);
+                if (key != null)
                 {
-                    using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\ArgoSalesTracker", false);
-                    if (key != null)
-                    {
-                        hasRegistered = key.GetValue("AssociationsRegistered", false) as bool? ?? false;
-                    }
+                    hasRegistered = key.GetValue("AssociationsRegistered", false) as bool? ?? false;
                 }
 
-                if (forceRegistration || !hasRegistered)
+                if (!hasRegistered)
                 {
-                    // Get application path for file association
-                    string applicationPath = Application.ExecutablePath;
-
                     ArgoFiles.RegisterFileIcon(ArgoFiles.ArgoCompanyFileExtension, Properties.Resources.ArgoColor, 0);
 
-                    using RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\ArgoSalesTracker");
-                    key?.SetValue("AssociationsRegistered", true);
+                    using RegistryKey writeKey = Registry.CurrentUser.CreateSubKey(subKey);
+                    writeKey?.SetValue("AssociationsRegistered", true);
                 }
             }
             catch (Exception ex)
@@ -64,10 +71,10 @@ namespace Sales_Tracker
         }
 
         /// <summary>
-        /// Handles opening a file directly from command line arguments.
+        /// Handles opening a company directly from command line arguments.
         /// </summary>
         /// <returns>True if file was successfully opened, false otherwise</returns>
-        public static bool TryOpenFileFromCommandLine(string[] args)
+        public static bool TryOpenCompanyFromCommandLine(string[] args)
         {
             try
             {
@@ -91,9 +98,6 @@ namespace Sales_Tracker
                 // Initialize directories
                 Directories.SetUniversalDirectories();
                 Directories.EnsureAppDataDirectoriesExist();
-                DotEnv.Load();
-
-                LanguageManager.InitLanguageManager();
 
                 // Open the company file directly
                 string filePath = args[0];
@@ -101,24 +105,19 @@ namespace Sales_Tracker
                 string fileName = Path.GetFileName(filePath);
                 string projectName = Path.GetFileNameWithoutExtension(fileName);
 
-                // Use the non-UI version of the method here
-                //if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(projectName))
-                //{
-                //    return false;
-                //}
+                if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(projectName))
+                {
+                    return false;
+                }
 
                 // Open the company
                 Directories.SetDirectories(directory, projectName);
                 ArgoCompany.InitThings();
 
-                // Skip the password step for now, or use a non-UI version if needed
-                /*
-                if (!PasswordManager.EnterPasswordNonUI())
+                if (!PasswordManager.EnterPassword())
                 {
-                    ArgoCompany.ApplicationMutex?.Dispose();  // Reset
                     return false;
                 }
-                */
 
                 // Save to recent files and import
                 DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, filePath);
@@ -126,18 +125,14 @@ namespace Sales_Tracker
                 Directories.ImportArgoTarFile(filePath, Directories.AppData_dir, Directories.ImportType.ArgoCompany, dirNames, false);
                 DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
 
-                CustomColors.SetColors();
-                CustomControls.ConstructRightClickRename();
-                LoadingPanel.InitBlankLoadingPanel();
-                LoadingPanel.InitLoadingPanel();
-
-                // Create and show MainMenu
-                Application.Run(new MainMenu_Form());
+                MainMenu_Form form = new();
+                form.Show();
 
                 return true;
             }
             catch (Exception ex)
             {
+                // Show a regular MessageBox in case CustomMessageBox is unavailable
                 MessageBox.Show($"Error opening file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

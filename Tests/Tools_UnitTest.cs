@@ -45,11 +45,11 @@ namespace Tests
             Form testForm = new();
             testForm.Show();
 
-            bool isOpen = Tools.IsFormOpen(typeof(Form));
+            bool isOpen = Tools.IsFormOpen<Form>();
             Assert.IsTrue(isOpen);
 
             testForm.Close();
-            isOpen = Tools.IsFormOpen(typeof(Form));
+            isOpen = Tools.IsFormOpen<Form>();
             Assert.IsFalse(isOpen);
         }
 

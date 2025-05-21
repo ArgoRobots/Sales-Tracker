@@ -674,29 +674,25 @@ namespace Sales_Tracker.UI
         }
         public static void CloseAllPanels(object sender, EventArgs? e)
         {
-            try
-            {
-                Rename();
-                SearchBox.CloseSearchBox();
-                TextBoxManager.RightClickTextBox_Panel.Parent?.Controls.Remove(TextBoxManager.RightClickTextBox_Panel);
+            Rename();
+            SearchBox.CloseSearchBox();
+            TextBoxManager.RightClickTextBox_Panel.Parent?.Controls.Remove(TextBoxManager.RightClickTextBox_Panel);
 
-                if (MainMenu_Form.Instance == null) { return; }
+            if (MainMenu_Form.Instance == null) { return; }
 
-                MainMenu_Form.Instance.Controls.Remove(_fileMenu);
-                MainMenu_Form.Instance.Controls.Remove(_recentlyOpenedMenu);
-                MainMenu_Form.Instance.Controls.Remove(_helpMenu);
-                MainMenu_Form.Instance.CloseDateRangePanel();
-                MenuKeyShortcutManager.SelectedPanel = null;
-                DeselectAllMenuButtons(_fileMenu);
-                DeselectAllMenuButtons(_recentlyOpenedMenu);
-                DeselectAllMenuButtons(_helpMenu);
+            MainMenu_Form.Instance.Controls.Remove(_fileMenu);
+            MainMenu_Form.Instance.Controls.Remove(_recentlyOpenedMenu);
+            MainMenu_Form.Instance.Controls.Remove(_helpMenu);
+            MainMenu_Form.Instance.CloseDateRangePanel();
+            MenuKeyShortcutManager.SelectedPanel = null;
+            DeselectAllMenuButtons(_fileMenu);
+            DeselectAllMenuButtons(_recentlyOpenedMenu);
+            DeselectAllMenuButtons(_helpMenu);
 
-                MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
-                MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
-                MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
-                MainMenu_Form.Instance.ClosePanels();
-            }
-            catch { }
+            MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
+            MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
+            MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
+            MainMenu_Form.Instance.ClosePanels();
         }
         private static void DeselectAllMenuButtons(Guna2Panel panel)
         {

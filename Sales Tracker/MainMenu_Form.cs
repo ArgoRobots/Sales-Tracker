@@ -614,7 +614,9 @@ namespace Sales_Tracker
 
             Log.SaveLogs();
             ThemeChangeDetector.StopListeningForThemeChanges();
+            ArgoCompany.ApplicationMutex?.Dispose();
             Directories.DeleteDirectory(Directories.TempCompany_dir, true);
+            Environment.Exit(0);  // Make sure all processes are fully closed
         }
 
         // Center and resize controls

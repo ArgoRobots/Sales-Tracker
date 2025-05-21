@@ -13,7 +13,7 @@ namespace Sales_Tracker
             ApplicationStartup.InitializeApplication();
 
             // Handle .ArgoSales file association - opens file if launched via double-click
-            if (ApplicationStartup.TryOpenFileFromCommandLine(args))
+            if (ApplicationStartup.TryOpenCompanyFromCommandLine(args))
             {
                 Application.Run();
                 return;

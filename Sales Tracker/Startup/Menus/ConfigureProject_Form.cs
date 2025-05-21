@@ -16,7 +16,6 @@ namespace Sales_Tracker.Startup.Menus
         {
             InitializeComponent();
 
-            SearchBox.ConstructSearchBox();
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);

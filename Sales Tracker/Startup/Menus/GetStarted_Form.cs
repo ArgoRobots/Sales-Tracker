@@ -25,17 +25,7 @@ namespace Sales_Tracker.Startup.Menus
             _instance = this;
             fileWatchers = [];
 
-            LoadingPanel.InitBlankLoadingPanel();
-            LoadingPanel.InitLoadingPanel();
-
-            CustomColors.SetColors();
-            Directories.SetUniversalDirectories();
-            Directories.EnsureAppDataDirectoriesExist();
-            CustomControls.ConstructRightClickRename();
-
             SetAccessibleDescriptions();
-            DotEnv.Load();
-            LanguageManager.InitLanguageManager();
             LanguageManager.UpdateLanguageForControl(this);
 
             ConstructRightClickOpenRecentMenu();
