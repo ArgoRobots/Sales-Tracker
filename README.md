@@ -26,7 +26,7 @@
 
 - **.NET 8 SDK**: Make sure you have the latest .NET 8 SDK installed on your machine. You can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 - **Visual Studio 2022 or later**: This project is developed using Visual Studio.
-- **API Keys**: You'll need to obtain the .env file containing the API keys from the project manager
+- **API Keys**: You'll need to obtain the .env file containing the API keys from the project manager.  You can request the .env file from Evan Di Placido.
 
 ## Installation
 
