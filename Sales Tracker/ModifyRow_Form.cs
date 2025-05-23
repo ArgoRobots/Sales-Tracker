@@ -30,9 +30,14 @@ namespace Sales_Tracker
 
             ConstructControls();
             AttachChangeHandlers();
+            SetAccessibleDescriptions();
             UpdateTheme();
-            LanguageManager.UpdateLanguageForControl(this, false);
+            LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        private void SetAccessibleDescriptions()
+        {
+            ModifyRow_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
         private void UpdateTheme()
         {
@@ -1424,7 +1429,8 @@ namespace Sales_Tracker
                 Text = text,
                 Name = text + "_Label",  // This is needed for the language translation
                 Font = new Font("Segoe UI", 11),
-                AutoSize = true
+                AutoSize = true,
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache
             };
             label.Click += CloseSearchBox;
             control.Controls.Add(label);
@@ -1448,7 +1454,7 @@ namespace Sales_Tracker
                 BorderRadius = 3,
                 Cursor = Cursors.Hand,
                 ShortcutsEnabled = false,
-                AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache
             };
             textBox.FocusedState.FillColor = CustomColors.ControlBack;
             textBox.HoverState.BorderColor = CustomColors.AccentBlue;
@@ -1522,7 +1528,8 @@ namespace Sales_Tracker
                 BorderColor = CustomColors.ControlBorder,
                 BorderRadius = 3,
                 Name = name,
-                Value = value
+                Value = value,
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache
             };
             gDatePicker.Click += CloseSearchBox;
             gDatePicker.HoverState.BorderColor = CustomColors.AccentBlue;

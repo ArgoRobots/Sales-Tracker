@@ -432,8 +432,8 @@ namespace Sales_Tracker.Theme
         }
         public static void MakeGButtonBlueSecondary(Guna2Button button)
         {
-            button.FillColor = Color.Transparent;
             button.BorderThickness = 2;
+            button.FillColor = Color.Transparent;
             button.BorderColor = CustomColors.AccentBlue;
             button.ForeColor = CustomColors.AccentBlue;
             button.Font = new Font(button.Font, FontStyle.Bold);
@@ -443,7 +443,7 @@ namespace Sales_Tracker.Theme
             return button.FillColor == CustomColors.AccentBlue || button.ForeColor == CustomColors.AccentBlue;
         }
 
-        // Set the form header to dark
+        // Set the form header theme
         // https://stackoverflow.com/questions/57124243/winforms-dark-title-bar-on-windows-10
 
         [LibraryImport("dwmapi.dll", EntryPoint = "DwmSetWindowAttribute")]

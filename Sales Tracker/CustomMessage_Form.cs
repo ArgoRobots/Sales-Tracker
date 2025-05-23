@@ -10,10 +10,13 @@ namespace Sales_Tracker
     public partial class CustomMessage_Form : Form
     {
         // Properties
-        public CustomMessageBoxResult result;
+        private CustomMessageBoxResult _result;
+
+        // Getter
+        public CustomMessageBoxResult Result => _result;
 
         // Init.
-        public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons, bool translateMessage)
+        public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             InitializeComponent();
             DoubleBuffered = true;
@@ -21,8 +24,8 @@ namespace Sales_Tracker
             ThemeManager.SetThemeForForm(this);
 
             SetMessageBox(title, message, icon, buttons);
-            SetAccessibleDescriptions(translateMessage);
 
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(Save_Button);
             LanguageManager.UpdateLanguageForControl(DontSave_Button);
             LanguageManager.UpdateLanguageForControl(Yes_Button);
@@ -30,18 +33,12 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(Ok_Button);
             LanguageManager.UpdateLanguageForControl(Cancel_Button);
             LanguageManager.UpdateLanguageForControl(this);
+
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        private void SetAccessibleDescriptions(bool translateMessage)
+        private void SetAccessibleDescriptions()
         {
-            if (translateMessage)
-            {
-                Message_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
-            }
-            else
-            {
-                Message_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
-            }
+            Message_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
         // Form event handlers
@@ -295,32 +292,32 @@ namespace Sales_Tracker
         // Event handlers
         private void No_Button_Click(object sender, EventArgs e)
         {
-            result = CustomMessageBoxResult.No;
+            _result = CustomMessageBoxResult.No;
             Close();
         }
         private void Yes_Button_Click(object sender, EventArgs e)
         {
-            result = CustomMessageBoxResult.Yes;
+            _result = CustomMessageBoxResult.Yes;
             Close();
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            result = CustomMessageBoxResult.Cancel;
+            _result = CustomMessageBoxResult.Cancel;
             Close();
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            result = CustomMessageBoxResult.Ok;
+            _result = CustomMessageBoxResult.Ok;
             Close();
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
-            result = CustomMessageBoxResult.Save;
+            _result = CustomMessageBoxResult.Save;
             Close();
         }
         private void DontSave_Button_Click(object sender, EventArgs e)
         {
-            result = CustomMessageBoxResult.DontSave;
+            _result = CustomMessageBoxResult.DontSave;
             Close();
         }
         private void Message_Label_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -359,7 +356,7 @@ namespace Sales_Tracker
     public static class CustomMessageBox
     {
         private static bool _isMessageBoxShowing = false;
-        public static CustomMessageBoxResult Show(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons, bool translateMessage = true)
+        public static CustomMessageBoxResult Show(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             // Only allow one MessageBox to appear at a time
             if (_isMessageBoxShowing)
@@ -376,16 +373,16 @@ namespace Sales_Tracker
                 {
                     return Application.OpenForms[0].Invoke(new Func<CustomMessageBoxResult>(() =>
                     {
-                        using CustomMessage_Form form = new(title, message, icon, buttons, translateMessage);
+                        using CustomMessage_Form form = new(title, message, icon, buttons);
                         form.ShowDialog();
-                        return form.result;
+                        return form.Result;
                     }));
                 }
                 else
                 {
-                    using CustomMessage_Form form = new(title, message, icon, buttons, translateMessage);
+                    using CustomMessage_Form form = new(title, message, icon, buttons);
                     form.ShowDialog();
-                    return form.result;
+                    return form.Result;
                 }
             }
             finally

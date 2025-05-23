@@ -260,11 +260,11 @@ namespace Sales_Tracker.Startup.Menus
             menuBtn = CustomControls.ConstructBtnForMenu("Rename company", CustomControls.PanelBtnWidth, false, flowPanel);
             menuBtn.Click += Rename;
 
-            menuBtn = CustomControls.ConstructBtnForMenu("Hide", CustomControls.PanelBtnWidth, false, flowPanel);
-            menuBtn.Click += Hide;
+            menuBtn = CustomControls.ConstructBtnForMenu("Remove from list", CustomControls.PanelBtnWidth, false, flowPanel);
+            menuBtn.Click += RemoveFromList;
 
-            rightClickOpenRecent_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete in folder", CustomControls.PanelBtnWidth, false, flowPanel);
-            rightClickOpenRecent_DeleteBtn.Click += DeleteInFolder;
+            rightClickOpenRecent_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, false, flowPanel);
+            rightClickOpenRecent_DeleteBtn.Click += Delete;
 
             LanguageManager.UpdateLanguageForControl(RightClickOpenRecent_Panel);
         }
@@ -296,7 +296,7 @@ namespace Sales_Tracker.Startup.Menus
             CustomControls.Rename_TextBox.SelectAll();
             CustomControls.Rename_TextBox.BringToFront();
         }
-        private void Hide(object sender, EventArgs e)
+        private void RemoveFromList(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
@@ -317,7 +317,7 @@ namespace Sales_Tracker.Startup.Menus
                 OpenRecent_FlowLayoutPanel.Controls.Remove(btn);
             }
         }
-        private void DeleteInFolder(object sender, EventArgs e)
+        private void Delete(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
 
@@ -341,7 +341,7 @@ namespace Sales_Tracker.Startup.Menus
                         OpenRecent_FlowLayoutPanel.Controls.Remove(btn);
                     }
                 }
-                else { Hide(null, null); }
+                else { RemoveFromList(null, null); }
             }
         }
 

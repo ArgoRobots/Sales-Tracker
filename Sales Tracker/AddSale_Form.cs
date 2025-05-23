@@ -22,6 +22,7 @@ namespace Sales_Tracker
 
             AddEventHandlersToTextBoxes();
             Date_DateTimePicker.Value = DateTime.Now;
+            Date_DateTimePicker.MaxDate = DateTime.Now;
             CheckIfProductsExist();
             CheckIfAccountantsExist();
             ThemeManager.SetThemeForForm(this);
