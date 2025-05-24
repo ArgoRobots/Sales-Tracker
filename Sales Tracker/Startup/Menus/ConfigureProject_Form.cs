@@ -277,7 +277,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
     }
 }

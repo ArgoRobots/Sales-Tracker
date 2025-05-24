@@ -41,15 +41,15 @@ namespace Sales_Tracker
 
             TextBoxValidation.OnlyAllowLetters(AccountantName_TextBox);
             TextBoxManager.Attach(AccountantName_TextBox);
-            SearchBox.Attach(AccountantName_TextBox, this, GetSearchResultsForAccountant, searchBoxMaxHeight, false, false, false, true);
+            SearchBox.Attach(AccountantName_TextBox, this, GetSearchResultsForAccountant, searchBoxMaxHeight, false, false, true, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(ProductName_TextBox);
-            SearchBox.Attach(ProductName_TextBox, this, GetSearchResultsForProducts, searchBoxMaxHeight, true, false, false, true);
+            SearchBox.Attach(ProductName_TextBox, this, GetSearchResultsForProducts, searchBoxMaxHeight, true, false, true, true);
             ProductName_TextBox.TextChanged += ValidateInputs;
 
             TextBoxManager.Attach(CountryOfDestinaion_TextBox);
-            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
+            SearchBox.Attach(CountryOfDestinaion_TextBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, true, false);
             CountryOfDestinaion_TextBox.TextChanged += ValidateInputs;
 
             TextBoxValidation.OnlyAllowNumbers(Quantity_TextBox);
@@ -117,7 +117,7 @@ namespace Sales_Tracker
         }
         private void AddSale_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
 
         // Event handlers
@@ -788,7 +788,7 @@ namespace Sales_Tracker
                 ConstructLabel(ProductName_Label.Text, 0, labelPanel);
             }
             Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, false, panel);
-            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, 150, true, false, false, true);
+            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, 150, true, false, true, true);
             AccountantName_TextBox.TextChanged += ValidateInputs;
 
             // Price per unit
@@ -1036,7 +1036,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
     }
 }

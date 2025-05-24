@@ -310,7 +310,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs? e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
     }
 }

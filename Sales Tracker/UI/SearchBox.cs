@@ -1,7 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.Settings;
 using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 using Timer = System.Windows.Forms.Timer;
@@ -53,17 +52,9 @@ namespace Sales_Tracker.UI
                     ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
                 }
             };
-            textBox.GotFocus += (_, _) =>
-            {
-                if (Settings_Form.Instance != null && !Settings_Form.Instance.IsFormClosing)  // This fixes a bug
-                {
-                    ShowSearchBox(searchBoxParent, textBox, results, maxHeight, false, increaseWidth, translateText, allowTextBoxEmpty, sortAlphabetically);
-                    Settings_Form.Instance.IsFormClosing = false;
-                }
-            };
             textBox.TextChanged += SearchTextBoxChanged;
             textBox.PreviewKeyDown += AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
-            textBox.KeyDown += (sender, e) => SearchBoxTextBox_KeyDown(e);
+            textBox.KeyDown += (sender, e) => SearchTextBox_KeyDown(e);
         }
 
         // List to store and reuse controls
@@ -75,12 +66,10 @@ namespace Sales_Tracker.UI
         {
             _searchResultBoxContainer = new Guna2Panel
             {
+                BorderThickness = 1,
                 BorderStyle = DashStyle.Solid,
                 BorderColor = Color.Gray,
-                BorderThickness = 1,
-                FillColor = CustomColors.ControlBack,
-                BorderRadius = 1,
-                UseTransparentBackground = true
+                FillColor = CustomColors.ControlBack
             };
             _searchResultBox = new Guna2Panel
             {
@@ -98,17 +87,14 @@ namespace Sales_Tracker.UI
             };
             debounceTimer.Tick += DebounceTimer_Tick;
 
-            InitNoResultsLabel();
-        }
-        private static void InitNoResultsLabel()
-        {
             noResults_Label = new()
             {
                 Text = "No results",
                 Height = 30,
                 ForeColor = CustomColors.Text,
                 Font = new Font("Segoe UI", 10),
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                BackColor = CustomColors.ControlBack
             };
         }
 
@@ -141,6 +127,16 @@ namespace Sales_Tracker.UI
                 }
             }
 
+            if (results.Count == 0)
+            {
+                return;
+            }
+
+            if (!alwaysShow)
+            {
+                CustomControls.CloseAllPanels();
+            }
+
             _searchBoxParent = searchBoxParent;
             searchTextBox = textBox;
             resultList = results;
@@ -149,12 +145,6 @@ namespace Sales_Tracker.UI
             _translateText = translateText;
             _allowTextBoxEmpty = allowTextBoxEmpty;
             _sortAlphabetically = sortAlphabetically;
-
-            if (results.Count == 0)
-            {
-                CustomControls.CloseAllPanels(null, null);
-                return;
-            }
 
             _searchResultBox.SuspendLayout();
             _searchResultBox.VerticalScroll.Value = 0;
@@ -257,7 +247,7 @@ namespace Sales_Tracker.UI
                             Guna2Button button = (Guna2Button)sender;
                             searchTextBox.Text = button.Text;
                             debounceTimer.Stop();
-                            CustomControls.CloseAllPanels(null, null);
+                            CustomControls.CloseAllPanels();
                         };
 
                         int padding = btn.Image != null ? 25 : 0;
@@ -290,6 +280,7 @@ namespace Sales_Tracker.UI
 
                 _searchResultBoxContainer.Height = maxHeight + 3;
                 _searchResultBox.Height = maxHeight;
+                _searchResultBox.AutoScroll = true;
             }
             else if (controlIndex == 0)
             {
@@ -298,6 +289,7 @@ namespace Sales_Tracker.UI
 
                 _searchResultBox.Height = 50;
                 _searchResultBoxContainer.Height = _searchResultBox.Height + 10;
+                _searchResultBox.AutoScroll = false;
             }
             else
             {
@@ -305,6 +297,7 @@ namespace Sales_Tracker.UI
 
                 _searchResultBox.Height = totalHeight;
                 _searchResultBoxContainer.Height = totalHeight + 10;
+                _searchResultBox.AutoScroll = false;
             }
 
             // Show search box
@@ -315,10 +308,6 @@ namespace Sales_Tracker.UI
             }
             _searchResultBox.ResumeLayout();
             _searchResultBoxContainer.BringToFront();
-
-            // This fixes the scrollbar thumb size
-            _searchResultBox.AutoScroll = false;
-            _searchResultBox.AutoScroll = true;
 
             // End timer
             long endTime = DateTime.Now.Ticks;
@@ -358,8 +347,10 @@ namespace Sales_Tracker.UI
         {
             if (resultList == null) { return; }
 
-            HashSet<string> names = new(resultList.Select(result => result.DisplayName));
+            HashSet<string> names = [.. resultList.Select(result => result.DisplayName)];
             CheckValidity(searchTextBox, names);
+
+            TextBoxManager.RightClickTextBox_Panel.Parent?.Controls.Remove(TextBoxManager.RightClickTextBox_Panel);
 
             debounceTimer.Stop();
             debounceTimer.Start();
@@ -377,7 +368,7 @@ namespace Sales_Tracker.UI
                 SetTextBoxToInvalid(textBox);
             }
         }
-        private static void SearchBoxTextBox_KeyDown(KeyEventArgs e)
+        private static void SearchTextBox_KeyDown(KeyEventArgs e)
         {
             List<Guna2Button> results = _searchResultBox.Controls.OfType<Guna2Button>().Where(btn => btn.Visible).ToList();
             if (results.Count == 0) { return; }
@@ -433,7 +424,7 @@ namespace Sales_Tracker.UI
                         searchTextBox.Text = btn.Text;
                         debounceTimer.Stop();
                         isResultSelected = true;
-                        CustomControls.CloseAllPanels(null, null);
+                        CustomControls.CloseAllPanels();
                         break;
                     }
                 }
@@ -455,14 +446,14 @@ namespace Sales_Tracker.UI
             control.BorderThickness = 1;
             _searchResultBox.ScrollControlIntoView(control);
         }
-        public static void SetTextBoxToInvalid(Guna2TextBox textBox)
+        private static void SetTextBoxToInvalid(Guna2TextBox textBox)
         {
             textBox.BorderColor = CustomColors.AccentRed;
             textBox.HoverState.BorderColor = CustomColors.AccentRed;
             textBox.FocusedState.BorderColor = CustomColors.AccentRed;
             textBox.Tag = "0";
         }
-        public static void SetTextBoxToValid(Guna2TextBox textBox)
+        private static void SetTextBoxToValid(Guna2TextBox textBox)
         {
             textBox.BorderColor = CustomColors.ControlBorder;
             textBox.HoverState.BorderColor = CustomColors.AccentBlue;
@@ -488,31 +479,33 @@ namespace Sales_Tracker.UI
                 parent = parent.Parent;
             }
 
-            if (parent == _searchBoxParent)
+            if (parent != _searchBoxParent)
             {
-                if (_increaseWidth)
-                {
-                    // Center the panel relative to the textbox
-                    int widthDifference = _searchResultBoxContainer.Width - textBox.Width;
-                    int centeredX = location.X - (widthDifference / 2);
+                return;
+            }
 
-                    // Ensure the panel doesn't extend beyond the parent's bounds
-                    if (centeredX < 0)
-                    {
-                        centeredX = 0;
-                    }
-                    else if (centeredX + _searchResultBoxContainer.Width > _searchBoxParent.Width)
-                    {
-                        centeredX = _searchBoxParent.Width - _searchResultBoxContainer.Width;
-                    }
+            if (_increaseWidth)
+            {
+                // Center the panel relative to the textbox
+                int widthDifference = _searchResultBoxContainer.Width - textBox.Width;
+                int centeredX = location.X - (widthDifference / 2);
 
-                    _searchResultBoxContainer.Location = new Point(centeredX, location.Y + textBox.Height);
-                }
-                else
+                // Ensure the panel doesn't extend beyond the parent's bounds
+                if (centeredX < 0)
                 {
-                    // Align panel to the left of the TextBox
-                    _searchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
+                    centeredX = 0;
                 }
+                else if (centeredX + _searchResultBoxContainer.Width > _searchBoxParent.Width)
+                {
+                    centeredX = _searchBoxParent.Width - _searchResultBoxContainer.Width;
+                }
+
+                _searchResultBoxContainer.Location = new Point(centeredX, location.Y + textBox.Height);
+            }
+            else
+            {
+                // Align panel to the left of the TextBox
+                _searchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
             }
         }
         public static void CloseSearchBox()
@@ -526,10 +519,9 @@ namespace Sales_Tracker.UI
                 _searchBoxParent.Controls.Remove(_searchResultBoxContainer);
             }
         }
-        public static bool IsSearchBoxOpen()
+        private static bool IsSearchBoxOpen()
         {
-            if (_searchBoxParent == null) { return false; }
-            return _searchBoxParent.Controls.Contains(_searchResultBoxContainer);
+            return _searchBoxParent != null && _searchBoxParent.Controls.Contains(_searchResultBoxContainer);
         }
     }
 }

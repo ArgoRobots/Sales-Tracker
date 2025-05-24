@@ -18,7 +18,7 @@ namespace Sales_Tracker.Charts
         /// </summary>
         public static void InitCharts(GunaChart[] charts)
         {
-            static void leftClickAction(GunaChart statisticsControls) => CustomControls.CloseAllPanels(null, null);
+            static void leftClickAction(GunaChart statisticsControls) => CustomControls.CloseAllPanels();
             Initialize(charts, leftClickAction, RightClickGunaChartMenu.ShowMenu);
         }
         private static void Initialize(GunaChart[] charts, Action<GunaChart> onLeftClick, Action<GunaChart, Point> onRightClick)

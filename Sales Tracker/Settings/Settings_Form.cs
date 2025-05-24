@@ -13,15 +13,9 @@ namespace Sales_Tracker.Settings
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
-        private bool _isFormClosing = false;
 
         // Getters and setters
         public static Settings_Form Instance => _instance;
-        public bool IsFormClosing
-        {
-            get => _isFormClosing;
-            set => _isFormClosing = value;
-        }
 
         // Init.
         public Settings_Form()
@@ -62,8 +56,7 @@ namespace Sales_Tracker.Settings
         }
         private void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
-            _isFormClosing = true;
+            CustomControls.CloseAllPanels();
         }
 
         // Left menu buttons
@@ -84,7 +77,7 @@ namespace Sales_Tracker.Settings
         // Bottom buttons
         private void ResetToDefault_Button_Click(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Reset settings", "All settings will be reset to default.",
@@ -98,7 +91,7 @@ namespace Sales_Tracker.Settings
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ApplyChanges(false);
             Close();
         }
@@ -108,14 +101,14 @@ namespace Sales_Tracker.Settings
         }
         private void Apply_Button_Click(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             ApplyChanges(true);
         }
         private static void ApplyChanges(bool includeGeneralForm)
         {
             UpdateColorTheme();
             UserSettings.SaveUserSettings(includeGeneralForm);
-            Security_Form.Instance.CenterEncryptControls();
+            Security_Form.Instance.CenterEncryptControls();  // In case the language changes
         }
         private static void UpdateColorTheme()
         {
@@ -150,7 +143,7 @@ namespace Sales_Tracker.Settings
         // Misc.
         private void SwitchForm(Form form, object btnSender)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Guna2Button button = (Guna2Button)btnSender;
 
             // If button is already selected

@@ -541,7 +541,7 @@ namespace Sales_Tracker
         }
         private void MainMenu_Form_ResizeBegin(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
         private void MainMenu_form_Resize(object sender, EventArgs e)
         {
@@ -599,7 +599,7 @@ namespace Sales_Tracker
         }
         private void MainMenu_form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Log.Write(2, "Closing Argo Sales Tracker");
 
             if (ArgoCompany.AreAnyChangesMade())
@@ -806,7 +806,7 @@ namespace Sales_Tracker
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             CustomControls.SaveAll();
         }
         private void Save_Button_MouseDown(object sender, MouseEventArgs e)
@@ -819,7 +819,7 @@ namespace Sales_Tracker
         }
         private void Upgrade_Button_Click(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             Tools.OpenForm(new Upgrade_Form());
         }
         private void Help_Button_Click(object sender, EventArgs e)
@@ -843,7 +843,7 @@ namespace Sales_Tracker
             }
             else
             {
-                CustomControls.CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels();
                 button.Image = whiteImage;
 
                 // Calculate X position based on alignment
@@ -2027,7 +2027,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs? e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
     }
 }

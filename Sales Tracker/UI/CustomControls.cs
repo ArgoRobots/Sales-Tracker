@@ -118,7 +118,7 @@ namespace Sales_Tracker.UI
             menuBtn.PressedColor = CustomColors.PanelBtnHover;
             if (closeAllPanels)
             {
-                menuBtn.Click += CloseAllPanels;
+                menuBtn.Click += (sender, e) => CloseAllPanels();
             }
 
             menuBtn.MouseEnter += (sender, e) =>
@@ -477,7 +477,7 @@ namespace Sales_Tracker.UI
             }
             else
             {
-                CloseAllPanels(null, null);
+                CloseAllPanels();
 
                 _controlDropDown_Panel.Location = new Point(
                     _controlsDropDown_Button.Right - _controlDropDown_Panel.Width,
@@ -672,7 +672,7 @@ namespace Sales_Tracker.UI
                 GetStarted_Form.Instance.RenameCompany();
             }
         }
-        public static void CloseAllPanels(object sender, EventArgs? e)
+        public static void CloseAllPanels()
         {
             Rename();
             SearchBox.CloseSearchBox();

@@ -68,13 +68,13 @@ namespace Sales_Tracker
         {
             int searchBoxMaxHeight = 300;
 
-            SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResultsForCategory, searchBoxMaxHeight, false, false, false, true);
+            SearchBox.Attach(ProductCategory_TextBox, this, GetSearchResultsForCategory, searchBoxMaxHeight, false, false, true, true);
             ProductCategory_TextBox.TextChanged += ValidateInputs;
 
-            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, false, false);
+            SearchBox.Attach(CountryOfOrigin_TextBox, this, () => Country.CountrySearchResults, searchBoxMaxHeight, false, true, true, false);
             CountryOfOrigin_TextBox.TextChanged += ValidateInputs;
 
-            SearchBox.Attach(CompanyOfOrigin_TextBox, this, GetSearchResultsForCompany, searchBoxMaxHeight, false, false, false, true);
+            SearchBox.Attach(CompanyOfOrigin_TextBox, this, GetSearchResultsForCompany, searchBoxMaxHeight, false, false, true, true);
             CompanyOfOrigin_TextBox.TextChanged += ValidateInputs;
         }
         private List<SearchResult> GetSearchResultsForCategory()
@@ -150,7 +150,7 @@ namespace Sales_Tracker
         }
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             MainMenu_Form.Instance.Selected = oldOption;
         }
 
@@ -316,7 +316,10 @@ namespace Sales_Tracker
             }
             else
             {
-                AddProduct_Button.Enabled = true;
+                if (IsProductValid())
+                {
+                    AddProduct_Button.Enabled = true;
+                }
                 ProductsRemaining_LinkLabel.ForeColor = CustomColors.Text;
             }
 
@@ -330,7 +333,21 @@ namespace Sales_Tracker
         // Validate product name
         public void ValidateProductNameTextBox()
         {
-            // Get list
+            if (IsProductValid())
+            {
+                AddProduct_Button.Enabled = false;
+                CustomControls.SetGTextBoxToInvalid(ProductName_TextBox);
+                ShowProductNameWarning();
+            }
+            else
+            {
+                AddProduct_Button.Enabled = true;
+                CustomControls.SetGTextBoxToValid(ProductName_TextBox);
+                HideProductNameWarning();
+            }
+        }
+        private bool IsProductValid()
+        {
             List<Category> categories;
             if (Sale_RadioButton.Checked)
             {
@@ -343,18 +360,7 @@ namespace Sales_Tracker
 
             string category = ProductCategory_TextBox.Text.Trim();
 
-            if (MainMenu_Form.DoesProductExistInCategory(ProductName_TextBox.Text, CompanyOfOrigin_TextBox.Text, categories, category))
-            {
-                AddProduct_Button.Enabled = false;
-                CustomControls.SetGTextBoxToInvalid(ProductName_TextBox);
-                ShowProductNameWarning();
-            }
-            else
-            {
-                AddProduct_Button.Enabled = true;
-                CustomControls.SetGTextBoxToValid(ProductName_TextBox);
-                HideProductNameWarning();
-            }
+            return MainMenu_Form.DoesProductExistInCategory(ProductName_TextBox.Text, CompanyOfOrigin_TextBox.Text, categories, category);
         }
         private void ShowProductNameWarning()
         {
@@ -493,7 +499,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
     }
 }

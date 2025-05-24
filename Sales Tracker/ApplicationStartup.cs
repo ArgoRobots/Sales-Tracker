@@ -23,12 +23,14 @@ namespace Sales_Tracker
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
 
+            CustomColors.SetColors();
+
             TextBoxManager.ConstructRightClickTextBoxMenu();
             SearchBox.ConstructSearchBox();
+
             LoadingPanel.InitBlankLoadingPanel();
             LoadingPanel.InitLoadingPanel();
 
-            CustomColors.SetColors();
             Directories.SetUniversalDirectories();
             Directories.EnsureAppDataDirectoriesExist();
             CustomControls.ConstructRightClickRename();

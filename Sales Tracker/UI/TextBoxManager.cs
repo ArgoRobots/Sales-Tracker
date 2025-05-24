@@ -14,6 +14,7 @@ namespace Sales_Tracker.UI
         private static readonly Dictionary<Guna2TextBox, Stack<TextState>> redoStacks = [];
         private static readonly Dictionary<Guna2TextBox, bool> isTextChangedByUserFlags = [];
         private const byte maxStackSize = 250;
+        private static Point mouseDownLocation;
 
         /// <summary>
         /// Represents the state of a TextBox, including its text content and cursor position
@@ -59,7 +60,8 @@ namespace Sales_Tracker.UI
             textBox.TextChanged += TextBox_TextChanged;
             textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
             textBox.KeyDown += TextBox_KeyDown;
-            textBox.MouseClick += TextBox_MouseClick;
+            textBox.MouseDown += TextBox_MouseDown;
+            textBox.MouseUp += TextBox_MouseUp;
         }
         private static bool IsAttached(Guna2TextBox textBox) => undoStacks.ContainsKey(textBox);
 
@@ -139,12 +141,27 @@ namespace Sales_Tracker.UI
                 }
             }
         }
-        private static void TextBox_MouseClick(object sender, MouseEventArgs e)
+        private static void TextBox_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
-                Guna2TextBox textBox = (Guna2TextBox)sender;
-                ShowRightClickMenu(textBox, e.Location);
+                mouseDownLocation = e.Location;
+            }
+        }
+        private static void TextBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                CustomControls.CloseAllPanels();
+
+                // Check if mouse hasn't moved too far from the down location
+                int threshold = 3; // pixels
+                if (Math.Abs(e.Location.X - mouseDownLocation.X) <= threshold &&
+                    Math.Abs(e.Location.Y - mouseDownLocation.Y) <= threshold)
+                {
+                    Guna2TextBox textBox = (Guna2TextBox)sender;
+                    ShowRightClickMenu(textBox, e.Location);
+                }
             }
         }
 
@@ -286,6 +303,13 @@ namespace Sales_Tracker.UI
             redoBtn.Click += HandleRedo;
             CustomControls.ConstructKeyShortcut("Ctrl+Y", redoBtn);
         }
+        private static void HandleSelectAll(object sender, EventArgs e)
+        {
+            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            textBox.SelectAll();
+            textBox.Focus();
+            CustomControls.CloseAllPanels();
+        }
         private static void HandleCopy(object sender, EventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
@@ -293,7 +317,7 @@ namespace Sales_Tracker.UI
             {
                 Clipboard.SetText(textBox.SelectedText);
             }
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
         private static void HandlePaste(object sender, EventArgs e)
         {
@@ -314,7 +338,7 @@ namespace Sales_Tracker.UI
             textBox.Text = text;
             textBox.SelectionStart = cursorPosition + clipboardText.Length;
 
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
         private static void HandleCut(object sender, EventArgs e)
         {
@@ -326,25 +350,19 @@ namespace Sales_Tracker.UI
             textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
             textBox.SelectionStart = cursorPosition;
 
-            CustomControls.CloseAllPanels(null, null);
-        }
-        private static void HandleSelectAll(object sender, EventArgs e)
-        {
-            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
-            textBox.SelectAll();
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
         private static void HandleUndo(object sender, EventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
             Undo(textBox);
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
         private static void HandleRedo(object sender, EventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
             Redo(textBox);
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
 
         // Methods for right click menu
@@ -353,6 +371,10 @@ namespace Sales_Tracker.UI
             // Convert mouse coordinates to screen coordinates
             Point screenPoint = textBox.PointToScreen(mouseLocation);
             screenPoint.X -= ReadOnlyVariables.OffsetRightClickPanel;
+
+            // Position at the bottom of the textbox in screen coordinates
+            Point bottomLeft = textBox.PointToScreen(new Point(0, textBox.Height));
+            screenPoint.Y = bottomLeft.Y;
 
             // Ensure the panel doesn't go off screen
             Rectangle screenBounds = Screen.FromControl(textBox).Bounds;

@@ -46,15 +46,15 @@ namespace Sales_Tracker.Theme
         public static bool IsDarkTheme()
         {
             return CurrentTheme == ThemeType.Dark ||
-                   (CurrentTheme == ThemeType.Windows && !IsWindowsThemeLight());
+                   (CurrentTheme == ThemeType.Windows && IsWindowsThemeDark());
         }
-        public static bool IsWindowsThemeLight()
+        public static bool IsWindowsThemeDark()
         {
             int? value = (int?)Registry.GetValue(
                 @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
                 "AppsUseLightTheme", -1);
 
-            return value != 0; // If value is 0, Windows is using dark theme
+            return value == 0; // If value is 0, Windows is using dark theme
         }
         public static void SetThemeForControl(List<Control> list)
         {
@@ -308,11 +308,11 @@ namespace Sales_Tracker.Theme
         public static void CustomizeScrollBar(Control control)
         {
             // Remove any existing Guna2VScrollBar
-            List<Guna2VScrollBar> existingScrollBars = control.Controls.OfType<Guna2VScrollBar>().ToList();
-            foreach (Guna2VScrollBar scrollBar in existingScrollBars)
+            Guna2VScrollBar existingScrollBar = control.Controls.OfType<Guna2VScrollBar>().FirstOrDefault();
+            if (existingScrollBar != null)
             {
-                control.Controls.Remove(scrollBar);
-                scrollBar.Dispose();
+                control.Controls.Remove(existingScrollBar);
+                existingScrollBar.Dispose();
             }
 
             // Add new scrollbar
@@ -354,12 +354,7 @@ namespace Sales_Tracker.Theme
         }
         public static void SetRightArrowImageBasedOnTheme(Guna2Button button)
         {
-            bool isDarkMode = CurrentTheme == ThemeType.Dark ||
-                            (CurrentTheme == ThemeType.Windows && !IsWindowsThemeLight());
-
-            button.Image = isDarkMode
-                ? Resources.RightArrowWhite
-                : Resources.RightArrowBlack;
+            button.Image = IsDarkTheme() ? Resources.RightArrowWhite : Resources.RightArrowBlack;
         }
         public static void UpdateOtherControls()
         {

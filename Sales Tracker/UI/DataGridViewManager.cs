@@ -186,7 +186,7 @@ namespace Sales_Tracker.UI
         {
             if (isMouseDown)
             {
-                CustomControls.CloseAllPanels(null, null);
+                CustomControls.CloseAllPanels();
             }
         }
         private static void DataGridView_MouseUp(object sender, MouseEventArgs e)
@@ -194,7 +194,7 @@ namespace Sales_Tracker.UI
             isMouseDown = false;
             Guna2DataGridView grid = (Guna2DataGridView)sender;
 
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
 
             SelectRowAndDeselectAllOthers(grid, e);
 

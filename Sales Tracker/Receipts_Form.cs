@@ -95,7 +95,7 @@ namespace Sales_Tracker
         }
         private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
             MainMenu_Form.Instance.Selected = oldOption;
         }
 
@@ -319,7 +319,7 @@ namespace Sales_Tracker
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
     }
 }

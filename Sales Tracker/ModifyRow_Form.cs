@@ -57,7 +57,7 @@ namespace Sales_Tracker
         }
         private void ModifyRow_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
 
         // Methods for checking if there are changes
@@ -1557,7 +1557,7 @@ namespace Sales_Tracker
         }
         public void CloseSearchBox(object sender, EventArgs e)
         {
-            CustomControls.CloseAllPanels(null, null);
+            CustomControls.CloseAllPanels();
         }
     }
 }
