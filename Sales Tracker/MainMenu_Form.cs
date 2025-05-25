@@ -443,6 +443,7 @@ namespace Sales_Tracker
             DataGridViewCell noteCell = dataGridView.Rows[rowIndex].Cells[Column.Note.ToString()];
             noteCell.Value = ReadOnlyVariables.Show_text;
             noteCell.Tag = noteValue;
+            DataGridViewManager.AddUnderlineToCell(noteCell);
         }
 
         // "Has receipt" column

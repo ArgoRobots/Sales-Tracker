@@ -1094,7 +1094,7 @@ namespace Sales_Tracker.UI
         {
             CustomMessageBox.Show(
                 $"Cannot be {action}",
-                $"This {type} is being used and cannot be {action}",
+                $"This {type} is being used by a transaction and cannot be {action}d",
                 CustomMessageBoxIcon.Exclamation,
                 CustomMessageBoxButtons.Ok);
         }
@@ -1274,15 +1274,97 @@ namespace Sales_Tracker.UI
             foreach (DataGridViewRow row in rowsToMove)
             {
                 string categoryName = row.Cells[0].Value.ToString();
+                Category? category = MainMenu_Form.GetCategoryCategoryNameIsFrom(sourceList, categoryName);
 
-                if (!CanCategoryBeMovedOrDeleted(categoryName, sourceList, moveAction))
+                // Check if category is being used in transactions
+                if (IsCategoryBeingUsedInTransactions(categoryName))
                 {
+                    ShowInUseMessage("category", moveAction);
                     continue;
                 }
 
-                Category? category = MainMenu_Form.GetCategoryCategoryNameIsFrom(sourceList, categoryName);
+                // Check if category has products
+                if (category != null && category.ProductList.Count > 0)
+                {
 
-                // Move the row between grids
+                    // Prepare products list for message box
+                    string allProductsList = string.Join("\n", category.ProductList.Select(p => $"• {p.Name} ({p.CompanyOfOrigin})"));
+
+                    // Ask user if they want to move products
+                    CustomMessageBoxResult result = CustomMessageBox.Show(
+                        $"Move category with {category.ProductList.Count} products",
+                        $"The category '{categoryName}' contains the following products:\n\n{allProductsList}\n\nDo you want to move all these products to the {(fromPurchaseToSale ? "Sales" : "Purchases")} category?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.OkCancel
+                    );
+
+                    if (result != CustomMessageBoxResult.Ok)
+                    {
+                        continue;
+                    }
+
+                    // Move all products to the target list
+                    List<Category> targetCategories = fromPurchaseToSale
+                        ? MainMenu_Form.Instance.CategorySaleList
+                        : MainMenu_Form.Instance.CategoryPurchaseList;
+
+                    // Find or create a category in the target list
+                    Category targetCategory = targetCategories.FirstOrDefault(c => c.Name == categoryName);
+                    if (targetCategory == null)
+                    {
+                        targetCategory = new Category { Name = categoryName };
+                        targetCategories.Add(targetCategory);
+                    }
+
+                    // Open Products_Form if it exists
+                    Products_Form? productsForm = Tools.IsFormOpen<Products_Form>()
+                        ? (Products_Form)Application.OpenForms[nameof(Products_Form)]
+                        : null;
+
+                    // Determine which grids to update based on current view
+                    Guna2DataGridView sourceProductGrid = fromPurchaseToSale
+                        ? productsForm?.Purchase_DataGridView
+                        : productsForm?.Sale_DataGridView;
+
+                    Guna2DataGridView targetProductGrid = fromPurchaseToSale
+                        ? productsForm?.Sale_DataGridView
+                        : productsForm?.Purchase_DataGridView;
+
+                    // Move products
+                    foreach (Product product in category.ProductList.ToList())
+                    {
+                        category.ProductList.Remove(product);
+                        targetCategory.AddProduct(product);
+
+                        // Update Products_Form if open
+                        if (productsForm != null && sourceProductGrid != null && targetProductGrid != null)
+                        {
+                            // Find and remove the product row from source grid
+                            DataGridViewRow? productRowToRemove = sourceProductGrid.Rows
+                                .Cast<DataGridViewRow>()
+                                .FirstOrDefault(r =>
+                                    r.Cells[Products_Form.Column.ProductName.ToString()].Value.ToString() == product.Name &&
+                                    r.Cells[Products_Form.Column.CompanyOfOrigin.ToString()].Value.ToString() == product.CompanyOfOrigin
+                                );
+
+                            if (productRowToRemove != null)
+                            {
+                                sourceProductGrid.Rows.Remove(productRowToRemove);
+                            }
+
+                            // Add product to the target grid
+                            targetProductGrid.Rows.Add(
+                                product.ProductID,
+                                product.Name,
+                                targetCategory.Name,
+                                product.CountryOfOrigin,
+                                product.CompanyOfOrigin
+                            );
+                        }
+                    }
+                }
+
+                // Move the category row
                 sourceGrid.Rows.Remove(row);
                 targetGrid.Rows.Add(row);
 
@@ -1306,7 +1388,45 @@ namespace Sales_Tracker.UI
             LabelManager.ShowTotalLabel(Categories_Form.Instance.Total_Label, sourceGrid);
             SortDataGridViewByCurrentDirection(targetGrid);
 
+            // Save changes to file
+            MainMenu_Form.Instance.SaveCategoriesToFile(
+                fromPurchaseToSale ? MainMenu_Form.SelectedOption.CategoryPurchases : MainMenu_Form.SelectedOption.CategorySales
+            );
+            MainMenu_Form.Instance.SaveCategoriesToFile(
+                fromPurchaseToSale ? MainMenu_Form.SelectedOption.CategorySales : MainMenu_Form.SelectedOption.CategoryPurchases
+            );
+
             MainMenu_Form.IsProgramLoading = false;
+        }
+        private static bool IsCategoryBeingUsedInTransactions(string categoryName)
+        {
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
+            {
+                if (row.Cells[MainMenu_Form.Column.Category.ToString()].Value?.ToString() == categoryName)
+                {
+                    return true;
+                }
+
+                // Check if transaction has multiple items
+                if (row.Tag is not (List<string> items, TagData))
+                    continue;
+
+                // Do not check receipt if present
+                int itemsToCheck = items[^1].StartsWith(ReadOnlyVariables.Receipt_text)
+                    ? items.Count - 1
+                    : items.Count;
+
+                // Check each item's category
+                for (int i = 0; i < itemsToCheck; i++)
+                {
+                    string[] itemDetails = items[i].Split(',');
+                    if (itemDetails.Length > 1 && itemDetails[1] == categoryName)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         private static void RestoreSelectionAndScroll(DataGridView gridView, int previousIndex, int scrollPosition)
         {

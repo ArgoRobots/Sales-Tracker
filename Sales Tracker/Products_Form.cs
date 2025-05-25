@@ -448,6 +448,8 @@ namespace Sales_Tracker
         };
         private const short topForDataGridView = 380;
         private Guna2DataGridView purchase_DataGridView, sale_DataGridView, selectedDataGridView;
+        public Guna2DataGridView Purchase_DataGridView => purchase_DataGridView;
+        public Guna2DataGridView Sale_DataGridView => sale_DataGridView;
 
         // DataGridView methods
         private void ConstructDataGridViews()
