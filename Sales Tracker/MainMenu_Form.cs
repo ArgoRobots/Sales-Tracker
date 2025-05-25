@@ -440,10 +440,9 @@ namespace Sales_Tracker
                 return;
             }
 
-            DataGridViewCell secondLastCell = dataGridView.Rows[rowIndex].Cells[dataGridView.Columns.Count - 2];
-            secondLastCell.Value = ReadOnlyVariables.Show_text;
-            secondLastCell.Tag = noteValue;
-            DataGridViewManager.AddUnderlineToCell(secondLastCell);
+            DataGridViewCell noteCell = dataGridView.Rows[rowIndex].Cells[Column.Note.ToString()];
+            noteCell.Value = ReadOnlyVariables.Show_text;
+            noteCell.Tag = noteValue;
         }
 
         // "Has receipt" column

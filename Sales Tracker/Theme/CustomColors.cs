@@ -8,7 +8,7 @@ namespace Sales_Tracker.Theme
     public static class CustomColors
     {
         // Control colors
-        private static Color _controlBack, _controlDisabledBack, _controlBorder, _controlUncheckedBorder, _controlPanelBorder, _controlSelectedBorder;
+        private static Color _controlBack, _controlDisabledBack, _controlBorder, _controlUncheckedBorder, _controlPanelBorder;
 
         // Text colors
         private static Color _text, _grayText, _linkColor;
@@ -40,29 +40,17 @@ namespace Sales_Tracker.Theme
         public static Color ControlBorder => _controlBorder;
         public static Color ControlUncheckedBorder => _controlUncheckedBorder;
         public static Color ControlPanelBorder => _controlPanelBorder;
-        public static Color ControlSelectedBorder => _controlSelectedBorder;
-
-        // Text Properties
         public static Color Text => _text;
         public static Color GrayText => _grayText;
         public static Color LinkColor => _linkColor;
-
-        // File Properties
         public static Color MouseHover => _mouseHover;
-
-        // Panel Properties
         public static Color PanelBtn => _panelBtn;
         public static Color PanelBtnHover => _panelBtnHover;
-
-        // Background Properties
         public static Color MainBackground => _mainBackground;
         public static Color HeaderBackground => _headerBackground;
         public static Color ToolbarBackground => _toolbarBackground;
         public static Color ContentPanelBackground => _contentPanelBackground;
-
-        // Theme Property
         public static DataGridViewPresetThemes DataGridViewTheme => _dataGridViewTheme;
-
         public static Color AccentGreen => _accentGreen;
 
         /// <summary>
@@ -87,7 +75,6 @@ namespace Sales_Tracker.Theme
             _controlBorder = Color.FromArgb(130, 130, 130);
             _controlUncheckedBorder = Color.FromArgb(125, 137, 149);
             _controlPanelBorder = Color.FromArgb(110, 110, 110);
-            _controlSelectedBorder = Color.FromArgb(153, 209, 255);
 
             // Text colors
             _text = Color.White;
@@ -121,7 +108,6 @@ namespace Sales_Tracker.Theme
             _controlBorder = Color.FromArgb(150, 150, 150);
             _controlUncheckedBorder = Color.FromArgb(125, 137, 149);
             _controlPanelBorder = Color.FromArgb(50, 50, 50);
-            _controlSelectedBorder = Color.FromArgb(153, 209, 255);
 
             // Text colors
             _text = Color.Black;

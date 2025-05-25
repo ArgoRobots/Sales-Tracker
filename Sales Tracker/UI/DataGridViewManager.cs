@@ -19,6 +19,7 @@ namespace Sales_Tracker.UI
         private static DataGridViewRow _selectedRowInMainMenu;
         private static readonly byte rowHeight = 35, columnHeaderHeight = 60;
         private static readonly string deleteAction = "deleted", moveAction = "move";
+        private static DataGridViewCell _currentlyHoveredNoteCell;
 
         // Getters
         public static bool DoNotDeleteRows
@@ -242,15 +243,19 @@ namespace Sales_Tracker.UI
         {
             DataGridView dataGridView = (DataGridView)sender;
 
-            if (IsLastCellClicked(e, dataGridView))
+            if (IsNoteCell(e, dataGridView))
             {
                 DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                string idCell = dataGridView.Rows[e.RowIndex].Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString();
+
                 if (IsClickOnText(cell, out Rectangle hitbox))
                 {
                     Point mousePos = dataGridView.PointToClient(Cursor.Position);
                     if (hitbox.Contains(mousePos))
                     {
-                        CustomMessageBox.Show("Note for purchase", cell.Tag.ToString(), CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                        AddUnderlineToCell(cell);
+                        string type = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale";
+                        CustomMessageBox.Show($"Note for {type} {idCell}", cell.Tag?.ToString(), CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     }
                 }
             }
@@ -259,9 +264,11 @@ namespace Sales_Tracker.UI
         {
             DataGridView dataGridView = (DataGridView)sender;
 
-            if (IsLastCellClicked(e, dataGridView))
+            if (IsNoteCell(e, dataGridView))
             {
                 DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                _currentlyHoveredNoteCell = cell; // Track the current note cell
+
                 if (IsClickOnText(cell, out Rectangle hitbox))
                 {
                     // Draw a rectangle around the hitbox for debugging
@@ -274,17 +281,34 @@ namespace Sales_Tracker.UI
                     UpdateCellStyleBasedOnMousePosition(cell, hitbox, mousePos);
                 }
             }
+            else
+            {
+                // If we're not in a note cell, clear any previously hovered note cell
+                if (_currentlyHoveredNoteCell != null)
+                {
+                    RestoreNoteCellUnderline(_currentlyHoveredNoteCell);
+                    _currentlyHoveredNoteCell = null;
+                }
+            }
         }
         private static void DataGridView_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
             DataGridView dataGridView = (DataGridView)sender;
 
-            if (e.RowIndex >= 0 && e.ColumnIndex == dataGridView.Columns.Count - 1)
+            // Always restore underline for any currently tracked note cell
+            if (_currentlyHoveredNoteCell != null)
+            {
+                RestoreNoteCellUnderline(_currentlyHoveredNoteCell);
+                _currentlyHoveredNoteCell = null;
+            }
+
+            // Fallback: also check the cell being left (original logic)
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && e.ColumnIndex < dataGridView.Columns.Count)
             {
                 DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                if (cell.Value != null && cell.Value.ToString() == ReadOnlyVariables.Show_text)
+                if (cell.Value != null && cell.Value.ToString() == ReadOnlyVariables.Show_text && cell.Tag is string)
                 {
-                    ResetCellStyle(cell);
+                    RestoreNoteCellUnderline(cell);
                 }
             }
         }
@@ -508,9 +532,20 @@ namespace Sales_Tracker.UI
         }
 
         // Methods for DataGridView for event handlers
-        private static bool IsLastCellClicked(DataGridViewCellMouseEventArgs e, DataGridView dataGridView)
+        private static void RestoreNoteCellUnderline(DataGridViewCell cell)
         {
-            return e.RowIndex >= 0 && e.ColumnIndex == dataGridView.Columns.Count - 1;
+            if (cell != null && cell.Value != null && cell.Value.ToString() == ReadOnlyVariables.Show_text)
+            {
+                AddUnderlineToCell(cell);
+            }
+        }
+        private static bool IsNoteCell(DataGridViewCellMouseEventArgs e, DataGridView dataGridView)
+        {
+            if (e.RowIndex < 0) { return false; }
+
+            DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+            return cell.Value.ToString() == ReadOnlyVariables.Show_text && cell.Tag is string;
         }
         private static bool IsClickOnText(DataGridViewCell cell, out Rectangle hitbox)
         {
@@ -536,18 +571,12 @@ namespace Sales_Tracker.UI
         {
             if (hitbox.Contains(mousePos))
             {
-                cell.Style.ForeColor = CustomColors.AccentBlue;
-                cell.Style.SelectionForeColor = CustomColors.AccentBlue;
+                RemoveUnderlineFromCell(cell);
             }
             else
             {
-                ResetCellStyle(cell);
+                AddUnderlineToCell(cell);
             }
-        }
-        private static void ResetCellStyle(DataGridViewCell cell)
-        {
-            cell.Style.ForeColor = CustomColors.Text;
-            cell.Style.SelectionForeColor = CustomColors.Text;
         }
 
         // Methods for DataGridView for MouseUp
@@ -827,11 +856,12 @@ namespace Sales_Tracker.UI
 
             string firstCategoryName = null, firstCountry = null, firstCompany = null;
             bool isCategoryNameConsistent = true, isCountryConsistent = true, isCompanyConsistent = true;
-            decimal totalPrice = 0;
+            decimal itemsTotal = 0;
             int totalQuantity = 0;
 
             bool shouldSkipLastItem = items[^1].StartsWith(ReadOnlyVariables.Receipt_text);
 
+            // Calculate total for all items
             for (int i = 0; i < (shouldSkipLastItem ? items.Count - 1 : items.Count); i++)
             {
                 string[] itemDetails = items[i].Split(',');
@@ -841,9 +871,10 @@ namespace Sales_Tracker.UI
                 string currentCompany = itemDetails[3];
                 int quantity = Convert.ToInt32(itemDetails[4]);
                 decimal pricePerUnit = decimal.Parse(itemDetails[5]);
-                totalPrice += quantity * pricePerUnit;
+                itemsTotal += quantity * pricePerUnit;
                 totalQuantity += quantity;
 
+                // Check consistency for category, country, company
                 if (firstCategoryName == null) { firstCategoryName = currentCategoryName; }
                 else if (isCategoryNameConsistent && firstCategoryName != currentCategoryName) { isCategoryNameConsistent = false; }
 
@@ -854,6 +885,7 @@ namespace Sales_Tracker.UI
                 else if (isCompanyConsistent && firstCompany != currentCompany) { isCompanyConsistent = false; }
             }
 
+            // Update category, country, company fields
             string categoryName = isCategoryNameConsistent ? firstCategoryName : ReadOnlyVariables.EmptyCell;
             string country = isCountryConsistent ? firstCountry : ReadOnlyVariables.EmptyCell;
             string company = isCompanyConsistent ? firstCompany : ReadOnlyVariables.EmptyCell;
@@ -867,10 +899,25 @@ namespace Sales_Tracker.UI
             decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
             decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
             decimal fee = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Fee.ToString()].Value.ToString());
-            totalPrice += shipping + tax - fee;
+            decimal discount = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Discount.ToString()].Value.ToString());
 
-            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value =
-                (Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice).ToString("N2");
+            bool isSale = selectedRow.DataGridView == MainMenu_Form.Instance.Sale_DataGridView;
+            decimal expectedTotal;
+
+            if (isSale)
+            {
+                expectedTotal = itemsTotal - shipping - discount;
+            }
+            else
+            {
+                expectedTotal = itemsTotal + shipping + tax + fee - discount;
+            }
+
+            // Calculate charged difference: Actual Total - Expected Total
+            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value);
+            decimal chargedDifference = actualTotal - expectedTotal;
+
+            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
         }
         public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
         {
@@ -880,10 +927,25 @@ namespace Sales_Tracker.UI
             decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
             decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
             decimal fee = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Fee.ToString()].Value.ToString());
-            decimal totalPrice = quantity * pricePerUnit + shipping + tax - fee;
+            decimal discount = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Discount.ToString()].Value.ToString());
 
-            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value =
-                (Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value) - totalPrice).ToString("N2");
+            bool isSale = selectedRow.DataGridView == MainMenu_Form.Instance.Sale_DataGridView;
+            decimal expectedTotal;
+
+            if (isSale)
+            {
+                expectedTotal = quantity * pricePerUnit - discount;
+            }
+            else
+            {
+                expectedTotal = quantity * pricePerUnit + shipping + tax + fee - discount;
+            }
+
+            // Calculate charged difference: Actual Total - Expected Total
+            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value);
+            decimal chargedDifference = actualTotal - expectedTotal;
+
+            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
         }
         public static void AddNoteToCell(Guna2DataGridView grid, int newRowIndex, string note)
         {

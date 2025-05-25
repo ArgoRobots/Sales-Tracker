@@ -136,6 +136,7 @@ namespace Sales_Tracker.Settings
             CustomColors.SetColors();
             FormThemeManager.UpdateAllForms();
             ThemeManager.UpdateOtherControls();
+            MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
 
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"Changed the 'color theme' setting to {selectedTheme}");
         }

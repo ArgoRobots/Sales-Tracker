@@ -38,6 +38,7 @@ namespace Sales_Tracker
         }
         private void SetAccessibleDescriptions()
         {
+            AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Message_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
