@@ -35,6 +35,7 @@ namespace Sales_Tracker
             Directories.EnsureAppDataDirectoriesExist();
             CustomControls.ConstructRightClickRename();
 
+            ArgoCompany.InitThings();
             DotEnv.Load();
             LanguageManager.InitLanguageManager();
 

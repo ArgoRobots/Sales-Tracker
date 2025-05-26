@@ -366,7 +366,7 @@ namespace Sales_Tracker.Classes
             string fileName,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: ENV file {fileName} file not found relative to solution.",
+            Error($"Error-7kp3xz: {fileName} file not found relative to solution.",
                 "",
                 lineNumber);
         }

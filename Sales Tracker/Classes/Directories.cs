@@ -14,7 +14,7 @@ namespace Sales_Tracker.Classes
         private static string _companyName, _tempCompany_dir, _argoCompany_dir, _argoCompany_file, _appData_dir,
             _globalAppDataSettingsCache_file, _appDataSettings_file, _purchases_file, _sales_file, _categoryPurchases_file,
             _categorySales_file, _accountants_file, _companies_file, _receipts_dir, _logsCache_dir, _desktop_dir, _cache_dir,
-            _translationsCache_file, _englishTexts_file, _config_file, _anonymousUserDataCache_file, _exchangeRateCache_file;
+            _translationsCache_file, _englishTexts_file, _anonymousUserDataCache_file, _exchangeRateCache_file, _secretsFilePath;
 
         // Getters and setters
         public static string CompanyName => _companyName;
@@ -32,7 +32,6 @@ namespace Sales_Tracker.Classes
         public static string Receipts_dir => _receipts_dir;
         public static string Logs_dir => _logsCache_dir;
         public static string Desktop_dir => _desktop_dir;
-        public static string Config_file => _config_file;
         public static string Cache_dir
         {
             get => _cache_dir;
@@ -51,6 +50,7 @@ namespace Sales_Tracker.Classes
             get => _englishTexts_file;
             set => _englishTexts_file = value;
         }
+        public static string SecretsFilePath => _secretsFilePath;
 
         // Methods
         /// <summary>
@@ -89,9 +89,6 @@ namespace Sales_Tracker.Classes
             // App data
             _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
 
-            // AES encryption
-            _config_file = _appData_dir + "config" + ArgoFiles.JsonFileExtension;
-
             // Cache
             _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueCompanyIdentifier("Argo Sales Tracker") + @"\";
             _translationsCache_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
@@ -103,6 +100,7 @@ namespace Sales_Tracker.Classes
             // Other
             _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;
             _desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            _secretsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.info");
         }
         public static void EnsureAppDataDirectoriesExist()
         {

@@ -1,26 +1,57 @@
 ﻿namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Provides functionality to load environment variables from a .env file and access them throughout the application.
+    /// Provides functionality to load environment variables from a .env file (development) 
+    /// or encrypted secrets file (production) and access them throughout the application.
     /// </summary>
     public static class DotEnv
     {
         private static readonly Dictionary<string, string> _envVars = [];
 
         /// <summary>
-        /// Loads environment variables from a .env file into memory.
+        /// Loads environment variables from either .env file (development) or encrypted secrets (production).
+        /// Automatically creates encrypted secrets file (development).
         /// </summary>
         public static void Load()
         {
-            string envFileName = ".env";
-            string envFilePath = FindFileRelativeToSolution(envFileName);
+            // Check if we have a .env file for development
+            string envFilePath = FindFileRelativeToSolution(".env");
 
-            if (envFilePath == null)
+            if (envFilePath != null)
             {
-                Log.Error_ENVFileNotFound(envFileName);
-                return;
-            }
+                // Development mode - use .env file
+                LoadFromEnvFile(envFilePath);
 
+                ProductionSecretsManager.CreateEncryptedSecretsFile(envFilePath);
+            }
+            else if (File.Exists(Directories.SecretsFilePath))
+            {
+                // Production mode - use encrypted secrets
+                LoadFromEncryptedSecrets();
+            }
+            else
+            {
+                Log.Error_ENVFileNotFound($".env or {Path.GetFileName(Directories.SecretsFilePath)}");
+            }
+        }
+        private static void LoadFromEncryptedSecrets()
+        {
+            try
+            {
+                Dictionary<string, string> secrets = ProductionSecretsManager.LoadEncryptedSecrets();
+
+                foreach (KeyValuePair<string, string> kvp in secrets)
+                {
+                    _envVars[kvp.Key] = kvp.Value;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(0, $"Failed to load encrypted secrets: {ex.Message}");
+            }
+        }
+        private static void LoadFromEnvFile(string envFilePath)
+        {
             foreach (string line in File.ReadAllLines(envFilePath))
             {
                 string[] parts = line.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
@@ -45,7 +76,7 @@
         /// </summary>
         public static string? Get(string key)
         {
-            if (_envVars.TryGetValue(key, out string value))
+            if (_envVars.TryGetValue(key, out string? value))
             {
                 return value;
             }
@@ -88,7 +119,7 @@
                 }
 
                 // Move up one directory
-                DirectoryInfo parentDir = Directory.GetParent(currentDir);
+                DirectoryInfo? parentDir = Directory.GetParent(currentDir);
                 if (parentDir == null)
                 {
                     break;  // We've reached the root directory
