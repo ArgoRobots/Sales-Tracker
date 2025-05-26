@@ -17,7 +17,7 @@
 
             if (envFilePath == null)
             {
-                Log.Write(0, $"{envFileName} file not found relative to solution.");
+                Log.Error_ENVFileNotFound(envFileName);
                 return;
             }
 
@@ -50,7 +50,7 @@
                 return value;
             }
 
-            Log.Write(0, $"{key} not found.");
+            Log.Error_ENVKeyNotFound(key);
             return null;
         }
 

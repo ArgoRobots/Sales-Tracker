@@ -44,11 +44,11 @@ namespace Sales_Tracker.Classes
 
                 _isUsingAIQuery = true;
                 Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}' (Used {_queryTranslator.LastTokenUsage} tokens)");
-                TriggerSearchWithTranslatedQuery();
+                MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error enhancing search: {ex.Message}");
+                Log.Error_EnhancingSearch(ex.Message);
                 _isUsingAIQuery = false;
             }
         }
@@ -82,18 +82,6 @@ namespace Sales_Tracker.Classes
                 return _originalQuery;
             }
             return displayedQuery;
-        }
-        private static void TriggerSearchWithTranslatedQuery()
-        {
-            // Get the MainMenu_Form instance
-            MainMenu_Form mainForm = MainMenu_Form.Instance;
-            if (mainForm == null)
-            {
-                Log.Write(0, "Could not find MainMenu_Form instance to trigger search.");
-                return;
-            }
-            // Trigger the search directly
-            mainForm.RefreshDataGridViewAndCharts();
         }
     }
 }

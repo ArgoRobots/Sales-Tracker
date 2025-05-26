@@ -454,8 +454,8 @@ namespace Sales_Tracker
 
             if (receipt == null)
             {
-                string ID = row.Cells[Column.ID.ToString()].Value.ToString();
-                Log.Write(0, $"Cannot process receipt column for transaction {ID}");
+                string transactionID = row.Cells[Column.ID.ToString()].Value.ToString();
+                Log.Error_CannotProcessReceiptColumn(transactionID);
                 return;
             }
 

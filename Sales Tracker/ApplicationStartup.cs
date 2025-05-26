@@ -68,7 +68,7 @@ namespace Sales_Tracker
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error registering file associations: {ex.Message}");
+                Log.Error_RegisterFileAssociations(ex.Message);
             }
         }
 

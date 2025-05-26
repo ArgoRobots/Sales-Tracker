@@ -252,6 +252,14 @@ namespace Sales_Tracker.Classes
                 "",
                 lineNumber);
         }
+        public static void Error_CannotProcessReceiptColumn(
+            string transactionID,
+           [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Cannot process receipt column for transaction {transactionID}",
+                "",
+                lineNumber);
+        }
 
         // Encryption errors
         public static void Error_InitEncryptionHelper(
@@ -307,12 +315,66 @@ namespace Sales_Tracker.Classes
                 lineNumber);
         }
 
-        // Anonymous usage data
+        // Anonymous usage data errors
         public static void Error_AnonymousDataCollection(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-7kp3xz: Error collecting anonymous usage data. {info}.",
+                "",
+                lineNumber);
+        }
+
+        // File association errors
+        public static void Error_RegisterFileAssociations(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: Error registering file associations: {info}.",
+                "",
+                lineNumber);
+        }
+
+        // API errors
+        public static void Error_Translation(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: AI Query Translation failed: {info}.",
+                "",
+                lineNumber);
+        }
+        public static void Error_TranslationAPIRequestFailed(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: API request failed: {info}.",
+                "",
+                lineNumber);
+        }
+        public static void Error_EnhancingSearch(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: Error enhancing search: {info}.",
+                "",
+                lineNumber);
+        }
+
+        // ENV
+        public static void Error_ENVFileNotFound(
+            string fileName,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: ENV file {fileName} file not found relative to solution.",
+                "",
+                lineNumber);
+        }
+        public static void Error_ENVKeyNotFound(
+        string key,
+        [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: ENV key {key} not found.",
                 "",
                 lineNumber);
         }

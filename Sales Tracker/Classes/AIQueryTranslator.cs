@@ -55,8 +55,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                // Log the error but don't crash
-                Log.Write(0, $"AI Query Translation failed: {ex.Message}");
+                Log.Error_Translation(ex.Message);
 
                 // Return the original query as fallback
                 return naturalLanguageQuery;
@@ -206,7 +205,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"API request failed: {ex.Message}");
+                Log.Error_TranslationAPIRequestFailed(ex.Message);
                 LastTokenUsage = 0;
                 throw;
             }
