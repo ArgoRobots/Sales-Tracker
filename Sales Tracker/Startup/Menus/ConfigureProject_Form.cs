@@ -9,7 +9,7 @@ namespace Sales_Tracker.Startup.Menus
     public partial class ConfigureProject_Form : Form
     {
         // Properties
-        public string selectedDirectory, projectName;
+        private string selectedDirectory, projectName;
 
         // Init.
         public ConfigureProject_Form()
@@ -133,7 +133,6 @@ namespace Sales_Tracker.Startup.Menus
             string oldTempDir = Directories.TempCompany_dir;
 
             Directories.SetDirectories(selectedDirectory, projectName);
-            ArgoCompany.InitThings();
 
             // Create directories and files
             Directories.CreateDirectory(Directories.TempCompany_dir, true);

@@ -376,12 +376,12 @@ namespace Sales_Tracker.Theme
 
             List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
 
-            foreach (Guna2Panel guna2Panel in listOfPanels)
+            foreach (Guna2Panel panel in listOfPanels)
             {
-                guna2Panel.FillColor = CustomColors.PanelBtn;
-                guna2Panel.BorderColor = CustomColors.ControlPanelBorder;
+                panel.FillColor = CustomColors.PanelBtn;
+                panel.BorderColor = CustomColors.ControlPanelBorder;
 
-                if (guna2Panel.Controls[0] is FlowLayoutPanel flowLayoutPanel)
+                if (panel.Controls[0] is FlowLayoutPanel flowLayoutPanel)
                 {
                     flowLayoutPanel.BackColor = CustomColors.MainBackground;
                 }

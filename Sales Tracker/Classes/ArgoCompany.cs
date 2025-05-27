@@ -136,7 +136,6 @@ namespace Sales_Tracker.Classes
             {
                 if (!OnlyAllowOneInstanceOfACompany(Path.GetFileNameWithoutExtension(dialog.FileName)))
                 {
-                    _applicationMutex?.Dispose();  // Reset
                     return;
                 }
 
@@ -155,11 +154,9 @@ namespace Sales_Tracker.Classes
         private static bool OpenCompanyFromPath(string filePath, string name)
         {
             Directories.SetDirectories(filePath, Path.GetFileNameWithoutExtension(name));
-            InitThings();
 
             if (!PasswordManager.EnterPassword())
             {
-                _applicationMutex?.Dispose();  // Reset
                 return false;
             }
 
@@ -167,8 +164,8 @@ namespace Sales_Tracker.Classes
             DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, Directories.ArgoCompany_file);
 
             // Import company data
-            List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
-            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
+            List<string> dirNames = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
+            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, dirNames, false);
             DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
 
             return true;
@@ -404,8 +401,6 @@ namespace Sales_Tracker.Classes
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
                         Directories.SetDirectories(dialog.SelectedPath, Path.GetFileNameWithoutExtension(company));
-
-                        InitThings();
                         SaveAll();
 
                         // Delete the temp folder

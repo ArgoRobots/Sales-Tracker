@@ -119,7 +119,6 @@ namespace Sales_Tracker.Startup.Menus
             string projectName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
             if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(projectName))
             {
-                ArgoCompany.ApplicationMutex?.Dispose();  // Reset
                 return;
             }
 
@@ -127,11 +126,9 @@ namespace Sales_Tracker.Startup.Menus
             string newDir = Directory.GetParent(button.Tag.ToString()).FullName;
 
             Directories.SetDirectories(newDir, projectName);
-            ArgoCompany.InitThings();
 
             if (!PasswordManager.EnterPassword())
             {
-                ArgoCompany.ApplicationMutex?.Dispose();  // Reset
                 return;
             }
 

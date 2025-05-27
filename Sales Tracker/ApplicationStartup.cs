@@ -98,10 +98,6 @@ namespace Sales_Tracker
                     return false;
                 }
 
-                // Initialize directories
-                Directories.SetUniversalDirectories();
-                Directories.EnsureAppDataDirectoriesExist();
-
                 // Open the company file directly
                 string filePath = args[0];
                 string directory = Path.GetDirectoryName(filePath);
@@ -115,15 +111,16 @@ namespace Sales_Tracker
 
                 // Open the company
                 Directories.SetDirectories(directory, projectName);
-                ArgoCompany.InitThings();
 
                 if (!PasswordManager.EnterPassword())
                 {
                     return false;
                 }
 
-                // Save to recent files and import
+                // Save recently opened companies
                 DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, filePath);
+
+                // Import company data
                 List<string> dirNames = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
                 Directories.ImportArgoTarFile(filePath, Directories.AppData_dir, Directories.ImportType.ArgoCompany, dirNames, false);
                 DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());

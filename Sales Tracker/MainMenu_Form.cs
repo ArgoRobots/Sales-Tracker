@@ -2005,7 +2005,8 @@ namespace Sales_Tracker
         // Misc.
         public static List<Guna2Panel> GetMenus()
         {
-            return [
+            return new List<Guna2Panel>
+            {
                 CustomControls.FileMenu,
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
@@ -2013,7 +2014,7 @@ namespace Sales_Tracker
                 GetStarted_Form.RightClickOpenRecent_Panel,
                 DataGridViewManager.RightClickDataGridView_Panel,
                 RightClickGunaChartMenu.RightClickGunaChart_Panel
-            ];
+            }.Where(panel => panel != null).ToList();
         }
         private void UpdateMainMenuFormText()
         {
