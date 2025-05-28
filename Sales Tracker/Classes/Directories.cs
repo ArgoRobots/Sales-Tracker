@@ -313,7 +313,7 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                Log.Error_FailedToWriteToFile(filePath);
+                Log.Error_WriteToFile(filePath);
             }
         }
 
@@ -334,7 +334,7 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                Log.Error_FailedToWriteToFile(filePath);
+                Log.Error_WriteToFile(filePath);
             }
         }
 
@@ -363,7 +363,7 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                Log.Error_FailedToReadFile(filePath);
+                Log.Error_ReadFile(filePath);
             }
 
             return lines.ToArray();
@@ -386,7 +386,7 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                Log.Error_FailedToReadFile(filePath);
+                Log.Error_ReadFile(filePath);
                 return "";
             }
         }
@@ -455,7 +455,7 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 string info = $"Error during tar creation or encryption: {ex.Message}";
-                Log.Error_FailedToSave(info, destinationFile);
+                Log.Error_Save(info, destinationFile);
             }
         }
         /// <summary>

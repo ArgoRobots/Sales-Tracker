@@ -323,7 +323,7 @@ namespace Sales_Tracker
         {
             if (!File.Exists(filePath))
             {
-                Log.Error_FailedToWriteToFile(Directories.CompanyName);
+                Log.Error_WriteToFile(Directories.CompanyName);
                 return false;
             }
             return true;

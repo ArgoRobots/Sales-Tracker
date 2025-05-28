@@ -247,7 +247,7 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                Log.Error_FailedToReadFile(Directories.ExchangeRateCache_file);
+                Log.Error_ReadFile(Directories.ExchangeRateCache_file);
                 ExchangeRateCache.Clear();
             }
         }
@@ -268,7 +268,7 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 // If there's an error saving the cache, log it but continue
-                Log.Error_FailedToWriteToFile($"Failed to save exchange rate cache: {ex.Message}");
+                Log.Error_WriteToFile($"Failed to save exchange rate cache: {ex.Message}");
             }
         }
     }

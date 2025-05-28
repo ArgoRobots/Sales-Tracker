@@ -623,8 +623,8 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             int controlCount = flowPanel.Controls.Cast<Control>().Count(c => c.Visible);
 
-            panel.Height = controlCount * PanelButtonHeight + SpaceForPanel;
-            flowPanel.Height = controlCount * PanelButtonHeight;
+            panel.Height = controlCount * _panelButtonHeight + _spaceForPanel;
+            flowPanel.Height = controlCount * _panelButtonHeight;
         }
         private static string FormatButtonName(string text)
         {

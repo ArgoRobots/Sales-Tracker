@@ -10,8 +10,8 @@ using System.Diagnostics;
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Handles the import and export of data to and from Excel spreadsheets, including data for 
-    /// accountants, companies, products, purchases, and sales in the application.
+    /// Handles the import and export of data to and from .xlsx spreadsheets, including data for 
+    /// accountants, companies, categories, products, and transactoins.
     /// </summary>
     internal class ExcelSheetManager
     {
@@ -771,7 +771,7 @@ namespace Sales_Tracker.Classes
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage.License.SetNonCommercialPersonal("Argo");
             using ExcelPackage package = new();
             string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
@@ -815,7 +815,7 @@ namespace Sales_Tracker.Classes
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage.License.SetNonCommercialPersonal("Argo");
             using ExcelPackage package = new();
             string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);

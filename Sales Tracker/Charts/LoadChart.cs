@@ -18,18 +18,13 @@ namespace Sales_Tracker.Charts
     }
 
     /// <summary>
-    /// The LoadChart class provides methods to configure, clear, and load data into GunaChart charts, 
-    /// including bar, line, and pie charts, based on data provided by DataGridViews. 
-    /// This class supports displaying revenue, profit, distribution, 
-    /// and analytics like average order values, country of origin, and sales vs expenses.
+    /// Provides methods to configure, clear, and load data into GunaCharts.
     /// </summary>
     internal class LoadChart
     {
         // Configuration
         public static void ConfigureChartForBar(GunaChart chart)
         {
-            if (chart == null) { return; }
-            ClearChartConfig(chart);
             ClearChart(chart);
 
             chart.XAxes.Display = true;
@@ -38,11 +33,10 @@ namespace Sales_Tracker.Charts
             chart.YAxes.Display = true;
             chart.YAxes.GridLines.Display = true;
             chart.YAxes.Ticks.Display = true;
+            chart.Legend.Position = LegendPosition.Top;
         }
         public static void ConfigureChartForLine(GunaChart chart)
         {
-            if (chart == null) { return; }
-            ClearChartConfig(chart);
             ClearChart(chart);
 
             chart.XAxes.Display = true;
@@ -52,27 +46,12 @@ namespace Sales_Tracker.Charts
             chart.YAxes.Display = true;
             chart.YAxes.GridLines.Display = true;
             chart.YAxes.Ticks.Display = true;
+            chart.Legend.Position = LegendPosition.Top;
         }
         public static void ConfigureChartForPie(GunaChart chart)
         {
-            if (chart == null) { return; }
-            ClearChartConfig(chart);
             ClearChart(chart);
-
-            chart.Legend.Display = true;
             chart.Legend.Position = LegendPosition.Right;
-        }
-        private static void ClearChartConfig(GunaChart chart)
-        {
-            chart.XAxes.Display = false;
-            chart.XAxes.GridLines.Display = false;
-            chart.XAxes.Ticks.Display = false;
-
-            chart.YAxes.Display = false;
-            chart.YAxes.GridLines.Display = false;
-            chart.YAxes.Ticks.Display = false;
-
-            chart.Legend.Display = false;
         }
 
         // Main charts
@@ -97,6 +76,8 @@ namespace Sales_Tracker.Charts
                 }
                 else { ConfigureChartForBar(chart); }
             }
+
+            chart.Legend.Display = false;
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset { Label = label }; }
@@ -330,6 +311,8 @@ namespace Sales_Tracker.Charts
                 }
                 else { ConfigureChartForBar(chart); }
             }
+
+            chart.Legend.Display = false;
 
             IGunaDataset dataset;
             if (isLineChart) { dataset = new GunaLineDataset() { Label = label }; }
@@ -979,9 +962,6 @@ namespace Sales_Tracker.Charts
             ApplyCurrencyFormatToDataset(expensesDataset);
             ApplyCurrencyFormatToDataset(salesDataset);
 
-            chart.Legend.Display = true;
-            chart.Legend.Position = LegendPosition.Top;
-
             chart.Update();
         }
         public static SalesExpensesChartData LoadAverageTransactionValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
@@ -1140,9 +1120,6 @@ namespace Sales_Tracker.Charts
                 ApplyCurrencyFormatToDataset(purchasesDataset);
                 ApplyCurrencyFormatToDataset(salesDataset);
 
-                chart.Legend.Display = true;
-                chart.Legend.Position = LegendPosition.Top;
-
                 chart.Update();
             }
 
@@ -1294,9 +1271,6 @@ namespace Sales_Tracker.Charts
                 chart.Datasets.Clear();
                 chart.Datasets.Add(purchasesDataset);
                 chart.Datasets.Add(salesDataset);
-
-                chart.Legend.Display = true;
-                chart.Legend.Position = LegendPosition.Top;
 
                 chart.Update();
             }
@@ -1467,9 +1441,6 @@ namespace Sales_Tracker.Charts
 
                 ApplyCurrencyFormatToDataset(purchasesDataset);
                 ApplyCurrencyFormatToDataset(salesDataset);
-
-                chart.Legend.Display = true;
-                chart.Legend.Position = LegendPosition.Top;
 
                 chart.Update();
             }
@@ -1647,9 +1618,6 @@ namespace Sales_Tracker.Charts
                 // Set Y-axis format to show percentage
                 revenueDataset.YFormat = "{0:0.0}%";
                 expenseDataset.YFormat = "{0:0.0}%";
-
-                chart.Legend.Display = true;
-                chart.Legend.Position = LegendPosition.Top;
 
                 chart.Update();
             }
@@ -1847,7 +1815,15 @@ namespace Sales_Tracker.Charts
         }
         private static void ClearChart(GunaChart chart)
         {
-            ClearChartConfig(chart);
+            chart.Zoom = ZoomMode.Y;
+            chart.XAxes.Display = false;
+            chart.XAxes.GridLines.Display = false;
+            chart.XAxes.Ticks.Display = false;
+
+            chart.YAxes.Display = false;
+            chart.YAxes.GridLines.Display = false;
+            chart.YAxes.Ticks.Display = false;
+
             chart.Datasets.Clear();
             chart.Update();
         }

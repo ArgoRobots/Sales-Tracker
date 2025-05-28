@@ -10,7 +10,7 @@ namespace Sales_Tracker.Charts
     {
         // Properties
         private static Guna2Panel _rightClickGunaChart_Panel;
-        private static readonly string exportBtn_text = "ExportBtn";
+        private static Guna2Button resetZoomButton;
 
         // Getter
         public static Guna2Panel RightClickGunaChart_Panel => _rightClickGunaChart_Panel;
@@ -19,15 +19,12 @@ namespace Sales_Tracker.Charts
         public static void ConstructRightClickGunaChartMenu()
         {
             Guna2Panel panel = CustomControls.ConstructPanelForMenu(
-                new Size(CustomControls.PanelWidth - 50, 3 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
+                new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickGunaChart_Panel"
             );
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
             int newBtnWidth = CustomControls.PanelBtnWidth - 50;
-
-            //Guna2Button button = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
-            //button.Click += ResetZoom;
 
             Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
             button.Click += SaveImage;
@@ -35,18 +32,14 @@ namespace Sales_Tracker.Charts
             // Export buttons are only visible when chart has data
             button = CustomControls.ConstructBtnForMenu("Export to Microsoft Excel", newBtnWidth, true, flowPanel);
             button.Click += ExportToMicrosoftExcel;
-            button.Tag = exportBtn_text;
 
             button = CustomControls.ConstructBtnForMenu("Export to Google Sheets", newBtnWidth, true, flowPanel);
             button.Click += ExportToGoogleSheets;
-            button.Tag = exportBtn_text;
+
+            resetZoomButton = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
+            resetZoomButton.Click += ResetZoom;
 
             _rightClickGunaChart_Panel = panel;
-        }
-        private static void ResetZoom(object sender, EventArgs e)
-        {
-            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
-            chart.ResetZoom();
         }
         private static void SaveImage(object sender, EventArgs e)
         {
@@ -358,10 +351,13 @@ namespace Sales_Tracker.Charts
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show(
-                    "Export Error", $"Failed to export chart: {ex.Message}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                Log.Error_ExportingChart(ex.Message);
             }
+        }
+        private static void ResetZoom(object sender, EventArgs e)
+        {
+            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            chart.ResetZoom();
         }
 
         // Other methods
@@ -376,6 +372,16 @@ namespace Sales_Tracker.Charts
             int formHeight = form.ClientSize.Height;
             byte offset = ReadOnlyVariables.OffsetRightClickPanel;
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
+
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickGunaChart_Panel.Controls[0];
+            if (chart.Datasets[0] is GunaPieDataset)
+            {
+                flowPanel.Controls.Remove(resetZoomButton);
+            }
+            else
+            {
+                flowPanel.Controls.Add(resetZoomButton);
+            }
 
             CustomControls.SetRightClickMenuHeight(_rightClickGunaChart_Panel);
 

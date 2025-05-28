@@ -1041,7 +1041,8 @@ namespace Sales_Tracker.UI
             foreach (DataGridViewRow row in grid.Rows)
             {
                 bool isVisible = row.Cells.Cast<DataGridViewCell>()
-                                          .Any(cell => cell.Value != null && cell.Value.ToString().Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+                                          .Any(cell => cell.Value != null && cell.Value.ToString()
+                                          .Contains(search_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
                 row.Visible = isVisible;
             }
 
@@ -1294,8 +1295,7 @@ namespace Sales_Tracker.UI
                     CustomMessageBoxResult result = CustomMessageBox.Show(
                         $"Move category with {category.ProductList.Count} products",
                         $"The category '{categoryName}' contains the following products:\n\n{allProductsList}\n\nDo you want to move all these products to the {(fromPurchaseToSale ? "Sales" : "Purchases")} category?",
-                        CustomMessageBoxIcon.Question,
-                        CustomMessageBoxButtons.OkCancel
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel
                     );
 
                     if (result != CustomMessageBoxResult.Ok)

@@ -208,7 +208,7 @@ namespace Sales_Tracker.Classes
                 "",
                 lineNumber);
         }
-        public static void Error_FailedToWriteToFile(
+        public static void Error_WriteToFile(
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
@@ -217,7 +217,7 @@ namespace Sales_Tracker.Classes
                 "",
                 lineNumber);
         }
-        public static void Error_FailedToReadFile(
+        public static void Error_ReadFile(
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
@@ -226,7 +226,7 @@ namespace Sales_Tracker.Classes
                 "",
                 lineNumber);
         }
-        public static void Error_FailedToSave(
+        public static void Error_Save(
             string info, string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
@@ -296,11 +296,27 @@ namespace Sales_Tracker.Classes
                 "",
                 lineNumber);
         }
-        public static void Error_GetTranslation(
+        public static void Error_TranslationAPIRequestFailed(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Error getting the translation. {info}.",
+            Error($"Error-7kp3xz: API request failed: {info}.",
+                "",
+                lineNumber);
+        }
+        public static void Error_EnhancingSearch(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: Error enhancing search: {info}.",
+                "",
+                lineNumber);
+        }
+        public static void Error_ExportingChart(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: Failed to export chart: {info}.",
                 "",
                 lineNumber);
         }
@@ -311,6 +327,22 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-5knt54: Error getting the English cache with the value: {controlKey}",
+                "",
+                lineNumber);
+        }
+        public static void Error_GetTranslation(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-5knt54: Error getting the translation. {info}.",
+                "",
+                lineNumber);
+        }
+        public static void Error_Translation(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-7kp3xz: AI Query Translation failed: {info}.",
                 "",
                 lineNumber);
         }
@@ -335,32 +367,6 @@ namespace Sales_Tracker.Classes
                 lineNumber);
         }
 
-        // API errors
-        public static void Error_Translation(
-            string info,
-            [CallerLineNumber] int lineNumber = 0)
-        {
-            Error($"Error-7kp3xz: AI Query Translation failed: {info}.",
-                "",
-                lineNumber);
-        }
-        public static void Error_TranslationAPIRequestFailed(
-            string info,
-            [CallerLineNumber] int lineNumber = 0)
-        {
-            Error($"Error-7kp3xz: API request failed: {info}.",
-                "",
-                lineNumber);
-        }
-        public static void Error_EnhancingSearch(
-            string info,
-            [CallerLineNumber] int lineNumber = 0)
-        {
-            Error($"Error-7kp3xz: Error enhancing search: {info}.",
-                "",
-                lineNumber);
-        }
-
         // ENV
         public static void Error_ENVFileNotFound(
             string fileName,
@@ -371,8 +377,8 @@ namespace Sales_Tracker.Classes
                 lineNumber);
         }
         public static void Error_ENVKeyNotFound(
-        string key,
-        [CallerLineNumber] int lineNumber = 0)
+            string key,
+            [CallerLineNumber] int lineNumber = 0)
         {
             Error($"Error-7kp3xz: ENV key {key} not found.",
                 "",
