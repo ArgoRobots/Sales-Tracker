@@ -59,8 +59,8 @@ namespace Sales_Tracker.Charts
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                ? LanguageManager.TranslateSingleString("Revenue")
-                : LanguageManager.TranslateSingleString("Expenses");
+                ? LanguageManager.TranslateString("Revenue")
+                : LanguageManager.TranslateString("Expenses");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -134,7 +134,7 @@ namespace Sales_Tracker.Charts
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                     ? TranslatedChartTitles.TotalRevenue
                     : TranslatedChartTitles.TotalExpenses;
-                string date = LanguageManager.TranslateSingleString("Date");
+                string date = LanguageManager.TranslateString("Date");
 
                 ExcelSheetManager.ExportChartToExcel(revenueByDate, filePath, chartType, chartTitle, date, label);
             }
@@ -150,8 +150,8 @@ namespace Sales_Tracker.Charts
         {
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                ? LanguageManager.TranslateSingleString("Revenue")
-                : LanguageManager.TranslateSingleString("Expenses");
+                ? LanguageManager.TranslateString("Revenue")
+                : LanguageManager.TranslateString("Expenses");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -265,7 +265,7 @@ namespace Sales_Tracker.Charts
                 string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                     ? TranslatedChartTitles.RevenueDistribution
                     : TranslatedChartTitles.ExpensesDistribution;
-                string category = LanguageManager.TranslateSingleString("Category");
+                string category = LanguageManager.TranslateString("Category");
 
                 ExcelSheetManager.ExportChartToExcel(sortedData, filePath, eChartType.Pie, chartTitle, category, label);
             }
@@ -295,7 +295,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
-            string label = LanguageManager.TranslateSingleString("Profits");
+            string label = LanguageManager.TranslateString("Profits");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -396,7 +396,7 @@ namespace Sales_Tracker.Charts
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
 
                 string chartTitle = TranslatedChartTitles.TotalProfits;
-                string date = LanguageManager.TranslateSingleString("Date");
+                string date = LanguageManager.TranslateString("Date");
 
                 ExcelSheetManager.ExportChartToExcel(profitByDate, filePath, chartType, chartTitle, date, label);
             }
@@ -415,7 +415,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
-            string label = LanguageManager.TranslateSingleString("# of items");
+            string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -488,7 +488,7 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
-                string countries = LanguageManager.TranslateSingleString("Countries");
+                string countries = LanguageManager.TranslateString("Countries");
 
                 ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, chartTitle, countries, label);
             }
@@ -516,7 +516,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
-            string label = LanguageManager.TranslateSingleString("# of items");
+            string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -589,7 +589,7 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
-                string companies = LanguageManager.TranslateSingleString("Companies");
+                string companies = LanguageManager.TranslateString("Companies");
 
                 ExcelSheetManager.ExportChartToExcel(groupedCompanyCounts, filePath, eChartType.Pie, chartTitle, companies, label);
             }
@@ -617,7 +617,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
-            string label = LanguageManager.TranslateSingleString("# of items");
+            string label = LanguageManager.TranslateString("# of items");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -690,7 +690,7 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 string chartTitle = TranslatedChartTitles.CountriesOfDestination;
-                string countries = LanguageManager.TranslateSingleString("Countries");
+                string countries = LanguageManager.TranslateString("Countries");
 
                 ExcelSheetManager.ExportChartToExcel(groupedCountryCounts, filePath, eChartType.Pie, chartTitle, countries, label);
             }
@@ -721,7 +721,7 @@ namespace Sales_Tracker.Charts
             ];
 
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
-            string label = LanguageManager.TranslateSingleString("# of transactions");
+            string label = LanguageManager.TranslateString("# of transactions");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -781,7 +781,7 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 string chartTitle = TranslatedChartTitles.AccountantsTransactions;
-                string accountants = LanguageManager.TranslateSingleString("Accountants");
+                string accountants = LanguageManager.TranslateString("Accountants");
 
                 ExcelSheetManager.ExportChartToExcel(groupedAccountantCounts, filePath, eChartType.Pie, chartTitle, accountants, label);
             }
@@ -810,8 +810,8 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
-            string expensesLabel = LanguageManager.TranslateSingleString("Total expenses");
-            string salesLabel = LanguageManager.TranslateSingleString("Total sales");
+            string expensesLabel = LanguageManager.TranslateString("Total expenses");
+            string salesLabel = LanguageManager.TranslateString("Total sales");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -970,8 +970,8 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
-            string purchaseLabel = LanguageManager.TranslateSingleString("Average purchase value");
-            string saleLabel = LanguageManager.TranslateSingleString("Average sale value");
+            string purchaseLabel = LanguageManager.TranslateString("Average purchase value");
+            string saleLabel = LanguageManager.TranslateString("Average sale value");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -1131,8 +1131,8 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
-            string purchasesLabel = LanguageManager.TranslateSingleString("Purchases");
-            string salesLabel = LanguageManager.TranslateSingleString("Sales");
+            string purchasesLabel = LanguageManager.TranslateString("Purchases");
+            string salesLabel = LanguageManager.TranslateString("Sales");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -1283,8 +1283,8 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
-            string purchaseLabel = LanguageManager.TranslateSingleString("Purchases");
-            string saleLabel = LanguageManager.TranslateSingleString("Sales");
+            string purchaseLabel = LanguageManager.TranslateString("Purchases");
+            string saleLabel = LanguageManager.TranslateString("Sales");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
@@ -1461,8 +1461,8 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
-            string expensesLabel = LanguageManager.TranslateSingleString("Expenses growth %");
-            string revenueLabel = LanguageManager.TranslateSingleString("Revenue growth %");
+            string expensesLabel = LanguageManager.TranslateString("Expenses growth %");
+            string revenueLabel = LanguageManager.TranslateString("Revenue growth %");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {

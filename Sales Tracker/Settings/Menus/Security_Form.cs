@@ -63,13 +63,13 @@ namespace Sales_Tracker.Settings.Menus
             if (Properties.Settings.Default.WindowsHelloEnabled)
             {
                 EnableWindowsHello_Button.Tag = "Enabled";
-                string newText = LanguageManager.TranslateSingleString("Disable Windows Hello");
+                string newText = LanguageManager.TranslateString("Disable Windows Hello");
                 EnableWindowsHello_Button.Text = newText;
             }
             else
             {
                 EnableWindowsHello_Button.Tag = "Disabled";
-                string newText = LanguageManager.TranslateSingleString("Enable Windows Hello");
+                string newText = LanguageManager.TranslateString("Enable Windows Hello");
                 EnableWindowsHello_Button.Text = newText;
             }
         }
@@ -124,7 +124,7 @@ namespace Sales_Tracker.Settings.Menus
                 {
                     Properties.Settings.Default.WindowsHelloEnabled = false;
                     CustomMessageBox.Show("Windows Hello disabled", "Windows Hello has been disabled", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
-                    string newText = LanguageManager.TranslateSingleString("Enable Windows Hello");
+                    string newText = LanguageManager.TranslateString("Enable Windows Hello");
                     EnableWindowsHello_Button.Text = newText;
                     EnableWindowsHello_Button.Tag = "Disabled";
                 }
@@ -149,7 +149,7 @@ namespace Sales_Tracker.Settings.Menus
                         StopPlayingLoadingAnimation();
                         CustomMessageBox.Show("Windows Hello enabled", "Windows Hello has been enabled. You can now log in with your biometrics",
                             CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
-                        string newText = LanguageManager.TranslateSingleString("Disable Windows Hello");
+                        string newText = LanguageManager.TranslateString("Disable Windows Hello");
                         EnableWindowsHello_Button.Text = newText;
                         EnableWindowsHello_Button.Tag = "Enabled";
                     }

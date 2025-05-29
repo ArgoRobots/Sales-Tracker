@@ -773,12 +773,12 @@ namespace Sales_Tracker.Classes
 
             ExcelPackage.License.SetNonCommercialPersonal("Argo");
             using ExcelPackage package = new();
-            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
+            string worksheetName = LanguageManager.TranslateString("Chart Data");
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
 
             // Add headers
-            worksheet.Cells["A1"].Value = LanguageManager.TranslateSingleString(column1Text);
-            worksheet.Cells["B1"].Value = LanguageManager.TranslateSingleString(column2Text);
+            worksheet.Cells["A1"].Value = LanguageManager.TranslateString(column1Text);
+            worksheet.Cells["B1"].Value = LanguageManager.TranslateString(column2Text);
 
             // Format headers
             ExcelRange headerRange = worksheet.Cells["A1:B1"];
@@ -817,14 +817,14 @@ namespace Sales_Tracker.Classes
 
             ExcelPackage.License.SetNonCommercialPersonal("Argo");
             using ExcelPackage package = new();
-            string worksheetName = LanguageManager.TranslateSingleString("Chart Data");
+            string worksheetName = LanguageManager.TranslateString("Chart Data");
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
 
             // Get all series names
             List<string> seriesNames = data.First().Value.Keys.ToList();
 
             // Add headers
-            worksheet.Cells[1, 1].Value = LanguageManager.TranslateSingleString("Date");
+            worksheet.Cells[1, 1].Value = LanguageManager.TranslateString("Date");
             for (int i = 0; i < seriesNames.Count; i++)
             {
                 worksheet.Cells[1, i + 2].Value = seriesNames[i];

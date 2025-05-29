@@ -80,7 +80,7 @@ namespace Sales_Tracker.Classes
                         {
                             Properties = new SheetProperties
                             {
-                                Title = LanguageManager.TranslateSingleString("Chart Data"),
+                                Title = LanguageManager.TranslateString("Chart Data"),
                                 SheetId = 0
                             }
                         }
@@ -92,7 +92,7 @@ namespace Sales_Tracker.Classes
                     .ExecuteAsync();
 
                 string spreadsheetId = spreadsheet.SpreadsheetId;
-                string sheetName = LanguageManager.TranslateSingleString("Chart Data");
+                string sheetName = LanguageManager.TranslateString("Chart Data");
 
                 // Create drive service
                 DriveService driveService = new(new BaseClientService.Initializer
@@ -117,8 +117,8 @@ namespace Sales_Tracker.Classes
                 List<IList<object>> values =
                 [
                     [
-                        LanguageManager.TranslateSingleString(column1Text),
-                        LanguageManager.TranslateSingleString(column2Text)
+                        LanguageManager.TranslateString(column1Text),
+                        LanguageManager.TranslateString(column2Text)
                     ]
                 ];
 
@@ -218,7 +218,7 @@ namespace Sales_Tracker.Classes
 
             try
             {
-                string sheetName = LanguageManager.TranslateSingleString("Chart Data");
+                string sheetName = LanguageManager.TranslateString("Chart Data");
 
                 // Create a new spreadsheet
                 Spreadsheet spreadsheet = new()
@@ -269,7 +269,7 @@ namespace Sales_Tracker.Classes
                 List<string> orderedSeriesNames = seriesNames
                     .OrderBy(x => x.Contains("Sales"))  // This puts "Total Sales" last
                     .ToList();
-                List<object> headers = [LanguageManager.TranslateSingleString("Date"), .. orderedSeriesNames];
+                List<object> headers = [LanguageManager.TranslateString("Date"), .. orderedSeriesNames];
 
                 // Prepare the data
                 List<IList<object>> values = [headers];

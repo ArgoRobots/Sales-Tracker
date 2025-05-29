@@ -46,7 +46,7 @@ namespace Sales_Tracker
         }
         private void SetTitle()
         {
-            Title_Label.Text = LanguageManager.TranslateSingleString(
+            Title_Label.Text = LanguageManager.TranslateString(
                 oldOption == MainMenu_Form.SelectedOption.Purchases ? "Items in purchase" : "Items in sale"
             );
         }

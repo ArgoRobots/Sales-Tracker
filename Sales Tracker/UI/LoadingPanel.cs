@@ -53,11 +53,11 @@ namespace Sales_Tracker.UI
         /// Displays a loading screen with a progress indicator and a message over a specified control.
         /// </summary>
         /// <remarks>
-        /// The message is translated into the current language using <see cref="LanguageManager.TranslateSingleString"/>.
+        /// The message is translated into the current language using <see cref="LanguageManager.TranslateString"/>.
         /// </remarks>
         public static void ShowLoadingScreen(Control control, string message)
         {
-            string translatedMessage = LanguageManager.TranslateSingleString(message);
+            string translatedMessage = LanguageManager.TranslateString(message);
 
             _loadingPanel.Size = control.Size;
             control.Controls.Add(_loadingPanel);

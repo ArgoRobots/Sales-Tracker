@@ -186,7 +186,7 @@ namespace Sales_Tracker
                 Font = new Font("Segoe UI", 13, FontStyle.Bold),
                 BackColor = CustomColors.MainBackground,
                 ForeColor = CustomColors.Text,
-                Text = LanguageManager.TranslateSingleString("License Verified Successfully!"),
+                Text = LanguageManager.TranslateString("License Verified Successfully!"),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Visible = false
             };
@@ -196,7 +196,7 @@ namespace Sales_Tracker
             {
                 Size = verifyLicense_Button.Size,
                 Anchor = AnchorStyles.Top,
-                Text = LanguageManager.TranslateSingleString("Close"),
+                Text = LanguageManager.TranslateString("Close"),
                 Font = new Font("Segoe UI", 10),
                 BorderRadius = 2,
                 BorderThickness = 1,
@@ -262,7 +262,7 @@ namespace Sales_Tracker
             }
 
             // Set label properties
-            errorLabel.Text = LanguageManager.TranslateSingleString("Invalid license key");
+            errorLabel.Text = LanguageManager.TranslateString("Invalid license key");
             errorLabel.Location = new Point(
                 (EnterKey_Panel.Width - errorLabel.Width) / 2,
                 verifyLicense_Button.Bottom + 10
@@ -271,7 +271,7 @@ namespace Sales_Tracker
 
             // Disable button
             verifyLicense_Button.Enabled = false;
-            verifyLicense_Button.Text = LanguageManager.TranslateSingleString("Invalid License");
+            verifyLicense_Button.Text = LanguageManager.TranslateString("Invalid License");
 
             _ = ShowErrorAndShake();
 
@@ -295,7 +295,7 @@ namespace Sales_Tracker
             // Hide error message and reset button
             errorLabel.Visible = false;
             verifyLicense_Button.Enabled = true;
-            verifyLicense_Button.Text = LanguageManager.TranslateSingleString("Verify License");
+            verifyLicense_Button.Text = LanguageManager.TranslateString("Verify License");
         }
         private void BackButton_Click(object sender, EventArgs e)
         {

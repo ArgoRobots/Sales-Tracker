@@ -958,18 +958,17 @@ namespace Sales_Tracker
 
             CenterAndResizeControls();
 
-            // Only refresh if the purchase charts haven't been loaded yet or need updating
+            // Only refresh if the purchase charts haven't been loaded yet
             if (_purchaseTotals_Chart.Datasets.Count == 0)
             {
                 RefreshDataGridViewAndCharts();
             }
 
-            UpdateTotalLabels();
-            SelectButton(Purchases_Button);
-
             _purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
-            Search_TextBox.PlaceholderText = LanguageManager.TranslateSingleString("Search for purchases");
+            UpdateTotalLabels();
+            SelectButton(Purchases_Button);
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for purchases");
         }
         private void Sales_Button_Click(object sender, EventArgs e)
         {
@@ -992,18 +991,17 @@ namespace Sales_Tracker
 
             CenterAndResizeControls();
 
-            // Only refresh if the sale charts haven't been loaded yet or need updating
+            // Only refresh if the sale charts haven't been loaded yet
             if (_saleTotals_Chart.Datasets.Count == 0)
             {
                 RefreshDataGridViewAndCharts();
             }
 
-            UpdateTotalLabels();
-            SelectButton(Sales_Button);
-
             _sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
-            Search_TextBox.PlaceholderText = LanguageManager.TranslateSingleString("Search for sales");
+            UpdateTotalLabels();
+            SelectButton(Sales_Button);
+            Search_TextBox.PlaceholderText = LanguageManager.TranslateString("Search for sales");
         }
         private void Analytics_Button_Click(object sender, EventArgs e)
         {

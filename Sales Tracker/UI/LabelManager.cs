@@ -94,7 +94,7 @@ namespace Sales_Tracker.UI
             string text = ReadOnlyVariables.NoData_text;
 
             // Get the translated version of the text
-            string translatedText = LanguageManager.TranslateSingleString(text);
+            string translatedText = LanguageManager.TranslateString(text);
 
             Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label =>
                 label.Tag != null && label.Tag.ToString() == text);
@@ -147,7 +147,7 @@ namespace Sales_Tracker.UI
 
             if (label != null)
             {
-                label.Text = LanguageManager.TranslateSingleString(ReadOnlyVariables.NoData_text);
+                label.Text = LanguageManager.TranslateString(ReadOnlyVariables.NoData_text);
                 label.Location = new Point((control.Width - label.Width) / 2, (control.Height - label.Height) / 2);
             }
         }

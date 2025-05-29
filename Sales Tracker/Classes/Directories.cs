@@ -95,7 +95,7 @@ namespace Sales_Tracker.Classes
             _globalAppDataSettingsCache_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
             _logsCache_dir = _cache_dir + @"logs\";
             _anonymousUserDataCache_file = _cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
-            _exchangeRateCache_file = _cache_dir + "exchange_rates_cache" + ArgoFiles.JsonFileExtension;
+            _exchangeRateCache_file = _cache_dir + "exchangeRatesCache" + ArgoFiles.JsonFileExtension;
 
             // Other
             _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;

@@ -127,7 +127,7 @@ namespace Sales_Tracker.Classes
             if (selectedRowCount > 1)
             {
                 // Create a new folder for multiple files
-                string name = LanguageManager.TranslateSingleString("Argo Sales Tracker receipts for");
+                string name = LanguageManager.TranslateString("Argo Sales Tracker receipts for");
                 string newFolderPath = Path.Combine(destinationPath, $"{name} {Directories.CompanyName} - "
                     + DateTime.Now.ToString("yyyyMMddHHmmss"));
 

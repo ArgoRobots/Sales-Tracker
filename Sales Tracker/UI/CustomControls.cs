@@ -108,7 +108,7 @@ namespace Sales_Tracker.UI
                 ForeColor = CustomColors.Text,
                 TextAlign = HorizontalAlignment.Left,
                 Font = new Font("Segoe UI", 10),
-                Text = LanguageManager.TranslateSingleString(text),
+                Text = LanguageManager.TranslateString(text),
                 Name = FormatButtonName(text),
                 Margin = new Padding(0),
                 BorderColor = CustomColors.ControlBorder

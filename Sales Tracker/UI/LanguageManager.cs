@@ -9,9 +9,9 @@ namespace Sales_Tracker.UI
 {
     /// <summary>
     /// Manages language translation and caching for user interface controls.
-    /// Utilizes Microsoft Translator API to translate text and maintain language consistency across controls.
-    /// Provides caching to optimize translation efficiency and includes methods for dynamic text adjustment
-    /// on various control types to ensure correct alignment and font size adjustments post-translation.
+    /// Uses Microsoft Translator API to translate text and maintain language consistency across controls.
+    /// Provides caching to optimize translation efficiency and ensures correct text alignment
+    /// and font size adjustments post-translation.
     /// </summary>
     public class LanguageManager
     {
@@ -26,7 +26,7 @@ namespace Sales_Tracker.UI
         private static readonly Dictionary<string, Rectangle> controlBoundsCache = [];
         private static readonly Dictionary<Control, float> originalFontSizes = [];
 
-        // Setters
+        // Getters and setters
         public static Dictionary<string, Dictionary<string, string>> TranslationCache
         {
             get => _translationCache;
@@ -37,6 +37,7 @@ namespace Sales_Tracker.UI
             get => _englishCache;
             set => _englishCache = value;
         }
+
         // Init.
         public static void InitLanguageManager()
         {
@@ -128,7 +129,7 @@ namespace Sales_Tracker.UI
 
             AnonymousDataManager.AddMicrosoftTranslatorData(languageData);
         }
-        public static void TranslateAllTextInControl(Control control, string targetLanguageAbbreviation,
+        private static void TranslateAllTextInControl(Control control, string targetLanguageAbbreviation,
             ref int controlsTranslated, ref int charactersTranslated, ref int cacheHits, ref int totalTranslations)
         {
             CacheControlBounds(control);
@@ -236,7 +237,7 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Translates text using cache or Microsoft Translator API.
+        /// Translates the text in a control to the default language using the cache or Microsoft Translator API.
         /// </summary>
         private static string? TranslateAndCacheText(string targetLanguageAbbreviation, string controlKey, Control control, string text,
             ref int charactersTranslated, ref int cacheHits, ref int totalTranslations)
@@ -333,10 +334,9 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Translates a single string to the default language while utilizing the translation cache.
+        /// Translates a string to the default language using the cache or Microsoft Translator API.
         /// </summary>
-        /// <returns>The translated text, or the original text if translation fails</returns>
-        public static string TranslateSingleString(string text)
+        public static string TranslateString(string text)
         {
             if (string.IsNullOrEmpty(text))
             {

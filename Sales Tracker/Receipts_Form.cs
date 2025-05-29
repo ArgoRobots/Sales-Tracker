@@ -249,7 +249,7 @@ namespace Sales_Tracker
         }
         private void AddReceiptsFromDataGridView(Guna2DataGridView sourceDataGridView, string type)
         {
-            string translatedType = LanguageManager.TranslateSingleString(type);
+            string translatedType = LanguageManager.TranslateString(type);
 
             foreach (DataGridViewRow row in sourceDataGridView.Rows)
             {

@@ -42,7 +42,7 @@ namespace Sales_Tracker.UI
             }
             else
             {
-                noResults_Label.Text = _translateText ? LanguageManager.TranslateSingleString("No results") : "No results";
+                noResults_Label.Text = _translateText ? LanguageManager.TranslateString("No results") : "No results";
             }
 
             textBox.MouseDown += (sender, e) =>
@@ -123,7 +123,7 @@ namespace Sales_Tracker.UI
             {
                 foreach (SearchResult result in results.Where(r => r.Name != addLine))
                 {
-                    result.DisplayName = LanguageManager.TranslateSingleString(result.Name);
+                    result.DisplayName = LanguageManager.TranslateString(result.Name);
                 }
             }
 

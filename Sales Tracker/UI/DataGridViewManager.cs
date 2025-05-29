@@ -623,14 +623,14 @@ namespace Sales_Tracker.UI
             // Add MoveBtn
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
-                string text = LanguageManager.TranslateSingleString("Move category to sales");
+                string text = LanguageManager.TranslateString("Move category to sales");
                 rightClickDataGridView_MoveBtn.Visible = true;
                 rightClickDataGridView_MoveBtn.Text = text;
                 flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, currentIndex++);
             }
             else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
             {
-                string text = LanguageManager.TranslateSingleString("Move category to purchases");
+                string text = LanguageManager.TranslateString("Move category to purchases");
                 rightClickDataGridView_MoveBtn.Visible = true;
                 rightClickDataGridView_MoveBtn.Text = text;
                 flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, currentIndex++);

@@ -18,12 +18,12 @@ namespace Sales_Tracker.Charts
         // Right click menu methods
         public static void ConstructRightClickGunaChartMenu()
         {
-            Guna2Panel panel = CustomControls.ConstructPanelForMenu(
+            _rightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickGunaChart_Panel"
             );
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickGunaChart_Panel.Controls[0];
             int newBtnWidth = CustomControls.PanelBtnWidth - 50;
 
             Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
@@ -38,8 +38,6 @@ namespace Sales_Tracker.Charts
 
             resetZoomButton = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
             resetZoomButton.Click += ResetZoom;
-
-            _rightClickGunaChart_Panel = panel;
         }
         private static void SaveImage(object sender, EventArgs e)
         {
@@ -153,10 +151,10 @@ namespace Sales_Tracker.Charts
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string first = LanguageManager.TranslateSingleString("Date");
+                            string first = LanguageManager.TranslateString("Date");
                             string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                                ? LanguageManager.TranslateSingleString("Revenue")
-                                : LanguageManager.TranslateSingleString("Expenses");
+                                ? LanguageManager.TranslateString("Revenue")
+                                : LanguageManager.TranslateString("Expenses");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
                         }
@@ -168,10 +166,10 @@ namespace Sales_Tracker.Charts
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.RevenueDistribution
                                 : TranslatedChartTitles.ExpensesDistribution;
-                            string first = LanguageManager.TranslateSingleString("Category");
+                            string first = LanguageManager.TranslateString("Category");
                             string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                               ? LanguageManager.TranslateSingleString("Revenue")
-                               : LanguageManager.TranslateSingleString("Expenses");
+                               ? LanguageManager.TranslateString("Revenue")
+                               : LanguageManager.TranslateString("Expenses");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
@@ -184,8 +182,8 @@ namespace Sales_Tracker.Charts
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string first = LanguageManager.TranslateSingleString("Date");
-                            string second = LanguageManager.TranslateSingleString("profits");
+                            string first = LanguageManager.TranslateString("Date");
+                            string second = LanguageManager.TranslateString("profits");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
                         }
@@ -195,8 +193,8 @@ namespace Sales_Tracker.Charts
                         {
                             ChartData chartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
-                            string first = LanguageManager.TranslateSingleString("Countries");
-                            string second = LanguageManager.TranslateSingleString("# of items");
+                            string first = LanguageManager.TranslateString("Countries");
+                            string second = LanguageManager.TranslateString("# of items");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
@@ -206,8 +204,8 @@ namespace Sales_Tracker.Charts
                         {
                             ChartData chartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
-                            string first = LanguageManager.TranslateSingleString("Companies");
-                            string second = LanguageManager.TranslateSingleString("# of items");
+                            string first = LanguageManager.TranslateString("Companies");
+                            string second = LanguageManager.TranslateString("# of items");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
@@ -217,8 +215,8 @@ namespace Sales_Tracker.Charts
                         {
                             ChartData chartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfDestination;
-                            string first = LanguageManager.TranslateSingleString("Countries");
-                            string second = LanguageManager.TranslateSingleString("# of items");
+                            string first = LanguageManager.TranslateString("Countries");
+                            string second = LanguageManager.TranslateString("# of items");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
@@ -228,8 +226,8 @@ namespace Sales_Tracker.Charts
                         {
                             ChartData chartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.AccountantsTransactions;
-                            string first = LanguageManager.TranslateSingleString("Accountants");
-                            string second = LanguageManager.TranslateSingleString("# of transactions");
+                            string first = LanguageManager.TranslateString("Accountants");
+                            string second = LanguageManager.TranslateString("# of transactions");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
@@ -244,8 +242,8 @@ namespace Sales_Tracker.Charts
                             {
                                 combinedData[date] = new Dictionary<string, double>
                                 {
-                                    [LanguageManager.TranslateSingleString("Total Expenses")] = salesExpensesData.GetExpensesForDate(date),
-                                    [LanguageManager.TranslateSingleString("Total Sales")] = salesExpensesData.GetSalesForDate(date)
+                                    [LanguageManager.TranslateString("Total Expenses")] = salesExpensesData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Total Sales")] = salesExpensesData.GetSalesForDate(date)
                                 };
                             }
 
@@ -267,8 +265,8 @@ namespace Sales_Tracker.Charts
                             {
                                 combinedData[date] = new Dictionary<string, double>
                                 {
-                                    [LanguageManager.TranslateSingleString("Average purchase value")] = chartData.GetExpensesForDate(date),
-                                    [LanguageManager.TranslateSingleString("Average sale value")] = chartData.GetSalesForDate(date)
+                                    [LanguageManager.TranslateString("Average purchase value")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Average sale value")] = chartData.GetSalesForDate(date)
                                 };
                             }
 
@@ -290,8 +288,8 @@ namespace Sales_Tracker.Charts
                             {
                                 combinedData[date] = new Dictionary<string, double>
                                 {
-                                    [LanguageManager.TranslateSingleString("Purchases")] = chartData.GetExpensesForDate(date),
-                                    [LanguageManager.TranslateSingleString("Sales")] = chartData.GetSalesForDate(date)
+                                    [LanguageManager.TranslateString("Purchases")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sales")] = chartData.GetSalesForDate(date)
                                 };
                             }
 
@@ -313,8 +311,8 @@ namespace Sales_Tracker.Charts
                             {
                                 combinedData[date] = new Dictionary<string, double>
                                 {
-                                    [LanguageManager.TranslateSingleString("Purchases")] = chartData.GetExpensesForDate(date),
-                                    [LanguageManager.TranslateSingleString("Sales")] = chartData.GetSalesForDate(date)
+                                    [LanguageManager.TranslateString("Purchases")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sales")] = chartData.GetSalesForDate(date)
                                 };
                             }
 
@@ -336,8 +334,8 @@ namespace Sales_Tracker.Charts
                             {
                                 combinedData[date] = new Dictionary<string, double>
                                 {
-                                    [LanguageManager.TranslateSingleString("Expenses growth %")] = chartData.GetExpensesForDate(date),
-                                    [LanguageManager.TranslateSingleString("Revenue growth %")] = chartData.GetSalesForDate(date)
+                                    [LanguageManager.TranslateString("Expenses growth %")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Revenue growth %")] = chartData.GetSalesForDate(date)
                                 };
                             }
 
