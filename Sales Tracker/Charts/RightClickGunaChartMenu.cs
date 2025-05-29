@@ -84,11 +84,11 @@ namespace Sales_Tracker.Charts
             switch (chart.Tag)
             {
                 case MainMenu_Form.ChartDataType.TotalRevenue:
-                    LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine, true, directory);
+                    LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.GetTotalsChart(), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.DistributionOfRevenue:
-                    LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.GetDistributionChart(), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.TotalProfits:
@@ -146,7 +146,7 @@ namespace Sales_Tracker.Charts
                 {
                     case MainMenu_Form.ChartDataType.TotalRevenue:
                         {
-                            ChartData chartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.Totals_Chart, isLine, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.GetTotalsChart(), isLine, canUpdateChart: false);
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.TotalRevenue
                                 : TranslatedChartTitles.TotalExpenses;
@@ -164,7 +164,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.DistributionOfRevenue:
                         {
-                            ChartData chartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.Distribution_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.GetDistributionChart(), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.RevenueDistribution
                                 : TranslatedChartTitles.ExpensesDistribution;
