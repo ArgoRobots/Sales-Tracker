@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     
-    <TargetFramework>net8.0-windows10.0.26100.1</TargetFramework>
+    <TargetFramework>net9.0-windows10.0.26100.1</TargetFramework>
     <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
     <Platforms>AnyCPU;x86;x64</Platforms>
   </PropertyGroup>

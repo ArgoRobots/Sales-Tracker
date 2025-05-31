@@ -19,24 +19,16 @@ namespace Sales_Tracker
         // Proprties
         private static MainMenu_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
-        private static string _currencySymbol;
-        private static bool _isProgramLoading;
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
         public static List<string> SettingsThatHaveChangedInFile => _settingsThatHaveChangedInFile;
-        public static string CurrencySymbol
-        {
-            get => _currencySymbol;
-            set => _currencySymbol = value;
-        }
-        public static bool IsProgramLoading
-        {
-            get => _isProgramLoading;
-            set => _isProgramLoading = value;
-        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static string CurrencySymbol { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static bool IsProgramLoading { get; set; }
 
         // Init.
         public MainMenu_Form()
@@ -44,7 +36,7 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            _isProgramLoading = true;
+            IsProgramLoading = true;
             CurrencySymbol = Currency.GetSymbol();
 
             CustomControls.ConstructControls();
@@ -138,8 +130,8 @@ namespace Sales_Tracker
             _sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
-            _sortFromDate = default;
-            _sortToDate = default;
+            SortFromDate = default;
+            SortToDate = default;
         }
         public void LoadData()
         {
@@ -569,7 +561,7 @@ namespace Sales_Tracker
             Sales_Button.PerformClick();
             _sale_DataGridView.ClearSelection();
 
-            _isProgramLoading = false;
+            IsProgramLoading = false;
 
             SortTheDataGridViewByDate();
             AlignTotalLabels();
@@ -685,7 +677,7 @@ namespace Sales_Tracker
         private bool wasControlsDropDownAdded;
         public void CenterAndResizeControls()
         {
-            if (_isProgramLoading) { return; }
+            if (IsProgramLoading) { return; }
 
             if (ClientSize.Height > 1400)
             {
@@ -1066,7 +1058,7 @@ namespace Sales_Tracker
         }
         private async void Search_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (_isProgramLoading) { return; }
+            if (IsProgramLoading) { return; }
 
             bool isAIQuery = Properties.Settings.Default.AISearchEnabled
                 && Properties.Settings.Default.LicenseActivated
@@ -1251,9 +1243,6 @@ namespace Sales_Tracker
             Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
         }
 
-        // Search DataGridView properties
-        private DateTime? _sortFromDate = null, _sortToDate = null;
-        private TimeSpan? _sortTimeSpan = TimeSpan.MaxValue;
         private static readonly Dictionary<TimeSpan, string> TimeSpanMappings = new()
         {
             { TimeSpan.MaxValue, "All Time" },
@@ -1269,22 +1258,15 @@ namespace Sales_Tracker
             { TimeSpan.FromDays(365 * 5), "5 years" }
         };
 
-        // Search DataGridView getters
-        public DateTime? SortFromDate
-        {
-            get => _sortFromDate;
-            set => _sortFromDate = value;
-        }
-        public DateTime? SortToDate
-        {
-            get => _sortToDate;
-            set => _sortToDate = value;
-        }
-        public TimeSpan? SortTimeSpan
-        {
-            get => _sortTimeSpan;
-            set => _sortTimeSpan = value;
-        }
+        // Search DataGridView getters and setters
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
+        // Search DataGridView getters and setters
+        public DateTime? SortFromDate { get; set; } = null;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DateTime? SortToDate { get; set; } = null;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TimeSpan? SortTimeSpan { get; set; } = TimeSpan.MaxValue;
 
         // Search DataGridView methods
         public void RefreshDataGridViewAndCharts()
@@ -1303,7 +1285,7 @@ namespace Sales_Tracker
         }
         private void ApplyFiltersToDataGridView()
         {
-            if (_sortFromDate != null && _sortToDate != null)
+            if (SortFromDate != null && SortToDate != null)
             {
                 FilterDataGridViewByDateRange(_selectedDataGridView);
             }
@@ -1312,7 +1294,7 @@ namespace Sales_Tracker
             string displayedSearchText = Search_TextBox.Text.Trim();
             string effectiveSearchText = AISearchExtensions.GetEffectiveSearchQuery(displayedSearchText);
 
-            bool filterExists = _sortTimeSpan != TimeSpan.MaxValue ||
+            bool filterExists = SortTimeSpan != TimeSpan.MaxValue ||
                 !string.IsNullOrEmpty(effectiveSearchText);
 
             bool hasVisibleRows = false;
@@ -1325,8 +1307,8 @@ namespace Sales_Tracker
                 {
                     DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
 
-                    bool isVisibleByDate = (_sortTimeSpan == TimeSpan.MaxValue ||
-                        rowDate >= DateTime.Now - _sortTimeSpan);
+                    bool isVisibleByDate = (SortTimeSpan == TimeSpan.MaxValue ||
+                        rowDate >= DateTime.Now - SortTimeSpan);
 
                     bool isVisibleBySearch = string.IsNullOrEmpty(effectiveSearchText) ||
                         SearchDataGridView.FilterRowByAdvancedSearch(row, effectiveSearchText);
@@ -1359,7 +1341,7 @@ namespace Sales_Tracker
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 DateTime rowDate = DateTime.Parse(row.Cells[PurchaseColumnHeaders[Column.Date]].Value.ToString());
-                bool isVisible = rowDate >= _sortFromDate && rowDate <= _sortToDate;
+                bool isVisible = rowDate >= SortFromDate && rowDate <= SortToDate;
                 row.Visible = isVisible;
             }
         }
@@ -1386,9 +1368,9 @@ namespace Sales_Tracker
             }
 
             // Handle time span case
-            if (_sortTimeSpan != null && _sortTimeSpan != TimeSpan.MaxValue)
+            if (SortTimeSpan != null && SortTimeSpan != TimeSpan.MaxValue)
             {
-                string timeSpanText = GetTimeSpanText(_sortTimeSpan.Value);
+                string timeSpanText = GetTimeSpanText(SortTimeSpan.Value);
 
                 if (!string.IsNullOrEmpty(searchDisplay))
                 {
@@ -1401,10 +1383,10 @@ namespace Sales_Tracker
             }
 
             // Handle custom date range case
-            if (_sortFromDate != null && _sortToDate != null)
+            if (SortFromDate != null && SortToDate != null)
             {
-                string fromDate = Tools.FormatDate((DateTime)_sortFromDate);
-                string toDate = Tools.FormatDate((DateTime)_sortToDate);
+                string fromDate = Tools.FormatDate((DateTime)SortFromDate);
+                string toDate = Tools.FormatDate((DateTime)SortToDate);
 
                 if (!string.IsNullOrEmpty(searchDisplay))
                 {
@@ -1877,7 +1859,7 @@ namespace Sales_Tracker
         }
         public void SaveCategoriesToFile(SelectedOption option)
         {
-            if (_isProgramLoading)
+            if (IsProgramLoading)
             {
                 return;
             }

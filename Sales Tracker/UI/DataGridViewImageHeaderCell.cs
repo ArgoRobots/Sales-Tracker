@@ -14,15 +14,10 @@
         private readonly Image _headerImage = new Bitmap(image, new Size(28, 28));
         private readonly int _imageOffsetX = -20;
         private readonly int _imageOffsetY = 5;
-        private string _headerText = headerText;
         private readonly string _messageBoxText = messageBoxText;
 
         // Getters and setters
-        public string HeaderText
-        {
-            get => _headerText;
-            set => _headerText = value;
-        }
+        public string HeaderText { get; set; } = headerText;
 
         protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates dataGridViewElementState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
@@ -45,7 +40,7 @@
                 graphics.DrawImage(_headerImage, new Rectangle(imgLocation, imgSize));
             }
 
-            if (!string.IsNullOrEmpty(_headerText))
+            if (!string.IsNullOrEmpty(HeaderText))
             {
                 // Define text formatting options
                 StringFormat stringFormat = new()
@@ -66,7 +61,7 @@
 
                 // Use the cell style's ForeColor for text drawing, so it updates when the theme changes
                 using Brush textBrush = new SolidBrush(cellStyle.ForeColor);
-                graphics.DrawString(_headerText, cellStyle.Font, textBrush, textBounds, stringFormat);
+                graphics.DrawString(HeaderText, cellStyle.Font, textBrush, textBounds, stringFormat);
             }
         }
         protected override void OnMouseMove(DataGridViewCellMouseEventArgs e)

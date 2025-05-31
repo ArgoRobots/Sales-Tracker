@@ -10,47 +10,29 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class Directories
     {
-        // Directories and files
-        private static string _companyName, _tempCompany_dir, _argoCompany_dir, _argoCompany_file, _appData_dir,
-            _globalAppDataSettingsCache_file, _appDataSettings_file, _purchases_file, _sales_file, _categoryPurchases_file,
-            _categorySales_file, _accountants_file, _companies_file, _receipts_dir, _logsCache_dir, _desktop_dir, _cache_dir,
-            _translationsCache_file, _englishTexts_file, _anonymousUserDataCache_file, _exchangeRateCache_file, _secretsFilePath;
-
         // Getters and setters
-        public static string CompanyName => _companyName;
-        public static string TempCompany_dir => _tempCompany_dir;
-        public static string ArgoCompany_dir => _argoCompany_dir;
-        public static string ArgoCompany_file => _argoCompany_file;
-        public static string AppData_dir => _appData_dir;
-        public static string AppDataSettings_file => _appDataSettings_file;
-        public static string Purchases_file => _purchases_file;
-        public static string Sales_file => _sales_file;
-        public static string CategoryPurchases_file => _categoryPurchases_file;
-        public static string CategorySales_file => _categorySales_file;
-        public static string Accountants_file => _accountants_file;
-        public static string Companies_file => _companies_file;
-        public static string Receipts_dir => _receipts_dir;
-        public static string Logs_dir => _logsCache_dir;
-        public static string Desktop_dir => _desktop_dir;
-        public static string Cache_dir
-        {
-            get => _cache_dir;
-            set => _cache_dir = value;
-        }
-        public static string TranslationsCache_file
-        {
-            get => _translationsCache_file;
-            set => _translationsCache_file = value;
-        }
-        public static string GlobalAppDataSettingsCache_file => _globalAppDataSettingsCache_file;
-        public static string AnonymousUserDataCache_file => _anonymousUserDataCache_file;
-        public static string ExchangeRateCache_file => _exchangeRateCache_file;
-        public static string EnglishTexts_file
-        {
-            get => _englishTexts_file;
-            set => _englishTexts_file = value;
-        }
-        public static string SecretsFilePath => _secretsFilePath;
+        public static string CompanyName { get; private set; }
+        public static string TempCompany_dir { get; private set; }
+        public static string ArgoCompany_dir { get; private set; }
+        public static string ArgoCompany_file { get; private set; }
+        public static string AppData_dir { get; private set; }
+        public static string AppDataSettings_file { get; private set; }
+        public static string Purchases_file { get; private set; }
+        public static string Sales_file { get; private set; }
+        public static string CategoryPurchases_file { get; private set; }
+        public static string CategorySales_file { get; private set; }
+        public static string Accountants_file { get; private set; }
+        public static string Companies_file { get; private set; }
+        public static string Receipts_dir { get; private set; }
+        public static string Logs_dir { get; private set; }
+        public static string Desktop_dir { get; private set; }
+        public static string Cache_dir { get; set; }
+        public static string TranslationsCache_file { get; set; }
+        public static string GlobalAppDataSettingsCache_file { get; private set; }
+        public static string AnonymousUserDataCache_file { get; private set; }
+        public static string ExchangeRateCache_file { get; private set; }
+        public static string EnglishTexts_file { get; set; }
+        public static string SecretsFilePath { get; private set; }
 
         // Methods
         /// <summary>
@@ -66,47 +48,47 @@ namespace Sales_Tracker.Classes
                 projectDir += "\\";
             }
 
-            _companyName = project_name;
-            _tempCompany_dir = _appData_dir + project_name + @"\";
+            CompanyName = project_name;
+            TempCompany_dir = AppData_dir + project_name + @"\";
 
-            _argoCompany_dir = projectDir;
-            _argoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
+            ArgoCompany_dir = projectDir;
+            ArgoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
 
             // Main files
-            _purchases_file = _tempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
-            _sales_file = _tempCompany_dir + "sales" + ArgoFiles.TxtFileExtension;
-            _categoryPurchases_file = _tempCompany_dir + "categoryPurchases" + ArgoFiles.JsonFileExtension;
-            _categorySales_file = _tempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
-            _accountants_file = _tempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
-            _companies_file = _tempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
-            _receipts_dir = _appData_dir + project_name + @"\receipts\";
+            Purchases_file = TempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
+            Sales_file = TempCompany_dir + "sales" + ArgoFiles.TxtFileExtension;
+            CategoryPurchases_file = TempCompany_dir + "categoryPurchases" + ArgoFiles.JsonFileExtension;
+            CategorySales_file = TempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
+            Accountants_file = TempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
+            Companies_file = TempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
+            Receipts_dir = AppData_dir + project_name + @"\receipts\";
 
             // Misc.
-            _appDataSettings_file = _tempCompany_dir + "appSettings" + ArgoFiles.TxtFileExtension;
+            AppDataSettings_file = TempCompany_dir + "appSettings" + ArgoFiles.TxtFileExtension;
         }
         public static void SetUniversalDirectories()
         {
             // App data
-            _appData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+            AppData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
 
             // Cache
-            _cache_dir = _appData_dir + "cache-" + ArgoCompany.GetUniqueCompanyIdentifier("Argo Sales Tracker") + @"\";
-            _translationsCache_file = _cache_dir + "translations" + ArgoFiles.JsonFileExtension;
-            _globalAppDataSettingsCache_file = _cache_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
-            _logsCache_dir = _cache_dir + @"logs\";
-            _anonymousUserDataCache_file = _cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
-            _exchangeRateCache_file = _cache_dir + "exchangeRatesCache" + ArgoFiles.JsonFileExtension;
+            Cache_dir = AppData_dir + "cache-" + ArgoCompany.GetUniqueCompanyIdentifier("Argo Sales Tracker") + @"\";
+            Logs_dir = Cache_dir + @"logs\";
+            AnonymousUserDataCache_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other
-            _englishTexts_file = _appData_dir + "english" + ArgoFiles.JsonFileExtension;
-            _desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            _secretsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.info");
+            ExchangeRateCache_file = "exchangeRatesCache" + ArgoFiles.JsonFileExtension;
+            TranslationsCache_file = "translations" + ArgoFiles.JsonFileExtension;
+            GlobalAppDataSettingsCache_file = "globalSettings" + ArgoFiles.TxtFileExtension;
+            EnglishTexts_file = AppData_dir + "english" + ArgoFiles.JsonFileExtension;
+            Desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            SecretsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.info");
         }
         public static void EnsureAppDataDirectoriesExist()
         {
-            if (!Directory.Exists(_appData_dir))
+            if (!Directory.Exists(AppData_dir))
             {
-                CreateDirectory(_appData_dir, false);
+                CreateDirectory(AppData_dir, false);
             }
         }
 

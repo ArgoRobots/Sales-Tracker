@@ -5,28 +5,17 @@
     /// </summary>
     public class Category
     {
-        // Properties
-        private string _name;
-        private List<Product> _productList = [];
 
         // Getters and setters
-        public string Name
-        {
-            get => _name;
-            set => _name = value;
-        }
-        public List<Product> ProductList
-        {
-            get => _productList;
-            set => _productList = value;
-        }
+        public string Name { get; set; }
+        public List<Product> ProductList { get; set; } = [];
 
         // Default constructor required for deserialization
         public Category() { }
 
         public Category(string name)
         {
-            _name = name;
+            Name = name;
         }
 
         public void AddProduct(Product product)

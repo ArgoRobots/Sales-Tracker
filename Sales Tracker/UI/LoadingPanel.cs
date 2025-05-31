@@ -10,23 +10,23 @@ namespace Sales_Tracker.UI
     /// </summary>
     public class LoadingPanel
     {
-        private static Panel _blankLoadingPanel;
-        private static Panel _loadingPanel;
+        // Properties
         private static Label _messageLabel;
 
-        public static Panel BlankLoadingPanelInstance => _blankLoadingPanel;
-        public static Panel LoadingPanelInstance => _loadingPanel;
+        // Getters and setters
+        public static Panel BlankLoadingPanelInstance { get; private set; }
+        public static Panel LoadingPanelInstance { get; private set; }
 
         public static void InitBlankLoadingPanel()
         {
-            _blankLoadingPanel = new Panel
+            BlankLoadingPanelInstance = new Panel
             {
                 BackColor = CustomColors.MainBackground
             };
         }
         public static void InitLoadingPanel()
         {
-            _loadingPanel = new Panel
+            LoadingPanelInstance = new Panel
             {
                 BackColor = CustomColors.MainBackground
             };
@@ -45,8 +45,8 @@ namespace Sales_Tracker.UI
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            _loadingPanel.Controls.Add(progressIndicator);
-            _loadingPanel.Controls.Add(_messageLabel);
+            LoadingPanelInstance.Controls.Add(progressIndicator);
+            LoadingPanelInstance.Controls.Add(_messageLabel);
         }
 
         /// <summary>
@@ -59,45 +59,45 @@ namespace Sales_Tracker.UI
         {
             string translatedMessage = LanguageManager.TranslateString(message);
 
-            _loadingPanel.Size = control.Size;
-            control.Controls.Add(_loadingPanel);
+            LoadingPanelInstance.Size = control.Size;
+            control.Controls.Add(LoadingPanelInstance);
 
-            Guna2WinProgressIndicator progressIndicator = (Guna2WinProgressIndicator)_loadingPanel.Controls[0];
+            Guna2WinProgressIndicator progressIndicator = (Guna2WinProgressIndicator)LoadingPanelInstance.Controls[0];
             progressIndicator.Location = new Point(
-                (_loadingPanel.Width - progressIndicator.Width) / 2,
-                (_loadingPanel.Height - progressIndicator.Height) / 2
+                (LoadingPanelInstance.Width - progressIndicator.Width) / 2,
+                (LoadingPanelInstance.Height - progressIndicator.Height) / 2
             );
 
             _messageLabel.Text = translatedMessage;
             _messageLabel.Location = new Point(
-                (_loadingPanel.Width - _messageLabel.Width) / 2,
+                (LoadingPanelInstance.Width - _messageLabel.Width) / 2,
                 progressIndicator.Top - progressIndicator.Height - 20
             );
             _messageLabel.ForeColor = CustomColors.Text;
 
-            _loadingPanel.BringToFront();
+            LoadingPanelInstance.BringToFront();
         }
         public static void ShowBlankLoadingPanel(Control control)
         {
-            _blankLoadingPanel.InvokeIfRequired(() =>
+            BlankLoadingPanelInstance.InvokeIfRequired(() =>
             {
-                _blankLoadingPanel.Size = control.Size;
-                control.Controls.Add(_blankLoadingPanel);
-                _blankLoadingPanel.BringToFront();
+                BlankLoadingPanelInstance.Size = control.Size;
+                control.Controls.Add(BlankLoadingPanelInstance);
+                BlankLoadingPanelInstance.BringToFront();
             });
         }
         public static void HideLoadingScreen(Control control)
         {
-            control.Controls.Remove(_loadingPanel);
+            control.Controls.Remove(LoadingPanelInstance);
         }
         public static void HideBlankLoadingPanel(Control control)
         {
-            control.Controls.Remove(_blankLoadingPanel);
+            control.Controls.Remove(BlankLoadingPanelInstance);
         }
         public static void UpdateTheme()
         {
-            _loadingPanel.BackColor = CustomColors.MainBackground;
-            _blankLoadingPanel.BackColor = CustomColors.MainBackground;
+            LoadingPanelInstance.BackColor = CustomColors.MainBackground;
+            BlankLoadingPanelInstance.BackColor = CustomColors.MainBackground;
         }
     }
 }

@@ -10,16 +10,10 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class ArgoCompany
     {
-        private static Mutex? _applicationMutex = null;
-
         /// <summary>
         /// Static mutex used to ensure only one instance of a company can be open at a time.
         /// </summary>
-        public static Mutex? ApplicationMutex
-        {
-            get => _applicationMutex;
-            private set => _applicationMutex = value;
-        }
+        public static Mutex? ApplicationMutex { get; private set; } = null;
 
         /// <summary>
         /// Initializes core components including encryption, cache files, and password management.
@@ -328,7 +322,7 @@ namespace Sales_Tracker.Classes
                 CustomMessageBox.Show("Already open",
                     "This company is already open",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                _applicationMutex?.Dispose();  // Reset
+                ApplicationMutex?.Dispose();  // Reset
                 return false;
             }
             return true;
@@ -343,7 +337,7 @@ namespace Sales_Tracker.Classes
         public static bool CreateMutex(string companyFilePath)
         {
             string uniqueMutexName = "Global\\MyApplication_" + GetUniqueCompanyIdentifier(companyFilePath);
-            _applicationMutex = new Mutex(initiallyOwned: true, name: uniqueMutexName, out bool createdNew);
+            ApplicationMutex = new Mutex(initiallyOwned: true, name: uniqueMutexName, out bool createdNew);
 
             if (createdNew)
             {

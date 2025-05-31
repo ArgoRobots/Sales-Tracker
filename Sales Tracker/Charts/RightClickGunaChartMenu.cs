@@ -9,21 +9,20 @@ namespace Sales_Tracker.Charts
     public static class RightClickGunaChartMenu
     {
         // Properties
-        private static Guna2Panel _rightClickGunaChart_Panel;
         private static Guna2Button resetZoomButton;
 
         // Getter
-        public static Guna2Panel RightClickGunaChart_Panel => _rightClickGunaChart_Panel;
+        public static Guna2Panel RightClickGunaChart_Panel { get; private set; }
 
         // Right click menu methods
         public static void ConstructRightClickGunaChartMenu()
         {
-            _rightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(
+            RightClickGunaChart_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth - 50, 4 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickGunaChart_Panel"
             );
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickGunaChart_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickGunaChart_Panel.Controls[0];
             int newBtnWidth = CustomControls.PanelBtnWidth - 50;
 
             Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
@@ -41,7 +40,7 @@ namespace Sales_Tracker.Charts
         }
         private static void SaveImage(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
@@ -57,7 +56,7 @@ namespace Sales_Tracker.Charts
         }
         private static void ExportToMicrosoftExcel(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
             string directory = "";
 
             using SaveFileDialog dialog = new();
@@ -132,7 +131,7 @@ namespace Sales_Tracker.Charts
         }
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
             Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? MainMenu_Form.Instance.Sale_DataGridView
                 : MainMenu_Form.Instance.Purchase_DataGridView;
@@ -354,7 +353,7 @@ namespace Sales_Tracker.Charts
         }
         private static void ResetZoom(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)_rightClickGunaChart_Panel.Tag;
+            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
             chart.ResetZoom();
         }
 
@@ -364,14 +363,14 @@ namespace Sales_Tracker.Charts
             if (chart.DatasetCount == 0) { return; }
 
             Form form = chart.FindForm();
-            _rightClickGunaChart_Panel.Tag = chart;
+            RightClickGunaChart_Panel.Tag = chart;
             Point localMousePosition = form.PointToClient(mousePosition);
             int formWidth = form.ClientSize.Width;
             int formHeight = form.ClientSize.Height;
             byte offset = ReadOnlyVariables.OffsetRightClickPanel;
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickGunaChart_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickGunaChart_Panel.Controls[0];
             if (chart.Datasets[0] is GunaPieDataset)
             {
                 flowPanel.Controls.Remove(resetZoomButton);
@@ -381,36 +380,36 @@ namespace Sales_Tracker.Charts
                 flowPanel.Controls.Add(resetZoomButton);
             }
 
-            CustomControls.SetRightClickMenuHeight(_rightClickGunaChart_Panel);
+            CustomControls.SetRightClickMenuHeight(RightClickGunaChart_Panel);
 
             // Calculate the horizontal position
             bool tooFarRight = false;
-            if (_rightClickGunaChart_Panel.Width + localMousePosition.X - offset + padding > formWidth)
+            if (RightClickGunaChart_Panel.Width + localMousePosition.X - offset + padding > formWidth)
             {
-                _rightClickGunaChart_Panel.Left = formWidth - _rightClickGunaChart_Panel.Width - padding;
+                RightClickGunaChart_Panel.Left = formWidth - RightClickGunaChart_Panel.Width - padding;
                 tooFarRight = true;
             }
             else
             {
-                _rightClickGunaChart_Panel.Left = localMousePosition.X - offset;
+                RightClickGunaChart_Panel.Left = localMousePosition.X - offset;
             }
 
             // Calculate the vertical position
-            if (localMousePosition.Y + _rightClickGunaChart_Panel.Height + padding > formHeight)
+            if (localMousePosition.Y + RightClickGunaChart_Panel.Height + padding > formHeight)
             {
-                _rightClickGunaChart_Panel.Top = formHeight - _rightClickGunaChart_Panel.Height - padding;
+                RightClickGunaChart_Panel.Top = formHeight - RightClickGunaChart_Panel.Height - padding;
                 if (!tooFarRight)
                 {
-                    _rightClickGunaChart_Panel.Left += offset;
+                    RightClickGunaChart_Panel.Left += offset;
                 }
             }
             else
             {
-                _rightClickGunaChart_Panel.Top = localMousePosition.Y;
+                RightClickGunaChart_Panel.Top = localMousePosition.Y;
             }
 
-            form.Controls.Add(_rightClickGunaChart_Panel);
-            _rightClickGunaChart_Panel.BringToFront();
+            form.Controls.Add(RightClickGunaChart_Panel);
+            RightClickGunaChart_Panel.BringToFront();
         }
     }
 }

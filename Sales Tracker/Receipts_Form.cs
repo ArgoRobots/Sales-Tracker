@@ -14,7 +14,7 @@ namespace Sales_Tracker
         private DateTime oldestDate;
         private readonly MainMenu_Form.SelectedOption oldOption;
 
-        // Getters and setters
+        // Getter
         public static Receipts_Form Instance => _instance;
 
         // Init.

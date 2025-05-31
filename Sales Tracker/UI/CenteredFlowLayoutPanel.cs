@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.UI
+﻿using System.ComponentModel;
+
+namespace Sales_Tracker.UI
 {
     /// <summary>
     /// A custom panel that arranges child controls in a centered, flow layout with adjustable spacing.
@@ -7,10 +9,11 @@
     public partial class CenteredFlowLayoutPanel : Panel
     {
         // Properties
-        private int _spacing = 10;
+        private byte _spacing = 10;
 
         // Getters and setters
-        public int Spacing
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public byte Spacing
         {
             get => _spacing;
             set

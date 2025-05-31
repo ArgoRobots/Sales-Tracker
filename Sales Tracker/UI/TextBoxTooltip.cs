@@ -5,6 +5,7 @@ namespace Sales_Tracker.UI
 {
     public static class TextBoxTooltip
     {
+        // Properties
         private static readonly Dictionary<Control, Guna2HtmlToolTip> tooltips = [];
         private static readonly Dictionary<Control, bool> tooltipStates = [];
 

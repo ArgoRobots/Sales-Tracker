@@ -20,29 +20,18 @@ namespace Sales_Tracker.UI
         private static readonly string translationEndpoint = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
         private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column",
             before_text = "before", link_text = "link", after_text = "after", full_text = "full";
-
-        private static Dictionary<string, Dictionary<string, string>> _translationCache;  // language -> controlKey -> translation
-        private static Dictionary<string, string> _englishCache;  // controlKey -> originalText
         private static readonly Dictionary<string, Rectangle> controlBoundsCache = [];
         private static readonly Dictionary<Control, float> originalFontSizes = [];
 
         // Getters and setters
-        public static Dictionary<string, Dictionary<string, string>> TranslationCache
-        {
-            get => _translationCache;
-            set => _translationCache = value;
-        }
-        public static Dictionary<string, string> EnglishCache
-        {
-            get => _englishCache;
-            set => _englishCache = value;
-        }
+        public static Dictionary<string, Dictionary<string, string>> TranslationCache { get; set; }
+        public static Dictionary<string, string> EnglishCache { get; set; }
 
         // Init.
         public static void InitLanguageManager()
         {
-            _translationCache = [];
-            _englishCache = [];
+            TranslationCache = [];
+            EnglishCache = [];
 
             // Load translation cache
             if (File.Exists(Directories.TranslationsCache_file))
@@ -56,7 +45,7 @@ namespace Sales_Tracker.UI
 
                     if (deserialized != null)
                     {
-                        _translationCache = deserialized;
+                        TranslationCache = deserialized;
                     }
                 }
             }
@@ -73,7 +62,7 @@ namespace Sales_Tracker.UI
 
                     if (deserializedEnglish != null)
                     {
-                        _englishCache = deserializedEnglish;
+                        EnglishCache = deserializedEnglish;
                     }
                 }
             }
@@ -254,7 +243,7 @@ namespace Sales_Tracker.UI
 
             // Get the cached translation for this control if it already exists
             if (targetLanguageAbbreviation != "en" && canCache &&
-                _translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
+                TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
                 controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
             {
                 cacheHits++;
@@ -262,7 +251,7 @@ namespace Sales_Tracker.UI
             }
 
             // Get the cached English for this control so it can be translated without back-translation errors
-            string englishText = _englishCache.TryGetValue(controlKey, out string? value) ? value : null;
+            string englishText = EnglishCache.TryGetValue(controlKey, out string? value) ? value : null;
             if (canCache && englishText == null)
             {
                 Log.Error_EnglishCacheDoesNotExist(controlKey);
@@ -311,10 +300,10 @@ namespace Sales_Tracker.UI
                 // Cache the translation
                 if (canCache)
                 {
-                    if (!_translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlDict))
+                    if (!TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlDict))
                     {
                         controlDict = [];
-                        _translationCache[targetLanguageAbbreviation] = controlDict;
+                        TranslationCache[targetLanguageAbbreviation] = controlDict;
                     }
 
                     if (!string.IsNullOrEmpty(translatedText))
@@ -353,16 +342,16 @@ namespace Sales_Tracker.UI
             string cacheKey = $"single_string_{text}";
 
             // Check if we have this translation cached
-            if (_translationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
+            if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
                 controlTranslations.TryGetValue(cacheKey, out string cachedTranslation))
             {
                 return cachedTranslation;
             }
 
             // Cache the English version if it's not already cached
-            if (!_englishCache.ContainsKey(cacheKey))
+            if (!EnglishCache.ContainsKey(cacheKey))
             {
-                _englishCache[cacheKey] = text;
+                EnglishCache[cacheKey] = text;
                 SaveEnglishCacheToFile();
             }
 
@@ -390,10 +379,10 @@ namespace Sales_Tracker.UI
                 string translatedText = result[0].translations[0].text;
 
                 // Cache the translation
-                if (!_translationCache.TryGetValue(targetLanguageAbbreviation, out controlTranslations))
+                if (!TranslationCache.TryGetValue(targetLanguageAbbreviation, out controlTranslations))
                 {
                     controlTranslations = [];
-                    _translationCache[targetLanguageAbbreviation] = controlTranslations;
+                    TranslationCache[targetLanguageAbbreviation] = controlTranslations;
                 }
 
                 if (!string.IsNullOrEmpty(translatedText))
@@ -544,7 +533,7 @@ namespace Sales_Tracker.UI
 
             string controlKey = GetControlKey(control);
 
-            if (_englishCache.ContainsKey(controlKey))
+            if (EnglishCache.ContainsKey(controlKey))
             {
                 return false;  // This control has already been cached
             }
@@ -554,7 +543,7 @@ namespace Sales_Tracker.UI
                 case Form form:
                     if (!string.IsNullOrEmpty(form.Text))
                     {
-                        _englishCache[controlKey] = form.Text;
+                        EnglishCache[controlKey] = form.Text;
                     }
                     break;
 
@@ -575,14 +564,14 @@ namespace Sales_Tracker.UI
                             string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
 
                             // Cache each part separately using the same logic as translation
-                            _englishCache[GetControlKey(linkLabel, before_text)] = textBeforeLink;
-                            _englishCache[GetControlKey(linkLabel, link_text)] = linkText;
-                            _englishCache[GetControlKey(linkLabel, after_text)] = textAfterLink;
+                            EnglishCache[GetControlKey(linkLabel, before_text)] = textBeforeLink;
+                            EnglishCache[GetControlKey(linkLabel, link_text)] = linkText;
+                            EnglishCache[GetControlKey(linkLabel, after_text)] = textAfterLink;
                         }
                         else
                         {
                             // If there's no link, cache the full text
-                            _englishCache[GetControlKey(linkLabel, full_text)] = fullText.Trim();
+                            EnglishCache[GetControlKey(linkLabel, full_text)] = fullText.Trim();
                         }
                     }
                     break;
@@ -590,26 +579,26 @@ namespace Sales_Tracker.UI
                 case Label label:
                     if (!string.IsNullOrEmpty(label.Text))
                     {
-                        _englishCache[controlKey] = label.Text;
+                        EnglishCache[controlKey] = label.Text;
                     }
                     break;
 
                 case Guna2Button guna2Button:
                     if (!string.IsNullOrEmpty(guna2Button.Text))
                     {
-                        _englishCache[controlKey] = guna2Button.Text;
+                        EnglishCache[controlKey] = guna2Button.Text;
                     }
                     break;
 
                 case Guna2TextBox guna2TextBox:
                     if (!string.IsNullOrEmpty(guna2TextBox.Text))
                     {
-                        _englishCache[controlKey] = guna2TextBox.Text;
+                        EnglishCache[controlKey] = guna2TextBox.Text;
                     }
                     if (!string.IsNullOrEmpty(guna2TextBox.PlaceholderText))
                     {
                         string placeholderKey = $"{controlKey}_{placeholder_text}";
-                        _englishCache[placeholderKey] = guna2TextBox.PlaceholderText;
+                        EnglishCache[placeholderKey] = guna2TextBox.PlaceholderText;
                     }
                     break;
 
@@ -619,13 +608,13 @@ namespace Sales_Tracker.UI
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
                             string itemKey = $"{controlKey}_{item_text}_{i}";
-                            _englishCache[itemKey] = guna2ComboBox.Items[i].ToString();
+                            EnglishCache[itemKey] = guna2ComboBox.Items[i].ToString();
                         }
                     }
                     break;
 
                 case GunaChart gunaChart:
-                    _englishCache[$"{controlKey}_{title_text}"] = gunaChart.Title.Text;
+                    EnglishCache[$"{controlKey}_{title_text}"] = gunaChart.Title.Text;
                     break;
 
                 case Guna2DataGridView gunaDataGridView:
@@ -637,12 +626,12 @@ namespace Sales_Tracker.UI
                         if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
                         {
                             // Cache the HeaderText for DataGridViewImageHeaderCell
-                            _englishCache[columnKey] = imageHeaderCell.HeaderText;
+                            EnglishCache[columnKey] = imageHeaderCell.HeaderText;
                         }
                         else
                         {
                             // Cache the regular DataGridViewColumn HeaderText
-                            _englishCache[columnKey] = column.HeaderText;
+                            EnglishCache[columnKey] = column.HeaderText;
                         }
                     }
                     break;
@@ -671,7 +660,7 @@ namespace Sales_Tracker.UI
         // Save cache to file
         private static void SaveCacheToFile()
         {
-            string jsonContent = JsonConvert.SerializeObject(_translationCache, Formatting.Indented);
+            string jsonContent = JsonConvert.SerializeObject(TranslationCache, Formatting.Indented);
             if (!Directory.Exists(Directories.Cache_dir))
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);
@@ -680,7 +669,7 @@ namespace Sales_Tracker.UI
         }
         private static void SaveEnglishCacheToFile()
         {
-            string jsonContent = JsonConvert.SerializeObject(_englishCache, Formatting.Indented);
+            string jsonContent = JsonConvert.SerializeObject(EnglishCache, Formatting.Indented);
             if (!Directory.Exists(Directories.Cache_dir))
             {
                 Directories.CreateDirectory(Directories.Cache_dir, false);

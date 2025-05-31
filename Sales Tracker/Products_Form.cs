@@ -8,13 +8,11 @@ namespace Sales_Tracker
 {
     public partial class Products_Form : Form
     {
-        // Properties
-        private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private static Products_Form _instance;
         private static bool isProgramLoading;
 
-        // Getters and setters
-        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
+        // Getters
+        public static List<string> ThingsThatHaveChangedInFile { get; } = [];
         public static Products_Form Instance => _instance;
 
         // Init.

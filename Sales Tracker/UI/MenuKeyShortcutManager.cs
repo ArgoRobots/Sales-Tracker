@@ -17,15 +17,10 @@ namespace Sales_Tracker.UI
     public static class MenuKeyShortcutManager
     {
         // Properties
-        private static Guna2Panel _selectedPanel;
         private static Guna2Button buttonThatOpenedCascadingMenu;
 
         // Getter and setter
-        public static Guna2Panel SelectedPanel
-        {
-            get => _selectedPanel;
-            set => _selectedPanel = value;
-        }
+        public static Guna2Panel SelectedPanel { get; set; }
 
         // Main methods
         /// <summary>
@@ -33,7 +28,7 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static void HandlePanelKeyDown(Guna2Panel panel, Keys e)
         {
-            Guna2Panel activePanel = _selectedPanel ?? panel;
+            Guna2Panel activePanel = SelectedPanel ?? panel;
 
             // Get the FlowLayoutPanel (which is always controls[0] if it exists)
             FlowLayoutPanel? flowPanel = activePanel.Controls.Count > 0 ? activePanel.Controls[0] as FlowLayoutPanel : null;
@@ -99,7 +94,7 @@ namespace Sales_Tracker.UI
         }
         private static void HandleKeyLeft(Guna2Button button, Guna2Panel panel)
         {
-            if (_selectedPanel != null)
+            if (SelectedPanel != null)
             {
                 // Get buttons from the FlowLayoutPanel in the panel
                 FlowLayoutPanel? flowPanel = panel.Controls.Count > 0 ? panel.Controls[0] as FlowLayoutPanel : null;
@@ -108,7 +103,7 @@ namespace Sales_Tracker.UI
                 IEnumerable<Guna2Button> buttons = flowPanel.Controls.OfType<Guna2Button>();
                 if (!buttons.Any()) { return; }
 
-                _selectedPanel = null;
+                SelectedPanel = null;
                 UnselectMenuButton(button);
                 SelectMenuButton(buttonThatOpenedCascadingMenu);
                 buttonThatOpenedCascadingMenu = null;
@@ -127,7 +122,7 @@ namespace Sales_Tracker.UI
                 if (!buttons.Any()) { return; }
 
                 buttonThatOpenedCascadingMenu = button;
-                _selectedPanel = panel;
+                SelectedPanel = panel;
 
                 UnselectMenuButton(button);
                 SelectFirstButton(buttons);
@@ -167,7 +162,7 @@ namespace Sales_Tracker.UI
         {
             button.BorderThickness = 0;
 
-            if (!CascadingMenu.IsThisACascadingMenu(_selectedPanel))
+            if (!CascadingMenu.IsThisACascadingMenu(SelectedPanel))
             {
                 CascadingMenu.RemoveCascadingMenus();
             }

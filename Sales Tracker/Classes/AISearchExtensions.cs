@@ -12,10 +12,9 @@ namespace Sales_Tracker.Classes
         private static AIQueryTranslator _queryTranslator;
         private static string _originalQuery = "";
         private static string _translatedQuery = "";
-        private static bool _isUsingAIQuery = false;
 
         // Getters
-        public static bool IsUsingAIQuery => _isUsingAIQuery;
+        public static bool IsUsingAIQuery { get; private set; } = false;
 
         // Init.
         public static void InitializeAISearch(string apiKey)
@@ -42,20 +41,20 @@ namespace Sales_Tracker.Classes
                 // Track the API usage data
                 AnonymousDataManager.AddOpenAIUsageData("gpt-3.5-turbo", stopwatch.ElapsedMilliseconds, _queryTranslator.LastTokenUsage);
 
-                _isUsingAIQuery = true;
+                IsUsingAIQuery = true;
                 Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}' (Used {_queryTranslator.LastTokenUsage} tokens)");
                 MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             }
             catch (Exception ex)
             {
                 Log.Error_EnhancingSearch(ex.Message);
-                _isUsingAIQuery = false;
+                IsUsingAIQuery = false;
             }
         }
         public static void ResetQuery()
         {
             // Reset the AI query flag if the user is doing a normal search
-            _isUsingAIQuery = false;
+            IsUsingAIQuery = false;
             _originalQuery = "";
             _translatedQuery = "";
         }
@@ -65,7 +64,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string GetEffectiveSearchQuery(string displayedQuery)
         {
-            if (_isUsingAIQuery && displayedQuery.StartsWith('!'))
+            if (IsUsingAIQuery && displayedQuery.StartsWith('!'))
             {
                 return _translatedQuery;
             }
@@ -77,7 +76,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string GetDisplayQuery(string displayedQuery)
         {
-            if (_isUsingAIQuery && displayedQuery.StartsWith('!'))
+            if (IsUsingAIQuery && displayedQuery.StartsWith('!'))
             {
                 return _originalQuery;
             }

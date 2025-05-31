@@ -5,6 +5,7 @@ namespace Sales_Tracker.UI
 {
     public static class CascadingMenu
     {
+        // Properties
         private static Guna2Panel menuToHide;
         private static readonly Timer HideMenu_timer = new();
 

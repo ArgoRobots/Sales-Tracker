@@ -99,7 +99,7 @@ namespace Sales_Tracker.Classes
         /// <returns>List of currency type names as strings.</returns>
         public static List<string> GetCurrencyTypesList()
         {
-            return Enum.GetNames(typeof(CurrencyTypes)).ToList();
+            return Enum.GetNames<CurrencyTypes>().ToList();
         }
 
         /// <summary>

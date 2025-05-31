@@ -15,23 +15,13 @@ namespace Sales_Tracker.UI
     {
         // Properties
         private static DataGridViewRow removedRow;
-        private static bool _doNotDeleteRows;
-        private static DataGridViewRow _selectedRowInMainMenu;
         private static readonly byte rowHeight = 35, columnHeaderHeight = 60;
         private static readonly string deleteAction = "deleted", moveAction = "move";
         private static DataGridViewCell _currentlyHoveredNoteCell;
 
         // Getters
-        public static bool DoNotDeleteRows
-        {
-            get => _doNotDeleteRows;
-            set => _doNotDeleteRows = value;
-        }
-        public static DataGridViewRow SelectedRowInMainMenu
-        {
-            get => _selectedRowInMainMenu;
-            set => _selectedRowInMainMenu = value;
-        }
+        public static bool DoNotDeleteRows { get; set; }
+        public static DataGridViewRow SelectedRowInMainMenu { get; set; }
 
         // Construct DataGridView
         private static bool isMouseDown;
@@ -85,7 +75,7 @@ namespace Sales_Tracker.UI
         {
             if (MainMenu_Form.IsProgramLoading) { return; }
 
-            if (_doNotDeleteRows)
+            if (DoNotDeleteRows)
             {
                 e.Cancel = true;
                 return;
@@ -234,7 +224,7 @@ namespace Sales_Tracker.UI
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
-                    _doNotDeleteRows = true;
+                    DoNotDeleteRows = true;
                     UnselectAllRowsInCurrentDataGridView(grid);
                 }
             }
@@ -495,7 +485,7 @@ namespace Sales_Tracker.UI
             string columnName = MainMenu_Form.Column.Product.ToString();
             string productName = e.Row.Cells[columnName].Value?.ToString();
 
-            if (!(_selectedRowInMainMenu.Tag is (List<string> itemList, TagData)))
+            if (!(SelectedRowInMainMenu.Tag is (List<string> itemList, TagData)))
             {
                 return;
             }
@@ -519,7 +509,7 @@ namespace Sales_Tracker.UI
 
                 Tools.CloseOpenForm<ItemsInTransaction_Form>();
                 Guna2DataGridView grid = (Guna2DataGridView)sender;
-                grid.Rows.Remove(_selectedRowInMainMenu);
+                grid.Rows.Remove(SelectedRowInMainMenu);
             }
             else
             {

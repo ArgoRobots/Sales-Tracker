@@ -13,9 +13,6 @@ namespace Sales_Tracker.UI
     /// </summary>
     public class SearchBox
     {
-        // Properties
-        private static Guna2Panel _searchResultBox;
-        private static Guna2Panel _searchResultBoxContainer;
         private static Timer debounceTimer;
         private static Label noResults_Label;
         public const string addLine = "ADD LINE CONTROL";
@@ -27,8 +24,8 @@ namespace Sales_Tracker.UI
         private static readonly short extraWidth = 350;
 
         // Getters
-        public static Guna2Panel SearchResultBoxContainer => _searchResultBoxContainer;
-        public static Guna2Panel SearchResultBox => _searchResultBox;
+        public static Guna2Panel SearchResultBoxContainer { get; private set; }
+        public static Guna2Panel SearchResultBox { get; private set; }
 
         /// <summary>
         /// Attaches events to a Guna2TextBox to add a SearchBox.
@@ -64,22 +61,22 @@ namespace Sales_Tracker.UI
         // Init.
         public static void ConstructSearchBox()
         {
-            _searchResultBoxContainer = new Guna2Panel
+            SearchResultBoxContainer = new Guna2Panel
             {
                 BorderThickness = 1,
                 BorderStyle = DashStyle.Solid,
                 BorderColor = Color.Gray,
                 FillColor = CustomColors.ControlBack
             };
-            _searchResultBox = new Guna2Panel
+            SearchResultBox = new Guna2Panel
             {
                 Location = new Point(1, 1),
                 FillColor = CustomColors.ControlBack
             };
-            _searchResultBox.HorizontalScroll.Enabled = false;
-            _searchResultBox.HorizontalScroll.Maximum = 0;
-            _searchResultBoxContainer.Controls.Add(_searchResultBox);
-            ThemeManager.CustomizeScrollBar(_searchResultBox);
+            SearchResultBox.HorizontalScroll.Enabled = false;
+            SearchResultBox.HorizontalScroll.Maximum = 0;
+            SearchResultBoxContainer.Controls.Add(SearchResultBox);
+            ThemeManager.CustomizeScrollBar(SearchResultBox);
 
             debounceTimer = new Timer
             {
@@ -111,7 +108,7 @@ namespace Sales_Tracker.UI
         {
             // Check if the search box is already shown for the same text box
             if (searchTextBox == textBox && !alwaysShow
-                && _searchBoxParent.Controls.Contains(_searchResultBoxContainer))
+                && _searchBoxParent.Controls.Contains(SearchResultBoxContainer))
             {
                 return;
             }
@@ -146,8 +143,8 @@ namespace Sales_Tracker.UI
             _allowTextBoxEmpty = allowTextBoxEmpty;
             _sortAlphabetically = sortAlphabetically;
 
-            _searchResultBox.SuspendLayout();
-            _searchResultBox.VerticalScroll.Value = 0;
+            SearchResultBox.SuspendLayout();
+            SearchResultBox.VerticalScroll.Value = 0;
             _searchResultControls.ForEach(c => c.Visible = false);
 
             string searchText = textBox.Text;
@@ -214,8 +211,8 @@ namespace Sales_Tracker.UI
                     }
                     else
                     {
-                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count, textBox, increaseWidth), _searchResultBox);
-                        _searchResultBox.Controls.Add(separator);
+                        separator = CustomControls.ConstructSeperator(CalculateControlWidth(metaList.Count, textBox, increaseWidth), SearchResultBox);
+                        SearchResultBox.Controls.Add(separator);
                         _searchResultControls.Add(separator);
                     }
                     separator.Visible = true;
@@ -254,7 +251,7 @@ namespace Sales_Tracker.UI
                         int availableWidth = btn.Width - padding;
                         btn.Text = Tools.AddEllipsisToString(btn.Text, btn.Font, availableWidth);
 
-                        _searchResultBox.Controls.Add(btn);
+                        SearchResultBox.Controls.Add(btn);
                         _searchResultControls.Add(btn);
                     }
                     btn.Text = meta.DisplayName;
@@ -270,44 +267,44 @@ namespace Sales_Tracker.UI
 
             // Set width
             int containerWidth = textBox.Width + (increaseWidth ? extraWidth : 0);
-            _searchResultBoxContainer.Width = containerWidth;
-            _searchResultBox.Width = containerWidth - 3;
+            SearchResultBoxContainer.Width = containerWidth;
+            SearchResultBox.Width = containerWidth - 3;
 
             int totalHeight = yOffset + 1;
             if (totalHeight > maxHeight)
             {
-                _searchResultBox.Controls.Remove(noResults_Label);
+                SearchResultBox.Controls.Remove(noResults_Label);
 
-                _searchResultBoxContainer.Height = maxHeight + 3;
-                _searchResultBox.Height = maxHeight;
-                _searchResultBox.AutoScroll = true;
+                SearchResultBoxContainer.Height = maxHeight + 3;
+                SearchResultBox.Height = maxHeight;
+                SearchResultBox.AutoScroll = true;
             }
             else if (controlIndex == 0)
             {
-                noResults_Label.Width = _searchResultBox.Width;
-                _searchResultBox.Controls.Add(noResults_Label);
+                noResults_Label.Width = SearchResultBox.Width;
+                SearchResultBox.Controls.Add(noResults_Label);
 
-                _searchResultBox.Height = 50;
-                _searchResultBoxContainer.Height = _searchResultBox.Height + 10;
-                _searchResultBox.AutoScroll = false;
+                SearchResultBox.Height = 50;
+                SearchResultBoxContainer.Height = SearchResultBox.Height + 10;
+                SearchResultBox.AutoScroll = false;
             }
             else
             {
-                _searchResultBox.Controls.Remove(noResults_Label);
+                SearchResultBox.Controls.Remove(noResults_Label);
 
-                _searchResultBox.Height = totalHeight;
-                _searchResultBoxContainer.Height = totalHeight + 10;
-                _searchResultBox.AutoScroll = false;
+                SearchResultBox.Height = totalHeight;
+                SearchResultBoxContainer.Height = totalHeight + 10;
+                SearchResultBox.AutoScroll = false;
             }
 
             // Show search box
             SetSearchBoxLocation(textBox);
-            if (!_searchBoxParent.Controls.Contains(_searchResultBoxContainer))
+            if (!_searchBoxParent.Controls.Contains(SearchResultBoxContainer))
             {
-                _searchBoxParent.Controls.Add(_searchResultBoxContainer);
+                _searchBoxParent.Controls.Add(SearchResultBoxContainer);
             }
-            _searchResultBox.ResumeLayout();
-            _searchResultBoxContainer.BringToFront();
+            SearchResultBox.ResumeLayout();
+            SearchResultBoxContainer.BringToFront();
 
             // End timer
             long endTime = DateTime.Now.Ticks;
@@ -370,7 +367,7 @@ namespace Sales_Tracker.UI
         }
         private static void SearchTextBox_KeyDown(KeyEventArgs e)
         {
-            List<Guna2Button> results = _searchResultBox.Controls.OfType<Guna2Button>().Where(btn => btn.Visible).ToList();
+            List<Guna2Button> results = SearchResultBox.Controls.OfType<Guna2Button>().Where(btn => btn.Visible).ToList();
             if (results.Count == 0) { return; }
 
             bool isResultSelected = false;
@@ -444,7 +441,7 @@ namespace Sales_Tracker.UI
         private static void SelectResult(Guna2Button control)
         {
             control.BorderThickness = 1;
-            _searchResultBox.ScrollControlIntoView(control);
+            SearchResultBox.ScrollControlIntoView(control);
         }
         private static void SetTextBoxToInvalid(Guna2TextBox textBox)
         {
@@ -487,7 +484,7 @@ namespace Sales_Tracker.UI
             if (_increaseWidth)
             {
                 // Center the panel relative to the textbox
-                int widthDifference = _searchResultBoxContainer.Width - textBox.Width;
+                int widthDifference = SearchResultBoxContainer.Width - textBox.Width;
                 int centeredX = location.X - (widthDifference / 2);
 
                 // Ensure the panel doesn't extend beyond the parent's bounds
@@ -495,17 +492,17 @@ namespace Sales_Tracker.UI
                 {
                     centeredX = 0;
                 }
-                else if (centeredX + _searchResultBoxContainer.Width > _searchBoxParent.Width)
+                else if (centeredX + SearchResultBoxContainer.Width > _searchBoxParent.Width)
                 {
-                    centeredX = _searchBoxParent.Width - _searchResultBoxContainer.Width;
+                    centeredX = _searchBoxParent.Width - SearchResultBoxContainer.Width;
                 }
 
-                _searchResultBoxContainer.Location = new Point(centeredX, location.Y + textBox.Height);
+                SearchResultBoxContainer.Location = new Point(centeredX, location.Y + textBox.Height);
             }
             else
             {
                 // Align panel to the left of the TextBox
-                _searchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
+                SearchResultBoxContainer.Location = new Point(location.X, location.Y + textBox.Height);
             }
         }
         public static void CloseSearchBox()
@@ -516,12 +513,12 @@ namespace Sales_Tracker.UI
                 Label firstLabel = _searchBoxParent.Controls.OfType<Label>().FirstOrDefault();
                 firstLabel?.Select();
 
-                _searchBoxParent.Controls.Remove(_searchResultBoxContainer);
+                _searchBoxParent.Controls.Remove(SearchResultBoxContainer);
             }
         }
         private static bool IsSearchBoxOpen()
         {
-            return _searchBoxParent != null && _searchBoxParent.Controls.Contains(_searchResultBoxContainer);
+            return _searchBoxParent != null && _searchBoxParent.Controls.Contains(SearchResultBoxContainer);
         }
     }
 }

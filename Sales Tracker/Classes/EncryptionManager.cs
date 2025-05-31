@@ -10,14 +10,11 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class EncryptionManager
     {
-        // Properties
-        private static byte[] _aesKey;
-        private static byte[] _aesIV;
         public const string encryptedTag = "encrypted:", encryptedValue = "true", passwordTag = "key:";
 
-        // Getters and setters
-        public static byte[] AesKey => _aesKey;
-        public static byte[] AesIV => _aesIV;
+        // Getters
+        public static byte[] AesKey { get; private set; }
+        public static byte[] AesIV { get; private set; }
 
         /// <summary>
         /// Initializes the encryption manager by deriving encryption keys from hardcoded secrets
@@ -27,7 +24,7 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                (_aesKey, _aesIV) = DeriveKeysFromSecrets();
+                (AesKey, AesIV) = DeriveKeysFromSecrets();
             }
             catch (Exception ex)
             {
