@@ -5,13 +5,13 @@ using Sales_Tracker.Theme;
 namespace Sales_Tracker.UI
 {
     /// <summary>
-    /// This prevents the screen from flashing white while the Form is loading.
-    /// This is especially useful when dark theme is enabled and there are a lot of things to load.
+    /// Provides a loading animation panel for better UX during data-intensive operations.
+    /// This prevents the screen from flashing white while the Form is loading, especially in dark theme scenarios.
     /// </summary>
     public class LoadingPanel
     {
         // Properties
-        private static Label _messageLabel;
+        private static Label messageLabel;
 
         // Getters and setters
         public static Panel BlankLoadingPanelInstance { get; private set; }
@@ -37,7 +37,7 @@ namespace Sales_Tracker.UI
                 ProgressColor = CustomColors.AccentBlue,
             };
 
-            _messageLabel = new Label
+            messageLabel = new Label
             {
                 AutoSize = true,
                 Font = new Font("Segoe UI", 12, FontStyle.Regular),
@@ -46,7 +46,7 @@ namespace Sales_Tracker.UI
             };
 
             LoadingPanelInstance.Controls.Add(progressIndicator);
-            LoadingPanelInstance.Controls.Add(_messageLabel);
+            LoadingPanelInstance.Controls.Add(messageLabel);
         }
 
         /// <summary>
@@ -68,14 +68,19 @@ namespace Sales_Tracker.UI
                 (LoadingPanelInstance.Height - progressIndicator.Height) / 2
             );
 
-            _messageLabel.Text = translatedMessage;
-            _messageLabel.Location = new Point(
-                (LoadingPanelInstance.Width - _messageLabel.Width) / 2,
+            messageLabel.Text = translatedMessage;
+            messageLabel.Location = new Point(
+                (LoadingPanelInstance.Width - messageLabel.Width) / 2,
                 progressIndicator.Top - progressIndicator.Height - 20
             );
-            _messageLabel.ForeColor = CustomColors.Text;
+            messageLabel.ForeColor = CustomColors.Text;
 
             LoadingPanelInstance.BringToFront();
+
+            progressIndicator.BeginInvoke(new Action(() =>
+            {
+                progressIndicator.Start();
+            }));
         }
         public static void ShowBlankLoadingPanel(Control control)
         {

@@ -363,10 +363,7 @@ namespace Sales_Tracker.Theme
             // Check if we need to invoke on UI thread
             if (MainMenu_Form.Instance.InvokeRequired)
             {
-                MainMenu_Form.Instance.Invoke(new Action(() =>
-                {
-                    UpdateOtherControls();
-                }));
+                MainMenu_Form.Instance.Invoke(new Action(UpdateOtherControls));
                 return;
             }
 

@@ -3,6 +3,8 @@ using Guna.UI2.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Settings;
+using Sales_Tracker.Settings.Menus;
 using System.Text;
 
 namespace Sales_Tracker.UI
@@ -87,36 +89,100 @@ namespace Sales_Tracker.UI
             int cacheHits = 0;
             int totalTranslations = 0;
 
+            bool cachedEnglish = CacheAllEnglishTextInControl(control);
+
             // Ensure all the English text in this Form has been cached
             if (cacheControl)
             {
-                if (CacheAllEnglishTextInControl(control))
+                if (cachedEnglish)
                 {
                     SaveEnglishCacheToFile();
                 }
+                SaveCacheToFile();
             }
 
             TranslateAllTextInControl(control, targetLanguageAbbreviation, ref controlsTranslated,
                 ref charactersTranslated, ref cacheHits, ref totalTranslations);
 
-            SaveCacheToFile();
-
-            // Calculate duration and cache hit percentage
-            long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-            long duration = endTime - startTime;
-            double cacheHitPercentage = totalTranslations > 0 ? (double)cacheHits / totalTranslations * 100 : 0;
-
-            // Log the language data
-            Dictionary<LanguageDataField, object> languageData = new()
+            if (cacheControl)
             {
-                [LanguageDataField.TargetLanguage] = targetLanguageAbbreviation,
-                [LanguageDataField.DurationMS] = duration,
-                [LanguageDataField.CharactersTranslated] = charactersTranslated,
-                [LanguageDataField.ControlsTranslated] = controlsTranslated,
-                [LanguageDataField.CacheHitPercentage] = cacheHitPercentage
-            };
+                // Calculate duration and cache hit percentage
+                long endTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                long duration = endTime - startTime;
+                double cacheHitPercentage = totalTranslations > 0 ? (double)cacheHits / totalTranslations * 100 : 0;
 
-            AnonymousDataManager.AddMicrosoftTranslatorData(languageData);
+                // Log the language data
+                Dictionary<LanguageDataField, object> languageData = new()
+                {
+                    [LanguageDataField.TargetLanguage] = targetLanguageAbbreviation,
+                    [LanguageDataField.DurationMS] = duration,
+                    [LanguageDataField.CharactersTranslated] = charactersTranslated,
+                    [LanguageDataField.ControlsTranslated] = controlsTranslated,
+                    [LanguageDataField.CacheHitPercentage] = cacheHitPercentage
+                };
+                AnonymousDataManager.AddMicrosoftTranslatorData(languageData);
+            }
+        }
+
+        /// <summary>
+        /// Translates all application forms and controls when the language is changed in settings.
+        /// </summary>
+        public static async Task TranslateAllApplicationFormsAsync(bool includeGeneralForm, CancellationToken cancellationToken = default)
+        {
+            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
+            if (targetLanguageAbbreviation == null) { return; }
+
+            Log.Write(2, "Starting translation of all application forms...");
+
+            List<Control> controlsList = [MainMenu_Form.Instance];
+
+            if (includeGeneralForm)
+            {
+                controlsList.AddRange(
+                [
+                    Settings_Form.Instance,
+                    General_Form.Instance,
+                    Security_Form.Instance,
+                    Updates_Form.Instance
+                ]);
+            }
+            if (Tools.IsFormOpen<Log_Form>())
+            {
+                controlsList.Add(Log_Form.Instance);
+            }
+
+            // Add UI panels
+            List<Control> panelsList = MainMenu_Form.GetMenus().Cast<Control>().ToList();
+            controlsList.AddRange(panelsList);
+
+            // Add other controls
+            controlsList.Add(CustomControls.ControlsDropDown_Button);
+
+            List<Task> translationTasks = [];
+
+            foreach (Control form in controlsList)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                translationTasks.Add(Task.Run(() =>
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    form?.InvokeIfRequired(() =>
+                    {
+                        UpdateLanguageForControl(form, false);
+                    });
+                }, cancellationToken));
+            }
+
+            // Wait for all translation tasks to complete
+            await Task.WhenAll(translationTasks);
+
+            SaveEnglishCacheToFile();
+            SaveCacheToFile();
+            MainMenu_Form.Instance.CenterAndResizeControls();
+
+            Log.Write(2, "Completed translation of all application forms");
         }
         private static void TranslateAllTextInControl(Control control, string targetLanguageAbbreviation,
             ref int controlsTranslated, ref int charactersTranslated, ref int cacheHits, ref int totalTranslations)
@@ -128,100 +194,43 @@ namespace Sales_Tracker.UI
             switch (control)
             {
                 case Form form:
-                    if (!string.IsNullOrEmpty(form.Text))
-                    {
-                        form.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, form.Text,
-                            ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                    }
-                    break;
-
-                case LinkLabel linkLabel:
-                    TranslateLinkLabel(linkLabel, targetLanguageAbbreviation,
+                    string translatedFormText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, form, form.Text,
                         ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                    AdjustLabelSizeAndPosition(linkLabel);
+
+                    form.InvokeIfRequired(() =>
+                    {
+                        form.Text = translatedFormText;
+                    });
                     break;
 
                 case Label label:
-                    label.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, label.Text,
+                    string translatedLabelText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, label, label.Text,
                         ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                    AdjustLabelSizeAndPosition(label);
+
+                    label.InvokeIfRequired(() =>
+                    {
+                        label.Text = translatedLabelText;
+                        AdjustLabelSizeAndPosition(label);
+                    });
                     break;
 
                 case Guna2Button guna2Button:
-                    string newText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2Button.Text,
+                    string translatedButtonText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, guna2Button, guna2Button.Text,
                         ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                    AdjustButtonFontSize(guna2Button, newText);
-                    break;
 
-                case Guna2TextBox guna2TextBox:
-                    guna2TextBox.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2TextBox.Text,
-                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                    string placeholderKey = $"{controlKey}_{placeholder_text}";
-                    guna2TextBox.PlaceholderText = TranslateAndCacheText(targetLanguageAbbreviation, placeholderKey, control, guna2TextBox.PlaceholderText,
-                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                    break;
-
-                case Guna2ComboBox guna2ComboBox:
-                    if (guna2ComboBox.DataSource == null)
+                    guna2Button.InvokeIfRequired(() =>
                     {
-                        int selectedIndex = guna2ComboBox.SelectedIndex;
-
-                        List<object> translatedItems = [];
-                        for (int i = 0; i < guna2ComboBox.Items.Count; i++)
-                        {
-                            string itemKey = $"{controlKey}_{item_text}_{i}";
-                            translatedItems.Add(TranslateAndCacheText(targetLanguageAbbreviation, itemKey, control, guna2ComboBox.Items[i].ToString(),
-                                ref charactersTranslated, ref cacheHits, ref totalTranslations));
-                        }
-
-                        guna2ComboBox.Items.Clear();
-                        guna2ComboBox.Items.AddRange(translatedItems.ToArray());
-
-                        if (selectedIndex >= 0 && selectedIndex < guna2ComboBox.Items.Count)
-                        {
-                            guna2ComboBox.SelectedIndex = selectedIndex;
-                        }
-                    }
-                    break;
-
-                case GunaChart gunaChart:
-                    gunaChart.Title.Text = TranslateAndCacheText(targetLanguageAbbreviation, $"{controlKey}_{title_text}", control, gunaChart.Title.Text,
-                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                    break;
-
-                case Guna2DataGridView gunaDataGridView:
-                    foreach (DataGridViewColumn column in gunaDataGridView.Columns)
-                    {
-                        string columnKey = $"{controlKey}_{column_text}_{column.Name}";
-
-                        // Check if the column uses DataGridViewImageHeaderCell
-                        if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
-                        {
-                            // Translate the HeaderText property
-                            string translatedHeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, imageHeaderCell.HeaderText,
-                                ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                            imageHeaderCell.HeaderText = translatedHeaderText;
-
-                            // Show the updated text
-                            gunaDataGridView.Refresh();
-                        }
-                        else
-                        {
-                            // Translate regular column headers
-                            column.HeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, column.HeaderText,
-                                ref charactersTranslated, ref cacheHits, ref totalTranslations);
-                        }
-                    }
+                        AdjustButtonFontSize(guna2Button, translatedButtonText);
+                    });
                     break;
             }
 
             controlsTranslated++;
 
-            // Recursively update child controls
             foreach (Control childControl in control.Controls)
             {
-                TranslateAllTextInControl(childControl, targetLanguageAbbreviation, ref controlsTranslated,
-                    ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                TranslateAllTextInControl(childControl, targetLanguageAbbreviation,
+                    ref controlsTranslated, ref charactersTranslated, ref cacheHits, ref totalTranslations);
             }
         }
 
@@ -488,38 +497,41 @@ namespace Sales_Tracker.UI
         }
         public static void AdjustButtonFontSize(Guna2Button button, string text)
         {
-            if (!originalFontSizes.ContainsKey(button))
+            button.InvokeIfRequired(() =>
             {
-                originalFontSizes[button] = button.Font.Size;
-            }
+                if (!originalFontSizes.ContainsKey(button))
+                {
+                    originalFontSizes[button] = button.Font.Size;
+                }
 
-            float originalFontSize = originalFontSizes[button];
-            float minFontSize = 3.0f;
-            float maxFontSize = originalFontSize;
+                float originalFontSize = originalFontSizes[button];
+                float minFontSize = 3.0f;
+                float maxFontSize = originalFontSize;
 
-            while (maxFontSize - minFontSize > 0.5f)
-            {
-                float fontSize = (minFontSize + maxFontSize) / 2;
-                button.Font = new Font(button.Font.FontFamily, fontSize, button.Font.Style);
+                while (maxFontSize - minFontSize > 0.5f)
+                {
+                    float fontSize = (minFontSize + maxFontSize) / 2;
+                    button.Font = new Font(button.Font.FontFamily, fontSize, button.Font.Style);
+                    button.Text = text;
+
+                    button.PerformLayout();
+                    Size preferredSize = button.PreferredSize;
+
+                    if (preferredSize.Width <= button.Width && preferredSize.Height <= button.Height)
+                    {
+                        minFontSize = fontSize;  // Try a larger font
+                    }
+                    else
+                    {
+                        maxFontSize = fontSize;  // Try a smaller font
+                    }
+                }
+
+                // Set the final font and text
+                float finalFontSize = Math.Max(minFontSize, 3.0f);
+                button.Font = new Font(button.Font.FontFamily, finalFontSize, button.Font.Style);
                 button.Text = text;
-
-                button.PerformLayout();
-                Size preferredSize = button.PreferredSize;
-
-                if (preferredSize.Width <= button.Width && preferredSize.Height <= button.Height)
-                {
-                    minFontSize = fontSize;  // Try a larger font
-                }
-                else
-                {
-                    maxFontSize = fontSize;  // Try a smaller font
-                }
-            }
-
-            // Set the final font and text
-            float finalFontSize = Math.Max(minFontSize, 3.0f);
-            button.Font = new Font(button.Font.FontFamily, finalFontSize, button.Font.Style);
-            button.Text = text;
+            });
         }
 
         // Cache things
@@ -749,53 +761,56 @@ namespace Sales_Tracker.UI
 
             return key;
         }
+
+        /// <summary>
+        /// Gets a list of supported languages with their corresponding ISO language codes, sorted alphabetically.
+        /// </summary>
         public static List<KeyValuePair<string, string>> GetLanguages()
         {
-            // Ordered by how western the country is
             return
             [
-                new("English", "en"),           // North America, UK, Australia
-                new("Irish", "ga"),             // Ireland
-                new("French", "fr"),            // France, Canada, Belgium
-                new("Spanish", "es"),           // Spain, Latin America
-                new("Portuguese", "pt"),        // Portugal, Brazil
-                new("Catalan", "ca"),           // Catalonia
-                new("Basque", "eu"),            // Basque Country
-                new("Galician", "gl"),          // Galicia
-                new("Dutch", "nl"),             // Netherlands, Belgium
-                new("German", "de"),            // Germany, Austria
-                new("Luxembourgish", "lb"),     // Luxembourg
-                new("Danish", "da"),            // Denmark
-                new("Norwegian", "no"),         // Norway
-                new("Swedish", "sv"),           // Sweden
-                new("Icelandic", "is"),         // Iceland
-                new("Finnish", "fi"),           // Finland
-                new("Italian", "it"),           // Italy
-                new("Maltese", "mt"),           // Malta
-                new("Polish", "pl"),            // Poland
-                new("Czech", "cs"),             // Czech Republic
-                new("Slovak", "sk"),            // Slovakia
-                new("Hungarian", "hu"),         // Hungary
-                new("Slovenian", "sl"),         // Slovenia
-                new("Croatian", "hr"),          // Croatia
-                new("Greek", "el"),             // Greece
                 new("Albanian", "sq"),          // Albania
-                new("Romanian", "ro"),          // Romania
-                new("Bulgarian", "bg"),         // Bulgaria
-                new("Serbian", "sr"),           // Serbia
-                new("Macedonian", "mk"),        // North Macedonia
-                new("Bosnian", "bs"),           // Bosnia and Herzegovina
-                new("Estonian", "et"),          // Estonia
-                new("Latvian", "lv"),           // Latvia
-                new("Lithuanian", "lt"),        // Lithuania
-                new("Ukrainian", "uk"),         // Ukraine
+                new("Basque", "eu"),            // Basque Country
                 new("Belarusian", "be"),        // Belarus
-                new("Russian", "ru"),           // Russia, Eastern Europe
-                new("Turkish", "tr"),           // Turkey
+                new("Bosnian", "bs"),           // Bosnia and Herzegovina
+                new("Bulgarian", "bg"),         // Bulgaria
+                new("Catalan", "ca"),           // Catalonia
+                new("Chinese (Simplified)", "zh-Hans"),  // Mainland China
+                new("Chinese (Traditional)", "zh-Hant"), // Taiwan, Hong Kong
+                new("Croatian", "hr"),          // Croatia
+                new("Czech", "cs"),             // Czech Republic
+                new("Danish", "da"),            // Denmark
+                new("Dutch", "nl"),             // Netherlands, Belgium
+                new("English", "en"),           // North America, UK, Australia
+                new("Estonian", "et"),          // Estonia
+                new("Finnish", "fi"),           // Finland
+                new("French", "fr"),            // France, Canada, Belgium
+                new("Galician", "gl"),          // Galicia
+                new("German", "de"),            // Germany, Austria
+                new("Greek", "el"),             // Greece
+                new("Hungarian", "hu"),         // Hungary
+                new("Icelandic", "is"),         // Iceland
+                new("Irish", "ga"),             // Ireland
+                new("Italian", "it"),           // Italy
                 new("Japanese", "ja"),          // Japan
                 new("Korean", "ko"),            // South Korea
-                new("Chinese (Simplified)", "zh-Hans"),  // Mainland China
-                new("Chinese (Traditional)", "zh-Hant")  // Taiwan, Hong Kong
+                new("Latvian", "lv"),           // Latvia
+                new("Lithuanian", "lt"),        // Lithuania
+                new("Luxembourgish", "lb"),     // Luxembourg
+                new("Macedonian", "mk"),        // North Macedonia
+                new("Maltese", "mt"),           // Malta
+                new("Norwegian", "no"),         // Norway
+                new("Polish", "pl"),            // Poland
+                new("Portuguese", "pt"),        // Portugal, Brazil
+                new("Romanian", "ro"),          // Romania
+                new("Russian", "ru"),           // Russia, Eastern Europe
+                new("Serbian", "sr"),           // Serbia
+                new("Slovak", "sk"),            // Slovakia
+                new("Slovenian", "sl"),         // Slovenia
+                new("Spanish", "es"),           // Spain, Latin America
+                new("Swedish", "sv"),           // Sweden
+                new("Turkish", "tr"),           // Turkey
+                new("Ukrainian", "uk"),         // Ukraine
             ];
         }
         public static List<string> GetLanguageNames()
@@ -806,17 +821,16 @@ namespace Sales_Tracker.UI
         public static string? GetDefaultLanguageAbbreviation()
         {
             string fullLanguageName = Properties.Settings.Default.Language;
+            string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == fullLanguageName).Value;
 
-            string defaultLanguageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == fullLanguageName).Value;
-
-            if (string.IsNullOrEmpty(defaultLanguageAbbreviation))
+            if (string.IsNullOrEmpty(languageAbbreviation))
             {
                 Log.Error_GetTranslation($"Language '{fullLanguageName}' not found in the list.");
                 return null;
             }
             else
             {
-                return defaultLanguageAbbreviation;
+                return languageAbbreviation;
             }
         }
     }

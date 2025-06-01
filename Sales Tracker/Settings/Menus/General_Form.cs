@@ -29,7 +29,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void InitComboBoxDataSources()
         {
-            ColorTheme_ComboBox.DataSource = Enum.GetValues(typeof(ThemeManager.ThemeType));
+            ColorTheme_ComboBox.DataSource = Enum.GetValues<ThemeManager.ThemeType>();
         }
         private void UpdateTheme()
         {
@@ -98,7 +98,7 @@ namespace Sales_Tracker.Settings.Menus
         private void MoreInformation_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Tools.OpenLink("https://argorobots.com/documentation/index.html");
+            Tools.OpenLink("https://argorobots.com/documentation/index.html#anonymous-data");
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
         {
@@ -121,7 +121,6 @@ namespace Sales_Tracker.Settings.Menus
             {
                 try
                 {
-                    // Use the AnonymousDataManager.ExportOrganizedData method to export organized data
                     AnonymousDataManager.ExportOrganizedData(dialog.FileName);
 
                     Log.Write(2, $"Exported organized anonymous usage data to '{Path.GetFileName(dialog.FileName)}'");

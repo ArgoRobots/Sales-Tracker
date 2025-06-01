@@ -13,6 +13,7 @@ namespace Sales_Tracker.Settings
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
+        private string _originalLanguage;
 
         // Getters and setters
         public static Settings_Form Instance => _instance;
@@ -22,6 +23,7 @@ namespace Sales_Tracker.Settings
         {
             InitializeComponent();
             _instance = this;
+            _originalLanguage = Properties.Settings.Default.Language;
 
             UpdateTheme();
             General_Button.PerformClick();
@@ -104,41 +106,58 @@ namespace Sales_Tracker.Settings
             CustomControls.CloseAllPanels();
             ApplyChanges(true);
         }
-        private static void ApplyChanges(bool includeGeneralForm)
+
+        /// <summary>
+        /// Applies all setting changes, including language translation if the language was changed.
+        /// </summary>
+        private async void ApplyChanges(bool includeGeneralForm)
         {
-            UpdateColorTheme();
-            UserSettings.SaveUserSettings(includeGeneralForm);
-            Security_Form.Instance.CenterEncryptControls();  // In case the language changes
+            UserSettings.SaveUserSettings();
+
+            if (HasLanguageChanged())
+            {
+                await UpdateLanguageAsync(includeGeneralForm);
+                Security_Form.Instance.CenterEncryptControls();
+            }
         }
-        private static void UpdateColorTheme()
+        private async Task UpdateLanguageAsync(bool includeGeneralForm)
         {
-            string selectedTheme = General_Form.Instance.ColorTheme_ComboBox.Text;
-
-            // If the theme did not change
-            if (selectedTheme == ThemeManager.CurrentTheme.ToString())
+            try
             {
-                return;
-            }
+                LoadingPanel.ShowLoadingScreen(this, "Translating application to new language...");
 
-            if (selectedTheme == ThemeManager.ThemeType.Dark.ToString())
-            {
-                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Dark;
-            }
-            else if (selectedTheme == ThemeManager.ThemeType.Light.ToString())
-            {
-                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Light;
-            }
-            else // Windows theme
-            {
-                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Windows;
-            }
+                // Create a cancellation token with a long timeout
+                using (CancellationTokenSource cts = new(TimeSpan.FromMinutes(2)))
+                {
+                    // Use async translation method with cancellation support
+                    await Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await Task.Run(() => LanguageManager.TranslateAllApplicationFormsAsync(includeGeneralForm, cts.Token));
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Log.Write(1, "Language translation was cancelled");
+                        }
+                    }, cts.Token);
+                }
 
-            CustomColors.SetColors();
-            FormThemeManager.UpdateAllForms();
-            ThemeManager.UpdateOtherControls();
-            MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
-
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"Changed the 'color theme' setting to {selectedTheme}");
+                _originalLanguage = General_Form.Instance.Language_TextBox.Text;
+            }
+            catch (Exception ex)
+            {
+                Log.Error_GetTranslation(ex.Message);
+            }
+            finally
+            {
+                LoadingPanel.HideLoadingScreen(this);
+            }
+        }
+        private bool HasLanguageChanged()
+        {
+            string currentLanguage = General_Form.Instance.Language_TextBox.Text;
+            return !string.Equals(_originalLanguage, currentLanguage, StringComparison.OrdinalIgnoreCase);
         }
 
         // Misc.

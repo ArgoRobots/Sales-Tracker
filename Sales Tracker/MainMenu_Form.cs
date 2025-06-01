@@ -186,22 +186,7 @@ namespace Sales_Tracker
         {
             bool isLine = LineGraph_ToggleSwitch.Checked;
 
-            if (_sale_DataGridView.Visible)
-            {
-                // Load sale charts
-                ChartData totalsData = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, _saleTotals_Chart, isLine);
-                _saleTotals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.GetTotal():N2}";
-
-                if (!onlyLoadForLineCharts)
-                {
-                    LoadChart.LoadDistributionIntoChart(_sale_DataGridView, _saleDistribution_Chart, PieChartGrouping.Top12);
-                    _saleDistribution_Chart.Title.Text = "Distribution of revenue";
-                }
-
-                LanguageManager.UpdateLanguageForControl(_saleTotals_Chart, true);
-                LanguageManager.UpdateLanguageForControl(_saleDistribution_Chart, true);
-            }
-            else if (_purchase_DataGridView.Visible)
+            if (_purchase_DataGridView.Visible)
             {
                 // Load purchase charts
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(_purchase_DataGridView, _purchaseTotals_Chart, isLine);
@@ -213,14 +198,29 @@ namespace Sales_Tracker
                     _purchaseDistribution_Chart.Title.Text = "Distribution of expenses";
                 }
 
-                LanguageManager.UpdateLanguageForControl(_purchaseTotals_Chart, true);
-                LanguageManager.UpdateLanguageForControl(_purchaseDistribution_Chart, true);
+                LanguageManager.UpdateLanguageForControl(_purchaseTotals_Chart);
+                LanguageManager.UpdateLanguageForControl(_purchaseDistribution_Chart);
+            }
+            else if (_sale_DataGridView.Visible)
+            {
+                // Load sale charts
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, _saleTotals_Chart, isLine);
+                _saleTotals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.GetTotal():N2}";
+
+                if (!onlyLoadForLineCharts)
+                {
+                    LoadChart.LoadDistributionIntoChart(_sale_DataGridView, _saleDistribution_Chart, PieChartGrouping.Top12);
+                    _saleDistribution_Chart.Title.Text = "Distribution of revenue";
+                }
+
+                LanguageManager.UpdateLanguageForControl(_saleTotals_Chart);
+                LanguageManager.UpdateLanguageForControl(_saleDistribution_Chart);
             }
 
             // Always load profits chart (it combines both)
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(_profits_Chart, isLine);
             _profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.GetTotal():N2}";
-            LanguageManager.UpdateLanguageForControl(_profits_Chart, true);
+            LanguageManager.UpdateLanguageForControl(_profits_Chart);
         }
         private void UpdateTheme()
         {

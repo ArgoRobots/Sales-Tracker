@@ -2,19 +2,16 @@
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
-using Sales_Tracker.UI;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Manages user settings, including saving, updating, and resetting settings.
+    /// Manages user settings, including saving, updating, and resetting.
     /// </summary>
     internal class UserSettings
     {
-        /// <summary>
-        /// Saves user settings, checking for changes in language, tooltip visibility, debug info, anonymous info sharing, and receipt settings.
-        /// </summary>
-        public static void SaveUserSettings(bool includeGeneralFormForLanguage)
+        public static void SaveUserSettings()
         {
             Properties.Settings settings = Properties.Settings.Default;
             General_Form form = General_Form.Instance;
@@ -22,7 +19,13 @@ namespace Sales_Tracker.Classes
             // Handle language change
             if (settings.Language != form.Language_TextBox.Text)
             {
-                UpdateLanguage(includeGeneralFormForLanguage);
+                UpdateLanguage();
+            }
+
+            // Handle theme change
+            if (settings.ColorTheme != ThemeManager.CurrentTheme.ToString())
+            {
+                UpdateTheme();
             }
 
             // Update checkbox settings
@@ -38,6 +41,8 @@ namespace Sales_Tracker.Classes
                 value => settings.SaleReceipts = value);
             UpdateSetting("AI search", settings.AISearchEnabled, form.EnableAISearch_CheckBox.Checked,
               value => settings.AISearchEnabled = value);
+            UpdateSetting("File encryption", settings.EncryptFiles, Security_Form.Instance.EncryptFiles_CheckBox.Checked,
+                value => settings.EncryptFiles = value);
 
             // Handle animate buttons
             if (settings.AnimateButtons != form.AnimateButtons_CheckBox.Checked)
@@ -71,10 +76,6 @@ namespace Sales_Tracker.Classes
             {
                 UpdateCurrency(oldCurrency);
             }
-
-            // Handle encryption setting
-            UpdateSetting("file encryption", settings.EncryptFiles, Security_Form.Instance.EncryptFiles_CheckBox.Checked,
-                value => settings.EncryptFiles = value);
         }
         public static void UpdateSetting(string settingName, bool currentValue, bool newValue, Action<bool> setter)
         {
@@ -87,44 +88,12 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Updates the application language across all open forms and UI elements.
+        /// Updates the application language setting and logs the change.
+        /// The actual UI translation is handled by the async method in Settings_Form.
         /// </summary>
-        private static void UpdateLanguage(bool includeGeneralForm)
+        private static void UpdateLanguage()
         {
             Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
-
-            // Add all open forms
-            List<Control> controlsList = [MainMenu_Form.Instance];
-
-            if (includeGeneralForm)
-            {
-                controlsList.AddRange(
-                [
-                    Settings_Form.Instance,
-                    General_Form.Instance,
-                    Security_Form.Instance,
-                    Updates_Form.Instance
-                ]);
-            }
-            if (Tools.IsFormOpen<Log_Form>())
-            {
-                controlsList.Add(Log_Form.Instance);
-            }
-
-            // Add UI panels
-            List<Control> panelsList = MainMenu_Form.GetMenus().Cast<Control>().ToList();
-            controlsList.AddRange(panelsList);
-
-            // Add other controls
-            controlsList.Add(CustomControls.ControlsDropDown_Button);
-
-            // Set the language
-            foreach (Control control in controlsList)
-            {
-                LanguageManager.UpdateLanguageForControl(control);
-            }
-
-            MainMenu_Form.Instance.CenterAndResizeControls();
 
             // Remove previous messages that mention language changes
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the language to"));
@@ -132,6 +101,30 @@ namespace Sales_Tracker.Classes
             // Add the new language change message
             string fullMessage = $"Changed the language to {Properties.Settings.Default.Language}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
+        }
+        private static void UpdateTheme()
+        {
+            string selectedTheme = Properties.Settings.Default.ColorTheme;
+
+            if (selectedTheme == ThemeManager.ThemeType.Dark.ToString())
+            {
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Dark;
+            }
+            else if (selectedTheme == ThemeManager.ThemeType.Light.ToString())
+            {
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Light;
+            }
+            else // Windows theme
+            {
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Windows;
+            }
+
+            CustomColors.SetColors();
+            FormThemeManager.UpdateAllForms();
+            ThemeManager.UpdateOtherControls();
+            MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
+
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"Changed the 'color theme' setting to {selectedTheme}");
         }
 
         /// <summary>
@@ -289,7 +282,6 @@ namespace Sales_Tracker.Classes
         {
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.Save();
-            DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, "USD");
 
             General_Form.Instance.UpdateControls();
             Security_Form.Instance.UpdateControls();

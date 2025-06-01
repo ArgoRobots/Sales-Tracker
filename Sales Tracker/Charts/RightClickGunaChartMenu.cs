@@ -28,7 +28,6 @@ namespace Sales_Tracker.Charts
             Guna2Button button = CustomControls.ConstructBtnForMenu("Save image", newBtnWidth, true, flowPanel);
             button.Click += SaveImage;
 
-            // Export buttons are only visible when chart has data
             button = CustomControls.ConstructBtnForMenu("Export to Microsoft Excel", newBtnWidth, true, flowPanel);
             button.Click += ExportToMicrosoftExcel;
 

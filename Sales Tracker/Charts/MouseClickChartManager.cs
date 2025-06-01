@@ -4,7 +4,7 @@ using Sales_Tracker.UI;
 namespace Sales_Tracker.Charts
 {
     /// <summary>
-    /// Manages mouse click detection for GunaChart controls and invokes specific actions, because unfortunately Guna does not support this.
+    /// Manages mouse click detection for GunaChart controls and invokes specific actions, because unfortunately Guna Charts does not support this.
     /// </summary>
     public static class MouseClickChartManager
     {

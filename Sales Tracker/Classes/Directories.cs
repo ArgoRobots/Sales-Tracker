@@ -77,9 +77,9 @@ namespace Sales_Tracker.Classes
             AnonymousUserDataCache_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other
-            ExchangeRateCache_file = "exchangeRatesCache" + ArgoFiles.JsonFileExtension;
-            TranslationsCache_file = "translations" + ArgoFiles.JsonFileExtension;
-            GlobalAppDataSettingsCache_file = "globalSettings" + ArgoFiles.TxtFileExtension;
+            ExchangeRateCache_file = AppData_dir + "exchangeRatesCache" + ArgoFiles.JsonFileExtension;
+            TranslationsCache_file = AppData_dir + "translations" + ArgoFiles.JsonFileExtension;
+            GlobalAppDataSettingsCache_file = AppData_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
             EnglishTexts_file = AppData_dir + "english" + ArgoFiles.JsonFileExtension;
             Desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             SecretsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.info");
