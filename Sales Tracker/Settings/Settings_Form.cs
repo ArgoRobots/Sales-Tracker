@@ -126,22 +126,19 @@ namespace Sales_Tracker.Settings
             {
                 LoadingPanel.ShowLoadingScreen(this, "Translating application to new language...");
 
-                // Create a cancellation token with a long timeout
-                using (CancellationTokenSource cts = new(TimeSpan.FromMinutes(2)))
+                using CancellationTokenSource cts = new();
+
+                await Task.Run(async () =>
                 {
-                    // Use async translation method with cancellation support
-                    await Task.Run(async () =>
+                    try
                     {
-                        try
-                        {
-                            await Task.Run(() => LanguageManager.TranslateAllApplicationFormsAsync(includeGeneralForm, cts.Token));
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            Log.Write(1, "Language translation was cancelled");
-                        }
-                    }, cts.Token);
-                }
+                        await LanguageManager.TranslateAllApplicationFormsAsync(includeGeneralForm, cts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Log.Write(1, "Language translation was cancelled");
+                    }
+                }, cts.Token).ConfigureAwait(false);
 
                 _originalLanguage = General_Form.Instance.Language_TextBox.Text;
             }
@@ -151,7 +148,10 @@ namespace Sales_Tracker.Settings
             }
             finally
             {
-                LoadingPanel.HideLoadingScreen(this);
+                this.InvokeIfRequired(() =>
+                {
+                    LoadingPanel.HideLoadingScreen(this);
+                });
             }
         }
         private bool HasLanguageChanged()

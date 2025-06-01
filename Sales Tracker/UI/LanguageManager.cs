@@ -24,6 +24,7 @@ namespace Sales_Tracker.UI
             before_text = "before", link_text = "link", after_text = "after", full_text = "full";
         private static readonly Dictionary<string, Rectangle> controlBoundsCache = [];
         private static readonly Dictionary<Control, float> originalFontSizes = [];
+        private static readonly Dictionary<string, Size> formSizeCache = [];
 
         // Getters and setters
         public static Dictionary<string, Dictionary<string, string>> TranslationCache { get; set; }
@@ -203,6 +204,12 @@ namespace Sales_Tracker.UI
                     });
                     break;
 
+                case LinkLabel linkLabel:
+                    TranslateLinkLabel(linkLabel, targetLanguageAbbreviation,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                    AdjustLabelSizeAndPosition(linkLabel);
+                    break;
+
                 case Label label:
                     string translatedLabelText = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, label, label.Text,
                         ref charactersTranslated, ref cacheHits, ref totalTranslations);
@@ -222,6 +229,67 @@ namespace Sales_Tracker.UI
                     {
                         AdjustButtonFontSize(guna2Button, translatedButtonText);
                     });
+                    break;
+
+                case Guna2TextBox guna2TextBox:
+                    guna2TextBox.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, guna2TextBox.Text,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                    string placeholderKey = $"{controlKey}_{placeholder_text}";
+                    guna2TextBox.PlaceholderText = TranslateAndCacheText(targetLanguageAbbreviation, placeholderKey, control, guna2TextBox.PlaceholderText,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                    break;
+
+                case Guna2ComboBox guna2ComboBox:
+                    if (guna2ComboBox.DataSource == null)
+                    {
+                        int selectedIndex = guna2ComboBox.SelectedIndex;
+
+                        List<object> translatedItems = [];
+                        for (int i = 0; i < guna2ComboBox.Items.Count; i++)
+                        {
+                            string itemKey = $"{controlKey}_{item_text}_{i}";
+                            translatedItems.Add(TranslateAndCacheText(targetLanguageAbbreviation, itemKey, control, guna2ComboBox.Items[i].ToString(),
+                                ref charactersTranslated, ref cacheHits, ref totalTranslations));
+                        }
+
+                        guna2ComboBox.Items.Clear();
+                        guna2ComboBox.Items.AddRange(translatedItems.ToArray());
+
+                        if (selectedIndex >= 0 && selectedIndex < guna2ComboBox.Items.Count)
+                        {
+                            guna2ComboBox.SelectedIndex = selectedIndex;
+                        }
+                    }
+                    break;
+
+                case GunaChart gunaChart:
+                    gunaChart.Title.Text = TranslateAndCacheText(targetLanguageAbbreviation, $"{controlKey}_{title_text}", control, gunaChart.Title.Text,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                    break;
+
+                case Guna2DataGridView gunaDataGridView:
+                    foreach (DataGridViewColumn column in gunaDataGridView.Columns)
+                    {
+                        string columnKey = $"{controlKey}_{column_text}_{column.Name}";
+
+                        // Check if the column uses DataGridViewImageHeaderCell
+                        if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
+                        {
+                            // Translate the HeaderText property
+                            string translatedHeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, imageHeaderCell.HeaderText,
+                                ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                            imageHeaderCell.HeaderText = translatedHeaderText;
+
+                            // Show the updated text
+                            gunaDataGridView.Refresh();
+                        }
+                        else
+                        {
+                            // Translate regular column headers
+                            column.HeaderText = TranslateAndCacheText(targetLanguageAbbreviation, columnKey, control, column.HeaderText,
+                                ref charactersTranslated, ref cacheHits, ref totalTranslations);
+                        }
+                    }
                     break;
             }
 
@@ -421,19 +489,50 @@ namespace Sales_Tracker.UI
 
             AdjustLabelPosition(label, originalBounds);
         }
+
+        /// <summary>
+        /// Adjusts label position based on original bounds and current form size.
+        /// Accounts for form resizing by calculating scale factors.
+        /// </summary>
         private static void AdjustLabelPosition(Label label, Rectangle originalBounds)
         {
+            // Find the top-level form containing this label
+            Form parentForm = label.FindForm();
+            if (parentForm == null) { return; }
+
+            string formKey = GetFormKey(parentForm);
+
+            // Get the original form size when bounds were cached
+            if (!formSizeCache.TryGetValue(formKey, out Size originalFormSize))
+            {
+                return;
+            }
+
+            // Calculate scaling factors based on form size changes
+            double scaleX = (double)parentForm.ClientSize.Width / originalFormSize.Width;
+            double scaleY = (double)parentForm.ClientSize.Height / originalFormSize.Height;
+
+            // Scale the original bounds to match current form size
+            Rectangle scaledBounds = new(
+                (int)(originalBounds.X * scaleX),
+                (int)(originalBounds.Y * scaleY),
+                (int)(originalBounds.Width * scaleX),
+                (int)(originalBounds.Height * scaleY)
+            );
+
+            // Apply positioning based on alignment
             if (label.AccessibleDescription == AccessibleDescriptionManager.AlignRight)
             {
-                label.Left = originalBounds.Right - label.Width;
+                label.Left = scaledBounds.Right - label.Width;
             }
             else if (label.AccessibleDescription != AccessibleDescriptionManager.AlignLeft
                 && !label.Anchor.HasFlag(AnchorStyles.Left))
             {
-                // Center
-                int originalCenterX = originalBounds.Left + originalBounds.Width / 2;
-                label.Left = originalCenterX - label.Width / 2;
+                // Center alignment
+                int scaledCenterX = scaledBounds.Left + scaledBounds.Width / 2;
+                label.Left = scaledCenterX - label.Width / 2;
             }
+            // For left alignment or anchored left, no adjustment needed as the form handles it
         }
         private static bool CanControlCache(Control control)
         {
@@ -657,6 +756,10 @@ namespace Sales_Tracker.UI
 
             return true;
         }
+
+        /// <summary>
+        /// Caches control bounds and form size for labels to enable proper positioning after form resize.
+        /// </summary>
         private static void CacheControlBounds(Control control)
         {
             if (control is Label)
@@ -665,6 +768,17 @@ namespace Sales_Tracker.UI
                 if (!controlBoundsCache.ContainsKey(controlKey))
                 {
                     controlBoundsCache[controlKey] = control.Bounds;
+
+                    // Also cache the form size when we first cache this control
+                    Form parentForm = control.FindForm();
+                    if (parentForm != null)
+                    {
+                        string formKey = GetFormKey(parentForm);
+                        if (!formSizeCache.ContainsKey(formKey))
+                        {
+                            formSizeCache[formKey] = parentForm.ClientSize;
+                        }
+                    }
                 }
             }
         }
@@ -760,6 +874,14 @@ namespace Sales_Tracker.UI
             }
 
             return key;
+        }
+
+        /// <summary>
+        /// Gets a unique key for a form to cache its size.
+        /// </summary>
+        private static string GetFormKey(Form form)
+        {
+            return $"Form_{form.Name ?? form.GetType().Name}";
         }
 
         /// <summary>

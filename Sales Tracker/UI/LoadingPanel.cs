@@ -1,6 +1,8 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Theme;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.UI
 {
@@ -12,6 +14,8 @@ namespace Sales_Tracker.UI
     {
         // Properties
         private static Label messageLabel;
+        private static Timer animationTimer;
+        private static Guna2WinProgressIndicator progressIndicator;
 
         // Getters and setters
         public static Panel BlankLoadingPanelInstance { get; private set; }
@@ -31,10 +35,9 @@ namespace Sales_Tracker.UI
                 BackColor = CustomColors.MainBackground
             };
 
-            Guna2WinProgressIndicator progressIndicator = new()
+            progressIndicator = new Guna2WinProgressIndicator
             {
-                AutoStart = true,
-                ProgressColor = CustomColors.AccentBlue,
+                ProgressColor = CustomColors.AccentBlue
             };
 
             messageLabel = new Label
@@ -42,11 +45,26 @@ namespace Sales_Tracker.UI
                 AutoSize = true,
                 Font = new Font("Segoe UI", 12, FontStyle.Regular),
                 Text = "Loading...",
+                AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate,
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
+            // Create a timer to ensure smooth animation
+            animationTimer = new Timer
+            {
+                Interval = 16, // ~60 FPS
+                Enabled = false
+            };
+            animationTimer.Tick += AnimationTimer_Tick;
+
             LoadingPanelInstance.Controls.Add(progressIndicator);
             LoadingPanelInstance.Controls.Add(messageLabel);
+        }
+        private static void AnimationTimer_Tick(object sender, EventArgs e)
+        {
+            // Force the progress indicator to update, even if the UI thread is busy
+            progressIndicator?.Invalidate();
+            Application.DoEvents();
         }
 
         /// <summary>
@@ -61,8 +79,8 @@ namespace Sales_Tracker.UI
 
             LoadingPanelInstance.Size = control.Size;
             control.Controls.Add(LoadingPanelInstance);
+            LoadingPanelInstance.Dock = DockStyle.Fill;
 
-            Guna2WinProgressIndicator progressIndicator = (Guna2WinProgressIndicator)LoadingPanelInstance.Controls[0];
             progressIndicator.Location = new Point(
                 (LoadingPanelInstance.Width - progressIndicator.Width) / 2,
                 (LoadingPanelInstance.Height - progressIndicator.Height) / 2
@@ -76,11 +94,7 @@ namespace Sales_Tracker.UI
             messageLabel.ForeColor = CustomColors.Text;
 
             LoadingPanelInstance.BringToFront();
-
-            progressIndicator.BeginInvoke(new Action(() =>
-            {
-                progressIndicator.Start();
-            }));
+            animationTimer.Start();
         }
         public static void ShowBlankLoadingPanel(Control control)
         {
@@ -93,6 +107,9 @@ namespace Sales_Tracker.UI
         }
         public static void HideLoadingScreen(Control control)
         {
+            animationTimer.Stop();
+            progressIndicator.Stop();
+
             control.Controls.Remove(LoadingPanelInstance);
         }
         public static void HideBlankLoadingPanel(Control control)
