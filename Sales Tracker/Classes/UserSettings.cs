@@ -23,7 +23,7 @@ namespace Sales_Tracker.Classes
             }
 
             // Handle theme change
-            if (settings.ColorTheme != ThemeManager.CurrentTheme.ToString())
+            if (settings.ColorTheme != form.ColorTheme_ComboBox.Text)
             {
                 UpdateTheme();
             }
@@ -96,21 +96,22 @@ namespace Sales_Tracker.Classes
             Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
 
             // Remove previous messages that mention language changes
-            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains("Changed the language to"));
+            string message = "Changed the language to";
+            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
 
             // Add the new language change message
-            string fullMessage = $"Changed the language to {Properties.Settings.Default.Language}";
+            string fullMessage = $"{message} {Properties.Settings.Default.Language}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
         }
         private static void UpdateTheme()
         {
-            string selectedTheme = Properties.Settings.Default.ColorTheme;
+            string newTheme = General_Form.Instance.ColorTheme_ComboBox.Text;
 
-            if (selectedTheme == ThemeManager.ThemeType.Dark.ToString())
+            if (newTheme == ThemeManager.ThemeType.Dark.ToString())
             {
                 ThemeManager.CurrentTheme = ThemeManager.ThemeType.Dark;
             }
-            else if (selectedTheme == ThemeManager.ThemeType.Light.ToString())
+            else if (newTheme == ThemeManager.ThemeType.Light.ToString())
             {
                 ThemeManager.CurrentTheme = ThemeManager.ThemeType.Light;
             }
@@ -124,7 +125,11 @@ namespace Sales_Tracker.Classes
             ThemeManager.UpdateOtherControls();
             MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
 
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"Changed the 'color theme' setting to {selectedTheme}");
+            // Remove previous messages that mention theme changes
+            string message = "Changed the color theme to";
+            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
+
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"{message} {newTheme}");
         }
 
         /// <summary>
@@ -153,9 +158,8 @@ namespace Sales_Tracker.Classes
             string message = "Changed the currency from";
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
 
-            string fullMessage = $"{message} {oldCurrency} to {newCurrency}";
-
             // Add the new currency change message
+            string fullMessage = $"{message} {oldCurrency} to {newCurrency}";
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
         }
 

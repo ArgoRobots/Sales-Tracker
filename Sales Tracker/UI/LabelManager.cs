@@ -155,7 +155,7 @@ namespace Sales_Tracker.UI
         {
             Label noProjectsLabel = new()
             {
-                Text = "No recently opened companies",
+                Text = LanguageManager.TranslateString("No recently opened companies"),
                 Name = "NoRecentlyOpenedCompanies_Label",
                 Size = new Size(labelWidth, CustomControls.PanelButtonHeight),
                 TextAlign = ContentAlignment.MiddleCenter,

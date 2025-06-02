@@ -10,6 +10,7 @@ namespace Sales_Tracker
     {
         // Properties
         private static Log_Form _instance;
+        private Dictionary<string, Color> translatedLogLevelColors;
 
         // Getters
         public static Log_Form Instance => _instance;
@@ -22,6 +23,11 @@ namespace Sales_Tracker
 
             ThemeManager.SetThemeForForm(this);
             ThemeManager.CustomizeScrollBar(Log_RichTextBox);
+            Log_RichTextBox.Text = Log.LogText;
+
+            // Initialize translated log levels
+            InitializeTranslatedLogLevels();
+
             LanguageManager.UpdateLanguageForControl(this);
 
             // Hide caret
@@ -30,22 +36,31 @@ namespace Sales_Tracker
                 HideCaret(Log_RichTextBox.Handle);
             };
 
-            // Select "Enable autoscroll"
-            AutoScroll_ComboBox.SelectedIndex = 0;
-
             AnimateButtons();
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        private void InitializeTranslatedLogLevels()
+        {
+            translatedLogLevelColors = new Dictionary<string, Color>
+            {
+                { LanguageManager.TranslateString("[Error]"), CustomColors.AccentRed },
+                { LanguageManager.TranslateString("[Debug]"), Color.Aqua },
+                { LanguageManager.TranslateString("[General]"), Color.Aqua },
+                { LanguageManager.TranslateString("[Product manager]"), Color.Aqua }
+            };
         }
         public void AnimateButtons()
         {
             CustomControls.AnimateButtons([Clear_Button], Properties.Settings.Default.AnimateButtons);
         }
+        public void RefreshLogColoring()
+        {
+            // Reinitialize translated log levels and reapply coloring
+            InitializeTranslatedLogLevels();
+            RichTextBox_TextChanged(Log_RichTextBox, EventArgs.Empty);
+        }
 
         // Form event handlers
-        private void Log_form_Load(object sender, EventArgs e)
-        {
-            Log_RichTextBox.Text = Log.LogText;
-        }
         private void Log_form_Shown(object sender, EventArgs e)
         {
             Clear_Button.Focus();  // Remove the caret (blinking text cursor)
@@ -63,66 +78,62 @@ namespace Sales_Tracker
         }
         private void RichTextBox_TextChanged(object sender, EventArgs e)
         {
-            // Set autoscroll
-            if (AutoScroll_ComboBox.Text == "Enable autoscroll")
-            {
-                Log_RichTextBox.SelectionStart = Log_RichTextBox.Text.Length;
-                Log_RichTextBox.ScrollToCaret();
-            }
+            // Temporarily disable redrawing to improve performance
+            Log_RichTextBox.SuspendLayout();
 
-            // Set the time to gray
-            // https://stackoverflow.com/questions/74134680/how-to-select-text-between-two-characters-in-a-richtextbox
-            MatchCollection matches = MyRegex().Matches(Log_RichTextBox.Text);
-            foreach (Match m in matches.Cast<Match>())
+            try
             {
-                Log_RichTextBox.SelectionStart = m.Index;
-                Log_RichTextBox.SelectionLength = m.Length;
-                Log_RichTextBox.SelectionColor = CustomColors.GrayText;
-            }
+                // Store current selection
+                int originalStart = Log_RichTextBox.SelectionStart;
+                int originalLength = Log_RichTextBox.SelectionLength;
 
-            // Set colors
-            string text = "[Error]";
+                // Set the time to gray
+                MatchCollection matches = MyRegex().Matches(Log_RichTextBox.Text);
+                foreach (Match m in matches.Cast<Match>())
+                {
+                    Log_RichTextBox.SelectionStart = m.Index;
+                    Log_RichTextBox.SelectionLength = m.Length;
+                    Log_RichTextBox.SelectionColor = CustomColors.GrayText;
+                }
+
+                // Apply colors for each translated log level
+                if (translatedLogLevelColors != null)
+                {
+                    foreach (var logLevel in translatedLogLevelColors)
+                    {
+                        ApplyColorToLogLevel(logLevel.Key, logLevel.Value);
+                    }
+                }
+
+                // Restore original selection
+                Log_RichTextBox.SelectionStart = originalStart;
+                Log_RichTextBox.SelectionLength = originalLength;
+            }
+            finally
+            {
+                Log_RichTextBox.ResumeLayout();
+            }
+        }
+
+        // Methods
+        private void ApplyColorToLogLevel(string logLevelText, Color color)
+        {
+            if (string.IsNullOrEmpty(logLevelText)) return;
+
             int start = 0;
-            int end = Log_RichTextBox.Text.LastIndexOf(text);
-            while (start < end)
-            {
-                Log_RichTextBox.Find(text, start, Log_RichTextBox.TextLength, RichTextBoxFinds.None);
-                Log_RichTextBox.SelectionColor = CustomColors.AccentRed;
-                start = Log_RichTextBox.Text.IndexOf(text, start) + 1;
-            }
+            int lastIndex = Log_RichTextBox.Text.LastIndexOf(logLevelText);
 
-            text = "[Debug]";
-            start = 0;
-            end = Log_RichTextBox.Text.LastIndexOf(text);
-            while (start < end)
+            while (start <= lastIndex)
             {
-                Log_RichTextBox.Find(text, start, Log_RichTextBox.TextLength, RichTextBoxFinds.None);
-                Log_RichTextBox.SelectionColor = Color.Aqua;
-                start = Log_RichTextBox.Text.IndexOf(text, start) + 1;
-            }
+                int index = Log_RichTextBox.Text.IndexOf(logLevelText, start);
+                if (index == -1) break;
 
-            text = "[General]";
-            start = 0;
-            end = Log_RichTextBox.Text.LastIndexOf(text);
-            while (start < end)
-            {
-                Log_RichTextBox.Find(text, start, Log_RichTextBox.TextLength, RichTextBoxFinds.None);
-                Log_RichTextBox.SelectionColor = Color.Aqua;
-                start = Log_RichTextBox.Text.IndexOf(text, start) + 1;
-            }
+                Log_RichTextBox.SelectionStart = index;
+                Log_RichTextBox.SelectionLength = logLevelText.Length;
+                Log_RichTextBox.SelectionColor = color;
 
-            text = "[Product manager]";
-            start = 0;
-            end = Log_RichTextBox.Text.LastIndexOf(text);
-            while (start < end)
-            {
-                Log_RichTextBox.Find(text, start, Log_RichTextBox.TextLength, RichTextBoxFinds.None);
-                Log_RichTextBox.SelectionColor = Color.Aqua;
-                start = Log_RichTextBox.Text.IndexOf(text, start) + 1;
+                start = index + 1;
             }
-
-            // Remove selection
-            Log_RichTextBox.SelectionLength = 0;
         }
 
         // Caret

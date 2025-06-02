@@ -24,20 +24,19 @@ namespace Sales_Tracker
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
 
             CustomColors.SetColors();
-
-            TextBoxManager.ConstructRightClickTextBoxMenu();
-            SearchBox.ConstructSearchBox();
-
             LoadingPanel.InitBlankLoadingPanel();
             LoadingPanel.InitLoadingPanel();
 
             Directories.SetUniversalDirectories();
+            DotEnv.Load();
+            ArgoCompany.InitThings();
+            LanguageManager.InitLanguageManager();
+
+            TextBoxManager.ConstructRightClickTextBoxMenu();
+            SearchBox.ConstructSearchBox();
+
             Directories.EnsureAppDataDirectoriesExist();
             CustomControls.ConstructRightClickRename();
-
-            ArgoCompany.InitThings();
-            DotEnv.Load();
-            LanguageManager.InitLanguageManager();
 
             ThemeChangeDetector.StartListeningForThemeChanges();
             RegisterFileAssociationOnFirstRun();

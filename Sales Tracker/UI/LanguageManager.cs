@@ -181,6 +181,15 @@ namespace Sales_Tracker.UI
 
             SaveEnglishCacheToFile();
             SaveCacheToFile();
+
+            if (Tools.IsFormOpen<Log_Form>())
+            {
+                Log_Form.Instance?.InvokeIfRequired(() =>
+                {
+                    Log_Form.Instance.RefreshLogColoring();
+                });
+            }
+
             MainMenu_Form.Instance.CenterAndResizeControls();
 
             Log.Write(2, "Completed translation of all application forms");
@@ -229,6 +238,11 @@ namespace Sales_Tracker.UI
                     {
                         AdjustButtonFontSize(guna2Button, translatedButtonText);
                     });
+                    break;
+
+                case RichTextBox textBox:
+                    textBox.Text = TranslateAndCacheText(targetLanguageAbbreviation, controlKey, control, textBox.Text,
+                        ref charactersTranslated, ref cacheHits, ref totalTranslations);
                     break;
 
                 case Guna2TextBox guna2TextBox:
@@ -698,6 +712,13 @@ namespace Sales_Tracker.UI
                     if (!string.IsNullOrEmpty(guna2Button.Text))
                     {
                         EnglishCache[controlKey] = guna2Button.Text;
+                    }
+                    break;
+
+                case RichTextBox textBox:
+                    if (!string.IsNullOrEmpty(textBox.Text))
+                    {
+                        EnglishCache[controlKey] = textBox.Text;
                     }
                     break;
 

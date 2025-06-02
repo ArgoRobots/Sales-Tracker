@@ -77,7 +77,7 @@ namespace Sales_Tracker.Settings
         }
 
         // Bottom buttons
-        private void ResetToDefault_Button_Click(object sender, EventArgs e)
+        private async void ResetToDefault_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
 
@@ -88,29 +88,29 @@ namespace Sales_Tracker.Settings
             if (result == CustomMessageBoxResult.Ok)
             {
                 UserSettings.ResetAllToDefault();
-                ApplyChanges(true);
+                await ApplyChanges(true);
             }
         }
-        private void Ok_Button_Click(object sender, EventArgs e)
+        private async void Ok_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
-            ApplyChanges(false);
+            await ApplyChanges(false);
             Close();
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             Close();
         }
-        private void Apply_Button_Click(object sender, EventArgs e)
+        private async void Apply_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
-            ApplyChanges(true);
+            await ApplyChanges(true);
         }
 
         /// <summary>
         /// Applies all setting changes, including language translation if the language was changed.
         /// </summary>
-        private async void ApplyChanges(bool includeGeneralForm)
+        private async Task ApplyChanges(bool includeGeneralForm)
         {
             UserSettings.SaveUserSettings();
 
