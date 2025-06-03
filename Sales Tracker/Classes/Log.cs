@@ -8,14 +8,7 @@ namespace Sales_Tracker.Classes
     internal class Log
     {
         // Properties
-        public static string _logText;
-
-        // Getter and setter
-        public static string LogText
-        {
-            get => _logText;
-            set => _logText = value;
-        }
+        public static string LogText { get; set; }
 
         // Save logs
         public static void SaveLogs()
@@ -41,7 +34,7 @@ namespace Sales_Tracker.Classes
 
                 if (!File.Exists(directory))
                 {
-                    Directories.WriteTextToFile(directory, Log.LogText);
+                    Directories.WriteTextToFile(directory, LogText);
                     break;
                 }
                 count++;
@@ -71,14 +64,14 @@ namespace Sales_Tracker.Classes
                         }
                         catch (Exception ex)
                         {
-                            Log.LogText += $"Failed to delete old log file {file.FullName}: {ex.Message}\n";
+                            LogText += $"Failed to delete old log file {file.FullName}: {ex.Message}\n";
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.LogText += $"Error during log cleanup: {ex.Message}\n";
+                LogText += $"Error during log cleanup: {ex.Message}\n";
             }
         }
 
@@ -119,7 +112,7 @@ namespace Sales_Tracker.Classes
                     break;
             }
             newText += text + "\n";
-            _logText += newText;
+            LogText += newText;
 
             if (Tools.IsFormOpen<Log_Form>())
             {

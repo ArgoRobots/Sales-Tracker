@@ -82,7 +82,7 @@ namespace Sales_Tracker.Settings
             Cancel_Button.FillColor = Color.FromArgb(250, 250, 250);
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(1187, 914);
+            Cancel_Button.Location = new Point(1187, 915);
             Cancel_Button.Margin = new Padding(6, 5, 6, 5);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -101,7 +101,7 @@ namespace Sales_Tracker.Settings
             Ok_Button.FillColor = Color.FromArgb(250, 250, 250);
             Ok_Button.Font = new Font("Segoe UI", 10F);
             Ok_Button.ForeColor = Color.Black;
-            Ok_Button.Location = new Point(1025, 914);
+            Ok_Button.Location = new Point(1025, 915);
             Ok_Button.Margin = new Padding(6, 5, 6, 5);
             Ok_Button.Name = "Ok_Button";
             Ok_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -120,7 +120,7 @@ namespace Sales_Tracker.Settings
             ResetToDefault_Button.FillColor = Color.FromArgb(250, 250, 250);
             ResetToDefault_Button.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ResetToDefault_Button.ForeColor = Color.Black;
-            ResetToDefault_Button.Location = new Point(15, 914);
+            ResetToDefault_Button.Location = new Point(15, 915);
             ResetToDefault_Button.Margin = new Padding(6, 5, 6, 5);
             ResetToDefault_Button.Name = "ResetToDefault_Button";
             ResetToDefault_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
@@ -139,7 +139,7 @@ namespace Sales_Tracker.Settings
             FormBack_Panel.Margin = new Padding(0);
             FormBack_Panel.Name = "FormBack_Panel";
             FormBack_Panel.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            FormBack_Panel.Size = new Size(1250, 865);
+            FormBack_Panel.Size = new Size(1250, 866);
             FormBack_Panel.TabIndex = 176;
             // 
             // Security_Button
@@ -185,7 +185,7 @@ namespace Sales_Tracker.Settings
             Apply_Button.FillColor = Color.FromArgb(250, 250, 250);
             Apply_Button.Font = new Font("Segoe UI", 10F);
             Apply_Button.ForeColor = Color.Black;
-            Apply_Button.Location = new Point(1349, 914);
+            Apply_Button.Location = new Point(1349, 915);
             Apply_Button.Margin = new Padding(6, 5, 6, 5);
             Apply_Button.Name = "Apply_Button";
             Apply_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
@@ -199,7 +199,7 @@ namespace Sales_Tracker.Settings
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(240, 240, 240);
-            ClientSize = new Size(1523, 973);
+            ClientSize = new Size(1523, 974);
             Controls.Add(Apply_Button);
             Controls.Add(General_Button);
             Controls.Add(Cancel_Button);
@@ -211,7 +211,7 @@ namespace Sales_Tracker.Settings
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(6, 5, 6, 5);
-            MinimumSize = new Size(1419, 796);
+            MinimumSize = new Size(1450, 795);
             Name = "Settings_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

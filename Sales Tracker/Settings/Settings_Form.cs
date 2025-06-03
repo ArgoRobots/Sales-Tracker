@@ -14,6 +14,7 @@ namespace Sales_Tracker.Settings
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
         private string _originalLanguage;
+        private CancellationTokenSource _translationCts;
 
         // Getters and setters
         public static Settings_Form Instance => _instance;
@@ -58,6 +59,10 @@ namespace Sales_Tracker.Settings
         }
         private void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Cancel any ongoing translation
+            _translationCts?.Cancel();
+            _translationCts?.Dispose();
+
             CustomControls.CloseAllPanels();
         }
 
@@ -124,23 +129,27 @@ namespace Sales_Tracker.Settings
         {
             try
             {
+                // Cancel any previous translation
+                _translationCts?.Cancel();
+                _translationCts?.Dispose();
+                _translationCts = new CancellationTokenSource();
+
+                // Show loading screen on UI thread
                 LoadingPanel.ShowLoadingScreen(this, "Translating application to new language...");
 
-                using CancellationTokenSource cts = new();
+                // Force the UI to update
+                Application.DoEvents();
+                await Task.Delay(100); // Give UI time to render
 
-                await Task.Run(async () =>
+                try
                 {
-                    try
-                    {
-                        await LanguageManager.TranslateAllApplicationFormsAsync(includeGeneralForm, cts.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        Log.Write(1, "Language translation was cancelled");
-                    }
-                }, cts.Token).ConfigureAwait(false);
-
-                _originalLanguage = General_Form.Instance.Language_TextBox.Text;
+                    await LanguageManager.TranslateAllApplicationFormsAsync(includeGeneralForm, _translationCts.Token);
+                    _originalLanguage = General_Form.Instance.Language_TextBox.Text;
+                }
+                catch (OperationCanceledException)
+                {
+                    Log.Write(1, "Language translation was cancelled");
+                }
             }
             catch (Exception ex)
             {
@@ -148,10 +157,7 @@ namespace Sales_Tracker.Settings
             }
             finally
             {
-                this.InvokeIfRequired(() =>
-                {
-                    LoadingPanel.HideLoadingScreen(this);
-                });
+                LoadingPanel.HideLoadingScreen(this);
             }
         }
         private bool HasLanguageChanged()

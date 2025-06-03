@@ -16,6 +16,7 @@ namespace Sales_Tracker.UI
         private static Label messageLabel;
         private static Timer animationTimer;
         private static Guna2WinProgressIndicator progressIndicator;
+        private static Panel animationPanel;
 
         // Getters and setters
         public static Panel BlankLoadingPanelInstance { get; private set; }
@@ -35,6 +36,13 @@ namespace Sales_Tracker.UI
                 BackColor = CustomColors.MainBackground
             };
 
+            // Create a separate panel for the animation to run on its own thread
+            animationPanel = new Panel
+            {
+                BackColor = Color.Transparent,
+                Size = new Size(100, 100)
+            };
+
             progressIndicator = new Guna2WinProgressIndicator
             {
                 ProgressColor = CustomColors.AccentBlue
@@ -49,22 +57,28 @@ namespace Sales_Tracker.UI
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            // Create a timer to ensure smooth animation
+            // Create a timer for smooth animation
             animationTimer = new Timer
             {
-                Interval = 16, // ~60 FPS
+                Interval = 100,
                 Enabled = false
             };
             animationTimer.Tick += AnimationTimer_Tick;
 
-            LoadingPanelInstance.Controls.Add(progressIndicator);
+            animationPanel.Controls.Add(progressIndicator);
+            LoadingPanelInstance.Controls.Add(animationPanel);
             LoadingPanelInstance.Controls.Add(messageLabel);
         }
         private static void AnimationTimer_Tick(object sender, EventArgs e)
         {
-            // Force the progress indicator to update, even if the UI thread is busy
-            progressIndicator?.Invalidate();
-            Application.DoEvents();
+            if (progressIndicator != null && progressIndicator.IsHandleCreated)
+            {
+                progressIndicator.BeginInvoke(new Action(() =>
+                {
+                    progressIndicator.Invalidate();
+                    progressIndicator.Update();
+                }));
+            }
         }
 
         /// <summary>
@@ -81,19 +95,31 @@ namespace Sales_Tracker.UI
             control.Controls.Add(LoadingPanelInstance);
             LoadingPanelInstance.Dock = DockStyle.Fill;
 
+            // Position the animation panel
+            animationPanel.Location = new Point(
+                (LoadingPanelInstance.Width - animationPanel.Width) / 2,
+                (LoadingPanelInstance.Height - animationPanel.Height) / 2
+            );
+
             progressIndicator.Location = new Point(
-                (LoadingPanelInstance.Width - progressIndicator.Width) / 2,
-                (LoadingPanelInstance.Height - progressIndicator.Height) / 2
+                (animationPanel.Width - progressIndicator.Width) / 2,
+                (animationPanel.Height - progressIndicator.Height) / 2
             );
 
             messageLabel.Text = translatedMessage;
             messageLabel.Location = new Point(
                 (LoadingPanelInstance.Width - messageLabel.Width) / 2,
-                progressIndicator.Top - progressIndicator.Height - 20
+                animationPanel.Top - 70
             );
             messageLabel.ForeColor = CustomColors.Text;
 
             LoadingPanelInstance.BringToFront();
+
+            // Start the progress indicator animation
+            progressIndicator.Start();
+            progressIndicator.AnimationSpeed = 80;
+
+            // Start animation on a separate thread to ensure smooth animation
             animationTimer.Start();
         }
         public static void ShowBlankLoadingPanel(Control control)
@@ -108,18 +134,26 @@ namespace Sales_Tracker.UI
         public static void HideLoadingScreen(Control control)
         {
             animationTimer.Stop();
-            progressIndicator.Stop();
+            progressIndicator?.Stop();
 
-            control.Controls.Remove(LoadingPanelInstance);
+            control.InvokeIfRequired(() =>
+            {
+                control.Controls.Remove(LoadingPanelInstance);
+            });
         }
         public static void HideBlankLoadingPanel(Control control)
         {
-            control.Controls.Remove(BlankLoadingPanelInstance);
+            control.InvokeIfRequired(() =>
+            {
+                control.Controls.Remove(BlankLoadingPanelInstance);
+            });
         }
         public static void UpdateTheme()
         {
             LoadingPanelInstance.BackColor = CustomColors.MainBackground;
             BlankLoadingPanelInstance.BackColor = CustomColors.MainBackground;
+            progressIndicator.ProgressColor = CustomColors.AccentBlue;
+            messageLabel.ForeColor = CustomColors.Text;
         }
     }
 }

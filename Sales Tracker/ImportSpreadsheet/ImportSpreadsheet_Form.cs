@@ -18,7 +18,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             InitializeComponent();
 
-
             oldOption = MainMenu_Form.Instance.Selected;
             InitLoadingComponents();
             InitContainerPanel();
