@@ -16,6 +16,7 @@ namespace Sales_Tracker.Classes
         public static string ArgoCompany_dir { get; private set; }
         public static string ArgoCompany_file { get; private set; }
         public static string AppData_dir { get; private set; }
+        public static string Downloads_dir { get; private set; }
         public static string AppDataSettings_file { get; private set; }
         public static string Purchases_file { get; private set; }
         public static string Sales_file { get; private set; }
@@ -29,7 +30,7 @@ namespace Sales_Tracker.Classes
         public static string Cache_dir { get; set; }
         public static string TranslationsCache_file { get; set; }
         public static string GlobalAppDataSettingsCache_file { get; private set; }
-        public static string AnonymousUserDataCache_file { get; private set; }
+        public static string AnonymousUserData_file { get; private set; }
         public static string ExchangeRateCache_file { get; private set; }
         public static string EnglishTexts_file { get; set; }
         public static string SecretsFilePath { get; private set; }
@@ -68,13 +69,13 @@ namespace Sales_Tracker.Classes
         }
         public static void SetUniversalDirectories()
         {
-            // App data
             AppData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
+            Downloads_dir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
 
             // Cache
             Cache_dir = AppData_dir + "cache-" + ArgoCompany.GetUniqueCompanyIdentifier("Argo Sales Tracker") + @"\";
             Logs_dir = Cache_dir + @"logs\";
-            AnonymousUserDataCache_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
+            AnonymousUserData_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other
             ExchangeRateCache_file = AppData_dir + "exchangeRatesCache" + ArgoFiles.JsonFileExtension;

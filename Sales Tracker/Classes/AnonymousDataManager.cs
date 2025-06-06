@@ -26,14 +26,6 @@ namespace Sales_Tracker.Classes
         XLSX,
         Receipts
     }
-    public enum LanguageDataField
-    {
-        TargetLanguage,
-        DurationMS,
-        CharactersTranslated,
-        ControlsTranslated,
-        CacheHitPercentage
-    }
 
     /// <summary>
     /// Manages collection and storage of anonymous data points for analytics purposes.
@@ -41,7 +33,7 @@ namespace Sales_Tracker.Classes
     public static class AnonymousDataManager
     {
         /// <summary>
-        /// Adds export operation data to the anonymous data log
+        /// Adds export operation data to the anonymous data log.
         /// </summary>
         /// <param name="data">Dictionary containing export operation metadata</param>
         public static void AddExportData(Dictionary<ExportDataField, object> data)
@@ -62,7 +54,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Adds OpenAI API usage data to the anonymous data log
+        /// Adds OpenAI API usage data to the anonymous data log.
         /// </summary>
         /// <param name="model">The OpenAI model used</param>
         /// <param name="durationMs">Duration of the API call in milliseconds</param>
@@ -82,7 +74,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Adds Open Exchange Rates API usage data to the anonymous data log
+        /// Adds Open Exchange Rates API usage data to the anonymous data log.
         /// </summary>
         /// <param name="durationMs">Duration of the API call in milliseconds</param>
         public static void AddOpenExchangeRatesData(long durationMs)
@@ -98,72 +90,14 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Adds Google Sheets API usage data to the anonymous data log
-        /// </summary>
-        /// <param name="durationMs">Duration of the API call in milliseconds</param>
-        /// <param name="operation">Type of operation performed (optional)</param>
-        public static void AddGoogleSheetsData(long durationMs, string operation = null)
-        {
-            Dictionary<string, object> dataPoint = new()
-            {
-                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.GoogleSheets.ToString(),
-                ["DurationMS"] = durationMs
-            };
-
-            if (!string.IsNullOrEmpty(operation))
-            {
-                dataPoint["Operation"] = operation;
-            }
-
-            AppendToDataFile(dataPoint);
-        }
-
-        /// <summary>
-        /// Adds language translation data to the anonymous data log
-        /// </summary>
-        /// <param name="data">Dictionary containing language translation metadata</param>
-        public static void AddMicrosoftTranslatorData(Dictionary<LanguageDataField, object> data)
-        {
-            string targetLanguage = (string)data[LanguageDataField.TargetLanguage];
-            long durationMs = (long)data[LanguageDataField.DurationMS];
-
-            Dictionary<string, object> dataPoint = new()
-            {
-                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.Language.ToString(),
-                ["TargetLanguage"] = targetLanguage,
-                ["DurationMS"] = Tools.FormatDuration(durationMs)
-            };
-
-            // Add optional fields if they exist
-            if (data.TryGetValue(LanguageDataField.CharactersTranslated, out object? charsValue))
-            {
-                dataPoint["CharactersTranslated"] = charsValue;
-            }
-
-            if (data.TryGetValue(LanguageDataField.ControlsTranslated, out object? controlsValue))
-            {
-                dataPoint["ControlsTranslated"] = controlsValue;
-            }
-
-            if (data.TryGetValue(LanguageDataField.CacheHitPercentage, out object? cacheHitValue))
-            {
-                dataPoint["CacheHitPercentage"] = cacheHitValue;
-            }
-
-            AppendToDataFile(dataPoint);
-        }
-
-        /// <summary>
-        /// Appends a data point to the anonymous data cache file
+        /// Appends a data point to the anonymous data cache file.
         /// </summary>
         private static void AppendToDataFile(Dictionary<string, object> dataPoint)
         {
             try
             {
                 // Ensure directory exists
-                string directory = Path.GetDirectoryName(Directories.AnonymousUserDataCache_file);
+                string directory = Path.GetDirectoryName(Directories.AnonymousUserData_file);
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
@@ -171,7 +105,7 @@ namespace Sales_Tracker.Classes
 
                 // Add the data point to file
                 string jsonLine = JsonConvert.SerializeObject(dataPoint, Formatting.None) + Environment.NewLine;
-                File.AppendAllText(Directories.AnonymousUserDataCache_file, jsonLine);
+                File.AppendAllText(Directories.AnonymousUserData_file, jsonLine);
             }
             catch (Exception ex)
             {
@@ -180,7 +114,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Exports the cached anonymous data in an organized format by data type
+        /// Exports the cached anonymous data in an organized format by data type.
         /// </summary>
         /// <returns>Status message or the exported JSON if no file path provided</returns>
         public static void ExportOrganizedData(string outputFilePath)
@@ -188,7 +122,7 @@ namespace Sales_Tracker.Classes
             if (string.IsNullOrEmpty(outputFilePath)) { return; }
 
             // Read all data points
-            string[] lines = File.ReadAllLines(Directories.AnonymousUserDataCache_file);
+            string[] lines = File.ReadAllLines(Directories.AnonymousUserData_file);
             List<JObject> allDataPoints = [];
 
             foreach (string line in lines)
@@ -225,25 +159,24 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Clears the anonymous data cache file
+        /// Clears the anonymous user data file.
         /// </summary>
         /// <returns>True if successful, false otherwise</returns>
-        public static void ClearDataCache()
+        public static void ClearUserData()
         {
-            Directories.DeleteFile(Directories.AnonymousUserDataCache_file);
+            Directories.DeleteFile(Directories.AnonymousUserData_file);
             LanguageManager.TranslationCache = [];
-            LanguageManager.EnglishCache = [];
         }
 
         /// <summary>
-        /// Gets the size of the anonymous data cache file in bytes
+        /// Gets the size of the anonymous data cache file in bytes.
         /// </summary>
         /// <returns>Size in bytes, or 0 if file doesn't exist</returns>
-        public static long GetDataCacheSize()
+        public static long GetUserDataCacheSize()
         {
-            if (File.Exists(Directories.AnonymousUserDataCache_file))
+            if (File.Exists(Directories.AnonymousUserData_file))
             {
-                FileInfo fileInfo = new(Directories.AnonymousUserDataCache_file);
+                FileInfo fileInfo = new(Directories.AnonymousUserData_file);
                 return fileInfo.Length;
             }
             return 0;

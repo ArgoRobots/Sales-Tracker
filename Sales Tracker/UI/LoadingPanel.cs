@@ -45,7 +45,8 @@ namespace Sales_Tracker.UI
 
             progressIndicator = new Guna2WinProgressIndicator
             {
-                ProgressColor = CustomColors.AccentBlue
+                ProgressColor = CustomColors.AccentBlue,
+                AnimationSpeed = 80
             };
 
             messageLabel = new Label
@@ -84,9 +85,6 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Displays a loading screen with a progress indicator and a message over a specified control.
         /// </summary>
-        /// <remarks>
-        /// The message is translated into the current language using <see cref="LanguageManager.TranslateString"/>.
-        /// </remarks>
         public static void ShowLoadingScreen(Control control, string message)
         {
             string translatedMessage = LanguageManager.TranslateString(message);
@@ -117,9 +115,6 @@ namespace Sales_Tracker.UI
 
             // Start the progress indicator animation
             progressIndicator.Start();
-            progressIndicator.AnimationSpeed = 80;
-
-            // Start animation on a separate thread to ensure smooth animation
             animationTimer.Start();
         }
         public static void ShowBlankLoadingPanel(Control control)

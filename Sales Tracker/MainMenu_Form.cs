@@ -16,6 +16,9 @@ namespace Sales_Tracker
 {
     public partial class MainMenu_Form : Form
     {
+        // Admin mode can only be enabled by directly setting it to true here
+        public readonly static bool EnableAdminMode = true;
+
         // Proprties
         private static MainMenu_Form _instance;
         private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];

@@ -42,7 +42,6 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                // Use thread-safe message box
                 ShowErrorMessageOnUIThread("Service Initialization Error", $"Failed to initialize Google Sheets service: {ex.Message}");
                 return false;
             }
@@ -62,9 +61,7 @@ namespace Sales_Tracker.Classes
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-
-            // Show loading form on UI thread
-            ShowLoadingForm("Exporting chart to Google Sheets...");
+            Loading_Form.ShowLoading("Exporting chart to Google Sheets...");
 
             try
             {
@@ -195,8 +192,7 @@ namespace Sales_Tracker.Classes
             }
             finally
             {
-                // Close loading form on UI thread
-                CloseLoadingForm();
+                Loading_Form.CompleteOperation();
             }
         }
 
@@ -212,9 +208,7 @@ namespace Sales_Tracker.Classes
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-
-            // Show loading form on UI thread
-            ShowLoadingForm("Exporting chart to Google Sheets...");
+            Loading_Form.ShowLoading("Exporting chart to Google Sheets...");
 
             try
             {
@@ -363,47 +357,14 @@ namespace Sales_Tracker.Classes
             }
             finally
             {
-                // Close loading form on UI thread
-                CloseLoadingForm();
-            }
-        }
-
-        // Helper methods for thread-safe UI operations
-        private static void ShowLoadingForm(string message)
-        {
-            if (Application.OpenForms.Count > 0)
-            {
-                Form mainForm = Application.OpenForms[0];
-                mainForm.InvokeIfRequired(() => Loading_Form.ShowLoading(message));
-            }
-            else
-            {
-                // Fallback if no forms are open
-                Loading_Form.ShowLoading(message);
-            }
-        }
-        private static void CloseLoadingForm()
-        {
-            if (Application.OpenForms.Count > 0)
-            {
-                Form mainForm = Application.OpenForms[0];
-                mainForm.InvokeIfRequired(() => Loading_Form.CompleteOperation());
-            }
-            else
-            {
-                // Fallback if no forms are open
                 Loading_Form.CompleteOperation();
             }
         }
         private static void ShowErrorMessageOnUIThread(string title, string message)
         {
-            if (Application.OpenForms.Count > 0)
-            {
-                Form mainForm = Application.OpenForms[0];
-                mainForm.InvokeIfRequired(() =>
-                    CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
-                );
-            }
+            MainMenu_Form.Instance.InvokeIfRequired(() =>
+                CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
+            );
         }
         private static void TrackGoogleSheetsExport(Stopwatch stopwatch)
         {

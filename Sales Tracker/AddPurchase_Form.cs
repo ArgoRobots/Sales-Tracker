@@ -872,13 +872,15 @@ namespace Sales_Tracker
                 FillColor = CustomColors.ControlBack,
                 BorderColor = CustomColors.ControlBorder,
                 ForeColor = CustomColors.Text,
-                ShortcutsEnabled = false
+                ShortcutsEnabled = false,
+                HoverState = { BorderColor = CustomColors.AccentBlue },
+                FocusedState = {
+                    BorderColor = CustomColors.AccentBlue,
+                    FillColor = CustomColors.ControlBack
+                }
             };
-            textBox.HoverState.BorderColor = CustomColors.AccentBlue;
-            textBox.FocusedState.BorderColor = CustomColors.AccentBlue;
-            textBox.FocusedState.FillColor = CustomColors.ControlBack;
 
-            // Assign the appropriate KeyPress event handler based on the keyPressValidation parameter
+            // Assign the appropriate KeyPress event handler
             switch (keyPressValidation)
             {
                 case CustomControls.KeyPressValidation.OnlyNumbersAndDecimalAndMinus:

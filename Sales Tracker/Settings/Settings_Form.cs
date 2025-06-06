@@ -14,7 +14,7 @@ namespace Sales_Tracker.Settings
         private readonly Form FormSecurity = new Security_Form();
         private readonly Form FormUpdates = new Updates_Form();
         private string _originalLanguage;
-        private CancellationTokenSource _translationCts;
+        private CancellationTokenSource _translationCts = new();
 
         // Getters and setters
         public static Settings_Form Instance => _instance;
@@ -121,6 +121,13 @@ namespace Sales_Tracker.Settings
 
             if (HasLanguageChanged())
             {
+                // Dispose of previous cancellation token source
+                _translationCts?.Cancel();
+                _translationCts?.Dispose();
+
+                // Create a new cancellation token source
+                _translationCts = new CancellationTokenSource();
+
                 await UpdateLanguageAsync(includeGeneralForm);
                 Security_Form.Instance.CenterEncryptControls();
             }
@@ -129,21 +136,11 @@ namespace Sales_Tracker.Settings
         {
             try
             {
-                // Cancel any previous translation
-                _translationCts?.Cancel();
-                _translationCts?.Dispose();
-                _translationCts = new CancellationTokenSource();
-
-                // Show loading screen on UI thread
                 LoadingPanel.ShowLoadingScreen(this, "Translating application to new language...");
-
-                // Force the UI to update
-                Application.DoEvents();
-                await Task.Delay(100); // Give UI time to render
 
                 try
                 {
-                    await LanguageManager.TranslateAllApplicationFormsAsync(includeGeneralForm, _translationCts.Token);
+                    await LanguageManager.UpdateLanguageTranslationMethod(includeGeneralForm, _translationCts.Token);
                     _originalLanguage = General_Form.Instance.Language_TextBox.Text;
                 }
                 catch (OperationCanceledException)
@@ -202,7 +199,6 @@ namespace Sales_Tracker.Settings
             form.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             form.Dock = DockStyle.Fill;
             form.Visible = true;
-            FormBack_Panel.Controls.Clear();
             FormBack_Panel.Controls.Add(form);
             form.BringToFront();
 

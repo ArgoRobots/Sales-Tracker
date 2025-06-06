@@ -321,9 +321,9 @@ namespace Sales_Tracker.Theme
                 FillColor = CustomColors.MainBackground,
                 ThumbColor = CustomColors.PanelBtnHover,
                 BorderColor = CustomColors.ControlPanelBorder,
-                ThumbSize = 40
+                ThumbSize = 40,
+                HoverState = { ThumbColor = Color.Gray }
             };
-            vScrollBar.HoverState.ThumbColor = Color.Gray;
             control.Controls.Add(vScrollBar);
             vScrollBar.BringToFront();
             vScrollBar.BindingContainer = control;

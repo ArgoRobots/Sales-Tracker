@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -20,7 +21,8 @@ namespace Sales_Tracker.Settings.Menus
             _instance = this;
 
             InitComboBoxDataSources();
-            UpdateTheme();
+            InitializeAdminModeControls();
+            ThemeManager.SetThemeForForm(this);
             SetAccessibleDescription();
             LanguageManager.UpdateLanguageForControl(this);
             UpdateControls();
@@ -30,10 +32,6 @@ namespace Sales_Tracker.Settings.Menus
         private void InitComboBoxDataSources()
         {
             ColorTheme_ComboBox.DataSource = Enum.GetValues<ThemeManager.ThemeType>();
-        }
-        private void UpdateTheme()
-        {
-            ThemeManager.SetThemeForForm(this);
         }
         private void SetAccessibleDescription()
         {
@@ -65,6 +63,24 @@ namespace Sales_Tracker.Settings.Menus
             List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
             SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, false, false, false);
             Currency_TextBox.TextChanged += (_, _) => ValidateInputs();
+        }
+        private void InitializeAdminModeControls()
+        {
+            if (!MainMenu_Form.EnableAdminMode)
+            {
+                return;
+            }
+
+            Guna2Button generateTranslationsButton = new()
+            {
+                Text = LanguageManager.TranslateString("Generate Translations"),
+                Size = new Size(200, 40),
+                Location = new Point((Width - 200) / 2, EnableAISearch_CheckBox.Bottom + 80)
+            };
+            generateTranslationsButton.Click += GenerateTranslationsButton_Click;
+            ThemeManager.MakeGButtonBlueSecondary(generateTranslationsButton);
+
+            Controls.Add(generateTranslationsButton);
         }
 
         // Form event handlers
@@ -102,7 +118,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(Directories.AnonymousUserDataCache_file) || AnonymousDataManager.GetDataCacheSize() == 0)
+            if (!File.Exists(Directories.AnonymousUserData_file) || AnonymousDataManager.GetUserDataCacheSize() == 0)
             {
                 CustomMessageBox.Show("No user data",
                     "No user data exists. Either the setting was disabled or the cache was cleared.",
@@ -138,17 +154,30 @@ namespace Sales_Tracker.Settings.Menus
         private void DeleteData_Button_Click(object sender, EventArgs e)
         {
             CustomMessageBoxResult result = CustomMessageBox.Show(
-                     "Delete anonymous usage data",
-                     $"Are you sure you want to delete your anonymous usage data?",
-                     CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                "Delete anonymous usage data", $"Are you sure you want to delete your anonymous usage data?",
+                 CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
             if (result == CustomMessageBoxResult.Yes)
             {
-                AnonymousDataManager.ClearDataCache();
+                AnonymousDataManager.ClearUserData();
 
-                CustomMessageBox.Show("Export Successful",
-                        "Successfully deleted anonymous usage data.",
-                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Export Successful", "Successfully deleted anonymous usage data.",
+                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+            }
+        }
+        private async void GenerateTranslationsButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await TranslationGenerator.GenerateAllLanguageTranslationFiles();
+
+                CustomMessageBox.Show("Success", "Translation files generated successfully!",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show("Error", $"Error generating translations: {ex.Message}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
         }
 

@@ -173,10 +173,9 @@ namespace Tests
         {
             // Act
             List<KeyValuePair<string, string>> languages = LanguageManager.GetLanguages();
-            List<string> languageNames = LanguageManager.GetLanguageNames();
+            List<string> languageNames = [.. languages.Select(kvp => kvp.Key)];
 
             // Assert
-            Assert.IsNotNull(languages);
             Assert.IsTrue(languages.Count > 0);
 
             // Verify essential languages are present

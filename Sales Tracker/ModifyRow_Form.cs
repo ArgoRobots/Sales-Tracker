@@ -511,10 +511,10 @@ namespace Sales_Tracker
                             Size = new Size(38, 38),
                             ImageSize = new Size(30, 30),
                             Image = Properties.Resources.CloseGray,
-                            Anchor = AnchorStyles.Top
+                            Anchor = AnchorStyles.Top,
+                            HoverState = { ImageSize = new Size(30, 30) },
+                            PressedState = { ImageSize = new Size(30, 30) }
                         };
-                        RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(30, 30);
-                        RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
                         RemoveReceipt_ImageButton.Click += (_, _) =>
                         {
                             CloseSearchBox(null, null);
@@ -1454,11 +1454,13 @@ namespace Sales_Tracker
                 BorderRadius = 3,
                 Cursor = Cursors.Hand,
                 ShortcutsEnabled = false,
-                AccessibleDescription = AccessibleDescriptionManager.DoNotCache
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
+                FocusedState = {
+                    FillColor = CustomColors.ControlBack,
+                    BorderColor = CustomColors.AccentBlue
+                },
+                HoverState = { BorderColor = CustomColors.AccentBlue }
             };
-            textBox.FocusedState.FillColor = CustomColors.ControlBack;
-            textBox.HoverState.BorderColor = CustomColors.AccentBlue;
-            textBox.FocusedState.BorderColor = CustomColors.AccentBlue;
 
             if (smallWidth)
             {
@@ -1529,10 +1531,10 @@ namespace Sales_Tracker
                 BorderRadius = 3,
                 Name = name,
                 Value = value,
-                AccessibleDescription = AccessibleDescriptionManager.DoNotCache
+                AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
+                HoverState = { BorderColor = CustomColors.AccentBlue }
             };
             gDatePicker.Click += CloseSearchBox;
-            gDatePicker.HoverState.BorderColor = CustomColors.AccentBlue;
             control.Controls.Add(gDatePicker);
 
             return gDatePicker;

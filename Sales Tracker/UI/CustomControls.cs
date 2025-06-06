@@ -53,8 +53,8 @@ namespace Sales_Tracker.UI
             OnlyLetters,
             None
         }
-        private static readonly int _panelWidth = 350;
-        private static readonly int _panelBtnWidth = 340;
+        private static readonly short _panelWidth = 350;
+        private static readonly short _panelBtnWidth = 340;
 
         // Getters
         public static int PanelWidth => _panelWidth;
@@ -111,11 +111,13 @@ namespace Sales_Tracker.UI
                 Text = LanguageManager.TranslateString(text),
                 Name = FormatButtonName(text),
                 Margin = new Padding(0),
-                BorderColor = CustomColors.ControlBorder
+                BorderColor = CustomColors.ControlBorder,
+                PressedColor = CustomColors.PanelBtnHover,
+                HoverState = {
+                    FillColor = Color.FromArgb(90, 90, 90),
+                    BorderColor = Color.FromArgb(120, 120, 120)
+                },
             };
-            menuBtn.HoverState.BorderColor = CustomColors.ControlBorder;
-            menuBtn.HoverState.FillColor = CustomColors.PanelBtnHover;
-            menuBtn.PressedColor = CustomColors.PanelBtnHover;
             if (closeAllPanels)
             {
                 menuBtn.Click += (sender, e) => CloseAllPanels();
