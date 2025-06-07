@@ -520,7 +520,6 @@ namespace Sales_Tracker.UI
                 if (!stringControlCache.ContainsKey(stringCacheKey))
                 {
                     stringControlCache[stringCacheKey] = control.Text;
-                    Log.Write(2, $"Cached control text as string: {stringCacheKey}");
                 }
                 return; // Don't proceed with normal bounds caching
             }

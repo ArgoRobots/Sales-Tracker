@@ -19,6 +19,7 @@ namespace Sales_Tracker
 
         // Init.
         private readonly MainMenu_Form.SelectedOption oldOption;
+        public Categories_Form() : this(false) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public Categories_Form(bool checkPurchaseRadioButton)
         {
             InitializeComponent();

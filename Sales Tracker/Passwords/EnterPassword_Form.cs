@@ -9,6 +9,7 @@ namespace Sales_Tracker.Passwords
     public partial class EnterPassword_Form : Form
     {
         // Init.
+        public EnterPassword_Form() : this(true) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public EnterPassword_Form(bool allowWindowsHello = true)
         {
             InitializeComponent();

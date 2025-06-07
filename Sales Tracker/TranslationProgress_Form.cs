@@ -14,6 +14,12 @@ namespace Sales_Tracker
         private int currentTranslationIndex;
         private bool operationCancelled = false;
 
+        // Time estimation properties
+        private DateTime operationStartTime;
+        private readonly Queue<DateTime> progressTimestamps = new();
+        private readonly Queue<int> progressValues = new();
+        private const int MaxSampleSize = 10; // Number of samples for moving average
+
         // Getters
         public bool IsCancelled => operationCancelled;
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
@@ -27,6 +33,7 @@ namespace Sales_Tracker
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
 
             cancellationTokenSource = new CancellationTokenSource();
+            operationStartTime = DateTime.Now;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -52,6 +59,11 @@ namespace Sales_Tracker
             totalTranslationsPerLanguage = translationsPerLanguage;
             currentLanguageIndex = 0;
             currentTranslationIndex = 0;
+            operationStartTime = DateTime.Now;
+
+            // Clear previous samples
+            progressTimestamps.Clear();
+            progressValues.Clear();
 
             UpdateProgressDisplay();
         }
@@ -113,7 +125,86 @@ namespace Sales_Tracker
                 : 0;
 
             ProgressBar.Value = Math.Min(progressPercentage, 100);
-            ProgressStats_Label.Text = $"{completedTranslations:N0} / {totalPossibleTranslations:N0} translations completed";
+
+            // Update time estimation
+            string timeEstimate = CalculateTimeRemaining(completedTranslations, totalPossibleTranslations);
+
+            ProgressStats_Label.Text = $"{completedTranslations:N0} / {totalPossibleTranslations:N0} translations completed{timeEstimate}";
+        }
+        private string CalculateTimeRemaining(int completedTranslations, int totalTranslations)
+        {
+            if (completedTranslations == 0 || totalTranslations == 0)
+                return "";
+
+            DateTime now = DateTime.Now;
+
+            // Add current progress sample
+            progressTimestamps.Enqueue(now);
+            progressValues.Enqueue(completedTranslations);
+
+            // Remove old samples to maintain moving window
+            while (progressTimestamps.Count > MaxSampleSize)
+            {
+                progressTimestamps.Dequeue();
+                progressValues.Dequeue();
+            }
+
+            // Need at least 2 samples to calculate rate
+            if (progressTimestamps.Count < 2)
+                return "";
+
+            try
+            {
+                // Calculate average rate using linear regression for better accuracy
+                double rate = CalculateProgressRate();
+
+                if (rate <= 0)
+                    return " - Calculating time remaining...";
+
+                int remainingTranslations = totalTranslations - completedTranslations;
+                double estimatedSecondsRemaining = remainingTranslations / rate;
+
+                // Format time remaining
+                TimeSpan timeRemaining = TimeSpan.FromSeconds(estimatedSecondsRemaining);
+
+                string formattedTime;
+                if (timeRemaining.TotalHours >= 1)
+                {
+                    formattedTime = $"{(int)timeRemaining.TotalHours}h {timeRemaining.Minutes}m";
+                }
+                else if (timeRemaining.TotalMinutes >= 1)
+                {
+                    formattedTime = $"{(int)timeRemaining.TotalMinutes}m {timeRemaining.Seconds}s";
+                }
+                else
+                {
+                    formattedTime = $"{(int)timeRemaining.TotalSeconds}s";
+                }
+
+                return $" - {formattedTime} remaining";
+            }
+            catch
+            {
+                return " - Calculating time remaining...";
+            }
+        }
+        private double CalculateProgressRate()
+        {
+            if (progressTimestamps.Count < 2)
+                return 0;
+
+            // Use simple rate calculation for more stability
+            DateTime firstTime = progressTimestamps.First();
+            DateTime lastTime = progressTimestamps.Last();
+            int firstProgress = progressValues.First();
+            int lastProgress = progressValues.Last();
+
+            double timeSpanSeconds = (lastTime - firstTime).TotalSeconds;
+            if (timeSpanSeconds <= 0)
+                return 0;
+
+            int progressDifference = lastProgress - firstProgress;
+            return progressDifference / timeSpanSeconds; // translations per second
         }
         public void CompleteProgress()
         {
@@ -124,13 +215,31 @@ namespace Sales_Tracker
             }
 
             ProgressBar.Value = 100;
-            Operation_Label.Text = "Translation generation complete!";
+
+            // Calculate total time taken
+            TimeSpan totalTime = DateTime.Now - operationStartTime;
+            string totalTimeFormatted;
+
+            if (totalTime.TotalHours >= 1)
+            {
+                totalTimeFormatted = $"{(int)totalTime.TotalHours}h {totalTime.Minutes}m {totalTime.Seconds}s";
+            }
+            else if (totalTime.TotalMinutes >= 1)
+            {
+                totalTimeFormatted = $"{(int)totalTime.TotalMinutes}m {totalTime.Seconds}s";
+            }
+            else
+            {
+                totalTimeFormatted = $"{(int)totalTime.TotalSeconds}s";
+            }
+
+            Operation_Label.Text = $"Translation generation complete! (Total time: {totalTimeFormatted})";
             Cancel_Button.Text = "Close";
 
-            // Auto-close after 2 seconds
+            // Auto-close after 3 seconds
             Timer closeTimer = new()
             {
-                Interval = 2000
+                Interval = 3000
             };
             closeTimer.Tick += (s, e) =>
             {

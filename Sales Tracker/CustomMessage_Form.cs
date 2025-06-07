@@ -16,6 +16,7 @@ namespace Sales_Tracker
         public CustomMessageBoxResult Result => _result;
 
         // Init.
+        public CustomMessage_Form() : this("", "", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             InitializeComponent();

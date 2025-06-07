@@ -11,6 +11,7 @@ namespace Sales_Tracker
         private static readonly List<string> _activeMessages = [];
 
         // Init for first creation
+        public Loading_Form() : this("") { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         private Loading_Form(string message)
         {
             InitializeComponent();
@@ -31,7 +32,7 @@ namespace Sales_Tracker
         // Static methods to manage operations
 
         /// <summary>
-        /// Shows the loading form or updates the existing one with a new operation
+        /// Shows the loading form or updates the existing one with a new operation.
         /// </summary>
         public static void ShowLoading(string message)
         {
@@ -39,24 +40,25 @@ namespace Sales_Tracker
             if (_instance == null || _instance.IsDisposed)
             {
                 _instance = new Loading_Form(message);
-                _instance.Show();
+                _instance.ShowDialog();
             }
 
             // Add to operations count
             _activeOperations++;
             _activeMessages.Add(message);
 
-            // Update the message to show how many operations are running
             UpdateLoadingMessage();
         }
 
         /// <summary>
-        /// Completes an operation and updates or closes the form
+        /// Completes an operation and updates or closes the form.
         /// </summary>
         public static void CompleteOperation(string message = null)
         {
             if (_instance == null || _instance.IsDisposed)
+            {
                 return;
+            }
 
             // Decrement operation count
             _activeOperations = Math.Max(0, _activeOperations - 1);
@@ -85,12 +87,14 @@ namespace Sales_Tracker
         }
 
         /// <summary>
-        /// Updates the loading message on the form
+        /// Updates the loading message on the form to show how many operations are in progress.
         /// </summary>
         private static void UpdateLoadingMessage()
         {
             if (_instance == null || _instance.IsDisposed)
+            {
                 return;
+            }
 
             // Use UI thread to update
             _instance.Invoke(new Action(() =>

@@ -14,9 +14,11 @@ namespace Sales_Tracker
         private string receiptFilePath;
 
         // Init.
+        public ModifyRow_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public ModifyRow_Form(DataGridViewRow row)
         {
             InitializeComponent();
+            if (row == null) { return; }
 
             selectedRow = row;
             selectedTag = row.DataGridView.Tag.ToString();

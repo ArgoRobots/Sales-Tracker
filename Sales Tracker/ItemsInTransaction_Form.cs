@@ -21,9 +21,12 @@ namespace Sales_Tracker
         private bool hasChanges = false;
 
         // Init.
+        public ItemsInTransaction_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public ItemsInTransaction_Form(DataGridViewRow row)
         {
             InitializeComponent();
+            if (row == null) { return; }
+
             DataGridViewManager.SelectedRowInMainMenu = row;
             oldOption = MainMenu_Form.Instance.Selected;
 

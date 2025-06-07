@@ -16,6 +16,7 @@ namespace Sales_Tracker.Startup
         public ConfigureProject_Form FormConfigureProject => _formConfigureProject;
 
         // Init.
+        public Startup_Form() : this([]) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public Startup_Form(string[] args)
         {
             InitializeComponent();
