@@ -89,7 +89,7 @@ namespace Sales_Tracker.UI
             }
 
             // Check for internet connection
-            if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("translation language", true))
+            if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("translating language", true))
             {
                 Log.Write(1, "Translating language cancelled - no internet connection");
                 return false;

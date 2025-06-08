@@ -1067,24 +1067,31 @@ namespace Sales_Tracker
                 && Properties.Settings.Default.LicenseActivated
                 && Search_TextBox.Text.StartsWith('!');
 
-            // Start timer for regular searches
-            if (!timerRunning && !isAIQuery)
+            // Process AI search only on Enter key
+            if (e.KeyCode == Keys.Enter && isAIQuery)
             {
-                timerRunning = true;
-                searchTimer.Start();
-            }
+                // Check for internet connection
+                if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("AI search", true))
+                {
+                    Log.Write(1, "AI search cancelled - no internet connection");
+                    return;
+                }
 
-            // Process AI search on Enter key
-            else if (e.KeyCode == Keys.Enter && isAIQuery)
-            {
                 ShowingResultsFor_Label.Text = "AI search in progress...";
                 CenterShowingResultsLabel();
                 await Search_TextBox.EnhanceSearchAsync();
             }
+            // Show AI search prompt for AI queries (but don't start regular search)
             else if (isAIQuery)
             {
                 ShowingResultsFor_Label.Text = "Press enter to begin AI search";
                 CenterShowingResultsLabel();
+            }
+            // Start timer for regular searches (only if not an AI query)
+            else if (!timerRunning)
+            {
+                timerRunning = true;
+                searchTimer.Start();
             }
         }
         private void Search_TextBox_TextChanged(object sender, EventArgs e)

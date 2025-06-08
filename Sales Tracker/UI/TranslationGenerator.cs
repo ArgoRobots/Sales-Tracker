@@ -62,6 +62,7 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static async Task GenerateAllLanguageTranslationFiles()
         {
+            // Check for internet connection
             if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("generating translations", true))
             {
                 Log.Write(1, "Translation generation cancelled - no internet connection");

@@ -112,8 +112,15 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Updates currency settings, including recalculating values and updating data grids.
         /// </summary>
-        private static void UpdateCurrency(string oldCurrency)
+        private static async void UpdateCurrency(string oldCurrency)
         {
+            // Check for internet connection
+            if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("currency conversion", true))
+            {
+                Log.Write(1, "Currency conversion cancelled - no internet connection");
+                return;
+            }
+
             string newCurrency = General_Form.Instance.Currency_TextBox.Text;
             DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, newCurrency);
             MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
