@@ -75,7 +75,7 @@ namespace Tests
             Assert.AreEqual("2.50s", mediumResult);
 
             // Test minutes and seconds format
-            long longDuration = 125000; // 2 minutes and 5 seconds
+            long longDuration = 125000;  // 2 minutes and 5 seconds
             string longResult = Tools.FormatDuration(longDuration);
             Assert.AreEqual("2m 5s", longResult);
         }
@@ -255,7 +255,7 @@ namespace Tests
         public void TestConvertBytesToReadableSizeTerabytes()
         {
             // Test with a value that should be displayed in TB
-            long terabytes = 2L * 1024 * 1024 * 1024 * 1024; // 2 TB
+            long terabytes = 2L * 1024 * 1024 * 1024 * 1024;  // 2 TB
             string result = Tools.ConvertBytesToReadableSize(terabytes);
             Assert.AreEqual("2 TB", result);
         }

@@ -124,7 +124,7 @@ namespace Sales_Tracker.UI
         {
             if (term.Length == 1 && (term[0] == '+' || term[0] == '-'))
             {
-                return; // Skip single character modifiers
+                return;  // Skip single character modifiers
             }
 
             try

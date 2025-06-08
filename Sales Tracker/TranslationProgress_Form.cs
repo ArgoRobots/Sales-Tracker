@@ -18,7 +18,7 @@ namespace Sales_Tracker
         private DateTime operationStartTime;
         private readonly Queue<DateTime> progressTimestamps = new();
         private readonly Queue<int> progressValues = new();
-        private const int MaxSampleSize = 10; // Number of samples for moving average
+        private const int MaxSampleSize = 10;  // Number of samples for moving average
 
         // Getters
         public bool IsCancelled => operationCancelled;
@@ -204,7 +204,7 @@ namespace Sales_Tracker
                 return 0;
 
             int progressDifference = lastProgress - firstProgress;
-            return progressDifference / timeSpanSeconds; // translations per second
+            return progressDifference / timeSpanSeconds;  // translations per second
         }
         public void CompleteProgress()
         {

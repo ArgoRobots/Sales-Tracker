@@ -276,8 +276,8 @@ namespace Sales_Tracker.Classes
 
             using (Rfc2898DeriveBytes pbkdf2 = new(keyMaterial, salt, 10000, HashAlgorithmName.SHA256))
             {
-                derivedKey = pbkdf2.GetBytes(32); // 256 bits for AES-256
-                derivedIV = pbkdf2.GetBytes(16);  // 128 bits for AES IV
+                derivedKey = pbkdf2.GetBytes(32);  // 256 bits for AES-256
+                derivedIV = pbkdf2.GetBytes(16);   // 128 bits for AES IV
             }
 
             return (derivedKey, derivedIV);

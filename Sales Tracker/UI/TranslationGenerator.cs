@@ -25,10 +25,10 @@ namespace Sales_Tracker.UI
 
         // Improved rate limiting and batching
         private static readonly byte maxBatchSize = 10;
-        private static readonly byte maxRequestsPerMinute = 60; // Reduced from 100 to be safe
+        private static readonly byte maxRequestsPerMinute = 60;
         private static readonly byte requestDelay_MS = 100;
-        private static readonly int maxCharactersPerRequest = 45000; // Safety buffer below 50,000 limit
-        private static readonly int maxCharactersPerHour = 2000000; // F0 tier limit
+        private static readonly int maxCharactersPerRequest = 45000;  // Safety buffer below 50,000 limit
+        private static readonly int maxCharactersPerHour = 2000000;   // F0 tier limit
         private static readonly SemaphoreSlim rateLimiter = new(1, 1);
         private static readonly Queue<DateTime> requestTimestamps = new();
         private static int charactersUsedThisHour = 0;
@@ -66,9 +66,7 @@ namespace Sales_Tracker.UI
 
             try
             {
-                // Show progress form as modal dialog
                 progressForm.Show();
-                progressForm.BringToFront();
 
                 // List of form types to process
                 Type[] formTypes =
@@ -226,17 +224,11 @@ namespace Sales_Tracker.UI
             {
                 string text = kvp.Value?.Trim();
 
-                // Skip empty, null, or very short texts
-                if (string.IsNullOrWhiteSpace(text) || text.Length < 2)
+                // Skip null, empty, very short texts, and numbers
+                if (string.IsNullOrWhiteSpace(text) || text.Length < 2 || text.All(char.IsDigit))
+                {
                     continue;
-
-                // Skip numbers only
-                if (text.All(char.IsDigit))
-                    continue;
-
-                // Skip single characters
-                if (text.Length == 1)
-                    continue;
+                }
 
                 optimizedTexts[kvp.Key] = text;
             }
@@ -267,7 +259,7 @@ namespace Sales_Tracker.UI
                 await WaitForRateLimit(batchCharacters, cancellationToken).ConfigureAwait(false);
 
                 int retryCount = 0;
-                const int maxRetries = 3;
+                const byte maxRetries = 3;
 
                 while (retryCount <= maxRetries)
                 {
@@ -283,12 +275,12 @@ namespace Sales_Tracker.UI
 
                         // Log progress
                         Log.Write(1, $"Completed batch {i + 1}/{batches.Count} ({batchCharacters} characters, {charactersUsedThisHour} total this hour)");
-                        break; // Success, exit retry loop
+                        break;  // Success, exit retry loop
                     }
                     catch (HttpRequestException ex) when ((ex.Message.Contains("429") || ex.Message.Contains("rate")) && retryCount < maxRetries)
                     {
                         retryCount++;
-                        int backoffDelay = (int)Math.Pow(2, retryCount) * 5000; // 10s, 20s, 40s
+                        int backoffDelay = (int)Math.Pow(2, retryCount) * 5000;  // 10s, 20s, 40s
                         Log.Write(1, $"Rate limit hit on batch {i + 1}, attempt {retryCount}/{maxRetries}. Waiting {backoffDelay / 1000}s before retry...");
 
                         await Task.Delay(backoffDelay, cancellationToken).ConfigureAwait(false);
@@ -482,7 +474,8 @@ namespace Sales_Tracker.UI
         private static void CollectTextsRecursively(Control control, Dictionary<string, string> textsToTranslate)
         {
             // Skip controls that should not be cached
-            if (control.AccessibleDescription == AccessibleDescriptionManager.DoNotCache)
+            if (control.AccessibleDescription == AccessibleDescriptionManager.DoNotCache
+                || control.AccessibleDescription == AccessibleDescriptionManager.DoNotTranslate)
             {
                 return;
             }

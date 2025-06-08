@@ -257,7 +257,7 @@ namespace Sales_Tracker.UI
             if (IsNoteCell(e, dataGridView))
             {
                 DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                _currentlyHoveredNoteCell = cell; // Track the current note cell
+                _currentlyHoveredNoteCell = cell;  // Track the current note cell
 
                 if (IsClickOnText(cell, out Rectangle hitbox))
                 {

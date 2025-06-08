@@ -33,12 +33,12 @@ namespace Sales_Tracker.UI
             TranslationCache = [];
 
             // Load translation cache
-            if (File.Exists(Directories.TranslationsCache_file))
+            if (!File.Exists(Directories.Translations_file))
             {
                 return;
             }
 
-            string cacheContent = File.ReadAllText(Directories.TranslationsCache_file);
+            string cacheContent = File.ReadAllText(Directories.Translations_file);
 
             if (string.IsNullOrWhiteSpace(cacheContent))
             {
@@ -70,19 +70,26 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Downloads and merges language JSON for the specified language.
         /// </summary>
-        public static async Task DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
+        private static async Task DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
         {
             string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == languageName).Value;
 
-            if (string.IsNullOrEmpty(languageAbbreviation) || languageAbbreviation == "en")
+            if (string.IsNullOrEmpty(languageAbbreviation))
             {
                 Log.Write(1, $"Skipping download for language: {languageName}");
                 return;
             }
 
+            // Check if language already exists in cache
+            if (TranslationCache.ContainsKey(languageAbbreviation))
+            {
+                Log.Write(1, $"Found language '{languageName}' in cache");
+                return;
+            }
+
             try
             {
-                string downloadUrl = $"https://argorobots.com/resources/downloads/{languageAbbreviation}.json";
+                string downloadUrl = $"https://argorobots.com/resources/downloads/languages/{languageAbbreviation}.json";
 
                 Log.Write(1, $"Downloading language file from: {downloadUrl}");
 
@@ -99,8 +106,15 @@ namespace Sales_Tracker.UI
 
                 if (downloadedTranslations == null || downloadedTranslations.Count == 0)
                 {
-                    Log.Write(1, "Downloaded translations are empty or invalid.");
+                    Log.Write(1, "Downloaded translations are empty or invalid");
                     return;
+                }
+
+                // Special handling for English - save to dedicated English file
+                if (languageAbbreviation == "en")
+                {
+                    Directories.WriteTextToFile(Directories.English_file, jsonContent);
+                    Log.Write(1, $"Successfully saved English translations to {Directories.English_file}");
                 }
 
                 // Merge downloaded translations with existing cache
@@ -147,7 +161,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Applies cached translations to all application forms and controls.
         /// </summary>
-        public static async Task ApplyTranslationsToAllForms(bool includeGeneralForm, CancellationToken cancellationToken = default)
+        private static async Task ApplyTranslationsToAllForms(bool includeGeneralForm, CancellationToken cancellationToken = default)
         {
             string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
             if (targetLanguageAbbreviation == null) { return; }
@@ -215,18 +229,12 @@ namespace Sales_Tracker.UI
             // Final UI updates
             if (Tools.IsFormOpen<Log_Form>() && Log_Form.Instance.IsHandleCreated)
             {
-                Log_Form.Instance.BeginInvoke(new Action(() =>
-                {
-                    Log_Form.Instance.RefreshLogColoring();
-                }));
+                Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.RefreshLogColoring));
             }
 
             if (MainMenu_Form.Instance.IsHandleCreated)
             {
-                MainMenu_Form.Instance.BeginInvoke(new Action(() =>
-                {
-                    MainMenu_Form.Instance.CenterAndResizeControls();
-                }));
+                MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             }
 
             Log.Write(2, "Completed translation of all application forms");
@@ -238,8 +246,17 @@ namespace Sales_Tracker.UI
         private static void TranslateAllTextInControlFromCache(Control control, string targetLanguageAbbreviation)
         {
             CacheControlBounds(control);
-
             string controlKey = GetControlKey(control);
+
+            foreach (Control childControl in control.Controls)
+            {
+                TranslateAllTextInControlFromCache(childControl, targetLanguageAbbreviation);
+            }
+
+            if (control.AccessibleDescription == AccessibleDescriptionManager.DoNotTranslate)
+            {
+                return;
+            }
 
             switch (control)
             {
@@ -319,11 +336,6 @@ namespace Sales_Tracker.UI
                     }
                     gunaDataGridView.Refresh();
                     break;
-            }
-
-            foreach (Control childControl in control.Controls)
-            {
-                TranslateAllTextInControlFromCache(childControl, targetLanguageAbbreviation);
             }
         }
         private static string GetCachedTranslation(string targetLanguageAbbreviation, string controlKey, string originalText)
@@ -521,7 +533,7 @@ namespace Sales_Tracker.UI
                 {
                     stringControlCache[stringCacheKey] = control.Text;
                 }
-                return; // Don't proceed with normal bounds caching
+                return;  // Don't proceed with normal bounds caching
             }
 
             string controlKey = GetControlKey(control);
@@ -556,7 +568,7 @@ namespace Sales_Tracker.UI
                 {
                     Directories.CreateDirectory(Directories.Cache_dir, false);
                 }
-                Directories.WriteTextToFile(Directories.TranslationsCache_file, jsonContent);
+                Directories.WriteTextToFile(Directories.Translations_file, jsonContent);
             }
             catch (Exception ex)
             {

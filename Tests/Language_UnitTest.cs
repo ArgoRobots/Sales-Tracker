@@ -24,8 +24,8 @@ namespace Tests
 
             // Set up test directories
             Directories.Cache_dir = tempCacheDir;
-            Directories.TranslationsCache_file = Path.Combine(tempCacheDir, "translations.json");
-            Directories.EnglishTexts_file = Path.Combine(tempCacheDir, "english_texts.json");
+            Directories.Translations_file = Path.Combine(tempCacheDir, "translations.json");
+            Directories.English_file = Path.Combine(tempCacheDir, "english_texts.json");
 
             // Initialize test controls
             testForm = new Form
@@ -82,7 +82,7 @@ namespace Tests
                 { "TestForm.TestLinkLabel_after", "to test" }
             };
             string englishJson = JsonConvert.SerializeObject(englishCache, Formatting.Indented);
-            File.WriteAllText(Directories.EnglishTexts_file, englishJson);
+            File.WriteAllText(Directories.English_file, englishJson);
 
             // Create and save test translations cache
             Dictionary<string, Dictionary<string, string>> translationCache = new()
@@ -100,7 +100,7 @@ namespace Tests
                 }
             };
             string translationsJson = JsonConvert.SerializeObject(translationCache, Formatting.Indented);
-            File.WriteAllText(Directories.TranslationsCache_file, translationsJson);
+            File.WriteAllText(Directories.Translations_file, translationsJson);
         }
 
         [TestMethod]
@@ -110,7 +110,7 @@ namespace Tests
             LanguageManager.UpdateLanguageForControl(testForm);
 
             // Assert
-            string cachedEnglish = File.ReadAllText(Directories.EnglishTexts_file);
+            string cachedEnglish = File.ReadAllText(Directories.English_file);
             Dictionary<string, string>? englishCache = JsonConvert.DeserializeObject<Dictionary<string, string>>(cachedEnglish);
 
             // Verify form text was cached
@@ -133,7 +133,7 @@ namespace Tests
             LanguageManager.UpdateLanguageForControl(testLinkLabel);
 
             // Assert
-            string cachedEnglish = File.ReadAllText(Directories.EnglishTexts_file);
+            string cachedEnglish = File.ReadAllText(Directories.English_file);
             Dictionary<string, string>? englishCache = JsonConvert.DeserializeObject<Dictionary<string, string>>(cachedEnglish);
 
             // Verify the link parts were cached correctly
@@ -155,7 +155,7 @@ namespace Tests
         {
             // Arrange
             float originalFontSize = testButton.Font.Size;
-            testButton.Width = 80; // Make button smaller to force text adjustment
+            testButton.Width = 80;  // Make button smaller to force text adjustment
 
             // Act
             string longText = "A very long button text that should not fit";

@@ -28,11 +28,11 @@ namespace Sales_Tracker.Classes
         public static string Logs_dir { get; private set; }
         public static string Desktop_dir { get; private set; }
         public static string Cache_dir { get; set; }
-        public static string TranslationsCache_file { get; set; }
-        public static string GlobalAppDataSettingsCache_file { get; private set; }
+        public static string Translations_file { get; set; }
+        public static string GlobalAppDataSettings_file { get; private set; }
         public static string AnonymousUserData_file { get; private set; }
-        public static string ExchangeRateCache_file { get; private set; }
-        public static string EnglishTexts_file { get; set; }
+        public static string ExchangeRates_file { get; private set; }
+        public static string English_file { get; set; }
         public static string SecretsFilePath { get; private set; }
 
         // Methods
@@ -78,10 +78,10 @@ namespace Sales_Tracker.Classes
             AnonymousUserData_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 
             // Other
-            ExchangeRateCache_file = AppData_dir + "exchangeRatesCache" + ArgoFiles.JsonFileExtension;
-            TranslationsCache_file = AppData_dir + "translations" + ArgoFiles.JsonFileExtension;
-            GlobalAppDataSettingsCache_file = AppData_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
-            EnglishTexts_file = AppData_dir + "english" + ArgoFiles.JsonFileExtension;
+            ExchangeRates_file = AppData_dir + "exchangeRates" + ArgoFiles.JsonFileExtension;
+            Translations_file = AppData_dir + "translations" + ArgoFiles.JsonFileExtension;
+            GlobalAppDataSettings_file = AppData_dir + "globalSettings" + ArgoFiles.TxtFileExtension;
+            English_file = AppData_dir + "english" + ArgoFiles.JsonFileExtension;
             Desktop_dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             SecretsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.info");
         }

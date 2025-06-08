@@ -155,7 +155,7 @@ namespace Sales_Tracker.UI
                 CustomControls.CloseAllPanels();
 
                 // Check if mouse hasn't moved too far from the down location
-                int threshold = 3; // pixels
+                byte threshold = 3;
                 if (Math.Abs(e.Location.X - mouseDownLocation.X) <= threshold &&
                     Math.Abs(e.Location.Y - mouseDownLocation.Y) <= threshold)
                 {

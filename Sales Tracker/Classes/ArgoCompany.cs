@@ -37,10 +37,10 @@ namespace Sales_Tracker.Classes
                 Directories.CreateDirectory(Directories.Cache_dir, false);
             }
 
-            if (!File.Exists(Directories.GlobalAppDataSettingsCache_file))
+            if (!File.Exists(Directories.GlobalAppDataSettings_file))
             {
-                Directories.CreateFile(Directories.GlobalAppDataSettingsCache_file);
-                Directories.CreateFile(Directories.ExchangeRateCache_file);
+                Directories.CreateFile(Directories.GlobalAppDataSettings_file);
+                Directories.CreateFile(Directories.ExchangeRates_file);
 
                 // TEMPORARILY DISABLE TUTORIAL VIDEOS BECAUSE THEY DO NOT EXIST YET
                 DataFileManager.SetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial, bool.FalseString);

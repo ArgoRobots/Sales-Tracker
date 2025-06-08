@@ -117,7 +117,7 @@ namespace Sales_Tracker.Classes
                     return symbol;
                 }
             }
-            throw new ArgumentException("Invalid currency type");
+            throw new ArgumentException($"Invalid currency type: {currency}");
         }
 
         /// <summary>
@@ -230,9 +230,9 @@ namespace Sales_Tracker.Classes
             try
             {
                 // If cache file exists, load it
-                if (File.Exists(Directories.ExchangeRateCache_file))
+                if (File.Exists(Directories.ExchangeRates_file))
                 {
-                    string json = File.ReadAllText(Directories.ExchangeRateCache_file);
+                    string json = File.ReadAllText(Directories.ExchangeRates_file);
                     Dictionary<string, decimal>? cacheData = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(json);
 
                     if (cacheData != null)
@@ -247,7 +247,7 @@ namespace Sales_Tracker.Classes
             }
             catch
             {
-                Log.Error_ReadFile(Directories.ExchangeRateCache_file);
+                Log.Error_ReadFile(Directories.ExchangeRates_file);
                 ExchangeRateCache.Clear();
             }
         }
@@ -263,7 +263,7 @@ namespace Sales_Tracker.Classes
 
                 // Serialize the cache to JSON using a cached JsonSerializerSettings for better performance
                 string json = JsonConvert.SerializeObject(ExchangeRateCache, Formatting.Indented);
-                File.WriteAllText(Directories.ExchangeRateCache_file, json);
+                File.WriteAllText(Directories.ExchangeRates_file, json);
             }
             catch (Exception ex)
             {

@@ -34,8 +34,8 @@ namespace Sales_Tracker
         private void LoadEULAText()
         {
             // Add padding by setting a margin
-            EULA_RichTextBox.SelectionIndent = 20; // Left margin in pixels
-            EULA_RichTextBox.SelectionRightIndent = 20; // Right margin in pixels
+            EULA_RichTextBox.SelectionIndent = 20;  // Left margin in pixels
+            EULA_RichTextBox.SelectionRightIndent = 20;  // Right margin in pixels
 
             // Define text styles
             Font titleFont = new("Segoe UI", 14f, FontStyle.Bold);
@@ -235,7 +235,7 @@ namespace Sales_Tracker
             }
             else
             {
-                e.Cancel = true; // Prevent the form from closing
+                e.Cancel = true;  // Prevent the form from closing
             }
         }
 

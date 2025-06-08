@@ -54,7 +54,7 @@ namespace Sales_Tracker.Theme
                 @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
                 "AppsUseLightTheme", -1);
 
-            return value == 0; // If value is 0, Windows is using dark theme
+            return value == 0;  // If value is 0, Windows is using dark theme
         }
         public static void SetThemeForControl(List<Control> list)
         {
