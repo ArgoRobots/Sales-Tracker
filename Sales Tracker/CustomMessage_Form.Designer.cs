@@ -40,6 +40,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Icon_PictureBox = new PictureBox();
             Ok_Button = new Guna.UI2.WinForms.Guna2Button();
             No_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -48,6 +50,7 @@
             Message_Label = new LinkLabel();
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             DontSave_Button = new Guna.UI2.WinForms.Guna2Button();
+            Retry_Button = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)Icon_PictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -211,10 +214,34 @@
             DontSave_Button.Text = "Don't save";
             DontSave_Button.Click += DontSave_Button_Click;
             // 
+            // Retry_Button
+            // 
+            Retry_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Retry_Button.BorderColor = Color.LightGray;
+            Retry_Button.BorderRadius = 4;
+            Retry_Button.BorderThickness = 1;
+            Retry_Button.CustomizableEdges = customizableEdges13;
+            Retry_Button.DisabledState.BorderColor = Color.DarkGray;
+            Retry_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Retry_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Retry_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Retry_Button.FillColor = SystemColors.Window;
+            Retry_Button.FocusedColor = Color.FromArgb(0, 192, 192);
+            Retry_Button.Font = new Font("Segoe UI", 9F);
+            Retry_Button.ForeColor = Color.Black;
+            Retry_Button.Location = new Point(283, 137);
+            Retry_Button.Name = "Retry_Button";
+            Retry_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Retry_Button.Size = new Size(150, 45);
+            Retry_Button.TabIndex = 7;
+            Retry_Button.Text = "Retry";
+            Retry_Button.Click += Retry_Button_Click;
+            // 
             // CustomMessage_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(778, 194);
+            Controls.Add(Retry_Button);
             Controls.Add(Message_Label);
             Controls.Add(DontSave_Button);
             Controls.Add(Icon_PictureBox);
@@ -245,5 +272,6 @@
         private System.Windows.Forms.LinkLabel Message_Label;
         public Guna.UI2.WinForms.Guna2Button Save_Button;
         public Guna.UI2.WinForms.Guna2Button DontSave_Button;
+        public Guna.UI2.WinForms.Guna2Button Retry_Button;
     }
 }

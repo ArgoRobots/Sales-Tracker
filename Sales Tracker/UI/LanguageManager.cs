@@ -70,21 +70,29 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Downloads and merges language JSON for the specified language.
         /// </summary>
-        private static async Task DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
+        /// <returns>True if successful, false if failed or skipped</returns>
+        private static async Task<bool> DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
         {
             string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == languageName).Value;
 
             if (string.IsNullOrEmpty(languageAbbreviation))
             {
                 Log.Write(1, $"Skipping download for language: {languageName}");
-                return;
+                return false;
             }
 
             // Check if language already exists in cache
             if (TranslationCache.ContainsKey(languageAbbreviation))
             {
                 Log.Write(1, $"Found language '{languageName}' in cache");
-                return;
+                return true;  // Consider cached language as success
+            }
+
+            // Check for internet connection
+            if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("translation language", true))
+            {
+                Log.Write(1, "Translating language cancelled - no internet connection");
+                return false;
             }
 
             try
@@ -98,7 +106,7 @@ namespace Sales_Tracker.UI
                 if (!response.IsSuccessStatusCode)
                 {
                     Log.Error_GetTranslation($"Failed to download language file. Status: {response.StatusCode}");
-                    return;
+                    return false;
                 }
 
                 string jsonContent = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -107,7 +115,7 @@ namespace Sales_Tracker.UI
                 if (downloadedTranslations == null || downloadedTranslations.Count == 0)
                 {
                     Log.Write(1, "Downloaded translations are empty or invalid");
-                    return;
+                    return false;
                 }
 
                 // Special handling for English - save to dedicated English file
@@ -132,22 +140,31 @@ namespace Sales_Tracker.UI
 
                 SaveCacheToFile();
                 Log.Write(1, $"Successfully merged translations for {languageName}");
+                return true;
             }
             catch (Exception ex)
             {
                 Log.Error_GetTranslation($"Failed to download language file: {ex.Message}");
+                return false;
             }
         }
 
         /// <summary>
         /// Updates the application's language translation by downloading and merging the language JSON
         /// </summary>
-        public static async Task UpdateLanguageTranslationMethod(bool includeGeneralForm, CancellationToken cancellationToken = default)
+        /// <returns>True if translation was successful, false if failed (e.g., no internet)</returns>
+        public static async Task<bool> UpdateLanguageTranslationMethod(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
         {
-            string targetLanguageName = Properties.Settings.Default.Language;
+            bool downloadSuccess = await DownloadAndMergeLanguageJson(targetLanguageName, cancellationToken);
 
-            await DownloadAndMergeLanguageJson(targetLanguageName, cancellationToken);
-            await ApplyTranslationsToAllForms(includeGeneralForm, cancellationToken);
+            if (!downloadSuccess)
+            {
+                Log.Write(1, $"Failed to download translations for {targetLanguageName}");
+                return false;
+            }
+
+            await ApplyTranslationsToAllForms(targetLanguageName, includeGeneralForm, cancellationToken);
+            return true;
         }
 
         /// <summary>
@@ -161,12 +178,12 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Applies cached translations to all application forms and controls.
         /// </summary>
-        private static async Task ApplyTranslationsToAllForms(bool includeGeneralForm, CancellationToken cancellationToken = default)
+        private static async Task ApplyTranslationsToAllForms(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
         {
-            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
+            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation(targetLanguageName);
             if (targetLanguageAbbreviation == null) { return; }
 
-            Log.Write(2, "Starting translation of all application forms...");
+            Log.Write(2, $"Translating application language to {targetLanguageName}...");
 
             List<Control> controlsList = [MainMenu_Form.Instance];
 
@@ -236,8 +253,6 @@ namespace Sales_Tracker.UI
             {
                 MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             }
-
-            Log.Write(2, "Completed translation of all application forms");
         }
 
         /// <summary>
@@ -714,14 +729,15 @@ namespace Sales_Tracker.UI
                 new("Ukrainian", "uk"),         // Ukraine
             ];
         }
-        private static string? GetDefaultLanguageAbbreviation()
+        private static string? GetDefaultLanguageAbbreviation(string targetLanguageName = null)
         {
-            string fullLanguageName = Properties.Settings.Default.Language;
-            string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == fullLanguageName).Value;
+            targetLanguageName ??= Properties.Settings.Default.Language;
+
+            string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == targetLanguageName).Value;
 
             if (string.IsNullOrEmpty(languageAbbreviation))
             {
-                Log.Error_GetTranslation($"Language '{fullLanguageName}' not found in the list.");
+                Log.Error_GetTranslation($"Language '{targetLanguageName}' not found in the list.");
                 return null;
             }
             else

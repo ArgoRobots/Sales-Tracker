@@ -140,8 +140,14 @@ namespace Sales_Tracker.Settings
 
                 try
                 {
-                    await LanguageManager.UpdateLanguageTranslationMethod(includeGeneralForm, _translationCts.Token);
-                    _originalLanguage = General_Form.Instance.Language_TextBox.Text;
+                    string currentLanguage = General_Form.Instance.Language_TextBox.Text;
+                    bool success = await LanguageManager.UpdateLanguageTranslationMethod(currentLanguage, includeGeneralForm, _translationCts.Token);
+
+                    if (success)
+                    {
+                        _originalLanguage = General_Form.Instance.Language_TextBox.Text;
+                        UpdateLanguage();
+                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -161,6 +167,22 @@ namespace Sales_Tracker.Settings
         {
             string currentLanguage = General_Form.Instance.Language_TextBox.Text;
             return !string.Equals(_originalLanguage, currentLanguage, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Updates the application language setting and logs the change.
+        /// </summary>
+        private static void UpdateLanguage()
+        {
+            Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
+
+            // Remove previous messages that mention language changes
+            string message = "Changed the language to";
+            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
+
+            // Add the new language change message
+            string fullMessage = $"{message} {Properties.Settings.Default.Language}";
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
         }
 
         // Misc.

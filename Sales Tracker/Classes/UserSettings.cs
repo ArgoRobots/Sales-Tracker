@@ -16,12 +16,6 @@ namespace Sales_Tracker.Classes
             Properties.Settings settings = Properties.Settings.Default;
             General_Form form = General_Form.Instance;
 
-            // Handle language change
-            if (settings.Language != form.Language_TextBox.Text)
-            {
-                UpdateLanguage();
-            }
-
             // Handle theme change
             if (settings.ColorTheme != form.ColorTheme_ComboBox.Text)
             {
@@ -85,23 +79,6 @@ namespace Sales_Tracker.Classes
                 string message = $"Changed the '{settingName}' setting";
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, message);
             }
-        }
-
-        /// <summary>
-        /// Updates the application language setting and logs the change.
-        /// The actual UI translation is handled by the async method in Settings_Form.
-        /// </summary>
-        private static void UpdateLanguage()
-        {
-            Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
-
-            // Remove previous messages that mention language changes
-            string message = "Changed the language to";
-            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
-
-            // Add the new language change message
-            string fullMessage = $"{message} {Properties.Settings.Default.Language}";
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
         }
         private static void UpdateTheme()
         {

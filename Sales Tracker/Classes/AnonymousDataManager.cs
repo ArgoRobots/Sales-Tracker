@@ -171,7 +171,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Gets the size of the anonymous data cache file in bytes.
         /// </summary>
-        /// <returns>Size in bytes, or 0 if file doesn't exist</returns>
+        /// <returns>Size in bytes, or 0 if the file doesn't exist</returns>
         public static long GetUserDataCacheSize()
         {
             if (File.Exists(Directories.AnonymousUserData_file))

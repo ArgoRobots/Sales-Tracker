@@ -7,21 +7,9 @@ namespace Sales_Tracker.Passwords
     /// </summary>
     internal class PasswordManager
     {
-        // Properties
-        private static bool _isPasswordValid;
-        private static string _password;
-
         // Getters and setters
-        public static bool IsPasswordValid
-        {
-            get => _isPasswordValid;
-            set => _isPasswordValid = value;
-        }
-        public static string Password
-        {
-            get => _password;
-            set => _password = value;
-        }
+        public static bool IsPasswordValid { get; set; }
+        public static string Password { get; set; }
 
         /// <summary>
         /// Validates the password based on specified requirements and updates the label colors.
@@ -98,7 +86,7 @@ namespace Sales_Tracker.Passwords
             if (Password != null)
             {
                 new EnterPassword_Form(allowWindowsHello).ShowDialog();
-                return _isPasswordValid;
+                return IsPasswordValid;
             }
             return true;
         }

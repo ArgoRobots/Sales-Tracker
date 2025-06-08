@@ -58,10 +58,16 @@ namespace Sales_Tracker.UI
 
         /// <summary>
         /// Generates translation JSON files for all supported languages based on the current application's text.
-        /// Shows a modern progress dialog with overall progress tracking.
+        /// Shows a progress dialog with progress tracking.
         /// </summary>
         public static async Task GenerateAllLanguageTranslationFiles()
         {
+            if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("generating translations", true))
+            {
+                Log.Write(1, "Translation generation cancelled - no internet connection");
+                return;
+            }
+
             TranslationProgress_Form progressForm = new();
 
             try
@@ -198,18 +204,17 @@ namespace Sales_Tracker.UI
                 }
 
                 progressForm.CompleteProgress();
-                Log.Write(1, "Translation generation complete.");
+                Log.Write(1, "Translation generation complete");
             }
             catch (OperationCanceledException)
             {
-                Log.Write(1, "Translation generation was cancelled by user.");
+                Log.Write(1, "Translation generation was cancelled by user");
                 progressForm.Close();
             }
             catch (Exception ex)
             {
                 Log.Error_GetTranslation($"Translation generation failed: {ex.Message}");
                 progressForm.Close();
-                throw;
             }
         }
 

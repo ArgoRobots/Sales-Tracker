@@ -88,6 +88,15 @@ namespace Sales_Tracker
                     break;
             }
 
+            // Clear buttons
+            Controls.Remove(Ok_Button);
+            Controls.Remove(Yes_Button);
+            Controls.Remove(No_Button);
+            Controls.Remove(Cancel_Button);
+            Controls.Remove(Save_Button);
+            Controls.Remove(DontSave_Button);
+            Controls.Remove(Retry_Button);
+
             // Set buttons
             byte buttonSpace = 35;
             switch (buttons)
@@ -97,20 +106,11 @@ namespace Sales_Tracker
                     Yes_Button.Left = No_Button.Left - Yes_Button.Width - CustomControls.SpaceBetweenControls;
                     Controls.Add(Yes_Button);
                     Controls.Add(No_Button);
-                    Controls.Remove(Cancel_Button);
-                    Controls.Remove(Ok_Button);
-                    Controls.Remove(Save_Button);
-                    Controls.Remove(DontSave_Button);
                     Yes_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.Ok:
                     Ok_Button.Left = Width - Ok_Button.Width - buttonSpace;
                     Controls.Add(Ok_Button);
-                    Controls.Remove(Yes_Button);
-                    Controls.Remove(No_Button);
-                    Controls.Remove(Cancel_Button);
-                    Controls.Remove(Save_Button);
-                    Controls.Remove(DontSave_Button);
                     Ok_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.OkCancel:
@@ -118,10 +118,6 @@ namespace Sales_Tracker
                     Ok_Button.Left = Cancel_Button.Left - Ok_Button.Width - CustomControls.SpaceBetweenControls;
                     Controls.Add(Ok_Button);
                     Controls.Add(Cancel_Button);
-                    Controls.Remove(Yes_Button);
-                    Controls.Remove(No_Button);
-                    Controls.Remove(Save_Button);
-                    Controls.Remove(DontSave_Button);
                     Ok_Button.Focus();
                     break;
                 case CustomMessageBoxButtons.SaveDontSaveCancel:
@@ -131,12 +127,17 @@ namespace Sales_Tracker
                     Controls.Add(Save_Button);
                     Controls.Add(DontSave_Button);
                     Controls.Add(Cancel_Button);
-                    Controls.Remove(Yes_Button);
-                    Controls.Remove(No_Button);
-                    Controls.Remove(Ok_Button);
                     Save_Button.Focus();
 
                     ShowThingsThatHaveChanged();
+                    break;
+
+                case CustomMessageBoxButtons.RetryCancel:
+                    Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
+                    Retry_Button.Left = Cancel_Button.Left - Retry_Button.Width - CustomControls.SpaceBetweenControls;
+                    Controls.Add(Retry_Button);
+                    Controls.Add(Cancel_Button);
+                    Retry_Button.Focus();
                     break;
             }
         }
@@ -322,6 +323,11 @@ namespace Sales_Tracker
             _result = CustomMessageBoxResult.DontSave;
             Close();
         }
+        private void Retry_Button_Click(object sender, EventArgs e)
+        {
+            _result = CustomMessageBoxResult.Retry;
+            Close();
+        }
         private void Message_Label_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Tools.OpenLink(CustomMessageBoxVariables.Link);
@@ -342,7 +348,8 @@ namespace Sales_Tracker
         YesNo,
         Ok,
         OkCancel,
-        SaveDontSaveCancel
+        SaveDontSaveCancel,
+        RetryCancel
     }
     public enum CustomMessageBoxResult
     {
@@ -352,6 +359,7 @@ namespace Sales_Tracker
         No,
         Save,
         DontSave,
+        Retry,
         None
     }
 
@@ -396,29 +404,10 @@ namespace Sales_Tracker
 
     public static class CustomMessageBoxVariables
     {
-        // Properties
-        private static string _link;
-        private static int _linkStart;
-        private static int _linkLength;
+        public static string Link { get; set; }
+        public static int LinkStart { get; set; }
+        public static int LinkLength { get; set; }
 
-        // Getters and setters
-        public static string Link
-        {
-            get => _link;
-            set => _link = value;
-        }
-        public static int LinkStart
-        {
-            get => _linkStart;
-            set => _linkStart = value;
-        }
-        public static int LinkLength
-        {
-            get => _linkLength;
-            set => _linkLength = value;
-        }
-
-        // Methods
         public static void Reset()
         {
             LinkStart = 0;

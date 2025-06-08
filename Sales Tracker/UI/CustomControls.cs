@@ -35,9 +35,9 @@ namespace Sales_Tracker.UI
             RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
 
             // Set language
-            LanguageManager.UpdateLanguageForControl(_fileMenu);
-            LanguageManager.UpdateLanguageForControl(_recentlyOpenedMenu);
-            LanguageManager.UpdateLanguageForControl(_helpMenu);
+            LanguageManager.UpdateLanguageForControl(FileMenu);
+            LanguageManager.UpdateLanguageForControl(RecentlyOpenedMenu);
+            LanguageManager.UpdateLanguageForControl(HelpMenu);
             LanguageManager.UpdateLanguageForControl(_controlsDropDown_Button);
             LanguageManager.UpdateLanguageForControl(_controlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(DataGridViewManager.RightClickDataGridView_Panel);
@@ -194,27 +194,13 @@ namespace Sales_Tracker.UI
         }
 
         // fileMenu
-        private static Guna2Panel _fileMenu, _recentlyOpenedMenu;
-        private static Guna2Button _openRecentCompany_Button;
-        public static Guna2Panel FileMenu
-        {
-            get => _fileMenu;
-            set => _fileMenu = value;
-        }
-        public static Guna2Panel RecentlyOpenedMenu
-        {
-            get => _recentlyOpenedMenu;
-            set => _recentlyOpenedMenu = value;
-        }
-        public static Guna2Button OpenRecentCompany_Button
-        {
-            get => _openRecentCompany_Button;
-            set => _openRecentCompany_Button = value;
-        }
+        public static Guna2Panel FileMenu { get; set; }
+        public static Guna2Panel RecentlyOpenedMenu { get; set; }
+        public static Guna2Button OpenRecentCompany_Button { get; set; }
         private static void ConstructFileMenu()
         {
-            _fileMenu = ConstructPanelForMenu(new Size(_panelWidth, 9 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "fileMenu_Panel");
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_fileMenu.Controls[0];
+            FileMenu = ConstructPanelForMenu(new Size(_panelWidth, 9 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "fileMenu_Panel");
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)FileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("New company", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
@@ -231,7 +217,7 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Open recent company", _panelBtnWidth, false, flowPanel);
             menuBtn.ImageSize = new Size(11, 11);
             menuBtn.ImageOffset = new Point((menuBtn.Width - menuBtn.ImageSize.Width - offsetForKeyboardShortcutOrArrow) - (menuBtn.Width / 2), 0);
-            menuBtn.Tag = _recentlyOpenedMenu;
+            menuBtn.Tag = RecentlyOpenedMenu;
             ThemeManager.SetRightArrowImageBasedOnTheme(menuBtn);
             menuBtn.Click += (sender, e) =>
             {
@@ -245,7 +231,7 @@ namespace Sales_Tracker.UI
                 SetRecentlyOpenedMenu();
             };
             menuBtn.MouseLeave += CascadingMenu.CloseMenu;
-            _openRecentCompany_Button = menuBtn;
+            OpenRecentCompany_Button = menuBtn;
 
             ConstructSeperator(_panelBtnWidth, flowPanel);
 
@@ -300,18 +286,18 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructRecentlyOpenedMenu()
         {
-            _recentlyOpenedMenu = ConstructPanelForMenu(new Size(_panelWidth, 100), "recentlyOpenedMenu_Panel");
-            _recentlyOpenedMenu.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
+            RecentlyOpenedMenu = ConstructPanelForMenu(new Size(_panelWidth, 100), "recentlyOpenedMenu_Panel");
+            RecentlyOpenedMenu.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
         }
         private static void SetRecentlyOpenedMenu()
         {
-            if (MainMenu_Form.Instance.Controls.Contains(_recentlyOpenedMenu))
+            if (MainMenu_Form.Instance.Controls.Contains(RecentlyOpenedMenu))
             {
                 CascadingMenu.KeepMenuOpen();
                 return;
             }
 
-            FlowLayoutPanel flowPanel = _recentlyOpenedMenu.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            FlowLayoutPanel flowPanel = RecentlyOpenedMenu.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             flowPanel.Controls.Clear();
 
             List<string> validProjectDirs = ArgoCompany.GetValidRecentCompanyPaths(true);
@@ -338,13 +324,13 @@ namespace Sales_Tracker.UI
                 }
             }
 
-            SetRightClickMenuHeight(_recentlyOpenedMenu);
+            SetRightClickMenuHeight(RecentlyOpenedMenu);
 
-            _recentlyOpenedMenu.Location = new Point(_fileMenu.Right,
-                _fileMenu.Top + _panelButtonHeight * 2);
+            RecentlyOpenedMenu.Location = new Point(FileMenu.Right,
+                FileMenu.Top + _panelButtonHeight * 2);
 
-            MainMenu_Form.Instance.Controls.Add(_recentlyOpenedMenu);
-            _recentlyOpenedMenu.BringToFront();
+            MainMenu_Form.Instance.Controls.Add(RecentlyOpenedMenu);
+            RecentlyOpenedMenu.BringToFront();
         }
         public static bool ShouldShowTutorial()
         {
@@ -381,16 +367,11 @@ namespace Sales_Tracker.UI
         }
 
         // helpMenu
-        private static Guna2Panel _helpMenu;
-        public static Guna2Panel HelpMenu
-        {
-            get => _helpMenu;
-            set => _helpMenu = value;
-        }
+        public static Guna2Panel HelpMenu { get; set; }
         private static void ConstructHelpMenu()
         {
-            _helpMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + spaceForSeperator + _spaceForPanel), "helpMenu_Panel");
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_helpMenu.Controls[0];
+            HelpMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + spaceForSeperator + _spaceForPanel), "helpMenu_Panel");
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)HelpMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Settings", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
@@ -573,15 +554,10 @@ namespace Sales_Tracker.UI
         }
 
         // Rename
-        private static Guna2TextBox _rename_TextBox;
-        public static Guna2TextBox Rename_TextBox
-        {
-            get => _rename_TextBox;
-            set => _rename_TextBox = value;
-        }
+        public static Guna2TextBox Rename_TextBox { get; set; }
         public static void ConstructRightClickRename()
         {
-            _rename_TextBox = new Guna2TextBox
+            Rename_TextBox = new Guna2TextBox
             {
                 Font = new Font("Segoe UI", 10),
                 Top = 1,
@@ -595,18 +571,18 @@ namespace Sales_Tracker.UI
             };
             if (ThemeManager.IsDarkTheme())
             {
-                _rename_TextBox.BorderColor = Color.White;
-                _rename_TextBox.HoverState.BorderColor = Color.White;
-                _rename_TextBox.FocusedState.BorderColor = Color.White;
+                Rename_TextBox.BorderColor = Color.White;
+                Rename_TextBox.HoverState.BorderColor = Color.White;
+                Rename_TextBox.FocusedState.BorderColor = Color.White;
             }
             else
             {
-                _rename_TextBox.BorderColor = Color.Black;
-                _rename_TextBox.HoverState.BorderColor = Color.Black;
-                _rename_TextBox.FocusedState.BorderColor = Color.Black;
+                Rename_TextBox.BorderColor = Color.Black;
+                Rename_TextBox.HoverState.BorderColor = Color.Black;
+                Rename_TextBox.FocusedState.BorderColor = Color.Black;
             }
 
-            _rename_TextBox.KeyDown += (sender, e) =>
+            Rename_TextBox.KeyDown += (sender, e) =>
             {
                 if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
                 {
@@ -616,7 +592,7 @@ namespace Sales_Tracker.UI
                     e.SuppressKeyPress = true;
                 }
             };
-            TextBoxManager.Attach(_rename_TextBox);
+            TextBoxManager.Attach(Rename_TextBox);
         }
 
         // Other methods
@@ -682,14 +658,14 @@ namespace Sales_Tracker.UI
 
             if (MainMenu_Form.Instance == null) { return; }
 
-            MainMenu_Form.Instance.Controls.Remove(_fileMenu);
-            MainMenu_Form.Instance.Controls.Remove(_recentlyOpenedMenu);
-            MainMenu_Form.Instance.Controls.Remove(_helpMenu);
+            MainMenu_Form.Instance.Controls.Remove(FileMenu);
+            MainMenu_Form.Instance.Controls.Remove(RecentlyOpenedMenu);
+            MainMenu_Form.Instance.Controls.Remove(HelpMenu);
             MainMenu_Form.Instance.CloseDateRangePanel();
             MenuKeyShortcutManager.SelectedPanel = null;
-            DeselectAllMenuButtons(_fileMenu);
-            DeselectAllMenuButtons(_recentlyOpenedMenu);
-            DeselectAllMenuButtons(_helpMenu);
+            DeselectAllMenuButtons(FileMenu);
+            DeselectAllMenuButtons(RecentlyOpenedMenu);
+            DeselectAllMenuButtons(HelpMenu);
 
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
