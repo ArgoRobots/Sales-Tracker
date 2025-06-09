@@ -351,6 +351,7 @@ namespace Sales_Tracker.Classes
 
             return lines.ToArray();
         }
+
         /// <summary>
         /// Reads all text from the specified file.
         /// </summary>
@@ -441,15 +442,12 @@ namespace Sales_Tracker.Classes
                 Log.Error_Save(info, destinationFile);
             }
         }
+
         /// <summary>
         /// Imports an Argo Tar file into a directory.
         /// </summary>
         /// <returns> The file name without the (num) and the extension. </returns>
-        public enum ImportType
-        {
-            ArgoCompany
-        }
-        public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, ImportType importType, List<string> listOfThingNames, bool askUserToRename)
+        public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
             string tempDir = destinationDirectory + ArgoCompany.GetUniqueCompanyIdentifier(AppData_dir);
@@ -487,8 +485,8 @@ namespace Sales_Tracker.Classes
                     if (askUserToRename)
                     {
                         result = CustomMessageBox.Show(
-                            $"Rename {importType}",
-                            $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already a {importType} with the same name.",
+                            $"Rename Argo company",
+                            $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already an Argo company with the same name.",
                             CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
                     }
                     if (result == CustomMessageBoxResult.Yes || !askUserToRename)
@@ -532,6 +530,7 @@ namespace Sales_Tracker.Classes
 
             return thingName;
         }
+
         /// <summary>
         /// Reads a TAR file and returns the name of the top-most directory or file.
         /// </summary>
@@ -593,7 +592,7 @@ namespace Sales_Tracker.Classes
             // Create zip archive from temporary directory
             ZipFile.CreateFromDirectory(tempDirPath, finalZipPath);
 
-            Log.Write(4, $"Backed up '{uniqueName}'");
+            Log.Write(2, $"Backed up '{uniqueName}'");
 
             // Clean up temporary directory and files
             if (Directory.Exists(tempDirPath))
@@ -601,6 +600,7 @@ namespace Sales_Tracker.Classes
                 DeleteDirectory(tempDirPath, true);
             }
         }
+
         /// <summary>
         /// Returns a list of all the files in the directory. Also remove the file extension.
         /// </summary>
@@ -612,6 +612,7 @@ namespace Sales_Tracker.Classes
                 .Cast<string>()
                 .ToList();
         }
+
         /// <summary>
         /// Returns a list of all the directories in the specified directory.
         /// </summary>
@@ -619,6 +620,7 @@ namespace Sales_Tracker.Classes
         {
             return Directory.GetDirectories(directory).ToList();
         }
+
         /// <summary>
         /// Returns a list of all the directory names in the specified directory.
         /// </summary>

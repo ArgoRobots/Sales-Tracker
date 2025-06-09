@@ -136,7 +136,7 @@ namespace Sales_Tracker.Startup.Menus
             DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, filePath);
 
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
-            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, listOfDirectories, false);
+            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, listOfDirectories, false);
             DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
 
             ShowMainMenu();
@@ -215,6 +215,15 @@ namespace Sales_Tracker.Startup.Menus
                     }
                 }
             });
+        }
+        private void DisposeAllFileWatchers()
+        {
+            foreach (FileSystemWatcher watcher in fileWatchers.Values)
+            {
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose();
+            }
+            fileWatchers.Clear();
         }
 
         // Event handlers
@@ -371,8 +380,9 @@ namespace Sales_Tracker.Startup.Menus
 
             CustomControls.Rename_TextBox.Clear();
         }
-        public static void ShowMainMenu()
+        public void ShowMainMenu()
         {
+            DisposeAllFileWatchers();
             Startup_Form.Instance.Close();
 
             MainMenu_Form formMainMenu = new();

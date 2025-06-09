@@ -21,11 +21,8 @@ namespace Sales_Tracker.UI
         /// </summary>
         private class TextState(string text, int cursorPosition)
         {
-            private readonly string _text = text ?? "";
-            private readonly int _cursorPosition = cursorPosition >= 0 ? cursorPosition : 0;
-
-            public string Text => _text;
-            public int CursorPosition => _cursorPosition;
+            public string Text { get; } = text ?? "";
+            public int CursorPosition { get; } = cursorPosition >= 0 ? cursorPosition : 0;
         }
 
         // Main methods
@@ -268,16 +265,15 @@ namespace Sales_Tracker.UI
         }
 
         // Right click menu
-        private static Guna2Panel _rightClickTextBox_Panel;
-        public static Guna2Panel RightClickTextBox_Panel => _rightClickTextBox_Panel;
+        public static Guna2Panel RightClickTextBox_Panel { get; private set; }
         public static void ConstructRightClickTextBoxMenu()
         {
-            _rightClickTextBox_Panel = CustomControls.ConstructPanelForMenu(
+            RightClickTextBox_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth, 6 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickTextBox_Panel"
             );
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickTextBox_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickTextBox_Panel.Controls[0];
 
             Guna2Button selectAllBtn = CustomControls.ConstructBtnForMenu("Select all", CustomControls.PanelBtnWidth, false, flowPanel);
             selectAllBtn.Click += HandleSelectAll;
@@ -305,14 +301,14 @@ namespace Sales_Tracker.UI
         }
         private static void HandleSelectAll(object sender, EventArgs e)
         {
-            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             textBox.SelectAll();
             textBox.Focus();
             CustomControls.CloseAllPanels();
         }
         private static void HandleCopy(object sender, EventArgs e)
         {
-            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             if (textBox.SelectedText != "")
             {
                 Clipboard.SetText(textBox.SelectedText);
@@ -324,7 +320,7 @@ namespace Sales_Tracker.UI
             string clipboardText = Clipboard.GetText();
             if (string.IsNullOrEmpty(clipboardText)) { return; }
 
-            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             int cursorPosition = textBox.SelectionStart;
             string text = textBox.Text;
 
@@ -342,7 +338,7 @@ namespace Sales_Tracker.UI
         }
         private static void HandleCut(object sender, EventArgs e)
         {
-            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             if (textBox.SelectedText == "") { return; }
 
             Clipboard.SetText(textBox.SelectedText);
@@ -354,13 +350,13 @@ namespace Sales_Tracker.UI
         }
         private static void HandleUndo(object sender, EventArgs e)
         {
-            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             Undo(textBox);
             CustomControls.CloseAllPanels();
         }
         private static void HandleRedo(object sender, EventArgs e)
         {
-            Guna2TextBox textBox = (Guna2TextBox)_rightClickTextBox_Panel.Tag;
+            Guna2TextBox textBox = (Guna2TextBox)RightClickTextBox_Panel.Tag;
             Redo(textBox);
             CustomControls.CloseAllPanels();
         }
@@ -378,20 +374,20 @@ namespace Sales_Tracker.UI
 
             // Ensure the panel doesn't go off screen
             Rectangle screenBounds = Screen.FromControl(textBox).Bounds;
-            if (screenPoint.X + _rightClickTextBox_Panel.Width > screenBounds.Right)
+            if (screenPoint.X + RightClickTextBox_Panel.Width > screenBounds.Right)
             {
-                screenPoint.X = screenBounds.Right - _rightClickTextBox_Panel.Width - ReadOnlyVariables.OffsetRightClickPanel;
+                screenPoint.X = screenBounds.Right - RightClickTextBox_Panel.Width - ReadOnlyVariables.OffsetRightClickPanel;
             }
-            if (screenPoint.Y + _rightClickTextBox_Panel.Height > screenBounds.Bottom)
+            if (screenPoint.Y + RightClickTextBox_Panel.Height > screenBounds.Bottom)
             {
-                screenPoint.Y = screenBounds.Bottom - _rightClickTextBox_Panel.Height;
+                screenPoint.Y = screenBounds.Bottom - RightClickTextBox_Panel.Height;
             }
 
             // Show the panel at the calculated position
-            _rightClickTextBox_Panel.Tag = textBox;
-            textBox.FindForm().Controls.Add(_rightClickTextBox_Panel);
-            _rightClickTextBox_Panel.Location = textBox.Parent.PointToClient(screenPoint);
-            _rightClickTextBox_Panel.BringToFront();
+            RightClickTextBox_Panel.Tag = textBox;
+            textBox.FindForm().Controls.Add(RightClickTextBox_Panel);
+            RightClickTextBox_Panel.Location = textBox.Parent.PointToClient(screenPoint);
+            RightClickTextBox_Panel.BringToFront();
         }
     }
 }

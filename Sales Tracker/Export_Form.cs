@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Ookii.Dialogs.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -53,7 +54,7 @@ namespace Sales_Tracker
         }
         private void Export_Form_Shown(object sender, EventArgs e)
         {
-            BeginInvoke(() => Export_Button.Focus());  // This fixes a bug
+            ExportCompany_Label.Focus();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
@@ -97,7 +98,7 @@ namespace Sales_Tracker
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
             // Select folder
-            Ookii.Dialogs.WinForms.VistaFolderBrowserDialog dialog = new();
+            VistaFolderBrowserDialog dialog = new();
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {

@@ -99,7 +99,7 @@ namespace Sales_Tracker
                 // Apply colors for each translated log level
                 if (translatedLogLevelColors != null)
                 {
-                    foreach (var logLevel in translatedLogLevelColors)
+                    foreach (KeyValuePair<string, Color> logLevel in translatedLogLevelColors)
                     {
                         ApplyColorToLogLevel(logLevel.Key, logLevel.Value);
                     }

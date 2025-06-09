@@ -31,7 +31,6 @@ namespace Sales_Tracker.Classes
             {
                 GoogleCredential credential = GoogleCredentialsManager.GetCredentialsFromEnvironment();
 
-                // Create the sheets service with proper scopes
                 _sheetsService = new SheetsService(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = credential,
@@ -53,7 +52,8 @@ namespace Sales_Tracker.Classes
             string chartTitle,
             ChartType chartType,
             string column1Text,
-            string column2Text)
+            string column2Text,
+            CancellationToken cancellationToken = default)
         {
             if (_sheetsService == null && !InitializeService())
             {
@@ -61,10 +61,18 @@ namespace Sales_Tracker.Classes
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Loading_Form.ShowLoading("Exporting chart to Google Sheets...");
+            string operationMessage = "Exporting chart to Google Sheets...";
+
+            // Create a new cancellation token source that combines with the provided token
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            CancellationToken activeCancellationToken = combinedCts.Token;
+
+            Loading_Form.ShowLoading(operationMessage, combinedCts);
 
             try
             {
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 // Create a new spreadsheet
                 Spreadsheet spreadsheet = new()
                 {
@@ -84,12 +92,16 @@ namespace Sales_Tracker.Classes
                     ]
                 };
 
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 spreadsheet = await _sheetsService.Spreadsheets
                     .Create(spreadsheet)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
 
                 string spreadsheetId = spreadsheet.SpreadsheetId;
                 string sheetName = LanguageManager.TranslateString("Chart Data");
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Create drive service
                 DriveService driveService = new(new BaseClientService.Initializer
@@ -106,9 +118,11 @@ namespace Sales_Tracker.Classes
                     AllowFileDiscovery = false
                 };
 
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 await driveService.Permissions
                     .Create(permission, spreadsheetId)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
 
                 // Prepare the data
                 List<IList<object>> values =
@@ -121,8 +135,11 @@ namespace Sales_Tracker.Classes
 
                 foreach (KeyValuePair<string, double> item in data.OrderBy(x => x.Key))
                 {
+                    activeCancellationToken.ThrowIfCancellationRequested();
                     values.Add([item.Key, item.Value]);
                 }
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Write data to sheet
                 string range = $"'{sheetName}'!A1:B{values.Count}";
@@ -131,7 +148,10 @@ namespace Sales_Tracker.Classes
                 SpreadsheetsResource.ValuesResource.UpdateRequest updateRequest =
                     _sheetsService.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
                 updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-                await updateRequest.ExecuteAsync();
+
+                await updateRequest.ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Format headers
                 List<Request> requests =
@@ -149,6 +169,8 @@ namespace Sales_Tracker.Classes
                 );
                 requests.Add(chartRequest);
 
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 // Execute all formatting requests
                 BatchUpdateSpreadsheetRequest batchUpdateRequest = new()
                 {
@@ -157,7 +179,9 @@ namespace Sales_Tracker.Classes
 
                 await _sheetsService.Spreadsheets
                     .BatchUpdate(batchUpdateRequest, spreadsheetId)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Auto-resize columns
                 DimensionRange dimensionRange = new()
@@ -181,18 +205,26 @@ namespace Sales_Tracker.Classes
                     {
                         Requests = [autoResizeRequest]
                     }, spreadsheetId)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 OpenGoogleSheet(spreadsheetId);
                 TrackGoogleSheetsExport(stopwatch);
             }
+            catch (OperationCanceledException)
+            {
+                // Don't show error message for cancellation
+                throw;
+            }
             catch (Exception ex)
             {
                 ShowErrorMessageOnUIThread("Export Error", $"Failed to export chart to Google Sheets: {ex.Message}");
+                throw;
             }
             finally
             {
-                Loading_Form.CompleteOperation();
+                Loading_Form.CompleteOperation(operationMessage);
             }
         }
 
@@ -200,7 +232,8 @@ namespace Sales_Tracker.Classes
         public static async Task ExportMultiDataSetChartToGoogleSheetsAsync(
             Dictionary<string, Dictionary<string, double>> data,
             string chartTitle,
-            ChartType chartType)
+            ChartType chartType,
+            CancellationToken cancellationToken = default)
         {
             if (_sheetsService == null && !InitializeService())
             {
@@ -208,10 +241,18 @@ namespace Sales_Tracker.Classes
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Loading_Form.ShowLoading("Exporting chart to Google Sheets...");
+            string operationMessage = "Exporting multi-dataset chart to Google Sheets...";
+
+            // Create a new cancellation token source that combines with the provided token
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            CancellationToken activeCancellationToken = combinedCts.Token;
+
+            Loading_Form.ShowLoading(operationMessage, combinedCts);
 
             try
             {
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 string sheetName = LanguageManager.TranslateString("Chart Data");
 
                 // Create a new spreadsheet
@@ -233,11 +274,15 @@ namespace Sales_Tracker.Classes
                     ]
                 };
 
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 spreadsheet = await _sheetsService.Spreadsheets
                     .Create(spreadsheet)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
 
                 string spreadsheetId = spreadsheet.SpreadsheetId;
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Create drive service
                 DriveService driveService = new(new BaseClientService.Initializer
@@ -256,7 +301,9 @@ namespace Sales_Tracker.Classes
 
                 await driveService.Permissions
                     .Create(permission, spreadsheetId)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Get series names and prepare headers
                 List<string> seriesNames = data.First().Value.Keys.ToList();
@@ -270,6 +317,8 @@ namespace Sales_Tracker.Classes
 
                 foreach (KeyValuePair<string, Dictionary<string, double>> dateEntry in data.OrderBy(x => x.Key))
                 {
+                    activeCancellationToken.ThrowIfCancellationRequested();
+
                     List<object> row = [dateEntry.Key];
                     foreach (string seriesName in orderedSeriesNames)
                     {
@@ -278,13 +327,17 @@ namespace Sales_Tracker.Classes
                     values.Add(row);
                 }
 
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 // Write data to sheet
                 string range = $"{sheetName}!A1:{(char)('A' + seriesNames.Count)}{values.Count}";
                 ValueRange valueRange = new() { Values = values };
 
                 SpreadsheetsResource.ValuesResource.UpdateRequest updateRequest = _sheetsService.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
                 updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-                await updateRequest.ExecuteAsync();
+                await updateRequest.ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Format headers and numbers
                 List<Request> requests =
@@ -295,6 +348,7 @@ namespace Sales_Tracker.Classes
                 // Format number columns
                 for (int i = 1; i <= seriesNames.Count; i++)
                 {
+                    activeCancellationToken.ThrowIfCancellationRequested();
                     requests.Add(CreateNumberFormatRequest(1, values.Count - 1, i, i, "#,##0.00"));
                 }
 
@@ -314,6 +368,8 @@ namespace Sales_Tracker.Classes
                 );
                 requests.Add(chartRequest);
 
+                activeCancellationToken.ThrowIfCancellationRequested();
+
                 // Execute all formatting requests
                 BatchUpdateSpreadsheetRequest batchUpdateRequest = new()
                 {
@@ -322,7 +378,9 @@ namespace Sales_Tracker.Classes
 
                 await _sheetsService.Spreadsheets
                     .BatchUpdate(batchUpdateRequest, spreadsheetId)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 // Auto-resize columns
                 DimensionRange dimensionRange = new()
@@ -346,26 +404,36 @@ namespace Sales_Tracker.Classes
                     {
                         Requests = [autoResizeRequest]
                     }, spreadsheetId)
-                    .ExecuteAsync();
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
 
                 OpenGoogleSheet(spreadsheetId);
                 TrackGoogleSheetsExport(stopwatch);
             }
+            catch (OperationCanceledException)
+            {
+                // Don't show error message for cancellation
+                throw;
+            }
             catch (Exception ex)
             {
                 ShowErrorMessageOnUIThread("Export Error", $"Failed to export multi-dataset chart to Google Sheets: {ex.Message}");
+                throw;
             }
             finally
             {
-                Loading_Form.CompleteOperation();
+                Loading_Form.CompleteOperation(operationMessage);
             }
         }
+
         private static void ShowErrorMessageOnUIThread(string title, string message)
         {
             MainMenu_Form.Instance.InvokeIfRequired(() =>
                 CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
             );
         }
+
         private static void TrackGoogleSheetsExport(Stopwatch stopwatch)
         {
             stopwatch.Stop();
@@ -385,12 +453,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static void OpenGoogleSheet(string spreadsheetId)
         {
-            string spreadsheetUrl = $"https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit";
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = spreadsheetUrl,
-                UseShellExecute = true
-            });
+            Tools.OpenLink($"https://docs.google.com/spreadsheets/d/{spreadsheetId}/edit");
         }
 
         // Helper methods for creating format requests

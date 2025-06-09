@@ -7,51 +7,29 @@ namespace Sales_Tracker.Theme
     /// </summary>
     public static class CustomColors
     {
-        // Control colors
-        private static Color _controlBack, _controlDisabledBack, _controlBorder, _controlUncheckedBorder, _controlPanelBorder;
-
-        // Text colors
-        private static Color _text, _grayText, _linkColor;
-
-        // File colors
-        private static Color _mouseHover;
-
-        // Panel colors
-        private static Color _panelBtn, _panelBtnHover;
-
-        // Background colors
-        private static Color _mainBackground, _headerBackground, _toolbarBackground, _contentPanelBackground;
-
-        // DataGridView theme
-        private static DataGridViewPresetThemes _dataGridViewTheme;
-
-        // Accent colors
-        private static Color _accentGreen;
-
         // Read-only accent colors that don't change with theme
         public static readonly Color AccentBlue = Color.FromArgb(25, 117, 197),
             AccentRed = Color.FromArgb(238, 89, 81),
             PastelBlue = Color.FromArgb(102, 153, 204),
             PastelGreen = Color.FromArgb(153, 204, 102);
 
-        // Control Properties
-        public static Color ControlBack => _controlBack;
-        public static Color ControlDisabledBack => _controlDisabledBack;
-        public static Color ControlBorder => _controlBorder;
-        public static Color ControlUncheckedBorder => _controlUncheckedBorder;
-        public static Color ControlPanelBorder => _controlPanelBorder;
-        public static Color Text => _text;
-        public static Color GrayText => _grayText;
-        public static Color LinkColor => _linkColor;
-        public static Color MouseHover => _mouseHover;
-        public static Color PanelBtn => _panelBtn;
-        public static Color PanelBtnHover => _panelBtnHover;
-        public static Color MainBackground => _mainBackground;
-        public static Color HeaderBackground => _headerBackground;
-        public static Color ToolbarBackground => _toolbarBackground;
-        public static Color ContentPanelBackground => _contentPanelBackground;
-        public static DataGridViewPresetThemes DataGridViewTheme => _dataGridViewTheme;
-        public static Color AccentGreen => _accentGreen;
+        public static Color ControlBack { get; private set; }
+        public static Color ControlDisabledBack { get; private set; }
+        public static Color ControlBorder { get; private set; }
+        public static Color ControlUncheckedBorder { get; private set; }
+        public static Color ControlPanelBorder { get; private set; }
+        public static Color Text { get; private set; }
+        public static Color GrayText { get; private set; }
+        public static Color LinkColor { get; private set; }
+        public static Color MouseHover { get; private set; }
+        public static Color PanelBtn { get; private set; }
+        public static Color PanelBtnHover { get; private set; }
+        public static Color MainBackground { get; private set; }
+        public static Color HeaderBackground { get; private set; }
+        public static Color ToolbarBackground { get; private set; }
+        public static Color ContentPanelBackground { get; private set; }
+        public static DataGridViewPresetThemes DataGridViewTheme { get; private set; }
+        public static Color AccentGreen { get; private set; }
 
         /// <summary>
         /// Sets all color values based on the current theme.
@@ -70,68 +48,68 @@ namespace Sales_Tracker.Theme
         private static void SetDarkThemeColors()
         {
             // Control colors
-            _controlBack = Color.FromArgb(62, 62, 66);
-            _controlDisabledBack = Color.Gray;
-            _controlBorder = Color.FromArgb(130, 130, 130);
-            _controlUncheckedBorder = Color.FromArgb(125, 137, 149);
-            _controlPanelBorder = Color.FromArgb(110, 110, 110);
+            ControlBack = Color.FromArgb(62, 62, 66);
+            ControlDisabledBack = Color.Gray;
+            ControlBorder = Color.FromArgb(130, 130, 130);
+            ControlUncheckedBorder = Color.FromArgb(125, 137, 149);
+            ControlPanelBorder = Color.FromArgb(110, 110, 110);
 
             // Text colors
-            _text = Color.White;
-            _grayText = Color.FromArgb(160, 160, 160);
-            _linkColor = Color.FromArgb(71, 157, 250);
+            Text = Color.White;
+            GrayText = Color.FromArgb(160, 160, 160);
+            LinkColor = Color.FromArgb(71, 157, 250);
 
             // File colors
-            _mouseHover = Color.FromArgb(77, 77, 77);
+            MouseHover = Color.FromArgb(77, 77, 77);
 
             // Panel colors
-            _panelBtn = Color.FromArgb(62, 62, 66);
-            _panelBtnHover = Color.FromArgb(90, 90, 94);
+            PanelBtn = Color.FromArgb(62, 62, 66);
+            PanelBtnHover = Color.FromArgb(90, 90, 94);
 
             // Background colors
-            _mainBackground = Color.FromArgb(40, 40, 40);
-            _headerBackground = Color.FromArgb(30, 30, 30);
-            _toolbarBackground = Color.FromArgb(20, 20, 20);
-            _contentPanelBackground = Color.FromArgb(50, 50, 50);
+            MainBackground = Color.FromArgb(40, 40, 40);
+            HeaderBackground = Color.FromArgb(30, 30, 30);
+            ToolbarBackground = Color.FromArgb(20, 20, 20);
+            ContentPanelBackground = Color.FromArgb(50, 50, 50);
 
             // Theme
-            _dataGridViewTheme = DataGridViewPresetThemes.Dark;
+            DataGridViewTheme = DataGridViewPresetThemes.Dark;
 
             // Accent colors
-            _accentGreen = Color.FromArgb(168, 233, 203);
+            AccentGreen = Color.FromArgb(168, 233, 203);
         }
         private static void SetLightThemeColors()
         {
             // Control colors
-            _controlBack = Color.FromArgb(220, 220, 220);
-            _controlDisabledBack = Color.LightGray;
-            _controlBorder = Color.FromArgb(150, 150, 150);
-            _controlUncheckedBorder = Color.FromArgb(125, 137, 149);
-            _controlPanelBorder = Color.FromArgb(50, 50, 50);
+            ControlBack = Color.FromArgb(220, 220, 220);
+            ControlDisabledBack = Color.LightGray;
+            ControlBorder = Color.FromArgb(150, 150, 150);
+            ControlUncheckedBorder = Color.FromArgb(125, 137, 149);
+            ControlPanelBorder = Color.FromArgb(50, 50, 50);
 
             // Text colors
-            _text = Color.Black;
-            _grayText = Color.Gray;
-            _linkColor = Color.FromArgb(71, 157, 250);
+            Text = Color.Black;
+            GrayText = Color.Gray;
+            LinkColor = Color.FromArgb(71, 157, 250);
 
             // File colors
-            _mouseHover = Color.FromArgb(229, 243, 255);
+            MouseHover = Color.FromArgb(229, 243, 255);
 
             // Panel colors
-            _panelBtn = Color.FromArgb(246, 246, 246);
-            _panelBtnHover = Color.FromArgb(214, 214, 214);
+            PanelBtn = Color.FromArgb(246, 246, 246);
+            PanelBtnHover = Color.FromArgb(214, 214, 214);
 
             // Background colors
-            _mainBackground = Color.FromArgb(240, 240, 240);
-            _headerBackground = Color.FromArgb(250, 250, 250);
-            _toolbarBackground = Color.FromArgb(204, 204, 204);
-            _contentPanelBackground = Color.FromArgb(250, 250, 250);
+            MainBackground = Color.FromArgb(240, 240, 240);
+            HeaderBackground = Color.FromArgb(250, 250, 250);
+            ToolbarBackground = Color.FromArgb(204, 204, 204);
+            ContentPanelBackground = Color.FromArgb(250, 250, 250);
 
             // Theme
-            _dataGridViewTheme = DataGridViewPresetThemes.White;
+            DataGridViewTheme = DataGridViewPresetThemes.White;
 
             // Accent colors
-            _accentGreen = Color.FromArgb(60, 160, 120);
+            AccentGreen = Color.FromArgb(60, 160, 120);
         }
     }
 }

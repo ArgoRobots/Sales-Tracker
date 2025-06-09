@@ -31,6 +31,7 @@ namespace Sales_Tracker.Settings
             AnimateButtons();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
+            LoadingPanel.CancelRequested += OnTranslationCancelled;
         }
         private void UpdateTheme()
         {
@@ -59,11 +60,20 @@ namespace Sales_Tracker.Settings
         }
         private void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
+            LoadingPanel.CancelRequested -= OnTranslationCancelled;
+
             // Cancel any ongoing translation
             _translationCts?.Cancel();
             _translationCts?.Dispose();
 
             CustomControls.CloseAllPanels();
+        }
+        private void OnTranslationCancelled(object sender, EventArgs e)
+        {
+            _translationCts?.Cancel();
+            LoadingPanel.HideLoadingScreen(this);
+            CustomMessageBox.Show("Translation Cancelled", "The language translation was cancelled.",
+                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
         }
 
         // Left menu buttons
@@ -136,17 +146,20 @@ namespace Sales_Tracker.Settings
         {
             try
             {
-                LoadingPanel.ShowLoadingScreen(this, "Translating application to new language...");
+                LoadingPanel.ShowLoadingScreen(this, "Translating application to new language...", true, _translationCts);
 
                 try
                 {
                     string currentLanguage = General_Form.Instance.Language_TextBox.Text;
                     bool success = await LanguageManager.UpdateLanguageTranslationMethod(currentLanguage, includeGeneralForm, _translationCts.Token);
 
-                    if (success)
+                    if (success && !_translationCts.Token.IsCancellationRequested)
                     {
                         _originalLanguage = General_Form.Instance.Language_TextBox.Text;
                         UpdateLanguage();
+                        LoadingPanel.HideLoadingScreen(this);
+                        CustomMessageBox.Show("Translation Complete", "Language has been successfully updated.",
+                            CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                     }
                 }
                 catch (OperationCanceledException)
@@ -156,11 +169,8 @@ namespace Sales_Tracker.Settings
             }
             catch (Exception ex)
             {
-                Log.Error_GetTranslation(ex.Message);
-            }
-            finally
-            {
                 LoadingPanel.HideLoadingScreen(this);
+                Log.Error_GetTranslation(ex.Message);
             }
         }
         private bool HasLanguageChanged()

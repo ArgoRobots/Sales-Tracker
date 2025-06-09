@@ -10,12 +10,11 @@ namespace Sales_Tracker
     {
         // Properties
         private static Companies_Form _instance;
-        private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
 
         // Getters
         public static Companies_Form Instance => _instance;
-        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
+        public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
         // Init.
         public Companies_Form()
@@ -89,7 +88,7 @@ namespace Sales_Tracker
             DataGridViewManager.DataGridViewRowsAdded(company_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             string message = $"Added company '{name}'";
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 2, message);
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 2, message);
 
             Company_TextBox.Clear();
             CustomControls.SetGTextBoxToValid(Company_TextBox);

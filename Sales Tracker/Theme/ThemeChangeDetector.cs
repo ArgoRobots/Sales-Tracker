@@ -7,13 +7,14 @@ namespace Sales_Tracker.Theme
     {
         private static bool _isListeningForThemeChanges = false;
         private static RegistryKey _personalizeKey = null;
-        public static event EventHandler SystemThemeChanged;
         private static RegistryWatcher _watcher;
 
         public static void StartListeningForThemeChanges()
         {
             if (_isListeningForThemeChanges)
+            {
                 return;
+            }
 
             try
             {

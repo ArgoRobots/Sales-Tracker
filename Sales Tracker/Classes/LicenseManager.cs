@@ -35,7 +35,7 @@ namespace Sales_Tracker.Classes
             try
             {
                 // Check if we have internet connectivity
-                if (!IsInternetAvailable())
+                if (!IsArgoServerAvailable())
                 {
                     // If no internet, check the saved license status
                     return Properties.Settings.Default.LicenseActivated;
@@ -97,10 +97,10 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Checks if the application can connect to the internet.
+        /// Checks if the application can connect to argorobots.com.
         /// </summary>
-        /// <returns>True if internet is available, false otherwise</returns>
-        private static bool IsInternetAvailable()
+        /// <returns>True if available, otherwise false</returns>
+        private static bool IsArgoServerAvailable()
         {
             try
             {

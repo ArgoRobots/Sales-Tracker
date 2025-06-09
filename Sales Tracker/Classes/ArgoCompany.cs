@@ -137,7 +137,7 @@ namespace Sales_Tracker.Classes
                 {
                     return;
                 }
-                GetStarted_Form.ShowMainMenu();
+                GetStarted_Form.Instance.ShowMainMenu();
             }
         }
 
@@ -159,7 +159,7 @@ namespace Sales_Tracker.Classes
 
             // Import company data
             List<string> dirNames = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
-            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, Directories.ImportType.ArgoCompany, dirNames, false);
+            Directories.ImportArgoTarFile(Directories.ArgoCompany_file, Directories.AppData_dir, dirNames, false);
             DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
 
             return true;

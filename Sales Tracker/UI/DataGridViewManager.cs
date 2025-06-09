@@ -592,8 +592,8 @@ namespace Sales_Tracker.UI
         }
         private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
         {
-            FlowLayoutPanel flowPanel = _rightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-            _rightClickDataGridView_Panel.Tag = grid;  // This is used for the button events
+            FlowLayoutPanel flowPanel = RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
+            RightClickDataGridView_Panel.Tag = grid;  // This is used for the button events
 
             // First, hide all controls
             foreach (Control control in flowPanel.Controls)
@@ -642,8 +642,8 @@ namespace Sales_Tracker.UI
             }
 
             // Add DeleteBtn
-            _rightClickDataGridView_DeleteBtn.Visible = true;
-            flowPanel.Controls.SetChildIndex(_rightClickDataGridView_DeleteBtn, currentIndex);
+            RightClickDataGridView_DeleteBtn.Visible = true;
+            flowPanel.Controls.SetChildIndex(RightClickDataGridView_DeleteBtn, currentIndex);
         }
         private static bool AnySelectedRowHasReceipt(DataGridView grid)
         {
@@ -669,19 +669,19 @@ namespace Sales_Tracker.UI
             SetHorizontalPosition(grid, e, formWidth);
             SetVerticalPosition(grid, info, formHeight);
 
-            CustomControls.SetRightClickMenuHeight(_rightClickDataGridView_Panel);
-            grid.Parent.Controls.Add(_rightClickDataGridView_Panel);
-            _rightClickDataGridView_Panel.BringToFront();
+            CustomControls.SetRightClickMenuHeight(RightClickDataGridView_Panel);
+            grid.Parent.Controls.Add(RightClickDataGridView_Panel);
+            RightClickDataGridView_Panel.BringToFront();
         }
         private static void SetHorizontalPosition(Guna2DataGridView grid, MouseEventArgs e, int formWidth)
         {
-            if (grid.Left + _rightClickDataGridView_Panel.Width + e.X - ReadOnlyVariables.OffsetRightClickPanel + ReadOnlyVariables.PaddingRightClickPanel > formWidth)
+            if (grid.Left + RightClickDataGridView_Panel.Width + e.X - ReadOnlyVariables.OffsetRightClickPanel + ReadOnlyVariables.PaddingRightClickPanel > formWidth)
             {
-                _rightClickDataGridView_Panel.Left = formWidth - _rightClickDataGridView_Panel.Width - ReadOnlyVariables.PaddingRightClickPanel;
+                RightClickDataGridView_Panel.Left = formWidth - RightClickDataGridView_Panel.Width - ReadOnlyVariables.PaddingRightClickPanel;
             }
             else
             {
-                _rightClickDataGridView_Panel.Left = grid.Left + e.X - ReadOnlyVariables.OffsetRightClickPanel;
+                RightClickDataGridView_Panel.Left = grid.Left + e.X - ReadOnlyVariables.OffsetRightClickPanel;
             }
         }
         private static void SetVerticalPosition(Guna2DataGridView grid, DataGridView.HitTestInfo info, int formHeight)
@@ -711,13 +711,13 @@ namespace Sales_Tracker.UI
 
             int rowTop = headerHeight + ((visibleRowsBeforeTarget + 1) * rowHeight) - scrollOffset + grid.Top;
 
-            if (rowTop + _rightClickDataGridView_Panel.Height > formHeight - ReadOnlyVariables.PaddingRightClickPanel)
+            if (rowTop + RightClickDataGridView_Panel.Height > formHeight - ReadOnlyVariables.PaddingRightClickPanel)
             {
-                _rightClickDataGridView_Panel.Top = formHeight - _rightClickDataGridView_Panel.Height - ReadOnlyVariables.PaddingRightClickPanel;
+                RightClickDataGridView_Panel.Top = formHeight - RightClickDataGridView_Panel.Height - ReadOnlyVariables.PaddingRightClickPanel;
             }
             else
             {
-                _rightClickDataGridView_Panel.Top = rowTop;
+                RightClickDataGridView_Panel.Top = rowTop;
             }
         }
 
@@ -1176,24 +1176,21 @@ namespace Sales_Tracker.UI
             }
         }
 
-        // Right click row properties
-        private static Guna2Panel _rightClickDataGridView_Panel;
         private static Guna2Button rightClickDataGridView_ModifyBtn, rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn, rightClickDataGridView_ShowItemsBtn;
-        private static Guna2Button _rightClickDataGridView_DeleteBtn;
 
         // Right click row getters
-        public static Guna2Panel RightClickDataGridView_Panel => _rightClickDataGridView_Panel;
-        public static Guna2Button RightClickDataGridView_DeleteBtn => _rightClickDataGridView_DeleteBtn;
+        public static Guna2Panel RightClickDataGridView_Panel { get; private set; }
+        public static Guna2Button RightClickDataGridView_DeleteBtn { get; private set; }
 
         // Right click row methods
         public static void ConstructRightClickRowMenu()
         {
-            _rightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
+            RightClickDataGridView_Panel = CustomControls.ConstructPanelForMenu(
                 new Size(CustomControls.PanelWidth, 5 * CustomControls.PanelButtonHeight + CustomControls.SpaceForPanel),
                 "rightClickDataGridView_Panel"
             );
 
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_rightClickDataGridView_Panel.Controls[0];
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickDataGridView_Panel.Controls[0];
 
             rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, true, flowPanel);
             rightClickDataGridView_ModifyBtn.Click += ModifyRow;
@@ -1207,20 +1204,20 @@ namespace Sales_Tracker.UI
             rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
             rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
 
-            _rightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
-            _rightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
-            _rightClickDataGridView_DeleteBtn.Click += DeleteRow;
+            RightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
+            RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
+            RightClickDataGridView_DeleteBtn.Click += DeleteRow;
 
-            CustomControls.ConstructKeyShortcut("Del", _rightClickDataGridView_DeleteBtn);
+            CustomControls.ConstructKeyShortcut("Del", RightClickDataGridView_DeleteBtn);
         }
         private static void ModifyRow(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             Tools.OpenForm(new ModifyRow_Form(grid.SelectedRows[0]));
         }
         private static void MoveRows(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             List<DataGridViewRow> selectedRows = grid.SelectedRows.Cast<DataGridViewRow>().ToList();
             if (selectedRows.Count == 0) { return; }
 
@@ -1437,17 +1434,17 @@ namespace Sales_Tracker.UI
         }
         private static void ExportReceipt(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             ReceiptManager.ExportSelectedReceipts(grid);
         }
         private static void ShowItems(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             Tools.OpenForm(new ItemsInTransaction_Form(grid.SelectedRows[0]));
         }
         private static void DeleteRow(object sender, EventArgs e)
         {
-            Guna2DataGridView grid = (Guna2DataGridView)_rightClickDataGridView_Panel.Tag;
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             int index = grid.SelectedRows[^1].Index;
 
             // Delete all selected rows

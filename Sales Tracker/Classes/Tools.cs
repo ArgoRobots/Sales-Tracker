@@ -1,5 +1,4 @@
-﻿using Guna.UI2.WinForms;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 
 namespace Sales_Tracker.Classes
@@ -84,7 +83,8 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string GetVersionNumber()
         {
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+            return $"{version.Major}.{version.Minor}.{version.Build}";
         }
 
         /// <summary>
@@ -93,27 +93,6 @@ namespace Sales_Tracker.Classes
         public static void ShowFileInFolder(string filePath)
         {
             Process.Start("explorer.exe", $"/select,\"{filePath}\"");
-        }
-
-        // TextBoxes
-        /// <summary>
-        /// Returns the first focused Guna2TextBox found, or null if none are found.
-        /// </summary>
-        public static Guna2TextBox? FindSelectedGTextBox(Control control)
-        {
-            foreach (Control childControl in control.Controls)
-            {
-                if (control is Guna2TextBox textBox && textBox.Focused)
-                {
-                    return textBox;
-                }
-                Guna2TextBox? result = FindSelectedGTextBox(childControl);
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-            return null;
         }
 
         // Strings

@@ -7,7 +7,7 @@
     {
         /// <summary>
         /// Creates an encrypted secrets file from the current .env file.
-        /// This should be run during your build process to generate the encrypted file.
+        /// This should be run during the build process to generate the encrypted file.
         /// </summary>
         public static void CreateEncryptedSecretsFile(string envFilePath)
         {

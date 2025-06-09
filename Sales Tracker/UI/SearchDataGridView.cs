@@ -691,8 +691,6 @@ namespace Sales_Tracker.UI
 
         private sealed class SearchTerm
         {
-            // Properties
-            private readonly string _text;
             private readonly SearchTermType _type;
 
             private SearchTerm(string text, SearchTermType type)
@@ -707,12 +705,12 @@ namespace Sales_Tracker.UI
                     throw new ArgumentException("Search term cannot be both excluded and required.");
                 }
 
-                _text = text.Trim();
+                Text = text.Trim();
                 _type = type;
             }
 
             // Getters
-            public string Text => _text;
+            public string Text { get; }
             public bool IsExactPhrase => _type.HasFlag(SearchTermType.ExactPhrase);
             public bool IsExclusion => _type.HasFlag(SearchTermType.Exclusion);
             public bool IsRequired => _type.HasFlag(SearchTermType.Required);

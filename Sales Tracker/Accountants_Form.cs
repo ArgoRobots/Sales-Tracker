@@ -10,12 +10,11 @@ namespace Sales_Tracker
     {
         // Properties
         private static Accountants_Form _instance;
-        private static readonly List<string> _thingsThatHaveChangedInFile = [];
         private readonly MainMenu_Form.SelectedOption oldOption;
 
         // Getters
         public static Accountants_Form Instance => _instance;
-        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
+        public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
         // Init.
         public Accountants_Form()
@@ -87,7 +86,7 @@ namespace Sales_Tracker
             DataGridViewManager.DataGridViewRowsAdded(accountant_DataGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
 
             string message = $"Added accountant '{name}'";
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 2, message);
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 2, message);
 
             Accountant_TextBox.Clear();
             CustomControls.SetGTextBoxToValid(Accountant_TextBox);

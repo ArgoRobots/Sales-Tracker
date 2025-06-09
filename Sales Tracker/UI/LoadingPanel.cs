@@ -17,6 +17,12 @@ namespace Sales_Tracker.UI
         private static Timer animationTimer;
         private static Guna2WinProgressIndicator progressIndicator;
         private static Panel animationPanel;
+        private static Guna2Button cancelButton;
+        private static CancellationTokenSource cancellationTokenSource;
+        private static Control currentControl;
+
+        // Events
+        public static event EventHandler CancelRequested;
 
         // Getters and setters
         public static Panel BlankLoadingPanelInstance { get; private set; }
@@ -58,6 +64,16 @@ namespace Sales_Tracker.UI
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
+            // Create cancel button
+            cancelButton = new Guna2Button
+            {
+                Text = "Cancel",
+                Size = new Size(200, 45),
+                Font = new Font("Segoe UI", 11, FontStyle.Regular)
+            };
+            cancelButton.Click += CancelButton_Click;
+            ThemeManager.MakeGButtonBlueSecondary(cancelButton);
+
             // Create a timer for smooth animation
             animationTimer = new Timer
             {
@@ -69,6 +85,7 @@ namespace Sales_Tracker.UI
             animationPanel.Controls.Add(progressIndicator);
             LoadingPanelInstance.Controls.Add(animationPanel);
             LoadingPanelInstance.Controls.Add(messageLabel);
+            LoadingPanelInstance.Controls.Add(cancelButton);
         }
         private static void AnimationTimer_Tick(object sender, EventArgs e)
         {
@@ -81,13 +98,29 @@ namespace Sales_Tracker.UI
                 }));
             }
         }
+        private static void CancelButton_Click(object sender, EventArgs e)
+        {
+            // Cancel the operation
+            cancellationTokenSource?.Cancel();
+
+            // Hide the loading panel from the current control
+            if (currentControl != null)
+            {
+                HideLoadingScreen(currentControl);
+            }
+
+            // Fire the cancel requested event for any additional handling
+            CancelRequested?.Invoke(null, EventArgs.Empty);
+        }
 
         /// <summary>
         /// Displays a loading screen with a progress indicator and a message over a specified control.
         /// </summary>
-        public static void ShowLoadingScreen(Control control, string message)
+        public static void ShowLoadingScreen(Control control, string message, bool showCancelButton = false, CancellationTokenSource cancellationTokenSource = null)
         {
             string translatedMessage = LanguageManager.TranslateString(message);
+            LoadingPanel.cancellationTokenSource = cancellationTokenSource;
+            currentControl = control; // Store the current control
 
             LoadingPanelInstance.Size = control.Size;
             control.Controls.Add(LoadingPanelInstance);
@@ -111,6 +144,15 @@ namespace Sales_Tracker.UI
             );
             messageLabel.ForeColor = CustomColors.Text;
 
+            cancelButton.Visible = showCancelButton;
+            if (showCancelButton)
+            {
+                cancelButton.Location = new Point(
+                    (LoadingPanelInstance.Width - cancelButton.Width) / 2,
+                    animationPanel.Bottom + 80
+                );
+            }
+
             LoadingPanelInstance.BringToFront();
 
             // Start the progress indicator animation
@@ -129,7 +171,8 @@ namespace Sales_Tracker.UI
         public static void HideLoadingScreen(Control control)
         {
             animationTimer.Stop();
-            progressIndicator?.Stop();
+            progressIndicator.Stop();
+            currentControl = null;
 
             control.InvokeIfRequired(() =>
             {

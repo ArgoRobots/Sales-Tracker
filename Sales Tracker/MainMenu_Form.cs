@@ -21,13 +21,12 @@ namespace Sales_Tracker
 
         // Proprties
         private static MainMenu_Form _instance;
-        private static readonly List<string> _thingsThatHaveChangedInFile = [], _settingsThatHaveChangedInFile = [];
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
-        public static List<string> ThingsThatHaveChangedInFile => _thingsThatHaveChangedInFile;
-        public static List<string> SettingsThatHaveChangedInFile => _settingsThatHaveChangedInFile;
+        public static List<string> ThingsThatHaveChangedInFile { get; } = [];
+        public static List<string> SettingsThatHaveChangedInFile { get; } = [];
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static string CurrencySymbol { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -123,8 +122,8 @@ namespace Sales_Tracker
         }
         public void ResetData()
         {
-            _categoryPurchaseList.Clear();
-            _categorySaleList.Clear();
+            CategoryPurchaseList.Clear();
+            CategorySaleList.Clear();
 
             _accountantList.Clear();
             _companyList.Clear();
@@ -138,8 +137,8 @@ namespace Sales_Tracker
         }
         public void LoadData()
         {
-            LoadCategoriesFromFile(Directories.CategoryPurchases_file, _categoryPurchaseList);
-            LoadCategoriesFromFile(Directories.CategorySales_file, _categorySaleList);
+            LoadCategoriesFromFile(Directories.CategoryPurchases_file, CategoryPurchaseList);
+            LoadCategoriesFromFile(Directories.CategorySales_file, CategorySaleList);
 
             _accountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
             _companyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
@@ -1235,7 +1234,7 @@ namespace Sales_Tracker
             UpdateMainMenuFormText();
 
             string message = $"Renamed program to: {CompanyName_Label.Text}";
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(_thingsThatHaveChangedInFile, 3, message);
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(ThingsThatHaveChangedInFile, 3, message);
         }
         private void CloseRenameCompany()
         {
@@ -1442,26 +1441,23 @@ namespace Sales_Tracker
             _purchase_DataGridView.Sort(_purchase_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
         }
 
-        // List properties
-        private readonly List<Category> _categorySaleList = [];
-        private readonly List<Category> _categoryPurchaseList = [];
         private List<string> _accountantList = [];
         private List<string> _companyList = [];
 
         // List getters
-        public List<Category> CategorySaleList => _categorySaleList;
-        public List<Category> CategoryPurchaseList => _categoryPurchaseList;
+        public List<Category> CategorySaleList { get; } = [];
+        public List<Category> CategoryPurchaseList { get; } = [];
         public List<string> AccountantList => _accountantList;
         public List<string> CompanyList => _companyList;
 
         // List methods
         public List<string> GetCategorySaleNames()
         {
-            return _categorySaleList.Select(s => s.Name).ToList();
+            return CategorySaleList.Select(s => s.Name).ToList();
         }
         public List<string> GetCategoryPurchaseNames()
         {
-            return _categoryPurchaseList.Select(p => p.Name).ToList();
+            return CategoryPurchaseList.Select(p => p.Name).ToList();
         }
         public static void AddProductToCategoryByName(List<Category> categoryList, string categoryName, Product product)
         {
@@ -1589,12 +1585,12 @@ namespace Sales_Tracker
         /// Gets a list of formatted product names for items available for sale.
         /// Format: "CompanyOfOrigin > CategoryName > ProductName"
         /// </summary>
-        public List<string> GetProductSaleNames() => GetFormattedProductNames(_categorySaleList);
+        public List<string> GetProductSaleNames() => GetFormattedProductNames(CategorySaleList);
         /// <summary>
         /// Gets a list of formatted product names for items available for purchase.
         /// Format: "CompanyOfOrigin > CategoryName > ProductName"
         /// </summary>
-        public List<string> GetProductPurchaseNames() => GetFormattedProductNames(_categoryPurchaseList);
+        public List<string> GetProductPurchaseNames() => GetFormattedProductNames(CategoryPurchaseList);
         /// <summary>
         /// Helper method to format product names from a category list.
         /// </summary>
@@ -1879,11 +1875,11 @@ namespace Sales_Tracker
             List<Category> categoryList;
             if (option == SelectedOption.CategoryPurchases || option == SelectedOption.ProductPurchases)
             {
-                categoryList = _categoryPurchaseList;
+                categoryList = CategoryPurchaseList;
             }
             else
             {
-                categoryList = _categorySaleList;
+                categoryList = CategorySaleList;
             }
 
             string json = JsonConvert.SerializeObject(categoryList, Formatting.Indented);

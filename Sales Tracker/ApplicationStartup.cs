@@ -121,7 +121,7 @@ namespace Sales_Tracker
 
                 // Import company data
                 List<string> dirNames = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
-                Directories.ImportArgoTarFile(filePath, Directories.AppData_dir, Directories.ImportType.ArgoCompany, dirNames, false);
+                Directories.ImportArgoTarFile(filePath, Directories.AppData_dir, dirNames, false);
                 DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
 
                 MainMenu_Form form = new();

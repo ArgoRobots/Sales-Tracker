@@ -1,38 +1,49 @@
 ﻿namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Provides functionality to load environment variables from a .env file (development) 
-    /// or encrypted secrets file (production) and access them throughout the application.
+    /// Provides functionality to load environment variables from encrypted secrets file
+    /// and access them throughout the application.
     /// </summary>
     public static class DotEnv
     {
         private static readonly Dictionary<string, string> envVars = [];
 
         /// <summary>
-        /// Loads environment variables from either .env file (development) or encrypted secrets (production).
-        /// Automatically creates encrypted secrets file (development).
+        /// Loads environment variables from encrypted secrets file.
+        /// In development (Visual Studio) it, automatically creates an encrypted secrets file from the .env.
         /// </summary>
         public static void Load()
         {
-            // Check if we have a .env file for development
-            string envFilePath = FindFileRelativeToSolution(".env");
-
-            if (envFilePath != null)
+            if (IsRunningInVisualStudio())
             {
-                // Development mode - use .env file
-                LoadFromEnvFile(envFilePath);
+                string envFilePath = FindEnvRelativeToSolution();
 
-                ProductionSecretsManager.CreateEncryptedSecretsFile(envFilePath);
+                if (envFilePath != null && File.Exists(envFilePath))
+                {
+                    ProductionSecretsManager.CreateEncryptedSecretsFile(envFilePath);
+                }
             }
-            else if (File.Exists(Directories.SecretsFilePath))
+
+            if (File.Exists(Directories.SecretsFilePath))
             {
-                // Production mode - use encrypted secrets
                 LoadFromEncryptedSecrets();
             }
             else
             {
-                Log.Error_ENVFileNotFound($".env or {Path.GetFileName(Directories.SecretsFilePath)}");
+                Log.Error_ENVFileNotFound($"Encrypted secrets file: {Path.GetFileName(Directories.SecretsFilePath)}");
             }
+        }
+
+        /// <summary>
+        /// Determines if the application is running in Visual Studio development environment.
+        /// </summary>
+        private static bool IsRunningInVisualStudio()
+        {
+            // Check for Visual Studio specific environment variables
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VisualStudioVersion")) ||
+                   !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSAPPIDDIR")) ||
+                   System.Diagnostics.Debugger.IsAttached ||
+                   Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == null;
         }
         private static void LoadFromEncryptedSecrets()
         {
@@ -48,26 +59,6 @@
             catch (Exception ex)
             {
                 Log.Write(0, $"Failed to load encrypted secrets: {ex.Message}");
-            }
-        }
-        private static void LoadFromEnvFile(string envFilePath)
-        {
-            foreach (string line in File.ReadAllLines(envFilePath))
-            {
-                string[] parts = line.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
-
-                if (parts.Length != 2) { continue; }
-
-                string key = parts[0].Trim();
-                string value = parts[1].Trim();
-
-                // Remove quotes if present
-                if (value.StartsWith('\"') && value.EndsWith('\"'))
-                {
-                    value = value.Substring(1, value.Length - 2);
-                }
-
-                envVars[key] = value;
             }
         }
 
@@ -88,9 +79,10 @@
         /// <summary>
         /// Locates a file by searching up through the directory hierarchy from the current directory.
         /// </summary>
-        private static string? FindFileRelativeToSolution(string fileName)
+        private static string? FindEnvRelativeToSolution()
         {
             string currentDir = Directory.GetCurrentDirectory();
+            string fileName = ".env";
 
             // Navigate up until we find either the solution file or the .env file
             while (!string.IsNullOrEmpty(currentDir))

@@ -345,6 +345,11 @@ namespace Sales_Tracker.Charts
                         break;
                 }
             }
+            catch (OperationCanceledException)
+            {
+                // Don't show error message for user-initiated cancellation
+                // This is expected behavior, not an error
+            }
             catch (Exception ex)
             {
                 Log.Error_ExportingChart(ex.Message);
