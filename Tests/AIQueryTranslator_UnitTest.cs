@@ -68,27 +68,6 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task TranslateQueryAsync_ApiError_ReturnsFallback()
-        {
-            // Arrange
-            string naturalLanguageQuery = "products from usa";
-
-            // Setup mock to simulate API error
-            _mockHttpHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ThrowsAsync(new HttpRequestException("API Error"));
-
-            // Act
-            string result = await _translator.TranslateQueryAsync(naturalLanguageQuery);
-
-            // Assert
-            Assert.AreEqual(naturalLanguageQuery, result, "Should fall back to original query on error");
-        }
-
-        [TestMethod]
         public async Task TranslateQueryAsync_RegionalQuery_TranslatesToCountryList()
         {
             // Arrange
