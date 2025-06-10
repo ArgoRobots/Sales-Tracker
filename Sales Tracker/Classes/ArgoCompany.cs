@@ -16,17 +16,6 @@ namespace Sales_Tracker.Classes
         public static Mutex? ApplicationMutex { get; private set; } = null;
 
         /// <summary>
-        /// Initializes core components including encryption, cache files, and password management.
-        /// Run this when the program is started.
-        /// </summary>
-        public static void InitThings()
-        {
-            EncryptionManager.Initialize();
-            InitCacheFiles();
-            PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
-        }
-
-        /// <summary>
         /// Initializes cache directory and global application settings file.
         /// Creates necessary directories and files if they don't exist.
         /// </summary>

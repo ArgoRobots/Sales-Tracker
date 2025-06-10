@@ -16,8 +16,6 @@
                 throw new FileNotFoundException($"Environment file not found: {envFilePath}");
             }
 
-            EncryptionManager.Initialize();
-
             string envContent = File.ReadAllText(envFilePath);
             string encryptedContent = EncryptionManager.EncryptString(envContent, EncryptionManager.AesKey, EncryptionManager.AesIV);
             File.WriteAllText(Directories.SecretsFilePath, encryptedContent);
@@ -78,12 +76,6 @@
 
                 string key = parts[0].Trim();
                 string value = parts[1].Trim();
-
-                // Remove quotes if present
-                if (value.StartsWith('"') && value.EndsWith('"'))
-                {
-                    value = value.Substring(1, value.Length - 2);
-                }
 
                 variables[key] = value;
             }

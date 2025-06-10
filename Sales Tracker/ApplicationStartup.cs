@@ -28,8 +28,10 @@ namespace Sales_Tracker
             LoadingPanel.InitLoadingPanel();
 
             Directories.SetUniversalDirectories();
+            ArgoCompany.InitCacheFiles();
+            EncryptionManager.Initialize();
             DotEnv.Load();
-            ArgoCompany.InitThings();
+            PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
             LanguageManager.InitLanguageManager();
 
             TextBoxManager.ConstructRightClickTextBoxMenu();

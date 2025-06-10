@@ -4,9 +4,8 @@ using System.Text;
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// The EncryptionManager class provides functionality for encrypting and decrypting data, 
-    /// including streams and strings, using AES encryption. This class derives encryption keys 
-    /// from hardcoded secrets and machine-specific information.
+    /// The EncryptionManager class provides functionality for encrypting and decrypting data, including
+    /// streams and strings, using AES encryption. This class derives encryption keys from hardcoded secrets.
     /// </summary>
     public static class EncryptionManager
     {
@@ -17,8 +16,7 @@ namespace Sales_Tracker.Classes
         public static byte[] AesIV { get; private set; }
 
         /// <summary>
-        /// Initializes the encryption manager by deriving encryption keys from hardcoded secrets
-        /// and machine-specific information.
+        /// Initializes the encryption manager by deriving encryption keys from hardcoded secrets.
         /// </summary>
         public static void Initialize()
         {

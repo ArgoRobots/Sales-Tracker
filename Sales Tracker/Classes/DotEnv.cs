@@ -47,18 +47,11 @@
         }
         private static void LoadFromEncryptedSecrets()
         {
-            try
-            {
-                Dictionary<string, string> secrets = ProductionSecretsManager.LoadEncryptedSecrets();
+            Dictionary<string, string> secrets = ProductionSecretsManager.LoadEncryptedSecrets();
 
-                foreach (KeyValuePair<string, string> kvp in secrets)
-                {
-                    envVars[kvp.Key] = kvp.Value;
-                }
-            }
-            catch (Exception ex)
+            foreach (KeyValuePair<string, string> kvp in secrets)
             {
-                Log.Write(0, $"Failed to load encrypted secrets: {ex.Message}");
+                envVars[kvp.Key] = kvp.Value;
             }
         }
 
