@@ -70,11 +70,10 @@ namespace Sales_Tracker.UI
             }
 
             TranslationProgress_Form progressForm = new();
+            Tools.OpenForm(progressForm);
 
             try
             {
-                progressForm.Show();
-
                 // List of form types to process
                 Type[] formTypes =
                 [
@@ -140,6 +139,8 @@ namespace Sales_Tracker.UI
 
                 // Add other controls
                 controlsToTranslate.Add(CustomControls.ControlsDropDown_Button);
+                controlsToTranslate.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
+                controlsToTranslate.AddRange(MainMenu_Form.Instance.GetMainControls());
 
                 // Create output directory
                 string outputDirectory = Path.Combine(Directories.Downloads_dir, "Sales Tracker Translations");
@@ -556,10 +557,6 @@ namespace Sales_Tracker.UI
             // Collect texts based on control type
             switch (control)
             {
-                case Form form:
-                    AddTextToTranslate(textsToTranslate, controlKey, form.Text);
-                    break;
-
                 case LinkLabel linkLabel:
                     CollectLinkLabelTexts(linkLabel, textsToTranslate);
                     break;

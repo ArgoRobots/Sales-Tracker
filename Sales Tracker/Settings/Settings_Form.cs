@@ -151,7 +151,7 @@ namespace Sales_Tracker.Settings
                 try
                 {
                     string currentLanguage = General_Form.Instance.Language_TextBox.Text;
-                    bool success = await LanguageManager.UpdateLanguageTranslationMethod(currentLanguage, includeGeneralForm, _translationCts.Token);
+                    bool success = await LanguageManager.UpdateApplicationLanguage(currentLanguage, includeGeneralForm, _translationCts.Token);
 
                     if (success && !_translationCts.Token.IsCancellationRequested)
                     {

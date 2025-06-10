@@ -1908,7 +1908,7 @@ namespace Sales_Tracker
         }
 
         // Chart properties
-        private List<Control> analyticsControls;
+        private List<Control> _analyticsControls;
         private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
             _growthRates_Chart, _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCosts_Chart;
         private Guna2CustomCheckBox _includeFreeShipping_CheckBox;
@@ -1941,7 +1941,7 @@ namespace Sales_Tracker
         public Guna2CustomCheckBox IncludeFreeShipping_CheckBox => _includeFreeShipping_CheckBox;
 
         // Analytics charts methods
-        private List<Control> GetMainControlsList()
+        public List<Control> GetMainControls()
         {
             return [
                 _sale_DataGridView,
@@ -1954,15 +1954,16 @@ namespace Sales_Tracker
                 Total_Panel
             ];
         }
+        public List<Control> GetAnalyticsControls() => _analyticsControls;
         private void ShowMainControls()
         {
-            if (analyticsControls == null) { return; }
+            if (_analyticsControls == null) { return; }
 
-            foreach (Control control in GetMainControlsList())
+            foreach (Control control in GetMainControls())
             {
                 control.Visible = true;
             }
-            foreach (Control control in analyticsControls)
+            foreach (Control control in _analyticsControls)
             {
                 control.Visible = false;
             }
@@ -2002,7 +2003,7 @@ namespace Sales_Tracker
             _includeFreeShipping_Label.Click += IncludeFreeShipping_Label_Click;
             Controls.Add(_includeFreeShipping_Label);
 
-            analyticsControls =
+            _analyticsControls =
             [
                 _countriesOfOrigin_Chart,
                 _companiesOfOrigin_Chart,
@@ -2017,7 +2018,7 @@ namespace Sales_Tracker
                 _includeFreeShipping_Label
             ];
 
-            MouseClickChartManager.InitCharts(analyticsControls.OfType<GunaChart>().ToArray());
+            MouseClickChartManager.InitCharts(_analyticsControls.OfType<GunaChart>().ToArray());
         }
         private void IncludeFreeShipping_Label_Click(object? sender, EventArgs e)
         {
@@ -2058,11 +2059,11 @@ namespace Sales_Tracker
         {
             LoadOrRefreshAnalyticsCharts(false);
 
-            foreach (Control control in analyticsControls)
+            foreach (Control control in _analyticsControls)
             {
                 control.Visible = true;
             }
-            foreach (Control control in GetMainControlsList())
+            foreach (Control control in GetMainControls())
             {
                 control.Visible = false;
             }

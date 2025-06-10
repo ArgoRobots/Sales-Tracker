@@ -153,7 +153,7 @@ namespace Sales_Tracker.UI
         /// Updates the application's language translation by downloading and merging the language JSON
         /// </summary>
         /// <returns>True if translation was successful, false if failed (e.g., no internet)</returns>
-        public static async Task<bool> UpdateLanguageTranslationMethod(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
+        public static async Task<bool> UpdateApplicationLanguage(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
         {
             bool downloadSuccess = await DownloadAndMergeLanguageJson(targetLanguageName, cancellationToken);
 
@@ -163,7 +163,7 @@ namespace Sales_Tracker.UI
                 return false;
             }
 
-            await ApplyTranslationsToAllForms(targetLanguageName, includeGeneralForm, cancellationToken);
+            await ApplyTranslations(targetLanguageName, includeGeneralForm, cancellationToken);
             return true;
         }
 
@@ -178,7 +178,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Applies cached translations to all application forms and controls.
         /// </summary>
-        private static async Task ApplyTranslationsToAllForms(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
+        private static async Task ApplyTranslations(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
         {
             string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation(targetLanguageName);
             if (targetLanguageAbbreviation == null) { return; }
@@ -208,34 +208,39 @@ namespace Sales_Tracker.UI
 
             // Add other controls
             controlsList.Add(CustomControls.ControlsDropDown_Button);
+            controlsList.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
+            controlsList.AddRange(MainMenu_Form.Instance.GetMainControls());
 
             // Apply translations to all controls on UI thread
             List<Task> updateTasks = [];
 
-            foreach (Control form in controlsList)
+            foreach (Control control in controlsList)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (form.IsHandleCreated)
+                // Force handle creation if not created yet
+                if (!control.IsHandleCreated)
                 {
-                    TaskCompletionSource<bool> tcs = new();
-
-                    form.BeginInvoke(new Action(() =>
-                    {
-                        try
-                        {
-                            TranslateAllTextInControlFromCache(form, targetLanguageAbbreviation);
-
-                            tcs.SetResult(true);
-                        }
-                        catch (Exception ex)
-                        {
-                            tcs.SetException(ex);
-                        }
-                    }));
-
-                    updateTasks.Add(tcs.Task);
+                    nint _ = control.Handle;  // Accessing Handle property forces creation
                 }
+
+                TaskCompletionSource<bool> tcs = new();
+
+                control.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        TranslateAllTextInControlFromCache(control, targetLanguageAbbreviation);
+
+                        tcs.SetResult(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        tcs.SetException(ex);
+                    }
+                }));
+
+                updateTasks.Add(tcs.Task);
             }
 
             // Wait for all UI updates to complete
@@ -275,11 +280,6 @@ namespace Sales_Tracker.UI
 
             switch (control)
             {
-                case Form form:
-                    string translatedFormText = GetCachedTranslation(targetLanguageAbbreviation, controlKey, form.Text);
-                    form.InvokeIfRequired(() => form.Text = translatedFormText);
-                    break;
-
                 case LinkLabel linkLabel:
                     TranslateLinkLabelFromCache(linkLabel, targetLanguageAbbreviation);
                     AdjustLabelPosition(linkLabel);
