@@ -43,10 +43,10 @@ namespace Sales_Tracker
         {
             translatedLogLevelColors = new Dictionary<string, Color>
             {
-                { LanguageManager.TranslateString("[Error]"), CustomColors.AccentRed },
-                { LanguageManager.TranslateString("[Debug]"), Color.Aqua },
-                { LanguageManager.TranslateString("[General]"), Color.Aqua },
-                { LanguageManager.TranslateString("[Product manager]"), Color.Aqua }
+                { "[" + LanguageManager.TranslateString("Error") +"]", CustomColors.AccentRed },
+                { "[" +  LanguageManager.TranslateString("Debug") +"]", Color.Aqua },
+                { "[" +  LanguageManager.TranslateString("General" +"]"), Color.Aqua },
+                { "[" +  LanguageManager.TranslateString("Product manager") +"]", Color.Aqua }
             };
         }
         public void AnimateButtons()

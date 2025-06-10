@@ -151,6 +151,12 @@ namespace Sales_Tracker.UI
 
                 Dictionary<string, string> sourceTexts = CollectTextsToTranslate(controlsToTranslate);
 
+                Dictionary<string, string> singleStrings = CollectStringsToTranslate();
+                foreach (KeyValuePair<string, string> kvp in singleStrings)
+                {
+                    sourceTexts[kvp.Key] = kvp.Value;
+                }
+
                 // Pre-filter and optimize texts
                 sourceTexts = FilterAndOptimizeTexts(sourceTexts);
 
@@ -469,6 +475,65 @@ namespace Sales_Tracker.UI
             foreach (Control control in controls)
             {
                 CollectTextsRecursively(control, textsToTranslate);
+            }
+
+            return textsToTranslate;
+        }
+
+        /// <summary>
+        /// Collects all translatable strings used by TranslateString() method.
+        /// These are standalone strings that need translation but aren't tied to specific UI controls.
+        /// </summary>
+        private static Dictionary<string, string> CollectStringsToTranslate()
+        {
+            string[] singleStrings = [
+                "# of items",
+                "# of transactions",
+                "Accountants",
+                "Argo Sales tracker receipts for",
+                "Average purchase value",
+                "Average sale value",
+                "Categories",
+                "Chart data",
+                "Close",
+                "Companies",
+                "Countries",
+                "Date",
+                "Debug",
+                "Disable Windows hello",
+                "Enable windows hello",
+                "Error",
+                "Expenses",
+                "Expenses growth %",
+                "Export",
+                "General",
+                "Generate translations",
+                "Invalid licese key",
+                "Invalid licese",
+                "License verified successfully!",
+                "Move category to purchases",
+                "Move category to sales",
+                "No recently opened companies",
+                "No results",
+                "Product manager",
+                "Profits",
+                "Purchases",
+                "Revenue",
+                "Revenue growth %",
+                "Sales",
+                "Search for purchases",
+                "Search for sales",
+                "Total expenses",
+                "Total sales",
+                "Verify license",
+            ];
+
+            Dictionary<string, string> textsToTranslate = [];
+
+            foreach (string str in singleStrings)
+            {
+                string key = $"single_string_{str.ToLower()}";
+                textsToTranslate[key] = str;
             }
 
             return textsToTranslate;

@@ -360,8 +360,6 @@ namespace Sales_Tracker.UI
                 return originalText;
             }
 
-            string stringCacheKey = GetStringKey(originalText);
-
             if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations))
             {
                 // Try control-specific translation first
@@ -371,13 +369,7 @@ namespace Sales_Tracker.UI
                 }
             }
 
-            // If not found, try string cache translation
-            if (stringControlCache.TryGetValue(stringCacheKey, out string stringCachedTranslation))
-            {
-                return stringCachedTranslation;
-            }
-
-            // If no cached translation, return original
+            // If no cached translation is found, return original
             return originalText;
         }
         private static void TranslateLinkLabelFromCache(LinkLabel linkLabel, string targetLanguageAbbreviation)
@@ -432,7 +424,7 @@ namespace Sales_Tracker.UI
             }
 
             // Use the text itself as the cache key
-            string cacheKey = $"single_string_{text}";
+            string cacheKey = GetStringKey(text);
 
             // Check if we have this translation cached
             if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
@@ -675,7 +667,7 @@ namespace Sales_Tracker.UI
         /// <returns></returns>
         private static string GetStringKey(string text)
         {
-            return $"single_string_{text}";
+            return $"single_string_{text.ToLower()}";
         }
 
         /// <summary>
