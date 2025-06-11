@@ -103,13 +103,13 @@ namespace Sales_Tracker.Settings
             if (result == CustomMessageBoxResult.Ok)
             {
                 UserSettings.ResetAllToDefault();
-                await ApplyChanges(true);
+                await ApplyChanges();
             }
         }
         private async void Ok_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
-            await ApplyChanges(false);
+            await ApplyChanges();
             Close();
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
@@ -119,13 +119,13 @@ namespace Sales_Tracker.Settings
         private async void Apply_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
-            await ApplyChanges(true);
+            await ApplyChanges();
         }
 
         /// <summary>
         /// Applies all setting changes, including language translation if the language was changed.
         /// </summary>
-        private async Task ApplyChanges(bool includeGeneralForm)
+        private async Task ApplyChanges()
         {
             UserSettings.SaveUserSettings();
 
@@ -138,11 +138,11 @@ namespace Sales_Tracker.Settings
                 // Create a new cancellation token source
                 _translationCts = new CancellationTokenSource();
 
-                await UpdateLanguageAsync(includeGeneralForm);
+                await UpdateLanguageAsync();
                 Security_Form.Instance.CenterEncryptControls();
             }
         }
-        private async Task UpdateLanguageAsync(bool includeGeneralForm)
+        private async Task UpdateLanguageAsync()
         {
             try
             {
@@ -151,7 +151,7 @@ namespace Sales_Tracker.Settings
                 try
                 {
                     string currentLanguage = General_Form.Instance.Language_TextBox.Text;
-                    bool success = await LanguageManager.UpdateApplicationLanguage(currentLanguage, includeGeneralForm, _translationCts.Token);
+                    bool success = await LanguageManager.UpdateApplicationLanguage(currentLanguage, _translationCts.Token);
 
                     if (success && !_translationCts.Token.IsCancellationRequested)
                     {

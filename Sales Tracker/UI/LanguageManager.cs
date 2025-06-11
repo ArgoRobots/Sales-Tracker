@@ -3,8 +3,6 @@ using Guna.UI2.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
-using Sales_Tracker.Settings;
-using Sales_Tracker.Settings.Menus;
 
 namespace Sales_Tracker.UI
 {
@@ -153,7 +151,7 @@ namespace Sales_Tracker.UI
         /// Updates the application's language translation by downloading and merging the language JSON
         /// </summary>
         /// <returns>True if translation was successful, false if failed (e.g., no internet)</returns>
-        public static async Task<bool> UpdateApplicationLanguage(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
+        public static async Task<bool> UpdateApplicationLanguage(string targetLanguageName, CancellationToken cancellationToken = default)
         {
             bool downloadSuccess = await DownloadAndMergeLanguageJson(targetLanguageName, cancellationToken);
 
@@ -163,7 +161,7 @@ namespace Sales_Tracker.UI
                 return false;
             }
 
-            await ApplyTranslations(targetLanguageName, includeGeneralForm, cancellationToken);
+            await ApplyTranslations(targetLanguageName, cancellationToken);
             return true;
         }
 
@@ -178,7 +176,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Applies cached translations to all application forms and controls.
         /// </summary>
-        private static async Task ApplyTranslations(string targetLanguageName, bool includeGeneralForm, CancellationToken cancellationToken = default)
+        private static async Task ApplyTranslations(string targetLanguageName, CancellationToken cancellationToken = default)
         {
             string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation(targetLanguageName);
             if (targetLanguageAbbreviation == null) { return; }
@@ -187,19 +185,14 @@ namespace Sales_Tracker.UI
 
             List<Control> controlsList = [MainMenu_Form.Instance];
 
-            if (includeGeneralForm)
+            // Add all currently open forms
+            foreach (Form openForm in Application.OpenForms.Cast<Form>())
             {
-                controlsList.AddRange(
-                [
-                    Settings_Form.Instance,
-                    General_Form.Instance,
-                    Security_Form.Instance,
-                    Updates_Form.Instance
-                ]);
-            }
-            if (Tools.IsFormOpen<Log_Form>())
-            {
-                controlsList.Add(Log_Form.Instance);
+                if (openForm.IsDisposed || openForm.Disposing)
+                {
+                    continue;
+                }
+                controlsList.Add(openForm);
             }
 
             // Add UI panels
