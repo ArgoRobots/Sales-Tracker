@@ -3,6 +3,7 @@ using Sales_Tracker.DataClasses;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.Theme;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
@@ -11,7 +12,11 @@ namespace Sales_Tracker.Classes
     /// </summary>
     internal class UserSettings
     {
-        public static void SaveUserSettings()
+        /// <summary>
+        /// Saves user settings and returns whether the operation was successful.
+        /// </summary>
+        /// <returns>True if all settings were successfully saved, false if cancelled or failed.</returns>
+        public static async Task<bool> SaveUserSettingsAsync()
         {
             Properties.Settings settings = Properties.Settings.Default;
             General_Form form = General_Form.Instance;
@@ -68,8 +73,14 @@ namespace Sales_Tracker.Classes
             string oldCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             if (oldCurrency != form.Currency_TextBox.Text)
             {
-                UpdateCurrency(oldCurrency);
+                bool currencyUpdateSuccess = await UpdateCurrencyAsync(oldCurrency);
+                if (!currencyUpdateSuccess)
+                {
+                    return false;  // Currency update was cancelled or failed
+                }
             }
+
+            return true;  // All settings were successfully saved
         }
         public static void UpdateSetting(string settingName, bool currentValue, bool newValue, Action<bool> setter)
         {
@@ -111,53 +122,133 @@ namespace Sales_Tracker.Classes
 
         /// <summary>
         /// Updates currency settings, including recalculating values and updating data grids.
+        /// Returns true if successful, false if cancelled or failed.
         /// </summary>
-        private static async void UpdateCurrency(string oldCurrency)
+        private static async Task<bool> UpdateCurrencyAsync(string oldCurrency)
         {
             // Check for internet connection
             if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("currency conversion", true))
             {
                 Log.Write(1, "Currency conversion cancelled - no internet connection");
-                return;
+                return false;
             }
 
             string newCurrency = General_Form.Instance.Currency_TextBox.Text;
-            DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, newCurrency);
-            MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
 
-            MainMenu_Form.IsProgramLoading = true;
+            CancellationTokenSource cancellationTokenSource = new();
 
-            UpdateCurrencyValuesInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView);
-            UpdateCurrencyValuesInDataGridView(MainMenu_Form.Instance.Sale_DataGridView);
+            LoadingPanel.ShowLoadingScreen(
+                Settings_Form.Instance, "Converting currency data...", false, cancellationTokenSource
+            );
 
-            MainMenu_Form.Instance.LoadOrRefreshMainCharts();
-            MainMenu_Form.Instance.UpdateTotalLabels();
+            try
+            {
+                // Set up cancellation token
+                CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
-            MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
+                // Longer delay to ensure loading panel appears and starts animating
+                await Task.Delay(150, cancellationToken);
 
-            MainMenu_Form.IsProgramLoading = false;
+                // Update basic currency settings
+                DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, newCurrency);
+                MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
+                MainMenu_Form.IsProgramLoading = true;
 
-            // Remove previous messages that mention currency changes
-            string message = "Changed the currency from";
-            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
+                // Yield control after basic settings
+                await Task.Delay(1, cancellationToken);
 
-            // Add the new currency change message
-            string fullMessage = $"{message} {oldCurrency} to {newCurrency}";
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
+                // Check if operation was cancelled
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Log.Write(1, "Currency conversion cancelled by user");
+                    return false;
+                }
+
+                // Update currency values in DataGridViews with progress updates
+                await UpdateCurrencyValuesInDataGridViewAsync(MainMenu_Form.Instance.Purchase_DataGridView, cancellationToken);
+
+                // Check if operation was cancelled
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Log.Write(1, "Currency conversion cancelled by user");
+                    return false;
+                }
+
+                await UpdateCurrencyValuesInDataGridViewAsync(MainMenu_Form.Instance.Sale_DataGridView, cancellationToken);
+
+                // Check if operation was cancelled
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Log.Write(1, "Currency conversion cancelled by user");
+                    return false;
+                }
+
+                // Yield control before UI updates
+                await Task.Delay(10, cancellationToken);
+
+                // Refresh charts and UI
+                MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+                MainMenu_Form.Instance.UpdateTotalLabels();
+
+                // Yield control after chart updates
+                await Task.Delay(10, cancellationToken);
+
+                // Save the updated data
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
+
+                // Remove previous messages that mention currency changes
+                string message = "Changed the currency from";
+                MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
+
+                // Add the new currency change message
+                string fullMessage = $"{message} {oldCurrency} to {newCurrency}";
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
+
+                Log.Write(2, $"Currency conversion completed: {oldCurrency} to {newCurrency}");
+                return true; // Success
+            }
+            catch (Exception ex)
+            {
+                Log.Error_WriteToFile($"Error during currency conversion: {ex.Message}");
+
+                // Revert currency settings on error
+                DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, oldCurrency);
+                MainMenu_Form.CurrencySymbol = Currency.GetSymbol();
+
+                CustomMessageBox.Show(
+                    "Currency Conversion Error",
+                    "An error occurred during currency conversion. Settings have been reverted to the previous currency.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
+                );
+                return false;
+            }
+            finally
+            {
+                MainMenu_Form.IsProgramLoading = false;
+                LoadingPanel.HideLoadingScreen(Settings_Form.Instance);
+            }
         }
 
         /// <summary>
         /// Updates currency values in a specified DataGridView based on the default currency.
+        /// Async version with cancellation token support.
         /// </summary>
-        private static void UpdateCurrencyValuesInDataGridView(Guna2DataGridView dataGridView)
+        private static async Task UpdateCurrencyValuesInDataGridViewAsync(Guna2DataGridView dataGridView, CancellationToken cancellationToken)
         {
             if (dataGridView.Rows.Count == 0) { return; }
 
             string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
+            int processedRows = 0;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
+                // Check for cancellation before processing each row
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+
                 if (row.Tag is (string, TagData tagData))
                 {
                     // Skip conversion if currencies match
@@ -191,6 +282,14 @@ namespace Sales_Tracker.Classes
 
                         UpdateMultiItemRowWithConvertedValues(row, tagData1, itemList, USDToDefault);
                     }
+                }
+
+                processedRows++;
+
+                // Yield control much more frequently to keep animation smooth
+                if (processedRows % 3 == 0)
+                {
+                    await Task.Delay(5, cancellationToken);
                 }
             }
         }

@@ -109,13 +109,19 @@ namespace Sales_Tracker.Settings
         private async void Ok_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
-            await ApplyChanges();
-            Close();
+            bool success = await ApplyChanges();
+
+            // Only close the form if changes were successfully applied
+            if (success)
+            {
+                Close();
+            }
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             Close();
         }
+
         private async void Apply_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
@@ -124,25 +130,46 @@ namespace Sales_Tracker.Settings
 
         /// <summary>
         /// Applies all setting changes, including language translation if the language was changed.
+        /// Returns true if all changes were successfully applied, false otherwise.
         /// </summary>
-        private async Task ApplyChanges()
+        private async Task<bool> ApplyChanges()
         {
-            UserSettings.SaveUserSettings();
-
-            if (HasLanguageChanged())
+            try
             {
-                // Dispose of previous cancellation token source
-                _translationCts?.Cancel();
-                _translationCts?.Dispose();
+                bool success = await UserSettings.SaveUserSettingsAsync();
 
-                // Create a new cancellation token source
-                _translationCts = new CancellationTokenSource();
+                if (!success)
+                {
+                    return false; // Settings save was cancelled or failed
+                }
 
-                await UpdateLanguageAsync();
-                Security_Form.Instance.CenterEncryptControls();
+                if (HasLanguageChanged())
+                {
+                    // Dispose of previous cancellation token source
+                    _translationCts?.Cancel();
+                    _translationCts?.Dispose();
+
+                    // Create a new cancellation token source
+                    _translationCts = new CancellationTokenSource();
+
+                    bool languageSuccess = await UpdateLanguageAsync();
+                    if (!languageSuccess)
+                    {
+                        return false; // Language update was cancelled or failed
+                    }
+
+                    Security_Form.Instance.CenterEncryptControls();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error_WriteToFile($"Error applying settings changes: {ex.Message}");
+                return false;
             }
         }
-        private async Task UpdateLanguageAsync()
+        private async Task<bool> UpdateLanguageAsync()
         {
             try
             {
@@ -160,17 +187,26 @@ namespace Sales_Tracker.Settings
                         LoadingPanel.HideLoadingScreen(this);
                         CustomMessageBox.Show("Translation Complete", "Language has been successfully updated.",
                             CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                        return true;
+                    }
+                    else
+                    {
+                        LoadingPanel.HideLoadingScreen(this);
+                        return false;  // Translation was cancelled or failed
                     }
                 }
                 catch (OperationCanceledException)
                 {
                     Log.Write(1, "Language translation was cancelled");
+                    LoadingPanel.HideLoadingScreen(this);
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 LoadingPanel.HideLoadingScreen(this);
                 Log.Error_GetTranslation(ex.Message);
+                return false;
             }
         }
         private bool HasLanguageChanged()
