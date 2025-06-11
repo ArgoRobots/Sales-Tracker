@@ -418,7 +418,8 @@ namespace Sales_Tracker
         private static void ProcessRow(Guna2DataGridView dataGridView, Dictionary<string, object> rowData)
         {
             string?[] cellValues = ExtractCellValues(rowData);
-            int rowIndex = dataGridView.Rows.Add(cellValues);
+            // Cast to object[] to match the expected parameter type
+            int rowIndex = dataGridView.Rows.Add(cellValues.Cast<object>().ToArray());
 
             ProcessRowTag(dataGridView, rowData, rowIndex);
             ProcessNoteText(dataGridView, rowData, rowIndex);
