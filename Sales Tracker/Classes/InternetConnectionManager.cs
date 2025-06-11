@@ -1,37 +1,51 @@
-﻿using System.Net.NetworkInformation;
+﻿using System.Net;
+using System.Net.NetworkInformation;
 
 namespace Sales_Tracker.Classes
 {
     /// <summary>
-    /// Utility class for checking internet connectivity and displaying appropriate messages.
+    /// Utility class for checking internet connectivity using multiple methods.
     /// </summary>
     public static class InternetConnectionManager
     {
-        private static readonly string[] testHosts = [
-            "8.8.8.8",        // Google DNS
-            "1.1.1.1",        // Cloudflare DNS  
-            "208.67.222.222"  // OpenDNS
-        ];
+        private static readonly HttpClient httpClient = new()
+        {
+            Timeout = TimeSpan.FromSeconds(5)
+        };
+
+        private static readonly string[] httpTestUrls = [
+            "https://www.google.com/generate_204",              // Google connectivity endpoint
+            "https://www.msftconnecttest.com/connecttest.txt",  // Microsoft connectivity endpoint
+            "https://detectportal.firefox.com/success.txt",     // Mozilla connectivity endpoint
+            "https://captive.apple.com/hotspot-detect.html"     // Apple connectivity endpoint
+       ];
 
         /// <summary>
-        /// Checks if internet connection is available by pinging reliable hosts.
+        /// Checks internet connectivity using multiple methods for maximum reliability.
         /// </summary>
-        private static async Task<bool> IsInternetAvailableAsync(int timeoutMs = 3000)
+        public static async Task<bool> IsInternetAvailableAsync()
         {
             try
             {
-                // First check network availability
+                // First check if any network interface is available
                 if (!NetworkInterface.GetIsNetworkAvailable())
                 {
                     return false;
                 }
 
-                // Test multiple hosts for reliability
-                IEnumerable<Task<bool>> pingTasks = testHosts.Select(host => PingHostAsync(host, timeoutMs));
-                bool[] results = await Task.WhenAll(pingTasks);
+                // Method 1: Try HTTP connectivity checks (most reliable)
+                if (await CheckHttpConnectivityAsync())
+                {
+                    return true;
+                }
 
-                // Return true if at least one ping succeeds
-                return results.Any(success => success);
+                // Method 2: Try DNS resolution (works through proxies)
+                if (await CheckDnsConnectivityAsync())
+                {
+                    return true;
+                }
+
+                return false;
             }
             catch (Exception ex)
             {
@@ -41,15 +55,47 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Pings a specific host to test connectivity.
+        /// Checks connectivity using HTTP requests to known endpoints.
         /// </summary>
-        private static async Task<bool> PingHostAsync(string host, int timeoutMs)
+        private static async Task<bool> CheckHttpConnectivityAsync()
         {
             try
             {
-                using Ping ping = new();
-                PingReply reply = await ping.SendPingAsync(host, timeoutMs);
-                return reply.Status == IPStatus.Success;
+                IEnumerable<Task<bool>> tasks = httpTestUrls.Select(CheckSingleHttpEndpointAsync);
+                bool[] results = await Task.WhenAll(tasks);
+                return results.Any(success => success);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks a single HTTP endpoint for connectivity.
+        /// </summary>
+        private static async Task<bool> CheckSingleHttpEndpointAsync(string url)
+        {
+            try
+            {
+                using HttpResponseMessage response = await httpClient.GetAsync(url);
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks connectivity by attempting DNS resolution.
+        /// </summary>
+        private static async Task<bool> CheckDnsConnectivityAsync()
+        {
+            try
+            {
+                IPHostEntry hostEntry = await Dns.GetHostEntryAsync("www.google.com");
+                return hostEntry.AddressList.Length > 0;
             }
             catch
             {
@@ -63,7 +109,7 @@ namespace Sales_Tracker.Classes
         private static CustomMessageBoxResult ShowNoInternetMessage(string operationName = "this operation", bool showRetryOption = true)
         {
             string title = "No Internet Connection";
-            string message = $"An internet connection is required for {operationName}. Please check your connection and try again";
+            string message = $"An internet connection is required for {operationName}. Please check your connection and try again.";
 
             CustomMessageBoxButtons buttons = showRetryOption
                 ? CustomMessageBoxButtons.RetryCancel
@@ -85,7 +131,6 @@ namespace Sales_Tracker.Classes
                 }
 
                 CustomMessageBoxResult result = ShowNoInternetMessage(operationName, showRetryOption);
-
                 if (result != CustomMessageBoxResult.Retry)
                 {
                     return false;
