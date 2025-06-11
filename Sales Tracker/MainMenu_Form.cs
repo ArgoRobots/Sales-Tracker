@@ -224,6 +224,28 @@ namespace Sales_Tracker
             _profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.GetTotal():N2}";
             LanguageManager.UpdateLanguageForControl(_profits_Chart);
         }
+        public void UpdateChartCurrencyFormats()
+        {
+            List<GunaChart> mainCharts = [_purchaseTotals_Chart, _saleTotals_Chart, _profits_Chart];
+            List<GunaChart> analyticsCharts = [_salesVsExpenses_Chart, _averageTransactionValue_Chart, _averageShippingCosts_Chart];
+
+            // Combine charts based on current view
+            List<GunaChart> chartsToUpdate = [.. mainCharts];
+            if (Selected == SelectedOption.Analytics)
+            {
+                chartsToUpdate.AddRange(analyticsCharts);
+            }
+
+            // Update currency formats for all relevant charts
+            foreach (GunaChart chart in chartsToUpdate)
+            {
+                foreach (object? dataset in chart.Datasets)
+                {
+                    LoadChart.ApplyCurrencyFormatToDataset(dataset);
+                }
+                chart.Update();
+            }
+        }
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
@@ -1799,12 +1821,12 @@ namespace Sales_Tracker
 
             LabelManager.ShowTotalsWithTransactions(Total_Label, _selectedDataGridView);
             Quantity_Label.Text = totalQuantity.ToString();
-            Tax_Label.Text = totalTax.ToString("C");
-            Shipping_Label.Text = totalShipping.ToString("C");
-            Fee_Label.Text = fee.ToString("C");
-            Discount_Label.Text = discount.ToString("C");
-            ChargedDifference_Label.Text = chargedDifference.ToString("C");
-            Price_Label.Text = totalPrice.ToString("C");
+            Tax_Label.Text = $"{CurrencySymbol}{totalTax:N2}";
+            Shipping_Label.Text = $"{CurrencySymbol}{totalShipping:N2}";
+            Fee_Label.Text = $"{CurrencySymbol}{fee:N2}";
+            Discount_Label.Text = $"{CurrencySymbol}{discount:N2}";
+            ChargedDifference_Label.Text = $"{CurrencySymbol}{chargedDifference:N2}";
+            Price_Label.Text = $"{CurrencySymbol}{totalPrice:N2}";
         }
 
         // Save to file

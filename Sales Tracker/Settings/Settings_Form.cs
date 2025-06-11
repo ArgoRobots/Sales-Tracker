@@ -109,7 +109,11 @@ namespace Sales_Tracker.Settings
         private async void Ok_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
+            SetButtonsEnabled(false);
+
             bool success = await ApplyChanges();
+
+            SetButtonsEnabled(true);
 
             // Only close the form if changes were successfully applied
             if (success)
@@ -121,11 +125,28 @@ namespace Sales_Tracker.Settings
         {
             Close();
         }
-
         private async void Apply_Button_Click(object sender, EventArgs e)
         {
             CustomControls.CloseAllPanels();
+            SetButtonsEnabled(false);
+
             await ApplyChanges();
+
+            SetButtonsEnabled(true);
+        }
+
+        // Methods
+        private void SetButtonsEnabled(bool enabled)
+        {
+            Ok_Button.Enabled = enabled;
+            Apply_Button.Enabled = enabled;
+            Cancel_Button.Enabled = enabled;
+            ResetToDefault_Button.Enabled = enabled;
+
+            // Also disable the left menu buttons
+            General_Button.Enabled = enabled;
+            Security_Button.Enabled = enabled;
+            Updates_Button.Enabled = enabled;
         }
 
         /// <summary>

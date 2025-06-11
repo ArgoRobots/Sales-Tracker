@@ -1796,20 +1796,22 @@ namespace Sales_Tracker.Charts
             }
             chart.Update();
         }
-        private static void ApplyCurrencyFormatToDataset(object dataset)
+        public static void ApplyCurrencyFormatToDataset(object dataset)
         {
+            string currencySymbol = MainMenu_Form.CurrencySymbol;
+
             switch (dataset)
             {
                 case GunaBarDataset barDataset:
-                    barDataset.YFormat = "{0:C}";
+                    barDataset.YFormat = $"{currencySymbol}{{0:N2}}";
                     break;
 
                 case GunaLineDataset lineDataset:
-                    lineDataset.YFormat = "{0:C}";
+                    lineDataset.YFormat = $"{currencySymbol}{{0:N2}}";
                     break;
 
                 case GunaPieDataset pieDataset:
-                    pieDataset.YFormat = "{0:C}";
+                    pieDataset.YFormat = $"{currencySymbol}{{0:N2}}";
                     break;
             }
         }
