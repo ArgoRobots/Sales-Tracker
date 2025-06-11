@@ -217,5 +217,16 @@ namespace Sales_Tracker.Classes
         {
             Application.OpenForms.OfType<T>().FirstOrDefault()?.Close();
         }
+
+        /// <summary>
+        /// Forces handle creation for a control if it hasn't been created yet.
+        /// </summary>
+        public static void EnsureHandleCreated(Control control)
+        {
+            if (!control.IsHandleCreated)
+            {
+                nint _ = control.Handle;  // Accessing Handle property forces creation
+            }
+        }
     }
 }

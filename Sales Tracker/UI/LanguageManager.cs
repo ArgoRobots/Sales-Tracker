@@ -211,11 +211,7 @@ namespace Sales_Tracker.UI
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                // Force handle creation if not created yet
-                if (!control.IsHandleCreated)
-                {
-                    nint _ = control.Handle;  // Accessing Handle property forces creation
-                }
+                Tools.EnsureHandleCreated(control);
 
                 TaskCompletionSource<bool> tcs = new();
 
