@@ -9,8 +9,7 @@ namespace Sales_Tracker.Classes
         Export,
         OpenAI,
         OpenExchangeRates,
-        GoogleSheets,
-        Language
+        GoogleSheets
     }
     public enum ExportDataField
     {
@@ -147,8 +146,7 @@ namespace Sales_Tracker.Classes
                     ["Export"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Export.ToString())),
                     ["OpenAI"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenAI.ToString())),
                     ["OpenExchangeRates"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenExchangeRates.ToString())),
-                    ["GoogleSheets"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.GoogleSheets.ToString())),
-                    ["Language"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Language.ToString()))
+                    ["GoogleSheets"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.GoogleSheets.ToString()))
                 }
             };
 
@@ -180,6 +178,53 @@ namespace Sales_Tracker.Classes
                 return fileInfo.Length;
             }
             return 0;
+        }
+
+        // Upload anonymous data
+        private static async Task UploadAnonymousDataAsync()
+        {
+            try
+            {
+                string tempFile = Path.Combine(Path.GetTempPath(), "organized_anonymous_data.json");
+                ExportOrganizedData(tempFile);
+
+                using HttpClient client = new();
+                MultipartFormDataContent form = new()
+                {
+                    { new StreamContent(File.OpenRead(tempFile)), "file", "anonymous_data.json" }
+                };
+
+                string serverUrl = "https://argorobots.com/upload_data.php";
+                HttpResponseMessage response = await client.PostAsync(serverUrl, form);
+                string result = await response.Content.ReadAsStringAsync();
+                Log.Write(1, "Uploaded anonymous data: " + result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error_AnonymousDataCollection($"Upload failed: {ex.Message}");
+            }
+        }
+        public static async Task TryUploadDataOnStartupAsync()
+        {
+            DateTime? lastUpload = GetLastUploadTime();
+            if (lastUpload == null || (DateTime.Now - lastUpload.Value).TotalHours >= 24)
+            {
+                await UploadAnonymousDataAsync();
+                SaveUploadTime(DateTime.Now);
+            }
+            else
+            {
+                Log.Write(1, $"Skipped anonymous data upload; last sent {lastUpload.Value}");
+            }
+        }
+        private static DateTime? GetLastUploadTime()
+        {
+            string? val = DataFileManager.GetValue(GlobalAppDataSettings.UploadTime_AnonymousData);
+            return DateTime.TryParse(val, out DateTime dt) ? dt : null;
+        }
+        private static void SaveUploadTime(DateTime time)
+        {
+            DataFileManager.SetValue(GlobalAppDataSettings.UploadTime_AnonymousData, time.ToString("o"));
         }
     }
 }

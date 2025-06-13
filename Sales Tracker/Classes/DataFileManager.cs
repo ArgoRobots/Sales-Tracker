@@ -6,7 +6,8 @@
         ShowWelcomeForm,  // bool
         ImportSpreadsheetTutorial,  // bool
         RecentCompanies,  // string[]
-        EULAAccepted  // bool 
+        EULAAccepted,  // bool
+        UploadTime_AnonymousData  // DateTime string
     }
     public enum AppDataSettings
     {

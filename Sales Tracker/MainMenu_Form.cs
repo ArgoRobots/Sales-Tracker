@@ -61,6 +61,7 @@ namespace Sales_Tracker
             InitializeAISearch();
             RemoveUpgradeButtonIfFullVersion();
             UpdateMainMenuFormText();
+            _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             LoadingPanel.ShowBlankLoadingPanel(this);
             IncludeFreeShipping_CheckBox.Checked = Properties.Settings.Default.IncludeFreeShipping;
         }
