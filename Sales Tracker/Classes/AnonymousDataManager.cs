@@ -9,7 +9,8 @@ namespace Sales_Tracker.Classes
         Export,
         OpenAI,
         OpenExchangeRates,
-        GoogleSheets
+        GoogleSheets,
+        Session
     }
     public enum ExportDataField
     {
@@ -31,6 +32,7 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class AnonymousDataManager
     {
+        // Methods to add data points
         /// <summary>
         /// Adds export operation data to the anonymous data log.
         /// </summary>
@@ -88,6 +90,28 @@ namespace Sales_Tracker.Classes
             AppendToDataFile(dataPoint);
         }
 
+        private static DateTime? _sessionStartTime;
+        public static void TrackSessionStart()
+        {
+            _sessionStartTime = DateTime.Now;
+        }
+        public static void TrackSessionEnd()
+        {
+            if (_sessionStartTime == null) { return; }
+
+            TimeSpan duration = DateTime.Now - _sessionStartTime.Value;
+
+            Dictionary<string, object> dataPoint = new()
+            {
+                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
+                ["dataType"] = DataPointType.Session.ToString(),
+                ["duration"] = duration.TotalSeconds
+            };
+
+            AppendToDataFile(dataPoint);
+        }
+
+        // General methods
         /// <summary>
         /// Appends a data point to the anonymous data cache file.
         /// </summary>
@@ -113,10 +137,9 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Exports the cached anonymous data in an organized format by data type.
+        /// Exports the anonymous data in an organized format by data type.
         /// </summary>
-        /// <returns>Status message or the exported JSON if no file path provided</returns>
-        public static void ExportOrganizedData(string outputFilePath)
+        public static void ExportOrganizedData(string outputFilePath, bool indent)
         {
             if (string.IsNullOrEmpty(outputFilePath)) { return; }
 
@@ -146,13 +169,14 @@ namespace Sales_Tracker.Classes
                     ["Export"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Export.ToString())),
                     ["OpenAI"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenAI.ToString())),
                     ["OpenExchangeRates"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenExchangeRates.ToString())),
-                    ["GoogleSheets"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.GoogleSheets.ToString()))
+                    ["GoogleSheets"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.GoogleSheets.ToString())),
+                    ["Session"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Session.ToString()))
                 }
             };
 
-            // Write organized data to file or return as string
-            string organizedJson = JsonConvert.SerializeObject(organizedData, Formatting.Indented);
-            outputFilePath = Directories.GetNewFileNameIfItAlreadyExists(outputFilePath);
+            // Write data to file
+            Formatting format = indent ? Formatting.Indented : Formatting.None;
+            string organizedJson = JsonConvert.SerializeObject(organizedData, format);
             File.WriteAllText(outputFilePath, organizedJson);
         }
 
@@ -183,15 +207,20 @@ namespace Sales_Tracker.Classes
         // Upload anonymous data
         private static async Task UploadAnonymousDataAsync()
         {
+            string tempFile = "";
             try
             {
-                string tempFile = Path.Combine(Path.GetTempPath(), "organized_anonymous_data.json");
-                ExportOrganizedData(tempFile);
+                tempFile = Path.Combine(Path.GetTempPath(), "organized_anonymous_data.json");
+                ExportOrganizedData(tempFile, false);
 
                 using HttpClient client = new();
-                MultipartFormDataContent form = new()
+
+                // Properly manage the file stream
+                using FileStream fileStream = File.OpenRead(tempFile);
+                using StreamContent streamContent = new(fileStream);
+                using MultipartFormDataContent form = new()
                 {
-                    { new StreamContent(File.OpenRead(tempFile)), "file", "anonymous_data.json" }
+                    { streamContent, "file", "anonymous_data.json" }
                 };
 
                 string serverUrl = "https://argorobots.com/upload_data.php";
@@ -202,6 +231,14 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 Log.Error_AnonymousDataCollection($"Upload failed: {ex.Message}");
+            }
+            finally
+            {
+                // Clean up - file handles are now closed
+                if (!string.IsNullOrEmpty(tempFile) && File.Exists(tempFile))
+                {
+                    Directories.DeleteFile(tempFile);
+                }
             }
         }
         public static async Task TryUploadDataOnStartupAsync()

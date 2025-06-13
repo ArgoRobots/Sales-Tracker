@@ -73,7 +73,7 @@ namespace Sales_Tracker.Classes
             Downloads_dir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
 
             // Cache
-            Cache_dir = AppData_dir + "cache-" + ArgoCompany.GetUniqueCompanyIdentifier("Argo Sales Tracker") + @"\";
+            Cache_dir = AppData_dir + @"cache\";
             Logs_dir = Cache_dir + @"logs\";
             AnonymousUserData_file = Cache_dir + "anonymousUserData" + ArgoFiles.JsonFileExtension;
 

@@ -62,8 +62,9 @@ namespace Sales_Tracker
             RemoveUpgradeButtonIfFullVersion();
             UpdateMainMenuFormText();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
-            LoadingPanel.ShowBlankLoadingPanel(this);
+            AnonymousDataManager.TrackSessionStart();
             IncludeFreeShipping_CheckBox.Checked = Properties.Settings.Default.IncludeFreeShipping;
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ConstructMainCharts()
         {
@@ -692,8 +693,9 @@ namespace Sales_Tracker
                 }
             }
 
-            Log.SaveLogs();
+            AnonymousDataManager.TrackSessionEnd();
             ThemeChangeDetector.StopListeningForThemeChanges();
+            Log.SaveLogs();
             ArgoCompany.ApplicationMutex?.Dispose();
             Directories.DeleteDirectory(Directories.TempCompany_dir, true);
             Environment.Exit(0);  // Make sure all processes are fully closed

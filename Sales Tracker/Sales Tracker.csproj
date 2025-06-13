@@ -26,7 +26,7 @@
     <NoWarn>$(NoWarn);IDE0057</NoWarn>
 
     <AssemblyVersion>1.0.1</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
+    <FileVersion>1.0.2</FileVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
