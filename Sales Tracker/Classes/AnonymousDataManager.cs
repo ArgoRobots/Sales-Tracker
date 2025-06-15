@@ -27,6 +27,13 @@ namespace Sales_Tracker.Classes
         Receipts
     }
 
+    public static class ApiConfig
+    {
+        public static string? ApiKey => DotEnv.Get("UPLOAD_API_KEY");
+        public static string UserAgent => "ArgoSalesTracker/1.0";
+        public static string ServerUrl => "https://argorobots.com/upload_data.php";
+    }
+
     /// <summary>
     /// Manages collection and storage of anonymous data points for analytics purposes.
     /// </summary>
@@ -210,10 +217,22 @@ namespace Sales_Tracker.Classes
             string tempFile = "";
             try
             {
+                // Check if API key is available
+                string? apiKey = ApiConfig.ApiKey;
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    Log.Error_AnonymousDataCollection("Upload API key not found in environment variables");
+                    return;
+                }
+
                 tempFile = Path.Combine(Path.GetTempPath(), "organized_anonymous_data.json");
                 ExportOrganizedData(tempFile, false);
 
                 using HttpClient client = new();
+
+                // Set authentication headers
+                client.DefaultRequestHeaders.Add("X-API-Key", apiKey);
+                client.DefaultRequestHeaders.Add("User-Agent", ApiConfig.UserAgent);
 
                 // Properly manage the file stream
                 using FileStream fileStream = File.OpenRead(tempFile);
@@ -223,10 +242,26 @@ namespace Sales_Tracker.Classes
                     { streamContent, "file", "anonymous_data.json" }
                 };
 
-                string serverUrl = "https://argorobots.com/upload_data.php";
-                HttpResponseMessage response = await client.PostAsync(serverUrl, form);
-                string result = await response.Content.ReadAsStringAsync();
-                Log.Write(1, "Uploaded anonymous data: " + result);
+                HttpResponseMessage response = await client.PostAsync(ApiConfig.ServerUrl, form);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+                    Log.Write(1, "Successfully uploaded anonymous data: " + result);
+                }
+                else
+                {
+                    string error = await response.Content.ReadAsStringAsync();
+                    Log.Error_AnonymousDataCollection($"Upload failed with status {response.StatusCode}: {error}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Error_AnonymousDataCollection($"Network error during upload: {ex.Message}");
+            }
+            catch (TaskCanceledException ex)
+            {
+                Log.Error_AnonymousDataCollection($"Upload timeout: {ex.Message}");
             }
             catch (Exception ex)
             {
