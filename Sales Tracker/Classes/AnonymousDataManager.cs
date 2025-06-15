@@ -214,6 +214,8 @@ namespace Sales_Tracker.Classes
         // Upload anonymous data
         private static async Task UploadAnonymousDataAsync()
         {
+            if (!File.Exists(Directories.AnonymousUserData_file)) { return; }
+
             string tempFile = "";
             try
             {

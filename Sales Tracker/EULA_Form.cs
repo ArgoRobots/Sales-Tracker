@@ -48,14 +48,14 @@ namespace Sales_Tracker
             EULA_RichTextBox.AppendText("\n");
 
             // Add title (center-aligned)
-            AppendFormattedText("END USER LICENSE AGREEMENT FOR ARGO SALES TRACKER", titleFont, CustomColors.AccentBlue, true, HorizontalAlignment.Center);
+            AppendFormattedText("End User License Agreement for Argo Sales Tracker", titleFont, CustomColors.AccentBlue, true, HorizontalAlignment.Center);
             EULA_RichTextBox.AppendText("\n");
 
             // Reset to left alignment for the rest of the document
             EULA_RichTextBox.SelectionAlignment = HorizontalAlignment.Left;
 
             // Add important notice
-            AppendFormattedText("IMPORTANT - READ CAREFULLY", headingFont);
+            AppendFormattedText("Important - Read Carefully", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             // Introduction paragraph
@@ -63,11 +63,11 @@ namespace Sales_Tracker
             EULA_RichTextBox.AppendText("\n");
 
             // Bold agreement statement
-            AppendFormattedText("BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND BY THE TERMS OF THIS AGREEMENT. IF YOU DO NOT AGREE TO THE TERMS OF THIS AGREEMENT, DO NOT INSTALL OR USE THE SOFTWARE.", emphasisFont);
+            AppendFormattedText("By installing, copying, or otherwise using the Software, you agree to be bound by the terms of this Agreement. If you do not agree to the terms of this Agreement, do not install or use the Software.", emphasisFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 1
-            AppendFormattedText("1. GRANT OF LICENSE", headingFont);
+            AppendFormattedText("1. Grant of License", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("1.1 Free Version", subheadingFont);
@@ -87,7 +87,7 @@ namespace Sales_Tracker
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 2
-            AppendFormattedText("2. LICENSE RESTRICTIONS", headingFont);
+            AppendFormattedText("2. License Restrictions", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("You may NOT:", regularFont);
@@ -99,14 +99,14 @@ namespace Sales_Tracker
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 3
-            AppendFormattedText("3. INTELLECTUAL PROPERTY RIGHTS", headingFont);
+            AppendFormattedText("3. Intellectual Property Rights", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("The Software is protected by copyright and other intellectual property laws and treaties. Licensor owns all title, copyright, and other intellectual property rights in and to the Software. This Agreement does not grant you any rights to trademarks or service marks of Licensor.", regularFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 4
-            AppendFormattedText("4. ANONYMOUS DATA COLLECTION", headingFont);
+            AppendFormattedText("4. Anonymous Data Collection", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("4.1 Usage Data", subheadingFont);
@@ -121,28 +121,28 @@ namespace Sales_Tracker
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 5
-            AppendFormattedText("5. THIRD-PARTY SERVICES", headingFont);
+            AppendFormattedText("5. Third-Party Services", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("The Software may use third-party services for certain functionality, including but not limited to Google Sheets, OpenAI, Microsoft Translator, and Open Exchange Rates. Your use of these services through the Software is subject to the respective terms and conditions of those services.", regularFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 6
-            AppendFormattedText("6. WARRANTY DISCLAIMER", headingFont);
+            AppendFormattedText("6. Warranty Disclaimer", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
-            AppendFormattedText("THE SOFTWARE IS PROVIDED \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. LICENSOR DOES NOT WARRANT THAT THE FUNCTIONS CONTAINED IN THE SOFTWARE WILL MEET YOUR REQUIREMENTS OR THAT THE OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR-FREE.", emphasisFont);
+            AppendFormattedText("The Software is provided \"as is\" without warranty of any kind, either express or implied, including, without limitation, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement. Licensor does not warrant that the functions contained in the Software will meet your requirements or that the operation of the Software will be uninterrupted or error-free.", emphasisFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 7
-            AppendFormattedText("7. LIMITATION OF LIABILITY", headingFont);
+            AppendFormattedText("7. Limitation of Liability", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
-            AppendFormattedText("IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF OR INABILITY TO USE THE SOFTWARE, EVEN IF LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.", emphasisFont);
+            AppendFormattedText("In no event shall Licensor be liable for any special, incidental, indirect, or consequential damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use the Software, even if Licensor has been advised of the possibility of such damages.", emphasisFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 8
-            AppendFormattedText("8. TERM AND TERMINATION", headingFont);
+            AppendFormattedText("8. Term and Termination", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("8.1 Term", subheadingFont);
@@ -154,28 +154,28 @@ namespace Sales_Tracker
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 9
-            AppendFormattedText("9. EXPORT REGULATIONS", headingFont);
+            AppendFormattedText("9. Export Regulations", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("You agree to comply with all applicable international and national laws that apply to the Software, including the export regulations of your country.", regularFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 10
-            AppendFormattedText("10. GOVERNING LAW", headingFont);
+            AppendFormattedText("10. Governing Law", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("This Agreement shall be governed by the laws of Canada, excluding its conflicts of law rules. Any disputes arising under or in connection with this Agreement shall be subject to the exclusive jurisdiction of the courts located in Canada.", regularFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 11
-            AppendFormattedText("11. ENTIRE AGREEMENT", headingFont);
+            AppendFormattedText("11. Entire Agreement", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("This Agreement constitutes the entire agreement between you and Licensor concerning the Software and supersedes all prior or contemporaneous oral or written communications, proposals, and representations with respect to the Software or any other subject matter covered by this Agreement.", regularFont);
             EULA_RichTextBox.AppendText("\n\n");
 
             // Section 12
-            AppendFormattedText("12. CONTACT INFORMATION", headingFont);
+            AppendFormattedText("12. Contact Information", headingFont);
             EULA_RichTextBox.AppendText("\n");
 
             AppendFormattedText("If you have any questions about this Agreement, please contact:", regularFont);
