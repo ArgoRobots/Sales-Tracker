@@ -16,36 +16,40 @@ namespace Sales_Tracker.Theme
                 return;
             }
 
-            try
+            // Add a small delay to avoid startup timing issues
+            Task.Delay(500).ContinueWith(_ =>
             {
-                _personalizeKey = Registry.CurrentUser.OpenSubKey(
-                    @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
-                    false);
-
-                if (_personalizeKey != null)
+                try
                 {
                     _personalizeKey = Registry.CurrentUser.OpenSubKey(
                         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
-                        true);
+                        false);
 
                     if (_personalizeKey != null)
                     {
-                        // Create a registry watcher
-                        _watcher = new RegistryWatcher(
-                            RegistryHive.CurrentUser,
-                            @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize");
+                        _personalizeKey = Registry.CurrentUser.OpenSubKey(
+                            @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
+                            true);
 
-                        _watcher.RegChanged += OnWindowsThemeChanged;
-                        _watcher.Start();
-                        _isListeningForThemeChanges = true;
-                        Log.Write(1, "Started listening for Windows theme changes");
+                        if (_personalizeKey != null)
+                        {
+                            // Create a registry watcher
+                            _watcher = new RegistryWatcher(
+                                RegistryHive.CurrentUser,
+                                @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize");
+
+                            _watcher.RegChanged += OnWindowsThemeChanged;
+                            _watcher.Start();
+                            _isListeningForThemeChanges = true;
+                            Log.Write(1, "Started listening for Windows theme changes");
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Log.Write(0, $"Error starting theme listener: {ex.Message}");
-            }
+                catch (Exception ex)
+                {
+                    Log.Write(0, $"Error starting theme listener: {ex.Message}");
+                }
+            });
         }
         private static void OnWindowsThemeChanged(object sender, EventArgs e)
         {

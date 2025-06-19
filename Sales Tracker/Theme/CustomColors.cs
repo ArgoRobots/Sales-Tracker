@@ -21,6 +21,7 @@ namespace Sales_Tracker.Theme
         public static Color Text { get; private set; }
         public static Color GrayText { get; private set; }
         public static Color LinkColor { get; private set; }
+        public static Color DebugText { get; private set; }
         public static Color MouseHover { get; private set; }
         public static Color PanelBtn { get; private set; }
         public static Color PanelBtnHover { get; private set; }
@@ -58,6 +59,7 @@ namespace Sales_Tracker.Theme
             Text = Color.White;
             GrayText = Color.FromArgb(160, 160, 160);
             LinkColor = Color.FromArgb(71, 157, 250);
+            DebugText = Color.FromArgb(0, 255, 255);
 
             // File colors
             MouseHover = Color.FromArgb(77, 77, 77);
@@ -91,6 +93,7 @@ namespace Sales_Tracker.Theme
             Text = Color.Black;
             GrayText = Color.Gray;
             LinkColor = Color.FromArgb(71, 157, 250);
+            DebugText = Color.FromArgb(0, 100, 150);
 
             // File colors
             MouseHover = Color.FromArgb(229, 243, 255);

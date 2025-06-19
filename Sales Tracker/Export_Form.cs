@@ -171,7 +171,6 @@ namespace Sales_Tracker
                     {
                         try
                         {
-                            // Pass the export folder path instead of the file path
                             ExportReceiptsToFolder(Path.Combine(exportFolder, Name_TextBox.Text));
                             successMessage += " and exported receipts";
                         }

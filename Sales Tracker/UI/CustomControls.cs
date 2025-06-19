@@ -114,8 +114,8 @@ namespace Sales_Tracker.UI
                 BorderColor = CustomColors.ControlBorder,
                 PressedColor = CustomColors.PanelBtnHover,
                 HoverState = {
-                    FillColor = Color.FromArgb(90, 90, 90),
-                    BorderColor = Color.FromArgb(120, 120, 120)
+                    FillColor = CustomColors.PanelBtnHover,
+                    BorderColor = CustomColors.ControlBorder
                 },
             };
             if (closeAllPanels)
