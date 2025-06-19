@@ -80,7 +80,6 @@ namespace Sales_Tracker.ImportSpreadsheet
 
                 List<Panel> panels = await Task.Run(LoadSpreadsheetData);
 
-                // This needs to be done on the main UI thread for some reason
                 foreach (Panel panel in panels)
                 {
                     Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
@@ -111,16 +110,20 @@ namespace Sales_Tracker.ImportSpreadsheet
                     HideLoadingIndicator();
                     string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}'";
                     CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
-                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+
+                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 }
                 else
                 {
-                    CustomMessageBox.Show("Nothing was imported", "Nothing was imported", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Nothing was imported", "Nothing was imported",
+                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 }
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
 
             HideLoadingIndicator();
@@ -343,7 +346,8 @@ namespace Sales_Tracker.ImportSpreadsheet
 
                 if (workbook.Worksheets.Count == 0)
                 {
-                    CustomMessageBox.Show("Spreadsheet is invalid", "This spreadsheet doesn't contain any sheets", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Spreadsheet is invalid", "This spreadsheet doesn't contain any sheets",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     return panels;
                 }
 
@@ -394,7 +398,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals(purchasesName, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     IXLWorksheet purchaseWorksheet = workbook.Worksheet(purchasesName);
-                    List<string> products = ExtractTransaction(purchaseWorksheet);
+                    List<string> products = ExtractTransactions(purchaseWorksheet);
 
                     if (products.Count > 0)
                     {
@@ -405,7 +409,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (workbook.Worksheets.Any(ws => ws.Name.Equals(salesName, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     IXLWorksheet salesWorksheet = workbook.Worksheet(salesName);
-                    List<string> products = ExtractTransaction(salesWorksheet);
+                    List<string> products = ExtractTransactions(salesWorksheet);
 
                     if (products.Count > 0)
                     {
@@ -433,7 +437,10 @@ namespace Sales_Tracker.ImportSpreadsheet
         private List<string> ExtractProducts(IXLWorksheet productsWorksheet)
         {
             List<string> products = [];
-            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? productsWorksheet.RowsUsed().Skip(1) : productsWorksheet.RowsUsed();
+
+            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked
+                ? productsWorksheet.RowsUsed().Skip(1)
+                : productsWorksheet.RowsUsed();
 
             foreach (IXLRow row in rows)
             {
@@ -449,10 +456,12 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             return products;
         }
-        private List<string> ExtractTransaction(IXLWorksheet productsWorksheet)
+        private List<string> ExtractTransactions(IXLWorksheet productsWorksheet)
         {
             List<string> products = [];
-            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? productsWorksheet.RowsUsed().Skip(1) : productsWorksheet.RowsUsed();
+            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked
+                ? productsWorksheet.RowsUsed().Skip(1)
+                : productsWorksheet.RowsUsed();
 
             foreach (IXLRow row in rows)
             {

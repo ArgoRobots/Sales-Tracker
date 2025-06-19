@@ -202,7 +202,7 @@ namespace Sales_Tracker.UI
             FileMenu = ConstructPanelForMenu(new Size(_panelWidth, 9 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "fileMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)FileMenu.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("New company", _panelBtnWidth, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("Create new company", _panelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenForm(new Startup_Form(["autoClickButton"]));
@@ -309,11 +309,11 @@ namespace Sales_Tracker.UI
             else
             {
                 // Construct buttons
-                foreach (string projectDir in validCompanyDirs)
+                foreach (string companyDir in validCompanyDirs)
                 {
-                    string text = Path.GetFileNameWithoutExtension(projectDir);
+                    string text = Path.GetFileNameWithoutExtension(companyDir);
                     Guna2Button menuBtn = ConstructBtnForMenu(text, _panelBtnWidth, true, flowPanel);
-                    menuBtn.Tag = projectDir;
+                    menuBtn.Tag = companyDir;
                     menuBtn.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
                     menuBtn.Click += (sender, e) =>
                     {

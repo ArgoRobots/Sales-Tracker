@@ -28,16 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Export_Form));
             WarningDir_PictureBox = new PictureBox();
             WarningDir_Label = new Label();
@@ -52,6 +54,8 @@
             ThreeDots_Button = new Guna.UI2.WinForms.Guna2Button();
             Export_Button = new Guna.UI2.WinForms.Guna2Button();
             FileType_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            ExportReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
+            ExportReceipts_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).BeginInit();
             SuspendLayout();
@@ -103,7 +107,7 @@
             // Directory_TextBox
             // 
             Directory_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Directory_TextBox.CustomizableEdges = customizableEdges11;
+            Directory_TextBox.CustomizableEdges = customizableEdges1;
             Directory_TextBox.DefaultText = "";
             Directory_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Directory_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -118,7 +122,7 @@
             Directory_TextBox.Name = "Directory_TextBox";
             Directory_TextBox.PlaceholderText = "";
             Directory_TextBox.SelectedText = "";
-            Directory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Directory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Directory_TextBox.ShortcutsEnabled = false;
             Directory_TextBox.Size = new Size(1015, 60);
             Directory_TextBox.TabIndex = 3;
@@ -137,7 +141,7 @@
             // Name_TextBox
             // 
             Name_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Name_TextBox.CustomizableEdges = customizableEdges13;
+            Name_TextBox.CustomizableEdges = customizableEdges3;
             Name_TextBox.DefaultText = "";
             Name_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Name_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -152,7 +156,7 @@
             Name_TextBox.Name = "Name_TextBox";
             Name_TextBox.PlaceholderText = "";
             Name_TextBox.SelectedText = "";
-            Name_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            Name_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Name_TextBox.ShortcutsEnabled = false;
             Name_TextBox.Size = new Size(1015, 60);
             Name_TextBox.TabIndex = 1;
@@ -193,14 +197,14 @@
             ThreeDots_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ThreeDots_Button.BorderColor = Color.FromArgb(213, 218, 223);
             ThreeDots_Button.BorderThickness = 1;
-            ThreeDots_Button.CustomizableEdges = customizableEdges15;
+            ThreeDots_Button.CustomizableEdges = customizableEdges5;
             ThreeDots_Button.FillColor = Color.White;
             ThreeDots_Button.Font = new Font("Segoe UI", 9F);
             ThreeDots_Button.ForeColor = Color.White;
             ThreeDots_Button.Image = Properties.Resources.ThreeDotsBlack;
             ThreeDots_Button.Location = new Point(1077, 470);
             ThreeDots_Button.Name = "ThreeDots_Button";
-            ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ThreeDots_Button.Size = new Size(60, 60);
             ThreeDots_Button.TabIndex = 4;
             ThreeDots_Button.Click += ThreeDots_Button_Click;
@@ -211,13 +215,13 @@
             Export_Button.BorderColor = Color.LightGray;
             Export_Button.BorderRadius = 2;
             Export_Button.BorderThickness = 1;
-            Export_Button.CustomizableEdges = customizableEdges17;
+            Export_Button.CustomizableEdges = customizableEdges7;
             Export_Button.FillColor = Color.White;
             Export_Button.Font = new Font("Segoe UI", 10F);
             Export_Button.ForeColor = Color.Black;
             Export_Button.Location = new Point(966, 637);
             Export_Button.Name = "Export_Button";
-            Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            Export_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Export_Button.Size = new Size(200, 45);
             Export_Button.TabIndex = 5;
             Export_Button.Text = "Export";
@@ -227,7 +231,7 @@
             // 
             FileType_ComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             FileType_ComboBox.BackColor = Color.Transparent;
-            FileType_ComboBox.CustomizableEdges = customizableEdges19;
+            FileType_ComboBox.CustomizableEdges = customizableEdges9;
             FileType_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             FileType_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             FileType_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
@@ -238,15 +242,51 @@
             FileType_ComboBox.Items.AddRange(new object[] { "ArgoSales (.zip)", "Excel spreadsheet (.xlsx)" });
             FileType_ComboBox.Location = new Point(48, 310);
             FileType_ComboBox.Name = "FileType_ComboBox";
-            FileType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            FileType_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             FileType_ComboBox.Size = new Size(1015, 60);
             FileType_ComboBox.TabIndex = 2;
+            FileType_ComboBox.SelectedIndexChanged += FileType_ComboBox_SelectedIndexChanged;
+            // 
+            // ExportReceipts_CheckBox
+            // 
+            ExportReceipts_CheckBox.Anchor = AnchorStyles.Top;
+            ExportReceipts_CheckBox.Animated = true;
+            ExportReceipts_CheckBox.Checked = true;
+            ExportReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            ExportReceipts_CheckBox.CheckedState.BorderRadius = 2;
+            ExportReceipts_CheckBox.CheckedState.BorderThickness = 0;
+            ExportReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            ExportReceipts_CheckBox.CustomizableEdges = customizableEdges11;
+            ExportReceipts_CheckBox.Location = new Point(53, 383);
+            ExportReceipts_CheckBox.Name = "ExportReceipts_CheckBox";
+            ExportReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            ExportReceipts_CheckBox.Size = new Size(20, 20);
+            ExportReceipts_CheckBox.TabIndex = 46;
+            ExportReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            ExportReceipts_CheckBox.UncheckedState.BorderRadius = 2;
+            ExportReceipts_CheckBox.UncheckedState.BorderThickness = 0;
+            ExportReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            // 
+            // ExportReceipts_Label
+            // 
+            ExportReceipts_Label.Anchor = AnchorStyles.Top;
+            ExportReceipts_Label.AutoSize = true;
+            ExportReceipts_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ExportReceipts_Label.Location = new Point(71, 373);
+            ExportReceipts_Label.Name = "ExportReceipts_Label";
+            ExportReceipts_Label.Padding = new Padding(5);
+            ExportReceipts_Label.Size = new Size(322, 40);
+            ExportReceipts_Label.TabIndex = 45;
+            ExportReceipts_Label.Text = "Also export receipts to a folder";
+            ExportReceipts_Label.Click += ExportReceipts_Label_Click;
             // 
             // Export_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1178, 694);
+            Controls.Add(ExportReceipts_CheckBox);
+            Controls.Add(ExportReceipts_Label);
             Controls.Add(FileType_ComboBox);
             Controls.Add(Export_Button);
             Controls.Add(ThreeDots_Button);
@@ -266,7 +306,6 @@
             Name = "Export_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Load += Export_Form_Load;
             Shown += Export_Form_Shown;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).EndInit();
@@ -289,5 +328,7 @@
         private Guna.UI2.WinForms.Guna2Button ThreeDots_Button;
         private Guna.UI2.WinForms.Guna2Button Export_Button;
         public Guna.UI2.WinForms.Guna2ComboBox FileType_ComboBox;
+        private Guna.UI2.WinForms.Guna2CustomCheckBox ExportReceipts_CheckBox;
+        private Label ExportReceipts_Label;
     }
 }

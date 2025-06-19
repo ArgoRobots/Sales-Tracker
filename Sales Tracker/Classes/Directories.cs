@@ -653,5 +653,25 @@ namespace Sales_Tracker.Classes
             }
             return filePath;
         }
+
+        /// <summary>
+        /// Generates a new unique directory name when a directory already exists.
+        /// Appends a number to the directory name to make it unique.
+        /// </summary>
+        /// <returns>New unique directory path</returns>
+        public static string GetNewDirectoryNameIfItAlreadyExists(string directoryPath)
+        {
+            // Check if the directory already exists and get a new name if necessary
+            if (Directory.Exists(directoryPath))
+            {
+                string parentDirectory = Path.GetDirectoryName(directoryPath);
+                string directoryName = Path.GetFileName(directoryPath);
+
+                List<string> existingDirectories = GetListOfAllDirectoryNamesInDirectory(parentDirectory);
+                directoryName = Tools.AddNumberForAStringThatAlreadyExists(directoryName, existingDirectories);
+                return Path.Combine(parentDirectory, directoryName);
+            }
+            return directoryPath;
+        }
     }
 }
