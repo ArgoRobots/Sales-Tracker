@@ -401,7 +401,6 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Retrieves a list of valid recent company paths from the global application data settings.
         /// </summary>
-        /// <returns>A list of valid company file paths.</returns>
         public static List<string> GetValidRecentCompanyPaths(bool excludeCurrentCompany)
         {
             string? value = DataFileManager.GetValue(GlobalAppDataSettings.RecentCompanies);

@@ -298,22 +298,12 @@ namespace Sales_Tracker.Startup.Menus
         private void RemoveFromList(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-
-            if (_rightClickOpenRecent_Panel.Tag is Guna2Button btn)
+            if (_rightClickOpenRecent_Panel.Tag is Guna2Button button)
             {
-                string companyDir = btn.Tag.ToString();
+                string companyDir = button.Tag.ToString();
 
-                // Remove from list of recent companies
-                string? value = DataFileManager.GetValue(GlobalAppDataSettings.RecentCompanies);
-                if (value != null)
-                {
-                    List<string> recentCompanyDirs = value.Split(',').ToList();
-                    recentCompanyDirs.RemoveAll(dir => dir == companyDir);
-                    DataFileManager.SetValue(GlobalAppDataSettings.RecentCompanies, string.Join(",", recentCompanyDirs));
-                }
-
-                // Remove the button
-                OpenRecent_FlowLayoutPanel.Controls.Remove(btn);
+                DataFileManager.RemoveValue(GlobalAppDataSettings.RecentCompanies, companyDir);
+                OpenRecent_FlowLayoutPanel.Controls.Remove(button);
             }
         }
         private void Delete(object sender, EventArgs e)
@@ -333,9 +323,9 @@ namespace Sales_Tracker.Startup.Menus
                     if (result == CustomMessageBoxResult.Yes)
                     {
                         FileSystem.DeleteFile(
-                        companyDir,
-                        UIOption.OnlyErrorDialogs,
-                        RecycleOption.SendToRecycleBin);
+                            companyDir,
+                            UIOption.OnlyErrorDialogs,
+                            RecycleOption.SendToRecycleBin);
 
                         OpenRecent_FlowLayoutPanel.Controls.Remove(btn);
                     }

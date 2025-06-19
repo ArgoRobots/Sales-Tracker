@@ -131,13 +131,6 @@ namespace Sales_Tracker.Charts
             /// </summary>
             private static bool IsAnotherFormAtPosition(Point screenPosition)
             {
-                // If there's only one form in the application, then there can't be another form on top
-                if (Application.OpenForms.Count <= 1)
-                {
-                    return false;
-                }
-
-                // Check if any other visible form contains the position
                 foreach (Form form in Application.OpenForms)
                 {
                     if (form != MainMenu_Form.Instance && form.Visible)

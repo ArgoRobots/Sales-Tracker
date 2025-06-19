@@ -74,14 +74,14 @@
         /// </summary>
         public static void SetValue<TEnum>(TEnum key, string value) where TEnum : Enum
         {
-            string finalFilePath = GetFilePath<TEnum>();
-            Dictionary<string, string> values = EnsureSettingsLoaded(finalFilePath);
+            string filePath = GetFilePath<TEnum>();
+            Dictionary<string, string> values = EnsureSettingsLoaded(filePath);
             string? keyString = Enum.GetName(typeof(TEnum), key);
 
             if (keyString != null)
             {
                 values[keyString] = value;
-                Save(finalFilePath);
+                Save(filePath);
             }
             else
             {
@@ -90,12 +90,12 @@
         }
 
         /// <summary>
-        /// Appends a value to a setting. If the value already exists, it is moved to the front of the list.
+        /// Appends a value to a setting. If the value already exists, it is moved to the end of the list.
         /// </summary>
         public static void AppendValue<TEnum>(TEnum key, string appendValue) where TEnum : Enum
         {
-            string finalFilePath = GetFilePath<TEnum>();
-            Dictionary<string, string> settings = EnsureSettingsLoaded(finalFilePath);
+            string filePath = GetFilePath<TEnum>();
+            Dictionary<string, string> settings = EnsureSettingsLoaded(filePath);
             string? keyString = Enum.GetName(typeof(TEnum), key) ?? throw new ArgumentException("Invalid enum key", nameof(key));
             byte maxValue = GetMaxValueForSetting(key);
 
@@ -122,7 +122,7 @@
 
             settings[keyString] = string.Join(",", valuesList);
 
-            Save(finalFilePath);
+            Save(filePath);
         }
 
         /// <summary>
@@ -156,9 +156,37 @@
         }
 
         /// <summary>
+        /// Removes a value from a setting. If the setting contains multiple instances of the value, all are removed.
+        /// </summary>
+        public static void RemoveValue<TEnum>(TEnum key, string removeValue) where TEnum : Enum
+        {
+            string filePath = GetFilePath<TEnum>();
+            Dictionary<string, string> settings = EnsureSettingsLoaded(filePath);
+            string? keyString = Enum.GetName(typeof(TEnum), key) ?? throw new ArgumentException("Invalid enum key", nameof(key));
+
+            // Attempt to get the current value
+            if (!settings.TryGetValue(keyString, out string? value) || string.IsNullOrEmpty(value))
+            {
+                return; // Nothing to remove
+            }
+
+            // Split into list
+            List<string> valuesList = value.Split([','], StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            // Remove all instances of the value
+            int removedCount = valuesList.RemoveAll(val => val == removeValue);
+
+            // Only save if something was actually removed
+            if (removedCount > 0)
+            {
+                settings[keyString] = string.Join(",", valuesList);
+                Save(filePath);
+            }
+        }
+
+        /// <summary>
         /// Saves the current settings to the specified file if any changes were made.
         /// </summary>
-        /// <param name="filePath">The file path where the settings will be saved.</param>
         private static void Save(string filePath)
         {
             if (!data.TryGetValue(filePath, out Dictionary<string, string>? values))

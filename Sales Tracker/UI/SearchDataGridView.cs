@@ -41,7 +41,7 @@ namespace Sales_Tracker.UI
             }
             catch (ArgumentException)
             {
-                // If parsing fails due to invalid search terms, treat as no match
+                // If parsing fails, treat it as no match
                 return false;
             }
 
