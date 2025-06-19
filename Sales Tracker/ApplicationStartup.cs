@@ -103,15 +103,15 @@ namespace Sales_Tracker
                 string filePath = args[0];
                 string directory = Path.GetDirectoryName(filePath);
                 string fileName = Path.GetFileName(filePath);
-                string projectName = Path.GetFileNameWithoutExtension(fileName);
+                string companyName = Path.GetFileNameWithoutExtension(fileName);
 
-                if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(projectName))
+                if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(companyName))
                 {
                     return false;
                 }
 
                 // Open the company
-                Directories.SetDirectories(directory, projectName);
+                Directories.SetDirectories(directory, companyName);
 
                 if (!PasswordManager.EnterPassword())
                 {

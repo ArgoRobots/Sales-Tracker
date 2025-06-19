@@ -1,7 +1,7 @@
 ﻿
 namespace Sales_Tracker.Startup.Menus
 {
-    partial class ConfigureProject_Form
+    partial class ConfigureCompany_Form
     {
         /// <summary>
         /// Required designer variable.
@@ -29,23 +29,23 @@ namespace Sales_Tracker.Startup.Menus
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Back_Button = new Guna.UI2.WinForms.Guna2Button();
             Create_Button = new Guna.UI2.WinForms.Guna2Button();
             ConfigureNewCompany_Label = new Label();
             CompanyName_Label = new Label();
-            ProjectName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            CompanyName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Directory_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             Directory_Label = new Label();
             WarningName_Label = new Label();
@@ -65,13 +65,13 @@ namespace Sales_Tracker.Startup.Menus
             Back_Button.BorderColor = Color.LightGray;
             Back_Button.BorderRadius = 2;
             Back_Button.BorderThickness = 1;
-            Back_Button.CustomizableEdges = customizableEdges1;
+            Back_Button.CustomizableEdges = customizableEdges13;
             Back_Button.FillColor = Color.White;
             Back_Button.Font = new Font("Segoe UI", 10F);
             Back_Button.ForeColor = Color.Black;
             Back_Button.Location = new Point(844, 735);
             Back_Button.Name = "Back_Button";
-            Back_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Back_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Back_Button.Size = new Size(200, 50);
             Back_Button.TabIndex = 7;
             Back_Button.Text = "Back";
@@ -83,13 +83,13 @@ namespace Sales_Tracker.Startup.Menus
             Create_Button.BorderColor = Color.LightGray;
             Create_Button.BorderRadius = 2;
             Create_Button.BorderThickness = 1;
-            Create_Button.CustomizableEdges = customizableEdges3;
+            Create_Button.CustomizableEdges = customizableEdges15;
             Create_Button.FillColor = Color.White;
             Create_Button.Font = new Font("Segoe UI", 10F);
             Create_Button.ForeColor = Color.Black;
             Create_Button.Location = new Point(1056, 735);
             Create_Button.Name = "Create_Button";
-            Create_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            Create_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Create_Button.Size = new Size(200, 50);
             Create_Button.TabIndex = 8;
             Create_Button.Text = "Create";
@@ -117,36 +117,35 @@ namespace Sales_Tracker.Startup.Menus
             CompanyName_Label.Text = "Company name";
             CompanyName_Label.Click += CloseAllPanels;
             // 
-            // ProjectName_TextBox
+            // CompanyName_TextBox
             // 
-            ProjectName_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            ProjectName_TextBox.CustomizableEdges = customizableEdges5;
-            ProjectName_TextBox.DefaultText = "";
-            ProjectName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            ProjectName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            ProjectName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            ProjectName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            ProjectName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            ProjectName_TextBox.Font = new Font("Segoe UI", 11F);
-            ProjectName_TextBox.ForeColor = SystemColors.ControlText;
-            ProjectName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            ProjectName_TextBox.Location = new Point(48, 150);
-            ProjectName_TextBox.Margin = new Padding(4, 5, 4, 5);
-            ProjectName_TextBox.Name = "ProjectName_TextBox";
-            ProjectName_TextBox.PasswordChar = '\0';
-            ProjectName_TextBox.PlaceholderText = "";
-            ProjectName_TextBox.SelectedText = "";
-            ProjectName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            ProjectName_TextBox.ShortcutsEnabled = false;
-            ProjectName_TextBox.Size = new Size(1135, 60);
-            ProjectName_TextBox.TabIndex = 1;
-            ProjectName_TextBox.TextChanged += TextBoxProjectName_TextChanged;
-            ProjectName_TextBox.Click += CloseAllPanels;
+            CompanyName_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            CompanyName_TextBox.CustomizableEdges = customizableEdges17;
+            CompanyName_TextBox.DefaultText = "";
+            CompanyName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            CompanyName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            CompanyName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            CompanyName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            CompanyName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            CompanyName_TextBox.Font = new Font("Segoe UI", 11F);
+            CompanyName_TextBox.ForeColor = SystemColors.ControlText;
+            CompanyName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            CompanyName_TextBox.Location = new Point(48, 150);
+            CompanyName_TextBox.Margin = new Padding(4, 5, 4, 5);
+            CompanyName_TextBox.Name = "CompanyName_TextBox";
+            CompanyName_TextBox.PlaceholderText = "";
+            CompanyName_TextBox.SelectedText = "";
+            CompanyName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            CompanyName_TextBox.ShortcutsEnabled = false;
+            CompanyName_TextBox.Size = new Size(1135, 60);
+            CompanyName_TextBox.TabIndex = 1;
+            CompanyName_TextBox.TextChanged += CompanyName_TextChanged;
+            CompanyName_TextBox.Click += CloseAllPanels;
             // 
             // Directory_TextBox
             // 
             Directory_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Directory_TextBox.CustomizableEdges = customizableEdges7;
+            Directory_TextBox.CustomizableEdges = customizableEdges19;
             Directory_TextBox.DefaultText = "";
             Directory_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Directory_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -159,10 +158,9 @@ namespace Sales_Tracker.Startup.Menus
             Directory_TextBox.Location = new Point(48, 330);
             Directory_TextBox.Margin = new Padding(4, 5, 4, 5);
             Directory_TextBox.Name = "Directory_TextBox";
-            Directory_TextBox.PasswordChar = '\0';
             Directory_TextBox.PlaceholderText = "";
             Directory_TextBox.SelectedText = "";
-            Directory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Directory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
             Directory_TextBox.ShortcutsEnabled = false;
             Directory_TextBox.Size = new Size(1135, 60);
             Directory_TextBox.TabIndex = 2;
@@ -233,14 +231,14 @@ namespace Sales_Tracker.Startup.Menus
             ThreeDots_Button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             ThreeDots_Button.BorderColor = Color.FromArgb(213, 218, 223);
             ThreeDots_Button.BorderThickness = 1;
-            ThreeDots_Button.CustomizableEdges = customizableEdges9;
+            ThreeDots_Button.CustomizableEdges = customizableEdges21;
             ThreeDots_Button.FillColor = Color.White;
             ThreeDots_Button.Font = new Font("Segoe UI", 9F);
             ThreeDots_Button.ForeColor = Color.White;
             ThreeDots_Button.Image = Properties.Resources.ThreeDotsBlack;
             ThreeDots_Button.Location = new Point(1190, 330);
             ThreeDots_Button.Name = "ThreeDots_Button";
-            ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges22;
             ThreeDots_Button.Size = new Size(60, 60);
             ThreeDots_Button.TabIndex = 3;
             ThreeDots_Button.Click += ThreeDots_Button_Click;
@@ -259,7 +257,7 @@ namespace Sales_Tracker.Startup.Menus
             // Currency_TextBox
             // 
             Currency_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            Currency_TextBox.CustomizableEdges = customizableEdges11;
+            Currency_TextBox.CustomizableEdges = customizableEdges23;
             Currency_TextBox.DefaultText = "";
             Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Currency_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -272,15 +270,14 @@ namespace Sales_Tracker.Startup.Menus
             Currency_TextBox.Location = new Point(48, 512);
             Currency_TextBox.Margin = new Padding(4, 5, 4, 5);
             Currency_TextBox.Name = "Currency_TextBox";
-            Currency_TextBox.PasswordChar = '\0';
             Currency_TextBox.PlaceholderText = "";
             Currency_TextBox.SelectedText = "";
-            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Currency_TextBox.ShortcutsEnabled = false;
             Currency_TextBox.Size = new Size(255, 50);
             Currency_TextBox.TabIndex = 275;
             // 
-            // ConfigureProject_Form
+            // ConfigureCompany_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
@@ -294,17 +291,17 @@ namespace Sales_Tracker.Startup.Menus
             Controls.Add(ThreeDots_Button);
             Controls.Add(Directory_TextBox);
             Controls.Add(Directory_Label);
-            Controls.Add(ProjectName_TextBox);
+            Controls.Add(CompanyName_TextBox);
             Controls.Add(ConfigureNewCompany_Label);
             Controls.Add(CompanyName_Label);
             Controls.Add(Back_Button);
             Controls.Add(Create_Button);
             FormBorderStyle = FormBorderStyle.None;
             KeyPreview = true;
-            Name = "ConfigureProject_Form";
+            Name = "ConfigureCompany_Form";
             StartPosition = FormStartPosition.CenterScreen;
-            Shown += ConfigureProject_Form_Shown;
-            Click += ConfigureProject_Form_Click;
+            Shown += ConfigureCompany_Form_Shown;
+            Click += ConfigureCompany_Form_Click;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).EndInit();
             ResumeLayout(false);
@@ -315,7 +312,7 @@ namespace Sales_Tracker.Startup.Menus
         private Guna.UI2.WinForms.Guna2Button Create_Button;
         private System.Windows.Forms.Label ConfigureNewCompany_Label;
         private System.Windows.Forms.Label CompanyName_Label;
-        private Guna.UI2.WinForms.Guna2TextBox ProjectName_TextBox;
+        private Guna.UI2.WinForms.Guna2TextBox CompanyName_TextBox;
         private Guna.UI2.WinForms.Guna2TextBox Directory_TextBox;
         private System.Windows.Forms.Label Directory_Label;
         private Guna.UI2.WinForms.Guna2Button ThreeDots_Button;

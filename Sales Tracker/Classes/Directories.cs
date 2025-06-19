@@ -37,23 +37,23 @@ namespace Sales_Tracker.Classes
 
         // Methods
         /// <summary>
-        /// Initializes directory paths for a specific project.
+        /// Initializes directory paths for a specific company.
         /// </summary>
-        public static void SetDirectories(string projectDir, string project_name)
+        public static void SetDirectories(string companyDir, string companyName)
         {
-            Properties.Settings.Default.ProjectDirectory = projectDir;
+            Properties.Settings.Default.CompanyDirectory = companyDir;
             Properties.Settings.Default.Save();
 
-            if (!projectDir.EndsWith('\\'))
+            if (!companyDir.EndsWith('\\'))
             {
-                projectDir += "\\";
+                companyDir += "\\";
             }
 
-            CompanyName = project_name;
-            TempCompany_dir = AppData_dir + project_name + @"\";
+            CompanyName = companyName;
+            TempCompany_dir = AppData_dir + companyName + @"\";
 
-            ArgoCompany_dir = projectDir;
-            ArgoCompany_file = projectDir + project_name + ArgoFiles.ArgoCompanyFileExtension;
+            ArgoCompany_dir = companyDir;
+            ArgoCompany_file = companyDir + companyName + ArgoFiles.ArgoCompanyFileExtension;
 
             // Main files
             Purchases_file = TempCompany_dir + "purchases" + ArgoFiles.TxtFileExtension;
@@ -62,7 +62,7 @@ namespace Sales_Tracker.Classes
             CategorySales_file = TempCompany_dir + "categorySales" + ArgoFiles.JsonFileExtension;
             Accountants_file = TempCompany_dir + "accountants" + ArgoFiles.TxtFileExtension;
             Companies_file = TempCompany_dir + "companies" + ArgoFiles.TxtFileExtension;
-            Receipts_dir = AppData_dir + project_name + @"\receipts\";
+            Receipts_dir = AppData_dir + companyName + @"\receipts\";
 
             // Misc.
             AppDataSettings_file = TempCompany_dir + "appSettings" + ArgoFiles.TxtFileExtension;
@@ -512,7 +512,7 @@ namespace Sales_Tracker.Classes
 
                 string newDestinationDirectory = destinationDirectory + thingName;
 
-                // If the .ArgoProject file was renamed
+                // If the .ArgoSales file was renamed
                 if (thingName != extractedDir)
                 {
                     RenameFolder(destinationDirectory + extractedDir, newDestinationDirectory);
@@ -553,14 +553,14 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Creates a backup of the current company project by saving all changes and creating a compressed archive.
-        /// Uses consistent naming convention to handle duplicates by appending " (2)", " (3)", etc.
+        /// Creates a backup of the current company by saving all changes and creating a compressed archive.
+        /// Uses naming convention to handle duplicates by appending " (2)", " (3)", etc.
         /// </summary>
         public static void CreateBackup(string destinationDirectory)
         {
             ArgoCompany.SaveAll();
 
-            string projectName = new DirectoryInfo(destinationDirectory).Name;
+            string companyName = new DirectoryInfo(destinationDirectory).Name;
             string backupDir = Path.GetDirectoryName(destinationDirectory);
             string fileExtension = ArgoFiles.ArgoCompanyFileExtension;
 
@@ -568,16 +568,16 @@ namespace Sales_Tracker.Classes
             List<string> existingBackups = GetListOfAllFilesWithoutExtensionInDirectory(backupDir);
 
             // Generate unique name if needed using consistent naming method
-            string uniqueName = projectName;
-            if (existingBackups.Contains(projectName))
+            string uniqueName = companyName;
+            if (existingBackups.Contains(companyName))
             {
-                uniqueName = Tools.AddNumberForAStringThatAlreadyExists(projectName, existingBackups);
+                uniqueName = Tools.AddNumberForAStringThatAlreadyExists(companyName, existingBackups);
             }
 
             // Construct paths using the unique name
             string uniqueBasePath = Path.Combine(backupDir, uniqueName);
             string tempDirPath = uniqueBasePath;
-            string tempFilePath = Path.Combine(tempDirPath, projectName + fileExtension);
+            string tempFilePath = Path.Combine(tempDirPath, companyName + fileExtension);
             string finalZipPath = uniqueBasePath + ArgoFiles.ZipExtension;
 
             // Create initial backup file

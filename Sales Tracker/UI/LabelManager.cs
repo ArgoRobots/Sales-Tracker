@@ -153,16 +153,15 @@ namespace Sales_Tracker.UI
         }
         public static void AddNoRecentlyOpenedCompanies(Control parent, int labelWidth)
         {
-            Label noProjectsLabel = new()
+            parent.Controls.Add(new Label
             {
                 Text = LanguageManager.TranslateString("No recently opened companies"),
                 Name = "NoRecentlyOpenedCompanies_Label",
                 Size = new Size(labelWidth, CustomControls.PanelButtonHeight),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                ForeColor = CustomColors.Text,
-            };
-            parent.Controls.Add(noProjectsLabel);
+                ForeColor = CustomColors.Text
+            });
         }
     }
 }

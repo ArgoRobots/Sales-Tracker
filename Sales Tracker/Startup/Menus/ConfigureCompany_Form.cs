@@ -6,20 +6,17 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup.Menus
 {
-    public partial class ConfigureProject_Form : Form
+    public partial class ConfigureCompany_Form : Form
     {
-        // Properties
-        private string selectedDirectory, projectName;
-
         // Init.
-        public ConfigureProject_Form()
+        public ConfigureCompany_Form()
         {
             InitializeComponent();
 
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-            SetDefaultProjectDirectory();
+            SetDefaultCompanyDirectory();
             SetDefaultTextInTextBoxes();
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -38,7 +35,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void SetAccessibleDescriptions()
         {
-            ProjectName_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            CompanyName_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Directory_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
@@ -46,8 +43,8 @@ namespace Sales_Tracker.Startup.Menus
         {
             byte searchBoxMaxHeight = 200;
 
-            TextBoxManager.Attach(ProjectName_TextBox);
-            ProjectName_TextBox.TextChanged += (_, _) => ValidateInputs();
+            TextBoxManager.Attach(CompanyName_TextBox);
+            CompanyName_TextBox.TextChanged += (_, _) => ValidateInputs();
 
             TextBoxManager.Attach(Directory_TextBox);
             Directory_TextBox.TextChanged += (_, _) => ValidateInputs();
@@ -62,8 +59,8 @@ namespace Sales_Tracker.Startup.Menus
             string defaultName = "CompanyName";
             List<string> existingNames = [];
 
-            string[] directories = Directory.GetDirectories(Properties.Settings.Default.ProjectDirectory);
-            string[] files = Directory.GetFiles(Properties.Settings.Default.ProjectDirectory, "*" + ArgoFiles.ArgoCompanyFileExtension);
+            string[] directories = Directory.GetDirectories(Properties.Settings.Default.CompanyDirectory);
+            string[] files = Directory.GetFiles(Properties.Settings.Default.CompanyDirectory, "*" + ArgoFiles.ArgoCompanyFileExtension);
 
             foreach (string dir in directories)
             {
@@ -78,32 +75,32 @@ namespace Sales_Tracker.Startup.Menus
                 defaultName = Tools.AddNumberForAStringThatAlreadyExists(defaultName, existingNames);
             }
 
-            ProjectName_TextBox.Text = defaultName;
+            CompanyName_TextBox.Text = defaultName;
 
             // Set default currency
             Currency_TextBox.Text = "CAD";
         }
-        private void SetDefaultProjectDirectory()
+        private void SetDefaultCompanyDirectory()
         {
-            if (Properties.Settings.Default.ProjectDirectory == "")
+            if (Properties.Settings.Default.CompanyDirectory == "")
             {
-                Properties.Settings.Default.ProjectDirectory = Directories.Desktop_dir;
+                Properties.Settings.Default.CompanyDirectory = Directories.Desktop_dir;
                 Properties.Settings.Default.Save();
-                Directory_TextBox.Text = Properties.Settings.Default.ProjectDirectory;
+                Directory_TextBox.Text = Properties.Settings.Default.CompanyDirectory;
             }
             else
             {
-                Directory_TextBox.Text = Properties.Settings.Default.ProjectDirectory;
+                Directory_TextBox.Text = Properties.Settings.Default.CompanyDirectory;
             }
         }
 
         // Form event handlers
-        private void ConfigureProject_Form_Shown(object sender, EventArgs e)
+        private void ConfigureCompany_Form_Shown(object sender, EventArgs e)
         {
-            ProjectName_TextBox.Focus();
+            CompanyName_TextBox.Focus();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void ConfigureProject_Form_Click(object sender, EventArgs e)
+        private void ConfigureCompany_Form_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
             ConfigureNewCompany_Label.Focus();  // This deselects any TextBox
@@ -119,20 +116,16 @@ namespace Sales_Tracker.Startup.Menus
         {
             CloseAllPanels(null, null);
 
-            // Set main directory
-            selectedDirectory = Directory_TextBox.Text;
-
-            if (File.Exists(selectedDirectory + @"\" + ProjectName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
+            if (File.Exists(Directory_TextBox.Text + @"\" + CompanyName_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension))
             {
                 Directory_TextBox.Focus();
-                CustomMessageBox.Show("Project already exists", "A project with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Company already exists", "A company with this name already exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
 
-            projectName = ProjectName_TextBox.Text;
             string oldTempDir = Directories.TempCompany_dir;
 
-            Directories.SetDirectories(selectedDirectory, projectName);
+            Directories.SetDirectories(Directory_TextBox.Text, CompanyName_TextBox.Text);
 
             // Create directories and files
             Directories.CreateDirectory(Directories.TempCompany_dir, true);
@@ -149,14 +142,14 @@ namespace Sales_Tracker.Startup.Menus
             Directories.CreateFile(Directories.Accountants_file);
             Directories.CreateFile(Directories.Companies_file);
 
-            // Set recently opened projects
+            // Set recently opened companies
             DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, Directories.ArgoCompany_file);
 
             // Set default currency
             DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
 
             ArgoCompany.SaveAll();
-            ArgoCompany.CreateMutex(projectName);
+            ArgoCompany.CreateMutex(CompanyName_TextBox.Text);
 
             Startup_Form.Instance.Close();
 
@@ -187,33 +180,32 @@ namespace Sales_Tracker.Startup.Menus
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Directory_TextBox.Text = dialog.SelectedPath + @"\";
-                selectedDirectory = Directory_TextBox.Text;
             }
 
             // Save so it loads back in when the program is restarted
-            Properties.Settings.Default.ProjectDirectory = selectedDirectory;
+            Properties.Settings.Default.CompanyDirectory = Directory_TextBox.Text;
             Properties.Settings.Default.Save();
         }
-        private void TextBoxProjectName_TextChanged(object sender, EventArgs e)
+        private void CompanyName_TextChanged(object sender, EventArgs e)
         {
             string invalidChars = "/\\#%&*|;";
 
-            if (string.IsNullOrEmpty(ProjectName_TextBox.Text))
+            if (string.IsNullOrEmpty(CompanyName_TextBox.Text))
             {
-                CustomControls.SetGTextBoxToInvalid(ProjectName_TextBox);
-                ShowWarningForProjectName();
-                WarningName_Label.Text = "Project name cannot be empty";
+                CustomControls.SetGTextBoxToInvalid(CompanyName_TextBox);
+                ShowWarningForCompanyName();
+                WarningName_Label.Text = "Company name cannot be empty";
             }
-            else if (invalidChars.Any(ProjectName_TextBox.Text.Contains))
+            else if (invalidChars.Any(CompanyName_TextBox.Text.Contains))
             {
-                CustomControls.SetGTextBoxToInvalid(ProjectName_TextBox);
-                ShowWarningForProjectName();
-                WarningName_Label.Text = "Project name contains invalid characters";
+                CustomControls.SetGTextBoxToInvalid(CompanyName_TextBox);
+                ShowWarningForCompanyName();
+                WarningName_Label.Text = "Company name contains invalid characters";
             }
             else
             {
-                CustomControls.SetGTextBoxToValid(ProjectName_TextBox);
-                HideWarningForProjectName();
+                CustomControls.SetGTextBoxToValid(CompanyName_TextBox);
+                HideWarningForCompanyName();
             }
         }
         private void Directory_textBox_TextChanged(object sender, EventArgs e)
@@ -256,12 +248,12 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_PictureBox.Visible = false;
             WarningDir_Label.Visible = false;
         }
-        private void ShowWarningForProjectName()
+        private void ShowWarningForCompanyName()
         {
             WarningName_PictureBox.Visible = true;
             WarningName_Label.Visible = true;
         }
-        private void HideWarningForProjectName()
+        private void HideWarningForCompanyName()
         {
             WarningName_PictureBox.Visible = false;
             WarningName_Label.Visible = false;
@@ -270,7 +262,7 @@ namespace Sales_Tracker.Startup.Menus
         // Methods
         private void ValidateInputs()
         {
-            Create_Button.Enabled = ProjectName_TextBox.BorderColor != Color.Red &&
+            Create_Button.Enabled = CompanyName_TextBox.BorderColor != Color.Red &&
                 Directory_TextBox.BorderColor != Color.Red &&
                 Currency_TextBox.BorderColor != Color.Red;
         }

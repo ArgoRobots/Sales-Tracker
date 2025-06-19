@@ -94,7 +94,7 @@ namespace Sales_Tracker.UI
                     typeof(Settings_Form),
 
                     // Startup
-                    typeof(ConfigureProject_Form),
+                    typeof(ConfigureCompany_Form),
                     typeof(GetStarted_Form),
                     typeof(Startup_Form),
 

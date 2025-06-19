@@ -29,7 +29,7 @@ namespace Sales_Tracker.Startup.Menus
             LanguageManager.UpdateLanguageForControl(this);
 
             ConstructRightClickOpenRecentMenu();
-            LoadListOfRecentProjects();
+            LoadListOfRecentCompanies();
             SetFlowLayoutPanel();
             SetTheme();
             ValidateKeyAsync();
@@ -76,28 +76,28 @@ namespace Sales_Tracker.Startup.Menus
             ArgoCompany.RecoverUnsavedWork();
         }
 
-        // Recent projects
-        private void LoadListOfRecentProjects()
+        // Recent companies
+        private void LoadListOfRecentCompanies()
         {
-            List<string> validProjectDirs = ArgoCompany.GetValidRecentCompanyPaths(false);
+            List<string> validCompanyDirs = ArgoCompany.GetValidRecentCompanyPaths(false);
 
-            if (validProjectDirs.Count == 0)
+            if (validCompanyDirs.Count == 0)
             {
                 LabelManager.AddNoRecentlyOpenedCompanies(OpenRecent_FlowLayoutPanel, CalculateButtonWidth());
                 return;
             }
 
-            foreach (string projectDir in validProjectDirs)
+            // Construct a button for each company
+            foreach (string companyDir in validCompanyDirs)
             {
-                // Construct button
                 Guna2Button btn = new()
                 {
                     BackColor = CustomColors.ControlBack,
                     FillColor = CustomColors.ControlBack,
                     Size = new Size(CalculateButtonWidth(), 60),
-                    Text = Path.GetFileNameWithoutExtension(projectDir),
+                    Text = Path.GetFileNameWithoutExtension(companyDir),
                     Font = new Font("Segoe UI", 11),
-                    Tag = projectDir,
+                    Tag = companyDir,
                     AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate
                 };
                 btn.MouseDown += Btn_MouseDown;
@@ -105,7 +105,7 @@ namespace Sales_Tracker.Startup.Menus
                 OpenRecent_FlowLayoutPanel.Controls.Add(btn);
 
                 // Initialize file watcher for the directory
-                string directory = Path.GetDirectoryName(projectDir);
+                string directory = Path.GetDirectoryName(companyDir);
                 InitializeFileWatcher(directory);
             }
         }
@@ -116,23 +116,22 @@ namespace Sales_Tracker.Startup.Menus
             if (e.Button != MouseButtons.Left) { return; }
             Guna2Button button = (Guna2Button)sender;
 
-            string projectName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
-            if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(projectName))
+            string companyName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
+            if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(companyName))
             {
                 return;
             }
 
-            // Save new ProjectDirectory
             string newDir = Directory.GetParent(button.Tag.ToString()).FullName;
 
-            Directories.SetDirectories(newDir, projectName);
+            Directories.SetDirectories(newDir, companyName);
 
             if (!PasswordManager.EnterPassword())
             {
                 return;
             }
 
-            string filePath = newDir + @"\" + projectName + ArgoFiles.ArgoCompanyFileExtension;
+            string filePath = newDir + @"\" + companyName + ArgoFiles.ArgoCompanyFileExtension;
             DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, filePath);
 
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);
@@ -156,14 +155,8 @@ namespace Sales_Tracker.Startup.Menus
         }
         private int CalculateButtonWidth()
         {
-            if (OpenRecent_FlowLayoutPanel.VerticalScroll.Visible)
-            {
-                return OpenRecent_FlowLayoutPanel.Width - SystemInformation.VerticalScrollBarWidth - 8;
-            }
-            else
-            {
-                return OpenRecent_FlowLayoutPanel.Width - 8;
-            }
+            int scrollBarWidth = OpenRecent_FlowLayoutPanel.VerticalScroll.Visible ? SystemInformation.VerticalScrollBarWidth : 0;
+            return OpenRecent_FlowLayoutPanel.Width - scrollBarWidth - 8;
         }
         private void InitializeFileWatcher(string directory)
         {
@@ -230,7 +223,7 @@ namespace Sales_Tracker.Startup.Menus
         private void CreateNewCompany_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormConfigureProject);
+            Startup_Form.Instance.SwitchMainForm(Startup_Form.Instance.FormConfigureCompany);
         }
         private void OpenCompany_Button_Click(object sender, EventArgs e)
         {
@@ -278,12 +271,12 @@ namespace Sales_Tracker.Startup.Menus
         {
             CloseAllPanels(null, null);
 
-            if (OpenRecent_FlowLayoutPanel.Controls.OfType<Guna2Button>().FirstOrDefault() is Guna2Button btn)
+            if (_rightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
-                string projectFile = btn.Tag.ToString();
-                if (File.Exists(projectFile))
+                string companyFile = btn.Tag.ToString();
+                if (File.Exists(companyFile))
                 {
-                    Tools.ShowFileInFolder(projectFile);
+                    Tools.ShowFileInFolder(companyFile);
                 }
             }
         }
@@ -308,18 +301,18 @@ namespace Sales_Tracker.Startup.Menus
 
             if (_rightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
-                string projectDir = btn.Tag.ToString();
+                string companyDir = btn.Tag.ToString();
 
-                // Remove from recent project in file
+                // Remove from list of recent companies
                 string? value = DataFileManager.GetValue(GlobalAppDataSettings.RecentCompanies);
                 if (value != null)
                 {
-                    List<string> projectDirs = value.Split(',').ToList();
-                    projectDirs.RemoveAll(dir => dir == projectDir);
-                    DataFileManager.SetValue(GlobalAppDataSettings.RecentCompanies, string.Join(",", projectDirs));
+                    List<string> recentCompanyDirs = value.Split(',').ToList();
+                    recentCompanyDirs.RemoveAll(dir => dir == companyDir);
+                    DataFileManager.SetValue(GlobalAppDataSettings.RecentCompanies, string.Join(",", recentCompanyDirs));
                 }
 
-                // Remove the button from the FlowLayoutPanel
+                // Remove the button
                 OpenRecent_FlowLayoutPanel.Controls.Remove(btn);
             }
         }
@@ -329,8 +322,8 @@ namespace Sales_Tracker.Startup.Menus
 
             if (_rightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
-                string projectDir = btn.Tag.ToString();
-                if (File.Exists(projectDir))
+                string companyDir = btn.Tag.ToString();
+                if (File.Exists(companyDir))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show(
                         "Delete company",
@@ -340,7 +333,7 @@ namespace Sales_Tracker.Startup.Menus
                     if (result == CustomMessageBoxResult.Yes)
                     {
                         FileSystem.DeleteFile(
-                        projectDir,
+                        companyDir,
                         UIOption.OnlyErrorDialogs,
                         RecycleOption.SendToRecycleBin);
 
@@ -370,12 +363,12 @@ namespace Sales_Tracker.Startup.Menus
 
             button.Text = CustomControls.Rename_TextBox.Text;
 
-            string projectDir = button.Tag.ToString();
-            string newProjectDir = Path.Combine(Path.GetDirectoryName(projectDir), CustomControls.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension);
+            string companyDir = button.Tag.ToString();
+            string newCompanyDir = Path.Combine(Path.GetDirectoryName(companyDir), CustomControls.Rename_TextBox.Text + ArgoFiles.ArgoCompanyFileExtension);
 
-            if (Directories.MoveFile(projectDir, newProjectDir))
+            if (Directories.MoveFile(companyDir, newCompanyDir))
             {
-                button.Tag = newProjectDir;
+                button.Tag = newCompanyDir;
             }
 
             CustomControls.Rename_TextBox.Clear();

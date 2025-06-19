@@ -300,16 +300,16 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = RecentlyOpenedMenu.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             flowPanel.Controls.Clear();
 
-            List<string> validProjectDirs = ArgoCompany.GetValidRecentCompanyPaths(true);
+            List<string> validCompanyDirs = ArgoCompany.GetValidRecentCompanyPaths(true);
 
-            if (validProjectDirs.Count == 0)
+            if (validCompanyDirs.Count == 0)
             {
                 LabelManager.AddNoRecentlyOpenedCompanies(flowPanel, _panelBtnWidth);
             }
             else
             {
                 // Construct buttons
-                foreach (string projectDir in validProjectDirs)
+                foreach (string projectDir in validCompanyDirs)
                 {
                     string text = Path.GetFileNameWithoutExtension(projectDir);
                     Guna2Button menuBtn = ConstructBtnForMenu(text, _panelBtnWidth, true, flowPanel);

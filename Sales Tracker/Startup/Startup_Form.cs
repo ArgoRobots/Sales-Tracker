@@ -11,7 +11,7 @@ namespace Sales_Tracker.Startup
         // Getters
         public static Startup_Form Instance => _instance;
         public GetStarted_Form FormGetStarted { get; } = new();
-        public ConfigureProject_Form FormConfigureProject { get; } = new();
+        public ConfigureCompany_Form FormConfigureCompany { get; } = new();
 
         // Init.
         public Startup_Form() : this([]) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
@@ -22,8 +22,8 @@ namespace Sales_Tracker.Startup
 
             if (args.Contains("autoClickButton"))
             {
-                SwitchMainForm(FormConfigureProject);
-                FormConfigureProject.Controls.Remove(FormConfigureProject.Back_Button);
+                SwitchMainForm(FormConfigureCompany);
+                FormConfigureCompany.Controls.Remove(FormConfigureCompany.Back_Button);
             }
             else { SwitchMainForm(FormGetStarted); }
 
