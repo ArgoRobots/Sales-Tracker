@@ -11,8 +11,8 @@ namespace Sales_Tracker
     {
         // Properties
         private static Receipts_Form _instance;
-        private DateTime oldestDate;
-        private readonly MainMenu_Form.SelectedOption oldOption;
+        private DateTime _oldestDate;
+        private readonly MainMenu_Form.SelectedOption _oldOption;
 
         // Getter
         public static Receipts_Form Instance => _instance;
@@ -23,7 +23,7 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            oldOption = MainMenu_Form.Instance.Selected;
+            _oldOption = MainMenu_Form.Instance.Selected;
 
             MainMenu_Form.IsProgramLoading = true;
             DataGridViewManager.InitializeDataGridView(Receipts_DataGridView, "Receipts_DataGridView", Receipts_DataGridView.Size, ColumnHeaders, null, this);
@@ -34,7 +34,7 @@ namespace Sales_Tracker
 
             if (Receipts_DataGridView.Rows.Count > 0)
             {
-                From_DateTimePicker.Value = oldestDate;
+                From_DateTimePicker.Value = _oldestDate;
                 To_DateTimePicker.Value = DateTime.Now;
             }
             MainMenu_Form.IsProgramLoading = false;
@@ -96,7 +96,7 @@ namespace Sales_Tracker
         private void Receipts_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             CustomControls.CloseAllPanels();
-            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.Selected = _oldOption;
         }
 
         // Event handlers
@@ -107,7 +107,7 @@ namespace Sales_Tracker
             IncludeSaleReceipts_CheckBox.Checked = true;
             FilterByDate_CheckBox.Checked = false;
             Search_TextBox.Text = "";
-            From_DateTimePicker.Value = oldestDate;
+            From_DateTimePicker.Value = _oldestDate;
             To_DateTimePicker.Value = DateTime.Now;
         }
         private void ExportSelected_Button_Click(object sender, EventArgs e)
@@ -225,7 +225,7 @@ namespace Sales_Tracker
             }
 
             Receipts_DataGridView.Rows.Clear();
-            oldestDate = default;
+            _oldestDate = default;
 
             if (IncludeSaleReceipts_CheckBox.Checked)
             {
@@ -288,9 +288,9 @@ namespace Sales_Tracker
 
                 // Get oldest date
                 DateTime currentDate = DateTime.Parse(row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString());
-                if (oldestDate == default || oldestDate > currentDate)
+                if (_oldestDate == default || _oldestDate > currentDate)
                 {
-                    oldestDate = currentDate;
+                    _oldestDate = currentDate;
                 }
             }
         }

@@ -11,20 +11,20 @@ namespace Sales_Tracker
     {
         // Properties
         private static Categories_Form _instance;
+        private readonly MainMenu_Form.SelectedOption _oldOption;
 
         // Getters
         public static Categories_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
         // Init.
-        private readonly MainMenu_Form.SelectedOption oldOption;
         public Categories_Form() : this(false) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public Categories_Form(bool checkPurchaseRadioButton)
         {
             InitializeComponent();
             _instance = this;
 
-            oldOption = MainMenu_Form.Instance.Selected;
+            _oldOption = MainMenu_Form.Instance.Selected;
             ConstructDataGridViews();
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
@@ -99,7 +99,7 @@ namespace Sales_Tracker
         }
         private void Categories_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.Selected = _oldOption;
         }
         private void Categories_Form_Shown(object sender, EventArgs e)
         {

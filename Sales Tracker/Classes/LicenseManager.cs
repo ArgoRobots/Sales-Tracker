@@ -17,7 +17,7 @@ namespace Sales_Tracker.Classes
 
         public LicenseManager()
         {
-            _httpClient = new HttpClient();
+            _httpClient = new();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Sales_Tracker.Classes
                 // Check if we have internet connectivity
                 if (!IsArgoServerAvailable())
                 {
-                    // If no internet, check the saved license status
+                    // If no internet, check the settings
                     return Properties.Settings.Default.LicenseActivated;
                 }
 

@@ -9,27 +9,28 @@ namespace Sales_Tracker
     public partial class Products_Form : Form
     {
         private static Products_Form _instance;
-        private static bool isProgramLoading;
+        private static bool _isProgramLoading;
+        private readonly MainMenu_Form.SelectedOption _oldOption;
+
 
         // Getters
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
         public static Products_Form Instance => _instance;
 
         // Init.
-        private readonly MainMenu_Form.SelectedOption oldOption;
         public Products_Form() : this(false) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public Products_Form(bool checkPurchaseRadioButton)
         {
             InitializeComponent();
             _instance = this;
 
-            oldOption = MainMenu_Form.Instance.Selected;
+            _oldOption = MainMenu_Form.Instance.Selected;
             AddSearchBoxEvents();
 
-            isProgramLoading = true;
+            _isProgramLoading = true;
             ConstructDataGridViews();
             LoadProducts();
-            isProgramLoading = false;
+            _isProgramLoading = false;
 
             ValidateCompanyTextBox();
             ThemeManager.SetThemeForForm(this);
@@ -150,7 +151,7 @@ namespace Sales_Tracker
         private void Products_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             CustomControls.CloseAllPanels();
-            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.Selected = _oldOption;
         }
 
         // Event handlers
@@ -457,24 +458,24 @@ namespace Sales_Tracker
 
             purchase_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(purchase_DataGridView, "purchases_DataGridView", size, ColumnHeaders, null, this);
-            purchase_DataGridView.RowsAdded += Sale_DataGridView_RowsChanged;
-            purchase_DataGridView.RowsRemoved += Sale_DataGridView_RowsChanged;
+            purchase_DataGridView.RowsAdded += DataGridView_RowsChanged;
+            purchase_DataGridView.RowsRemoved += DataGridView_RowsChanged;
             purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             purchase_DataGridView.Location = new Point((ClientSize.Width - purchase_DataGridView.Width) / 2, topForDataGridView);
             purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
 
             sale_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(sale_DataGridView, "sales_DataGridView", size, ColumnHeaders, null, this);
-            sale_DataGridView.RowsAdded += Sale_DataGridView_RowsChanged;
-            sale_DataGridView.RowsRemoved += Sale_DataGridView_RowsChanged;
+            sale_DataGridView.RowsAdded += DataGridView_RowsChanged;
+            sale_DataGridView.RowsRemoved += DataGridView_RowsChanged;
             sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             sale_DataGridView.Location = new Point((ClientSize.Width - sale_DataGridView.Width) / 2, topForDataGridView);
             sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Product;
             ThemeManager.CustomizeScrollBar(sale_DataGridView);
         }
-        private void Sale_DataGridView_RowsChanged(object sender, EventArgs e)
+        private void DataGridView_RowsChanged(object sender, EventArgs e)
         {
-            if (isProgramLoading) { return; }
+            if (_isProgramLoading) { return; }
             SetProductsRemainingLabel();
         }
         private void CenterSelectedDataGridView()

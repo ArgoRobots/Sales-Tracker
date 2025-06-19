@@ -27,7 +27,7 @@ namespace Sales_Tracker
             UpgradeSubTitle_Label.Left = CenterHorizontally(UpgradeSubTitle_Label);
             DollarAmount_Label.Left = CenterHorizontally(DollarAmount_Label);
             Upgrade_Button.Left = CenterHorizontally(Upgrade_Button);
-            Upgrade_Button.Left = CenterHorizontally(EnterKey_Button);
+            EnterKey_Button.Left = CenterHorizontally(EnterKey_Button);
 
             StripeLogo_ImageButton.Left = CenterHorizontally(StripeLogo_ImageButton);
             PayPalLogo_ImageButton.Left = StripeLogo_ImageButton.Left - PayPalLogo_ImageButton.Width - CustomControls.SpaceBetweenControls;

@@ -194,7 +194,7 @@ namespace Sales_Tracker
             {
                 // Load purchase charts
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(_purchase_DataGridView, _purchaseTotals_Chart, isLine);
-                _purchaseTotals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.GetTotal():N2}";
+                _purchaseTotals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
@@ -209,7 +209,7 @@ namespace Sales_Tracker
             {
                 // Load sale charts
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, _saleTotals_Chart, isLine);
-                _saleTotals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.GetTotal():N2}";
+                _saleTotals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
@@ -223,7 +223,7 @@ namespace Sales_Tracker
 
             // Always load profits chart (it combines both)
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(_profits_Chart, isLine);
-            _profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.GetTotal():N2}";
+            _profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
             LanguageManager.UpdateLanguageForControl(_profits_Chart);
         }
         public void UpdateChartCurrencyFormats()

@@ -10,7 +10,7 @@ namespace Sales_Tracker
     {
         // Properties
         private static Companies_Form _instance;
-        private readonly MainMenu_Form.SelectedOption oldOption;
+        private readonly MainMenu_Form.SelectedOption _oldOption;
 
         // Getters
         public static Companies_Form Instance => _instance;
@@ -22,7 +22,7 @@ namespace Sales_Tracker
             InitializeComponent();
             _instance = this;
 
-            oldOption = MainMenu_Form.Instance.Selected;
+            _oldOption = MainMenu_Form.Instance.Selected;
             ConstructDataGridViews();
             CenterSelectedDataGridView();
             LoadCompanies();
@@ -70,7 +70,7 @@ namespace Sales_Tracker
         }
         private void Companies_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.Selected = _oldOption;
         }
         private void Companies_Form_Shown(object sender, EventArgs e)
         {

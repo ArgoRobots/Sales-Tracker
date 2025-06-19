@@ -154,7 +154,7 @@ namespace Sales_Tracker.Charts
                                 ? LanguageManager.TranslateString("Revenue")
                                 : LanguageManager.TranslateString("Expenses");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
                         }
                         break;
 
@@ -169,7 +169,7 @@ namespace Sales_Tracker.Charts
                                ? LanguageManager.TranslateString("Revenue")
                                : LanguageManager.TranslateString("Expenses");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -183,7 +183,7 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateString("Date");
                             string second = LanguageManager.TranslateString("profits");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
                         }
                         break;
 
@@ -194,7 +194,7 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateString("Countries");
                             string second = LanguageManager.TranslateString("# of items");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -205,7 +205,7 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateString("Companies");
                             string second = LanguageManager.TranslateString("# of items");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -216,7 +216,7 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateString("Countries");
                             string second = LanguageManager.TranslateString("# of items");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -227,7 +227,7 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateString("Accountants");
                             string second = LanguageManager.TranslateString("# of transactions");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.GetData(), chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 

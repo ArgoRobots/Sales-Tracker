@@ -9,8 +9,8 @@ namespace Sales_Tracker
     public partial class ItemsInTransaction_Form : Form
     {
         // Properties
-        private readonly MainMenu_Form.SelectedOption oldOption;
-        private readonly List<MainMenu_Form.Column> columnsToLoad = [
+        private readonly MainMenu_Form.SelectedOption _oldOption;
+        private readonly List<MainMenu_Form.Column> _columnsToLoad = [
             MainMenu_Form.Column.Product,
             MainMenu_Form.Column.Category,
             MainMenu_Form.Column.Country,
@@ -18,7 +18,7 @@ namespace Sales_Tracker
             MainMenu_Form.Column.TotalItems,
             MainMenu_Form.Column.PricePerUnit
         ];
-        private bool hasChanges = false;
+        private bool _hasChanges = false;
 
         // Init.
         public ItemsInTransaction_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
@@ -28,7 +28,7 @@ namespace Sales_Tracker
             if (row == null) { return; }
 
             DataGridViewManager.SelectedRowInMainMenu = row;
-            oldOption = MainMenu_Form.Instance.Selected;
+            _oldOption = MainMenu_Form.Instance.Selected;
 
             SetTitle();
 
@@ -41,16 +41,16 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
 
             // Attach event handlers to detect changes in DataGridView
-            Items_DataGridView.CellValueChanged += (_, _) => hasChanges = true;
-            Items_DataGridView.RowsAdded += (_, _) => hasChanges = true;
-            Items_DataGridView.RowsRemoved += (_, _) => hasChanges = true;
+            Items_DataGridView.CellValueChanged += (_, _) => _hasChanges = true;
+            Items_DataGridView.RowsAdded += (_, _) => _hasChanges = true;
+            Items_DataGridView.RowsRemoved += (_, _) => _hasChanges = true;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetTitle()
         {
             Title_Label.Text = LanguageManager.TranslateString(
-                oldOption == MainMenu_Form.SelectedOption.Purchases ? "Items in purchase" : "Items in sale"
+                _oldOption == MainMenu_Form.SelectedOption.Purchases ? "Items in purchase" : "Items in sale"
             );
         }
 
@@ -58,9 +58,9 @@ namespace Sales_Tracker
         private void ItemsInTransaction_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainMenu_Form.IsProgramLoading = true;
-            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.Selected = _oldOption;
 
-            if (hasChanges)
+            if (_hasChanges)
             {
                 if (Items_DataGridView.Rows.Count == 0)
                 {
@@ -117,11 +117,11 @@ namespace Sales_Tracker
         private void SetDataGridView(List<string> itemList)
         {
             Dictionary<MainMenu_Form.Column, string> columnHeaders;
-            columnHeaders = (oldOption == MainMenu_Form.SelectedOption.Purchases)
+            columnHeaders = (_oldOption == MainMenu_Form.SelectedOption.Purchases)
                 ? MainMenu_Form.Instance.PurchaseColumnHeaders
                 : MainMenu_Form.Instance.SalesColumnHeaders;
 
-            DataGridViewManager.InitializeDataGridView(Items_DataGridView, "Items_DataGridView", Items_DataGridView.Size, columnHeaders, columnsToLoad, this);
+            DataGridViewManager.InitializeDataGridView(Items_DataGridView, "Items_DataGridView", Items_DataGridView.Size, columnHeaders, _columnsToLoad, this);
             Items_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
             Items_DataGridView.RowsRemoved -= DataGridViewManager.DataGridView_RowsRemoved;
             Items_DataGridView.UserDeletingRow -= DataGridViewManager.DataGridView_UserDeletingRow;

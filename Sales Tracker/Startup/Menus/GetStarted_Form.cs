@@ -13,7 +13,7 @@ namespace Sales_Tracker.Startup.Menus
     {
         // Properties
         private static GetStarted_Form _instance;
-        private readonly Dictionary<string, FileSystemWatcher> fileWatchers;
+        private readonly Dictionary<string, FileSystemWatcher> _fileWatchers;
 
         // Getters
         public static GetStarted_Form Instance => _instance;
@@ -23,7 +23,7 @@ namespace Sales_Tracker.Startup.Menus
         {
             InitializeComponent();
             _instance = this;
-            fileWatchers = [];
+            _fileWatchers = [];
 
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
@@ -160,7 +160,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void InitializeFileWatcher(string directory)
         {
-            if (Directory.Exists(directory) && !fileWatchers.ContainsKey(directory))
+            if (Directory.Exists(directory) && !_fileWatchers.ContainsKey(directory))
             {
                 FileSystemWatcher fileWatcher = new()
                 {
@@ -170,7 +170,7 @@ namespace Sales_Tracker.Startup.Menus
                 fileWatcher.Deleted += FileDeleted;
                 fileWatcher.EnableRaisingEvents = true;
 
-                fileWatchers[directory] = fileWatcher;
+                _fileWatchers[directory] = fileWatcher;
             }
         }
         private void FileDeleted(object sender, FileSystemEventArgs e)
@@ -201,22 +201,22 @@ namespace Sales_Tracker.Startup.Menus
                     bool directoryStillInUse = OpenRecent_FlowLayoutPanel.Controls.OfType<Guna2Button>()
                         .Any(btn => Path.GetDirectoryName(btn.Tag.ToString()) == directory);
 
-                    if (!directoryStillInUse && fileWatchers.TryGetValue(directory, out FileSystemWatcher? value))
+                    if (!directoryStillInUse && _fileWatchers.TryGetValue(directory, out FileSystemWatcher? value))
                     {
                         value.Dispose();
-                        fileWatchers.Remove(directory);
+                        _fileWatchers.Remove(directory);
                     }
                 }
             });
         }
         private void DisposeAllFileWatchers()
         {
-            foreach (FileSystemWatcher watcher in fileWatchers.Values)
+            foreach (FileSystemWatcher watcher in _fileWatchers.Values)
             {
                 watcher.EnableRaisingEvents = false;
                 watcher.Dispose();
             }
-            fileWatchers.Clear();
+            _fileWatchers.Clear();
         }
 
         // Event handlers

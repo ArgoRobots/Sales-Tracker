@@ -7,22 +7,21 @@ namespace Sales_Tracker
     public partial class TranslationProgress_Form : Form
     {
         // Properties
-        private readonly CancellationTokenSource cancellationTokenSource;
-        private int totalLanguages;
-        private int totalTranslationsPerLanguage;
-        private int currentLanguageIndex;
-        private int currentTranslationIndex;
-        private bool operationCancelled = false;
+        private readonly CancellationTokenSource _cancellationTokenSource;
+        private int _totalLanguages;
+        private int _totalTranslationsPerLanguage;
+        private int _currentLanguageIndex;
+        private int _currentTranslationIndex;
 
         // Time estimation properties
-        private DateTime operationStartTime;
-        private readonly Queue<DateTime> progressTimestamps = new();
-        private readonly Queue<int> progressValues = new();
-        private const int MaxSampleSize = 10;  // Number of samples for moving average
+        private DateTime _operationStartTime;
+        private readonly Queue<DateTime> _progressTimestamps = new();
+        private readonly Queue<int> _progressValues = new();
+        private const int _maxSampleSize = 10;  // Number of samples for moving average
 
         // Getters
-        public bool IsCancelled => operationCancelled;
-        public CancellationToken CancellationToken => cancellationTokenSource.Token;
+        public bool IsCancelled { get; private set; } = false;
+        public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
         // Init.
         public TranslationProgress_Form()
@@ -32,8 +31,8 @@ namespace Sales_Tracker
             ThemeManager.SetThemeForForm(this);
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
 
-            cancellationTokenSource = new CancellationTokenSource();
-            operationStartTime = DateTime.Now;
+            _cancellationTokenSource = new CancellationTokenSource();
+            _operationStartTime = DateTime.Now;
 
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -45,25 +44,25 @@ namespace Sales_Tracker
         }
         private void TranslationProgress_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!operationCancelled && Cancel_Button.Text != "Close")
+            if (!IsCancelled && Cancel_Button.Text != "Close")
             {
-                operationCancelled = true;
-                cancellationTokenSource.Cancel();
+                IsCancelled = true;
+                _cancellationTokenSource.Cancel();
             }
         }
 
         // Methods
         public void Initialize(int totalLanguageCount, int translationsPerLanguage)
         {
-            totalLanguages = totalLanguageCount;
-            totalTranslationsPerLanguage = translationsPerLanguage;
-            currentLanguageIndex = 0;
-            currentTranslationIndex = 0;
-            operationStartTime = DateTime.Now;
+            _totalLanguages = totalLanguageCount;
+            _totalTranslationsPerLanguage = translationsPerLanguage;
+            _currentLanguageIndex = 0;
+            _currentTranslationIndex = 0;
+            _operationStartTime = DateTime.Now;
 
             // Clear previous samples
-            progressTimestamps.Clear();
-            progressValues.Clear();
+            _progressTimestamps.Clear();
+            _progressValues.Clear();
 
             UpdateProgressDisplay();
         }
@@ -75,10 +74,10 @@ namespace Sales_Tracker
                 return;
             }
 
-            currentLanguageIndex = languageIndex;
-            currentTranslationIndex = 0;
+            _currentLanguageIndex = languageIndex;
+            _currentTranslationIndex = 0;
 
-            CurrentLanguage_Label.Text = $"Processing: {languageName} ({languageIndex + 1} of {totalLanguages})";
+            CurrentLanguage_Label.Text = $"Processing: {languageName} ({languageIndex + 1} of {_totalLanguages})";
             Operation_Label.Text = "Collecting source texts...";
 
             UpdateProgressDisplay();
@@ -91,7 +90,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            currentTranslationIndex = translationIndex;
+            _currentTranslationIndex = translationIndex;
 
             if (!string.IsNullOrEmpty(operation))
                 Operation_Label.Text = operation;
@@ -109,16 +108,16 @@ namespace Sales_Tracker
             Operation_Label.Text = $"Translating batch {batchIndex + 1} of {totalBatches} ({textsInBatch} texts)";
 
             // Calculate progress within current language
-            int progressWithinLanguage = (int)((double)batchIndex / totalBatches * totalTranslationsPerLanguage);
-            currentTranslationIndex = progressWithinLanguage;
+            int progressWithinLanguage = (int)((double)batchIndex / totalBatches * _totalTranslationsPerLanguage);
+            _currentTranslationIndex = progressWithinLanguage;
 
             UpdateProgressDisplay();
         }
         private void UpdateProgressDisplay()
         {
             // Calculate overall progress
-            int totalPossibleTranslations = totalLanguages * totalTranslationsPerLanguage;
-            int completedTranslations = currentLanguageIndex * totalTranslationsPerLanguage + currentTranslationIndex;
+            int totalPossibleTranslations = _totalLanguages * _totalTranslationsPerLanguage;
+            int completedTranslations = _currentLanguageIndex * _totalTranslationsPerLanguage + _currentTranslationIndex;
 
             int progressPercentage = totalPossibleTranslations > 0
                 ? (int)((double)completedTranslations / totalPossibleTranslations * 100)
@@ -139,18 +138,18 @@ namespace Sales_Tracker
             DateTime now = DateTime.Now;
 
             // Add current progress sample
-            progressTimestamps.Enqueue(now);
-            progressValues.Enqueue(completedTranslations);
+            _progressTimestamps.Enqueue(now);
+            _progressValues.Enqueue(completedTranslations);
 
             // Remove old samples to maintain moving window
-            while (progressTimestamps.Count > MaxSampleSize)
+            while (_progressTimestamps.Count > _maxSampleSize)
             {
-                progressTimestamps.Dequeue();
-                progressValues.Dequeue();
+                _progressTimestamps.Dequeue();
+                _progressValues.Dequeue();
             }
 
             // Need at least 2 samples to calculate rate
-            if (progressTimestamps.Count < 2)
+            if (_progressTimestamps.Count < 2)
                 return "";
 
             try
@@ -190,14 +189,14 @@ namespace Sales_Tracker
         }
         private double CalculateProgressRate()
         {
-            if (progressTimestamps.Count < 2)
+            if (_progressTimestamps.Count < 2)
                 return 0;
 
             // Use simple rate calculation for more stability
-            DateTime firstTime = progressTimestamps.First();
-            DateTime lastTime = progressTimestamps.Last();
-            int firstProgress = progressValues.First();
-            int lastProgress = progressValues.Last();
+            DateTime firstTime = _progressTimestamps.First();
+            DateTime lastTime = _progressTimestamps.Last();
+            int firstProgress = _progressValues.First();
+            int lastProgress = _progressValues.Last();
 
             double timeSpanSeconds = (lastTime - firstTime).TotalSeconds;
             if (timeSpanSeconds <= 0)
@@ -217,7 +216,7 @@ namespace Sales_Tracker
             ProgressBar.Value = 100;
 
             // Calculate total time taken
-            TimeSpan totalTime = DateTime.Now - operationStartTime;
+            TimeSpan totalTime = DateTime.Now - _operationStartTime;
             string totalTimeFormatted;
 
             if (totalTime.TotalHours >= 1)
@@ -258,8 +257,8 @@ namespace Sales_Tracker
                 return;
             }
 
-            operationCancelled = true;
-            cancellationTokenSource.Cancel();
+            IsCancelled = true;
+            _cancellationTokenSource.Cancel();
 
             Cancel_Button.Enabled = false;
             Cancel_Button.Text = "Cancelling...";

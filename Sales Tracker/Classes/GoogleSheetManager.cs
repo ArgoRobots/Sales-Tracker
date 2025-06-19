@@ -48,7 +48,7 @@ namespace Sales_Tracker.Classes
 
         // Export single dataset charts
         public static async Task ExportChartToGoogleSheetsAsync(
-            Dictionary<string, double> data,
+            IReadOnlyDictionary<string, double> data,
             string chartTitle,
             ChartType chartType,
             string column1Text,

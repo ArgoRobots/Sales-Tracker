@@ -9,7 +9,6 @@ namespace Sales_Tracker.Theme
     public static class FormThemeManager
     {
         private static readonly List<Form> _registeredForms = [];
-        public static List<Form> RegisteredForms => _registeredForms;
 
         public static void RegisterForm(Form form)
         {
@@ -26,19 +25,24 @@ namespace Sales_Tracker.Theme
         public static void UpdateAllForms()
         {
             foreach (Form form in _registeredForms)
+            {
                 if (form != null && !form.IsDisposed)
                 {
-                    // First try to call UpdateTheme if it exists
                     MethodInfo updateMethod = form.GetType().GetMethod("UpdateTheme",
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
                     if (updateMethod != null)
+                    {
                         // Form has UpdateTheme method, so use it
                         updateMethod.Invoke(form, null);
+                    }
                     else
+                    {
                         // Form doesn't have UpdateTheme, so apply theme directly
                         ThemeManager.SetThemeForForm(form);
+                    }
                 }
+            }
         }
     }
 }

@@ -6,10 +6,11 @@ namespace Sales_Tracker.ImportSpreadsheet
     {
         // Properties
         private static Setup_Form _instance;
-        public readonly Form FormTutorial, FormImport;
 
         // Getters
         public static Setup_Form Instance => _instance;
+        public Form FormTutorial { get; }
+        public Form FormImport { get; }
 
         // Init.
         public Setup_Form()

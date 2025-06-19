@@ -9,7 +9,7 @@ namespace Sales_Tracker
     {
         // Properties
         private static DateRange_Form _instance;
-        private Dictionary<TimeSpan, Guna2CustomRadioButton> timeSpanOptions;
+        private Dictionary<TimeSpan, Guna2CustomRadioButton> _timeSpanOptions;
 
         // Getters and setters
         public static DateRange_Form Instance => _instance;
@@ -32,7 +32,7 @@ namespace Sales_Tracker
         private void ResetControls()
         {
             // Uncheck all radio buttons first
-            foreach (Guna2CustomRadioButton radioButton in timeSpanOptions.Values)
+            foreach (Guna2CustomRadioButton radioButton in _timeSpanOptions.Values)
             {
                 radioButton.Checked = false;
             }
@@ -59,7 +59,7 @@ namespace Sales_Tracker
         }
         private void InitializeTimeSpanOptions()
         {
-            timeSpanOptions = new Dictionary<TimeSpan, Guna2CustomRadioButton>
+            _timeSpanOptions = new Dictionary<TimeSpan, Guna2CustomRadioButton>
             {
                 { TimeSpan.MaxValue, AllTime_RadioButton },
                 { TimeSpan.FromDays(1), Last24Hours_RadioButton },
@@ -213,7 +213,7 @@ namespace Sales_Tracker
         // Methods
         private TimeSpan? GetSelectedTimeSpan()
         {
-            return timeSpanOptions.FirstOrDefault(kvp => kvp.Value.Checked).Key;
+            return _timeSpanOptions.FirstOrDefault(kvp => kvp.Value.Checked).Key;
         }
         private void SetCustomRangeControls()
         {

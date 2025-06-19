@@ -8,8 +8,6 @@ namespace Sales_Tracker.DataClasses
     /// </summary>
     public static class Country
     {
-        // https://ofac.treasury.gov/sanctions-programs-and-country-information
-
         public static readonly List<SearchResult> CountrySearchResults =
         [
             new SearchResult("Unkown", null, 0),

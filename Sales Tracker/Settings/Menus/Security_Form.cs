@@ -11,8 +11,8 @@ namespace Sales_Tracker.Settings.Menus
     {
         // Properties
         private static Security_Form _instance;
-        private readonly bool isFormLoading;
-        private Guna2WinProgressIndicator progressIndicator;
+        private readonly bool _isFormLoading;
+        private Guna2WinProgressIndicator _progressIndicator;
 
         // Getters
         public static Security_Form Instance => _instance;
@@ -23,9 +23,9 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             _instance = this;
 
-            isFormLoading = true;
+            _isFormLoading = true;
             UpdateControls();
-            isFormLoading = false;
+            _isFormLoading = false;
 
             SetPasswordButton();
             UpdateTheme();
@@ -83,7 +83,7 @@ namespace Sales_Tracker.Settings.Menus
         // Event handlers
         private void EncryptFiles_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (isFormLoading) { return; }
+            if (_isFormLoading) { return; }
 
             if (EncryptFiles_CheckBox.Checked) { return; }
 
@@ -168,21 +168,21 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void PlayLoadingAnimation()
         {
-            progressIndicator = new()
+            _progressIndicator = new()
             {
                 AutoStart = true,
                 ProgressColor = CustomColors.AccentBlue,
             };
-            progressIndicator.Location = new Point(
-                (Width - progressIndicator.Width) / 2,
+            _progressIndicator.Location = new Point(
+                (Width - _progressIndicator.Width) / 2,
                 EnableWindowsHello_Button.Bottom + 50
             );
-            Controls.Add(progressIndicator);
+            Controls.Add(_progressIndicator);
         }
         private void StopPlayingLoadingAnimation()
         {
-            Controls.Remove(progressIndicator);
-            progressIndicator = null;
+            Controls.Remove(_progressIndicator);
+            _progressIndicator = null;
         }
 
         // Methods

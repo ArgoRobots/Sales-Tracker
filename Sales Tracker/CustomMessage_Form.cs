@@ -9,11 +9,8 @@ namespace Sales_Tracker
 {
     public partial class CustomMessage_Form : Form
     {
-        // Properties
-        private CustomMessageBoxResult _result;
-
         // Getter
-        public CustomMessageBoxResult Result => _result;
+        public CustomMessageBoxResult Result { get; private set; }
 
         // Init.
         public CustomMessage_Form() : this("", "", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
@@ -295,37 +292,37 @@ namespace Sales_Tracker
         // Event handlers
         private void No_Button_Click(object sender, EventArgs e)
         {
-            _result = CustomMessageBoxResult.No;
+            Result = CustomMessageBoxResult.No;
             Close();
         }
         private void Yes_Button_Click(object sender, EventArgs e)
         {
-            _result = CustomMessageBoxResult.Yes;
+            Result = CustomMessageBoxResult.Yes;
             Close();
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
-            _result = CustomMessageBoxResult.Cancel;
+            Result = CustomMessageBoxResult.Cancel;
             Close();
         }
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            _result = CustomMessageBoxResult.Ok;
+            Result = CustomMessageBoxResult.Ok;
             Close();
         }
         private void Save_Button_Click(object sender, EventArgs e)
         {
-            _result = CustomMessageBoxResult.Save;
+            Result = CustomMessageBoxResult.Save;
             Close();
         }
         private void DontSave_Button_Click(object sender, EventArgs e)
         {
-            _result = CustomMessageBoxResult.DontSave;
+            Result = CustomMessageBoxResult.DontSave;
             Close();
         }
         private void Retry_Button_Click(object sender, EventArgs e)
         {
-            _result = CustomMessageBoxResult.Retry;
+            Result = CustomMessageBoxResult.Retry;
             Close();
         }
         private void Message_Label_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

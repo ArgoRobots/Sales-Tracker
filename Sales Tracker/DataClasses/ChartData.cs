@@ -1,26 +1,29 @@
 ﻿namespace Sales_Tracker.DataClasses
 {
+    /// <summary>
+    /// Represents chart data containing a total value and associated data points for visualization.
+    /// </summary>
     public record ChartData
     {
-        // Properties
-        private readonly double _total;
-        private readonly Dictionary<string, double> _data;
-
         // Getters
-        public double GetTotal() => _total;
-        public Dictionary<string, double> GetData() => _data;
+        public double Total { get; }
+        public IReadOnlyDictionary<string, double> Data { get; }
 
         // Constructor
         public ChartData(double total, Dictionary<string, double> data)
         {
-            _total = total;
-            _data = new Dictionary<string, double>(data ?? []);  // Defensive copy
+            Total = total;
+            Data = new Dictionary<string, double>(data ?? []).AsReadOnly();  // Defensive copy
         }
 
         // Static factory method for creating empty ChartData
         public static ChartData Empty => new(0, []);
     }
 
+    /// <summary>
+    /// Represents chart data specifically for sales vs expenses comparisons, containing separate datasets
+    /// for expenses and sales along with their chronological ordering.
+    /// </summary>
     public record SalesExpensesChartData
     {
         // Properties

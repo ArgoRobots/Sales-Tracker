@@ -8,7 +8,7 @@ namespace Sales_Tracker.Settings.Menus
         // Properties
         private static Updates_Form _instance;
 
-        // Getters
+        // Getter
         public static Updates_Form Instance => _instance;
 
         // Init.

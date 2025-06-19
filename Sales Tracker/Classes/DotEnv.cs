@@ -6,7 +6,7 @@
     /// </summary>
     public static class DotEnv
     {
-        private static readonly Dictionary<string, string> envVars = [];
+        private static readonly Dictionary<string, string> _envVars = [];
 
         /// <summary>
         /// Loads environment variables from encrypted secrets file.
@@ -51,7 +51,7 @@
 
             foreach (KeyValuePair<string, string> kvp in secrets)
             {
-                envVars[kvp.Key] = kvp.Value;
+                _envVars[kvp.Key] = kvp.Value;
             }
         }
 
@@ -60,7 +60,7 @@
         /// </summary>
         public static string? Get(string key)
         {
-            if (envVars.TryGetValue(key, out string? value))
+            if (_envVars.TryGetValue(key, out string? value))
             {
                 return value;
             }

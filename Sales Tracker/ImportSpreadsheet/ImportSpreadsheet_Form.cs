@@ -10,15 +10,15 @@ namespace Sales_Tracker.ImportSpreadsheet
     public partial class ImportSpreadsheet_Form : Form
     {
         // Properties
-        private string spreadsheetFilePath;
-        private readonly MainMenu_Form.SelectedOption oldOption;
+        private string _spreadsheetFilePath;
+        private readonly MainMenu_Form.SelectedOption _oldOption;
 
         // Init.
         public ImportSpreadsheet_Form()
         {
             InitializeComponent();
 
-            oldOption = MainMenu_Form.Instance.Selected;
+            _oldOption = MainMenu_Form.Instance.Selected;
             InitLoadingComponents();
             InitContainerPanel();
             UpdateTheme();
@@ -54,7 +54,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void ImportSpreadSheets_Form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MainMenu_Form.Instance.Selected = oldOption;
+            MainMenu_Form.Instance.Selected = _oldOption;
         }
 
         // Event handlers
@@ -69,7 +69,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                spreadsheetFilePath = dialog.FileName;
+                _spreadsheetFilePath = dialog.FileName;
                 if (!ValidateSpreadsheet()) { return; }
 
                 Import_Button.Enabled = false;
@@ -109,7 +109,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 {
                     MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
                     HideLoadingIndicator();
-                    string message = $"Imported '{Path.GetFileName(spreadsheetFilePath)}'";
+                    string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}'";
                     CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
                     CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 }
@@ -131,7 +131,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             try
             {
-                using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 using XLWorkbook workbook = new(stream);
                 return true;
             }
@@ -164,7 +164,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private async void SkipHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(spreadsheetFilePath))
+            if (string.IsNullOrEmpty(_spreadsheetFilePath))
             {
                 return;
             }
@@ -328,7 +328,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Load spreadsheets
         private Task<List<Panel>> LoadSpreadsheetData()
         {
-            if (string.IsNullOrEmpty(spreadsheetFilePath))
+            if (string.IsNullOrEmpty(_spreadsheetFilePath))
             {
                 return Task.FromResult(new List<Panel>());
             }
@@ -338,7 +338,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 List<Panel> panels = [];
 
                 // Open the file in read-only and shared mode in case the file is being used by another program
-                using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 using XLWorkbook workbook = new(stream);
 
                 if (workbook.Worksheets.Count == 0)
@@ -474,7 +474,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             MainMenu_Form.IsProgramLoading = true;
 
-            using FileStream stream = new(spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
             bool skipheader = SkipHeaderRow_CheckBox.Checked;
             bool wasSomethingImported = false, purchaseImportFailed = false, salesImportFailed = false;
@@ -573,7 +573,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             Controls.Remove(SelectedReceipt_Label);
             Controls.Remove(RemoveReceipt_ImageButton);
-            spreadsheetFilePath = "";
+            _spreadsheetFilePath = "";
         }
     }
 }
