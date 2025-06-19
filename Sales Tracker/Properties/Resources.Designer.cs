@@ -243,9 +243,19 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hide {
+        internal static System.Drawing.Bitmap HideBlack {
             get {
-                object obj = ResourceManager.GetObject("Hide", resourceCulture);
+                object obj = ResourceManager.GetObject("HideBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap HideWhite {
+            get {
+                object obj = ResourceManager.GetObject("HideWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -433,9 +443,19 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap View {
+        internal static System.Drawing.Bitmap ViewBlack {
             get {
-                object obj = ResourceManager.GetObject("View", resourceCulture);
+                object obj = ResourceManager.GetObject("ViewBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ViewWhite {
+            get {
+                object obj = ResourceManager.GetObject("ViewWhite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

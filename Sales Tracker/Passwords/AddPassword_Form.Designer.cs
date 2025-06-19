@@ -227,7 +227,7 @@
             PasswordEye_Button.FillColor = Color.Empty;
             PasswordEye_Button.Font = new Font("Segoe UI", 9F);
             PasswordEye_Button.ForeColor = Color.Black;
-            PasswordEye_Button.Image = Properties.Resources.Hide;
+            PasswordEye_Button.Image = Properties.Resources.HideBlack;
             PasswordEye_Button.ImageSize = new Size(30, 30);
             PasswordEye_Button.Location = new Point(494, 128);
             PasswordEye_Button.Name = "PasswordEye_Button";
@@ -247,7 +247,7 @@
             ConfirmPasswordEye_Button.FillColor = Color.Empty;
             ConfirmPasswordEye_Button.Font = new Font("Segoe UI", 9F);
             ConfirmPasswordEye_Button.ForeColor = Color.Black;
-            ConfirmPasswordEye_Button.Image = Properties.Resources.Hide;
+            ConfirmPasswordEye_Button.Image = Properties.Resources.HideBlack;
             ConfirmPasswordEye_Button.ImageSize = new Size(30, 30);
             ConfirmPasswordEye_Button.Location = new Point(494, 412);
             ConfirmPasswordEye_Button.Name = "ConfirmPasswordEye_Button";

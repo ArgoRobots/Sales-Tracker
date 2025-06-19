@@ -13,16 +13,15 @@ namespace Sales_Tracker.Passwords
             InitializeComponent();
 
             AddEventHandlersToTextBoxes();
-            ThemeManager.SetThemeForForm(this);
+            AlignValidationLabels();
+            UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
-            LoadingPanel.ShowBlankLoadingPanel(this);
 
             // Center the label
             PasswordsMatch_Label.Width = ClientSize.Width;
             PasswordsMatch_Label.Left = 0;
 
-            AlignValidationLabels();
-            SetTheme();
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AlignValidationLabels()
         {
@@ -49,8 +48,10 @@ namespace Sales_Tracker.Passwords
             Number_Checkmark.Left = checkMarkWidth;
             SpecialChar_Checkmark.Left = checkMarkWidth;
         }
-        private void SetTheme()
+        private void UpdateTheme()
         {
+            ThemeManager.SetThemeForForm(this);
+
             Length_Checkmark.BackColor = CustomColors.MainBackground;
             Uppercase_Checkmark.BackColor = CustomColors.MainBackground;
             Number_Checkmark.BackColor = CustomColors.MainBackground;
@@ -63,6 +64,17 @@ namespace Sales_Tracker.Passwords
 
             PasswordEye_Button.BackColor = CustomColors.ControlBack;
             ConfirmPasswordEye_Button.BackColor = CustomColors.ControlBack;
+
+            if (ThemeManager.IsDarkTheme())
+            {
+                PasswordEye_Button.Image = Resources.ViewWhite;
+                ConfirmPasswordEye_Button.Image = Resources.ViewWhite;
+            }
+            else
+            {
+                PasswordEye_Button.Image = Resources.ViewBlack;
+                ConfirmPasswordEye_Button.Image = Resources.ViewBlack;
+            }
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -101,16 +113,18 @@ namespace Sales_Tracker.Passwords
         }
         private void PasswordEye_Button_Click(object sender, EventArgs e)
         {
+            bool isDarkTheme = ThemeManager.IsDarkTheme();
+
             // Toggle the password char
             if (Password_TextBox.PasswordChar == '\0')
             {
                 Password_TextBox.PasswordChar = '•';
-                PasswordEye_Button.Image = Resources.View;
+                PasswordEye_Button.Image = isDarkTheme ? Resources.ViewWhite : Resources.ViewBlack;
             }
             else
             {
                 Password_TextBox.PasswordChar = '\0';
-                PasswordEye_Button.Image = Resources.Hide;
+                PasswordEye_Button.Image = isDarkTheme ? Resources.HideWhite : Resources.HideBlack;
             }
 
             // Set focus back to the password field
@@ -118,16 +132,18 @@ namespace Sales_Tracker.Passwords
         }
         private void ConfirmPasswordEye_Button_Click(object sender, EventArgs e)
         {
+            bool isDarkTheme = ThemeManager.IsDarkTheme();
+
             // Toggle the password char
             if (ConfirmPassword_TextBox.PasswordChar == '\0')
             {
                 ConfirmPassword_TextBox.PasswordChar = '•';
-                ConfirmPasswordEye_Button.Image = Resources.View;
+                ConfirmPasswordEye_Button.Image = isDarkTheme ? Resources.ViewWhite : Resources.ViewBlack;
             }
             else
             {
                 ConfirmPassword_TextBox.PasswordChar = '\0';
-                ConfirmPasswordEye_Button.Image = Resources.Hide;
+                ConfirmPasswordEye_Button.Image = isDarkTheme ? Resources.HideWhite : Resources.HideBlack;
             }
 
             // Set focus back to the confirm password field
