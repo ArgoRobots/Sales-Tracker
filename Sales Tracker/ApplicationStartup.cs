@@ -45,7 +45,7 @@ namespace Sales_Tracker
         }
 
         /// <summary>
-        /// Registers file associations only on first run of the application.
+        /// Registers file associations if they have not already been registered.
         /// </summary>
         private static void RegisterFileAssociationOnFirstRun()
         {
@@ -77,7 +77,7 @@ namespace Sales_Tracker
         /// <summary>
         /// Handles opening a company directly from command line arguments.
         /// </summary>
-        /// <returns>True if file was successfully opened, false otherwise</returns>
+        /// <returns>True if file was successfully opened, otherwise false</returns>
         public static bool TryOpenCompanyFromCommandLine(string[] args)
         {
             try
