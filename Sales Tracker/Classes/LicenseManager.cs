@@ -8,7 +8,7 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public class LicenseManager
     {
-        private const string ValidationUrl = "https://argorobots.com/validate_license.php";
+        private const string _validationUrl = "https://argorobots.com/validate_license.php";
         private readonly HttpClient _httpClient;
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
@@ -48,7 +48,7 @@ namespace Sales_Tracker.Classes
                     "application/json");
 
                 // Send the request to the validation endpoint
-                HttpResponseMessage response = await _httpClient.PostAsync(ValidationUrl, content);
+                HttpResponseMessage response = await _httpClient.PostAsync(_validationUrl, content);
 
                 // Read the response and parse it
                 string jsonResponse = await response.Content.ReadAsStringAsync();

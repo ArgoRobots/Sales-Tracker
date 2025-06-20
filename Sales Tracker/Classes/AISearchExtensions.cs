@@ -13,7 +13,7 @@ namespace Sales_Tracker.Classes
         private static string _originalQuery = "";
         private static string _translatedQuery = "";
 
-        // Getters
+        // Getter
         public static bool IsUsingAIQuery { get; private set; } = false;
 
         // Init.

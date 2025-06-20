@@ -9,7 +9,7 @@ namespace Sales_Tracker.Charts
     public static class RightClickGunaChartMenu
     {
         // Properties
-        private static Guna2Button resetZoomButton;
+        private static Guna2Button _resetZoomButton;
 
         // Getter
         public static Guna2Panel RightClickGunaChart_Panel { get; private set; }
@@ -34,8 +34,8 @@ namespace Sales_Tracker.Charts
             button = CustomControls.ConstructBtnForMenu("Export to Google Sheets", newBtnWidth, true, flowPanel);
             button.Click += ExportToGoogleSheets;
 
-            resetZoomButton = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
-            resetZoomButton.Click += ResetZoom;
+            _resetZoomButton = CustomControls.ConstructBtnForMenu("Reset zoom", newBtnWidth, true, flowPanel);
+            _resetZoomButton.Click += ResetZoom;
         }
         private static void SaveImage(object sender, EventArgs e)
         {
@@ -377,11 +377,11 @@ namespace Sales_Tracker.Charts
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickGunaChart_Panel.Controls[0];
             if (chart.Datasets[0] is GunaPieDataset)
             {
-                flowPanel.Controls.Remove(resetZoomButton);
+                flowPanel.Controls.Remove(_resetZoomButton);
             }
             else
             {
-                flowPanel.Controls.Add(resetZoomButton);
+                flowPanel.Controls.Add(_resetZoomButton);
             }
 
             CustomControls.SetRightClickMenuHeight(RightClickGunaChart_Panel);

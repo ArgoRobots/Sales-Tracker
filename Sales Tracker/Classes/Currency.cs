@@ -17,32 +17,32 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public enum CurrencyTypes
         {
-            USD,    // United States Dollar
-            CAD,    // Canadian Dollar
-            EUR,    // Euro
-            AUD,    // Australia
-            BRL,    // Brazilian Real
-            DKK,    // Danish Krone
-            NOK,    // Norwegian Krone
-            SEK,    // Swedish Krona
-            ISK,    // Icelandic Króna
-            PLN,    // Polish Złoty
-            CZK,    // Czech Koruna
-            HUF,    // Hungarian Forint
-            ALL,    // Albanian Lek
-            RON,    // Romanian Leu
-            BGN,    // Bulgarian Lev
-            RSD,    // Serbian Dinar
-            MKD,    // Macedonian Denar
-            BAM,    // Bosnia and Herzegovina Convertible Mark
-            UAH,    // Ukrainian Hryvnia
-            BYN,    // Belarusian Ruble
-            RUB,    // Russian Ruble
-            TRY,    // Turkish Lira
-            JPY,    // Japanese Yen
-            KRW,    // South Korean Won
-            CNY,    // Chinese Yuan Renminbi
-            TWD     // Taiwan Dollar
+            USD,  // United States Dollar
+            CAD,  // Canadian Dollar
+            EUR,  // Euro
+            AUD,  // Australia
+            BRL,  // Brazilian Real
+            DKK,  // Danish Krone
+            NOK,  // Norwegian Krone
+            SEK,  // Swedish Krona
+            ISK,  // Icelandic Króna
+            PLN,  // Polish Złoty
+            CZK,  // Czech Koruna
+            HUF,  // Hungarian Forint
+            ALL,  // Albanian Lek
+            RON,  // Romanian Leu
+            BGN,  // Bulgarian Lev
+            RSD,  // Serbian Dinar
+            MKD,  // Macedonian Denar
+            BAM,  // Bosnia and Herzegovina Convertible Mark
+            UAH,  // Ukrainian Hryvnia
+            BYN,  // Belarusian Ruble
+            RUB,  // Russian Ruble
+            TRY,  // Turkish Lira
+            JPY,  // Japanese Yen
+            KRW,  // South Korean Won
+            CNY,  // Chinese Yuan Renminbi
+            TWD   // Taiwan Dollar
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Sales_Tracker.Classes
         /// In-memory cache for exchange rates to minimize API calls.
         /// Key format: "date_sourceCurrency_targetCurrency" (e.g., "2023-04-01_USD_EUR").
         /// </summary>
-        private static readonly Dictionary<string, decimal> ExchangeRateCache = [];
+        private static readonly Dictionary<string, decimal> _exchangeRateCache = [];
 
         /// <summary>
         /// Initializes the currency cache by loading saved exchange rates from disk.
@@ -138,17 +138,17 @@ namespace Sales_Tracker.Classes
 
             // Check in-memory cache first
             string cacheKey = $"{date}_{sourceCurrency}_{targetCurrency}";
-            if (ExchangeRateCache.TryGetValue(cacheKey, out decimal cachedRate))
+            if (_exchangeRateCache.TryGetValue(cacheKey, out decimal cachedRate))
             {
                 return cachedRate;
             }
 
             // Check if we have the inverse rate (e.g., USD to EUR instead of EUR to USD)
             string inverseCacheKey = $"{date}_{targetCurrency}_{sourceCurrency}";
-            if (ExchangeRateCache.TryGetValue(inverseCacheKey, out decimal inverseRate) && inverseRate != 0)
+            if (_exchangeRateCache.TryGetValue(inverseCacheKey, out decimal inverseRate) && inverseRate != 0)
             {
                 decimal calculatedRate = 1 / inverseRate;
-                ExchangeRateCache[cacheKey] = calculatedRate;  // Cache the calculated rate
+                _exchangeRateCache[cacheKey] = calculatedRate;  // Cache the calculated rate
                 SaveExchangeRateCache();
                 return calculatedRate;
             }
@@ -187,8 +187,8 @@ namespace Sales_Tracker.Classes
                         decimal exchangeRate = targetRate / sourceRate;
 
                         // Cache both the rate and its inverse
-                        ExchangeRateCache[cacheKey] = exchangeRate;
-                        ExchangeRateCache[inverseCacheKey] = 1 / exchangeRate;
+                        _exchangeRateCache[cacheKey] = exchangeRate;
+                        _exchangeRateCache[inverseCacheKey] = 1 / exchangeRate;
                         SaveExchangeRateCache();
 
                         return exchangeRate;
@@ -239,7 +239,7 @@ namespace Sales_Tracker.Classes
                     {
                         foreach (KeyValuePair<string, decimal> item in cacheData)
                         {
-                            ExchangeRateCache[item.Key] = item.Value;
+                            _exchangeRateCache[item.Key] = item.Value;
                         }
                         Log.Write(1, $"Loaded {cacheData.Count} exchange rates from cache");
                     }
@@ -248,7 +248,7 @@ namespace Sales_Tracker.Classes
             catch
             {
                 Log.Error_ReadFile(Directories.ExchangeRates_file);
-                ExchangeRateCache.Clear();
+                _exchangeRateCache.Clear();
             }
         }
         private static void SaveExchangeRateCache()
@@ -262,7 +262,7 @@ namespace Sales_Tracker.Classes
                 }
 
                 // Serialize the cache to JSON using a cached JsonSerializerSettings for better performance
-                string json = JsonConvert.SerializeObject(ExchangeRateCache, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(_exchangeRateCache, Formatting.Indented);
                 File.WriteAllText(Directories.ExchangeRates_file, json);
             }
             catch (Exception ex)

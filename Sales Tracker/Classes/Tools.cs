@@ -196,6 +196,11 @@ namespace Sales_Tracker.Classes
         {
             return Application.OpenForms.OfType<T>().Any();
         }
+
+        /// <summary>
+        /// Opens a form or brings it to the front if it's already open. 
+        /// Ensures only one instance of each form type is displayed at a time.
+        /// </summary>
         public static void OpenForm(Form form)
         {
             Form existingForm = Application.OpenForms.OfType<Form>()

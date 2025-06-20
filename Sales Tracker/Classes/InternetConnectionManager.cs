@@ -8,7 +8,7 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public static class InternetConnectionManager
     {
-        private static readonly HttpClient httpClient = new()
+        private static readonly HttpClient _httpClient = new()
         {
             Timeout = TimeSpan.FromSeconds(5)
         };
@@ -78,7 +78,7 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                using HttpResponseMessage response = await httpClient.GetAsync(url);
+                using HttpResponseMessage response = await _httpClient.GetAsync(url);
                 return response.IsSuccessStatusCode;
             }
             catch

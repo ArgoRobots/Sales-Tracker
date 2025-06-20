@@ -8,10 +8,10 @@ namespace Sales_Tracker.Charts
     /// </summary>
     public static class MouseClickChartManager
     {
-        private static readonly HashSet<GunaChart> registeredCharts = [];
-        private static Action<GunaChart> onLeftClick;
-        private static Action<GunaChart, Point> onRightClick;
-        private static CustomMessageFilter messageFilter;
+        private static readonly HashSet<GunaChart> _registeredCharts = [];
+        private static Action<GunaChart> _onLeftClick;
+        private static Action<GunaChart, Point> _onRightClick;
+        private static CustomMessageFilter _messageFilter;
 
         /// <summary>
         /// Initializes the click manager for specified GunaChart controls and assigns actions to be called on left and right mouse clicks.
@@ -26,17 +26,17 @@ namespace Sales_Tracker.Charts
             // Add new charts to the collection
             foreach (GunaChart chart in charts)
             {
-                registeredCharts.Add(chart);
+                _registeredCharts.Add(chart);
             }
 
-            MouseClickChartManager.onLeftClick = onLeftClick;
-            MouseClickChartManager.onRightClick = onRightClick;
+            _onLeftClick = onLeftClick;
+            _onRightClick = onRightClick;
 
             // Initialize message filter if not already done
-            if (messageFilter == null)
+            if (_messageFilter == null)
             {
-                messageFilter = new CustomMessageFilter();
-                Application.AddMessageFilter(messageFilter);
+                _messageFilter = new CustomMessageFilter();
+                Application.AddMessageFilter(_messageFilter);
             }
         }
 
@@ -99,7 +99,7 @@ namespace Sales_Tracker.Charts
                 }
 
                 // Check if the click happened on any of the charts
-                foreach (GunaChart chart in registeredCharts)
+                foreach (GunaChart chart in _registeredCharts)
                 {
                     if (!chart.Visible)
                     {
@@ -113,12 +113,12 @@ namespace Sales_Tracker.Charts
                     if (chart.Bounds.Contains(localMousePosition))
                     {
                         // Trigger the left click action with chart
-                        onLeftClick?.Invoke(chart);
+                        _onLeftClick?.Invoke(chart);
 
                         if (isRightClick)
                         {
                             // Trigger the right click action with chart and mouse position
-                            onRightClick?.Invoke(chart, mousePosition);
+                            _onRightClick?.Invoke(chart, mousePosition);
                         }
                         break;
                     }
