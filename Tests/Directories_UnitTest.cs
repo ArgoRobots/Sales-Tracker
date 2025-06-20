@@ -17,10 +17,7 @@ namespace Tests
         [TestCleanup]
         public void Cleanup()
         {
-            if (Directory.Exists(_testDirectory))
-            {
-                Directories.DeleteDirectory(_testDirectory, true);
-            }
+            Directories.DeleteDirectory(_testDirectory, true);
         }
 
         [TestMethod]

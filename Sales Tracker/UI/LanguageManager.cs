@@ -26,6 +26,10 @@ namespace Sales_Tracker.UI
         public static Dictionary<string, Dictionary<string, string>> TranslationCache { get; set; }
 
         // Init.
+
+        /// <summary>
+        /// Initializes the LanguageManager by loading cached translation data from the translations file.
+        /// </summary>
         public static void InitLanguageManager()
         {
             TranslationCache = [];
@@ -560,10 +564,7 @@ namespace Sales_Tracker.UI
                 );
 
                 string jsonContent = JsonConvert.SerializeObject(combinedCache, Formatting.Indented);
-                if (!Directory.Exists(Directories.Cache_dir))
-                {
-                    Directories.CreateDirectory(Directories.Cache_dir, false);
-                }
+                Directories.CreateDirectory(Directories.Cache_dir, false);
                 Directories.WriteTextToFile(Directories.Translations_file, jsonContent);
             }
             catch (Exception ex)
@@ -595,7 +596,7 @@ namespace Sales_Tracker.UI
             }
 
             // Add line
-            searchResults.Add(new SearchResult(SearchBox.addLine, null, 0));
+            searchResults.Add(new SearchResult(SearchBox.AddLine, null, 0));
 
             // Add remaining languages
             IEnumerable<KeyValuePair<string, string>> remainingLanguages = allLanguages

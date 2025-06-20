@@ -12,11 +12,10 @@ namespace Tests
             List<string> currencyTypes = Currency.GetCurrencyTypesList();
 
             // Assert
-            Assert.IsNotNull(currencyTypes);
             Assert.IsTrue(currencyTypes.Count > 0);
 
             // Verify that all enum values are present
-            string[] enumValues = Enum.GetNames(typeof(Currency.CurrencyTypes));
+            string[] enumValues = Enum.GetNames<Currency.CurrencyTypes>();
             CollectionAssert.AreEquivalent(enumValues, currencyTypes.ToArray());
 
             // Verify specific currencies are included

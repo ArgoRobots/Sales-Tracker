@@ -19,6 +19,9 @@ namespace Sales_Tracker.UI
     /// </summary>
     internal static class CustomControls
     {
+        /// <summary>
+        /// Constructs various UI controls used throughout the application, including FileMenu, HelpMenu, and more.
+        /// </summary>
         public static void ConstructControls()
         {
             CascadingMenu.Init();

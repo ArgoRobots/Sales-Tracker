@@ -13,15 +13,16 @@ namespace Sales_Tracker.UI
     /// </summary>
     public class SearchBox
     {
-        private static Timer debounceTimer;
-        private static Label noResults_Label;
-        public const string addLine = "ADD LINE CONTROL";
+        // Properties
+        private static Timer _debounceTimer;
+        private static Label _noResults_Label;
         private static Control _searchBoxParent;
-        private static Guna2TextBox searchTextBox;
-        private static List<SearchResult> resultList;
+        private static Guna2TextBox _searchTextBox;
+        private static List<SearchResult> _resultList;
         private static int _maxHeight;
         private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
         private static readonly short extraWidth = 350;
+        public const string AddLine = "ADD LINE CONTROL";
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer { get; private set; }
@@ -39,7 +40,7 @@ namespace Sales_Tracker.UI
             }
             else
             {
-                noResults_Label.Text = _translateText ? LanguageManager.TranslateString("No results") : "No results";
+                _noResults_Label.Text = _translateText ? LanguageManager.TranslateString("No results") : "No results";
             }
 
             textBox.MouseDown += (sender, e) =>
@@ -77,13 +78,13 @@ namespace Sales_Tracker.UI
             SearchResultBoxContainer.Controls.Add(SearchResultBox);
             ThemeManager.CustomizeScrollBar(SearchResultBox);
 
-            debounceTimer = new Timer
+            _debounceTimer = new Timer
             {
                 Interval = 300
             };
-            debounceTimer.Tick += DebounceTimer_Tick;
+            _debounceTimer.Tick += DebounceTimer_Tick;
 
-            noResults_Label = new()
+            _noResults_Label = new()
             {
                 Text = "No results",
                 Height = 30,
@@ -97,8 +98,8 @@ namespace Sales_Tracker.UI
         // Event handlers
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
-            debounceTimer.Stop();
-            ShowSearchBox(_searchBoxParent, searchTextBox, () => resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically);
+            _debounceTimer.Stop();
+            ShowSearchBox(_searchBoxParent, _searchTextBox, () => _resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically);
         }
 
         // Main methods
@@ -106,7 +107,7 @@ namespace Sales_Tracker.UI
             int maxHeight, bool alwaysShow, bool increaseWidth, bool translateText, bool allowTextBoxEmpty, bool sortAlphabetically)
         {
             // Check if the search box is already shown for the same text box
-            if (searchTextBox == textBox && !alwaysShow
+            if (_searchTextBox == textBox && !alwaysShow
                 && _searchBoxParent.Controls.Contains(SearchResultBoxContainer))
             {
                 return;
@@ -117,7 +118,7 @@ namespace Sales_Tracker.UI
             List<SearchResult> results = resultsFunc();
             if (translateText)
             {
-                foreach (SearchResult result in results.Where(r => r.Name != addLine))
+                foreach (SearchResult result in results.Where(r => r.Name != AddLine))
                 {
                     result.DisplayName = LanguageManager.TranslateString(result.Name);
                 }
@@ -134,8 +135,8 @@ namespace Sales_Tracker.UI
             }
 
             _searchBoxParent = searchBoxParent;
-            searchTextBox = textBox;
-            resultList = results;
+            _searchTextBox = textBox;
+            _resultList = results;
             _maxHeight = maxHeight;
             _increaseWidth = increaseWidth;
             _translateText = translateText;
@@ -172,7 +173,7 @@ namespace Sales_Tracker.UI
 
                 if (searchTerms.Length != 0)
                 {
-                    foreach (SearchResult? result in results.Where(r => r.Name != addLine))
+                    foreach (SearchResult? result in results.Where(r => r.Name != AddLine))
                     {
                         string displayNameLower = result.DisplayName.ToLower();
                         int score = 0;
@@ -201,7 +202,7 @@ namespace Sales_Tracker.UI
             // Construct buttons
             foreach (SearchResult meta in metaList)
             {
-                if (meta.Name == addLine)
+                if (meta.Name == AddLine)
                 {
                     Guna2Separator separator;
                     if (controlIndex < SearchResultControls.Count && SearchResultControls[controlIndex] is Guna2Separator existingSeparator)
@@ -241,8 +242,8 @@ namespace Sales_Tracker.UI
                         btn.Click += (sender, e) =>
                         {
                             Guna2Button button = (Guna2Button)sender;
-                            searchTextBox.Text = button.Text;
-                            debounceTimer.Stop();
+                            _searchTextBox.Text = button.Text;
+                            _debounceTimer.Stop();
                             CustomControls.CloseAllPanels();
                         };
 
@@ -272,7 +273,7 @@ namespace Sales_Tracker.UI
             int totalHeight = yOffset + 1;
             if (totalHeight > maxHeight)
             {
-                SearchResultBox.Controls.Remove(noResults_Label);
+                SearchResultBox.Controls.Remove(_noResults_Label);
 
                 SearchResultBoxContainer.Height = maxHeight + 3;
                 SearchResultBox.Height = maxHeight;
@@ -280,8 +281,8 @@ namespace Sales_Tracker.UI
             }
             else if (controlIndex == 0)
             {
-                noResults_Label.Width = SearchResultBox.Width;
-                SearchResultBox.Controls.Add(noResults_Label);
+                _noResults_Label.Width = SearchResultBox.Width;
+                SearchResultBox.Controls.Add(_noResults_Label);
 
                 SearchResultBox.Height = 50;
                 SearchResultBoxContainer.Height = SearchResultBox.Height + 10;
@@ -289,7 +290,7 @@ namespace Sales_Tracker.UI
             }
             else
             {
-                SearchResultBox.Controls.Remove(noResults_Label);
+                SearchResultBox.Controls.Remove(_noResults_Label);
 
                 SearchResultBox.Height = totalHeight;
                 SearchResultBoxContainer.Height = totalHeight + 10;
@@ -341,15 +342,15 @@ namespace Sales_Tracker.UI
         }
         private static void SearchTextBoxChanged(object sender, EventArgs e)
         {
-            if (resultList == null) { return; }
+            if (_resultList == null) { return; }
 
-            HashSet<string> names = [.. resultList.Select(result => result.DisplayName)];
-            CheckValidity(searchTextBox, names);
+            HashSet<string> names = [.. _resultList.Select(result => result.DisplayName)];
+            CheckValidity(_searchTextBox, names);
 
             TextBoxManager.RightClickTextBox_Panel.Parent?.Controls.Remove(TextBoxManager.RightClickTextBox_Panel);
 
-            debounceTimer.Stop();
-            debounceTimer.Start();
+            _debounceTimer.Stop();
+            _debounceTimer.Start();
         }
 
         // Methods
@@ -417,8 +418,8 @@ namespace Sales_Tracker.UI
                 {
                     if (btn.BorderThickness == 1)
                     {
-                        searchTextBox.Text = btn.Text;
-                        debounceTimer.Stop();
+                        _searchTextBox.Text = btn.Text;
+                        _debounceTimer.Stop();
                         isResultSelected = true;
                         CustomControls.CloseAllPanels();
                         break;

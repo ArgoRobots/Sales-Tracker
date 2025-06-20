@@ -33,7 +33,7 @@ namespace Sales_Tracker.Theme
         public static Color AccentGreen { get; private set; }
 
         /// <summary>
-        /// Sets all color values based on the current theme.
+        /// Sets all color values based on the current theme. These colors are used for UI controls throughout the application.
         /// </summary>
         public static void SetColors()
         {

@@ -1,7 +1,7 @@
 ﻿namespace Sales_Tracker.DataClasses
 {
     /// <summary>
-    /// This is used as a second Tag property.
+    /// This is used as a second Tag property in controls to help with language translation.
     /// </summary>
     public static class AccessibleDescriptionManager
     {

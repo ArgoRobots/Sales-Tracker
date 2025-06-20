@@ -28,6 +28,7 @@ namespace Sales_Tracker
             LoadingPanel.InitLoadingPanel();
 
             Directories.SetUniversalDirectories();
+            Directories.EnsureAppDataDirectoriesExist();
             ArgoCompany.InitCacheFiles();
             EncryptionManager.Initialize();
             DotEnv.Load();
@@ -36,8 +37,6 @@ namespace Sales_Tracker
 
             TextBoxManager.ConstructRightClickTextBoxMenu();
             SearchBox.ConstructSearchBox();
-
-            Directories.EnsureAppDataDirectoriesExist();
             CustomControls.ConstructRightClickRename();
 
             ThemeChangeDetector.StartListeningForThemeChanges();
@@ -45,7 +44,7 @@ namespace Sales_Tracker
         }
 
         /// <summary>
-        /// Registers file associations if they have not already been registered.
+        /// Registers Argo file associations if they have not already been registered.
         /// </summary>
         private static void RegisterFileAssociationOnFirstRun()
         {
@@ -82,12 +81,8 @@ namespace Sales_Tracker
         {
             try
             {
-                if (args.Length == 0)
-                {
-                    return false;
-                }
-
-                if (!File.Exists(args[0]))
+                // If the command is invalid
+                if (args.Length == 0 || !File.Exists(args[0]))
                 {
                     return false;
                 }

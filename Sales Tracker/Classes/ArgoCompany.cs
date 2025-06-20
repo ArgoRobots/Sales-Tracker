@@ -21,10 +21,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void InitCacheFiles()
         {
-            if (!Directory.Exists(Directories.Cache_dir))
-            {
-                Directories.CreateDirectory(Directories.Cache_dir, false);
-            }
+            Directories.CreateDirectory(Directories.Cache_dir, false);
 
             if (!File.Exists(Directories.GlobalAppDataSettings_file))
             {

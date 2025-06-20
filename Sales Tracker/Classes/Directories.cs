@@ -67,6 +67,10 @@ namespace Sales_Tracker.Classes
             // Misc.
             AppDataSettings_file = TempCompany_dir + "appSettings" + ArgoFiles.TxtFileExtension;
         }
+
+        /// <summary>
+        /// Initializes universal application directory paths that are not company-specific.
+        /// </summary>
         public static void SetUniversalDirectories()
         {
             AppData_dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Argo\Argo Sales Tracker\";
@@ -87,22 +91,18 @@ namespace Sales_Tracker.Classes
         }
         public static void EnsureAppDataDirectoriesExist()
         {
-            if (!Directory.Exists(AppData_dir))
-            {
-                CreateDirectory(AppData_dir, false);
-            }
+            CreateDirectory(AppData_dir, false);
         }
 
         // Directories
         /// <summary>
-        /// Creates a new directory with optional hidden attribute.
+        /// Creates a new directory if it doesn't already exist, with an optional hidden attribute.
         /// </summary>
         /// <returns>True if directory was created successfully, false if it already exists</returns>
         public static bool CreateDirectory(string directory, bool hidden)
         {
             if (Directory.Exists(directory))
             {
-                Log.Error_DirectoryAlreadyExists(directory);
                 return false;
             }
 
@@ -155,14 +155,13 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Deletes a directory and optionally its contents.
+        /// Deletes a directory and optionally its contents, if it exists.
         /// </summary>
         /// <returns>True if directory was deleted successfully</returns>
         public static bool DeleteDirectory(string directory, bool recursive)
         {
             if (!Directory.Exists(directory))
             {
-                Log.Error_DirectoryDoesNotExist(directory);
                 return false;
             }
 

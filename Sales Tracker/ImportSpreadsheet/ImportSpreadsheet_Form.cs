@@ -218,7 +218,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
         // Show things to import
         private readonly byte _panelPadding = 25, _panelHeight = 240;
-        private readonly int _panelWidth = 300;
+        private readonly short _panelWidth = 300;
         private CenteredFlowLayoutPanel _centeredFlowPanel;
         private Panel CreatePanel(List<string> items, string worksheetName)
         {

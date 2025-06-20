@@ -13,10 +13,8 @@ namespace Sales_Tracker.Classes
         // Save logs
         public static void SaveLogs()
         {
-            if (!Directory.Exists(Directories.Logs_dir))
-            {
-                Directories.CreateDirectory(Directories.Logs_dir, false);
-            }
+            Directories.CreateDirectory(Directories.Logs_dir, false);
+
             DateTime time = DateTime.Now;
             int count = 0;
             string directory;
@@ -151,15 +149,6 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-3vknm9: File does not exist:" +
-                $"\n'{filePath}'.",
-                "",
-                lineNumber);
-        }
-        public static void Error_DirectoryDoesNotExist(
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0)
-        {
-            Error("Error-tq45ek: Directory does not exist:" +
                 $"\n'{filePath}'.",
                 "",
                 lineNumber);

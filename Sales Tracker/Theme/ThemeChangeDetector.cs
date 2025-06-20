@@ -9,6 +9,10 @@ namespace Sales_Tracker.Theme
         private static RegistryKey _personalizeKey = null;
         private static RegistryWatcher _watcher;
 
+        /// <summary>
+        /// Starts monitoring Windows system theme changes by setting up a registry watcher on the Windows personalization settings,
+        /// and automatically updates the application theme when Windows theme changes are detected.
+        /// </summary>
         public static void StartListeningForThemeChanges()
         {
             if (_isListeningForThemeChanges)

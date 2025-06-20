@@ -355,7 +355,7 @@ namespace Sales_Tracker.Classes
         private static List<string> GetAllCountryNames()
         {
             return Country.CountrySearchResults
-                .Where(c => c.DisplayName != SearchBox.addLine && c.DisplayName != "Unkown")
+                .Where(c => c.DisplayName != SearchBox.AddLine && c.DisplayName != "Unkown")
                 .Select(c => c.DisplayName)
                 .OrderBy(s => s)
                 .ToList();

@@ -20,7 +20,7 @@ namespace Sales_Tracker.DataClasses
             new SearchResult("Italy", Properties.Flags.Italy, 0),
             new SearchResult("Canada", Properties.Flags.Canada, 0),
 
-            new SearchResult(SearchBox.addLine, null, 0),
+            new SearchResult(SearchBox.AddLine, null, 0),
 
             new SearchResult("Afghanistan", Properties.Flags.Afghanistan, 0),
             new SearchResult("Albania", Properties.Flags.Albania, 0),
