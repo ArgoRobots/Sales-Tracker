@@ -172,12 +172,37 @@ namespace Sales_Tracker.ImportSpreadsheet
                 return;
             }
 
+            // Remember current checkbox states before reloading
+            Dictionary<string, bool> checkboxStates = [];
+            foreach (Panel panel in centeredFlowPanel.Controls.OfType<Panel>())
+            {
+                Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
+                string worksheetName = panel.Tag.ToString();
+                if (checkBox != null)
+                {
+                    checkboxStates[worksheetName] = checkBox.Checked;
+                }
+            }
+
             Import_Button.Enabled = false;
             Controls.Remove(centeredFlowPanel);
 
             ShowLoadingIndicator();
 
             List<Panel> panels = await LoadSpreadsheetData();
+
+            // Restore checkbox states
+            foreach (Panel panel in panels)
+            {
+                Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
+                string worksheetName = panel.Tag.ToString();
+
+                if (checkBox != null)
+                {
+                    // Use saved state if available, otherwise default to checked
+                    checkBox.Checked = !checkboxStates.TryGetValue(worksheetName, out bool savedState) || savedState;
+                }
+            }
 
             if (panels.Count > 0)
             {
@@ -499,9 +524,12 @@ namespace Sales_Tracker.ImportSpreadsheet
                     continue;
                 }
 
-                // If the sheet no longer not exists. The user may have deleted a sheet after selecting the spreadsheet file
+                // If the sheet no longer exists. The user may have deleted a sheet after selecting the spreadsheet file
                 if (!workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
                 {
+                    CustomMessageBox.Show("Sheet no longer exists",
+                        $"The sheet {worksheetName} no longer exists and will not be imported",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                     continue;
                 }
 

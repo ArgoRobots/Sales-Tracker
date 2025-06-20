@@ -330,7 +330,6 @@ namespace Sales_Tracker.Classes
 
             if (createdNew)
             {
-                Log.Write(1, $"Created Mutex: {uniqueMutexName}");
                 return true;
             }
             return false;
