@@ -38,13 +38,13 @@ namespace Sales_Tracker.UI
             LanguageManager.UpdateLanguageForControl(FileMenu);
             LanguageManager.UpdateLanguageForControl(RecentlyOpenedMenu);
             LanguageManager.UpdateLanguageForControl(HelpMenu);
-            LanguageManager.UpdateLanguageForControl(_controlsDropDown_Button);
-            LanguageManager.UpdateLanguageForControl(_controlDropDown_Panel);
+            LanguageManager.UpdateLanguageForControl(ControlsDropDown_Button);
+            LanguageManager.UpdateLanguageForControl(ControlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(DataGridViewManager.RightClickDataGridView_Panel);
         }
 
         // Properties
-        private static readonly byte _panelButtonHeight = 35, spaceForSeperator = 11, _spaceForPanel = 10, _spaceBetweenControls = 8, offsetForKeyboardShortcutOrArrow = 15;
+        private static readonly byte spaceForSeperator = 11, offsetForKeyboardShortcutOrArrow = 15;
         public enum KeyPressValidation
         {
             OnlyNumbersAndDecimalAndMinus,
@@ -53,15 +53,13 @@ namespace Sales_Tracker.UI
             OnlyLetters,
             None
         }
-        private static readonly short _panelWidth = 350;
-        private static readonly short _panelBtnWidth = 340;
 
         // Getters
-        public static int PanelWidth => _panelWidth;
-        public static int PanelBtnWidth => _panelBtnWidth;
-        public static byte PanelButtonHeight => _panelButtonHeight;
-        public static byte SpaceForPanel => _spaceForPanel;
-        public static byte SpaceBetweenControls => _spaceBetweenControls;
+        public static short PanelWidth { get; } = 350;
+        public static short PanelBtnWidth { get; } = 340;
+        public static byte PanelButtonHeight { get; } = 35;
+        public static byte SpaceForPanel { get; } = 10;
+        public static byte SpaceBetweenControls { get; } = 8;
 
         // Construct things for menus
         public static Guna2Panel ConstructPanelForMenu(Size size, string name)
@@ -77,11 +75,11 @@ namespace Sales_Tracker.UI
                 Name = name
             };
 
-            int half = _spaceForPanel / 2;
+            int half = SpaceForPanel / 2;
             FlowLayoutPanel flowLayoutPanel = new()
             {
                 BackColor = CustomColors.PanelBtn,
-                Size = new Size(size.Width - _spaceForPanel, size.Height - _spaceForPanel),
+                Size = new Size(size.Width - SpaceForPanel, size.Height - SpaceForPanel),
                 Location = new Point(half, half)
             };
             panel.Controls.Add(flowLayoutPanel);
@@ -103,7 +101,7 @@ namespace Sales_Tracker.UI
         {
             Guna2Button menuBtn = new()
             {
-                Size = new Size(width, _panelButtonHeight),
+                Size = new Size(width, PanelButtonHeight),
                 FillColor = CustomColors.PanelBtn,
                 ForeColor = CustomColors.Text,
                 TextAlign = HorizontalAlignment.Left,
@@ -199,22 +197,22 @@ namespace Sales_Tracker.UI
         public static Guna2Button OpenRecentCompany_Button { get; set; }
         private static void ConstructFileMenu()
         {
-            FileMenu = ConstructPanelForMenu(new Size(_panelWidth, 9 * _panelButtonHeight + spaceForSeperator * 2 + _spaceForPanel), "fileMenu_Panel");
+            FileMenu = ConstructPanelForMenu(new Size(PanelWidth, 9 * PanelButtonHeight + spaceForSeperator * 2 + SpaceForPanel), "fileMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)FileMenu.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("Create new company", _panelBtnWidth, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("Create new company", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenForm(new Startup_Form(["autoClickButton"]));
             };
 
-            menuBtn = ConstructBtnForMenu("Open company", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Open company", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 ArgoCompany.OpenCompanyWhenACompanyIsAlreadyOpen();
             };
 
-            menuBtn = ConstructBtnForMenu("Open recent company", _panelBtnWidth, false, flowPanel);
+            menuBtn = ConstructBtnForMenu("Open recent company", PanelBtnWidth, false, flowPanel);
             menuBtn.ImageSize = new Size(11, 11);
             menuBtn.ImageOffset = new Point((menuBtn.Width - menuBtn.ImageSize.Width - offsetForKeyboardShortcutOrArrow) - (menuBtn.Width / 2), 0);
             menuBtn.Tag = RecentlyOpenedMenu;
@@ -233,9 +231,9 @@ namespace Sales_Tracker.UI
             menuBtn.MouseLeave += CascadingMenu.CloseMenu;
             OpenRecentCompany_Button = menuBtn;
 
-            ConstructSeperator(_panelBtnWidth, flowPanel);
+            ConstructSeperator(PanelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Save", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Save", PanelBtnWidth, true, flowPanel);
             menuBtn.Name = "Save";
             menuBtn.Click += (_, _) =>
             {
@@ -243,27 +241,27 @@ namespace Sales_Tracker.UI
             };
             ConstructKeyShortcut("Ctrl+S", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Save as...", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Save as...", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 ArgoCompany.SaveAs();
             };
             ConstructKeyShortcut("Ctrl+Shift+S", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Export as...", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Export as...", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenForm(new Export_Form());
             };
             ConstructKeyShortcut("Ctrl+E", menuBtn);
 
-            menuBtn = ConstructBtnForMenu("Export receipts", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Export receipts", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenForm(new Receipts_Form());
             };
 
-            menuBtn = ConstructBtnForMenu("Import spreadsheet", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Import spreadsheet", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 if (ShouldShowTutorial())
@@ -276,9 +274,9 @@ namespace Sales_Tracker.UI
                 }
             };
 
-            ConstructSeperator(_panelBtnWidth, flowPanel);
+            ConstructSeperator(PanelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Show company in folder", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Show company in folder", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.ShowFileInFolder(Directories.ArgoCompany_file);
@@ -286,7 +284,7 @@ namespace Sales_Tracker.UI
         }
         private static void ConstructRecentlyOpenedMenu()
         {
-            RecentlyOpenedMenu = ConstructPanelForMenu(new Size(_panelWidth, 100), "recentlyOpenedMenu_Panel");
+            RecentlyOpenedMenu = ConstructPanelForMenu(new Size(PanelWidth, 100), "recentlyOpenedMenu_Panel");
             RecentlyOpenedMenu.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
         }
         private static void SetRecentlyOpenedMenu()
@@ -304,7 +302,7 @@ namespace Sales_Tracker.UI
 
             if (validCompanyDirs.Count == 0)
             {
-                LabelManager.AddNoRecentlyOpenedCompanies(flowPanel, _panelBtnWidth);
+                LabelManager.AddNoRecentlyOpenedCompanies(flowPanel, PanelBtnWidth);
             }
             else
             {
@@ -312,7 +310,7 @@ namespace Sales_Tracker.UI
                 foreach (string companyDir in validCompanyDirs)
                 {
                     string text = Path.GetFileNameWithoutExtension(companyDir);
-                    Guna2Button menuBtn = ConstructBtnForMenu(text, _panelBtnWidth, true, flowPanel);
+                    Guna2Button menuBtn = ConstructBtnForMenu(text, PanelBtnWidth, true, flowPanel);
                     menuBtn.Tag = companyDir;
                     menuBtn.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
                     menuBtn.Click += (sender, e) =>
@@ -327,7 +325,7 @@ namespace Sales_Tracker.UI
             SetRightClickMenuHeight(RecentlyOpenedMenu);
 
             RecentlyOpenedMenu.Location = new Point(FileMenu.Right,
-                FileMenu.Top + _panelButtonHeight * 2);
+                FileMenu.Top + PanelButtonHeight * 2);
 
             MainMenu_Form.Instance.Controls.Add(RecentlyOpenedMenu);
             RecentlyOpenedMenu.BringToFront();
@@ -370,55 +368,55 @@ namespace Sales_Tracker.UI
         public static Guna2Panel HelpMenu { get; set; }
         private static void ConstructHelpMenu()
         {
-            HelpMenu = ConstructPanelForMenu(new Size(_panelWidth, 8 * _panelButtonHeight + spaceForSeperator + _spaceForPanel), "helpMenu_Panel");
+            HelpMenu = ConstructPanelForMenu(new Size(PanelWidth, 8 * PanelButtonHeight + spaceForSeperator + SpaceForPanel), "helpMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)HelpMenu.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu("Settings", _panelBtnWidth, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu("Settings", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenForm(new Settings_Form());
             };
 
-            menuBtn = ConstructBtnForMenu("What's new", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("What's new", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/whats-new/index.html");
             };
 
-            menuBtn = ConstructBtnForMenu("Documentaion", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Documentaion", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/documentation/index.html");
             };
 
-            menuBtn = ConstructBtnForMenu("Show logs", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Show logs", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenForm(new Log_Form());
             };
             ConstructKeyShortcut("Ctrl+L", menuBtn);
 
-            ConstructSeperator(_panelBtnWidth, flowPanel);
+            ConstructSeperator(PanelBtnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu("Contact us", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Contact us", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/contact-us/index.php");
             };
 
-            menuBtn = ConstructBtnForMenu("About", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("About", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/about-us/index.html");
             };
 
-            menuBtn = ConstructBtnForMenu("Share feedback", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Share feedback", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/contact-us/index.php");
             };
 
-            menuBtn = ConstructBtnForMenu("Clear cache", _panelBtnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu("Clear cache", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 ArgoCompany.ClearCache();
@@ -426,13 +424,11 @@ namespace Sales_Tracker.UI
         }
 
         // Control dropdown
-        private static Guna2Button _controlsDropDown_Button;
-        private static Guna2Panel _controlDropDown_Panel;
-        public static Guna2Button ControlsDropDown_Button => _controlsDropDown_Button;
-        public static Guna2Panel ControlDropDown_Panel => _controlDropDown_Panel;
+        public static Guna2Button ControlsDropDown_Button { get; private set; }
+        public static Guna2Panel ControlDropDown_Panel { get; private set; }
         private static void ContructControlsDropDownButton()
         {
-            _controlsDropDown_Button = new Guna2Button
+            ControlsDropDown_Button = new Guna2Button
             {
                 BackColor = Color.Transparent,
                 BorderColor = CustomColors.ControlBorder,
@@ -450,25 +446,25 @@ namespace Sales_Tracker.UI
                 Text = "Controls",
                 TextOffset = new Point(-10, 0)
             };
-            _controlsDropDown_Button.Click += ControlsDropDownButton_Click;
+            ControlsDropDown_Button.Click += ControlsDropDownButton_Click;
         }
         private static void ControlsDropDownButton_Click(object sender, EventArgs e)
         {
-            if (MainMenu_Form.Instance.Controls.Contains(_controlDropDown_Panel))
+            if (MainMenu_Form.Instance.Controls.Contains(ControlDropDown_Panel))
             {
-                MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
+                MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
             }
             else
             {
                 CloseAllPanels();
 
-                _controlDropDown_Panel.Location = new Point(
-                    _controlsDropDown_Button.Right - _controlDropDown_Panel.Width,
+                ControlDropDown_Panel.Location = new Point(
+                    ControlsDropDown_Button.Right - ControlDropDown_Panel.Width,
                     MainMenu_Form.Instance.MainTop_Panel.Top + MainMenu_Form.Instance.MainTop_Panel.Height);
 
-                MainMenu_Form.Instance.Controls.Add(_controlDropDown_Panel);
-                _controlDropDown_Panel.BringToFront();
-                _controlDropDown_Panel.Focus();
+                MainMenu_Form.Instance.Controls.Add(ControlDropDown_Panel);
+                ControlDropDown_Panel.BringToFront();
+                ControlDropDown_Panel.Focus();
             }
         }
         private static void ConstructControlsDropDownMenu()
@@ -476,8 +472,8 @@ namespace Sales_Tracker.UI
             int btnWidth = 290;
             byte btnHeight = 50;
 
-            _controlDropDown_Panel = ConstructPanelForMenu(new Size(300, btnHeight * 6 + 15 + spaceForSeperator * 5), "controlDropDown_Panel");
-            FlowLayoutPanel flowPanel = (FlowLayoutPanel)_controlDropDown_Panel.Controls[0];
+            ControlDropDown_Panel = ConstructPanelForMenu(new Size(300, btnHeight * 6 + 15 + spaceForSeperator * 5), "controlDropDown_Panel");
+            FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
@@ -601,8 +597,8 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             int controlCount = flowPanel.Controls.Cast<Control>().Count(c => c.Visible);
 
-            panel.Height = controlCount * _panelButtonHeight + _spaceForPanel;
-            flowPanel.Height = controlCount * _panelButtonHeight;
+            panel.Height = controlCount * PanelButtonHeight + SpaceForPanel;
+            flowPanel.Height = controlCount * PanelButtonHeight;
         }
         private static string FormatButtonName(string text)
         {
@@ -669,7 +665,7 @@ namespace Sales_Tracker.UI
 
             MainMenu_Form.Instance.File_Button.Image = Resources.FileGray;
             MainMenu_Form.Instance.Help_Button.Image = Resources.HelpGray;
-            MainMenu_Form.Instance.Controls.Remove(_controlDropDown_Panel);
+            MainMenu_Form.Instance.Controls.Remove(ControlDropDown_Panel);
             MainMenu_Form.Instance.ClosePanels();
         }
         private static void DeselectAllMenuButtons(Guna2Panel panel)
