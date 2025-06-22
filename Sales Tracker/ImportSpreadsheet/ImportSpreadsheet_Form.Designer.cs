@@ -44,8 +44,8 @@
             RemoveReceipt_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             SelectedReceipt_Label = new Label();
             OpenTutorial_Button = new Guna.UI2.WinForms.Guna2Button();
-            SkipHeaderRow_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
-            SkipHeaderRow_Label = new Label();
+            IncludeHeaderRow_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
+            IncludeHeaderRow_Label = new Label();
             SuspendLayout();
             // 
             // ImportSpreadsheet_Label
@@ -160,47 +160,46 @@
             OpenTutorial_Button.Text = "Open tutorial";
             OpenTutorial_Button.Click += OpenTutorial_Button_Click;
             // 
-            // SkipHeaderRow_CheckBox
+            // IncludeHeaderRow_CheckBox
             // 
-            SkipHeaderRow_CheckBox.Anchor = AnchorStyles.Top;
-            SkipHeaderRow_CheckBox.Animated = true;
-            SkipHeaderRow_CheckBox.Checked = true;
-            SkipHeaderRow_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            SkipHeaderRow_CheckBox.CheckedState.BorderRadius = 2;
-            SkipHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
-            SkipHeaderRow_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            SkipHeaderRow_CheckBox.CustomizableEdges = customizableEdges8;
-            SkipHeaderRow_CheckBox.Location = new Point(812, 122);
-            SkipHeaderRow_CheckBox.Name = "SkipHeaderRow_CheckBox";
-            SkipHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
-            SkipHeaderRow_CheckBox.Size = new Size(20, 20);
-            SkipHeaderRow_CheckBox.TabIndex = 2;
-            SkipHeaderRow_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            SkipHeaderRow_CheckBox.UncheckedState.BorderRadius = 2;
-            SkipHeaderRow_CheckBox.UncheckedState.BorderThickness = 0;
-            SkipHeaderRow_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            SkipHeaderRow_CheckBox.CheckedChanged += SkipHeaderRow_CheckBox_CheckedChanged;
+            IncludeHeaderRow_CheckBox.Anchor = AnchorStyles.Top;
+            IncludeHeaderRow_CheckBox.Animated = true;
+            IncludeHeaderRow_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            IncludeHeaderRow_CheckBox.CheckedState.BorderRadius = 2;
+            IncludeHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
+            IncludeHeaderRow_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            IncludeHeaderRow_CheckBox.CustomizableEdges = customizableEdges8;
+            IncludeHeaderRow_CheckBox.Location = new Point(812, 122);
+            IncludeHeaderRow_CheckBox.Name = "IncludeHeaderRow_CheckBox";
+            IncludeHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
+            IncludeHeaderRow_CheckBox.Size = new Size(20, 20);
+            IncludeHeaderRow_CheckBox.TabIndex = 2;
+            IncludeHeaderRow_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            IncludeHeaderRow_CheckBox.UncheckedState.BorderRadius = 2;
+            IncludeHeaderRow_CheckBox.UncheckedState.BorderThickness = 0;
+            IncludeHeaderRow_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            IncludeHeaderRow_CheckBox.CheckedChanged += IncludeHeaderRow_CheckBox_CheckedChanged;
             // 
-            // SkipHeaderRow_Label
+            // IncludeHeaderRow_Label
             // 
-            SkipHeaderRow_Label.Anchor = AnchorStyles.Top;
-            SkipHeaderRow_Label.AutoSize = true;
-            SkipHeaderRow_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SkipHeaderRow_Label.Location = new Point(830, 112);
-            SkipHeaderRow_Label.Name = "SkipHeaderRow_Label";
-            SkipHeaderRow_Label.Padding = new Padding(5);
-            SkipHeaderRow_Label.Size = new Size(181, 40);
-            SkipHeaderRow_Label.TabIndex = 0;
-            SkipHeaderRow_Label.Text = "Skip header row";
-            SkipHeaderRow_Label.Click += SkipHeaderRow_Label_Click;
+            IncludeHeaderRow_Label.Anchor = AnchorStyles.Top;
+            IncludeHeaderRow_Label.AutoSize = true;
+            IncludeHeaderRow_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            IncludeHeaderRow_Label.Location = new Point(830, 112);
+            IncludeHeaderRow_Label.Name = "IncludeHeaderRow_Label";
+            IncludeHeaderRow_Label.Padding = new Padding(5);
+            IncludeHeaderRow_Label.Size = new Size(210, 40);
+            IncludeHeaderRow_Label.TabIndex = 0;
+            IncludeHeaderRow_Label.Text = "Include header row";
+            IncludeHeaderRow_Label.Click += IncludeHeaderRow_Label_Click;
             // 
             // ImportSpreadsheet_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1128, 864);
-            Controls.Add(SkipHeaderRow_CheckBox);
-            Controls.Add(SkipHeaderRow_Label);
+            Controls.Add(IncludeHeaderRow_CheckBox);
+            Controls.Add(IncludeHeaderRow_Label);
             Controls.Add(OpenTutorial_Button);
             Controls.Add(RemoveReceipt_ImageButton);
             Controls.Add(SelectedReceipt_Label);
@@ -227,7 +226,7 @@
         private Guna.UI2.WinForms.Guna2ImageButton RemoveReceipt_ImageButton;
         private Label SelectedReceipt_Label;
         public Guna.UI2.WinForms.Guna2Button OpenTutorial_Button;
-        private Guna.UI2.WinForms.Guna2CustomCheckBox SkipHeaderRow_CheckBox;
-        private Label SkipHeaderRow_Label;
+        private Guna.UI2.WinForms.Guna2CustomCheckBox IncludeHeaderRow_CheckBox;
+        private Label IncludeHeaderRow_Label;
     }
 }

@@ -36,15 +36,15 @@ namespace Sales_Tracker.ImportSpreadsheet
         private void AlignControls()
         {
             int spaceAvailable = ClientSize.Width - Import_Button.Right;
-            int newLeftPosition = Import_Button.Right + (spaceAvailable - SkipHeaderRow_CheckBox.Width - SkipHeaderRow_Label.Width) / 2;
-            int initialSpacing = SkipHeaderRow_Label.Left - SkipHeaderRow_CheckBox.Right;
+            int newLeftPosition = Import_Button.Right + (spaceAvailable - IncludeHeaderRow_CheckBox.Width - IncludeHeaderRow_Label.Width) / 2;
+            int initialSpacing = IncludeHeaderRow_Label.Left - IncludeHeaderRow_CheckBox.Right;
 
-            SkipHeaderRow_CheckBox.Left = newLeftPosition;
-            SkipHeaderRow_Label.Left = SkipHeaderRow_CheckBox.Right + initialSpacing;
+            IncludeHeaderRow_CheckBox.Left = newLeftPosition;
+            IncludeHeaderRow_Label.Left = IncludeHeaderRow_CheckBox.Right + initialSpacing;
         }
         private void SetAccessibleDescriptions()
         {
-            SkipHeaderRow_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            IncludeHeaderRow_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
         }
 
         // Form event handlers
@@ -165,7 +165,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             Tools.OpenLink("https://argorobots.com/documentation/index.html#spreadsheets");
         }
-        private async void SkipHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
+        private async void IncludeHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(_spreadsheetFilePath))
             {
@@ -211,9 +211,9 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
             HideLoadingIndicator();
         }
-        private void SkipHeaderRow_Label_Click(object sender, EventArgs e)
+        private void IncludeHeaderRow_Label_Click(object sender, EventArgs e)
         {
-            SkipHeaderRow_CheckBox.Checked = !SkipHeaderRow_CheckBox.Checked;
+            IncludeHeaderRow_CheckBox.Checked = !IncludeHeaderRow_CheckBox.Checked;
         }
 
         // Show things to import
@@ -236,10 +236,11 @@ namespace Sales_Tracker.ImportSpreadsheet
                 Text = worksheetName,
                 AutoSize = true,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Location = new Point(outerPanel.Padding.Left, outerPanel.Padding.Top),
+                Top = outerPanel.Padding.Top,
                 ForeColor = CustomColors.Text
             };
             outerPanel.Controls.Add(titleLabel);
+            titleLabel.Left = (outerPanel.Width - titleLabel.Width) / 2;
 
             int flowPanelY = titleLabel.Height + titleLabel.Location.Y + CustomControls.SpaceBetweenControls;
 
@@ -449,7 +450,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         private List<string> ExtractFirstCells(IXLWorksheet worksheet)
         {
             List<string> firstCells = [];
-            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked ? worksheet.RowsUsed() : worksheet.RowsUsed().Skip(1);
 
             foreach (IXLRow row in rows)
             {
@@ -463,9 +464,9 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             List<string> products = [];
 
-            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked
-                ? productsWorksheet.RowsUsed().Skip(1)
-                : productsWorksheet.RowsUsed();
+            IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
+                ? productsWorksheet.RowsUsed()
+                : productsWorksheet.RowsUsed().Skip(1);
 
             foreach (IXLRow row in rows)
             {
@@ -484,9 +485,9 @@ namespace Sales_Tracker.ImportSpreadsheet
         private List<string> ExtractTransactions(IXLWorksheet productsWorksheet)
         {
             List<string> products = [];
-            IEnumerable<IXLRow> rows = SkipHeaderRow_CheckBox.Checked
-                ? productsWorksheet.RowsUsed().Skip(1)
-                : productsWorksheet.RowsUsed();
+            IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
+                ? productsWorksheet.RowsUsed()
+                : productsWorksheet.RowsUsed().Skip(1);
 
             foreach (IXLRow row in rows)
             {
@@ -510,7 +511,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
-            bool skipheader = SkipHeaderRow_CheckBox.Checked;
+            bool skipheader = IncludeHeaderRow_CheckBox.Checked;
             bool wasSomethingImported = false, purchaseImportFailed = false, salesImportFailed = false;
 
             foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
