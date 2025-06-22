@@ -11,7 +11,7 @@ namespace Tests
         public void Setup()
         {
             _testDirectory = Path.Combine(Path.GetTempPath(), "TestDirectory");
-            Directories.CreateDirectory(_testDirectory, false);
+            Directories.CreateDirectory(_testDirectory);
         }
 
         [TestCleanup]
@@ -24,7 +24,7 @@ namespace Tests
         public void TestCreateDirectory()
         {
             string dir = Path.Combine(_testDirectory, "NewDirectory");
-            bool result = Directories.CreateDirectory(dir, false);
+            bool result = Directories.CreateDirectory(dir);
             Assert.IsTrue(result, "Directory should be created.");
             Assert.IsTrue(Directory.Exists(dir), "Directory should exist.");
         }
@@ -78,7 +78,7 @@ namespace Tests
         public void TestRenameFolder()
         {
             string newFolder = Path.Combine(_testDirectory, "RenamedFolder");
-            Directories.CreateDirectory(newFolder, false);
+            Directories.CreateDirectory(newFolder);
             Directories.RenameFolder(newFolder, "RenamedFolder1");
 
             Assert.IsTrue(Directory.Exists(Path.Combine(_testDirectory, "RenamedFolder1")), "Folder should be renamed.");
@@ -103,8 +103,8 @@ namespace Tests
         {
             string dir1 = Path.Combine(_testDirectory, "Dir1");
             string dir2 = Path.Combine(_testDirectory, "Dir2");
-            Directories.CreateDirectory(dir1, false);
-            Directories.CreateDirectory(dir2, false);
+            Directories.CreateDirectory(dir1);
+            Directories.CreateDirectory(dir2);
 
             List<string> dirNames = Directories.GetListOfAllDirectoriesInDirectory(_testDirectory);
             Assert.AreEqual(2, dirNames.Count, "There should be two directories.");

@@ -128,10 +128,7 @@ namespace Sales_Tracker.Classes
             {
                 // Ensure directory exists
                 string directory = Path.GetDirectoryName(Directories.AnonymousUserData_file);
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
+                Directories.CreateDirectory(directory);
 
                 // Add the data point to file
                 string jsonLine = JsonConvert.SerializeObject(dataPoint, Formatting.None) + Environment.NewLine;
@@ -272,10 +269,7 @@ namespace Sales_Tracker.Classes
             finally
             {
                 // Clean up - file handles are now closed
-                if (!string.IsNullOrEmpty(tempFile) && File.Exists(tempFile))
-                {
-                    Directories.DeleteFile(tempFile);
-                }
+                Directories.DeleteFile(tempFile);
             }
         }
         public static async Task TryUploadDataOnStartupAsync()

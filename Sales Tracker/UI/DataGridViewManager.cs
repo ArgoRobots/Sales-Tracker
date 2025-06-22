@@ -14,9 +14,9 @@ namespace Sales_Tracker.UI
     public class DataGridViewManager
     {
         // Properties
-        private static DataGridViewRow removedRow;
-        private static readonly byte rowHeight = 35, columnHeaderHeight = 60;
-        private static readonly string deleteAction = "deleted", moveAction = "move";
+        private static DataGridViewRow _removedRow;
+        private static readonly byte _rowHeight = 35, _columnHeaderHeight = 60;
+        private static readonly string _deleteAction = "deleted", _moveAction = "move";
         private static DataGridViewCell _currentlyHoveredNoteCell;
 
         // Getters
@@ -24,7 +24,7 @@ namespace Sales_Tracker.UI
         public static DataGridViewRow SelectedRowInMainMenu { get; set; }
 
         // Construct DataGridView
-        private static bool isMouseDown;
+        private static bool _isMouseDown;
         public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control parent) where TEnum : Enum
         {
             dataGridView.Name = name;
@@ -32,9 +32,9 @@ namespace Sales_Tracker.UI
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToResizeRows = false;
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridView.ColumnHeadersHeight = columnHeaderHeight;
+            dataGridView.ColumnHeadersHeight = _columnHeaderHeight;
             dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView.RowTemplate.Height = rowHeight;
+            dataGridView.RowTemplate.Height = _rowHeight;
             dataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
@@ -81,7 +81,7 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            removedRow = e.Row;
+            _removedRow = e.Row;
 
             switch (MainMenu_Form.Instance.Selected)
             {
@@ -130,15 +130,15 @@ namespace Sales_Tracker.UI
             DataGridViewRowChanged((Guna2DataGridView)sender, MainMenu_Form.Instance.Selected);
 
             // Remove receipt from file
-            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales && removedRow?.Tag != null)
+            if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales && _removedRow?.Tag != null)
             {
                 string tagValue = "";
 
-                if (removedRow.Tag is (List<string> tagList, TagData))
+                if (_removedRow.Tag is (List<string> tagList, TagData))
                 {
                     tagValue = ReceiptManager.ProcessReceiptTextFromRowTag(tagList[^1]);
                 }
-                else if (removedRow.Tag is (string tagString, TagData))
+                else if (_removedRow.Tag is (string tagString, TagData))
                 {
                     tagValue = ReceiptManager.ProcessReceiptTextFromRowTag(tagString);
                 }
@@ -148,7 +148,7 @@ namespace Sales_Tracker.UI
                     Directories.DeleteFile(tagValue);
                 }
 
-                removedRow = null;
+                _removedRow = null;
             }
         }
         public static void DataGridViewRowChanged(Guna2DataGridView dataGridView, MainMenu_Form.SelectedOption selected)
@@ -171,18 +171,18 @@ namespace Sales_Tracker.UI
         }
         private static void DataGridView_MouseDown(object sender, MouseEventArgs e)
         {
-            isMouseDown = true;
+            _isMouseDown = true;
         }
         private static void DataGridView_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isMouseDown)
+            if (_isMouseDown)
             {
                 CustomControls.CloseAllPanels();
             }
         }
         private static void DataGridView_MouseUp(object sender, MouseEventArgs e)
         {
-            isMouseDown = false;
+            _isMouseDown = false;
             Guna2DataGridView grid = (Guna2DataGridView)sender;
 
             CustomControls.CloseAllPanels();
@@ -356,7 +356,7 @@ namespace Sales_Tracker.UI
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -378,7 +378,7 @@ namespace Sales_Tracker.UI
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -400,7 +400,7 @@ namespace Sales_Tracker.UI
             string columnName = Categories_Form.Column.CategoryName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategoryPurchaseList, deleteAction))
+            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategoryPurchaseList, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -422,7 +422,7 @@ namespace Sales_Tracker.UI
             string columnName = Categories_Form.Column.CategoryName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategorySaleList, deleteAction))
+            if (!CanCategoryBeMovedOrDeleted(valueBeingRemoved, MainMenu_Form.Instance.CategorySaleList, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -444,7 +444,7 @@ namespace Sales_Tracker.UI
             string columnName = Accountants_Form.Column.AccountantName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Accountant.ToString(), valueBeingRemoved, deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Accountant.ToString(), valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -465,7 +465,7 @@ namespace Sales_Tracker.UI
             string columnName = Companies_Form.Column.Company.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved, deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -606,39 +606,39 @@ namespace Sales_Tracker.UI
             // Add ModifyBtn
             if (grid.SelectedRows.Count == 1)
             {
-                rightClickDataGridView_ModifyBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(rightClickDataGridView_ModifyBtn, currentIndex++);
+                _rightClickDataGridView_ModifyBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ModifyBtn, currentIndex++);
             }
 
             // Add MoveBtn
             if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
                 string text = LanguageManager.TranslateString("Move category to sales");
-                rightClickDataGridView_MoveBtn.Visible = true;
-                rightClickDataGridView_MoveBtn.Text = text;
-                flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, currentIndex++);
+                _rightClickDataGridView_MoveBtn.Visible = true;
+                _rightClickDataGridView_MoveBtn.Text = text;
+                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_MoveBtn, currentIndex++);
             }
             else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
             {
                 string text = LanguageManager.TranslateString("Move category to purchases");
-                rightClickDataGridView_MoveBtn.Visible = true;
-                rightClickDataGridView_MoveBtn.Text = text;
-                flowPanel.Controls.SetChildIndex(rightClickDataGridView_MoveBtn, currentIndex++);
+                _rightClickDataGridView_MoveBtn.Visible = true;
+                _rightClickDataGridView_MoveBtn.Text = text;
+                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_MoveBtn, currentIndex++);
             }
 
             // Add ShowItemsBtn
             if (grid.SelectedRows[0].Tag is (List<string>, TagData)
                 && grid.SelectedRows.Count == 1)
             {
-                rightClickDataGridView_ShowItemsBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(rightClickDataGridView_ShowItemsBtn, currentIndex++);
+                _rightClickDataGridView_ShowItemsBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ShowItemsBtn, currentIndex++);
             }
 
             // Add ExportReceiptBtn
             if (AnySelectedRowHasReceipt(grid))
             {
-                rightClickDataGridView_ExportReceiptBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(rightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                _rightClickDataGridView_ExportReceiptBtn.Visible = true;
+                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ExportReceiptBtn, currentIndex++);
             }
 
             // Add DeleteBtn
@@ -1176,7 +1176,8 @@ namespace Sales_Tracker.UI
             }
         }
 
-        private static Guna2Button rightClickDataGridView_ModifyBtn, rightClickDataGridView_MoveBtn, rightClickDataGridView_ExportReceiptBtn, rightClickDataGridView_ShowItemsBtn;
+        private static Guna2Button _rightClickDataGridView_ModifyBtn, _rightClickDataGridView_MoveBtn,
+            _rightClickDataGridView_ExportReceiptBtn, _rightClickDataGridView_ShowItemsBtn;
 
         // Right click row getters
         public static Guna2Panel RightClickDataGridView_Panel { get; private set; }
@@ -1192,17 +1193,17 @@ namespace Sales_Tracker.UI
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickDataGridView_Panel.Controls[0];
 
-            rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, true, flowPanel);
-            rightClickDataGridView_ModifyBtn.Click += ModifyRow;
+            _rightClickDataGridView_ModifyBtn = CustomControls.ConstructBtnForMenu("Modify", CustomControls.PanelBtnWidth, true, flowPanel);
+            _rightClickDataGridView_ModifyBtn.Click += ModifyRow;
 
-            rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, true, flowPanel);
-            rightClickDataGridView_MoveBtn.Click += MoveRows;
+            _rightClickDataGridView_MoveBtn = CustomControls.ConstructBtnForMenu("Move", CustomControls.PanelBtnWidth, true, flowPanel);
+            _rightClickDataGridView_MoveBtn.Click += MoveRows;
 
-            rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, true, flowPanel);
-            rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
+            _rightClickDataGridView_ExportReceiptBtn = CustomControls.ConstructBtnForMenu("Export receipt", CustomControls.PanelBtnWidth, true, flowPanel);
+            _rightClickDataGridView_ExportReceiptBtn.Click += ExportReceipt;
 
-            rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
-            rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
+            _rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
+            _rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
 
             RightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
@@ -1267,7 +1268,7 @@ namespace Sales_Tracker.UI
                 // Check if category is being used in transactions
                 if (IsCategoryBeingUsedInTransactions(categoryName))
                 {
-                    ShowInUseMessage("category", moveAction);
+                    ShowInUseMessage("category", _moveAction);
                     continue;
                 }
 

@@ -564,7 +564,7 @@ namespace Sales_Tracker.UI
                 );
 
                 string jsonContent = JsonConvert.SerializeObject(combinedCache, Formatting.Indented);
-                Directories.CreateDirectory(Directories.Cache_dir, false);
+                Directories.CreateDirectory(Directories.Cache_dir);
                 Directories.WriteTextToFile(Directories.Translations_file, jsonContent);
             }
             catch (Exception ex)

@@ -13,7 +13,7 @@ namespace Sales_Tracker.Classes
         // Save logs
         public static void SaveLogs()
         {
-            Directories.CreateDirectory(Directories.Logs_dir, false);
+            Directories.CreateDirectory(Directories.Logs_dir);
 
             DateTime time = DateTime.Now;
             int count = 0;

@@ -66,11 +66,7 @@ namespace Sales_Tracker.Classes
         public static void RemoveReceiptFromFile(DataGridViewRow row)
         {
             string filePath = row.Tag.ToString();
-
-            if (File.Exists(filePath))
-            {
-                Directories.DeleteFile(filePath);
-            }
+            Directories.DeleteFile(filePath);
             row.Tag = null;
         }
 

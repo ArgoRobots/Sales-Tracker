@@ -98,8 +98,8 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Creates a new directory if it doesn't already exist, with an optional hidden attribute.
         /// </summary>
-        /// <returns>True if directory was created successfully, false if it already exists</returns>
-        public static bool CreateDirectory(string directory, bool hidden)
+        /// <returns>True if directory was created successfully, false if it already exists.</returns>
+        public static bool CreateDirectory(string directory, bool hidden = false)
         {
             if (Directory.Exists(directory))
             {
@@ -157,7 +157,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Deletes a directory and optionally its contents, if it exists.
         /// </summary>
-        /// <returns>True if directory was deleted successfully</returns>
+        /// <returns>True if it was deleted successfully, otherwise false.</returns>
         public static bool DeleteDirectory(string directory, bool recursive)
         {
             if (!Directory.Exists(directory))
@@ -238,17 +238,22 @@ namespace Sales_Tracker.Classes
             File.Copy(source, destination);
             return true;
         }
+
+        /// <summary>
+        /// Deletes a file, if it exists.
+        /// </summary>
+        /// <returns>True if it was deleted successfully, otherwise false.</returns>
         public static bool DeleteFile(string file)
         {
             if (!File.Exists(file))
             {
-                Log.Error_FileDoesNotExist(file);
                 return false;
             }
 
             File.Delete(file);
             return true;
         }
+
         /// <summary>
         /// Moves a file. Gives an option to rename the file.
         /// </summary>
