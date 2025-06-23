@@ -127,8 +127,8 @@ namespace Sales_Tracker
             CategoryPurchaseList.Clear();
             CategorySaleList.Clear();
 
-            _accountantList.Clear();
-            _companyList.Clear();
+            AccountantList.Clear();
+            CompanyList.Clear();
 
             _purchase_DataGridView.Rows.Clear();
             _sale_DataGridView.Rows.Clear();
@@ -142,8 +142,8 @@ namespace Sales_Tracker
             LoadCategoriesFromFile(Directories.CategoryPurchases_file, CategoryPurchaseList);
             LoadCategoriesFromFile(Directories.CategorySales_file, CategorySaleList);
 
-            _accountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
-            _companyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
+            AccountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
+            CompanyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
             if (_purchase_DataGridView == null)
             {
@@ -1295,8 +1295,6 @@ namespace Sales_Tracker
 
         // Search DataGridView getters and setters
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-
-        // Search DataGridView getters and setters
         public DateTime? SortFromDate { get; set; } = null;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime? SortToDate { get; set; } = null;
@@ -1467,14 +1465,11 @@ namespace Sales_Tracker
             _purchase_DataGridView.Sort(_purchase_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
         }
 
-        private List<string> _accountantList = [];
-        private List<string> _companyList = [];
-
         // List getters
         public List<Category> CategorySaleList { get; } = [];
         public List<Category> CategoryPurchaseList { get; } = [];
-        public List<string> AccountantList => _accountantList;
-        public List<string> CompanyList => _companyList;
+        public List<string> AccountantList { get; private set; } = [];
+        public List<string> CompanyList { get; private set; } = [];
 
         // List methods
         public List<string> GetCategorySaleNames()

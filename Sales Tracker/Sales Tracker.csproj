@@ -34,12 +34,12 @@
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
     <PackageReference Include="ClosedXML" Version="0.105.0" />
-    <PackageReference Include="EPPlus" Version="8.0.5" />
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.69.0.3713" />
+    <PackageReference Include="EPPlus" Version="8.0.6" />
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3783" />
     <PackageReference Include="Google.Apis.Iam.v1" Version="1.69.0.3788" />
     <PackageReference Include="Google.Apis.ServiceUsage.v1" Version="1.69.0.3787" />
-    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.69.0.3785" />
+    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.70.0.3806" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

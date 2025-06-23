@@ -123,7 +123,7 @@ namespace Sales_Tracker.Startup.Menus
                 return;
             }
 
-            string oldTempDir = Directories.TempCompany_dir;
+            string tempDir = Directories.TempCompany_dir;
 
             Directories.SetDirectories(Directory_TextBox.Text, CompanyName_TextBox.Text);
 
@@ -157,9 +157,13 @@ namespace Sales_Tracker.Startup.Menus
             }
             else  // The user is creating a new company from the "New company" button
             {
-                Directories.DeleteDirectory(oldTempDir, true);
+                Directories.DeleteDirectory(tempDir, true);
 
                 MainMenu_Form.Instance.SetCompanyLabel();
+                MainMenu_Form.IsProgramLoading = true;
+                MainMenu_Form.Instance.Purchase_DataGridView.Rows.Clear();
+                MainMenu_Form.Instance.Sale_DataGridView.Rows.Clear();
+                MainMenu_Form.IsProgramLoading = false;
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.LoadOrRefreshMainCharts();
                 MainMenu_Form.Instance.HideShowingResultsForLabel();
