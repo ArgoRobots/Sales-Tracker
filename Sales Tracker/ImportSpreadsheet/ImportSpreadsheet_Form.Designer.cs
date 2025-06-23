@@ -37,51 +37,57 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportSpreadsheet_Form));
             ImportSpreadsheet_Label = new Label();
-            SelectFile_Button = new Guna.UI2.WinForms.Guna2Button();
+            SelectSpreadsheet_Button = new Guna.UI2.WinForms.Guna2Button();
             Import_Button = new Guna.UI2.WinForms.Guna2Button();
-            RemoveReceipt_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
-            SelectedReceipt_Label = new Label();
+            RemoveSpreadsheet_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
+            SelectedSpreadsheet_Label = new Label();
             OpenTutorial_Button = new Guna.UI2.WinForms.Guna2Button();
             IncludeHeaderRow_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             IncludeHeaderRow_Label = new Label();
+            SelectReceiptsFolder_Button = new Guna.UI2.WinForms.Guna2Button();
+            SelectedReceiptsFolder_Label = new Label();
+            RemoveReceiptsFolder_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
             SuspendLayout();
             // 
             // ImportSpreadsheet_Label
             // 
             ImportSpreadsheet_Label.Anchor = AnchorStyles.Top;
             ImportSpreadsheet_Label.AutoSize = true;
-            ImportSpreadsheet_Label.Font = new Font("Segoe UI", 16F);
-            ImportSpreadsheet_Label.Location = new Point(415, 30);
+            ImportSpreadsheet_Label.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            ImportSpreadsheet_Label.Location = new Point(422, 15);
             ImportSpreadsheet_Label.Margin = new Padding(6, 0, 6, 0);
             ImportSpreadsheet_Label.Name = "ImportSpreadsheet_Label";
-            ImportSpreadsheet_Label.Size = new Size(299, 45);
+            ImportSpreadsheet_Label.Size = new Size(306, 45);
             ImportSpreadsheet_Label.TabIndex = 0;
             ImportSpreadsheet_Label.Text = "Import spreadsheet";
             // 
-            // SelectFile_Button
+            // SelectSpreadsheet_Button
             // 
-            SelectFile_Button.Anchor = AnchorStyles.Top;
-            SelectFile_Button.BorderColor = Color.FromArgb(217, 221, 226);
-            SelectFile_Button.BorderRadius = 3;
-            SelectFile_Button.BorderThickness = 1;
-            SelectFile_Button.CustomizableEdges = customizableEdges1;
-            SelectFile_Button.DisabledState.BorderColor = Color.DarkGray;
-            SelectFile_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            SelectFile_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            SelectFile_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            SelectFile_Button.FillColor = Color.White;
-            SelectFile_Button.Font = new Font("Segoe UI", 10F);
-            SelectFile_Button.ForeColor = Color.Black;
-            SelectFile_Button.Location = new Point(454, 110);
-            SelectFile_Button.Margin = new Padding(6, 5, 6, 5);
-            SelectFile_Button.Name = "SelectFile_Button";
-            SelectFile_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            SelectFile_Button.Size = new Size(220, 45);
-            SelectFile_Button.TabIndex = 1;
-            SelectFile_Button.Text = "Select file";
-            SelectFile_Button.Click += SelectFile_Button_Click;
+            SelectSpreadsheet_Button.Anchor = AnchorStyles.Top;
+            SelectSpreadsheet_Button.BorderColor = Color.FromArgb(217, 221, 226);
+            SelectSpreadsheet_Button.BorderRadius = 3;
+            SelectSpreadsheet_Button.BorderThickness = 1;
+            SelectSpreadsheet_Button.CustomizableEdges = customizableEdges1;
+            SelectSpreadsheet_Button.DisabledState.BorderColor = Color.DarkGray;
+            SelectSpreadsheet_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            SelectSpreadsheet_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            SelectSpreadsheet_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            SelectSpreadsheet_Button.FillColor = Color.White;
+            SelectSpreadsheet_Button.Font = new Font("Segoe UI", 10F);
+            SelectSpreadsheet_Button.ForeColor = Color.Black;
+            SelectSpreadsheet_Button.Location = new Point(230, 85);
+            SelectSpreadsheet_Button.Margin = new Padding(6, 5, 6, 5);
+            SelectSpreadsheet_Button.Name = "SelectSpreadsheet_Button";
+            SelectSpreadsheet_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            SelectSpreadsheet_Button.Size = new Size(220, 45);
+            SelectSpreadsheet_Button.TabIndex = 1;
+            SelectSpreadsheet_Button.Text = "Select spreadsheet";
+            SelectSpreadsheet_Button.Click += SelectSpreadsheet_Button_Click;
             // 
             // Import_Button
             // 
@@ -107,35 +113,35 @@
             Import_Button.Text = "Import";
             Import_Button.Click += Import_Button_Click;
             // 
-            // RemoveReceipt_ImageButton
+            // RemoveSpreadsheet_ImageButton
             // 
-            RemoveReceipt_ImageButton.Anchor = AnchorStyles.Top;
-            RemoveReceipt_ImageButton.CheckedState.ImageSize = new Size(64, 64);
-            RemoveReceipt_ImageButton.HoverState.ImageSize = new Size(30, 30);
-            RemoveReceipt_ImageButton.Image = Properties.Resources.CloseGray;
-            RemoveReceipt_ImageButton.ImageOffset = new Point(0, 0);
-            RemoveReceipt_ImageButton.ImageRotate = 0F;
-            RemoveReceipt_ImageButton.ImageSize = new Size(30, 30);
-            RemoveReceipt_ImageButton.Location = new Point(550, 163);
-            RemoveReceipt_ImageButton.Name = "RemoveReceipt_ImageButton";
-            RemoveReceipt_ImageButton.PressedState.ImageSize = new Size(30, 30);
-            RemoveReceipt_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges5;
-            RemoveReceipt_ImageButton.Size = new Size(38, 38);
-            RemoveReceipt_ImageButton.TabIndex = 3;
-            RemoveReceipt_ImageButton.Click += RemoveReceipt_ImageButton_Click;
-            RemoveReceipt_ImageButton.MouseEnter += RemoveReceipt_ImageButton_MouseEnter;
-            RemoveReceipt_ImageButton.MouseLeave += RemoveReceipt_ImageButton_MouseLeave;
+            RemoveSpreadsheet_ImageButton.Anchor = AnchorStyles.Top;
+            RemoveSpreadsheet_ImageButton.CheckedState.ImageSize = new Size(64, 64);
+            RemoveSpreadsheet_ImageButton.HoverState.ImageSize = new Size(30, 30);
+            RemoveSpreadsheet_ImageButton.Image = Properties.Resources.CloseGray;
+            RemoveSpreadsheet_ImageButton.ImageOffset = new Point(0, 0);
+            RemoveSpreadsheet_ImageButton.ImageRotate = 0F;
+            RemoveSpreadsheet_ImageButton.ImageSize = new Size(30, 30);
+            RemoveSpreadsheet_ImageButton.Location = new Point(326, 138);
+            RemoveSpreadsheet_ImageButton.Name = "RemoveSpreadsheet_ImageButton";
+            RemoveSpreadsheet_ImageButton.PressedState.ImageSize = new Size(30, 30);
+            RemoveSpreadsheet_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges5;
+            RemoveSpreadsheet_ImageButton.Size = new Size(38, 38);
+            RemoveSpreadsheet_ImageButton.TabIndex = 3;
+            RemoveSpreadsheet_ImageButton.Click += RemoveSpreadsheet_ImageButton_Click;
+            RemoveSpreadsheet_ImageButton.MouseEnter += RemoveSpreadhseet_ImageButton_MouseEnter;
+            RemoveSpreadsheet_ImageButton.MouseLeave += RemoveSpreadsheet_ImageButton_MouseLeave;
             // 
-            // SelectedReceipt_Label
+            // SelectedSpreadsheet_Label
             // 
-            SelectedReceipt_Label.Anchor = AnchorStyles.Top;
-            SelectedReceipt_Label.AutoSize = true;
-            SelectedReceipt_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceipt_Label.Location = new Point(456, 168);
-            SelectedReceipt_Label.Name = "SelectedReceipt_Label";
-            SelectedReceipt_Label.Size = new Size(86, 28);
-            SelectedReceipt_Label.TabIndex = 0;
-            SelectedReceipt_Label.Text = "Selected";
+            SelectedSpreadsheet_Label.Anchor = AnchorStyles.Top;
+            SelectedSpreadsheet_Label.AutoSize = true;
+            SelectedSpreadsheet_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            SelectedSpreadsheet_Label.Location = new Point(232, 143);
+            SelectedSpreadsheet_Label.Name = "SelectedSpreadsheet_Label";
+            SelectedSpreadsheet_Label.Size = new Size(86, 28);
+            SelectedSpreadsheet_Label.TabIndex = 0;
+            SelectedSpreadsheet_Label.Text = "Selected";
             // 
             // OpenTutorial_Button
             // 
@@ -169,7 +175,7 @@
             IncludeHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
             IncludeHeaderRow_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludeHeaderRow_CheckBox.CustomizableEdges = customizableEdges8;
-            IncludeHeaderRow_CheckBox.Location = new Point(812, 122);
+            IncludeHeaderRow_CheckBox.Location = new Point(776, 95);
             IncludeHeaderRow_CheckBox.Name = "IncludeHeaderRow_CheckBox";
             IncludeHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
             IncludeHeaderRow_CheckBox.Size = new Size(20, 20);
@@ -185,7 +191,7 @@
             IncludeHeaderRow_Label.Anchor = AnchorStyles.Top;
             IncludeHeaderRow_Label.AutoSize = true;
             IncludeHeaderRow_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            IncludeHeaderRow_Label.Location = new Point(830, 112);
+            IncludeHeaderRow_Label.Location = new Point(794, 85);
             IncludeHeaderRow_Label.Name = "IncludeHeaderRow_Label";
             IncludeHeaderRow_Label.Padding = new Padding(5);
             IncludeHeaderRow_Label.Size = new Size(210, 40);
@@ -193,18 +199,74 @@
             IncludeHeaderRow_Label.Text = "Include header row";
             IncludeHeaderRow_Label.Click += IncludeHeaderRow_Label_Click;
             // 
+            // SelectReceiptsFolder_Button
+            // 
+            SelectReceiptsFolder_Button.Anchor = AnchorStyles.Top;
+            SelectReceiptsFolder_Button.BorderColor = Color.FromArgb(217, 221, 226);
+            SelectReceiptsFolder_Button.BorderRadius = 3;
+            SelectReceiptsFolder_Button.BorderThickness = 1;
+            SelectReceiptsFolder_Button.CustomizableEdges = customizableEdges10;
+            SelectReceiptsFolder_Button.DisabledState.BorderColor = Color.DarkGray;
+            SelectReceiptsFolder_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            SelectReceiptsFolder_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            SelectReceiptsFolder_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            SelectReceiptsFolder_Button.FillColor = Color.White;
+            SelectReceiptsFolder_Button.Font = new Font("Segoe UI", 10F);
+            SelectReceiptsFolder_Button.ForeColor = Color.Black;
+            SelectReceiptsFolder_Button.Location = new Point(487, 85);
+            SelectReceiptsFolder_Button.Margin = new Padding(6, 5, 6, 5);
+            SelectReceiptsFolder_Button.Name = "SelectReceiptsFolder_Button";
+            SelectReceiptsFolder_Button.ShadowDecoration.CustomizableEdges = customizableEdges11;
+            SelectReceiptsFolder_Button.Size = new Size(220, 45);
+            SelectReceiptsFolder_Button.TabIndex = 6;
+            SelectReceiptsFolder_Button.Text = "Select receipts folder";
+            SelectReceiptsFolder_Button.Click += SelectReceiptsFolder_Button_Click;
+            // 
+            // SelectedReceiptsFolder_Label
+            // 
+            SelectedReceiptsFolder_Label.Anchor = AnchorStyles.Top;
+            SelectedReceiptsFolder_Label.AutoSize = true;
+            SelectedReceiptsFolder_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            SelectedReceiptsFolder_Label.Location = new Point(487, 143);
+            SelectedReceiptsFolder_Label.Name = "SelectedReceiptsFolder_Label";
+            SelectedReceiptsFolder_Label.Size = new Size(86, 28);
+            SelectedReceiptsFolder_Label.TabIndex = 7;
+            SelectedReceiptsFolder_Label.Text = "Selected";
+            // 
+            // RemoveReceiptsFolder_ImageButton
+            // 
+            RemoveReceiptsFolder_ImageButton.Anchor = AnchorStyles.Top;
+            RemoveReceiptsFolder_ImageButton.CheckedState.ImageSize = new Size(64, 64);
+            RemoveReceiptsFolder_ImageButton.HoverState.ImageSize = new Size(30, 30);
+            RemoveReceiptsFolder_ImageButton.Image = Properties.Resources.CloseGray;
+            RemoveReceiptsFolder_ImageButton.ImageOffset = new Point(0, 0);
+            RemoveReceiptsFolder_ImageButton.ImageRotate = 0F;
+            RemoveReceiptsFolder_ImageButton.ImageSize = new Size(30, 30);
+            RemoveReceiptsFolder_ImageButton.Location = new Point(579, 141);
+            RemoveReceiptsFolder_ImageButton.Name = "RemoveReceiptsFolder_ImageButton";
+            RemoveReceiptsFolder_ImageButton.PressedState.ImageSize = new Size(30, 30);
+            RemoveReceiptsFolder_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            RemoveReceiptsFolder_ImageButton.Size = new Size(38, 38);
+            RemoveReceiptsFolder_ImageButton.TabIndex = 8;
+            RemoveReceiptsFolder_ImageButton.Click += RemoveReceiptsFolder_ImageButton_Click;
+            RemoveReceiptsFolder_ImageButton.MouseEnter += RemoveReceiptsFolder_ImageButton_MouseEnter;
+            RemoveReceiptsFolder_ImageButton.MouseLeave += RemoveReceiptsFolder_ImageButton_MouseLeave;
+            // 
             // ImportSpreadsheet_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1128, 864);
+            Controls.Add(RemoveReceiptsFolder_ImageButton);
+            Controls.Add(SelectedReceiptsFolder_Label);
+            Controls.Add(SelectReceiptsFolder_Button);
             Controls.Add(IncludeHeaderRow_CheckBox);
             Controls.Add(IncludeHeaderRow_Label);
             Controls.Add(OpenTutorial_Button);
-            Controls.Add(RemoveReceipt_ImageButton);
-            Controls.Add(SelectedReceipt_Label);
+            Controls.Add(RemoveSpreadsheet_ImageButton);
+            Controls.Add(SelectedSpreadsheet_Label);
             Controls.Add(Import_Button);
-            Controls.Add(SelectFile_Button);
+            Controls.Add(SelectSpreadsheet_Button);
             Controls.Add(ImportSpreadsheet_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -221,12 +283,15 @@
         #endregion
 
         private Label ImportSpreadsheet_Label;
-        public Guna.UI2.WinForms.Guna2Button SelectFile_Button;
+        public Guna.UI2.WinForms.Guna2Button SelectSpreadsheet_Button;
         public Guna.UI2.WinForms.Guna2Button Import_Button;
-        private Guna.UI2.WinForms.Guna2ImageButton RemoveReceipt_ImageButton;
-        private Label SelectedReceipt_Label;
+        private Guna.UI2.WinForms.Guna2ImageButton RemoveSpreadsheet_ImageButton;
+        private Label SelectedSpreadsheet_Label;
         public Guna.UI2.WinForms.Guna2Button OpenTutorial_Button;
         private Guna.UI2.WinForms.Guna2CustomCheckBox IncludeHeaderRow_CheckBox;
         private Label IncludeHeaderRow_Label;
+        public Guna.UI2.WinForms.Guna2Button SelectReceiptsFolder_Button;
+        private Label SelectedReceiptsFolder_Label;
+        private Guna.UI2.WinForms.Guna2ImageButton RemoveReceiptsFolder_ImageButton;
     }
 }

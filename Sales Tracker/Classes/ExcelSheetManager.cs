@@ -19,20 +19,20 @@ namespace Sales_Tracker.Classes
         private const string DecimalFormatPattern = "#,##0.00";
 
         // Import spreadsheet methods
-        public static bool ImportAccountantsData(IXLWorksheet worksheet, bool skipHeader)
+        public static bool ImportAccountantsData(IXLWorksheet worksheet, bool includeHeader)
         {
             return ImportSimpleListData(
                 worksheet,
-                skipHeader,
+                includeHeader,
                 MainMenu_Form.Instance.AccountantList,
                 MainMenu_Form.SelectedOption.Accountants,
                 "Accountant");
         }
-        public static bool ImportCompaniesData(IXLWorksheet worksheet, bool skipHeader)
+        public static bool ImportCompaniesData(IXLWorksheet worksheet, bool includeHeader)
         {
             return ImportSimpleListData(
                 worksheet,
-                skipHeader,
+                includeHeader,
                 MainMenu_Form.Instance.CompanyList,
                 MainMenu_Form.SelectedOption.Companies,
                 "Company");
@@ -43,12 +43,15 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static bool ImportSimpleListData(
             IXLWorksheet worksheet,
-            bool skipHeader,
+            bool includeHeader,
             List<string> existingList,
             MainMenu_Form.SelectedOption optionType,
             string itemTypeName)
         {
-            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            IEnumerable<IXLRow> rowsToProcess = includeHeader
+                ? worksheet.RowsUsed()
+                : worksheet.RowsUsed().Skip(1);
+
             bool wasSomethingImported = false;
 
             HashSet<string> existingItems = new(existingList.Count);
@@ -82,9 +85,12 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.SaveListToFile(existingList, optionType);
             return wasSomethingImported;
         }
-        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool skipHeader)
+        public static bool ImportProductsData(IXLWorksheet worksheet, bool purchase, bool includeHeader)
         {
-            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            IEnumerable<IXLRow> rowsToProcess = includeHeader
+                ? worksheet.RowsUsed()
+                : worksheet.RowsUsed().Skip(1);
+
             bool wasSomethingImported = false;
 
             List<Category> list = purchase
@@ -1147,21 +1153,156 @@ namespace Sales_Tracker.Classes
             productsSet.Add(productNameLower);
         }
 
-        public static (bool, bool) ImportPurchaseData(IXLWorksheet worksheet, bool skipHeader)
+        public static (bool, bool) ImportPurchaseData(IXLWorksheet worksheet, bool includeHeader)
         {
-            return ImportTransactionData(worksheet, skipHeader, true);
+            return ImportTransactionData(worksheet, includeHeader, true);
         }
-        public static (bool, bool) ImportSalesData(IXLWorksheet worksheet, bool skipHeader)
+        public static (bool, bool) ImportSalesData(IXLWorksheet worksheet, bool includeHeader)
         {
-            return ImportTransactionData(worksheet, skipHeader, false);
+            return ImportTransactionData(worksheet, includeHeader, false);
+        }
+        public static bool ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath)
+        {
+            IEnumerable<IXLRow> rowsToProcess = includeHeader
+                ? worksheet.RowsUsed()
+                : worksheet.RowsUsed().Skip(1);
+
+            bool wasSomethingImported = false;
+            int successfulImports = 0;
+            int failedImports = 0;
+
+            foreach (IXLRow row in rowsToProcess)
+            {
+                string transactionId = row.Cell(1).GetValue<string>();
+                string receiptFileName = row.Cell(2).GetValue<string>();
+
+                // Skip if any essential field is empty
+                if (string.IsNullOrWhiteSpace(transactionId) ||
+                    string.IsNullOrWhiteSpace(receiptFileName) ||
+                    string.IsNullOrWhiteSpace(receiptsFolderPath))
+                {
+                    continue;
+                }
+
+                string receiptFilePath = Path.Combine(receiptsFolderPath, receiptFileName);
+
+                // Check if the receipt file exists
+                if (!File.Exists(receiptFilePath))
+                {
+                    failedImports++;
+                    Log.Error_FileDoesNotExist(receiptFilePath);
+                    continue;
+                }
+
+                // Find the transaction in both purchase and sale DataGridViews
+                DataGridViewRow? targetRow = FindTransactionRow(transactionId);
+                if (targetRow == null)
+                {
+                    failedImports++;
+                    continue;
+                }
+
+                // Check if transaction already has a receipt
+                if (TransactionHasReceipt(targetRow))
+                {
+                    CustomMessageBoxResult result = CustomMessageBox.Show(
+                        "Transaction already has receipt",
+                        $"Transaction {transactionId} already has a receipt. Do you want to replace it?",
+                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+                    if (result != CustomMessageBoxResult.Yes)
+                    {
+                        continue;
+                    }
+                }
+
+                // Copy the receipt file to the receipts directory
+                (string newReceiptPath, bool saved) = ReceiptManager.SaveReceiptInFile(receiptFilePath);
+                if (!saved)
+                {
+                    failedImports++;
+                    continue;
+                }
+
+                ReceiptManager.AddReceiptToTag(targetRow, newReceiptPath);
+                MainMenu_Form.SetHasReceiptColumn(targetRow, newReceiptPath);
+
+                successfulImports++;
+                wasSomethingImported = true;
+            }
+
+            // Show summary message
+            if (wasSomethingImported || failedImports > 0)
+            {
+                string message = "";
+                if (successfulImports > 0)
+                {
+                    message += $"Successfully imported {successfulImports} receipt(s).";
+                }
+                if (failedImports > 0)
+                {
+                    if (successfulImports > 0) message += " ";
+                    message += $"Failed to import {failedImports} receipt(s).";
+                }
+
+                CustomMessageBox.Show("Receipt Import Results", message,
+                    failedImports > 0 ? CustomMessageBoxIcon.Exclamation : CustomMessageBoxIcon.Info,
+                    CustomMessageBoxButtons.Ok);
+            }
+
+            // Save the updated transaction data
+            if (wasSomethingImported)
+            {
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
+                MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
+            }
+
+            return wasSomethingImported;
+        }
+        private static DataGridViewRow? FindTransactionRow(string transactionId)
+        {
+            // Search in purchase transactions
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchase_DataGridView.Rows)
+            {
+                if (row.Cells[MainMenu_Form.Column.ID.ToString()].Value?.ToString() == transactionId)
+                {
+                    return row;
+                }
+            }
+
+            // Search in sale transactions
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sale_DataGridView.Rows)
+            {
+                if (row.Cells[MainMenu_Form.Column.ID.ToString()].Value?.ToString() == transactionId)
+                {
+                    return row;
+                }
+            }
+
+            return null;
+        }
+        private static bool TransactionHasReceipt(DataGridViewRow row)
+        {
+            if (row.Tag is (List<string> tagList, TagData))
+            {
+                return tagList[^1].StartsWith(ReadOnlyVariables.Receipt_text);
+            }
+            else if (row.Tag is (string tagString, TagData))
+            {
+                return !string.IsNullOrEmpty(tagString);
+            }
+            return false;
         }
 
         /// <summary>
-        /// Common method for importing purchase and sales data
+        /// Helper method for importing purchase and sales data.
         /// </summary>
-        private static (bool, bool) ImportTransactionData(IXLWorksheet worksheet, bool skipHeader, bool isPurchase)
+        private static (bool, bool) ImportTransactionData(IXLWorksheet worksheet, bool includeHeader, bool isPurchase)
         {
-            IEnumerable<IXLRow> rowsToProcess = skipHeader ? worksheet.RowsUsed().Skip(1) : worksheet.RowsUsed();
+            IEnumerable<IXLRow> rowsToProcess = includeHeader
+                ? worksheet.RowsUsed()
+                : worksheet.RowsUsed().Skip(1);
+
             bool wasSomethingImported = false;
             int newRowIndex = -1;
 

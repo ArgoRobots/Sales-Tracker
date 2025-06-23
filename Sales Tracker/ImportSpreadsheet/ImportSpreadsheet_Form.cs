@@ -10,7 +10,7 @@ namespace Sales_Tracker.ImportSpreadsheet
     public partial class ImportSpreadsheet_Form : Form
     {
         // Properties
-        private string _spreadsheetFilePath;
+        private string _spreadsheetFilePath, _receiptsFolderPath;
         private readonly MainMenu_Form.SelectedOption _oldOption;
 
         // Init.
@@ -24,23 +24,16 @@ namespace Sales_Tracker.ImportSpreadsheet
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-            RemoveReceiptLabel();
-            AlignControls();
+            RemoveSpreadsheetLabel();
+            RemoveReceiptsFolderLabel();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
             ThemeManager.MakeGButtonBluePrimary(Import_Button);
-        }
-        private void AlignControls()
-        {
-            int spaceAvailable = ClientSize.Width - Import_Button.Right;
-            int newLeftPosition = Import_Button.Right + (spaceAvailable - IncludeHeaderRow_CheckBox.Width - IncludeHeaderRow_Label.Width) / 2;
-            int initialSpacing = IncludeHeaderRow_Label.Left - IncludeHeaderRow_CheckBox.Right;
-
-            IncludeHeaderRow_CheckBox.Left = newLeftPosition;
-            IncludeHeaderRow_Label.Left = IncludeHeaderRow_CheckBox.Right + initialSpacing;
+            ThemeManager.MakeGButtonBluePrimary(SelectSpreadsheet_Button);
+            ThemeManager.MakeGButtonBluePrimary(SelectReceiptsFolder_Button);
         }
         private void SetAccessibleDescriptions()
         {
@@ -57,8 +50,8 @@ namespace Sales_Tracker.ImportSpreadsheet
             MainMenu_Form.Instance.Selected = _oldOption;
         }
 
-        // Event handlers
-        private async void SelectFile_Button_Click(object sender, EventArgs e)
+        // Select spreadsheet
+        private async void SelectSpreadsheet_Button_Click(object sender, EventArgs e)
         {
             // File selection dialog
             OpenFileDialog dialog = new()
@@ -72,63 +65,13 @@ namespace Sales_Tracker.ImportSpreadsheet
                 _spreadsheetFilePath = dialog.FileName;
                 if (!ValidateSpreadsheet()) { return; }
 
-                Import_Button.Enabled = false;
-                Controls.Remove(_centeredFlowPanel);
+                AutoDetectReceiptsFolder();
 
-                ShowReceiptLabel(dialog.SafeFileName);
-                ShowLoadingIndicator();
+                ShowSpreadsheetLabel(dialog.SafeFileName);
+                ShowReceiptsFolderLabel();
 
-                List<Panel> panels = await Task.Run(LoadSpreadsheetData);
-
-                foreach (Panel panel in panels)
-                {
-                    Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
-                    checkBox.Checked = true;
-                }
-
-                if (panels.Count > 0)
-                {
-                    Import_Button.Enabled = true;
-                    AddPanels(panels);
-                }
-                HideLoadingIndicator();
+                await RefreshPanelsAsync();
             }
-        }
-        private async void Import_Button_Click(object sender, EventArgs e)
-        {
-            if (!ValidateSpreadsheet()) { return; }
-
-            Controls.Remove(_centeredFlowPanel);
-            ShowLoadingIndicator();
-            Import_Button.Enabled = false;
-
-            try
-            {
-                if (await Task.Run(ImportSpreadsheet))
-                {
-                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
-                    HideLoadingIndicator();
-                    string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}'";
-                    CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
-
-                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet",
-                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
-                }
-                else
-                {
-                    CustomMessageBox.Show("Nothing was imported", "Nothing was imported",
-                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                }
-            }
-            catch (Exception ex)
-            {
-                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
-            }
-
-            HideLoadingIndicator();
-            RemoveReceiptLabel();
-            Close();
         }
         private bool ValidateSpreadsheet()
         {
@@ -147,51 +90,91 @@ namespace Sales_Tracker.ImportSpreadsheet
                 return false;
             }
         }
-        private void RemoveReceipt_ImageButton_Click(object sender, EventArgs e)
+        private void RemoveSpreadsheet_ImageButton_Click(object sender, EventArgs e)
         {
-            RemoveReceiptLabel();
+            RemoveSpreadsheetLabel();
             Controls.Remove(_centeredFlowPanel);
             Import_Button.Enabled = false;
+            _receiptsFolderPath = "";
         }
-        private void RemoveReceipt_ImageButton_MouseEnter(object sender, EventArgs e)
+        private void RemoveSpreadhseet_ImageButton_MouseEnter(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.MouseHover;
+            RemoveSpreadsheet_ImageButton.BackColor = CustomColors.MouseHover;
         }
-        private void RemoveReceipt_ImageButton_MouseLeave(object sender, EventArgs e)
+        private void RemoveSpreadsheet_ImageButton_MouseLeave(object sender, EventArgs e)
         {
-            RemoveReceipt_ImageButton.BackColor = CustomColors.MainBackground;
+            RemoveSpreadsheet_ImageButton.BackColor = CustomColors.MainBackground;
         }
-        private void OpenTutorial_Button_Click(object sender, EventArgs e)
+
+        // Select receipts folder
+        private void SelectReceiptsFolder_Button_Click(object sender, EventArgs e)
         {
-            Tools.OpenLink("https://argorobots.com/documentation/index.html#spreadsheets");
+            FolderBrowserDialog dialog = new()
+            {
+                Description = "Select folder containing receipt files",
+                UseDescriptionForTitle = true,
+                ShowNewFolderButton = false
+            };
+
+            if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
+            {
+                dialog.SelectedPath = _receiptsFolderPath;
+            }
+            else if (!string.IsNullOrEmpty(_spreadsheetFilePath))
+            {
+                dialog.SelectedPath = Path.GetDirectoryName(_spreadsheetFilePath);
+            }
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                _receiptsFolderPath = dialog.SelectedPath;
+                ShowReceiptsFolderLabel();
+            }
         }
-        private async void IncludeHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
+        private async void RemoveReceiptsFolder_ImageButton_Click(object sender, EventArgs e)
+        {
+            RemoveReceiptsFolderLabel();
+            await RefreshPanelsAsync();
+        }
+        private void RemoveReceiptsFolder_ImageButton_MouseEnter(object sender, EventArgs e)
+        {
+            RemoveReceiptsFolder_ImageButton.BackColor = CustomColors.MouseHover;
+        }
+        private void RemoveReceiptsFolder_ImageButton_MouseLeave(object sender, EventArgs e)
+        {
+            RemoveReceiptsFolder_ImageButton.BackColor = CustomColors.MainBackground;
+        }
+
+        // Refresh panels
+        private async Task RefreshPanelsAsync()
         {
             if (string.IsNullOrEmpty(_spreadsheetFilePath))
             {
                 return;
             }
 
-            // Remember current checkbox states before reloading
+            // Remember current checkbox states
             Dictionary<string, bool> checkboxStates = [];
-            foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
+            if (_centeredFlowPanel != null)
             {
-                Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
-                string worksheetName = panel.Tag.ToString();
-                if (checkBox != null)
+                foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
                 {
-                    checkboxStates[worksheetName] = checkBox.Checked;
+                    Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
+                    string worksheetName = panel.Tag.ToString();
+                    if (checkBox != null)
+                    {
+                        checkboxStates[worksheetName] = checkBox.Checked;
+                    }
                 }
             }
 
             Import_Button.Enabled = false;
             Controls.Remove(_centeredFlowPanel);
-
             ShowLoadingIndicator();
 
-            List<Panel> panels = await LoadSpreadsheetData();
+            List<Panel> panels = await Task.Run(LoadSpreadsheetData);
 
-            // Restore checkbox states
+            // Set checkbox states
             foreach (Panel panel in panels)
             {
                 Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
@@ -199,8 +182,9 @@ namespace Sales_Tracker.ImportSpreadsheet
 
                 if (checkBox != null)
                 {
-                    // Use saved state if available, otherwise default to checked
+                    // Use saved state if available
                     checkBox.Checked = !checkboxStates.TryGetValue(worksheetName, out bool savedState) || savedState;
+
                 }
             }
 
@@ -211,15 +195,196 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
             HideLoadingIndicator();
         }
+
+        // Import
+        private async void Import_Button_Click(object sender, EventArgs e)
+        {
+            if (!ValidateSpreadsheet()) { return; }
+
+            Controls.Remove(_centeredFlowPanel);
+            ShowLoadingIndicator();
+            Import_Button.Enabled = false;
+
+            try
+            {
+                if (await Task.Run(ImportSpreadsheetAndReceipts))
+                {
+                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                    HideLoadingIndicator();
+                    string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}'";
+                    CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
+
+                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+
+                    HideLoadingIndicator();
+                    RemoveSpreadsheetLabel();
+                    RemoveReceiptsFolderLabel();
+                    Close();
+                }
+                else
+                {
+                    CustomMessageBox.Show("Nothing was imported", "Nothing was imported",
+                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+            }
+        }
+        private bool ImportSpreadsheetAndReceipts()
+        {
+            MainMenu_Form.IsProgramLoading = true;
+
+            using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using XLWorkbook workbook = new(stream);
+            bool includeheader = IncludeHeaderRow_CheckBox.Checked;
+            bool wasSomethingImported = false, purchaseImportFailed = false, salesImportFailed = false;
+
+            foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
+            {
+                Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
+                string worksheetName = panel.Tag.ToString();
+
+                // If the CheckBox is not checked
+                if (checkBox == null || !checkBox.Checked)
+                {
+                    continue;
+                }
+
+                // If the sheet no longer exists. The user may have deleted a sheet after selecting the spreadsheet file
+                if (!workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    CustomMessageBox.Show("Sheet no longer exists",
+                        $"The sheet {worksheetName} no longer exists and will not be imported",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    continue;
+                }
+
+                IXLWorksheet worksheet = workbook.Worksheet(worksheetName);
+
+                switch (worksheetName)
+                {
+                    case _accountantsName:
+                        wasSomethingImported |= ExcelSheetManager.ImportAccountantsData(worksheet, includeheader);
+                        break;
+
+                    case _companiesName:
+                        wasSomethingImported |= ExcelSheetManager.ImportCompaniesData(worksheet, includeheader);
+                        break;
+
+                    case _purchaseProductsName:
+                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, true, includeheader);
+                        break;
+
+                    case _saleProductsName:
+                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, false, includeheader);
+                        break;
+
+                    case _purchasesName:
+                        (bool connection, bool somethingImported) = ExcelSheetManager.ImportPurchaseData(worksheet, includeheader);
+                        if (!connection) { purchaseImportFailed = true; }
+                        wasSomethingImported |= somethingImported;
+                        break;
+
+                    case _salesName:
+                        (bool connection1, bool somethingImported2) = ExcelSheetManager.ImportSalesData(worksheet, includeheader);
+                        if (!connection1) { salesImportFailed = true; }
+                        wasSomethingImported |= somethingImported2;
+                        break;
+
+                    case _receiptsName:
+                        // Check if receipts folder is available for receipts import
+                        if (string.IsNullOrEmpty(_receiptsFolderPath) || !Directory.Exists(_receiptsFolderPath))
+                        {
+                            CustomMessageBox.Show("No receipts folder selected",
+                                "Please select a receipts folder to import receipt data.",
+                                CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                            continue;
+                        }
+                        wasSomethingImported |= ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath);
+                        break;
+                }
+            }
+
+            if (purchaseImportFailed || salesImportFailed)
+            {
+                string message = "Failed to import ";
+                if (purchaseImportFailed) { message += "'Purchases'"; }
+                if (purchaseImportFailed && salesImportFailed) { message += " and "; }
+                if (salesImportFailed) { message += "'Sales'"; }
+                message += " because it looks like you are not connected to the internet. A connection is needed to get the exchange rates. Please check your connection and try again";
+
+                CustomMessageBox.Show("No connection", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+            }
+
+            MainMenu_Form.IsProgramLoading = false;
+            return wasSomethingImported;
+        }
+
+        // Other event handlers
+        private void OpenTutorial_Button_Click(object sender, EventArgs e)
+        {
+            Tools.OpenLink("https://argorobots.com/documentation/index.html#spreadsheets");
+        }
+        private async void IncludeHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            await RefreshPanelsAsync();
+        }
         private void IncludeHeaderRow_Label_Click(object sender, EventArgs e)
         {
             IncludeHeaderRow_CheckBox.Checked = !IncludeHeaderRow_CheckBox.Checked;
+        }
+        private void AutoDetectReceiptsFolder()
+        {
+            _receiptsFolderPath = "";
+
+            if (string.IsNullOrEmpty(_spreadsheetFilePath))
+            {
+                return;
+            }
+
+            string spreadsheetDirectory = Path.GetDirectoryName(_spreadsheetFilePath);
+            string spreadsheetNameWithoutExtension = Path.GetFileNameWithoutExtension(_spreadsheetFilePath);
+
+            // Check for various receipts folder naming conventions
+            string[] possibleFolderNames =
+            [
+                $"{spreadsheetNameWithoutExtension}_receipts",
+                $"{spreadsheetNameWithoutExtension}_Receipts",
+                $"{spreadsheetNameWithoutExtension} receipts",
+                $"{spreadsheetNameWithoutExtension} Receipts",
+                "receipts",
+                "Receipts"
+            ];
+
+            foreach (string folderName in possibleFolderNames)
+            {
+                string possiblePath = Path.Combine(spreadsheetDirectory, folderName);
+                if (Directory.Exists(possiblePath))
+                {
+                    _receiptsFolderPath = possiblePath;
+                    break;
+                }
+            }
         }
 
         // Show things to import
         private readonly byte _panelPadding = 25, _panelHeight = 240;
         private readonly short _panelWidth = 300;
         private CenteredFlowLayoutPanel _centeredFlowPanel;
+        private void InitContainerPanel()
+        {
+            _centeredFlowPanel = new()
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
+                Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
+                Top = 240,
+                Spacing = _panelPadding
+            };
+        }
         private Panel CreatePanel(List<string> items, string worksheetName)
         {
             Panel outerPanel = new()
@@ -300,16 +465,6 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             return outerPanel;
         }
-        private void InitContainerPanel()
-        {
-            _centeredFlowPanel = new()
-            {
-                Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
-                Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
-                Top = 240,
-                Spacing = _panelPadding
-            };
-        }
         private void AddPanels(List<Panel> panelsToAdd)
         {
             List<Panel> panelsToRemove = _centeredFlowPanel.Controls.OfType<Panel>().ToList();
@@ -327,7 +482,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Loading controls
         private Guna2WinProgressIndicator _loadingIndicator;
         private const string _accountantsName = "Accountants", _companiesName = "Companies", _purchaseProductsName = "Purchase products",
-            _saleProductsName = "Sale products", _purchasesName = "Purchases", _salesName = "Sales";
+            _saleProductsName = "Sale products", _purchasesName = "Purchases", _salesName = "Sales", _receiptsName = "Receipts";
         private void InitLoadingComponents()
         {
             _loadingIndicator = new Guna2WinProgressIndicator
@@ -340,11 +495,11 @@ namespace Sales_Tracker.ImportSpreadsheet
         private void ShowLoadingIndicator()
         {
             Controls.Add(_loadingIndicator);
-            _loadingIndicator.Location = new Point((ClientSize.Width - _loadingIndicator.Width) / 2, 350);
+            _loadingIndicator.Location = new Point((ClientSize.Width - _loadingIndicator.Width) / 2, 400);
         }
         private void HideLoadingIndicator()
         {
-            _centeredFlowPanel.SuspendLayout();  // This prevenets the horizontal scroll bar from flashing
+            _centeredFlowPanel.SuspendLayout();
 
             Controls.Remove(_loadingIndicator);
             Controls.Add(_centeredFlowPanel);
@@ -504,114 +659,69 @@ namespace Sales_Tracker.ImportSpreadsheet
             return products;
         }
 
-        // Import
-        private bool ImportSpreadsheet()
+        // Spreadsheet helper methods
+        private void ShowSpreadsheetLabel(string text)
         {
-            MainMenu_Form.IsProgramLoading = true;
+            SelectedSpreadsheet_Label.Text = text;
 
-            using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using XLWorkbook workbook = new(stream);
-            bool skipheader = IncludeHeaderRow_CheckBox.Checked;
-            bool wasSomethingImported = false, purchaseImportFailed = false, salesImportFailed = false;
+            // Show the controls
+            Controls.Add(SelectedSpreadsheet_Label);
+            Controls.Add(RemoveSpreadsheet_ImageButton);
 
-            foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
-            {
-                Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
-                string worksheetName = panel.Tag.ToString();
+            // Position the controls
+            SelectedSpreadsheet_Label.Location = new Point(
+               SelectSpreadsheet_Button.Left,
+               SelectSpreadsheet_Button.Bottom + CustomControls.SpaceBetweenControls);
 
-                // If the CheckBox is not checked
-                if (checkBox == null || !checkBox.Checked)
-                {
-                    continue;
-                }
-
-                // If the sheet no longer exists. The user may have deleted a sheet after selecting the spreadsheet file
-                if (!workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    CustomMessageBox.Show("Sheet no longer exists",
-                        $"The sheet {worksheetName} no longer exists and will not be imported",
-                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                    continue;
-                }
-
-                IXLWorksheet worksheet = workbook.Worksheet(worksheetName);
-
-                switch (worksheetName)
-                {
-                    case _accountantsName:
-                        wasSomethingImported |= ExcelSheetManager.ImportAccountantsData(worksheet, skipheader);
-                        break;
-
-                    case _companiesName:
-                        wasSomethingImported |= ExcelSheetManager.ImportCompaniesData(worksheet, skipheader);
-                        break;
-
-                    case _purchaseProductsName:
-                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, true, skipheader);
-                        break;
-
-                    case _saleProductsName:
-                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, false, skipheader);
-                        break;
-
-                    case _purchasesName:
-                        (bool connection, bool somethingImported) = ExcelSheetManager.ImportPurchaseData(worksheet, skipheader);
-                        if (!connection) { purchaseImportFailed = true; }
-                        wasSomethingImported |= somethingImported;
-                        break;
-
-                    case _salesName:
-                        (bool connection1, bool somethingImported2) = ExcelSheetManager.ImportSalesData(worksheet, skipheader);
-                        if (!connection1) { salesImportFailed = true; }
-                        wasSomethingImported |= somethingImported2;
-                        break;
-                }
-            }
-
-            if (purchaseImportFailed || salesImportFailed)
-            {
-                string message = "Failed to import ";
-                if (purchaseImportFailed) { message += "'Purchases'"; }
-                if (purchaseImportFailed && salesImportFailed) { message += " and "; }
-                if (salesImportFailed) { message += "'Sales'"; }
-                message += " because it looks like you are not connected to the internet. A connection is needed to get the exchange rates. Please check your connection and try again";
-
-                CustomMessageBox.Show("No connection", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-            }
-
-            MainMenu_Form.IsProgramLoading = false;
-            return wasSomethingImported;
+            RemoveSpreadsheet_ImageButton.Location = new Point(
+                SelectedSpreadsheet_Label.Right + CustomControls.SpaceBetweenControls,
+                SelectSpreadsheet_Button.Bottom + (RemoveSpreadsheet_ImageButton.Height - SelectedSpreadsheet_Label.Height) / 2);
+        }
+        private void RemoveSpreadsheetLabel()
+        {
+            Controls.Remove(SelectedSpreadsheet_Label);
+            Controls.Remove(RemoveSpreadsheet_ImageButton);
+            _spreadsheetFilePath = "";
         }
 
-        // Methods
-        private void ShowReceiptLabel(string text)
+        // Receipt folder helper methods
+        private void ShowReceiptsFolderLabel()
         {
-            SelectedReceipt_Label.Text = text;
-
-            Controls.Add(SelectedReceipt_Label);
-            Controls.Add(RemoveReceipt_ImageButton);
-            SetReceiptLabelLocation();
-        }
-        private void SetReceiptLabelLocation()
-        {
-            if (!Controls.Contains(SelectedReceipt_Label))
+            if (!Controls.Contains(SelectedSpreadsheet_Label))
             {
                 return;
             }
 
-            SelectedReceipt_Label.Location = new Point(
-                (ClientSize.Width - RemoveReceipt_ImageButton.Width - SelectedReceipt_Label.Width) / 2,
-                RemoveReceipt_ImageButton.Top + (RemoveReceipt_ImageButton.Height - SelectedReceipt_Label.Height) / 2 - 1);
+            if (Directory.Exists(_receiptsFolderPath))
+            {
+                SelectedReceiptsFolder_Label.Text = LanguageManager.TranslateString("Receipts folder")
+                    + " " + Path.GetFileName(_receiptsFolderPath);
+                SelectReceiptsFolder_Button.Text = LanguageManager.TranslateString("Change folder");
+            }
+            else
+            {
+                SelectedReceiptsFolder_Label.Text = LanguageManager.TranslateString("Select receipts folder");
+                SelectReceiptsFolder_Button.Text = LanguageManager.TranslateString("Select receipts folder");
+            }
 
-            RemoveReceipt_ImageButton.Location = new Point(
-                SelectedReceipt_Label.Right + CustomControls.SpaceBetweenControls,
-                SelectFile_Button.Bottom + CustomControls.SpaceBetweenControls);
+            // Show the controls
+            Controls.Add(SelectedReceiptsFolder_Label);
+            Controls.Add(RemoveReceiptsFolder_ImageButton);
+
+            // Position the controls
+            SelectedReceiptsFolder_Label.Location = new Point(
+                SelectReceiptsFolder_Button.Left,
+                SelectReceiptsFolder_Button.Bottom + CustomControls.SpaceBetweenControls);
+
+            RemoveReceiptsFolder_ImageButton.Location = new Point(
+                SelectedReceiptsFolder_Label.Right + CustomControls.SpaceBetweenControls,
+                SelectSpreadsheet_Button.Bottom + (RemoveReceiptsFolder_ImageButton.Height - SelectedReceiptsFolder_Label.Height) / 2);
         }
-        private void RemoveReceiptLabel()
+        private void RemoveReceiptsFolderLabel()
         {
-            Controls.Remove(SelectedReceipt_Label);
-            Controls.Remove(RemoveReceipt_ImageButton);
-            _spreadsheetFilePath = "";
+            Controls.Remove(SelectedReceiptsFolder_Label);
+            Controls.Remove(RemoveReceiptsFolder_ImageButton);
+            _receiptsFolderPath = "";
         }
     }
 }
