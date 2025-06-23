@@ -63,8 +63,6 @@ namespace Sales_Tracker.UI
         /// </example>
         public static void ShowTotalsWithTransactions(Label totalsLabel, DataGridView dataGridView)
         {
-            if (MainMenu_Form.IsProgramLoading) { return; }
-
             string baseText = totalsLabel.Text.Split(['(', ':'])[0].Trim();
 
             // Extract the word "transactions" (or its translation) from the existing text

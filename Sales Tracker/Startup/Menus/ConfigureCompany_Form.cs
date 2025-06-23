@@ -1,4 +1,6 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.Charts.WinForms;
+using Sales_Tracker.Charts;
+using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
@@ -159,21 +161,30 @@ namespace Sales_Tracker.Startup.Menus
             {
                 Directories.DeleteDirectory(tempDir, true);
 
-                MainMenu_Form.Instance.SetCompanyLabel();
+                // Clear DataGridViews
                 MainMenu_Form.IsProgramLoading = true;
                 MainMenu_Form.Instance.Purchase_DataGridView.Rows.Clear();
                 MainMenu_Form.Instance.Sale_DataGridView.Rows.Clear();
                 MainMenu_Form.IsProgramLoading = false;
 
+                // Reset controls
+                MainMenu_Form.Instance.SetCompanyLabel();
+                MainMenu_Form.Instance.UpdateTotalLabels();
+                MainMenu_Form.Instance.HideShowingResultsForLabel();
+                MainMenu_Form.Instance.Search_TextBox.Text = "";
+
+                // Clear charts
+                foreach (GunaChart chart in MainMenu_Form.Instance.GetAllCharts())
+                {
+                    LoadChart.ClearChart(chart);
+                    LabelManager.ManageNoDataLabelOnControl(false, chart);
+                }
+
+                // Clear lists
                 MainMenu_Form.Instance.CategorySaleList.Clear();
                 MainMenu_Form.Instance.CategoryPurchaseList.Clear();
                 MainMenu_Form.Instance.AccountantList.Clear();
                 MainMenu_Form.Instance.CompanyList.Clear();
-
-                MainMenu_Form.Instance.UpdateTotalLabels();
-                MainMenu_Form.Instance.LoadOrRefreshMainCharts();
-                MainMenu_Form.Instance.HideShowingResultsForLabel();
-                MainMenu_Form.Instance.Search_TextBox.Text = "";
             }
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)

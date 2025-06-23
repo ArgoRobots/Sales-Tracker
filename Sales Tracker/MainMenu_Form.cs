@@ -824,7 +824,6 @@ namespace Sales_Tracker
             _saleDistribution_Chart.Height = height;
             Profits_Chart.Height = height;
         }
-
         private static void SetChartPosition(GunaChart chart, Size size, int left, int top)
         {
             chart.Size = size;
@@ -1967,6 +1966,23 @@ namespace Sales_Tracker
             ];
         }
         public List<Control> GetAnalyticsControls() => _analyticsControls;
+        public IEnumerable<GunaChart> GetAllCharts()
+        {
+            return [_purchaseTotals_Chart,
+                _purchaseDistribution_Chart,
+                _saleTotals_Chart,
+                _saleDistribution_Chart,
+                Profits_Chart,
+                CountriesOfOrigin_Chart,
+                CompaniesOfOrigin_Chart,
+                CountriesOfDestination_Chart,
+                Accountants_Chart,
+                SalesVsExpenses_Chart,
+                AverageTransactionValue_Chart,
+                TotalTransactions_Chart,
+                AverageShippingCosts_Chart,
+                GrowthRates_Chart];
+        }
         private void ShowMainControls()
         {
             if (_analyticsControls == null) { return; }

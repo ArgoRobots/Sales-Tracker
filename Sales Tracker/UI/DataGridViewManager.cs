@@ -18,13 +18,13 @@ namespace Sales_Tracker.UI
         private static readonly byte _rowHeight = 35, _columnHeaderHeight = 60;
         private static readonly string _deleteAction = "deleted", _moveAction = "move";
         private static DataGridViewCell _currentlyHoveredNoteCell;
+        private static bool _isMouseDown;
 
         // Getters
         public static bool DoNotDeleteRows { get; set; }
         public static DataGridViewRow SelectedRowInMainMenu { get; set; }
 
         // Construct DataGridView
-        private static bool _isMouseDown;
         public static void InitializeDataGridView<TEnum>(Guna2DataGridView dataGridView, string name, Size size, Dictionary<TEnum, string> columnHeaders, List<TEnum>? columnsToLoad, Control parent) where TEnum : Enum
         {
             dataGridView.Name = name;

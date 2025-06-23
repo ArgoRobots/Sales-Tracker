@@ -1815,7 +1815,7 @@ namespace Sales_Tracker.Charts
                     break;
             }
         }
-        private static void ClearChart(GunaChart chart)
+        public static void ClearChart(GunaChart chart)
         {
             chart.Zoom = ZoomMode.Y;
             chart.XAxes.Display = false;
