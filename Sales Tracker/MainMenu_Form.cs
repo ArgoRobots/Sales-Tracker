@@ -72,7 +72,7 @@ namespace Sales_Tracker
             _purchaseDistribution_Chart = ConstructMainChart("purchaseDistribution_Chart");
             _saleTotals_Chart = ConstructMainChart("saleTotals_Chart");
             _saleDistribution_Chart = ConstructMainChart("saleDistribution_Chart");
-            _profits_Chart = ConstructMainChart("profits_Chart");
+            Profits_Chart = ConstructMainChart("profits_Chart");
 
             LoadChart.ConfigureChartForPie(_purchaseDistribution_Chart);
             LoadChart.ConfigureChartForPie(_saleDistribution_Chart);
@@ -82,17 +82,17 @@ namespace Sales_Tracker
             _purchaseDistribution_Chart.Visible = false;
             _saleTotals_Chart.Visible = true;
             _saleDistribution_Chart.Visible = true;
-            _profits_Chart.Visible = true;
+            Profits_Chart.Visible = true;
 
             _purchaseTotals_Chart.Tag = ChartDataType.TotalRevenue;
             _purchaseDistribution_Chart.Tag = ChartDataType.DistributionOfRevenue;
             _saleTotals_Chart.Tag = ChartDataType.TotalRevenue;
             _saleDistribution_Chart.Tag = ChartDataType.DistributionOfRevenue;
-            _profits_Chart.Tag = ChartDataType.TotalProfits;
+            Profits_Chart.Tag = ChartDataType.TotalProfits;
 
             MouseClickChartManager.InitCharts([
                 _purchaseTotals_Chart, _purchaseDistribution_Chart,
-                _saleTotals_Chart, _saleDistribution_Chart, _profits_Chart
+                _saleTotals_Chart, _saleDistribution_Chart, Profits_Chart
             ]);
         }
         private GunaChart ConstructMainChart(string name)
@@ -130,8 +130,8 @@ namespace Sales_Tracker
             AccountantList.Clear();
             CompanyList.Clear();
 
-            _purchase_DataGridView.Rows.Clear();
-            _sale_DataGridView.Rows.Clear();
+            Purchase_DataGridView.Rows.Clear();
+            Sale_DataGridView.Rows.Clear();
 
             Search_TextBox.Clear();
             SortFromDate = default;
@@ -145,31 +145,31 @@ namespace Sales_Tracker
             AccountantList = Directories.ReadAllLinesInFile(Directories.Accountants_file).ToList();
             CompanyList = Directories.ReadAllLinesInFile(Directories.Companies_file).ToList();
 
-            if (_purchase_DataGridView == null)
+            if (Purchase_DataGridView == null)
             {
                 Size size = new(1300, 350);
-                _purchase_DataGridView = new();
-                DataGridViewManager.InitializeDataGridView(_purchase_DataGridView, "purchases_DataGridView", size, PurchaseColumnHeaders, null, this);
-                _purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+                Purchase_DataGridView = new();
+                DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", size, PurchaseColumnHeaders, null, this);
+                Purchase_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
 
-                _sale_DataGridView = new();
-                DataGridViewManager.InitializeDataGridView(_sale_DataGridView, "sales_DataGridView", size, SalesColumnHeaders, null, this);
-                _sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
+                Sale_DataGridView = new();
+                DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", size, SalesColumnHeaders, null, this);
+                Sale_DataGridView.Tag = DataGridViewTag.SaleOrPurchase;
             }
 
             SetHasReceiptColumnVisibilty();
 
-            AddRowsFromFile(_purchase_DataGridView, SelectedOption.Purchases);
-            AddRowsFromFile(_sale_DataGridView, SelectedOption.Sales);
+            AddRowsFromFile(Purchase_DataGridView, SelectedOption.Purchases);
+            AddRowsFromFile(Sale_DataGridView, SelectedOption.Sales);
         }
         private void LoadCustomColumnHeaders()
         {
-            DataGridViewColumn chargedDifferenceColumn = _purchase_DataGridView.Columns[Column.ChargedDifference.ToString()];
+            DataGridViewColumn chargedDifferenceColumn = Purchase_DataGridView.Columns[Column.ChargedDifference.ToString()];
             string existingHeaderText = chargedDifferenceColumn.HeaderText;
             string messageBoxText = "Having a charged difference is common and is usually due to taxes, duties, bank fees, exchange rate differences, or political and tax variations across countries.";
             chargedDifferenceColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
 
-            DataGridViewColumn totalColumn = _sale_DataGridView.Columns[Column.Total.ToString()];
+            DataGridViewColumn totalColumn = Sale_DataGridView.Columns[Column.Total.ToString()];
             existingHeaderText = totalColumn.HeaderText;
             messageBoxText = "The revenue excludes shipping, taxes, and fees.";
             totalColumn.HeaderCell = new DataGridViewImageHeaderCell(Resources.HelpGray, existingHeaderText, messageBoxText);
@@ -190,30 +190,30 @@ namespace Sales_Tracker
         {
             bool isLine = LineGraph_ToggleSwitch.Checked;
 
-            if (_purchase_DataGridView.Visible)
+            if (Purchase_DataGridView.Visible)
             {
                 // Load purchase charts
-                ChartData totalsData = LoadChart.LoadTotalsIntoChart(_purchase_DataGridView, _purchaseTotals_Chart, isLine);
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Purchase_DataGridView, _purchaseTotals_Chart, isLine);
                 _purchaseTotals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(_purchase_DataGridView, _purchaseDistribution_Chart, PieChartGrouping.Top12);
+                    LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, _purchaseDistribution_Chart, PieChartGrouping.Top12);
                     _purchaseDistribution_Chart.Title.Text = "Distribution of expenses";
                 }
 
                 LanguageManager.UpdateLanguageForControl(_purchaseTotals_Chart);
                 LanguageManager.UpdateLanguageForControl(_purchaseDistribution_Chart);
             }
-            else if (_sale_DataGridView.Visible)
+            else if (Sale_DataGridView.Visible)
             {
                 // Load sale charts
-                ChartData totalsData = LoadChart.LoadTotalsIntoChart(_sale_DataGridView, _saleTotals_Chart, isLine);
+                ChartData totalsData = LoadChart.LoadTotalsIntoChart(Sale_DataGridView, _saleTotals_Chart, isLine);
                 _saleTotals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
-                    LoadChart.LoadDistributionIntoChart(_sale_DataGridView, _saleDistribution_Chart, PieChartGrouping.Top12);
+                    LoadChart.LoadDistributionIntoChart(Sale_DataGridView, _saleDistribution_Chart, PieChartGrouping.Top12);
                     _saleDistribution_Chart.Title.Text = "Distribution of revenue";
                 }
 
@@ -222,14 +222,14 @@ namespace Sales_Tracker
             }
 
             // Always load profits chart (it combines both)
-            ChartData profitsData = LoadChart.LoadProfitsIntoChart(_profits_Chart, isLine);
-            _profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
-            LanguageManager.UpdateLanguageForControl(_profits_Chart);
+            ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
+            Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
+            LanguageManager.UpdateLanguageForControl(Profits_Chart);
         }
         public void UpdateChartCurrencyFormats()
         {
-            List<GunaChart> mainCharts = [_purchaseTotals_Chart, _saleTotals_Chart, _profits_Chart];
-            List<GunaChart> analyticsCharts = [_salesVsExpenses_Chart, _averageTransactionValue_Chart, _averageShippingCosts_Chart];
+            List<GunaChart> mainCharts = [_purchaseTotals_Chart, _saleTotals_Chart, Profits_Chart];
+            List<GunaChart> analyticsCharts = [SalesVsExpenses_Chart, AverageTransactionValue_Chart, AverageShippingCosts_Chart];
 
             // Combine charts based on current view
             List<GunaChart> chartsToUpdate = [.. mainCharts];
@@ -277,7 +277,7 @@ namespace Sales_Tracker
                 _purchaseDistribution_Chart,
                 _saleTotals_Chart,
                 _saleDistribution_Chart,
-                _profits_Chart,
+                Profits_Chart,
                 Total_Panel
             ]);
         }
@@ -315,18 +315,18 @@ namespace Sales_Tracker
             _purchaseDistribution_Chart.Tag = ChartDataType.DistributionOfRevenue;
             _saleTotals_Chart.Tag = ChartDataType.TotalRevenue;
             _saleDistribution_Chart.Tag = ChartDataType.DistributionOfRevenue;
-            _profits_Chart.Tag = ChartDataType.TotalProfits;
+            Profits_Chart.Tag = ChartDataType.TotalProfits;
 
             // Analytics charts
-            _countriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
-            _companiesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
-            _countriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
-            _accountants_Chart.Tag = ChartDataType.Accountants;
-            _growthRates_Chart.Tag = ChartDataType.GrowthRates;
-            _salesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
-            _totalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
-            _averageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
-            _averageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
+            CountriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
+            CompaniesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
+            CountriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
+            Accountants_Chart.Tag = ChartDataType.Accountants;
+            GrowthRates_Chart.Tag = ChartDataType.GrowthRates;
+            SalesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
+            TotalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
+            AverageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
+            AverageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -586,7 +586,7 @@ namespace Sales_Tracker
         private void MainMenu_Form_Load(object sender, EventArgs e)
         {
             Sales_Button.PerformClick();
-            _sale_DataGridView.ClearSelection();
+            Sale_DataGridView.ClearSelection();
 
             IsProgramLoading = false;
 
@@ -702,7 +702,7 @@ namespace Sales_Tracker
         }
 
         // Center and resize controls
-        private bool wasControlsDropDownAdded;
+        private bool _wasControlsDropDownAdded;
         public void CenterAndResizeControls()
         {
             if (IsProgramLoading) { return; }
@@ -726,12 +726,12 @@ namespace Sales_Tracker
             if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
-                wasControlsDropDownAdded = true;
+                _wasControlsDropDownAdded = true;
             }
-            else if (wasControlsDropDownAdded)
+            else if (_wasControlsDropDownAdded)
             {
                 RemoveControlsDropDown();
-                wasControlsDropDownAdded = false;
+                _wasControlsDropDownAdded = false;
             }
 
             if (Selected == SelectedOption.Analytics)
@@ -763,23 +763,23 @@ namespace Sales_Tracker
                 int bottomRowY = middleRowY + statChartHeight + spaceBetweenRows - 10;
 
                 // Set positions for top row charts
-                SetChartPosition(_countriesOfOrigin_Chart, chartSize, firstX, topRowY);
-                SetChartPosition(_countriesOfDestination_Chart, chartSize, secondX, topRowY);
-                SetChartPosition(_companiesOfOrigin_Chart, chartSize, thirdX, topRowY);
+                SetChartPosition(CountriesOfOrigin_Chart, chartSize, firstX, topRowY);
+                SetChartPosition(CountriesOfDestination_Chart, chartSize, secondX, topRowY);
+                SetChartPosition(CompaniesOfOrigin_Chart, chartSize, thirdX, topRowY);
 
                 // Set positions for middle row charts
-                SetChartPosition(_accountants_Chart, chartSize, firstX, middleRowY);
-                SetChartPosition(_growthRates_Chart, chartSize, secondX, middleRowY);
-                SetChartPosition(_salesVsExpenses_Chart, chartSize, thirdX, middleRowY);
+                SetChartPosition(Accountants_Chart, chartSize, firstX, middleRowY);
+                SetChartPosition(GrowthRates_Chart, chartSize, secondX, middleRowY);
+                SetChartPosition(SalesVsExpenses_Chart, chartSize, thirdX, middleRowY);
 
                 // Set positions for bottom row charts
-                SetChartPosition(_totalTransactions_Chart, chartSize, firstX, bottomRowY);
-                SetChartPosition(_averageTransactionValue_Chart, chartSize, secondX, bottomRowY);
-                SetChartPosition(_averageShippingCosts_Chart, chartSize, thirdX, bottomRowY);
+                SetChartPosition(TotalTransactions_Chart, chartSize, firstX, bottomRowY);
+                SetChartPosition(AverageTransactionValue_Chart, chartSize, secondX, bottomRowY);
+                SetChartPosition(AverageShippingCosts_Chart, chartSize, thirdX, bottomRowY);
 
                 // Set position for free shipping checkbox
-                _includeFreeShipping_CheckBox.Location = new Point(_averageShippingCosts_Chart.Left, _averageShippingCosts_Chart.Bottom + 8);
-                _includeFreeShipping_Label.Location = new Point(_includeFreeShipping_CheckBox.Right - 2, _includeFreeShipping_CheckBox.Top - 9);
+                IncludeFreeShipping_CheckBox.Location = new Point(AverageShippingCosts_Chart.Left, AverageShippingCosts_Chart.Bottom + 8);
+                _includeFreeShipping_Label.Location = new Point(IncludeFreeShipping_CheckBox.Right - 2, IncludeFreeShipping_CheckBox.Top - 9);
             }
             else
             {
@@ -795,8 +795,8 @@ namespace Sales_Tracker
                 int rightX = middleX + chartWidth + spaceBetweenCharts;
 
                 // Position the currently visible charts
-                GunaChart totalsChart = _sale_DataGridView.Visible ? _saleTotals_Chart : _purchaseTotals_Chart;
-                GunaChart distributionChart = _sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
+                GunaChart totalsChart = Sale_DataGridView.Visible ? _saleTotals_Chart : _purchaseTotals_Chart;
+                GunaChart distributionChart = Sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
 
                 // Set positions for visible charts
                 totalsChart.Size = new Size(chartWidth, chartHeight);
@@ -805,17 +805,17 @@ namespace Sales_Tracker
                 distributionChart.Size = new Size(chartWidth, chartHeight);
                 distributionChart.Left = middleX;
 
-                _profits_Chart.Size = new Size(chartWidth, chartHeight);
-                _profits_Chart.Left = rightX;
+                Profits_Chart.Size = new Size(chartWidth, chartHeight);
+                Profits_Chart.Left = rightX;
 
                 // Position DataGridView and Total Panel
-                _selectedDataGridView.Size = new Size(ClientSize.Width - 65,
+                SelectedDataGridView.Size = new Size(ClientSize.Width - 65,
                     ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - chartHeight - totalsChart.Top - 15);
-                _selectedDataGridView.Location = new Point((ClientSize.Width - _selectedDataGridView.Width) / 2,
-                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - _selectedDataGridView.Height);
+                SelectedDataGridView.Location = new Point((ClientSize.Width - SelectedDataGridView.Width) / 2,
+                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - SelectedDataGridView.Height);
 
-                Total_Panel.Location = new Point(_selectedDataGridView.Left, _selectedDataGridView.Top + _selectedDataGridView.Height);
-                Total_Panel.Width = _selectedDataGridView.Width;
+                Total_Panel.Location = new Point(SelectedDataGridView.Left, SelectedDataGridView.Top + SelectedDataGridView.Height);
+                Total_Panel.Width = SelectedDataGridView.Width;
             }
         }
         private void SetMainChartsHeight(int height)
@@ -824,7 +824,7 @@ namespace Sales_Tracker
             _purchaseDistribution_Chart.Height = height;
             _saleTotals_Chart.Height = height;
             _saleDistribution_Chart.Height = height;
-            _profits_Chart.Height = height;
+            Profits_Chart.Height = height;
         }
 
         private static void SetChartPosition(GunaChart chart, Size size, int left, int top)
@@ -962,13 +962,13 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             if (Selected == SelectedOption.Purchases) { return; }
 
-            _purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
             Selected = SelectedOption.Purchases;
             ShowMainControls();
-            _selectedDataGridView = _purchase_DataGridView;
-            _purchase_DataGridView.Visible = true;
-            _sale_DataGridView.Visible = false;
+            SelectedDataGridView = Purchase_DataGridView;
+            Purchase_DataGridView.Visible = true;
+            Sale_DataGridView.Visible = false;
 
             // Show purchase charts, hide sale charts
             _purchaseTotals_Chart.Visible = true;
@@ -984,7 +984,7 @@ namespace Sales_Tracker
                 RefreshDataGridViewAndCharts();
             }
 
-            _purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             UpdateTotalLabels();
             SelectButton(Purchases_Button);
@@ -995,13 +995,13 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             if (Selected == SelectedOption.Sales) { return; }
 
-            _sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
 
             Selected = SelectedOption.Sales;
             ShowMainControls();
-            _selectedDataGridView = _sale_DataGridView;
-            _sale_DataGridView.Visible = true;
-            _purchase_DataGridView.Visible = false;
+            SelectedDataGridView = Sale_DataGridView;
+            Sale_DataGridView.Visible = true;
+            Purchase_DataGridView.Visible = false;
 
             // Show sale charts, hide purchase charts
             _saleTotals_Chart.Visible = true;
@@ -1017,7 +1017,7 @@ namespace Sales_Tracker
                 RefreshDataGridViewAndCharts();
             }
 
-            _sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
+            Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
             UpdateTotalLabels();
             SelectButton(Sales_Button);
@@ -1139,18 +1139,17 @@ namespace Sales_Tracker
         }
 
         // TimeRange
-        private static Guna2Panel _timeRangePanel;
-        public static Guna2Panel TimeRangePanel => _timeRangePanel;
+        public static Guna2Panel TimeRangePanel { get; private set; }
         private static void InitTimeRangePanel()
         {
             DateRange_Form dateRange_Form = new();
-            _timeRangePanel = dateRange_Form.Main_Panel;
-            _timeRangePanel.BorderColor = CustomColors.ControlPanelBorder;
-            _timeRangePanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            TimeRangePanel = dateRange_Form.Main_Panel;
+            TimeRangePanel.BorderColor = CustomColors.ControlPanelBorder;
+            TimeRangePanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         }
         private void TimeRange_Button_Click(object sender, EventArgs e)
         {
-            if (Controls.Contains(_timeRangePanel))
+            if (Controls.Contains(TimeRangePanel))
             {
                 CloseDateRangePanel();
             }
@@ -1159,17 +1158,17 @@ namespace Sales_Tracker
                 CloseAllPanels(null, null);
 
                 // Set the location for the panel
-                _timeRangePanel.Location = new Point(
-                    TimeRange_Button.Right - _timeRangePanel.Width,
+                TimeRangePanel.Location = new Point(
+                    TimeRange_Button.Right - TimeRangePanel.Width,
                     TimeRange_Button.Bottom);
 
-                Controls.Add(_timeRangePanel);
-                _timeRangePanel.BringToFront();
+                Controls.Add(TimeRangePanel);
+                TimeRangePanel.BringToFront();
             }
         }
         public void CloseDateRangePanel()
         {
-            Controls.Remove(_timeRangePanel);
+            Controls.Remove(TimeRangePanel);
         }
 
         // Timer for loading the charts
@@ -1313,14 +1312,14 @@ namespace Sales_Tracker
             else
             {
                 LoadOrRefreshMainCharts();
-                _selectedDataGridView.ClearSelection();
+                SelectedDataGridView.ClearSelection();
             }
         }
         private void ApplyFiltersToDataGridView()
         {
             if (SortFromDate != null && SortToDate != null)
             {
-                FilterDataGridViewByDateRange(_selectedDataGridView);
+                FilterDataGridViewByDateRange(SelectedDataGridView);
             }
 
             // Get the effective search text, which might be AI-translated
@@ -1336,7 +1335,7 @@ namespace Sales_Tracker
             {
                 ShowShowingResultsForLabel();
 
-                foreach (DataGridViewRow row in _selectedDataGridView.Rows)
+                foreach (DataGridViewRow row in SelectedDataGridView.Rows)
                 {
                     DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
 
@@ -1359,15 +1358,15 @@ namespace Sales_Tracker
             {
                 HideShowingResultsForLabel();
 
-                foreach (DataGridViewRow row in _selectedDataGridView.Rows)
+                foreach (DataGridViewRow row in SelectedDataGridView.Rows)
                 {
                     row.Visible = true;
                     hasVisibleRows = true;
                 }
             }
 
-            DataGridViewManager.UpdateAlternatingRowColors(_selectedDataGridView);
-            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, _selectedDataGridView);
+            DataGridViewManager.UpdateAlternatingRowColors(SelectedDataGridView);
+            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, SelectedDataGridView);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)
         {
@@ -1438,7 +1437,7 @@ namespace Sales_Tracker
         }
         private void CenterShowingResultsLabel()
         {
-            GunaChart visibleDistributionChart = _sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
+            GunaChart visibleDistributionChart = Sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
 
             ShowingResultsFor_Label.Location = new Point(
                 (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
@@ -1459,10 +1458,10 @@ namespace Sales_Tracker
         private void SortTheDataGridViewByDate()
         {
             string dateColumnHeader = SalesColumnHeaders[Column.Date];
-            _sale_DataGridView.Sort(_sale_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
+            Sale_DataGridView.Sort(Sale_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
 
             dateColumnHeader = PurchaseColumnHeaders[Column.Date];
-            _purchase_DataGridView.Sort(_purchase_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
+            Purchase_DataGridView.Sort(Purchase_DataGridView.Columns[dateColumnHeader], ListSortDirection.Ascending);
         }
 
         // List getters
@@ -1630,16 +1629,14 @@ namespace Sales_Tracker
 
         // DataGridView properties
         public SelectedOption Selected;
-        private Guna2DataGridView _purchase_DataGridView, _sale_DataGridView, _selectedDataGridView;
         private GunaChart _purchaseTotals_Chart, _purchaseDistribution_Chart;
         private GunaChart _saleTotals_Chart, _saleDistribution_Chart;
-        private GunaChart _profits_Chart;
 
         // DataGridView getters
-        public Guna2DataGridView Purchase_DataGridView => _purchase_DataGridView;
-        public Guna2DataGridView Sale_DataGridView => _sale_DataGridView;
-        public Guna2DataGridView SelectedDataGridView => _selectedDataGridView;
-        public GunaChart Profits_Chart => _profits_Chart;
+        public Guna2DataGridView Purchase_DataGridView { get; private set; }
+        public Guna2DataGridView Sale_DataGridView { get; private set; }
+        public Guna2DataGridView SelectedDataGridView { get; private set; }
+        public GunaChart Profits_Chart { get; private set; }
 
         // DataGridView enums
         public enum SelectedOption
@@ -1735,11 +1732,11 @@ namespace Sales_Tracker
         }
         public GunaChart GetTotalsChart()
         {
-            return _sale_DataGridView.Visible ? _saleTotals_Chart : _purchaseTotals_Chart;
+            return Sale_DataGridView.Visible ? _saleTotals_Chart : _purchaseTotals_Chart;
         }
         public GunaChart GetDistributionChart()
         {
-            return _sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
+            return Sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
         }
 
         // Total labels
@@ -1753,34 +1750,34 @@ namespace Sales_Tracker
             string chargedDifference = Column.ChargedDifference.ToString();
             string totalPriceColumn = Column.Total.ToString();
 
-            Quantity_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
-            Quantity_Label.Width = _selectedDataGridView.Columns[quantityColumn].Width;
+            Quantity_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[quantityColumn].Index, -1, true).Left;
+            Quantity_Label.Width = SelectedDataGridView.Columns[quantityColumn].Width;
 
-            Tax_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[taxColumn].Index, -1, true).Left;
-            Tax_Label.Width = _selectedDataGridView.Columns[taxColumn].Width;
+            Tax_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[taxColumn].Index, -1, true).Left;
+            Tax_Label.Width = SelectedDataGridView.Columns[taxColumn].Width;
 
-            Shipping_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[shippingColumn].Index, -1, true).Left;
-            Shipping_Label.Width = _selectedDataGridView.Columns[shippingColumn].Width;
+            Shipping_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[shippingColumn].Index, -1, true).Left;
+            Shipping_Label.Width = SelectedDataGridView.Columns[shippingColumn].Width;
 
-            Fee_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[feeColumn].Index, -1, true).Left;
-            Fee_Label.Width = _selectedDataGridView.Columns[feeColumn].Width;
+            Fee_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[feeColumn].Index, -1, true).Left;
+            Fee_Label.Width = SelectedDataGridView.Columns[feeColumn].Width;
 
-            Discount_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[discountColumn].Index, -1, true).Left;
-            Discount_Label.Width = _selectedDataGridView.Columns[feeColumn].Width;
+            Discount_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[discountColumn].Index, -1, true).Left;
+            Discount_Label.Width = SelectedDataGridView.Columns[feeColumn].Width;
 
-            if (_selectedDataGridView == _purchase_DataGridView)
+            if (SelectedDataGridView == Purchase_DataGridView)
             {
                 ChargedDifference_Label.Visible = true;
-                ChargedDifference_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
-                ChargedDifference_Label.Width = _selectedDataGridView.Columns[chargedDifference].Width;
+                ChargedDifference_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
+                ChargedDifference_Label.Width = SelectedDataGridView.Columns[chargedDifference].Width;
             }
             else
             {
                 ChargedDifference_Label.Visible = false;
             }
 
-            Price_Label.Left = _selectedDataGridView.GetCellDisplayRectangle(_selectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
-            Price_Label.Width = _selectedDataGridView.Columns[totalPriceColumn].Width;
+            Price_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
+            Price_Label.Width = SelectedDataGridView.Columns[totalPriceColumn].Width;
         }
         public void UpdateTotalLabels()
         {
@@ -1789,7 +1786,7 @@ namespace Sales_Tracker
                 return;
             }
 
-            Total_Panel.Visible = DataGridViewManager.HasVisibleRows(_selectedDataGridView);
+            Total_Panel.Visible = DataGridViewManager.HasVisibleRows(SelectedDataGridView);
 
             int totalVisibleRows = 0,
                 totalQuantity = 0;
@@ -1801,7 +1798,7 @@ namespace Sales_Tracker
                 chargedDifference = 0,
                 totalPrice = 0;
 
-            foreach (DataGridViewRow row in _selectedDataGridView.Rows)
+            foreach (DataGridViewRow row in SelectedDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
                 totalVisibleRows++;
@@ -1818,7 +1815,7 @@ namespace Sales_Tracker
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
             }
 
-            LabelManager.ShowTotalsWithTransactions(Total_Label, _selectedDataGridView);
+            LabelManager.ShowTotalsWithTransactions(Total_Label, SelectedDataGridView);
             Quantity_Label.Text = totalQuantity.ToString();
             Tax_Label.Text = $"{CurrencySymbol}{totalTax:N2}";
             Shipping_Label.Text = $"{CurrencySymbol}{totalShipping:N2}";
@@ -1930,11 +1927,7 @@ namespace Sales_Tracker
 
         // Chart properties
         private List<Control> _analyticsControls;
-        private GunaChart _countriesOfOrigin_Chart, _countriesOfDestination_Chart, _companiesOfOrigin_Chart, _accountants_Chart,
-            _growthRates_Chart, _salesVsExpenses_Chart, _averageTransactionValue_Chart, _totalTransactions_Chart, _averageShippingCosts_Chart;
-        private Guna2CustomCheckBox _includeFreeShipping_CheckBox;
         private Label _includeFreeShipping_Label;
-
         public enum ChartDataType
         {
             TotalRevenue,
@@ -1950,28 +1943,28 @@ namespace Sales_Tracker
             AverageShippingCosts,
             GrowthRates
         }
-        public GunaChart CountriesOfOrigin_Chart => _countriesOfOrigin_Chart;
-        public GunaChart CountriesOfDestination_Chart => _countriesOfDestination_Chart;
-        public GunaChart CompaniesOfOrigin_Chart => _companiesOfOrigin_Chart;
-        public GunaChart Accountants_Chart => _accountants_Chart;
-        public GunaChart GrowthRates_Chart => _growthRates_Chart;
-        public GunaChart SalesVsExpenses_Chart => _salesVsExpenses_Chart;
-        public GunaChart AverageTransactionValue_Chart => _averageTransactionValue_Chart;
-        public GunaChart TotalTransactions_Chart => _totalTransactions_Chart;
-        public GunaChart AverageShippingCosts_Chart => _averageShippingCosts_Chart;
-        public Guna2CustomCheckBox IncludeFreeShipping_CheckBox => _includeFreeShipping_CheckBox;
+        public GunaChart CountriesOfOrigin_Chart { get; private set; }
+        public GunaChart CountriesOfDestination_Chart { get; private set; }
+        public GunaChart CompaniesOfOrigin_Chart { get; private set; }
+        public GunaChart Accountants_Chart { get; private set; }
+        public GunaChart GrowthRates_Chart { get; private set; }
+        public GunaChart SalesVsExpenses_Chart { get; private set; }
+        public GunaChart AverageTransactionValue_Chart { get; private set; }
+        public GunaChart TotalTransactions_Chart { get; private set; }
+        public GunaChart AverageShippingCosts_Chart { get; private set; }
+        public Guna2CustomCheckBox IncludeFreeShipping_CheckBox { get; private set; }
 
         // Analytics charts methods
         public List<Control> GetMainControls()
         {
             return [
-                _sale_DataGridView,
-                _purchase_DataGridView,
+                Sale_DataGridView,
+                Purchase_DataGridView,
                 _purchaseTotals_Chart,
                 _purchaseDistribution_Chart,
                 _saleTotals_Chart,
                 _saleDistribution_Chart,
-                _profits_Chart,
+                Profits_Chart,
                 Total_Panel
             ];
         }
@@ -1995,22 +1988,22 @@ namespace Sales_Tracker
         /// </summary>
         private void ConstructControlsForAnalytics()
         {
-            _countriesOfOrigin_Chart = ConstructAnalyticsChart("countriesOfOrigin_Chart");
-            _companiesOfOrigin_Chart = ConstructAnalyticsChart("companiesOfOrigin_Chart");
-            _countriesOfDestination_Chart = ConstructAnalyticsChart("countriesOfDestination_Chart");
-            _accountants_Chart = ConstructAnalyticsChart("accountants_Chart");
-            _salesVsExpenses_Chart = ConstructAnalyticsChart("salesVsExpenses_Chart");
-            _averageTransactionValue_Chart = ConstructAnalyticsChart("averageOrderValue_Chart");
-            _totalTransactions_Chart = ConstructAnalyticsChart("totalTransactions_Chart");
-            _averageShippingCosts_Chart = ConstructAnalyticsChart("averageShippingCosts_Chart");
-            _growthRates_Chart = ConstructAnalyticsChart("growthRates_Chart");
+            CountriesOfOrigin_Chart = ConstructAnalyticsChart("countriesOfOrigin_Chart");
+            CompaniesOfOrigin_Chart = ConstructAnalyticsChart("companiesOfOrigin_Chart");
+            CountriesOfDestination_Chart = ConstructAnalyticsChart("countriesOfDestination_Chart");
+            Accountants_Chart = ConstructAnalyticsChart("accountants_Chart");
+            SalesVsExpenses_Chart = ConstructAnalyticsChart("salesVsExpenses_Chart");
+            AverageTransactionValue_Chart = ConstructAnalyticsChart("averageOrderValue_Chart");
+            TotalTransactions_Chart = ConstructAnalyticsChart("totalTransactions_Chart");
+            AverageShippingCosts_Chart = ConstructAnalyticsChart("averageShippingCosts_Chart");
+            GrowthRates_Chart = ConstructAnalyticsChart("growthRates_Chart");
 
-            _includeFreeShipping_CheckBox = new Guna2CustomCheckBox
+            IncludeFreeShipping_CheckBox = new Guna2CustomCheckBox
             {
                 Size = new Size(20, 20)
             };
-            _includeFreeShipping_CheckBox.CheckedChanged += IncludeFreeShippingCheckBox_CheckedChanged;
-            Controls.Add(_includeFreeShipping_CheckBox);
+            IncludeFreeShipping_CheckBox.CheckedChanged += IncludeFreeShippingCheckBox_CheckedChanged;
+            Controls.Add(IncludeFreeShipping_CheckBox);
 
             _includeFreeShipping_Label = new Label
             {
@@ -2026,16 +2019,16 @@ namespace Sales_Tracker
 
             _analyticsControls =
             [
-                _countriesOfOrigin_Chart,
-                _companiesOfOrigin_Chart,
-                _countriesOfDestination_Chart,
-                _accountants_Chart,
-                _salesVsExpenses_Chart,
-                _averageTransactionValue_Chart,
-                _totalTransactions_Chart,
-                _averageShippingCosts_Chart,
-                _growthRates_Chart,
-                _includeFreeShipping_CheckBox,
+                CountriesOfOrigin_Chart,
+                CompaniesOfOrigin_Chart,
+                CountriesOfDestination_Chart,
+                Accountants_Chart,
+                SalesVsExpenses_Chart,
+                AverageTransactionValue_Chart,
+                TotalTransactions_Chart,
+                AverageShippingCosts_Chart,
+                GrowthRates_Chart,
+                IncludeFreeShipping_CheckBox,
                 _includeFreeShipping_Label
             ];
 
@@ -2053,7 +2046,7 @@ namespace Sales_Tracker
             UserSettings.UpdateSetting("Include free shipping in chart", Properties.Settings.Default.IncludeFreeShipping, zeroShipping,
              value => Properties.Settings.Default.IncludeFreeShipping = value);
 
-            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart, includeZeroShipping: zeroShipping);
+            LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLineChart, includeZeroShipping: zeroShipping);
         }
         private GunaChart ConstructAnalyticsChart(string name)
         {
@@ -2095,42 +2088,42 @@ namespace Sales_Tracker
 
             if (!onlyRefreshForLineCharts)
             {
-                LoadChart.LoadCountriesOfOriginForProductsIntoChart(_countriesOfOrigin_Chart, PieChartGrouping.Top8);
-                _countriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
-                LanguageManager.UpdateLanguageForControl(_countriesOfOrigin_Chart);
+                LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
+                CountriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
+                LanguageManager.UpdateLanguageForControl(CountriesOfOrigin_Chart);
 
-                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(_companiesOfOrigin_Chart, PieChartGrouping.Top8);
-                _companiesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
-                LanguageManager.UpdateLanguageForControl(_companiesOfOrigin_Chart);
+                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
+                CompaniesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
+                LanguageManager.UpdateLanguageForControl(CompaniesOfOrigin_Chart);
 
-                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(_countriesOfDestination_Chart, PieChartGrouping.Top8);
-                _countriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
-                LanguageManager.UpdateLanguageForControl(_countriesOfDestination_Chart);
+                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(CountriesOfDestination_Chart, PieChartGrouping.Top8);
+                CountriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
+                LanguageManager.UpdateLanguageForControl(CountriesOfDestination_Chart);
 
-                LoadChart.LoadAccountantsIntoChart(_accountants_Chart, PieChartGrouping.Top8);
-                _accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
-                LanguageManager.UpdateLanguageForControl(_accountants_Chart);
+                LoadChart.LoadAccountantsIntoChart(Accountants_Chart, PieChartGrouping.Top8);
+                Accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
+                LanguageManager.UpdateLanguageForControl(Accountants_Chart);
 
-                LoadChart.LoadGrowthRateChart(_growthRates_Chart);
-                _growthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
-                LanguageManager.UpdateLanguageForControl(_growthRates_Chart);
+                LoadChart.LoadGrowthRateChart(GrowthRates_Chart);
+                GrowthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
+                LanguageManager.UpdateLanguageForControl(GrowthRates_Chart);
             }
 
-            LoadChart.LoadSalesVsExpensesChart(_salesVsExpenses_Chart, isLineChart);
-            _salesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
-            LanguageManager.UpdateLanguageForControl(_salesVsExpenses_Chart);
+            LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLineChart);
+            SalesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
+            LanguageManager.UpdateLanguageForControl(SalesVsExpenses_Chart);
 
-            LoadChart.LoadTotalTransactionsChart(_totalTransactions_Chart, isLineChart);
-            _totalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
-            LanguageManager.UpdateLanguageForControl(_totalTransactions_Chart);
+            LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLineChart);
+            TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
+            LanguageManager.UpdateLanguageForControl(TotalTransactions_Chart);
 
-            LoadChart.LoadAverageTransactionValueChart(_averageTransactionValue_Chart, isLineChart);
-            _averageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
-            LanguageManager.UpdateLanguageForControl(_averageTransactionValue_Chart);
+            LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLineChart);
+            AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
+            LanguageManager.UpdateLanguageForControl(AverageTransactionValue_Chart);
 
-            LoadChart.LoadAverageShippingCostsChart(_averageShippingCosts_Chart, isLineChart, includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
-            _averageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
-            LanguageManager.UpdateLanguageForControl(_averageShippingCosts_Chart);
+            LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLineChart, includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
+            AverageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
+            LanguageManager.UpdateLanguageForControl(AverageShippingCosts_Chart);
         }
 
         // Misc.
