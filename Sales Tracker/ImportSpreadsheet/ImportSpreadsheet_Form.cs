@@ -19,7 +19,6 @@ namespace Sales_Tracker.ImportSpreadsheet
             InitializeComponent();
 
             _oldOption = MainMenu_Form.Instance.Selected;
-            InitLoadingComponents();
             InitContainerPanel();
             UpdateTheme();
             SetAccessibleDescriptions();
@@ -170,7 +169,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             Import_Button.Enabled = false;
             Controls.Remove(_centeredFlowPanel);
-            ShowLoadingIndicator();
+            LoadingPanel.ShowLoadingScreen(this, "Loading...");
 
             List<Panel> panels = await Task.Run(LoadSpreadsheetData);
 
@@ -193,7 +192,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 Import_Button.Enabled = true;
                 AddPanels(panels);
             }
-            HideLoadingIndicator();
+            LoadingPanel.HideLoadingScreen(this);
         }
 
         // Import
@@ -202,7 +201,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             if (!ValidateSpreadsheet()) { return; }
 
             Controls.Remove(_centeredFlowPanel);
-            ShowLoadingIndicator();
+            LoadingPanel.ShowLoadingScreen(this, "Importing...");
             Import_Button.Enabled = false;
 
             try
@@ -210,14 +209,14 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (await Task.Run(ImportSpreadsheetAndReceipts))
                 {
                     MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
-                    HideLoadingIndicator();
+                    LoadingPanel.HideLoadingScreen(this);
                     string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}'";
                     CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
 
                     CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet",
                         CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
 
-                    HideLoadingIndicator();
+                    LoadingPanel.HideLoadingScreen(this);
                     RemoveSpreadsheetLabel();
                     RemoveReceiptsFolderLabel();
                     Close();
@@ -232,6 +231,10 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+            }
+            finally
+            {
+                LoadingPanel.HideLoadingScreen(this);
             }
         }
         private bool ImportSpreadsheetAndReceipts()
@@ -477,39 +480,18 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 _centeredFlowPanel.Controls.Add(panel);
             }
-        }
 
-        // Loading controls
-        private Guna2WinProgressIndicator _loadingIndicator;
-        private const string _accountantsName = "Accountants", _companiesName = "Companies", _purchaseProductsName = "Purchase products",
-            _saleProductsName = "Sale products", _purchasesName = "Purchases", _salesName = "Sales", _receiptsName = "Receipts";
-        private void InitLoadingComponents()
-        {
-            _loadingIndicator = new Guna2WinProgressIndicator
-            {
-                AutoStart = true,
-                ProgressColor = CustomColors.AccentBlue,
-                Anchor = AnchorStyles.Top
-            };
-        }
-        private void ShowLoadingIndicator()
-        {
-            Controls.Add(_loadingIndicator);
-            _loadingIndicator.Location = new Point((ClientSize.Width - _loadingIndicator.Width) / 2, 400);
-        }
-        private void HideLoadingIndicator()
-        {
             _centeredFlowPanel.SuspendLayout();
-
-            Controls.Remove(_loadingIndicator);
             Controls.Add(_centeredFlowPanel);
-
             ThemeManager.CustomizeScrollBar(_centeredFlowPanel);
             _centeredFlowPanel.ResumeLayout();
             _centeredFlowPanel.Left = (ClientSize.Width - _centeredFlowPanel.Width) / 2;
         }
 
         // Load spreadsheets
+        private const string _accountantsName = "Accountants", _companiesName = "Companies", _purchaseProductsName = "Purchase products",
+            _saleProductsName = "Sale products", _purchasesName = "Purchases", _salesName = "Sales", _receiptsName = "Receipts";
+
         private Task<List<Panel>> LoadSpreadsheetData()
         {
             if (string.IsNullOrEmpty(_spreadsheetFilePath))
