@@ -120,7 +120,7 @@ namespace Sales_Tracker.UI
         {
             string translatedMessage = LanguageManager.TranslateString(message);
             LoadingPanel.cancellationTokenSource = cancellationTokenSource;
-            currentControl = control; // Store the current control
+            currentControl = control;
 
             LoadingPanelInstance.Size = control.Size;
             control.Controls.Add(LoadingPanelInstance);

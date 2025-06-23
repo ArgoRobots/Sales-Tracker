@@ -164,6 +164,12 @@ namespace Sales_Tracker.Startup.Menus
                 MainMenu_Form.Instance.Purchase_DataGridView.Rows.Clear();
                 MainMenu_Form.Instance.Sale_DataGridView.Rows.Clear();
                 MainMenu_Form.IsProgramLoading = false;
+
+                MainMenu_Form.Instance.CategorySaleList.Clear();
+                MainMenu_Form.Instance.CategoryPurchaseList.Clear();
+                MainMenu_Form.Instance.AccountantList.Clear();
+                MainMenu_Form.Instance.CompanyList.Clear();
+
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.LoadOrRefreshMainCharts();
                 MainMenu_Form.Instance.HideShowingResultsForLabel();

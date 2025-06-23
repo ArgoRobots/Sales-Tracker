@@ -591,8 +591,6 @@ namespace Sales_Tracker
             IsProgramLoading = false;
 
             SortTheDataGridViewByDate();
-            AlignTotalLabels();
-            UpdateTotalLabels();
             CenterAndResizeControls();
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
