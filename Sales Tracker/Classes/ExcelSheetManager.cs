@@ -1667,21 +1667,7 @@ namespace Sales_Tracker.Classes
 
                 IXLCell excelCell = worksheet.Cell(currentRow, excelColumnIndex);
 
-                // Handle ID column (first column) as number
-                if (i == 0)
-                {
-                    object? cellValue = row.Cells[i].Value;
-                    if (cellValue != null && int.TryParse(cellValue.ToString(), out int idValue))
-                    {
-                        excelCell.Value = idValue;
-                        excelCell.Style.NumberFormat.Format = _numberFormatPattern;
-                    }
-                    else
-                    {
-                        excelCell.Value = cellValue?.ToString();
-                    }
-                }
-                else if (tagData != null && i >= 8 && i <= 14)
+                if (tagData != null && i >= 8 && i <= 14)
                 {
                     (decimal usdValue, bool useEmpty) = i switch
                     {
