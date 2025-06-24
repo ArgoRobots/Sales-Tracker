@@ -1161,25 +1161,24 @@ namespace Sales_Tracker.Classes
         {
             return ImportTransactionData(worksheet, includeHeader, false);
         }
-        public static bool ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath)
+        public static bool ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase)
         {
             IEnumerable<IXLRow> rowsToProcess = includeHeader
                 ? worksheet.RowsUsed()
                 : worksheet.RowsUsed().Skip(1);
 
             bool wasSomethingImported = false;
-            int successfulImports = 0;
-            int failedImports = 0;
 
             foreach (IXLRow row in rowsToProcess)
             {
                 string transactionId = row.Cell(1).GetValue<string>();
-                string receiptFileName = row.Cell(2).GetValue<string>();
+                string receiptFileName = row.Cell(18).GetValue<string>();
 
                 // Skip if any essential field is empty
                 if (string.IsNullOrWhiteSpace(transactionId) ||
                     string.IsNullOrWhiteSpace(receiptFileName) ||
-                    string.IsNullOrWhiteSpace(receiptsFolderPath))
+                    string.IsNullOrWhiteSpace(receiptsFolderPath) ||
+                    receiptFileName == ReadOnlyVariables.EmptyCell)
                 {
                     continue;
                 }
@@ -1189,25 +1188,26 @@ namespace Sales_Tracker.Classes
                 // Check if the receipt file exists
                 if (!File.Exists(receiptFilePath))
                 {
-                    failedImports++;
                     Log.Error_FileDoesNotExist(receiptFilePath);
                     continue;
                 }
 
-                // Find the transaction in both purchase and sale DataGridViews
-                DataGridViewRow? targetRow = FindTransactionRow(transactionId);
+                // Find the transaction in the correct DataGridView
+                DataGridViewRow? targetRow = FindTransactionRow(transactionId, isPurchase);
                 if (targetRow == null)
                 {
-                    failedImports++;
+                    string transactionType = isPurchase ? "purchase" : "sale";
+                    Log.Write(1, $"{transactionType} {transactionId} not found for receipt {receiptFileName}");
                     continue;
                 }
 
                 // Check if transaction already has a receipt
                 if (TransactionHasReceipt(targetRow))
                 {
+                    string transactionType = isPurchase ? "purchase" : "sale";
                     CustomMessageBoxResult result = CustomMessageBox.Show(
                         "Transaction already has receipt",
-                        $"Transaction {transactionId} already has a receipt. Do you want to replace it?",
+                        $"{transactionType} {transactionId} already has a receipt. Do you want to replace it?",
                         CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
                     if (result != CustomMessageBoxResult.Yes)
@@ -1220,34 +1220,13 @@ namespace Sales_Tracker.Classes
                 (string newReceiptPath, bool saved) = ReceiptManager.SaveReceiptInFile(receiptFilePath);
                 if (!saved)
                 {
-                    failedImports++;
                     continue;
                 }
 
                 ReceiptManager.AddReceiptToTag(targetRow, newReceiptPath);
                 MainMenu_Form.SetHasReceiptColumn(targetRow, newReceiptPath);
 
-                successfulImports++;
                 wasSomethingImported = true;
-            }
-
-            // Show summary message
-            if (wasSomethingImported || failedImports > 0)
-            {
-                string message = "";
-                if (successfulImports > 0)
-                {
-                    message += $"Successfully imported {successfulImports} receipt(s).";
-                }
-                if (failedImports > 0)
-                {
-                    if (successfulImports > 0) message += " ";
-                    message += $"Failed to import {failedImports} receipt(s).";
-                }
-
-                CustomMessageBox.Show("Receipt Import Results", message,
-                    failedImports > 0 ? CustomMessageBoxIcon.Exclamation : CustomMessageBoxIcon.Info,
-                    CustomMessageBoxButtons.Ok);
             }
 
             // Save the updated transaction data
@@ -1259,19 +1238,13 @@ namespace Sales_Tracker.Classes
 
             return wasSomethingImported;
         }
-        private static DataGridViewRow? FindTransactionRow(string transactionId)
+        private static DataGridViewRow? FindTransactionRow(string transactionId, bool isPurchase)
         {
-            // Search in purchase transactions
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchase_DataGridView.Rows)
-            {
-                if (row.Cells[MainMenu_Form.Column.ID.ToString()].Value?.ToString() == transactionId)
-                {
-                    return row;
-                }
-            }
+            Guna2DataGridView targetDataGridView = isPurchase
+                ? MainMenu_Form.Instance.Purchase_DataGridView
+                : MainMenu_Form.Instance.Sale_DataGridView;
 
-            // Search in sale transactions
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sale_DataGridView.Rows)
+            foreach (DataGridViewRow row in targetDataGridView.Rows)
             {
                 if (row.Cells[MainMenu_Form.Column.ID.ToString()].Value?.ToString() == transactionId)
                 {
@@ -1412,8 +1385,14 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static void FormatNoteCell(DataGridViewRow row)
         {
-            DataGridViewCell lastCell = row.Cells[^1];
-            DataGridViewManager.AddUnderlineToCell(lastCell);
+            int noteCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? row.Cells.Count - 2 : row.Cells.Count - 1;
+            DataGridViewCell lastCell = row.Cells[noteCellIndex];
+
+            // Only add underline if the cell has a note
+            if (lastCell.Value?.ToString() == ReadOnlyVariables.Show_text && lastCell.Tag != null)
+            {
+                DataGridViewManager.AddUnderlineToCell(lastCell);
+            }
         }
 
         /// <summary>
@@ -1430,7 +1409,8 @@ namespace Sales_Tracker.Classes
             decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", currency, date, false);
             if (exchangeRateToDefault == -1) { return false; }
 
-            for (int i = 0; i < row.Cells().Count() - 2; i++)  // Do not add the note in the last cell yet
+            int noteCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? newRow.Cells.Count - 2 : newRow.Cells.Count - 1;
+            for (int i = 0; i < noteCellIndex; i++)  // Do not add the note in the last cell yet
             {
                 string value = row.Cell(i + 1).GetValue<string>();
 
@@ -1481,19 +1461,19 @@ namespace Sales_Tracker.Classes
                 }
             }
 
-            // Set the note in the last cell
-            DataGridViewCell lastCell = newRow.Cells[^1];
-            IXLCell lastExcelCell = row.Cell(row.Cells().Count() - 1);
-            string lastExcelCellValue = lastExcelCell.Value.ToString();
+            // Set the note
+            DataGridViewCell noteCell = newRow.Cells[noteCellIndex];
+            IXLCell excelNoteCell = row.Cell(16);
+            string excelNoteCellValue = excelNoteCell.GetValue<string>();
 
-            if (lastExcelCellValue == ReadOnlyVariables.EmptyCell)
+            if (string.IsNullOrWhiteSpace(excelNoteCellValue) || excelNoteCellValue == ReadOnlyVariables.EmptyCell)
             {
-                lastCell.Value = ReadOnlyVariables.EmptyCell;
+                noteCell.Value = ReadOnlyVariables.EmptyCell;
             }
             else
             {
-                lastCell.Value = ReadOnlyVariables.Show_text;
-                lastCell.Tag = lastExcelCellValue;
+                noteCell.Value = ReadOnlyVariables.Show_text;
+                noteCell.Tag = excelNoteCellValue;
             }
 
             // Save

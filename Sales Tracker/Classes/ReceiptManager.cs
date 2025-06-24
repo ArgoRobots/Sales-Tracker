@@ -17,7 +17,7 @@ namespace Sales_Tracker.Classes
         /// <returns>A tuple containing the new path of the saved receipt and a boolean indicating if the save operation was successful.</returns>
         public static (string, bool) SaveReceiptInFile(string receiptFilePath)
         {
-            // Replace the company name with companyName_text
+            // Replace CompanyName_text with CompanyName
             string[] pathParts = Directories.Receipts_dir.Split(Path.DirectorySeparatorChar);
             if (pathParts[7] == ReadOnlyVariables.CompanyName_text)
             {
@@ -49,7 +49,7 @@ namespace Sales_Tracker.Classes
             // Save receipt
             bool saved = Directories.CopyFile(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, ""), newFilePath);
 
-            // Replace the companyName_text with companyName_textcompany name
+            // Replace CompanyName with CompanyName_text
             pathParts = newFilePath.Split(Path.DirectorySeparatorChar);
             if (pathParts[7] == Directories.CompanyName)
             {
@@ -71,17 +71,35 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Adds a receipt file path to a DataGridView row's tag, either updating an existing
-        /// tag list or setting a new file path.
+        /// Adds a receipt file path to a DataGridView row's tag, preserving existing TagData structure.
         /// </summary>
         public static void AddReceiptToTag(DataGridViewRow row, string filePath)
         {
-            if (row.Tag is List<string> tagList)
+            if (row.Tag is (List<string> tagList, TagData))
             {
-                tagList[^1] = filePath;
+                // Multiple items case - replace or add receipt as last item
+                if (tagList.Count > 0 && tagList[^1].StartsWith(ReadOnlyVariables.Receipt_text))
+                {
+                    tagList[^1] = filePath;  // Replace existing receipt
+                }
+                else
+                {
+                    tagList.Add(filePath);  // Add receipt
+                }
+            }
+            else if (row.Tag is (string, TagData tagData2))
+            {
+                // Single item with existing receipt - replace receipt
+                row.Tag = (filePath, tagData2);
+            }
+            else if (row.Tag is TagData tagData3)
+            {
+                // Single item without receipt - convert to tuple with receipt
+                row.Tag = (filePath, tagData3);
             }
             else
             {
+                // Fallback - this shouldn't happen for properly imported transactions
                 row.Tag = filePath;
             }
         }
@@ -89,7 +107,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Checks if a specified receipt file exists in the filesystem and shows a message if it does not.
         /// </summary>
-        /// <returns>True if the receipt exists or if the user did not select a receipt; otherwise, false.</returns>
+        /// <returns>True if the receipt exists or if the user did not select a receipt. Otherwise, false.</returns>
         public static bool CheckIfReceiptExists(string receiptFilePath)
         {
             if (receiptFilePath != null && !File.Exists(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, "")))
