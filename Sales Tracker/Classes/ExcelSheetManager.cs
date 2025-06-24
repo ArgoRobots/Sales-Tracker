@@ -16,7 +16,9 @@ namespace Sales_Tracker.Classes
     internal class ExcelSheetManager
     {
         // Constants
-        private const string DecimalFormatPattern = "#,##0.00";
+        private const string _decimalFormatPattern = "#,##0.00";
+        private const string _currencyFormatPattern = "\"$\"#,##0.00";
+        private const string _numberFormatPattern = "0";
 
         // Import spreadsheet methods
         public static bool ImportAccountantsData(IXLWorksheet worksheet, bool includeHeader)
@@ -1342,6 +1344,12 @@ namespace Sales_Tracker.Classes
                 DataGridViewManager.DataGridViewRowsAdded(targetGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
 
+            // Update "Has Receipt" column for all imported rows
+            if (wasSomethingImported)
+            {
+                MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
+            }
+
             return (true, wasSomethingImported);
         }
 
@@ -1410,7 +1418,7 @@ namespace Sales_Tracker.Classes
             if (exchangeRateToDefault == -1) { return false; }
 
             int noteCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? newRow.Cells.Count - 2 : newRow.Cells.Count - 1;
-            for (int i = 0; i < noteCellIndex; i++)  // Do not add the note in the last cell yet
+            for (int i = 0; i < noteCellIndex; i++)
             {
                 string value = row.Cell(i + 1).GetValue<string>();
 
@@ -1453,7 +1461,7 @@ namespace Sales_Tracker.Classes
 
                     newRow.Cells[i].Value = useEmpty
                         ? ReadOnlyVariables.EmptyCell
-                        : (decimalValue * exchangeRateToDefault).ToString("N2");
+                        : (decimalValue * exchangeRateToDefault);
                 }
                 else
                 {
@@ -1476,7 +1484,6 @@ namespace Sales_Tracker.Classes
                 noteCell.Tag = excelNoteCellValue;
             }
 
-            // Save
             newRow.Tag = tagData;
             return true;
         }
@@ -1562,15 +1569,23 @@ namespace Sales_Tracker.Classes
         private static void AddTransactionToWorksheet(IXLWorksheet worksheet, DataGridView dataGridView)
         {
             // Add headers and format them
+            int excelColumnIndex = 1;
             for (int i = 0; i < dataGridView.Columns.Count; i++)
             {
-                IXLCell cell = worksheet.Cell(1, i + 1);
+                // Skip the "Has Receipt" column
+                if (dataGridView.Columns[i].Name == MainMenu_Form.Column.HasReceipt.ToString())
+                {
+                    continue;
+                }
+
+                IXLCell cell = worksheet.Cell(1, excelColumnIndex);
                 cell.Value = dataGridView.Columns[i].HeaderText;
                 cell.Style.Font.Bold = true;
                 cell.Style.Fill.BackgroundColor = XLColor.LightBlue;
+                excelColumnIndex++;
             }
 
-            int receiptCellIndex = dataGridView.Columns.Count + 1;
+            int receiptCellIndex = excelColumnIndex;
 
             // Add header for the receipt column
             worksheet.Cell(1, receiptCellIndex).Value = "Receipt";
@@ -1590,7 +1605,7 @@ namespace Sales_Tracker.Classes
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                // Handle receipts and adding new rows using pattern matching
+                // Add transactions
                 switch (row.Tag)
                 {
                     case (List<string> itemList, TagData tagData) when itemList.Count > 0:
@@ -1609,11 +1624,11 @@ namespace Sales_Tracker.Classes
 
                         AddRowToWorksheet(worksheet, row, currentRow, tagData);
 
-                        // Add additional rows if they exist in itemList
-                        for (int j = 0; j < itemList.Count - receiptOffset; j++)
+                        // Add items in transaction if they exist in itemList
+                        for (int i = 0; i < itemList.Count - receiptOffset; i++)
                         {
                             currentRow++;
-                            string[] values = itemList[j].Split(',');
+                            string[] values = itemList[i].Split(',');
 
                             AddItemRowToWorksheet(worksheet, values, currentRow);
                         }
@@ -1636,17 +1651,39 @@ namespace Sales_Tracker.Classes
         }
         private static void AddRowToWorksheet(IXLWorksheet worksheet, DataGridViewRow row, int currentRow, TagData tagData)
         {
-            for (int i = 0; i < row.Cells.Count - 1; i++)  // Do not add the note in the last cell yet
+            int excelColumnIndex = 1;
+
+            for (int i = 0; i < row.Cells.Count; i++)
             {
-                IXLCell excelCell = worksheet.Cell(currentRow, i + 1);
+                // Skip the Notes column - it will be handled separately
+                int notesColumnIndex = Properties.Settings.Default.ShowHasReceiptColumn
+                    ? row.Cells.Count - 2
+                    : row.Cells.Count - 1;
 
-                if (tagData != null && i >= 8 && i <= 14)
+                if (i == notesColumnIndex)
                 {
-                    decimal usdValue;
-                    bool useEmpty;
+                    break;
+                }
 
-                    // Use a switch expression for cleaner code
-                    (usdValue, useEmpty) = i switch
+                IXLCell excelCell = worksheet.Cell(currentRow, excelColumnIndex);
+
+                // Handle ID column (first column) as number
+                if (i == 0)
+                {
+                    object? cellValue = row.Cells[i].Value;
+                    if (cellValue != null && int.TryParse(cellValue.ToString(), out int idValue))
+                    {
+                        excelCell.Value = idValue;
+                        excelCell.Style.NumberFormat.Format = _numberFormatPattern;
+                    }
+                    else
+                    {
+                        excelCell.Value = cellValue?.ToString();
+                    }
+                }
+                else if (tagData != null && i >= 8 && i <= 14)
+                {
+                    (decimal usdValue, bool useEmpty) = i switch
                     {
                         8 => (tagData.PricePerUnitUSD, tagData.PricePerUnitUSD == 0),
                         9 => (tagData.ShippingUSD, false),
@@ -1658,26 +1695,57 @@ namespace Sales_Tracker.Classes
                         _ => (0, false)
                     };
 
-                    excelCell.Value = useEmpty ? ReadOnlyVariables.EmptyCell : usdValue.ToString("N5");
+                    if (useEmpty)
+                    {
+                        excelCell.Value = ReadOnlyVariables.EmptyCell;
+                    }
+                    else
+                    {
+                        // Set as numeric value with currency formatting
+                        excelCell.Value = usdValue;
+                        excelCell.Style.NumberFormat.Format = _currencyFormatPattern;
+                    }
                 }
                 else
                 {
-                    string? cellValue = row.Cells[i].Value?.ToString();
-                    excelCell.Value = cellValue;
+                    // Handle other cell types
+                    object? cellValue = row.Cells[i].Value;
+
+                    // Try to parse as decimal for numeric columns
+                    if (cellValue != null && IsNumericColumn(i) &&
+                        decimal.TryParse(cellValue.ToString(), out decimal numericValue))
+                    {
+                        excelCell.Value = numericValue;
+                        // Use currency format for money columns, decimal for others
+                        if (IsCurrencyColumn(i))
+                        {
+                            excelCell.Style.NumberFormat.Format = _currencyFormatPattern;
+                        }
+                        else
+                        {
+                            excelCell.Style.NumberFormat.Format = _decimalFormatPattern;
+                        }
+                    }
+                    else
+                    {
+                        excelCell.Value = cellValue?.ToString();
+                    }
                 }
+
+                excelColumnIndex++;
             }
 
-            // Set the note in the last cell
-            DataGridViewCell lastCell = row.Cells[^1];
-            string? lastCellValue = lastCell.Value?.ToString();
-            IXLCell lastExcelCell = worksheet.Cell(currentRow, row.Cells.Count);
+            // Handle the Notes column
+            int notesCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? row.Cells.Count - 2 : row.Cells.Count - 1;
+            DataGridViewCell notesCell = row.Cells[notesCellIndex];
+            string? notesCellValue = notesCell.Value?.ToString();
+            IXLCell notesExcelCell = worksheet.Cell(currentRow, excelColumnIndex);
 
-            // Use ternary operators for cleaner code
-            lastExcelCell.Value = lastCellValue == ReadOnlyVariables.EmptyCell
+            notesExcelCell.Value = notesCellValue == ReadOnlyVariables.EmptyCell
                 ? ReadOnlyVariables.EmptyCell
-                : (lastCellValue == ReadOnlyVariables.Show_text && lastCell.Tag != null)
-                    ? lastCell.Tag.ToString()
-                    : lastCellValue;
+                : (notesCellValue == ReadOnlyVariables.Show_text && notesCell.Tag != null)
+                    ? notesCell.Tag.ToString()
+                    : notesCellValue;
         }
         private static void AddItemRowToWorksheet(IXLWorksheet worksheet, string[] row, int currentRow)
         {
@@ -1685,12 +1753,48 @@ namespace Sales_Tracker.Classes
             {
                 // Shift the data one column to the right after the date column
                 int columnIndex = i < 4 ? i : i + 1;
-
                 IXLCell excelCell = worksheet.Cell(currentRow, columnIndex + 3);
 
-                string? cellValue = row[i]?.ToString();
-                excelCell.Value = cellValue;
+                string cellValue = row[i];
+
+                // Check if this should be a numeric value (quantity, price, etc.)
+                if (i == 4 || i == 5) // quantity and price columns
+                {
+                    if (decimal.TryParse(cellValue, out decimal numericValue))
+                    {
+                        excelCell.Value = numericValue;
+                        // Format price as currency, quantity as decimal
+                        if (i == 5) // price column
+                        {
+                            excelCell.Style.NumberFormat.Format = _currencyFormatPattern;
+                        }
+                        else // quantity column
+                        {
+                            excelCell.Style.NumberFormat.Format = _decimalFormatPattern;
+                        }
+                    }
+                    else
+                    {
+                        excelCell.Value = cellValue;
+                    }
+                }
+                else
+                {
+                    excelCell.Value = cellValue;
+                }
             }
+        }
+        private static bool IsCurrencyColumn(int columnIndex)
+        {
+            // Define which columns contain currency data
+            int[] currencyColumns = [8, 9, 10, 11, 12, 13, 14]; // USD value columns
+            return currencyColumns.Contains(columnIndex);
+        }
+        private static bool IsNumericColumn(int columnIndex)
+        {
+            // Define which columns contain numeric data (both currency and non-currency)
+            int[] numericColumns = [7, 8, 9, 10, 11, 12, 13, 14];
+            return numericColumns.Contains(columnIndex);
         }
         private static void AddCompaniesToWorksheet(IXLWorksheet worksheet)
         {
@@ -1780,7 +1884,7 @@ namespace Sales_Tracker.Classes
             {
                 worksheet.Cells[row, 1].Value = item.Key;
                 worksheet.Cells[row, 2].Value = item.Value;
-                worksheet.Cells[row, 2].Style.Numberformat.Format = DecimalFormatPattern;
+                worksheet.Cells[row, 2].Style.Numberformat.Format = _currencyFormatPattern;
                 row++;
             }
 
@@ -1833,7 +1937,8 @@ namespace Sales_Tracker.Classes
                 for (int i = 0; i < seriesNames.Count; i++)
                 {
                     worksheet.Cells[row, i + 2].Value = dateEntry.Value[seriesNames[i]];
-                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = DecimalFormatPattern;
+                    // Use currency formatting for money values
+                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = _currencyFormatPattern;
                 }
                 row++;
             }

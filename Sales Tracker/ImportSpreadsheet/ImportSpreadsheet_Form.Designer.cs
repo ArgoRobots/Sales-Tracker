@@ -59,7 +59,7 @@
             ImportSpreadsheet_Label.Anchor = AnchorStyles.Top;
             ImportSpreadsheet_Label.AutoSize = true;
             ImportSpreadsheet_Label.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            ImportSpreadsheet_Label.Location = new Point(422, 15);
+            ImportSpreadsheet_Label.Location = new Point(411, 15);
             ImportSpreadsheet_Label.Margin = new Padding(6, 0, 6, 0);
             ImportSpreadsheet_Label.Name = "ImportSpreadsheet_Label";
             ImportSpreadsheet_Label.Size = new Size(306, 45);
@@ -80,7 +80,7 @@
             SelectSpreadsheet_Button.FillColor = Color.White;
             SelectSpreadsheet_Button.Font = new Font("Segoe UI", 10F);
             SelectSpreadsheet_Button.ForeColor = Color.Black;
-            SelectSpreadsheet_Button.Location = new Point(230, 85);
+            SelectSpreadsheet_Button.Location = new Point(326, 84);
             SelectSpreadsheet_Button.Margin = new Padding(6, 5, 6, 5);
             SelectSpreadsheet_Button.Name = "SelectSpreadsheet_Button";
             SelectSpreadsheet_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -122,7 +122,7 @@
             RemoveSpreadsheet_ImageButton.ImageOffset = new Point(0, 0);
             RemoveSpreadsheet_ImageButton.ImageRotate = 0F;
             RemoveSpreadsheet_ImageButton.ImageSize = new Size(30, 30);
-            RemoveSpreadsheet_ImageButton.Location = new Point(326, 138);
+            RemoveSpreadsheet_ImageButton.Location = new Point(422, 137);
             RemoveSpreadsheet_ImageButton.Name = "RemoveSpreadsheet_ImageButton";
             RemoveSpreadsheet_ImageButton.PressedState.ImageSize = new Size(30, 30);
             RemoveSpreadsheet_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges5;
@@ -137,7 +137,7 @@
             SelectedSpreadsheet_Label.Anchor = AnchorStyles.Top;
             SelectedSpreadsheet_Label.AutoSize = true;
             SelectedSpreadsheet_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedSpreadsheet_Label.Location = new Point(232, 143);
+            SelectedSpreadsheet_Label.Location = new Point(328, 142);
             SelectedSpreadsheet_Label.Name = "SelectedSpreadsheet_Label";
             SelectedSpreadsheet_Label.Size = new Size(86, 28);
             SelectedSpreadsheet_Label.TabIndex = 0;
@@ -168,14 +168,14 @@
             // 
             // IncludeHeaderRow_CheckBox
             // 
-            IncludeHeaderRow_CheckBox.Anchor = AnchorStyles.Top;
+            IncludeHeaderRow_CheckBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             IncludeHeaderRow_CheckBox.Animated = true;
             IncludeHeaderRow_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
             IncludeHeaderRow_CheckBox.CheckedState.BorderRadius = 2;
             IncludeHeaderRow_CheckBox.CheckedState.BorderThickness = 0;
             IncludeHeaderRow_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             IncludeHeaderRow_CheckBox.CustomizableEdges = customizableEdges8;
-            IncludeHeaderRow_CheckBox.Location = new Point(776, 95);
+            IncludeHeaderRow_CheckBox.Location = new Point(875, 30);
             IncludeHeaderRow_CheckBox.Name = "IncludeHeaderRow_CheckBox";
             IncludeHeaderRow_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges9;
             IncludeHeaderRow_CheckBox.Size = new Size(20, 20);
@@ -188,10 +188,10 @@
             // 
             // IncludeHeaderRow_Label
             // 
-            IncludeHeaderRow_Label.Anchor = AnchorStyles.Top;
+            IncludeHeaderRow_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             IncludeHeaderRow_Label.AutoSize = true;
             IncludeHeaderRow_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            IncludeHeaderRow_Label.Location = new Point(794, 85);
+            IncludeHeaderRow_Label.Location = new Point(893, 20);
             IncludeHeaderRow_Label.Name = "IncludeHeaderRow_Label";
             IncludeHeaderRow_Label.Padding = new Padding(5);
             IncludeHeaderRow_Label.Size = new Size(210, 40);
@@ -213,7 +213,7 @@
             SelectReceiptsFolder_Button.FillColor = Color.White;
             SelectReceiptsFolder_Button.Font = new Font("Segoe UI", 10F);
             SelectReceiptsFolder_Button.ForeColor = Color.Black;
-            SelectReceiptsFolder_Button.Location = new Point(487, 85);
+            SelectReceiptsFolder_Button.Location = new Point(583, 84);
             SelectReceiptsFolder_Button.Margin = new Padding(6, 5, 6, 5);
             SelectReceiptsFolder_Button.Name = "SelectReceiptsFolder_Button";
             SelectReceiptsFolder_Button.ShadowDecoration.CustomizableEdges = customizableEdges11;
@@ -227,7 +227,7 @@
             SelectedReceiptsFolder_Label.Anchor = AnchorStyles.Top;
             SelectedReceiptsFolder_Label.AutoSize = true;
             SelectedReceiptsFolder_Label.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SelectedReceiptsFolder_Label.Location = new Point(487, 143);
+            SelectedReceiptsFolder_Label.Location = new Point(583, 142);
             SelectedReceiptsFolder_Label.Name = "SelectedReceiptsFolder_Label";
             SelectedReceiptsFolder_Label.Size = new Size(86, 28);
             SelectedReceiptsFolder_Label.TabIndex = 7;
@@ -242,7 +242,7 @@
             RemoveReceiptsFolder_ImageButton.ImageOffset = new Point(0, 0);
             RemoveReceiptsFolder_ImageButton.ImageRotate = 0F;
             RemoveReceiptsFolder_ImageButton.ImageSize = new Size(30, 30);
-            RemoveReceiptsFolder_ImageButton.Location = new Point(579, 141);
+            RemoveReceiptsFolder_ImageButton.Location = new Point(675, 140);
             RemoveReceiptsFolder_ImageButton.Name = "RemoveReceiptsFolder_ImageButton";
             RemoveReceiptsFolder_ImageButton.PressedState.ImageSize = new Size(30, 30);
             RemoveReceiptsFolder_ImageButton.ShadowDecoration.CustomizableEdges = customizableEdges12;

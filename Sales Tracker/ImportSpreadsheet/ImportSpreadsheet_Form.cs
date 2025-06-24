@@ -289,7 +289,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         if (!connection) { purchaseImportFailed = true; }
                         wasSomethingImported |= somethingImported;
 
-                        // Import receipts if receipts folder is specified - SPECIFY IT'S FOR PURCHASES
+                        // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
                             wasSomethingImported |= ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true); // true for purchases
@@ -301,7 +301,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         if (!connection1) { salesImportFailed = true; }
                         wasSomethingImported |= somethingImported2;
 
-                        // Import receipts if receipts folder is specified - SPECIFY IT'S FOR SALES
+                        // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
                             wasSomethingImported |= ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false); // false for sales
@@ -488,7 +488,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
         // Load spreadsheets
         private const string _accountantsName = "Accountants", _companiesName = "Companies", _purchaseProductsName = "Purchase products",
-            _saleProductsName = "Sale products", _purchasesName = "Purchases", _salesName = "Sales", _receiptsName = "Receipts";
+            _saleProductsName = "Sale products", _purchasesName = "Purchases", _salesName = "Sales";
 
         private Task<List<Panel>> LoadSpreadsheetData()
         {
