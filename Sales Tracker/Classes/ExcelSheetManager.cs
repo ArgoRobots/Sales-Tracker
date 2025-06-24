@@ -1697,20 +1697,18 @@ namespace Sales_Tracker.Classes
                     // Handle other cell types
                     object? cellValue = row.Cells[i].Value;
 
-                    // Try to parse as decimal for numeric columns
-                    if (cellValue != null && IsNumericColumn(i) &&
-                        decimal.TryParse(cellValue.ToString(), out decimal numericValue))
+                    // Special handling for quantity column (index 7) to ensure it's treated as numeric
+                    if (i == 7)
                     {
-                        excelCell.Value = numericValue;
-                        // Use currency format for money columns, decimal for others
-                        if (IsCurrencyColumn(i))
+                        if (cellValue != null && decimal.TryParse(cellValue.ToString(), out decimal quantityValue))
                         {
-                            excelCell.Style.NumberFormat.Format = _currencyFormatPattern;
+                            excelCell.Value = quantityValue;
                         }
                         else
                         {
-                            excelCell.Style.NumberFormat.Format = _decimalFormatPattern;
+                            excelCell.Value = cellValue?.ToString();
                         }
+                        excelCell.Style.NumberFormat.Format = _numberFormatPattern;
                     }
                     else
                     {
@@ -1769,18 +1767,6 @@ namespace Sales_Tracker.Classes
                     excelCell.Value = cellValue;
                 }
             }
-        }
-        private static bool IsCurrencyColumn(int columnIndex)
-        {
-            // Define which columns contain currency data
-            int[] currencyColumns = [8, 9, 10, 11, 12, 13, 14]; // USD value columns
-            return currencyColumns.Contains(columnIndex);
-        }
-        private static bool IsNumericColumn(int columnIndex)
-        {
-            // Define which columns contain numeric data (both currency and non-currency)
-            int[] numericColumns = [7, 8, 9, 10, 11, 12, 13, 14];
-            return numericColumns.Contains(columnIndex);
         }
         private static void AddCompaniesToWorksheet(IXLWorksheet worksheet)
         {
