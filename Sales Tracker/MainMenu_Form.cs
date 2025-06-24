@@ -606,12 +606,12 @@ namespace Sales_Tracker
                 EULA_Form eulaForm = new();
                 if (eulaForm.ShowDialog() != DialogResult.OK)
                 {
-                    // User declined the EULA, the application will exit in the EULA form's Decline_Button_Click method
+                    // User declined the EULA, the application will exit in EULA_Form.Decline_Button_Click()
                     return;
                 }
             }
 
-            // Check if the welcome form should be shown (original code)
+            // Check if the welcome form should be shown
             string value = DataFileManager.GetValue(GlobalAppDataSettings.ShowWelcomeForm);
             if (bool.TryParse(value, out bool boolResult) && boolResult)
             {

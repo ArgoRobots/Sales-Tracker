@@ -270,14 +270,15 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.LoadData();
             MainMenu_Form.IsProgramLoading = false;
 
+            // Reset controls
             MainMenu_Form.Instance.SetCompanyLabel();
             MainMenu_Form.Instance.UpdateTotalLabels();
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.HideShowingResultsForLabel();
 
-            bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.Purchase_DataGridView) &&
-                                  AreRowsVisible(MainMenu_Form.Instance.Sale_DataGridView);
+            Tools.CloseAllOpenForms();
 
+            bool hasVisibleRows = AreRowsVisible(MainMenu_Form.Instance.SelectedDataGridView);
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, MainMenu_Form.Instance.SelectedDataGridView);
         }
 
@@ -355,7 +356,7 @@ namespace Sales_Tracker.Classes
             {
                 if (company + @"\" == Directories.Cache_dir) { continue; }
 
-                // Check if there are any changes
+                // If there are no changes
                 string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade, company + @"\info" + ArgoFiles.TxtFileExtension);
                 if (bool.TryParse(value, out bool boolResult) && !boolResult)
                 {

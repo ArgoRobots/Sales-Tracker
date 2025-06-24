@@ -224,6 +224,21 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
+        /// Close all open forms except for MainMenu_Form.
+        /// </summary>
+        public static void CloseAllOpenForms()
+        {
+            List<Form> formsToClose = Application.OpenForms.OfType<Form>()
+               .Where(form => form != MainMenu_Form.Instance)
+               .ToList();
+
+            foreach (Form form in formsToClose)
+            {
+                form.Close();
+            }
+        }
+
+        /// <summary>
         /// Forces handle creation for a control if it hasn't been created yet.
         /// </summary>
         public static void EnsureHandleCreated(Control control)

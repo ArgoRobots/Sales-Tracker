@@ -1174,7 +1174,7 @@ namespace Sales_Tracker.Classes
             foreach (IXLRow row in rowsToProcess)
             {
                 string transactionId = row.Cell(1).GetValue<string>();
-                string receiptFileName = row.Cell(18).GetValue<string>();
+                string receiptFileName = row.Cell(17).GetValue<string>();
 
                 // Skip if any essential field is empty
                 if (string.IsNullOrWhiteSpace(transactionId) ||

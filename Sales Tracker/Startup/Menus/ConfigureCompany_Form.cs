@@ -160,18 +160,12 @@ namespace Sales_Tracker.Startup.Menus
             else  // The user is creating a new company from the "New company" button
             {
                 Directories.DeleteDirectory(tempDir, true);
-
-                // Clear DataGridViews
-                MainMenu_Form.IsProgramLoading = true;
-                MainMenu_Form.Instance.Purchase_DataGridView.Rows.Clear();
-                MainMenu_Form.Instance.Sale_DataGridView.Rows.Clear();
-                MainMenu_Form.IsProgramLoading = false;
+                MainMenu_Form.Instance.ResetData();
 
                 // Reset controls
                 MainMenu_Form.Instance.SetCompanyLabel();
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.HideShowingResultsForLabel();
-                MainMenu_Form.Instance.Search_TextBox.Text = "";
 
                 // Clear charts
                 foreach (GunaChart chart in MainMenu_Form.Instance.GetAllCharts())
@@ -180,11 +174,7 @@ namespace Sales_Tracker.Startup.Menus
                     LabelManager.ManageNoDataLabelOnControl(false, chart);
                 }
 
-                // Clear lists
-                MainMenu_Form.Instance.CategorySaleList.Clear();
-                MainMenu_Form.Instance.CategoryPurchaseList.Clear();
-                MainMenu_Form.Instance.AccountantList.Clear();
-                MainMenu_Form.Instance.CompanyList.Clear();
+                Tools.CloseAllOpenForms();
             }
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
