@@ -1436,32 +1436,32 @@ namespace Sales_Tracker.Classes
                             }
                             else
                             {
-                                tagData.PricePerUnitUSD = decimalValue;
+                                tagData.PricePerUnitUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
                             }
                             break;
                         case 9:
-                            tagData.ShippingUSD = decimalValue;
+                            tagData.ShippingUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 10:
-                            tagData.TaxUSD = decimalValue;
+                            tagData.TaxUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 11:
-                            tagData.FeeUSD = decimalValue;
+                            tagData.FeeUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 12:
-                            tagData.DiscountUSD = decimalValue;
+                            tagData.DiscountUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 13:
-                            tagData.ChargedDifferenceUSD = decimalValue;
+                            tagData.ChargedDifferenceUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 14:
-                            tagData.ChargedOrCreditedUSD = decimalValue;
+                            tagData.ChargedOrCreditedUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
                             break;
                     }
 
                     newRow.Cells[i].Value = useEmpty
                         ? ReadOnlyVariables.EmptyCell
-                        : (decimalValue * exchangeRateToDefault);
+                        : Math.Round(decimalValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero);
                 }
                 else
                 {
@@ -1515,14 +1515,16 @@ namespace Sales_Tracker.Classes
                     decimal quantity = ConvertStringToDecimal(nextRow.Cell(8).Value.ToString());
                     decimal pricePerUnit = ConvertStringToDecimal(nextRow.Cell(9).Value.ToString());
 
+                    decimal totalPrice = Math.Round(quantity * pricePerUnit, 2, MidpointRounding.AwayFromZero);
+
                     string item = string.Join(",",
                         productName,
                         categoryName,
                         currentCountry,
                         currentCompany,
                         quantity.ToString(),
-                        pricePerUnit.ToString("N2"),
-                        (quantity * pricePerUnit).ToString("N2")
+                        pricePerUnit.ToString("N2"),  // Format to 2 decimal places
+                        totalPrice.ToString("N2")     // Format to 2 decimal places
                     );
 
                     items.Add(item);
@@ -1981,7 +1983,8 @@ namespace Sales_Tracker.Classes
 
             try
             {
-                return Convert.ToDecimal(value);
+                decimal result = Convert.ToDecimal(value);
+                return Math.Round(result, 2, MidpointRounding.AwayFromZero);
             }
             catch
             {

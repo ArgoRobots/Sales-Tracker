@@ -419,8 +419,6 @@ namespace Sales_Tracker.Classes
                     // Create and append the footer
                     string footer = Environment.NewLine + EncryptionManager.encryptedTag + EncryptionManager.encryptedValue + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
-
-                    Log.Write(2, $"File created and encrypted successfully: {destinationFile}");
                 }
                 else
                 {
@@ -436,8 +434,6 @@ namespace Sales_Tracker.Classes
                     // Create and append the footer with the encrypted password
                     string footer = Environment.NewLine + EncryptionManager.encryptedTag + Environment.NewLine + encryptedPassword;
                     File.AppendAllText(destinationFile, footer);
-
-                    Log.Write(2, $"File created successfully: {destinationFile}");
                 }
             }
             catch (Exception ex)

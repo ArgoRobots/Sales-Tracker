@@ -489,7 +489,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Load spreadsheets
         private const string _accountantsName = "Accountants", _companiesName = "Companies", _purchaseProductsName = "Purchase products",
             _saleProductsName = "Sale products", _purchasesName = "Purchases", _salesName = "Sales";
-
         private Task<List<Panel>> LoadSpreadsheetData()
         {
             if (string.IsNullOrEmpty(_spreadsheetFilePath))
