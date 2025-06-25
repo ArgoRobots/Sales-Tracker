@@ -808,9 +808,9 @@ namespace Sales_Tracker
 
                 // Position DataGridView and Total Panel
                 SelectedDataGridView.Size = new Size(ClientSize.Width - 65,
-                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - chartHeight - totalsChart.Top - 15);
+                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - chartHeight - totalsChart.Top + 35);
                 SelectedDataGridView.Location = new Point((ClientSize.Width - SelectedDataGridView.Width) / 2,
-                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - SelectedDataGridView.Height);
+                    ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - SelectedDataGridView.Height + 50);
 
                 Total_Panel.Location = new Point(SelectedDataGridView.Left, SelectedDataGridView.Top + SelectedDataGridView.Height);
                 Total_Panel.Width = SelectedDataGridView.Width;
