@@ -30,6 +30,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(No_Button);
             LanguageManager.UpdateLanguageForControl(Ok_Button);
             LanguageManager.UpdateLanguageForControl(Cancel_Button);
+            LanguageManager.UpdateLanguageForControl(Skip_Button);
             LanguageManager.UpdateLanguageForControl(this);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -59,7 +60,7 @@ namespace Sales_Tracker
             CustomMessageBoxVariables.Reset();
             Controls.Add(Icon_PictureBox);
 
-            Height = 130 + Message_Label.Height;
+            Height = 150 + Message_Label.Height;
 
             // Set icon
             switch (icon)
@@ -93,6 +94,7 @@ namespace Sales_Tracker
             Controls.Remove(Save_Button);
             Controls.Remove(DontSave_Button);
             Controls.Remove(Retry_Button);
+            Controls.Remove(Skip_Button);
 
             // Set buttons
             byte buttonSpace = 35;
@@ -136,7 +138,27 @@ namespace Sales_Tracker
                     Controls.Add(Cancel_Button);
                     Retry_Button.Focus();
                     break;
+
+                case CustomMessageBoxButtons.SkipCancel:
+                    Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
+                    Skip_Button.Left = Cancel_Button.Left - Skip_Button.Width - CustomControls.SpaceBetweenControls;
+                    Controls.Add(Skip_Button);
+                    Controls.Add(Cancel_Button);
+                    Skip_Button.Focus();
+                    break;
+
+                case CustomMessageBoxButtons.SkipRetryCancel:
+                    Cancel_Button.Left = Width - Cancel_Button.Width - buttonSpace;
+                    Retry_Button.Left = Cancel_Button.Left - Retry_Button.Width - CustomControls.SpaceBetweenControls;
+                    Skip_Button.Left = Retry_Button.Left - Skip_Button.Width - CustomControls.SpaceBetweenControls;
+                    Controls.Add(Skip_Button);
+                    Controls.Add(Retry_Button);
+                    Controls.Add(Cancel_Button);
+                    Skip_Button.Focus();
+                    break;
             }
+
+            MinimumSize = new Size(MinimumSize.Width, Height);
         }
         private Panel changed_Panel;
         private Guna2Panel changedBackground_Panel;
@@ -325,6 +347,11 @@ namespace Sales_Tracker
             Result = CustomMessageBoxResult.Retry;
             Close();
         }
+        private void Skip_Button_Click(object sender, EventArgs e)
+        {
+            Result = CustomMessageBoxResult.Skip;
+            Close();
+        }
         private void Message_Label_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Tools.OpenLink(CustomMessageBoxVariables.Link);
@@ -346,7 +373,9 @@ namespace Sales_Tracker
         Ok,
         OkCancel,
         SaveDontSaveCancel,
-        RetryCancel
+        RetryCancel,
+        SkipCancel,
+        SkipRetryCancel
     }
     public enum CustomMessageBoxResult
     {
@@ -357,6 +386,7 @@ namespace Sales_Tracker
         Save,
         DontSave,
         Retry,
+        Skip,
         None
     }
 

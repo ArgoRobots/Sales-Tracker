@@ -42,6 +42,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Icon_PictureBox = new PictureBox();
             Ok_Button = new Guna.UI2.WinForms.Guna2Button();
             No_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -51,6 +53,7 @@
             Save_Button = new Guna.UI2.WinForms.Guna2Button();
             DontSave_Button = new Guna.UI2.WinForms.Guna2Button();
             Retry_Button = new Guna.UI2.WinForms.Guna2Button();
+            Skip_Button = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)Icon_PictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -237,10 +240,34 @@
             Retry_Button.Text = "Retry";
             Retry_Button.Click += Retry_Button_Click;
             // 
+            // Skip_Button
+            // 
+            Skip_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Skip_Button.BorderColor = Color.LightGray;
+            Skip_Button.BorderRadius = 4;
+            Skip_Button.BorderThickness = 1;
+            Skip_Button.CustomizableEdges = customizableEdges15;
+            Skip_Button.DisabledState.BorderColor = Color.DarkGray;
+            Skip_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Skip_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Skip_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Skip_Button.FillColor = SystemColors.Window;
+            Skip_Button.FocusedColor = Color.FromArgb(0, 192, 192);
+            Skip_Button.Font = new Font("Segoe UI", 9F);
+            Skip_Button.ForeColor = Color.Black;
+            Skip_Button.Location = new Point(418, 137);
+            Skip_Button.Name = "Skip_Button";
+            Skip_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Skip_Button.Size = new Size(150, 45);
+            Skip_Button.TabIndex = 8;
+            Skip_Button.Text = "Skip";
+            Skip_Button.Click += Skip_Button_Click;
+            // 
             // CustomMessage_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(778, 194);
+            Controls.Add(Skip_Button);
             Controls.Add(Retry_Button);
             Controls.Add(Message_Label);
             Controls.Add(DontSave_Button);
@@ -273,5 +300,6 @@
         public Guna.UI2.WinForms.Guna2Button Save_Button;
         public Guna.UI2.WinForms.Guna2Button DontSave_Button;
         public Guna.UI2.WinForms.Guna2Button Retry_Button;
+        public Guna.UI2.WinForms.Guna2Button Skip_Button;
     }
 }

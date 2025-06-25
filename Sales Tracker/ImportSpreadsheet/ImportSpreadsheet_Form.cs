@@ -194,7 +194,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             LoadingPanel.HideLoadingScreen(this);
         }
 
-        // Import
+        // Import with rollback support
         private async void Import_Button_Click(object sender, EventArgs e)
         {
             if (!ValidateSpreadsheet()) { return; }
@@ -203,49 +203,140 @@ namespace Sales_Tracker.ImportSpreadsheet
             LoadingPanel.ShowLoadingScreen(this, "Importing...");
             Import_Button.Enabled = false;
 
+            ExcelSheetManager.ImportSession importSession = new();
+            bool importSuccessful = false;
+
             try
             {
-                if (await Task.Run(ImportSpreadsheetAndReceipts))
+                ExcelSheetManager.ImportSummary summary = await Task.Run(() => ImportSpreadsheetAndReceipts(importSession));
+
+                if (summary.WasCancelled)
                 {
+                    // Rollback all changes
+                    ExcelSheetManager.RollbackImportSession(importSession);
+                    LoadingPanel.HideLoadingScreen(this);
+                    ShowImportCancelledMessage(summary);
+                }
+                else if (summary.SuccessfulImports > 0)
+                {
+                    // Commit all changes
+                    ExcelSheetManager.CommitImportSession(importSession);
+                    importSuccessful = true;
+
                     MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
                     MainMenu_Form.Instance.UpdateTotalLabels();
                     LoadingPanel.HideLoadingScreen(this);
 
+                    ShowImportSuccessMessage(summary);
+
                     string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}'";
                     CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
-
-                    CustomMessageBox.Show("Imported spreadsheet", "Finished importing spreadsheet",
-                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
 
                     Close();
                 }
                 else
                 {
-                    CustomMessageBox.Show("Nothing was imported", "Nothing was imported",
-                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    // Nothing was imported, but no cancellation - still rollback to be safe
+                    ExcelSheetManager.RollbackImportSession(importSession);
+                    LoadingPanel.HideLoadingScreen(this);
+                    ShowNoImportMessage(summary);
                 }
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}",
+                // On any exception, rollback changes
+                ExcelSheetManager.RollbackImportSession(importSession);
+                LoadingPanel.HideLoadingScreen(this);
+
+                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}. All changes have been rolled back.",
                     CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
             }
             finally
             {
                 LoadingPanel.HideLoadingScreen(this);
+                Import_Button.Enabled = true;
+
+                // Refresh the UI if import was not successful
+                if (!importSuccessful)
+                {
+                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                    MainMenu_Form.Instance.UpdateTotalLabels();
+                }
             }
         }
-        private bool ImportSpreadsheetAndReceipts()
+        private static void ShowImportCancelledMessage(ExcelSheetManager.ImportSummary summary)
+        {
+            string message = "Import was cancelled by user. All changes have been rolled back.";
+
+            if (summary.SuccessfulImports > 0)
+            {
+                message += $"\n{summary.SuccessfulImports} transactions that were imported have been removed.";
+            }
+
+            if (summary.Errors.Count > 0)
+            {
+                message += $"\nErrors encountered: {summary.Errors.Count}";
+            }
+
+            CustomMessageBox.Show("Import Cancelled", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+        }
+        private static void ShowImportSuccessMessage(ExcelSheetManager.ImportSummary summary)
+        {
+            string message = $"Successfully imported {summary.SuccessfulImports} transactions.";
+
+            if (summary.SkippedRows > 0)
+            {
+                message += $"\n\n{summary.SkippedRows} transactions were skipped due to errors.";
+            }
+
+            if (summary.Errors.Count > 0)
+            {
+                message += $"\nTotal errors encountered: {summary.Errors.Count}";
+            }
+
+            CustomMessageBox.Show("Import Completed", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+        }
+        private static void ShowNoImportMessage(ExcelSheetManager.ImportSummary summary)
+        {
+            string message = "Nothing was imported.";
+
+            if (summary.Errors.Count > 0)
+            {
+                message += $"\n{summary.Errors.Count} errors were encountered during the import process.";
+
+                // Show first few errors as examples
+                if (summary.Errors.Count > 0)
+                {
+                    message += "\nFirst error example:";
+                    ExcelSheetManager.ImportError firstError = summary.Errors.First();
+                    message += $"\nWorksheet: {firstError.WorksheetName}";
+                    message += $"\nRow: {firstError.RowNumber}";
+                    message += $"\nField: {firstError.FieldName}";
+                    message += $"\nInvalid Value: '{firstError.InvalidValue}'";
+                }
+            }
+
+            CustomMessageBox.Show("No Data Imported", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+        }
+        private ExcelSheetManager.ImportSummary ImportSpreadsheetAndReceipts(ExcelSheetManager.ImportSession importSession)
         {
             MainMenu_Form.IsProgramLoading = true;
+
+            ExcelSheetManager.ImportSummary aggregatedSummary = new();
 
             using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using XLWorkbook workbook = new(stream);
             bool includeheader = IncludeHeaderRow_CheckBox.Checked;
-            bool wasSomethingImported = false, purchaseImportFailed = false, salesImportFailed = false;
 
             foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
             {
+                // Check for cancellation before processing each worksheet
+                if (importSession.IsCancelled)
+                {
+                    aggregatedSummary.WasCancelled = true;
+                    break;
+                }
+
                 Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
                 string worksheetName = panel.Tag.ToString();
 
@@ -269,60 +360,172 @@ namespace Sales_Tracker.ImportSpreadsheet
                 switch (worksheetName)
                 {
                     case _accountantsName:
-                        wasSomethingImported |= ExcelSheetManager.ImportAccountantsData(worksheet, includeheader);
+                        // For simple list imports that still return bool, convert to count
+                        bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, includeheader, importSession);
+                        if (accountantsImported)
+                        {
+                            // Count the number of accountants that would be imported (simplified approach)
+                            // You could enhance this by making these methods return ImportSummary too
+                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                        }
                         break;
 
                     case _companiesName:
-                        wasSomethingImported |= ExcelSheetManager.ImportCompaniesData(worksheet, includeheader);
+                        bool companiesImported = ExcelSheetManager.ImportCompaniesData(worksheet, includeheader, importSession);
+                        if (companiesImported)
+                        {
+                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                        }
                         break;
 
                     case _purchaseProductsName:
-                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, true, includeheader);
+                        bool purchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, includeheader, importSession);
+                        if (purchaseProductsImported)
+                        {
+                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                        }
                         break;
 
                     case _saleProductsName:
-                        wasSomethingImported |= ExcelSheetManager.ImportProductsData(worksheet, false, includeheader);
+                        bool saleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, includeheader, importSession);
+                        if (saleProductsImported)
+                        {
+                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                        }
                         break;
 
                     case _purchasesName:
-                        (bool connection, bool somethingImported) = ExcelSheetManager.ImportPurchaseData(worksheet, includeheader);
-                        if (!connection) { purchaseImportFailed = true; }
-                        wasSomethingImported |= somethingImported;
+                        // Use the new ImportSummary return type
+                        ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(worksheet, includeheader, importSession);
+
+                        // Aggregate the results
+                        aggregatedSummary.SuccessfulImports += purchaseSummary.SuccessfulImports;
+                        aggregatedSummary.SkippedRows += purchaseSummary.SkippedRows;
+                        aggregatedSummary.Errors.AddRange(purchaseSummary.Errors);
+
+                        if (purchaseSummary.WasCancelled)
+                        {
+                            aggregatedSummary.WasCancelled = true;
+                            break;
+                        }
+
+                        // Check for cancellation after purchase import
+                        if (importSession.IsCancelled)
+                        {
+                            aggregatedSummary.WasCancelled = true;
+                            break;
+                        }
 
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            wasSomethingImported |= ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true); // true for purchases
+                            bool receiptsImported = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true);  // true for purchases
+                            if (receiptsImported)
+                            {
+                                // Add receipt count (could be enhanced to return actual count)
+                                aggregatedSummary.SuccessfulImports += CountReceiptsToImport(worksheet, includeheader);
+                            }
                         }
                         break;
 
                     case _salesName:
-                        (bool connection1, bool somethingImported2) = ExcelSheetManager.ImportSalesData(worksheet, includeheader);
-                        if (!connection1) { salesImportFailed = true; }
-                        wasSomethingImported |= somethingImported2;
+                        // Use the new ImportSummary return type
+                        ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(worksheet, includeheader, importSession);
+
+                        // Aggregate the results
+                        aggregatedSummary.SuccessfulImports += salesSummary.SuccessfulImports;
+                        aggregatedSummary.SkippedRows += salesSummary.SkippedRows;
+                        aggregatedSummary.Errors.AddRange(salesSummary.Errors);
+
+                        if (salesSummary.WasCancelled)
+                        {
+                            aggregatedSummary.WasCancelled = true;
+                            break;
+                        }
+
+                        // Check for cancellation after sales import
+                        if (importSession.IsCancelled)
+                        {
+                            aggregatedSummary.WasCancelled = true;
+                            break;
+                        }
 
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            wasSomethingImported |= ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false); // false for sales
+                            bool receiptsImported = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false);  // false for sales
+                            if (receiptsImported)
+                            {
+                                // Add receipt count (could be enhanced to return actual count)
+                                aggregatedSummary.SuccessfulImports += CountReceiptsToImport(worksheet, includeheader);
+                            }
                         }
                         break;
                 }
+
+                // Check for cancellation after each worksheet processing
+                if (importSession.IsCancelled)
+                {
+                    aggregatedSummary.WasCancelled = true;
+                    break;
+                }
             }
 
-            if (purchaseImportFailed || salesImportFailed)
-            {
-                string message = "Failed to import ";
-                if (purchaseImportFailed) { message += "'Purchases'"; }
-                if (purchaseImportFailed && salesImportFailed) { message += " and "; }
-                if (salesImportFailed) { message += "'Sales'"; }
-                message += " because it looks like you are not connected to the internet. A connection is needed to get the exchange rates. Please check your connection and try again";
-
-                CustomMessageBox.Show("No connection", message, CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-            }
+            // Set the final cancellation state
+            aggregatedSummary.WasCancelled = importSession.IsCancelled;
 
             MainMenu_Form.IsProgramLoading = false;
-            return wasSomethingImported;
+            return aggregatedSummary;
+        }
+
+        /// <summary>
+        /// Helper method to count rows that would be imported (for non-transaction imports).
+        /// </summary>
+        private static int CountRowsToImport(IXLWorksheet worksheet, bool includeHeader)
+        {
+            IEnumerable<IXLRow> rowsToProcess = includeHeader
+                ? worksheet.RowsUsed()
+                : worksheet.RowsUsed().Skip(1);
+
+            int count = 0;
+
+            foreach (IXLRow row in rowsToProcess)
+            {
+                string firstCell = row.Cell(1).GetValue<string>();
+                if (!string.IsNullOrWhiteSpace(firstCell))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Helper method to count receipts that would be imported.
+        /// </summary>
+        private static int CountReceiptsToImport(IXLWorksheet worksheet, bool includeHeader)
+        {
+            IEnumerable<IXLRow> rowsToProcess = includeHeader
+                ? worksheet.RowsUsed()
+                : worksheet.RowsUsed().Skip(1);
+
+            int count = 0;
+
+            foreach (IXLRow row in rowsToProcess)
+            {
+                string transactionId = row.Cell(1).GetValue<string>();
+                string receiptFileName = row.Cell(17).GetValue<string>();
+
+                if (!string.IsNullOrWhiteSpace(transactionId) &&
+                    !string.IsNullOrWhiteSpace(receiptFileName) &&
+                    receiptFileName != ReadOnlyVariables.EmptyCell)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         // Other event handlers
