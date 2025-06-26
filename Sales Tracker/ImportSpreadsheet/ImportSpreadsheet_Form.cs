@@ -215,7 +215,8 @@ namespace Sales_Tracker.ImportSpreadsheet
                     // Rollback all changes
                     ExcelSheetManager.RollbackImportSession(importSession);
                     LoadingPanel.HideLoadingScreen(this);
-                    ShowImportCancelledMessage(summary);
+                    await RefreshPanelsAsync();
+                    ShowImportCancelledMessage();
                 }
                 else if (summary.SuccessfulImports > 0)
                 {
@@ -239,6 +240,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     // Nothing was imported, but no cancellation - still rollback to be safe
                     ExcelSheetManager.RollbackImportSession(importSession);
                     LoadingPanel.HideLoadingScreen(this);
+                    await RefreshPanelsAsync();
                     ShowNoImportMessage(summary);
                 }
             }
@@ -264,34 +266,23 @@ namespace Sales_Tracker.ImportSpreadsheet
                 }
             }
         }
-        private static void ShowImportCancelledMessage(ExcelSheetManager.ImportSummary summary)
+        private static void ShowImportCancelledMessage()
         {
-            string message = "Import was cancelled by user. All changes have been rolled back.";
-
-            if (summary.SuccessfulImports > 0)
-            {
-                message += $"\n{summary.SuccessfulImports} transactions that were imported have been removed.";
-            }
-
-            if (summary.Errors.Count > 0)
-            {
-                message += $"\nErrors encountered: {summary.Errors.Count}";
-            }
-
-            CustomMessageBox.Show("Import Cancelled", message, CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            CustomMessageBox.Show("Import Cancelled", "The import was cancelled. All changes have been rolled back",
+                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
         }
         private static void ShowImportSuccessMessage(ExcelSheetManager.ImportSummary summary)
         {
-            string message = $"Successfully imported {summary.SuccessfulImports} transactions.";
+            string message = $"Successfully imported {summary.SuccessfulImports} transaction{(summary.SuccessfulImports == 1 ? "" : "s")}.";
 
             if (summary.SkippedRows > 0)
             {
-                message += $"\n\n{summary.SkippedRows} transactions were skipped due to errors.";
+                message += $"\n\n{summary.SkippedRows} transaction{(summary.SkippedRows == 1 ? "" : "s")} {(summary.SkippedRows == 1 ? "was" : "were")} skipped due to error{(summary.SkippedRows == 1 ? "" : "s")}.";
             }
 
             if (summary.Errors.Count > 0)
             {
-                message += $"\nTotal errors encountered: {summary.Errors.Count}";
+                message += $"\nTotal error{(summary.Errors.Count == 1 ? "" : "s")} encountered: {summary.Errors.Count}";
             }
 
             CustomMessageBox.Show("Import Completed", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
@@ -360,12 +351,9 @@ namespace Sales_Tracker.ImportSpreadsheet
                 switch (worksheetName)
                 {
                     case _accountantsName:
-                        // For simple list imports that still return bool, convert to count
                         bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, includeheader, importSession);
                         if (accountantsImported)
                         {
-                            // Count the number of accountants that would be imported (simplified approach)
-                            // You could enhance this by making these methods return ImportSummary too
                             aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
                         }
                         break;
@@ -395,7 +383,6 @@ namespace Sales_Tracker.ImportSpreadsheet
                         break;
 
                     case _purchasesName:
-                        // Use the new ImportSummary return type
                         ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(worksheet, includeheader, importSession);
 
                         // Aggregate the results
@@ -419,17 +406,12 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            bool receiptsImported = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true);  // true for purchases
-                            if (receiptsImported)
-                            {
-                                // Add receipt count (could be enhanced to return actual count)
-                                aggregatedSummary.SuccessfulImports += CountReceiptsToImport(worksheet, includeheader);
-                            }
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true);  // true for purchases
+                            aggregatedSummary.SuccessfulImports += importedReceiptCount;
                         }
                         break;
 
                     case _salesName:
-                        // Use the new ImportSummary return type
                         ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(worksheet, includeheader, importSession);
 
                         // Aggregate the results
@@ -453,12 +435,8 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            bool receiptsImported = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false);  // false for sales
-                            if (receiptsImported)
-                            {
-                                // Add receipt count (could be enhanced to return actual count)
-                                aggregatedSummary.SuccessfulImports += CountReceiptsToImport(worksheet, includeheader);
-                            }
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false);  // false for sales
+                            aggregatedSummary.SuccessfulImports += importedReceiptCount;
                         }
                         break;
                 }
@@ -493,33 +471,6 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 string firstCell = row.Cell(1).GetValue<string>();
                 if (!string.IsNullOrWhiteSpace(firstCell))
-                {
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
-        /// <summary>
-        /// Helper method to count receipts that would be imported.
-        /// </summary>
-        private static int CountReceiptsToImport(IXLWorksheet worksheet, bool includeHeader)
-        {
-            IEnumerable<IXLRow> rowsToProcess = includeHeader
-                ? worksheet.RowsUsed()
-                : worksheet.RowsUsed().Skip(1);
-
-            int count = 0;
-
-            foreach (IXLRow row in rowsToProcess)
-            {
-                string transactionId = row.Cell(1).GetValue<string>();
-                string receiptFileName = row.Cell(17).GetValue<string>();
-
-                if (!string.IsNullOrWhiteSpace(transactionId) &&
-                    !string.IsNullOrWhiteSpace(receiptFileName) &&
-                    receiptFileName != ReadOnlyVariables.EmptyCell)
                 {
                     count++;
                 }

@@ -1277,13 +1277,13 @@ namespace Sales_Tracker.Classes
             }
             return ImportTransactionData(worksheet, includeHeader, false, session);
         }
-        public static bool ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase)
+        public static int ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase)
         {
             IEnumerable<IXLRow> rowsToProcess = includeHeader
                 ? worksheet.RowsUsed()
                 : worksheet.RowsUsed().Skip(1);
 
-            bool wasSomethingImported = false;
+            int importedCount = 0;
 
             foreach (IXLRow row in rowsToProcess)
             {
@@ -1345,17 +1345,17 @@ namespace Sales_Tracker.Classes
                 ReceiptManager.AddReceiptToTag(targetRow, newReceiptPath);
                 MainMenu_Form.SetHasReceiptColumn(targetRow, newReceiptPath);
 
-                wasSomethingImported = true;
+                importedCount++;
             }
 
             // Save the updated transaction data
-            if (wasSomethingImported)
+            if (importedCount > 0)
             {
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
             }
 
-            return wasSomethingImported;
+            return importedCount;
         }
         private static DataGridViewRow? FindTransactionRow(string transactionId, bool isPurchase)
         {
@@ -1599,7 +1599,6 @@ namespace Sales_Tracker.Classes
                     addedDuringImport.Add(transactionNumber);
                 }
 
-                // INCREMENT THE SUCCESSFUL IMPORT COUNT HERE!
                 summary.SuccessfulImports++;
                 DataGridViewManager.DataGridViewRowsAdded(targetGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
             }
