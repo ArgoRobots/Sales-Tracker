@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Sales_Tracker.DataClasses;
+using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes
 {
@@ -96,10 +98,17 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Gets a list of all supported currency type names.
         /// </summary>
-        /// <returns>List of currency type names as strings.</returns>
         public static List<string> GetCurrencyTypesList()
         {
             return Enum.GetNames<CurrencyTypes>().ToList();
+        }
+
+        /// <summary>
+        /// Gets a list of SearchResult for all supported currency type names.
+        /// </summary>
+        public static List<SearchResult> GetSearchResults()
+        {
+            return SearchBox.ConvertToSearchResults(GetCurrencyTypesList());
         }
 
         /// <summary>

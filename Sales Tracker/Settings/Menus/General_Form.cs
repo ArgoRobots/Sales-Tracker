@@ -60,8 +60,7 @@ namespace Sales_Tracker.Settings.Menus
             Language_TextBox.TextChanged += (_, _) => ValidateInputs();
 
             TextBoxManager.Attach(Currency_TextBox);
-            List<SearchResult> searchResult1 = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
-            SearchBox.Attach(Currency_TextBox, this, () => searchResult1, searchBoxMaxHeight, false, false, false, false);
+            SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
             Currency_TextBox.TextChanged += (_, _) => ValidateInputs();
         }
         private void InitializeAdminModeControls()

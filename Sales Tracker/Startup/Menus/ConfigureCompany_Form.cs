@@ -52,8 +52,7 @@ namespace Sales_Tracker.Startup.Menus
             Directory_TextBox.TextChanged += (_, _) => ValidateInputs();
 
             TextBoxManager.Attach(Currency_TextBox);
-            List<SearchResult> searchResult = SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
-            SearchBox.Attach(Currency_TextBox, this, () => searchResult, searchBoxMaxHeight, false, false, false, false);
+            SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
             Currency_TextBox.TextChanged += (_, _) => ValidateInputs();
         }
         private void SetDefaultTextInTextBoxes()

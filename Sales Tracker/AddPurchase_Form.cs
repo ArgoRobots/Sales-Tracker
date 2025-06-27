@@ -35,7 +35,7 @@ namespace Sales_Tracker
             byte searchBoxMaxHeight = 255;
 
             TextBoxManager.Attach(Currency_TextBox);
-            SearchBox.Attach(Currency_TextBox, this, GetSearchResultsForCurrency, searchBoxMaxHeight, false, false, true, false);
+            SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, true, false);
 
             TextBoxManager.Attach(OrderNumber_TextBox);
 
@@ -70,10 +70,6 @@ namespace Sales_Tracker
             TextBoxManager.Attach(Charged_TextBox);
 
             TextBoxManager.Attach(Notes_TextBox);
-        }
-        private List<SearchResult> GetSearchResultsForCurrency()
-        {
-            return SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
         }
         private List<SearchResult> GetSearchResultsForAccountant()
         {

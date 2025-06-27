@@ -48,6 +48,7 @@ namespace Sales_Tracker
             SetDefaultCurrency(defaultCurrency);
 
             SetExportSpreadsheetControls();
+            ValidateInputs();
         }
         private void SetDefaultCurrency(string currencyType)
         {
@@ -103,11 +104,8 @@ namespace Sales_Tracker
             TextBoxManager.Attach(Directory_TextBox);
 
             TextBoxManager.Attach(Currency_TextBox);
-            SearchBox.Attach(Currency_TextBox, this, GetSearchResultsForCurrency, searchBoxMaxHeight, false, false, true, false);
-        }
-        private static List<SearchResult> GetSearchResultsForCurrency()
-        {
-            return SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
+            SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
+            Currency_TextBox.TextChanged += Currency_TextBox_TextChanged;
         }
 
         // Form event handlers
@@ -120,39 +118,63 @@ namespace Sales_Tracker
         // Event handlers
         private void Name_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if ("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "")
+            ValidateInputs();
+        }
+        private void Directory_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateInputs();
+        }
+        private void Currency_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateInputs();
+        }
+        private void ValidateInputs()
+        {
+            bool isNameValid = !("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "");
+            bool isDirectoryValid = !("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'));
+            bool isCurrencyValid = !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
+
+            // Update Name validation UI
+            if (isNameValid)
             {
-                Export_Button.Enabled = false;
-                CustomControls.SetGTextBoxToInvalid(Name_TextBox);
-                WarningName_Label.Visible = true;
-                WarningName_PictureBox.Visible = true;
-            }
-            else
-            {
-                Export_Button.Enabled = true;
                 CustomControls.SetGTextBoxToValid(Name_TextBox);
                 WarningName_Label.Visible = false;
                 WarningName_PictureBox.Visible = false;
             }
-        }
-        private void Directory_TextBox_TextChanged(object sender, EventArgs e)
-        {
-            if ("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'))
-            {
-                Export_Button.Enabled = false;
-                Directory_TextBox.BorderColor = Color.Red;
-                Directory_TextBox.FocusedState.BorderColor = Color.Red;
-                WarningDir_Label.Visible = true;
-                WarningDir_PictureBox.Visible = true;
-            }
             else
             {
-                Export_Button.Enabled = true;
+                CustomControls.SetGTextBoxToInvalid(Name_TextBox);
+                WarningName_Label.Visible = true;
+                WarningName_PictureBox.Visible = true;
+            }
+
+            // Update Directory validation UI
+            if (isDirectoryValid)
+            {
                 Directory_TextBox.BorderColor = CustomColors.ControlBorder;
                 Directory_TextBox.FocusedState.BorderColor = CustomColors.ControlBorder;
                 WarningDir_Label.Visible = false;
                 WarningDir_PictureBox.Visible = false;
             }
+            else
+            {
+                Directory_TextBox.BorderColor = Color.Red;
+                Directory_TextBox.FocusedState.BorderColor = Color.Red;
+                WarningDir_Label.Visible = true;
+                WarningDir_PictureBox.Visible = true;
+            }
+
+            // Update Currency validation UI
+            if (isCurrencyValid)
+            {
+                CustomControls.SetGTextBoxToValid(Currency_TextBox);
+            }
+            else
+            {
+                CustomControls.SetGTextBoxToInvalid(Currency_TextBox);
+            }
+
+            Export_Button.Enabled = isNameValid && isDirectoryValid && isCurrencyValid;
         }
         private void FileType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -160,10 +182,13 @@ namespace Sales_Tracker
         }
         private void ExportReceipts_Label_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             ExportReceipts_CheckBox.Checked = !ExportReceipts_CheckBox.Checked;
         }
         private void ThreeDots_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             // Select folder
             VistaFolderBrowserDialog dialog = new();
 
@@ -174,6 +199,8 @@ namespace Sales_Tracker
         }
         private async void Export_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             // Check if there's any data to export
             if (!HasAnyDataToExport())
             {
@@ -368,6 +395,10 @@ namespace Sales_Tracker
                    main.CategorySaleList.Count > 0 ||
                    main.CompanyList.Count > 0 ||
                    main.AccountantList.Count > 0;
+        }
+        private void CloseAllPanels(object sender, EventArgs e)
+        {
+            CustomControls.CloseAllPanels();
         }
     }
 }

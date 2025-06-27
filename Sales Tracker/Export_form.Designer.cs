@@ -38,10 +38,10 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Export_Form));
             WarningDir_PictureBox = new PictureBox();
             WarningDir_Label = new Label();
@@ -57,10 +57,10 @@
             Export_Button = new Guna.UI2.WinForms.Guna2Button();
             FileType_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             SpreadsheetOptions_GroupBox = new GroupBox();
+            Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ExportReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
             Currency_Label = new Label();
             ExportReceipts_Label = new Label();
-            Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).BeginInit();
             SpreadsheetOptions_GroupBox.SuspendLayout();
@@ -76,6 +76,7 @@
             WarningDir_PictureBox.TabIndex = 44;
             WarningDir_PictureBox.TabStop = false;
             WarningDir_PictureBox.Visible = false;
+            WarningDir_PictureBox.Click += CloseAllPanels;
             // 
             // WarningDir_Label
             // 
@@ -87,6 +88,7 @@
             WarningDir_Label.TabIndex = 0;
             WarningDir_Label.Text = "Emtpy or invalid directory";
             WarningDir_Label.Visible = false;
+            WarningDir_Label.Click += CloseAllPanels;
             // 
             // WarningName_PictureBox
             // 
@@ -98,6 +100,7 @@
             WarningName_PictureBox.TabIndex = 43;
             WarningName_PictureBox.TabStop = false;
             WarningName_PictureBox.Visible = false;
+            WarningName_PictureBox.Click += CloseAllPanels;
             // 
             // WarningName_Label
             // 
@@ -109,6 +112,7 @@
             WarningName_Label.TabIndex = 0;
             WarningName_Label.Text = "Emtpy or invalid company name";
             WarningName_Label.Visible = false;
+            WarningName_Label.Click += CloseAllPanels;
             // 
             // Directory_TextBox
             // 
@@ -133,6 +137,7 @@
             Directory_TextBox.Size = new Size(1015, 60);
             Directory_TextBox.TabIndex = 3;
             Directory_TextBox.TextChanged += Directory_TextBox_TextChanged;
+            Directory_TextBox.Click += CloseAllPanels;
             // 
             // Directory_Label
             // 
@@ -167,6 +172,7 @@
             Name_TextBox.Size = new Size(1015, 60);
             Name_TextBox.TabIndex = 1;
             Name_TextBox.TextChanged += Name_TextBox_TextChanged;
+            Name_TextBox.Click += CloseAllPanels;
             // 
             // Name_Label
             // 
@@ -177,6 +183,7 @@
             Name_Label.Size = new Size(78, 32);
             Name_Label.TabIndex = 0;
             Name_Label.Text = "Name";
+            Name_Label.Click += CloseAllPanels;
             // 
             // ExportCompany_Label
             // 
@@ -187,6 +194,7 @@
             ExportCompany_Label.Size = new Size(333, 45);
             ExportCompany_Label.TabIndex = 0;
             ExportCompany_Label.Text = "Export your company";
+            ExportCompany_Label.Click += CloseAllPanels;
             // 
             // FileType_Label
             // 
@@ -197,6 +205,7 @@
             FileType_Label.Size = new Size(105, 32);
             FileType_Label.TabIndex = 0;
             FileType_Label.Text = "File type";
+            FileType_Label.Click += CloseAllPanels;
             // 
             // ThreeDots_Button
             // 
@@ -252,6 +261,7 @@
             FileType_ComboBox.Size = new Size(1015, 60);
             FileType_ComboBox.TabIndex = 2;
             FileType_ComboBox.SelectedIndexChanged += FileType_ComboBox_SelectedIndexChanged;
+            FileType_ComboBox.Click += CloseAllPanels;
             // 
             // SpreadsheetOptions_GroupBox
             // 
@@ -268,47 +278,6 @@
             SpreadsheetOptions_GroupBox.TabStop = false;
             SpreadsheetOptions_GroupBox.Text = "Spreadsheet Options";
             SpreadsheetOptions_GroupBox.Visible = false;
-            // 
-            // ExportReceipts_CheckBox
-            // 
-            ExportReceipts_CheckBox.Animated = true;
-            ExportReceipts_CheckBox.Checked = true;
-            ExportReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            ExportReceipts_CheckBox.CheckedState.BorderRadius = 2;
-            ExportReceipts_CheckBox.CheckedState.BorderThickness = 0;
-            ExportReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            ExportReceipts_CheckBox.CustomizableEdges = customizableEdges13;
-            ExportReceipts_CheckBox.Location = new Point(15, 47);
-            ExportReceipts_CheckBox.Name = "ExportReceipts_CheckBox";
-            ExportReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            ExportReceipts_CheckBox.Size = new Size(20, 20);
-            ExportReceipts_CheckBox.TabIndex = 0;
-            ExportReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            ExportReceipts_CheckBox.UncheckedState.BorderRadius = 2;
-            ExportReceipts_CheckBox.UncheckedState.BorderThickness = 0;
-            ExportReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            // 
-            // Currency_Label
-            // 
-            Currency_Label.AutoSize = true;
-            Currency_Label.Font = new Font("Segoe UI", 10F);
-            Currency_Label.Location = new Point(347, 43);
-            Currency_Label.Name = "Currency_Label";
-            Currency_Label.Size = new Size(93, 28);
-            Currency_Label.TabIndex = 2;
-            Currency_Label.Text = "Currency:";
-            // 
-            // ExportReceipts_Label
-            // 
-            ExportReceipts_Label.AutoSize = true;
-            ExportReceipts_Label.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ExportReceipts_Label.Location = new Point(33, 38);
-            ExportReceipts_Label.Name = "ExportReceipts_Label";
-            ExportReceipts_Label.Padding = new Padding(5);
-            ExportReceipts_Label.Size = new Size(291, 38);
-            ExportReceipts_Label.TabIndex = 1;
-            ExportReceipts_Label.Text = "Also export receipts to a folder";
-            ExportReceipts_Label.Click += ExportReceipts_Label_Click;
             // 
             // Currency_TextBox
             // 
@@ -332,6 +301,50 @@
             Currency_TextBox.ShortcutsEnabled = false;
             Currency_TextBox.Size = new Size(132, 47);
             Currency_TextBox.TabIndex = 48;
+            Currency_TextBox.Click += CloseAllPanels;
+            // 
+            // ExportReceipts_CheckBox
+            // 
+            ExportReceipts_CheckBox.Animated = true;
+            ExportReceipts_CheckBox.Checked = true;
+            ExportReceipts_CheckBox.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            ExportReceipts_CheckBox.CheckedState.BorderRadius = 2;
+            ExportReceipts_CheckBox.CheckedState.BorderThickness = 0;
+            ExportReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            ExportReceipts_CheckBox.CustomizableEdges = customizableEdges13;
+            ExportReceipts_CheckBox.Location = new Point(15, 47);
+            ExportReceipts_CheckBox.Name = "ExportReceipts_CheckBox";
+            ExportReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            ExportReceipts_CheckBox.Size = new Size(20, 20);
+            ExportReceipts_CheckBox.TabIndex = 0;
+            ExportReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            ExportReceipts_CheckBox.UncheckedState.BorderRadius = 2;
+            ExportReceipts_CheckBox.UncheckedState.BorderThickness = 0;
+            ExportReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            ExportReceipts_CheckBox.Click += CloseAllPanels;
+            // 
+            // Currency_Label
+            // 
+            Currency_Label.AutoSize = true;
+            Currency_Label.Font = new Font("Segoe UI", 10F);
+            Currency_Label.Location = new Point(347, 43);
+            Currency_Label.Name = "Currency_Label";
+            Currency_Label.Size = new Size(93, 28);
+            Currency_Label.TabIndex = 2;
+            Currency_Label.Text = "Currency:";
+            Currency_Label.Click += CloseAllPanels;
+            // 
+            // ExportReceipts_Label
+            // 
+            ExportReceipts_Label.AutoSize = true;
+            ExportReceipts_Label.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ExportReceipts_Label.Location = new Point(33, 38);
+            ExportReceipts_Label.Name = "ExportReceipts_Label";
+            ExportReceipts_Label.Padding = new Padding(5);
+            ExportReceipts_Label.Size = new Size(291, 38);
+            ExportReceipts_Label.TabIndex = 1;
+            ExportReceipts_Label.Text = "Also export receipts to a folder";
+            ExportReceipts_Label.Click += ExportReceipts_Label_Click;
             // 
             // Export_Form
             // 
@@ -359,6 +372,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Shown += Export_Form_Shown;
+            Click += CloseAllPanels;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).EndInit();
             SpreadsheetOptions_GroupBox.ResumeLayout(false);
