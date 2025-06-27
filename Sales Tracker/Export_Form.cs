@@ -11,7 +11,7 @@ namespace Sales_Tracker
     public partial class Export_Form : Form
     {
         // Properties
-        private int originalDirectoryLabelY, originalDirectoryTextBoxY, originalWarningDirLabelY, originalWarningDirPictureBoxY;
+        private int _originalDirectoryLabelY, _originalDirectoryTextBoxY, _originalWarningDirLabelY, _originalWarningDirPictureBoxY;
 
         // Init.
         public Export_Form()
@@ -27,10 +27,10 @@ namespace Sales_Tracker
         }
         private void StoreOriginalPositions()
         {
-            originalDirectoryLabelY = Directory_Label.Location.Y;
-            originalDirectoryTextBoxY = Directory_TextBox.Location.Y;
-            originalWarningDirLabelY = WarningDir_Label.Location.Y;
-            originalWarningDirPictureBoxY = WarningDir_PictureBox.Location.Y;
+            _originalDirectoryLabelY = Directory_Label.Location.Y;
+            _originalDirectoryTextBoxY = Directory_TextBox.Location.Y;
+            _originalWarningDirLabelY = WarningDir_Label.Location.Y;
+            _originalWarningDirPictureBoxY = WarningDir_PictureBox.Location.Y;
         }
         private void SetControls()
         {
@@ -226,22 +226,22 @@ namespace Sales_Tracker
 
                 // Move directory controls down to make room for the GroupBox
                 byte space = 70;
-                Directory_Label.Top = originalDirectoryLabelY + space;
-                Directory_TextBox.Top = originalDirectoryTextBoxY + space;
-                ThreeDots_Button.Top = originalDirectoryTextBoxY + space;
-                WarningDir_Label.Top = originalWarningDirLabelY + space;
-                WarningDir_PictureBox.Top = originalWarningDirPictureBoxY + space;
+                Directory_Label.Top = _originalDirectoryLabelY + space;
+                Directory_TextBox.Top = _originalDirectoryTextBoxY + space;
+                ThreeDots_Button.Top = _originalDirectoryTextBoxY + space;
+                WarningDir_Label.Top = _originalWarningDirLabelY + space;
+                WarningDir_PictureBox.Top = _originalWarningDirPictureBoxY + space;
             }
             else
             {
                 SpreadsheetOptions_GroupBox.Visible = false;
 
                 // Move directory controls back to original positions
-                Directory_Label.Top = originalDirectoryLabelY;
-                Directory_TextBox.Top = originalDirectoryTextBoxY;
-                ThreeDots_Button.Top = originalDirectoryTextBoxY;
-                WarningDir_Label.Top = originalWarningDirLabelY;
-                WarningDir_PictureBox.Top = originalWarningDirPictureBoxY;
+                Directory_Label.Top = _originalDirectoryLabelY;
+                Directory_TextBox.Top = _originalDirectoryTextBoxY;
+                ThreeDots_Button.Top = _originalDirectoryTextBoxY;
+                WarningDir_Label.Top = _originalWarningDirLabelY;
+                WarningDir_PictureBox.Top = _originalWarningDirPictureBoxY;
             }
         }
         private void Export(string fileType, string directoryPath, string fileName, bool exportReceipts, string currency)

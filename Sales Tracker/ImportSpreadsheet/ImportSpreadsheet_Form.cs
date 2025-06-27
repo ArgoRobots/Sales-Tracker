@@ -235,7 +235,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             _centeredFlowPanel.Left = (ClientSize.Width - _centeredFlowPanel.Width) / 2;
         }
 
-        // Import with rollback support
+        // Import spreadsheets and receipts with cancellation and rollback support
         private async void Import_Button_Click(object sender, EventArgs e)
         {
             if (!ValidateSpreadsheet()) { return; }
