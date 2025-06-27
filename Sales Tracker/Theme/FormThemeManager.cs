@@ -33,12 +33,12 @@ namespace Sales_Tracker.Theme
 
                     if (updateMethod != null)
                     {
-                        // Form has UpdateTheme method, so use it
+                        // Form has UpdateTheme(), so use it
                         updateMethod.Invoke(form, null);
                     }
                     else
                     {
-                        // Form doesn't have UpdateTheme, so apply theme directly
+                        // Form doesn't have UpdateTheme(), so apply theme directly
                         ThemeManager.SetThemeForForm(form);
                     }
                 }

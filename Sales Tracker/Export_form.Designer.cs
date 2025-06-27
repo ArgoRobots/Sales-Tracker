@@ -136,7 +136,7 @@
             Directory_TextBox.ShortcutsEnabled = false;
             Directory_TextBox.Size = new Size(1015, 60);
             Directory_TextBox.TabIndex = 3;
-            Directory_TextBox.TextChanged += Directory_TextBox_TextChanged;
+            Directory_TextBox.TextChanged += ValidateInputs;
             Directory_TextBox.Click += CloseAllPanels;
             // 
             // Directory_Label
@@ -171,7 +171,7 @@
             Name_TextBox.ShortcutsEnabled = false;
             Name_TextBox.Size = new Size(1015, 60);
             Name_TextBox.TabIndex = 1;
-            Name_TextBox.TextChanged += Name_TextBox_TextChanged;
+            Name_TextBox.TextChanged += ValidateInputs;
             Name_TextBox.Click += CloseAllPanels;
             // 
             // Name_Label
@@ -301,6 +301,7 @@
             Currency_TextBox.ShortcutsEnabled = false;
             Currency_TextBox.Size = new Size(132, 47);
             Currency_TextBox.TabIndex = 48;
+            Currency_TextBox.TextChanged += ValidateInputs;
             Currency_TextBox.Click += CloseAllPanels;
             // 
             // ExportReceipts_CheckBox

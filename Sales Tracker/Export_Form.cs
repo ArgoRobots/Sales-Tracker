@@ -48,7 +48,6 @@ namespace Sales_Tracker
             SetDefaultCurrency(defaultCurrency);
 
             SetExportSpreadsheetControls();
-            ValidateInputs();
         }
         private void SetDefaultCurrency(string currencyType)
         {
@@ -104,7 +103,6 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(Currency_TextBox);
             SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
-            Currency_TextBox.TextChanged += Currency_TextBox_TextChanged;
         }
 
         // Form event handlers
@@ -115,19 +113,7 @@ namespace Sales_Tracker
         }
 
         // Event handlers
-        private void Name_TextBox_TextChanged(object sender, EventArgs e)
-        {
-            ValidateInputs();
-        }
-        private void Directory_TextBox_TextChanged(object sender, EventArgs e)
-        {
-            ValidateInputs();
-        }
-        private void Currency_TextBox_TextChanged(object sender, EventArgs e)
-        {
-            ValidateInputs();
-        }
-        private void ValidateInputs()
+        private void ValidateInputs(object sender, EventArgs e)
         {
             bool isNameValid = !("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "");
             bool isDirectoryValid = !("/#%&*|;".Any(Directory_TextBox.Text.Contains) ||
