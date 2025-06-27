@@ -347,11 +347,11 @@ namespace Sales_Tracker.ImportSpreadsheet
             }
             if (summary.PurchaseTransactionsImported > 0)
             {
-                importedItems.Add($"{summary.PurchaseTransactionsImported} purchase transaction{(summary.PurchaseTransactionsImported == 1 ? "" : "s")}");
+                importedItems.Add($"{summary.PurchaseTransactionsImported} purchase{(summary.PurchaseTransactionsImported == 1 ? "" : "s")}");
             }
             if (summary.SaleTransactionsImported > 0)
             {
-                importedItems.Add($"{summary.SaleTransactionsImported} sale transaction{(summary.SaleTransactionsImported == 1 ? "" : "s")}");
+                importedItems.Add($"{summary.SaleTransactionsImported} sale{(summary.SaleTransactionsImported == 1 ? "" : "s")}");
             }
             if (summary.ReceiptsImported > 0)
             {
@@ -489,6 +489,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += purchaseSummary.SkippedRows;
                         aggregatedSummary.Errors.AddRange(purchaseSummary.Errors);
+                        aggregatedSummary.PurchaseTransactionsImported += purchaseSummary.PurchaseTransactionsImported;
 
                         if (purchaseSummary.WasCancelled)
                         {
@@ -517,6 +518,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += salesSummary.SkippedRows;
                         aggregatedSummary.Errors.AddRange(salesSummary.Errors);
+                        aggregatedSummary.SaleTransactionsImported += salesSummary.SaleTransactionsImported;
 
                         if (salesSummary.WasCancelled)
                         {

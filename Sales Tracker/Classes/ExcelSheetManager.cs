@@ -596,6 +596,7 @@ namespace Sales_Tracker.Classes
 
             int newRowIndex = -1;
             int currentRowNumber = includeHeader ? 1 : 2;  // Track the actual Excel row number
+            int successfulTransactions = 0;
 
             Guna2DataGridView targetGridView = isPurchase
                 ? MainMenu_Form.Instance.Purchase_DataGridView
@@ -730,7 +731,17 @@ namespace Sales_Tracker.Classes
                     addedDuringImport.Add(transactionNumber);
                 }
 
+                successfulTransactions++;
                 DataGridViewManager.DataGridViewRowsAdded(targetGridView, new DataGridViewRowsAddedEventArgs(newRowIndex, 1));
+            }
+
+            if (isPurchase)
+            {
+                summary.PurchaseTransactionsImported = successfulTransactions;
+            }
+            else
+            {
+                summary.SaleTransactionsImported = successfulTransactions;
             }
 
             // Update "Has Receipt" column for all imported rows
