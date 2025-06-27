@@ -44,50 +44,41 @@ namespace Sales_Tracker
             Directory_TextBox.Text = Properties.Settings.Default.ExportDirectory;
             FileType_ComboBox.SelectedIndex = 0;
 
-            PopulateCurrencyComboBox();
             string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             SetDefaultCurrency(defaultCurrency);
 
             SetExportSpreadsheetControls();
         }
-        private void PopulateCurrencyComboBox()
-        {
-            foreach (string currencyType in Currency.GetCurrencyTypesList())
-            {
-                Currency_ComboBox.Items.Add($"{currencyType}");
-            }
-        }
         private void SetDefaultCurrency(string currencyType)
         {
-            // Find the matching currency in the ComboBox items
-            for (int i = 0; i < Currency_ComboBox.Items.Count; i++)
-            {
-                string item = Currency_ComboBox.Items[i].ToString();
+            // Get the list of currencies and find a match
+            List<string> currencies = Currency.GetCurrencyTypesList();
 
+            foreach (string currency in currencies)
+            {
                 // Check if the currency type matches the item (exact match or starts with)
-                if (item.Equals(currencyType, StringComparison.OrdinalIgnoreCase) ||
-                    item.StartsWith(currencyType, StringComparison.OrdinalIgnoreCase))
+                if (currency.Equals(currencyType, StringComparison.OrdinalIgnoreCase) ||
+                    currency.StartsWith(currencyType, StringComparison.OrdinalIgnoreCase))
                 {
-                    Currency_ComboBox.SelectedIndex = i;
+                    Currency_TextBox.Text = currency;
                     return;
                 }
             }
 
             // If no match found, default to USD if available, otherwise first item
-            for (int i = 0; i < Currency_ComboBox.Items.Count; i++)
+            foreach (string currency in currencies)
             {
-                string item = Currency_ComboBox.Items[i].ToString();
-                if (item.StartsWith("USD", StringComparison.OrdinalIgnoreCase))
+                if (currency.StartsWith("USD", StringComparison.OrdinalIgnoreCase))
                 {
-                    Currency_ComboBox.SelectedIndex = i;
+                    Currency_TextBox.Text = currency;
                     return;
                 }
             }
 
             // Fallback to first item if USD not found
-            if (Currency_ComboBox.Items.Count > 0)
+            if (currencies.Count > 0)
             {
-                Currency_ComboBox.SelectedIndex = 0;
+                Currency_TextBox.Text = currencies[0];
             }
         }
         private void UpdateTheme()
@@ -106,8 +97,17 @@ namespace Sales_Tracker
         }
         private void AddEventHandlersToTextBoxes()
         {
+            byte searchBoxMaxHeight = 255;
+
             TextBoxManager.Attach(Name_TextBox);
             TextBoxManager.Attach(Directory_TextBox);
+
+            TextBoxManager.Attach(Currency_TextBox);
+            SearchBox.Attach(Currency_TextBox, this, GetSearchResultsForCurrency, searchBoxMaxHeight, false, false, true, false);
+        }
+        private static List<SearchResult> GetSearchResultsForCurrency()
+        {
+            return SearchBox.ConvertToSearchResults(Currency.GetCurrencyTypesList());
         }
 
         // Form event handlers
@@ -195,7 +195,7 @@ namespace Sales_Tracker
             string directoryPath = Directory_TextBox.Text;
             string fileName = Name_TextBox.Text;
             bool exportReceipts = ExportReceipts_CheckBox.Checked && ExportReceipts_CheckBox.Visible;
-            string currency = Currency_ComboBox.SelectedItem?.ToString() ?? "USD ($)";
+            string currency = Currency_TextBox.Text;
 
             // Run the export operation
             await Task.Run(() => Export(fileType, directoryPath, fileName, exportReceipts, currency));

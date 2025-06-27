@@ -38,10 +38,10 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Export_Form));
             WarningDir_PictureBox = new PictureBox();
             WarningDir_Label = new Label();
@@ -58,9 +58,9 @@
             FileType_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             SpreadsheetOptions_GroupBox = new GroupBox();
             ExportReceipts_CheckBox = new Guna.UI2.WinForms.Guna2CustomCheckBox();
-            Currency_ComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             Currency_Label = new Label();
             ExportReceipts_Label = new Label();
+            Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).BeginInit();
             SpreadsheetOptions_GroupBox.SuspendLayout();
@@ -256,8 +256,8 @@
             // SpreadsheetOptions_GroupBox
             // 
             SpreadsheetOptions_GroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            SpreadsheetOptions_GroupBox.Controls.Add(Currency_TextBox);
             SpreadsheetOptions_GroupBox.Controls.Add(ExportReceipts_CheckBox);
-            SpreadsheetOptions_GroupBox.Controls.Add(Currency_ComboBox);
             SpreadsheetOptions_GroupBox.Controls.Add(Currency_Label);
             SpreadsheetOptions_GroupBox.Controls.Add(ExportReceipts_Label);
             SpreadsheetOptions_GroupBox.Font = new Font("Segoe UI", 10F);
@@ -277,10 +277,10 @@
             ExportReceipts_CheckBox.CheckedState.BorderRadius = 2;
             ExportReceipts_CheckBox.CheckedState.BorderThickness = 0;
             ExportReceipts_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            ExportReceipts_CheckBox.CustomizableEdges = customizableEdges11;
-            ExportReceipts_CheckBox.Location = new Point(15, 45);
+            ExportReceipts_CheckBox.CustomizableEdges = customizableEdges13;
+            ExportReceipts_CheckBox.Location = new Point(15, 47);
             ExportReceipts_CheckBox.Name = "ExportReceipts_CheckBox";
-            ExportReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            ExportReceipts_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ExportReceipts_CheckBox.Size = new Size(20, 20);
             ExportReceipts_CheckBox.TabIndex = 0;
             ExportReceipts_CheckBox.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
@@ -288,28 +288,11 @@
             ExportReceipts_CheckBox.UncheckedState.BorderThickness = 0;
             ExportReceipts_CheckBox.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
             // 
-            // Currency_ComboBox
-            // 
-            Currency_ComboBox.BackColor = Color.Transparent;
-            Currency_ComboBox.CustomizableEdges = customizableEdges13;
-            Currency_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
-            Currency_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            Currency_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            Currency_ComboBox.Font = new Font("Segoe UI", 9F);
-            Currency_ComboBox.ForeColor = Color.Black;
-            Currency_ComboBox.ItemHeight = 35;
-            Currency_ComboBox.Location = new Point(442, 35);
-            Currency_ComboBox.Name = "Currency_ComboBox";
-            Currency_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            Currency_ComboBox.Size = new Size(156, 41);
-            Currency_ComboBox.TabIndex = 3;
-            // 
             // Currency_Label
             // 
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 10F);
-            Currency_Label.Location = new Point(347, 41);
+            Currency_Label.Location = new Point(347, 43);
             Currency_Label.Name = "Currency_Label";
             Currency_Label.Size = new Size(93, 28);
             Currency_Label.TabIndex = 2;
@@ -319,13 +302,36 @@
             // 
             ExportReceipts_Label.AutoSize = true;
             ExportReceipts_Label.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ExportReceipts_Label.Location = new Point(33, 36);
+            ExportReceipts_Label.Location = new Point(33, 38);
             ExportReceipts_Label.Name = "ExportReceipts_Label";
             ExportReceipts_Label.Padding = new Padding(5);
             ExportReceipts_Label.Size = new Size(291, 38);
             ExportReceipts_Label.TabIndex = 1;
             ExportReceipts_Label.Text = "Also export receipts to a folder";
             ExportReceipts_Label.Click += ExportReceipts_Label_Click;
+            // 
+            // Currency_TextBox
+            // 
+            Currency_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Currency_TextBox.CustomizableEdges = customizableEdges11;
+            Currency_TextBox.DefaultText = "";
+            Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Currency_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Currency_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Font = new Font("Segoe UI", 11F);
+            Currency_TextBox.ForeColor = SystemColors.ControlText;
+            Currency_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Location = new Point(447, 34);
+            Currency_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Currency_TextBox.Name = "Currency_TextBox";
+            Currency_TextBox.PlaceholderText = "";
+            Currency_TextBox.SelectedText = "";
+            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Currency_TextBox.ShortcutsEnabled = false;
+            Currency_TextBox.Size = new Size(132, 47);
+            Currency_TextBox.TabIndex = 48;
             // 
             // Export_Form
             // 
@@ -380,6 +386,6 @@
         private Guna.UI2.WinForms.Guna2CustomCheckBox ExportReceipts_CheckBox;
         private Label ExportReceipts_Label;
         private Label Currency_Label;
-        private Guna.UI2.WinForms.Guna2ComboBox Currency_ComboBox;
+        private Guna.UI2.WinForms.Guna2TextBox Currency_TextBox;
     }
 }
