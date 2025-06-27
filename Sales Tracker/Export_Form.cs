@@ -52,7 +52,6 @@ namespace Sales_Tracker
         }
         private void SetDefaultCurrency(string currencyType)
         {
-            // Get the list of currencies and find a match
             List<string> currencies = Currency.GetCurrencyTypesList();
 
             foreach (string currency in currencies)
@@ -131,7 +130,9 @@ namespace Sales_Tracker
         private void ValidateInputs()
         {
             bool isNameValid = !("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "");
-            bool isDirectoryValid = !("/#%&*|;".Any(Directory_TextBox.Text.Contains) || Directory_TextBox.Text == "" || !Directory_TextBox.Text.Contains('\\'));
+            bool isDirectoryValid = !("/#%&*|;".Any(Directory_TextBox.Text.Contains) ||
+                Directory_TextBox.Text == "" ||
+                !Directory.Exists(Directory_TextBox.Text.TrimEnd('\\')));
             bool isCurrencyValid = !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
 
             // Update Name validation UI

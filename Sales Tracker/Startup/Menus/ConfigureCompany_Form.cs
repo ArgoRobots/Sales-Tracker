@@ -59,7 +59,6 @@ namespace Sales_Tracker.Startup.Menus
         {
             string defaultName = "CompanyName";
             List<string> existingNames = [];
-
             string[] directories = Directory.GetDirectories(Properties.Settings.Default.CompanyDirectory);
             string[] files = Directory.GetFiles(Properties.Settings.Default.CompanyDirectory, "*" + ArgoFiles.ArgoCompanyFileExtension);
 
@@ -235,6 +234,12 @@ namespace Sales_Tracker.Startup.Menus
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
                 ShowWarningForDirectory();
                 WarningDir_Label.Text = "Directory must contain a backslash (\\)";
+            }
+            else if (!Directory.Exists(Directory_TextBox.Text))
+            {
+                CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
+                ShowWarningForDirectory();
+                WarningDir_Label.Text = "Directory does not exist";
             }
             else
             {
