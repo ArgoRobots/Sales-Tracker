@@ -10,16 +10,27 @@ namespace Sales_Tracker
 {
     public partial class Export_Form : Form
     {
+        // Properties
+        private int originalDirectoryLabelY, originalDirectoryTextBoxY, originalWarningDirLabelY, originalWarningDirPictureBoxY;
+
         // Init.
         public Export_Form()
         {
             InitializeComponent();
 
+            StoreOriginalPositions();
             AddEventHandlersToTextBoxes();
+            SetControls();
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
-            SetControls();
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        private void StoreOriginalPositions()
+        {
+            originalDirectoryLabelY = Directory_Label.Location.Y;
+            originalDirectoryTextBoxY = Directory_TextBox.Location.Y;
+            originalWarningDirLabelY = WarningDir_Label.Location.Y;
+            originalWarningDirPictureBoxY = WarningDir_PictureBox.Location.Y;
         }
         private void SetControls()
         {
@@ -29,11 +40,55 @@ namespace Sales_Tracker
                 Properties.Settings.Default.Save();
             }
 
+            Name_TextBox.Text = Directories.CompanyName + " " + Tools.FormatDate(DateTime.Today);
             Directory_TextBox.Text = Properties.Settings.Default.ExportDirectory;
             FileType_ComboBox.SelectedIndex = 0;
-            Name_TextBox.Text = Directories.CompanyName + " " + Tools.FormatDate(DateTime.Today);
 
-            UpdateReceiptExportControlsVisibility();
+            PopulateCurrencyComboBox();
+            string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
+            SetDefaultCurrency(defaultCurrency);
+
+            SetExportSpreadsheetControls();
+        }
+        private void PopulateCurrencyComboBox()
+        {
+            foreach (string currencyType in Currency.GetCurrencyTypesList())
+            {
+                Currency_ComboBox.Items.Add($"{currencyType}");
+            }
+        }
+        private void SetDefaultCurrency(string currencyType)
+        {
+            // Find the matching currency in the ComboBox items
+            for (int i = 0; i < Currency_ComboBox.Items.Count; i++)
+            {
+                string item = Currency_ComboBox.Items[i].ToString();
+
+                // Check if the currency type matches the item (exact match or starts with)
+                if (item.Equals(currencyType, StringComparison.OrdinalIgnoreCase) ||
+                    item.StartsWith(currencyType, StringComparison.OrdinalIgnoreCase))
+                {
+                    Currency_ComboBox.SelectedIndex = i;
+                    return;
+                }
+            }
+
+            // If no match found, default to USD if available, otherwise first item
+            for (int i = 0; i < Currency_ComboBox.Items.Count; i++)
+            {
+                string item = Currency_ComboBox.Items[i].ToString();
+                if (item.StartsWith("USD", StringComparison.OrdinalIgnoreCase))
+                {
+                    Currency_ComboBox.SelectedIndex = i;
+                    return;
+                }
+            }
+
+            // Fallback to first item if USD not found
+            if (Currency_ComboBox.Items.Count > 0)
+            {
+                Currency_ComboBox.SelectedIndex = 0;
+            }
         }
         private void UpdateTheme()
         {
@@ -101,7 +156,7 @@ namespace Sales_Tracker
         }
         private void FileType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateReceiptExportControlsVisibility();
+            SetExportSpreadsheetControls();
         }
         private void ExportReceipts_Label_Click(object sender, EventArgs e)
         {
@@ -119,50 +174,85 @@ namespace Sales_Tracker
         }
         private async void Export_Button_Click(object sender, EventArgs e)
         {
+            // Check if there's any data to export
+            if (!HasAnyDataToExport())
+            {
+                CustomMessageBox.Show(
+                    "No Data to Export",
+                    "There is no data available to export. Please add some transactions, products, companies, or accountants before exporting.",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
             string loadingText = ExportReceipts_CheckBox.Checked && ExportReceipts_CheckBox.Visible
                 ? $"Exporting {FileType_ComboBox.Text} and receipts..."
                 : $"Exporting {FileType_ComboBox.Text}...";
 
             LoadingPanel.ShowLoadingScreen(this, loadingText);
 
+            // Capture all UI values on the UI thread
             string fileType = FileType_ComboBox.Text;
+            string directoryPath = Directory_TextBox.Text;
+            string fileName = Name_TextBox.Text;
             bool exportReceipts = ExportReceipts_CheckBox.Checked && ExportReceipts_CheckBox.Visible;
+            string currency = Currency_ComboBox.SelectedItem?.ToString() ?? "USD ($)";
 
-            await Task.Run(() => { Export(fileType, exportReceipts); });
+            // Run the export operation
+            await Task.Run(() => Export(fileType, directoryPath, fileName, exportReceipts, currency));
         }
 
         // Methods
-        private void UpdateReceiptExportControlsVisibility()
+        private void SetExportSpreadsheetControls()
         {
             bool isExcelSelected = FileType_ComboBox.Text == "Excel spreadsheet (.xlsx)";
 
-            ExportReceipts_CheckBox.Visible = isExcelSelected;
-            ExportReceipts_Label.Visible = isExcelSelected;
+            if (isExcelSelected)
+            {
+                SpreadsheetOptions_GroupBox.Visible = true;
+
+                // Move directory controls down to make room for the GroupBox
+                byte space = 70;
+                Directory_Label.Top = originalDirectoryLabelY + space;
+                Directory_TextBox.Top = originalDirectoryTextBoxY + space;
+                ThreeDots_Button.Top = originalDirectoryTextBoxY + space;
+                WarningDir_Label.Top = originalWarningDirLabelY + space;
+                WarningDir_PictureBox.Top = originalWarningDirPictureBoxY + space;
+            }
+            else
+            {
+                SpreadsheetOptions_GroupBox.Visible = false;
+
+                // Move directory controls back to original positions
+                Directory_Label.Top = originalDirectoryLabelY;
+                Directory_TextBox.Top = originalDirectoryTextBoxY;
+                ThreeDots_Button.Top = originalDirectoryTextBoxY;
+                WarningDir_Label.Top = originalWarningDirLabelY;
+                WarningDir_PictureBox.Top = originalWarningDirPictureBoxY;
+            }
         }
-        private void Export(string fileType, bool exportReceipts = false)
+        private void Export(string fileType, string directoryPath, string fileName, bool exportReceipts, string currency)
         {
-            string filePath = Directory_TextBox.Text + "\\" + Name_TextBox.Text;
+            string filePath = Path.Combine(directoryPath, fileName);
             Stopwatch stopwatch = Stopwatch.StartNew();
-            ExportType exportType;
 
             switch (fileType)
             {
                 case "ArgoSales (.zip)":
                     Directories.CreateBackup(filePath);
-                    exportType = ExportType.Backup;
-                    TrackExport(stopwatch, filePath + ArgoFiles.ZipExtension, exportType);
+                    TrackExport(stopwatch, filePath + ArgoFiles.ZipExtension, ExportType.Backup);
                     FinalizeExport($"Successfully backed up '{Directories.CompanyName}'");
                     break;
 
                 case "Excel spreadsheet (.xlsx)":
-                    string exportFolder = Path.Combine(Directory_TextBox.Text, Name_TextBox.Text);
+                    string exportFolder = Path.Combine(directoryPath, fileName);
+
+                    // Create export folder
                     exportFolder = Directories.GetNewDirectoryNameIfItAlreadyExists(exportFolder);
                     Directory.CreateDirectory(exportFolder);
 
                     // Create xlsx file inside the export folder
-                    string xlsxPath = Path.Combine(exportFolder, Name_TextBox.Text + ArgoFiles.XlsxFileExtension);
-                    ExcelSheetManager.ExportSpreadsheet(xlsxPath);
-                    exportType = ExportType.XLSX;
+                    string xlsxPath = Path.Combine(exportFolder, fileName + ArgoFiles.XlsxFileExtension);
+                    ExcelSheetManager.ExportSpreadsheet(xlsxPath, currency);
 
                     string successMessage = $"Successfully created spreadsheet for '{Directories.CompanyName}'";
 
@@ -171,7 +261,7 @@ namespace Sales_Tracker
                     {
                         try
                         {
-                            ExportReceiptsToFolder(Path.Combine(exportFolder, Name_TextBox.Text));
+                            ExportReceiptsToFolder(Path.Combine(exportFolder, fileName));
                             successMessage += " and exported receipts";
                         }
                         catch (Exception ex)
@@ -180,7 +270,7 @@ namespace Sales_Tracker
                         }
                     }
 
-                    TrackExport(stopwatch, xlsxPath, exportType);
+                    TrackExport(stopwatch, xlsxPath, ExportType.XLSX);
                     FinalizeExport(successMessage);
                     break;
             }
@@ -267,6 +357,17 @@ namespace Sales_Tracker
                 LoadingPanel.HideLoadingScreen(this);
                 CustomMessageBox.Show("Successfully exported", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             });
+        }
+        private static bool HasAnyDataToExport()
+        {
+            MainMenu_Form main = MainMenu_Form.Instance;
+
+            return main.Purchase_DataGridView.Rows.Count > 0 ||
+                   main.Sale_DataGridView.Rows.Count > 0 ||
+                   main.CategoryPurchaseList.Count > 0 ||
+                   main.CategorySaleList.Count > 0 ||
+                   main.CompanyList.Count > 0 ||
+                   main.AccountantList.Count > 0;
         }
     }
 }

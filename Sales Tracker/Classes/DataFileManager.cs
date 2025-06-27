@@ -64,9 +64,9 @@
             if (!File.Exists(filePath)) { return null; }
 
             return Directories.ReadAllLinesInFile(filePath)
-                        .Select(line => line.Split([':'], 2))
-                        .Where(parts => parts.Length == 2)
-                        .ToDictionary(parts => parts[0], parts => parts[1], StringComparer.OrdinalIgnoreCase);
+                       .Select(line => line.Split([':'], 2))
+                       .Where(parts => parts.Length == 2)
+                       .ToDictionary(parts => parts[0], parts => parts[1], StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

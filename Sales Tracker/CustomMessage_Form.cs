@@ -406,18 +406,19 @@ namespace Sales_Tracker
 
             try
             {
-                // Construct a new form to free resources when it closes
-                if (Application.OpenForms.Count > 0 && Application.OpenForms[0].InvokeRequired)
+                // Check if we have any open forms and need to invoke
+                if (Application.OpenForms.Count > 0)
                 {
-                    return Application.OpenForms[0].Invoke(new Func<CustomMessageBoxResult>(() =>
+                    return Application.OpenForms[0].InvokeIfRequired(() =>
                     {
                         using CustomMessage_Form form = new(title, message, icon, buttons);
                         form.ShowDialog();
                         return form.Result;
-                    }));
+                    });
                 }
                 else
                 {
+                    // No forms available, create directly
                     using CustomMessage_Form form = new(title, message, icon, buttons);
                     form.ShowDialog();
                     return form.Result;

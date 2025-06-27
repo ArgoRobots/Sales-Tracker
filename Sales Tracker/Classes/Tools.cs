@@ -3,22 +3,6 @@ using System.Reflection;
 
 namespace Sales_Tracker.Classes
 {
-    // Thread-safe UI extensions
-    public static class UIExtensions
-    {
-        public static void InvokeIfRequired(this Control control, Action action)
-        {
-            if (control.InvokeRequired)
-            {
-                control.Invoke(action);
-            }
-            else
-            {
-                action();
-            }
-        }
-    }
-
     /// <summary>
     /// Provides a collection of utility methods for various formatting, file management, and input validation tasks.
     /// </summary>

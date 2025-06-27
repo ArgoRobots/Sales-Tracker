@@ -106,9 +106,9 @@ namespace Sales_Tracker.Classes
         /// Gets the symbol for the default currency type set in application settings.
         /// </summary>
         /// <returns>Currency symbol as a string.</returns>
-        public static string GetSymbol()
+        public static string GetSymbol(string currency = null)
         {
-            string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
+            currency ??= DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             if (Enum.TryParse(currency, out CurrencyTypes currencyType))
             {
@@ -117,7 +117,7 @@ namespace Sales_Tracker.Classes
                     return symbol;
                 }
             }
-            throw new ArgumentException($"Invalid currency type: {currency}");
+            return "$";  // Default fallback
         }
 
         /// <summary>
@@ -261,7 +261,6 @@ namespace Sales_Tracker.Classes
                     Directory.CreateDirectory(Directories.Cache_dir);
                 }
 
-                // Serialize the cache to JSON using a cached JsonSerializerSettings for better performance
                 string json = JsonConvert.SerializeObject(_exchangeRateCache, Formatting.Indented);
                 File.WriteAllText(Directories.ExchangeRates_file, json);
             }

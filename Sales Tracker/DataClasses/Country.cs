@@ -210,5 +210,887 @@ namespace Sales_Tracker.DataClasses
             new SearchResult("Zambia", Properties.Flags.Zambia, 0),
             new SearchResult("Zimbabwe", Properties.Flags.Zimbabwe ,0)
         ];
+
+        public static string NormalizeCountryName(string countryOfOrigin)
+        {
+            if (string.IsNullOrWhiteSpace(countryOfOrigin))
+            {
+                return countryOfOrigin;
+            }
+
+            // Create a case-insensitive comparison dictionary for country variants
+            Dictionary<string, string> countryVariants = new(StringComparer.OrdinalIgnoreCase)
+            {
+                // United States variants
+                ["US"] = "United States",
+                ["USA"] = "United States",
+                ["U.S."] = "United States",
+                ["U.S.A."] = "United States",
+                ["United States of America"] = "United States",
+                ["America"] = "United States",
+                ["States"] = "United States",
+                ["The States"] = "United States",
+
+                // China variants
+                ["CN"] = "China",
+                ["CHN"] = "China",
+                ["PRC"] = "China",
+                ["People's Republic of China"] = "China",
+                ["Mainland China"] = "China",
+
+                // Germany variants
+                ["DE"] = "Germany",
+                ["DEU"] = "Germany",
+                ["Deutschland"] = "Germany",
+                ["Federal Republic of Germany"] = "Germany",
+
+                // Japan variants
+                ["JP"] = "Japan",
+                ["JPN"] = "Japan",
+                ["Nippon"] = "Japan",
+
+                // United Kingdom variants
+                ["GB"] = "United Kingdom",
+                ["GBR"] = "United Kingdom",
+                ["UK"] = "United Kingdom",
+                ["U.K."] = "United Kingdom",
+                ["Great Britain"] = "United Kingdom",
+                ["Britain"] = "United Kingdom",
+                ["England"] = "United Kingdom",
+                ["Scotland"] = "United Kingdom",
+                ["Wales"] = "United Kingdom",
+                ["Northern Ireland"] = "United Kingdom",
+
+                // France variants
+                ["FR"] = "France",
+                ["FRA"] = "France",
+                ["French Republic"] = "France",
+
+                // Italy variants
+                ["IT"] = "Italy",
+                ["ITA"] = "Italy",
+                ["Italian Republic"] = "Italy",
+
+                // Canada variants
+                ["CA"] = "Canada",
+                ["CAN"] = "Canada",
+
+                // Afghanistan variants
+                ["AF"] = "Afghanistan",
+                ["AFG"] = "Afghanistan",
+
+                // Albania variants
+                ["AL"] = "Albania",
+                ["ALB"] = "Albania",
+
+                // Algeria variants
+                ["DZ"] = "Algeria",
+                ["DZA"] = "Algeria",
+
+                // Andorra variants
+                ["AD"] = "Andorra",
+                ["AND"] = "Andorra",
+
+                // Angola variants
+                ["AO"] = "Angola",
+                ["AGO"] = "Angola",
+
+                // Antigua and Barbuda variants
+                ["AG"] = "Antigua and Barbuda",
+                ["ATG"] = "Antigua and Barbuda",
+
+                // Argentina variants
+                ["AR"] = "Argentina",
+                ["ARG"] = "Argentina",
+                ["Argentine Republic"] = "Argentina",
+
+                // Armenia variants
+                ["AM"] = "Armenia",
+                ["ARM"] = "Armenia",
+
+                // Australia variants
+                ["AU"] = "Australia",
+                ["AUS"] = "Australia",
+                ["Commonwealth of Australia"] = "Australia",
+
+                // Austria variants
+                ["AT"] = "Austria",
+                ["AUT"] = "Austria",
+                ["Republic of Austria"] = "Austria",
+
+                // Azerbaijan variants
+                ["AZ"] = "Azerbaijan",
+                ["AZE"] = "Azerbaijan",
+
+                // Bahamas variants
+                ["BS"] = "Bahamas",
+                ["BHS"] = "Bahamas",
+
+                // Bahrain variants
+                ["BH"] = "Bahrain",
+                ["BHR"] = "Bahrain",
+
+                // Bangladesh variants
+                ["BD"] = "Bangladesh",
+                ["BGD"] = "Bangladesh",
+
+                // Barbados variants
+                ["BB"] = "Barbados",
+                ["BRB"] = "Barbados",
+
+                // Belarus variants
+                ["BY"] = "Belarus",
+                ["BLR"] = "Belarus",
+                ["Republic of Belarus"] = "Belarus",
+
+                // Belgium variants
+                ["BE"] = "Belgium",
+                ["BEL"] = "Belgium",
+                ["Kingdom of Belgium"] = "Belgium",
+
+                // Belize variants
+                ["BZ"] = "Belize",
+                ["BLZ"] = "Belize",
+
+                // Benin variants
+                ["BJ"] = "Benin",
+                ["BEN"] = "Benin",
+
+                // Bhutan variants
+                ["BT"] = "Bhutan",
+                ["BTN"] = "Bhutan",
+
+                // Bolivia variants
+                ["BO"] = "Bolivia",
+                ["BOL"] = "Bolivia",
+
+                // Bosnia and Herzegovina variants
+                ["BA"] = "Bosnia and Herzegovina",
+                ["BIH"] = "Bosnia and Herzegovina",
+
+                // Botswana variants
+                ["BW"] = "Botswana",
+                ["BWA"] = "Botswana",
+
+                // Brazil variants
+                ["BR"] = "Brazil",
+                ["BRA"] = "Brazil",
+                ["Federative Republic of Brazil"] = "Brazil",
+
+                // Brunei variants
+                ["BN"] = "Brunei",
+                ["BRN"] = "Brunei",
+
+                // Bulgaria variants
+                ["BG"] = "Bulgaria",
+                ["BGR"] = "Bulgaria",
+                ["Republic of Bulgaria"] = "Bulgaria",
+
+                // Burkina Faso variants
+                ["BF"] = "Burkina Faso",
+                ["BFA"] = "Burkina Faso",
+
+                // Burundi variants
+                ["BI"] = "Burundi",
+                ["BDI"] = "Burundi",
+
+                // Cabo Verde variants
+                ["CV"] = "Cabo Verde",
+                ["CPV"] = "Cabo Verde",
+                ["Cape Verde"] = "Cabo Verde",
+
+                // Cambodia variants
+                ["KH"] = "Cambodia",
+                ["KHM"] = "Cambodia",
+
+                // Cameroon variants
+                ["CM"] = "Cameroon",
+                ["CMR"] = "Cameroon",
+
+                // Central African Republic variants
+                ["CF"] = "Central African Republic",
+                ["CAF"] = "Central African Republic",
+
+                // Chad variants
+                ["TD"] = "Chad",
+                ["TCD"] = "Chad",
+
+                // Chile variants
+                ["CL"] = "Chile",
+                ["CHL"] = "Chile",
+
+                // Colombia variants
+                ["CO"] = "Colombia",
+                ["COL"] = "Colombia",
+
+                // Comoros variants
+                ["KM"] = "Comoros",
+                ["COM"] = "Comoros",
+
+                // Costa Rica variants
+                ["CR"] = "Costa Rica",
+                ["CRI"] = "Costa Rica",
+
+                // Croatia variants
+                ["HR"] = "Croatia",
+                ["HRV"] = "Croatia",
+                ["Republic of Croatia"] = "Croatia",
+
+                // Cuba variants
+                ["CU"] = "Cuba",
+                ["CUB"] = "Cuba",
+
+                // Cyprus variants
+                ["CY"] = "Cyprus",
+                ["CYP"] = "Cyprus",
+
+                // Czechia variants
+                ["CZ"] = "Czechia",
+                ["CZE"] = "Czechia",
+                ["Czech Republic"] = "Czechia",
+
+                // Denmark variants
+                ["DK"] = "Denmark",
+                ["DNK"] = "Denmark",
+                ["Kingdom of Denmark"] = "Denmark",
+
+                // Djibouti variants
+                ["DJ"] = "Djibouti",
+                ["DJI"] = "Djibouti",
+
+                // Dominica variants
+                ["DM"] = "Dominica",
+                ["DMA"] = "Dominica",
+
+                // Dominican Republic variants
+                ["DO"] = "Dominican Republic",
+                ["DOM"] = "Dominican Republic",
+
+                // Ecuador variants
+                ["EC"] = "Ecuador",
+                ["ECU"] = "Ecuador",
+
+                // Egypt variants
+                ["EG"] = "Egypt",
+                ["EGY"] = "Egypt",
+                ["Arab Republic of Egypt"] = "Egypt",
+
+                // El Salvador variants
+                ["SV"] = "El Salvador",
+                ["SLV"] = "El Salvador",
+
+                // Equatorial Guinea variants
+                ["GQ"] = "Equatorial Guinea",
+                ["GNQ"] = "Equatorial Guinea",
+
+                // Eritrea variants
+                ["ER"] = "Eritrea",
+                ["ERI"] = "Eritrea",
+
+                // Estonia variants
+                ["EE"] = "Estonia",
+                ["EST"] = "Estonia",
+                ["Republic of Estonia"] = "Estonia",
+
+                // Eswatini variants
+                ["SZ"] = "Eswatini",
+                ["SWZ"] = "Eswatini",
+                ["Swaziland"] = "Eswatini",
+
+                // Ethiopia variants
+                ["ET"] = "Ethiopia",
+                ["ETH"] = "Ethiopia",
+
+                // Fiji variants
+                ["FJ"] = "Fiji",
+                ["FJI"] = "Fiji",
+
+                // Finland variants
+                ["FI"] = "Finland",
+                ["FIN"] = "Finland",
+                ["Republic of Finland"] = "Finland",
+
+                // Gabon variants
+                ["GA"] = "Gabon",
+                ["GAB"] = "Gabon",
+
+                // Gambia variants
+                ["GM"] = "Gambia",
+                ["GMB"] = "Gambia",
+
+                // Georgia variants
+                ["GE"] = "Georgia",
+                ["GEO"] = "Georgia",
+
+                // Ghana variants
+                ["GH"] = "Ghana",
+                ["GHA"] = "Ghana",
+
+                // Greece variants
+                ["GR"] = "Greece",
+                ["GRC"] = "Greece",
+                ["Hellenic Republic"] = "Greece",
+
+                // Grenada variants
+                ["GD"] = "Grenada",
+                ["GRD"] = "Grenada",
+
+                // Guatemala variants
+                ["GT"] = "Guatemala",
+                ["GTM"] = "Guatemala",
+
+                // Guinea variants
+                ["GN"] = "Guinea",
+                ["GIN"] = "Guinea",
+
+                // Guinea-Bissau variants
+                ["GW"] = "Guinea-Bissau",
+                ["GNB"] = "Guinea-Bissau",
+
+                // Guyana variants
+                ["GY"] = "Guyana",
+                ["GUY"] = "Guyana",
+
+                // Haiti variants
+                ["HT"] = "Haiti",
+                ["HTI"] = "Haiti",
+
+                // Honduras variants
+                ["HN"] = "Honduras",
+                ["HND"] = "Honduras",
+
+                // Hungary variants
+                ["HU"] = "Hungary",
+                ["HUN"] = "Hungary",
+
+                // Iceland variants
+                ["IS"] = "Iceland",
+                ["ISL"] = "Iceland",
+
+                // India variants
+                ["IN"] = "India",
+                ["IND"] = "India",
+                ["Republic of India"] = "India",
+                ["Bharat"] = "India",
+
+                // Indonesia variants
+                ["ID"] = "Indonesia",
+                ["IDN"] = "Indonesia",
+
+                // Iran variants
+                ["IR"] = "Iran",
+                ["IRN"] = "Iran",
+
+                // Iraq variants
+                ["IQ"] = "Iraq",
+                ["IRQ"] = "Iraq",
+
+                // Ireland variants
+                ["IE"] = "Ireland",
+                ["IRL"] = "Ireland",
+                ["Republic of Ireland"] = "Ireland",
+
+                // Israel variants
+                ["IL"] = "Israel",
+                ["ISR"] = "Israel",
+                ["State of Israel"] = "Israel",
+
+                // Ivory Coast variants
+                ["CI"] = "Ivory Coast",
+                ["CIV"] = "Ivory Coast",
+                ["Côte d'Ivoire"] = "Ivory Coast",
+
+                // Jamaica variants
+                ["JM"] = "Jamaica",
+                ["JAM"] = "Jamaica",
+
+                // Jordan variants
+                ["JO"] = "Jordan",
+                ["JOR"] = "Jordan",
+
+                // Kazakhstan variants
+                ["KZ"] = "Kazakhstan",
+                ["KAZ"] = "Kazakhstan",
+
+                // Kenya variants
+                ["KE"] = "Kenya",
+                ["KEN"] = "Kenya",
+
+                // Kiribati variants
+                ["KI"] = "Kiribati",
+                ["KIR"] = "Kiribati",
+
+                // Kuwait variants
+                ["KW"] = "Kuwait",
+                ["KWT"] = "Kuwait",
+
+                // Kyrgyzstan variants
+                ["KG"] = "Kyrgyzstan",
+                ["KGZ"] = "Kyrgyzstan",
+
+                // Lao variants
+                ["LA"] = "Lao",
+                ["LAO"] = "Lao",
+                ["Laos"] = "Lao",
+
+                // Latvia variants
+                ["LV"] = "Latvia",
+                ["LVA"] = "Latvia",
+                ["Republic of Latvia"] = "Latvia",
+
+                // Lebanon variants
+                ["LB"] = "Lebanon",
+                ["LBN"] = "Lebanon",
+
+                // Lesotho variants
+                ["LS"] = "Lesotho",
+                ["LSO"] = "Lesotho",
+
+                // Liberia variants
+                ["LR"] = "Liberia",
+                ["LBR"] = "Liberia",
+
+                // Libya variants
+                ["LY"] = "Libya",
+                ["LBY"] = "Libya",
+
+                // Liechtenstein variants
+                ["LI"] = "Liechtenstein",
+                ["LIE"] = "Liechtenstein",
+
+                // Lithuania variants
+                ["LT"] = "Lithuania",
+                ["LTU"] = "Lithuania",
+                ["Republic of Lithuania"] = "Lithuania",
+
+                // Luxembourg variants
+                ["LU"] = "Luxembourg",
+                ["LUX"] = "Luxembourg",
+
+                // Madagascar variants
+                ["MG"] = "Madagascar",
+                ["MDG"] = "Madagascar",
+
+                // Malawi variants
+                ["MW"] = "Malawi",
+                ["MWI"] = "Malawi",
+
+                // Malaysia variants
+                ["MY"] = "Malaysia",
+                ["MYS"] = "Malaysia",
+
+                // Maldives variants
+                ["MV"] = "Maldives",
+                ["MDV"] = "Maldives",
+
+                // Mali variants
+                ["ML"] = "Mali",
+                ["MLI"] = "Mali",
+
+                // Malta variants
+                ["MT"] = "Malta",
+                ["MLT"] = "Malta",
+
+                // Marshall Islands variants
+                ["MH"] = "Marshall Islands",
+                ["MHL"] = "Marshall Islands",
+
+                // Mauritania variants
+                ["MR"] = "Mauritania",
+                ["MRT"] = "Mauritania",
+
+                // Mauritius variants
+                ["MU"] = "Mauritius",
+                ["MUS"] = "Mauritius",
+
+                // Mexico variants
+                ["MX"] = "Mexico",
+                ["MEX"] = "Mexico",
+                ["United Mexican States"] = "Mexico",
+
+                // Micronesia variants
+                ["FM"] = "Micronesia",
+                ["FSM"] = "Micronesia",
+
+                // Moldova variants
+                ["MD"] = "Moldova",
+                ["MDA"] = "Moldova",
+                ["Republic of Moldova"] = "Moldova",
+
+                // Monaco variants
+                ["MC"] = "Monaco",
+                ["MCO"] = "Monaco",
+
+                // Mongolia variants
+                ["MN"] = "Mongolia",
+                ["MNG"] = "Mongolia",
+
+                // Montenegro variants
+                ["ME"] = "Montenegro",
+                ["MNE"] = "Montenegro",
+
+                // Morocco variants
+                ["MA"] = "Morocco",
+                ["MAR"] = "Morocco",
+
+                // Mozambique variants
+                ["MZ"] = "Mozambique",
+                ["MOZ"] = "Mozambique",
+
+                // Myanmar variants
+                ["MM"] = "Myanmar",
+                ["MMR"] = "Myanmar",
+                ["Burma"] = "Myanmar",
+
+                // Namibia variants
+                ["NA"] = "Namibia",
+                ["NAM"] = "Namibia",
+
+                // Nauru variants
+                ["NR"] = "Nauru",
+                ["NRU"] = "Nauru",
+
+                // Nepal variants
+                ["NP"] = "Nepal",
+                ["NPL"] = "Nepal",
+
+                // Netherlands variants
+                ["NL"] = "Netherlands",
+                ["NLD"] = "Netherlands",
+                ["Holland"] = "Netherlands",
+                ["Kingdom of the Netherlands"] = "Netherlands",
+
+                // New Zealand variants
+                ["NZ"] = "New Zealand",
+                ["NZL"] = "New Zealand",
+                ["Aotearoa"] = "New Zealand",
+
+                // Nicaragua variants
+                ["NI"] = "Nicaragua",
+                ["NIC"] = "Nicaragua",
+
+                // Niger variants
+                ["NE"] = "Niger",
+                ["NER"] = "Niger",
+
+                // Nigeria variants
+                ["NG"] = "Nigeria",
+                ["NGA"] = "Nigeria",
+
+                // North Korea variants
+                ["KP"] = "North Korea",
+                ["PRK"] = "North Korea",
+                ["Democratic People's Republic of Korea"] = "North Korea",
+                ["DPRK"] = "North Korea",
+
+                // North Macedonia variants
+                ["MK"] = "North Macedonia",
+                ["MKD"] = "North Macedonia",
+                ["Macedonia"] = "North Macedonia",
+
+                // Norway variants
+                ["NO"] = "Norway",
+                ["NOR"] = "Norway",
+                ["Kingdom of Norway"] = "Norway",
+
+                // Oman variants
+                ["OM"] = "Oman",
+                ["OMN"] = "Oman",
+
+                // Pakistan variants
+                ["PK"] = "Pakistan",
+                ["PAK"] = "Pakistan",
+
+                // Palau variants
+                ["PW"] = "Palau",
+                ["PLW"] = "Palau",
+
+                // Panama variants
+                ["PA"] = "Panama",
+                ["PAN"] = "Panama",
+
+                // Papua New Guinea variants
+                ["PG"] = "Papua New Guinea",
+                ["PNG"] = "Papua New Guinea",
+
+                // Paraguay variants
+                ["PY"] = "Paraguay",
+                ["PRY"] = "Paraguay",
+
+                // Peru variants
+                ["PE"] = "Peru",
+                ["PER"] = "Peru",
+
+                // Philippines variants
+                ["PH"] = "Philippines",
+                ["PHL"] = "Philippines",
+
+                // Poland variants
+                ["PL"] = "Poland",
+                ["POL"] = "Poland",
+                ["Republic of Poland"] = "Poland",
+
+                // Portugal variants
+                ["PT"] = "Portugal",
+                ["PRT"] = "Portugal",
+                ["Portuguese Republic"] = "Portugal",
+
+                // Qatar variants
+                ["QA"] = "Qatar",
+                ["QAT"] = "Qatar",
+
+                // Romania variants
+                ["RO"] = "Romania",
+                ["ROU"] = "Romania",
+
+                // Russia variants
+                ["RU"] = "Russia",
+                ["RUS"] = "Russia",
+                ["Russian Federation"] = "Russia",
+                ["USSR"] = "Russia",
+                ["Soviet Union"] = "Russia",
+
+                // Rwanda variants
+                ["RW"] = "Rwanda",
+                ["RWA"] = "Rwanda",
+
+                // Saint Kitts and Nevis variants
+                ["KN"] = "Saint Kitts and Nevis",
+                ["KNA"] = "Saint Kitts and Nevis",
+
+                // Saint Lucia variants
+                ["LC"] = "Saint Lucia",
+                ["LCA"] = "Saint Lucia",
+
+                // Saint Vincent and the Grenadines variants
+                ["VC"] = "Saint Vincent and the Grenadines",
+                ["VCT"] = "Saint Vincent and the Grenadines",
+
+                // Samoa variants
+                ["WS"] = "Samoa",
+                ["WSM"] = "Samoa",
+
+                // San Marino variants
+                ["SM"] = "San Marino",
+                ["SMR"] = "San Marino",
+
+                // Sao Tome and Principe variants
+                ["ST"] = "Sao Tome and Principe",
+                ["STP"] = "Sao Tome and Principe",
+
+                // Saudi Arabia variants
+                ["SA"] = "Saudi Arabia",
+                ["SAU"] = "Saudi Arabia",
+
+                // Senegal variants
+                ["SN"] = "Senegal",
+                ["SEN"] = "Senegal",
+
+                // Serbia variants
+                ["RS"] = "Serbia",
+                ["SRB"] = "Serbia",
+
+                // Seychelles variants
+                ["SC"] = "Seychelles",
+                ["SYC"] = "Seychelles",
+
+                // Sierra Leone variants
+                ["SL"] = "Sierra Leone",
+                ["SLE"] = "Sierra Leone",
+
+                // Singapore variants
+                ["SG"] = "Singapore",
+                ["SGP"] = "Singapore",
+                ["Republic of Singapore"] = "Singapore",
+
+                // Slovakia variants
+                ["SK"] = "Slovakia",
+                ["SVK"] = "Slovakia",
+                ["Slovak Republic"] = "Slovakia",
+
+                // Slovenia variants
+                ["SI"] = "Slovenia",
+                ["SVN"] = "Slovenia",
+                ["Republic of Slovenia"] = "Slovenia",
+
+                // Solomon Islands variants
+                ["SB"] = "Solomon Islands",
+                ["SLB"] = "Solomon Islands",
+
+                // Somalia variants
+                ["SO"] = "Somalia",
+                ["SOM"] = "Somalia",
+
+                // South Africa variants
+                ["ZA"] = "South Africa",
+                ["ZAF"] = "South Africa",
+                ["Republic of South Africa"] = "South Africa",
+
+                // South Korea variants
+                ["KR"] = "South Korea",
+                ["KOR"] = "South Korea",
+                ["Korea"] = "South Korea",
+                ["Republic of Korea"] = "South Korea",
+                ["ROK"] = "South Korea",
+
+                // South Sudan variants
+                ["SS"] = "South Sudan",
+                ["SSD"] = "South Sudan",
+
+                // Spain variants
+                ["ES"] = "Spain",
+                ["ESP"] = "Spain",
+                ["Kingdom of Spain"] = "Spain",
+
+                // Sri Lanka variants
+                ["LK"] = "Sri Lanka",
+                ["LKA"] = "Sri Lanka",
+
+                // Sudan variants
+                ["SD"] = "Sudan",
+                ["SDN"] = "Sudan",
+
+                // Suriname variants
+                ["SR"] = "Suriname",
+                ["SUR"] = "Suriname",
+
+                // Sweden variants
+                ["SE"] = "Sweden",
+                ["SWE"] = "Sweden",
+                ["Kingdom of Sweden"] = "Sweden",
+
+                // Switzerland variants
+                ["CH"] = "Switzerland",
+                ["CHE"] = "Switzerland",
+                ["Swiss Confederation"] = "Switzerland",
+
+                // Syria variants
+                ["SY"] = "Syria",
+                ["SYR"] = "Syria",
+
+                // Taiwan variants
+                ["TW"] = "Taiwan",
+                ["TWN"] = "Taiwan",
+                ["ROC"] = "Taiwan",
+                ["Republic of China"] = "Taiwan",
+
+                // Tajikistan variants
+                ["TJ"] = "Tajikistan",
+                ["TJK"] = "Tajikistan",
+
+                // Tanzania variants
+                ["TZ"] = "Tanzania",
+                ["TZA"] = "Tanzania",
+
+                // Thailand variants
+                ["TH"] = "Thailand",
+                ["THA"] = "Thailand",
+                ["Kingdom of Thailand"] = "Thailand",
+
+                // The Democratic Republic of the Congo variants
+                ["CD"] = "The Democratic Republic of the Congo",
+                ["COD"] = "The Democratic Republic of the Congo",
+                ["DRC"] = "The Democratic Republic of the Congo",
+                ["Congo-Kinshasa"] = "The Democratic Republic of the Congo",
+
+                // The Republic of the Congo variants
+                ["CG"] = "The Republic of the Congo",
+                ["COG"] = "The Republic of the Congo",
+                ["Congo-Brazzaville"] = "The Republic of the Congo",
+
+                // Timor-Leste variants
+                ["TL"] = "Timor-Leste",
+                ["TLS"] = "Timor-Leste",
+                ["East Timor"] = "Timor-Leste",
+
+                // Togo variants
+                ["TG"] = "Togo",
+                ["TGO"] = "Togo",
+
+                // Tonga variants
+                ["TO"] = "Tonga",
+                ["TON"] = "Tonga",
+
+                // Trinidad and Tobago variants
+                ["TT"] = "Trinidad and Tobago",
+                ["TTO"] = "Trinidad and Tobago",
+
+                // Tunisia variants
+                ["TN"] = "Tunisia",
+                ["TUN"] = "Tunisia",
+
+                // Turkey variants
+                ["TR"] = "Turkey",
+                ["TUR"] = "Turkey",
+                ["Republic of Turkey"] = "Turkey",
+
+                // Turkmenistan variants
+                ["TM"] = "Turkmenistan",
+                ["TKM"] = "Turkmenistan",
+
+                // Tuvalu variants
+                ["TV"] = "Tuvalu",
+                ["TUV"] = "Tuvalu",
+
+                // Uganda variants
+                ["UG"] = "Uganda",
+                ["UGA"] = "Uganda",
+
+                // Ukraine variants
+                ["UA"] = "Ukraine",
+                ["UKR"] = "Ukraine",
+
+                // United Arab Emirates variants
+                ["AE"] = "United Arab Emirates",
+                ["ARE"] = "United Arab Emirates",
+                ["UAE"] = "United Arab Emirates",
+
+                // Uruguay variants
+                ["UY"] = "Uruguay",
+                ["URY"] = "Uruguay",
+
+                // Uzbekistan variants
+                ["UZ"] = "Uzbekistan",
+                ["UZB"] = "Uzbekistan",
+
+                // Vanuatu variants
+                ["VU"] = "Vanuatu",
+                ["VUT"] = "Vanuatu",
+
+                // Venezuela variants
+                ["VE"] = "Venezuela",
+                ["VEN"] = "Venezuela",
+
+                // Vietnam variants
+                ["VN"] = "Vietnam",
+                ["VNM"] = "Vietnam",
+                ["Socialist Republic of Vietnam"] = "Vietnam",
+
+                // Western Sahara variants
+                ["EH"] = "Western Sahara",
+                ["ESH"] = "Western Sahara",
+
+                // Yemen variants
+                ["YE"] = "Yemen",
+                ["YEM"] = "Yemen",
+
+                // Zambia variants
+                ["ZM"] = "Zambia",
+                ["ZMB"] = "Zambia",
+
+                // Zimbabwe variants
+                ["ZW"] = "Zimbabwe",
+                ["ZWE"] = "Zimbabwe"
+            };
+
+            // Check if the country name is in our variants dictionary
+            if (countryVariants.TryGetValue(countryOfOrigin, out string normalizedName))
+            {
+                return normalizedName;
+            }
+
+            // If no variant found, return the original name
+            return countryOfOrigin;
+        }
     }
 }

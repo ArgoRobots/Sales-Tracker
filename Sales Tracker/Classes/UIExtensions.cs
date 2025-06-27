@@ -1,0 +1,37 @@
+﻿namespace Sales_Tracker.Classes
+{
+    // Thread-safe UI extensions
+    public static class UIExtensions
+    {
+        /// <summary>
+        /// Executes an action on the UI thread if required, otherwise it executes immediately.
+        /// </summary>
+        public static void InvokeIfRequired(this Control control, Action action)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(action);
+            }
+            else
+            {
+                action();
+            }
+        }
+
+        /// <summary>
+        /// Executes a function on the UI thread if required and returns the result, otherwise it executes immediately.
+        /// </summary>
+        /// <returns>The result of the function execution.</returns>
+        public static T InvokeIfRequired<T>(this Control control, Func<T> func)
+        {
+            if (control.InvokeRequired)
+            {
+                return control.Invoke(func);
+            }
+            else
+            {
+                return func();
+            }
+        }
+    }
+}

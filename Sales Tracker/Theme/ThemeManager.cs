@@ -141,6 +141,11 @@ namespace Sales_Tracker.Theme
                         panel.BackColor = CustomColors.MainBackground;
                         break;
 
+                    case GroupBox groupBox:
+                        groupBox.BackColor = CustomColors.MainBackground;
+                        groupBox.ForeColor = CustomColors.Text;
+                        break;
+
                     case Guna2TrackBar guna2TrackBar:
                         guna2TrackBar.ThumbColor = CustomColors.AccentBlue;
                         guna2TrackBar.BackColor = CustomColors.MainBackground;
@@ -330,27 +335,20 @@ namespace Sales_Tracker.Theme
         }
         public static void SetThemeForForm(Form form)
         {
-            // Check if we need to invoke on UI thread
-            if (form.InvokeRequired)
+            form.InvokeIfRequired(() =>
             {
-                form.Invoke(new Action(() =>
+                FormThemeManager.RegisterForm(form);
+                form.BackColor = CustomColors.MainBackground;
+                List<Control> list = [];
+
+                foreach (Control item in form.Controls)
                 {
-                    SetThemeForForm(form);
-                }));
-                return;
-            }
+                    list.Add(item);
+                }
 
-            FormThemeManager.RegisterForm(form);
-            form.BackColor = CustomColors.MainBackground;
-
-            List<Control> list = [];
-            foreach (Control item in form.Controls)
-            {
-                list.Add(item);
-            }
-
-            SetThemeForControl(list);
-            UseImmersiveDarkMode(form.Handle, IsDarkTheme());
+                SetThemeForControl(list);
+                UseImmersiveDarkMode(form.Handle, IsDarkTheme());
+            });
         }
         public static void SetRightArrowImageBasedOnTheme(Guna2Button button)
         {
@@ -360,7 +358,6 @@ namespace Sales_Tracker.Theme
         {
             if (MainMenu_Form.Instance == null) { return; }
 
-            // Check if we need to invoke on UI thread
             if (MainMenu_Form.Instance.InvokeRequired)
             {
                 MainMenu_Form.Instance.Invoke(new Action(UpdateOtherControls));

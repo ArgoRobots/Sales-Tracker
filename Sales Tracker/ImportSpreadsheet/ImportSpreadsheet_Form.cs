@@ -65,9 +65,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (!ValidateSpreadsheet()) { return; }
 
                 AutoDetectReceiptsFolder();
-
                 ShowSpreadsheetLabel(dialog.SafeFileName);
-                ShowReceiptsFolderLabel();
 
                 await RefreshPanelsAsync();
             }
@@ -158,16 +156,14 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             // Remember current checkbox states
             Dictionary<string, bool> checkboxStates = [];
-            if (_centeredFlowPanel != null)
+            foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
             {
-                foreach (Panel panel in _centeredFlowPanel.Controls.OfType<Panel>())
+                Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
+
+                if (checkBox != null)
                 {
-                    Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
                     string worksheetName = panel.Tag.ToString();
-                    if (checkBox != null)
-                    {
-                        checkboxStates[worksheetName] = checkBox.Checked;
-                    }
+                    checkboxStates[worksheetName] = checkBox.Checked;
                 }
             }
 
@@ -177,11 +173,10 @@ namespace Sales_Tracker.ImportSpreadsheet
             foreach (Panel panel in panels)
             {
                 Guna2CustomCheckBox checkBox = panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault();
-                string worksheetName = panel.Tag.ToString();
 
                 if (checkBox != null)
                 {
-                    // Use saved state if available
+                    string worksheetName = panel.Tag.ToString();
                     checkBox.Checked = !checkboxStates.TryGetValue(worksheetName, out bool savedState) || savedState;
                 }
             }
@@ -191,13 +186,72 @@ namespace Sales_Tracker.ImportSpreadsheet
                 Import_Button.Enabled = true;
                 AddPanels(panels);
             }
+            else
+            {
+                // No panels were created
+                ShowEmptySpreadsheetPanel();
+            }
+
             LoadingPanel.HideLoadingScreen(this);
+        }
+        private void ShowEmptySpreadsheetPanel()
+        {
+            Panel emptyPanel = new()
+            {
+                Size = new Size(_panelWidth, _panelHeight),
+                BackColor = CustomColors.ContentPanelBackground,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            Label emptyLabel = new()
+            {
+                Text = "No Data Found",
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                ForeColor = CustomColors.Text,
+                Size = new Size(emptyPanel.Width - 20, 40),
+                Location = new Point(10, emptyPanel.Height / 2 - 40)
+            };
+
+            Label instructionLabel = new()
+            {
+                Text = "Please select a spreadsheet\nwith valid data",
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 10),
+                ForeColor = CustomColors.Text,
+                Size = new Size(emptyPanel.Width - 20, 60),
+                Location = new Point(10, emptyPanel.Height / 2)
+            };
+
+            emptyPanel.Controls.Add(emptyLabel);
+            emptyPanel.Controls.Add(instructionLabel);
+
+            _centeredFlowPanel.Controls.Clear();
+            _centeredFlowPanel.Controls.Add(emptyPanel);
+
+            Controls.Add(_centeredFlowPanel);
+            _centeredFlowPanel.Left = (ClientSize.Width - _centeredFlowPanel.Width) / 2;
         }
 
         // Import with rollback support
         private async void Import_Button_Click(object sender, EventArgs e)
         {
             if (!ValidateSpreadsheet()) { return; }
+
+            // Additional validation: Check if any checkboxes are selected
+            List<Panel> selectedPanels = _centeredFlowPanel.Controls.OfType<Panel>()
+                .Where(panel => panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault()?.Checked == true)
+                .ToList();
+
+            if (selectedPanels.Count == 0)
+            {
+                CustomMessageBox.Show("No Data Selected",
+                    "Please select at least one data section to import.",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
 
             Controls.Remove(_centeredFlowPanel);
             LoadingPanel.ShowLoadingScreen(this, "Importing...");
@@ -218,7 +272,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     await RefreshPanelsAsync();
                     ShowImportCancelledMessage();
                 }
-                else if (summary.SuccessfulImports > 0)
+                else if (summary.HasAnyImports)
                 {
                     // Commit all changes
                     ExcelSheetManager.CommitImportSession(importSession);
@@ -273,11 +327,58 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private static void ShowImportSuccessMessage(ExcelSheetManager.ImportSummary summary)
         {
-            string message = $"Successfully imported {summary.SuccessfulImports} transaction{(summary.SuccessfulImports == 1 ? "" : "s")}.";
+            List<string> importedItems = [];
+
+            if (summary.AccountantsImported > 0)
+            {
+                importedItems.Add($"{summary.AccountantsImported} accountant{(summary.AccountantsImported == 1 ? "" : "s")}");
+            }
+            if (summary.CompaniesImported > 0)
+            {
+                importedItems.Add($"{summary.CompaniesImported} compan{(summary.CompaniesImported == 1 ? "y" : "ies")}");
+            }
+            if (summary.PurchaseProductsImported > 0)
+            {
+                importedItems.Add($"{summary.PurchaseProductsImported} purchase product{(summary.PurchaseProductsImported == 1 ? "" : "s")}");
+            }
+            if (summary.SaleProductsImported > 0)
+            {
+                importedItems.Add($"{summary.SaleProductsImported} sale product{(summary.SaleProductsImported == 1 ? "" : "s")}");
+            }
+            if (summary.PurchaseTransactionsImported > 0)
+            {
+                importedItems.Add($"{summary.PurchaseTransactionsImported} purchase transaction{(summary.PurchaseTransactionsImported == 1 ? "" : "s")}");
+            }
+            if (summary.SaleTransactionsImported > 0)
+            {
+                importedItems.Add($"{summary.SaleTransactionsImported} sale transaction{(summary.SaleTransactionsImported == 1 ? "" : "s")}");
+            }
+            if (summary.ReceiptsImported > 0)
+            {
+                importedItems.Add($"{summary.ReceiptsImported} receipt{(summary.ReceiptsImported == 1 ? "" : "s")}");
+            }
+
+            string message;
+            if (importedItems.Count == 0)
+            {
+                message = "No items were imported.";
+            }
+            else if (importedItems.Count == 1)
+            {
+                message = $"Successfully imported {importedItems[0]}.";
+            }
+            else if (importedItems.Count == 2)
+            {
+                message = $"Successfully imported {importedItems[0]} and {importedItems[1]}.";
+            }
+            else
+            {
+                message = $"Successfully imported {string.Join(", ", importedItems.Take(importedItems.Count - 1))}, and {importedItems.Last()}.";
+            }
 
             if (summary.SkippedRows > 0)
             {
-                message += $"\n\n{summary.SkippedRows} transaction{(summary.SkippedRows == 1 ? "" : "s")} {(summary.SkippedRows == 1 ? "was" : "were")} skipped due to error{(summary.SkippedRows == 1 ? "" : "s")}.";
+                message += $"\n\n{summary.SkippedRows} row{(summary.SkippedRows == 1 ? "" : "s")} {(summary.SkippedRows == 1 ? "was" : "were")} skipped due to error{(summary.SkippedRows == 1 ? "" : "s")}.";
             }
 
             if (summary.Errors.Count > 0)
@@ -337,7 +438,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     continue;
                 }
 
-                // If the sheet no longer exists. The user may have deleted a sheet after selecting the spreadsheet file
+                // If the sheet no longer exists
                 if (!workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     CustomMessageBox.Show("Sheet no longer exists",
@@ -354,7 +455,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         bool accountantsImported = ExcelSheetManager.ImportAccountantsData(worksheet, includeheader, importSession);
                         if (accountantsImported)
                         {
-                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.AccountantsImported = CountRowsToImport(worksheet, includeheader);
                         }
                         break;
 
@@ -362,7 +463,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         bool companiesImported = ExcelSheetManager.ImportCompaniesData(worksheet, includeheader, importSession);
                         if (companiesImported)
                         {
-                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.CompaniesImported = CountRowsToImport(worksheet, includeheader);
                         }
                         break;
 
@@ -370,7 +471,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         bool purchaseProductsImported = ExcelSheetManager.ImportProductsData(worksheet, true, includeheader, importSession);
                         if (purchaseProductsImported)
                         {
-                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.PurchaseProductsImported = CountRowsToImport(worksheet, includeheader);
                         }
                         break;
 
@@ -378,7 +479,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         bool saleProductsImported = ExcelSheetManager.ImportProductsData(worksheet, false, includeheader, importSession);
                         if (saleProductsImported)
                         {
-                            aggregatedSummary.SuccessfulImports += CountRowsToImport(worksheet, includeheader);
+                            aggregatedSummary.SaleProductsImported = CountRowsToImport(worksheet, includeheader);
                         }
                         break;
 
@@ -386,7 +487,6 @@ namespace Sales_Tracker.ImportSpreadsheet
                         ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(worksheet, includeheader, importSession);
 
                         // Aggregate the results
-                        aggregatedSummary.SuccessfulImports += purchaseSummary.SuccessfulImports;
                         aggregatedSummary.SkippedRows += purchaseSummary.SkippedRows;
                         aggregatedSummary.Errors.AddRange(purchaseSummary.Errors);
 
@@ -406,8 +506,8 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true);  // true for purchases
-                            aggregatedSummary.SuccessfulImports += importedReceiptCount;
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true);
+                            aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
 
@@ -415,7 +515,6 @@ namespace Sales_Tracker.ImportSpreadsheet
                         ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(worksheet, includeheader, importSession);
 
                         // Aggregate the results
-                        aggregatedSummary.SuccessfulImports += salesSummary.SuccessfulImports;
                         aggregatedSummary.SkippedRows += salesSummary.SkippedRows;
                         aggregatedSummary.Errors.AddRange(salesSummary.Errors);
 
@@ -435,8 +534,8 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false);  // false for sales
-                            aggregatedSummary.SuccessfulImports += importedReceiptCount;
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false);
+                            aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
                 }
@@ -521,6 +620,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 if (Directory.Exists(possiblePath))
                 {
                     _receiptsFolderPath = possiblePath;
+                    ShowReceiptsFolderLabel();
                     break;
                 }
             }
@@ -654,90 +754,109 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 List<Panel> panels = [];
 
-                // Open the file in read-only and shared mode in case the file is being used by another program
-                using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using XLWorkbook workbook = new(stream);
-
-                if (workbook.Worksheets.Count == 0)
+                try
                 {
-                    CustomMessageBox.Show("Spreadsheet is invalid", "This spreadsheet doesn't contain any sheets",
-                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    // Open the file in read-only and shared mode in case the file is being used by another program
+                    using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using XLWorkbook workbook = new(stream);
+
+                    if (workbook.Worksheets.Count == 0)
+                    {
+                        ShowNoDataMessage("This spreadsheet doesn't contain any sheets");
+                        return panels;
+                    }
+
+                    bool hasAnyData = false;
+                    List<string> emptyWorksheets = [];
+
+                    // Check each expected worksheet
+                    hasAnyData |= ProcessWorksheet(workbook, _accountantsName, ExtractFirstCells, panels, emptyWorksheets);
+                    hasAnyData |= ProcessWorksheet(workbook, _companiesName, ExtractFirstCells, panels, emptyWorksheets);
+                    hasAnyData |= ProcessWorksheet(workbook, _purchaseProductsName, ExtractProducts, panels, emptyWorksheets);
+                    hasAnyData |= ProcessWorksheet(workbook, _saleProductsName, ExtractProducts, panels, emptyWorksheets);
+                    hasAnyData |= ProcessWorksheet(workbook, _purchasesName, ExtractTransactions, panels, emptyWorksheets);
+                    hasAnyData |= ProcessWorksheet(workbook, _salesName, ExtractTransactions, panels, emptyWorksheets);
+
+                    // Handle case where no data was found in any worksheet
+                    if (!hasAnyData)
+                    {
+                        HandleNoDataFound(emptyWorksheets);
+                    }
+
                     return panels;
                 }
-
-                if (workbook.Worksheets.Any(ws => ws.Name.Equals(_accountantsName, StringComparison.CurrentCultureIgnoreCase)))
+                catch (Exception ex)
                 {
-                    IXLWorksheet accountantsWorksheet = workbook.Worksheet(_accountantsName);
-                    List<string> accountants = ExtractFirstCells(accountantsWorksheet);
-
-                    if (accountants.Count > 0)
-                    {
-                        Panel panel = CreatePanel(accountants, accountantsWorksheet.Name);
-                        panels.Add(panel);
-                    }
+                    CustomMessageBox.Show("Error Reading Spreadsheet",
+                        $"An error occurred while reading the spreadsheet: {ex.Message}",
+                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                    return panels;
                 }
-                if (workbook.Worksheets.Any(ws => ws.Name.Equals(_companiesName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    IXLWorksheet companiesWorksheet = workbook.Worksheet(_companiesName);
-                    List<string> companies = ExtractFirstCells(companiesWorksheet);
-
-                    if (companies.Count > 0)
-                    {
-                        Panel panel = CreatePanel(companies, companiesWorksheet.Name);
-                        panels.Add(panel);
-                    }
-                }
-                if (workbook.Worksheets.Any(ws => ws.Name.Equals(_purchaseProductsName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    IXLWorksheet productsWorksheet = workbook.Worksheet(_purchaseProductsName);
-                    List<string> products = ExtractProducts(productsWorksheet);
-
-                    if (products.Count > 0)
-                    {
-                        Panel panel = CreatePanel(products, productsWorksheet.Name);
-                        panels.Add(panel);
-                    }
-                }
-                if (workbook.Worksheets.Any(ws => ws.Name.Equals(_saleProductsName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    IXLWorksheet productsWorksheet = workbook.Worksheet(_saleProductsName);
-                    List<string> products = ExtractProducts(productsWorksheet);
-
-                    if (products.Count > 0)
-                    {
-                        Panel panel = CreatePanel(products, productsWorksheet.Name);
-                        panels.Add(panel);
-                    }
-                }
-                if (workbook.Worksheets.Any(ws => ws.Name.Equals(_purchasesName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    IXLWorksheet purchaseWorksheet = workbook.Worksheet(_purchasesName);
-                    List<string> products = ExtractTransactions(purchaseWorksheet);
-
-                    if (products.Count > 0)
-                    {
-                        Panel panel = CreatePanel(products, purchaseWorksheet.Name);
-                        panels.Add(panel);
-                    }
-                }
-                if (workbook.Worksheets.Any(ws => ws.Name.Equals(_salesName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    IXLWorksheet salesWorksheet = workbook.Worksheet(_salesName);
-                    List<string> products = ExtractTransactions(salesWorksheet);
-
-                    if (products.Count > 0)
-                    {
-                        Panel panel = CreatePanel(products, salesWorksheet.Name);
-                        panels.Add(panel);
-                    }
-                }
-
-                return panels;
             });
+        }
+        private void HandleNoDataFound(List<string> emptyWorksheets)
+        {
+            string message;
+
+            if (emptyWorksheets.Count == 0)
+            {
+                message = "The spreadsheet contains no recognizable data sheets. " +
+                          "Please ensure your spreadsheet contains sheets named: " +
+                          $"{_accountantsName}, {_companiesName}, {_purchaseProductsName}, " +
+                          $"{_saleProductsName}, {_purchasesName}, or {_salesName}.";
+            }
+            else if (emptyWorksheets.Count == 1)
+            {
+                message = $"The '{emptyWorksheets[0]}' sheet exists but contains no data to import.";
+            }
+            else
+            {
+                message = $"The following sheets exist but contain no data to import: {string.Join(", ", emptyWorksheets)}.";
+            }
+
+            this.InvokeIfRequired(() => ShowNoDataMessage(message));
+        }
+        private static void ShowNoDataMessage(string message)
+        {
+            CustomMessageBox.Show("No Data Found",
+                $"{message}\n\nPlease check your spreadsheet and ensure it contains data in the expected format.",
+                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+        }
+        private bool ProcessWorksheet<T>(XLWorkbook workbook, string worksheetName,
+            Func<IXLWorksheet, List<T>> extractionMethod, List<Panel> panels, List<string> emptyWorksheets)
+        {
+            if (!workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                return false;  // Worksheet doesn't exist
+            }
+
+            IXLWorksheet worksheet = workbook.Worksheet(worksheetName);
+
+            // Check if worksheet is completely empty
+            if (!worksheet.RowsUsed().Any())
+            {
+                emptyWorksheets.Add(worksheetName);
+                return false;
+            }
+
+            List<T> extractedData = extractionMethod(worksheet);
+
+            if (extractedData.Count > 0)
+            {
+                Panel panel = CreatePanel(extractedData.Cast<string>().ToList(), worksheet.Name);
+                panels.Add(panel);
+                return true;
+            }
+            else
+            {
+                emptyWorksheets.Add(worksheetName);
+                return false;
+            }
         }
         private List<string> ExtractFirstCells(IXLWorksheet worksheet)
         {
             List<string> firstCells = [];
+
             IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
                 ? worksheet.RowsUsed()
                 : worksheet.RowsUsed().Skip(1);
@@ -745,7 +864,11 @@ namespace Sales_Tracker.ImportSpreadsheet
             foreach (IXLRow row in rows)
             {
                 string firstCellValue = row.Cell(1).GetValue<string>();
-                firstCells.Add(firstCellValue);
+
+                if (!string.IsNullOrWhiteSpace(firstCellValue))
+                {
+                    firstCells.Add(firstCellValue.Trim());
+                }
             }
 
             return firstCells;
@@ -760,38 +883,39 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             foreach (IXLRow row in rows)
             {
-                // Ensure the cells have values before attempting to read
                 string productName = row.Cell(2).GetValue<string>();
                 string categoryName = row.Cell(3).GetValue<string>();
 
-                if (!string.IsNullOrEmpty(productName) && !string.IsNullOrEmpty(categoryName))
+                // Only add if both fields have values
+                if (!string.IsNullOrWhiteSpace(productName) && !string.IsNullOrWhiteSpace(categoryName))
                 {
-                    products.Add($"{categoryName} > {productName}");
+                    products.Add($"{categoryName.Trim()} > {productName.Trim()}");
                 }
             }
 
             return products;
         }
-        private List<string> ExtractTransactions(IXLWorksheet productsWorksheet)
+        private List<string> ExtractTransactions(IXLWorksheet transactionsWorksheet)
         {
-            List<string> products = [];
+            List<string> transactions = [];
+
             IEnumerable<IXLRow> rows = IncludeHeaderRow_CheckBox.Checked
-                ? productsWorksheet.RowsUsed()
-                : productsWorksheet.RowsUsed().Skip(1);
+                ? transactionsWorksheet.RowsUsed()
+                : transactionsWorksheet.RowsUsed().Skip(1);
 
             foreach (IXLRow row in rows)
             {
-                // Ensure the cells have values before attempting to read
                 string productName = row.Cell(3).GetValue<string>();
                 string date = row.Cell(7).GetValue<string>();
 
-                if (!string.IsNullOrEmpty(productName) && !string.IsNullOrEmpty(date))
+                // Only add if both fields have values
+                if (!string.IsNullOrWhiteSpace(productName) && !string.IsNullOrWhiteSpace(date))
                 {
-                    products.Add($"{productName} - {date}");
+                    transactions.Add($"{productName.Trim()} - {date.Trim()}");
                 }
             }
 
-            return products;
+            return transactions;
         }
 
         // Spreadsheet helper methods
