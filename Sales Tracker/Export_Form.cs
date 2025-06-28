@@ -64,21 +64,8 @@ namespace Sales_Tracker
                 }
             }
 
-            // If no match found, default to USD if available, otherwise first item
-            foreach (string currency in currencies)
-            {
-                if (currency.StartsWith("USD", StringComparison.OrdinalIgnoreCase))
-                {
-                    Currency_TextBox.Text = currency;
-                    return;
-                }
-            }
-
-            // Fallback to first item if USD not found
-            if (currencies.Count > 0)
-            {
-                Currency_TextBox.Text = currencies[0];
-            }
+            // If no match found, default to USD
+            Currency_TextBox.Text = "USD";
         }
         private void UpdateTheme()
         {

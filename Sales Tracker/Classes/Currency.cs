@@ -19,32 +19,34 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public enum CurrencyTypes
         {
-            USD,  // United States Dollar
-            CAD,  // Canadian Dollar
-            EUR,  // Euro
-            AUD,  // Australia
-            BRL,  // Brazilian Real
-            DKK,  // Danish Krone
-            NOK,  // Norwegian Krone
-            SEK,  // Swedish Krona
-            ISK,  // Icelandic Króna
-            PLN,  // Polish Złoty
-            CZK,  // Czech Koruna
-            HUF,  // Hungarian Forint
             ALL,  // Albanian Lek
-            RON,  // Romanian Leu
-            BGN,  // Bulgarian Lev
-            RSD,  // Serbian Dinar
-            MKD,  // Macedonian Denar
+            AUD,  // Australian Dollar
             BAM,  // Bosnia and Herzegovina Convertible Mark
-            UAH,  // Ukrainian Hryvnia
+            BGN,  // Bulgarian Lev
+            BRL,  // Brazilian Real
             BYN,  // Belarusian Ruble
-            RUB,  // Russian Ruble
-            TRY,  // Turkish Lira
+            CAD,  // Canadian Dollar
+            CHF,  // Swiss Franc
+            CNY,  // Chinese Yuan Renminbi
+            CZK,  // Czech Koruna
+            DKK,  // Danish Krone
+            EUR,  // Euro
+            GBP,  // British Pound
+            HUF,  // Hungarian Forint
+            ISK,  // Icelandic Króna
             JPY,  // Japanese Yen
             KRW,  // South Korean Won
-            CNY,  // Chinese Yuan Renminbi
-            TWD   // Taiwan Dollar
+            MKD,  // Macedonian Denar
+            NOK,  // Norwegian Krone
+            PLN,  // Polish Złoty
+            RON,  // Romanian Leu
+            RSD,  // Serbian Dinar
+            RUB,  // Russian Ruble
+            SEK,  // Swedish Krona
+            TRY,  // Turkish Lira
+            TWD,  // Taiwan Dollar
+            UAH,  // Ukrainian Hryvnia
+            USD   // United States Dollar
         }
 
         /// <summary>
@@ -53,37 +55,70 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static readonly Dictionary<CurrencyTypes, string> CurrencySymbols = new()
         {
-            { CurrencyTypes.USD, "$" },
-            { CurrencyTypes.CAD, "$" },
-            { CurrencyTypes.EUR, "€" },
-            { CurrencyTypes.AUD, "$" },
-            { CurrencyTypes.BRL, "R$" },
-            { CurrencyTypes.DKK, "kr" },
-            { CurrencyTypes.NOK, "kr" },
-            { CurrencyTypes.SEK, "kr" },
-            { CurrencyTypes.ISK, "kr" },
-            { CurrencyTypes.PLN, "zł" },
-            { CurrencyTypes.CZK, "Kč" },
-            { CurrencyTypes.HUF, "Ft" },
             { CurrencyTypes.ALL, "L" },
-            { CurrencyTypes.RON, "lei" },
-            { CurrencyTypes.BGN, "лв" },
-            { CurrencyTypes.RSD, "дин" },
-            { CurrencyTypes.MKD, "ден" },
+            { CurrencyTypes.AUD, "$" },
             { CurrencyTypes.BAM, "KM" },
-            { CurrencyTypes.UAH, "₴" },
+            { CurrencyTypes.BGN, "лв" },
+            { CurrencyTypes.BRL, "R$" },
             { CurrencyTypes.BYN, "Br" },
-            { CurrencyTypes.RUB, "₽" },
-            { CurrencyTypes.TRY, "₺" },
+            { CurrencyTypes.CAD, "$" },
+            { CurrencyTypes.CHF, "CHF" },
+            { CurrencyTypes.CNY, "¥" },
+            { CurrencyTypes.CZK, "Kč" },
+            { CurrencyTypes.DKK, "kr" },
+            { CurrencyTypes.EUR, "€" },
+            { CurrencyTypes.GBP, "£" },
+            { CurrencyTypes.HUF, "Ft" },
+            { CurrencyTypes.ISK, "kr" },
             { CurrencyTypes.JPY, "¥" },
             { CurrencyTypes.KRW, "₩" },
-            { CurrencyTypes.CNY, "¥" },
-            { CurrencyTypes.TWD, "NT$" }
+            { CurrencyTypes.MKD, "ден" },
+            { CurrencyTypes.NOK, "kr" },
+            { CurrencyTypes.PLN, "zł" },
+            { CurrencyTypes.RON, "lei" },
+            { CurrencyTypes.RSD, "дин" },
+            { CurrencyTypes.RUB, "₽" },
+            { CurrencyTypes.SEK, "kr" },
+            { CurrencyTypes.TRY, "₺" },
+            { CurrencyTypes.TWD, "NT$" },
+            { CurrencyTypes.UAH, "₴" },
+            { CurrencyTypes.USD, "$" }
+        };
+
+        public static readonly Dictionary<string, List<string>> CurrencyPatterns = new()
+        {
+            { "ALL", new List<string> { "L", "ALL", "Lek", "Albanian" } },
+            { "AUD", new List<string> { "$", "AUD", "A$", "Australian" } },
+            { "BAM", new List<string> { "KM", "BAM", "Mark", "Bosnia" } },
+            { "BGN", new List<string> { "лв", "BGN", "Lev", "Bulgarian" } },
+            { "BRL", new List<string> { "R$", "BRL", "Real" } },
+            { "BYN", new List<string> { "Br", "BYN", "Ruble", "Belarusian" } },
+            { "CAD", new List<string> { "$", "CAD", "C$", "Canadian" } },
+            { "CHF", new List<string> { "CHF", "Swiss" } },
+            { "CNY", new List<string> { "¥", "CNY", "Yuan", "RMB" } },
+            { "CZK", new List<string> { "Kč", "CZK", "Koruna" } },
+            { "DKK", new List<string> { "kr", "DKK", "Krone" } },
+            { "EUR", new List<string> { "€", "EUR", "Euro" } },
+            { "GBP", new List<string> { "£", "GBP", "Pound" } },
+            { "HUF", new List<string> { "Ft", "HUF", "Forint" } },
+            { "ISK", new List<string> { "kr", "ISK", "Krona", "Icelandic" } },
+            { "JPY", new List<string> { "¥", "JPY", "Yen" } },
+            { "KRW", new List<string> { "₩", "KRW", "Won", "Korean" } },
+            { "MKD", new List<string> { "ден", "MKD", "Denar", "Macedonian" } },
+            { "NOK", new List<string> { "kr", "NOK", "Krone" } },
+            { "PLN", new List<string> { "zł", "PLN", "Złoty" } },
+            { "RON", new List<string> { "lei", "RON", "Leu", "Romanian" } },
+            { "RSD", new List<string> { "дин", "RSD", "Dinar", "Serbian" } },
+            { "RUB", new List<string> { "₽", "RUB", "Ruble", "Russian" } },
+            { "SEK", new List<string> { "kr", "SEK", "Krona" } },
+            { "TRY", new List<string> { "₺", "TRY", "Lira", "Turkish" } },
+            { "TWD", new List<string> { "NT$", "TWD", "Taiwan", "Dollar" } },
+            { "UAH", new List<string> { "₴", "UAH", "Hryvnia", "Ukrainian" } },
+            { "USD", new List<string> { "$", "USD", "US$", "Dollar" } }
         };
 
         /// <summary>
-        /// In-memory cache for exchange rates to minimize API calls.
-        /// Key format: "date_sourceCurrency_targetCurrency" (e.g., "2023-04-01_USD_EUR").
+        /// Cache for exchange rates to minimize API calls.
         /// </summary>
         private static readonly Dictionary<string, decimal> _exchangeRateCache = [];
 

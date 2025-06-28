@@ -12,6 +12,16 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Properties
         private string _spreadsheetFilePath, _receiptsFolderPath;
         private readonly MainMenu_Form.SelectedOption _oldOption;
+        private string _selectedSourceCurrency = "USD";  // Default to USD
+
+        // Currency Detection Results
+        public class CurrencyDetectionResult
+        {
+            public string DetectedCurrency { get; set; } = "";
+            public List<string> PossibleCurrencies { get; set; } = [];
+            public byte ConfidenceLevel { get; set; } = 0;  // 0 = No detection, 1 = Low confidence, 2 = High confidence
+            public List<string> SampleValues { get; set; } = [];
+        }
 
         // Init.
         public ImportSpreadsheet_Form()
@@ -20,6 +30,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             _oldOption = MainMenu_Form.Instance.Selected;
             InitContainerPanel();
+            InitCurrencyControls();
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
@@ -27,16 +38,42 @@ namespace Sales_Tracker.ImportSpreadsheet
             RemoveReceiptsFolderLabel();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
+        private void InitCurrencyControls()
+        {
+            // Add currency selection controls
+            byte searchBoxMaxHeight = 255;
+
+            // Initialize currency textbox with default
+            SourceCurrency_TextBox.Text = GetCurrencyDisplayText(_selectedSourceCurrency);
+
+            TextBoxManager.Attach(SourceCurrency_TextBox);
+            SearchBox.Attach(SourceCurrency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
+
+            SourceCurrency_TextBox.TextChanged += SourceCurrency_TextBox_TextChanged;
+
+            // Initially hide currency controls
+            SourceCurrency_GroupBox.Visible = false;
+        }
+        private void SourceCurrency_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(SourceCurrency_TextBox.Text))
+            {
+                _selectedSourceCurrency = SourceCurrency_TextBox.Text.Split(' ')[0];  // Get just the currency code
+            }
+        }
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
             ThemeManager.MakeGButtonBluePrimary(Import_Button);
             ThemeManager.MakeGButtonBlueSecondary(SelectSpreadsheet_Button);
             ThemeManager.MakeGButtonBlueSecondary(SelectReceiptsFolder_Button);
+            ThemeManager.MakeGButtonBlueSecondary(DetectCurrency_Button);
         }
         private void SetAccessibleDescriptions()
         {
             IncludeHeaderRow_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            SourceCurrency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            DetectedCurrency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
         }
 
         // Form event handlers
@@ -67,6 +104,9 @@ namespace Sales_Tracker.ImportSpreadsheet
                 AutoDetectReceiptsFolder();
                 ShowSpreadsheetLabel(dialog.SafeFileName);
 
+                // Detect currency from spreadsheet
+                await DetectCurrencyAsync();
+
                 await RefreshPanelsAsync();
             }
         }
@@ -87,12 +127,232 @@ namespace Sales_Tracker.ImportSpreadsheet
                 return false;
             }
         }
+
+        // Currency Detection Methods
+        private async Task DetectCurrencyAsync()
+        {
+            if (string.IsNullOrEmpty(_spreadsheetFilePath))
+            {
+                return;
+            }
+
+            LoadingPanel.ShowLoadingScreen(this, "Detecting currency...");
+
+            try
+            {
+                CurrencyDetectionResult result = await Task.Run(DetectCurrencyFromSpreadsheet);
+
+                LoadingPanel.HideLoadingScreen(this);
+
+                if (result.ConfidenceLevel > 0)
+                {
+                    ShowCurrencyDetectionResults(result);
+                }
+                else
+                {
+                    ShowCurrencySelectionDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                LoadingPanel.HideLoadingScreen(this);
+                CustomMessageBox.Show("Currency Detection Error",
+                    $"Could not detect currency from spreadsheet: {ex.Message}\nPlease select the currency manually.",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                ShowCurrencySelectionDialog();
+            }
+        }
+        private CurrencyDetectionResult DetectCurrencyFromSpreadsheet()
+        {
+            CurrencyDetectionResult result = new();
+
+            try
+            {
+                using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using XLWorkbook workbook = new(stream);
+
+                Dictionary<string, int> currencySymbolCounts = [];
+                Dictionary<string, List<string>> currencySamples = [];
+
+                // Check each worksheet for currency indicators
+                foreach (IXLWorksheet worksheet in workbook.Worksheets)
+                {
+                    // Skip if worksheet is empty
+                    if (!worksheet.RowsUsed().Any()) { continue; }
+
+                    // Look for currency symbols in monetary columns
+                    foreach (IXLRow row in worksheet.RowsUsed().Take(10))  // Check first 10 rows
+                    {
+                        for (int col = 8; col <= 15; col++)
+                        {
+                            try
+                            {
+                                string cellValue = row.Cell(col).GetValue<string>();
+                                if (string.IsNullOrEmpty(cellValue)) { continue; }
+
+                                foreach (KeyValuePair<string, List<string>> currencyPattern in Currency.CurrencyPatterns)
+                                {
+                                    string currency = currencyPattern.Key;
+                                    List<string> patterns = currencyPattern.Value;
+
+                                    foreach (string pattern in patterns)
+                                    {
+                                        if (cellValue.Contains(pattern))
+                                        {
+                                            // Use TryGetValue to fix CA1854 - avoid double lookup
+                                            if (!currencySymbolCounts.TryGetValue(currency, out int count))
+                                            {
+                                                currencySymbolCounts[currency] = 1;
+                                            }
+                                            else
+                                            {
+                                                currencySymbolCounts[currency] = count + 1;
+                                            }
+
+                                            if (!currencySamples.TryGetValue(currency, out List<string>? samples))
+                                            {
+                                                currencySamples[currency] = [cellValue];
+                                            }
+                                            else if (samples.Count < 3)
+                                            {
+                                                samples.Add(cellValue);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                // Continue if cell read fails
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Also check header row for currency indicators
+                    if (worksheet.RowsUsed().Any())
+                    {
+                        IXLRow headerRow = worksheet.RowsUsed().First();
+                        foreach (IXLCell cell in headerRow.CellsUsed())
+                        {
+                            string headerValue = cell.GetValue<string>();
+                            foreach (KeyValuePair<string, List<string>> currencyPattern in Currency.CurrencyPatterns)
+                            {
+                                string currency = currencyPattern.Key;
+                                List<string> patterns = currencyPattern.Value;
+
+                                foreach (string pattern in patterns)
+                                {
+                                    if (headerValue.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        // Use TryGetValue to fix CA1854 - avoid double lookup
+                                        if (!currencySymbolCounts.TryGetValue(currency, out int count))
+                                        {
+                                            currencySymbolCounts[currency] = 5;  // Weight headers more heavily
+                                        }
+                                        else
+                                        {
+                                            currencySymbolCounts[currency] = count + 5;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Analyze results
+                if (currencySymbolCounts.Count != 0)
+                {
+                    KeyValuePair<string, int> topCurrency = currencySymbolCounts.OrderByDescending(x => x.Value).First();
+                    result.DetectedCurrency = topCurrency.Key;
+                    result.PossibleCurrencies = currencySymbolCounts.Keys.ToList();
+                    result.SampleValues = currencySamples.TryGetValue(topCurrency.Key, out List<string>? value) ? value : [];
+
+                    // Determine confidence level
+                    if (topCurrency.Value >= 10)
+                    {
+                        result.ConfidenceLevel = 2;  // High confidence
+                    }
+                    else if (topCurrency.Value >= 3)
+                    {
+                        result.ConfidenceLevel = 1;  // Low confidence
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(1, $"Currency detection failed: {ex.Message}");
+                return result;
+            }
+        }
+        private void ShowCurrencyDetectionResults(CurrencyDetectionResult result)
+        {
+            CustomMessageBoxResult userChoice = CustomMessageBox.Show(
+                "Currency Detection", $"Detected Currency: {result.DetectedCurrency}. Is this correct?",
+                CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+
+            if (userChoice == CustomMessageBoxResult.Yes)
+            {
+                _selectedSourceCurrency = result.DetectedCurrency;
+                SourceCurrency_TextBox.Text = GetCurrencyDisplayText(result.DetectedCurrency);
+                DetectedCurrency_Label.Text = $"✓ Detected: {result.DetectedCurrency}";
+                DetectedCurrency_Label.ForeColor = Color.Green;
+                ShowCurrencyControls();
+            }
+            else
+            {
+                ShowCurrencySelectionDialog();
+            }
+        }
+        private void ShowCurrencySelectionDialog()
+        {
+            _selectedSourceCurrency = "USD";  // Default
+            SourceCurrency_TextBox.Text = GetCurrencyDisplayText("USD");
+            DetectedCurrency_Label.Text = "⚠ Please verify currency selection";
+            DetectedCurrency_Label.ForeColor = Color.Orange;
+            ShowCurrencyControls();
+
+            CustomMessageBox.Show(
+                "Currency Selection Required",
+                "Could not automatically detect the currency from your spreadsheet.\n\n" +
+                "Please select the currency that your spreadsheet data is in using the dropdown below.\n\n" +
+                "This is important for accurate currency conversion.",
+                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+        }
+        private void ShowCurrencyControls()
+        {
+            SourceCurrency_GroupBox.Visible = true;
+        }
+        private static string GetCurrencyDisplayText(string currencyCode)
+        {
+            List<string> currencies = Currency.GetCurrencyTypesList();
+            return currencies.FirstOrDefault(c => c.StartsWith(currencyCode, StringComparison.OrdinalIgnoreCase)) ?? currencyCode;
+        }
+        private void DetectCurrency_Button_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_spreadsheetFilePath))
+            {
+                CustomMessageBox.Show("No Spreadsheet",
+                    "Please select a spreadsheet first before detecting currency.",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                return;
+            }
+
+            _ = DetectCurrencyAsync();
+        }
         private void RemoveSpreadsheet_ImageButton_Click(object sender, EventArgs e)
         {
             RemoveSpreadsheetLabel();
             Controls.Remove(_centeredFlowPanel);
             Import_Button.Enabled = false;
             _receiptsFolderPath = "";
+
+            // Hide currency controls when spreadsheet is removed
+            SourceCurrency_GroupBox.Visible = false;
+            _selectedSourceCurrency = "USD";
         }
         private void RemoveSpreadhseet_ImageButton_MouseEnter(object sender, EventArgs e)
         {
@@ -235,7 +495,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             _centeredFlowPanel.Left = (ClientSize.Width - _centeredFlowPanel.Width) / 2;
         }
 
-        // Import spreadsheets and receipts with cancellation and rollback support
+        // Import with rollback support
         private async void Import_Button_Click(object sender, EventArgs e)
         {
             if (!ValidateSpreadsheet()) { return; }
@@ -284,7 +544,7 @@ namespace Sales_Tracker.ImportSpreadsheet
 
                     ShowImportSuccessMessage(summary);
 
-                    string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}'";
+                    string message = $"Imported '{Path.GetFileName(_spreadsheetFilePath)}' ({_selectedSourceCurrency})";
                     CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, message);
 
                     Close();
@@ -484,7 +744,9 @@ namespace Sales_Tracker.ImportSpreadsheet
                         break;
 
                     case _purchasesName:
-                        ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(worksheet, includeheader, importSession);
+                        // Pass the source currency to the import method
+                        ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(
+                            worksheet, includeheader, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += purchaseSummary.SkippedRows;
@@ -513,7 +775,9 @@ namespace Sales_Tracker.ImportSpreadsheet
                         break;
 
                     case _salesName:
-                        ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(worksheet, includeheader, importSession);
+                        // Pass the source currency to the import method
+                        ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(
+                            worksheet, includeheader, _selectedSourceCurrency, importSession);
 
                         // Aggregate the results
                         aggregatedSummary.SkippedRows += salesSummary.SkippedRows;
@@ -632,16 +896,18 @@ namespace Sales_Tracker.ImportSpreadsheet
         private readonly byte _panelPadding = 25, _panelHeight = 240;
         private readonly short _panelWidth = 300;
         private CenteredFlowLayoutPanel _centeredFlowPanel;
+
         private void InitContainerPanel()
         {
             _centeredFlowPanel = new()
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
                 Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
-                Top = 240,
+                Top = 320, // Adjusted to account for currency controls
                 Spacing = _panelPadding
             };
         }
+
         private Panel CreatePanel(List<string> items, string worksheetName)
         {
             Panel outerPanel = new()

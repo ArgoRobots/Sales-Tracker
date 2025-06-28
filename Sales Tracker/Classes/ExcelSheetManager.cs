@@ -11,7 +11,7 @@ namespace Sales_Tracker.Classes
 {
     /// <summary>
     /// Handles the import and export of data to and from .xlsx spreadsheets, including transactions
-    /// and receipts. It also has immediate cancellation support.
+    /// and receipts. It also has immediate cancellation support and multi-currency import capabilities.
     /// </summary>
     internal class ExcelSheetManager
     {
@@ -219,16 +219,13 @@ namespace Sales_Tracker.Classes
                     continue;
                 }
 
-                // Process US country variants
                 countryOfOrigin = Country.NormalizeCountryName(countryOfOrigin);
 
-                // Validate country exists in system
                 if (!ValidateCountry(countryOfOrigin))
                 {
                     continue;
                 }
 
-                // Ensure company exists
                 EnsureCompanyExists(companyOfOrigin, session);
 
                 // Find or create the category
@@ -392,22 +389,25 @@ namespace Sales_Tracker.Classes
             return product;
         }
 
-        public static ImportSummary ImportPurchaseData(IXLWorksheet worksheet, bool includeHeader, ImportSession session = null)
+        // Enhanced import methods with source currency support
+        public static ImportSummary ImportPurchaseData(IXLWorksheet worksheet, bool includeHeader, string sourceCurrency = "USD", ImportSession session = null)
         {
             if (session?.IsCancelled == true)
             {
                 return new ImportSummary { WasCancelled = true };
             }
-            return ImportTransactionData(worksheet, includeHeader, true, session);
+            return ImportTransactionData(worksheet, includeHeader, true, sourceCurrency, session);
         }
-        public static ImportSummary ImportSalesData(IXLWorksheet worksheet, bool includeHeader, ImportSession session = null)
+
+        public static ImportSummary ImportSalesData(IXLWorksheet worksheet, bool includeHeader, string sourceCurrency = "USD", ImportSession session = null)
         {
             if (session?.IsCancelled == true)
             {
                 return new ImportSummary { WasCancelled = true };
             }
-            return ImportTransactionData(worksheet, includeHeader, false, session);
+            return ImportTransactionData(worksheet, includeHeader, false, sourceCurrency, session);
         }
+
         public static int ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase)
         {
             IEnumerable<IXLRow> rowsToProcess = includeHeader
@@ -577,10 +577,10 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Helper method for importing purchase and sales data with immediate cancellation support.
+        /// Helper method for importing purchase and sales data with source currency support and immediate cancellation support.
         /// Returns ImportSummary with actual counts instead of just boolean.
         /// </summary>
-        private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool includeHeader, bool isPurchase, ImportSession session = null)
+        private static ImportSummary ImportTransactionData(IXLWorksheet worksheet, bool includeHeader, bool isPurchase, string sourceCurrency = "USD", ImportSession session = null)
         {
             ImportSummary summary = new();
 
@@ -656,7 +656,7 @@ namespace Sales_Tracker.Classes
                 DataGridViewRow newRow = (DataGridViewRow)targetGridView.RowTemplate.Clone();
                 newRow.CreateCells(targetGridView);
 
-                ImportTransactionResult importResult = ImportTransaction(row, newRow, currentRowNumber, worksheetName, session);
+                ImportTransactionResult importResult = ImportTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
 
                 switch (importResult)
                 {
@@ -682,7 +682,7 @@ namespace Sales_Tracker.Classes
                         break;  // Continue processing this transaction
                 }
 
-                ImportTransactionResult itemsImportResult = ImportItemsInTransaction(row, newRow, currentRowNumber, worksheetName, session);
+                ImportTransactionResult itemsImportResult = ImportItemsInTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
 
                 switch (itemsImportResult)
                 {
@@ -804,20 +804,25 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Imports data into a DataGridViewRow with immediate cancellation support.
+        /// Imports data into a DataGridViewRow with source currency support and immediate cancellation support.
         /// </summary>
         /// <returns>ImportTransactionResult indicating the result of the import operation.</returns>
-        private static ImportTransactionResult ImportTransaction(IXLRow row, DataGridViewRow newRow, int rowNumber, string worksheetName, ImportSession session = null)
+        private static ImportTransactionResult ImportTransaction(IXLRow row, DataGridViewRow newRow, int rowNumber, string worksheetName, string sourceCurrency = "USD", ImportSession session = null)
         {
             if (session?.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
             TagData tagData = new();
 
-            // Get exchange rate
+            // Get exchange rate from source currency to default currency
             string date = row.Cell(7).GetValue<string>();
-            string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
-            decimal exchangeRateToDefault = Currency.GetExchangeRate("USD", currency, date, false);
+            string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
+
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(sourceCurrency, defaultCurrency, date, false);
             if (exchangeRateToDefault == -1) { return ImportTransactionResult.Failed; }
+
+            // Get exchange rate from source currency to USD for TagData storage
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(sourceCurrency, "USD", date, false);
+            if (exchangeRateToUSD == -1) { return ImportTransactionResult.Failed; }
 
             string transactionId = row.Cell(1).GetValue<string>();  // Get transaction ID for error reporting
 
@@ -869,7 +874,7 @@ namespace Sales_Tracker.Classes
                             break;
                     }
 
-                    decimal decimalValue = conversionResult.Value;
+                    decimal sourceValue = conversionResult.Value;
                     bool useEmpty = false;
 
                     switch (i)
@@ -881,37 +886,52 @@ namespace Sales_Tracker.Classes
                             }
                             else
                             {
-                                tagData.PricePerUnitUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
+                                // Store USD value in TagData
+                                tagData.PricePerUnitUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             }
                             break;
                         case 9:
-                            tagData.ShippingUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
+                            tagData.ShippingUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 10:
-                            tagData.TaxUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
+                            tagData.TaxUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 11:
-                            tagData.FeeUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
+                            tagData.FeeUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 12:
-                            tagData.DiscountUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
+                            tagData.DiscountUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 13:
-                            tagData.ChargedDifferenceUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
+                            tagData.ChargedDifferenceUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                         case 14:
-                            tagData.ChargedOrCreditedUSD = Math.Round(decimalValue, 2, MidpointRounding.AwayFromZero);
+                            tagData.ChargedOrCreditedUSD = Math.Round(sourceValue * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
                             break;
                     }
 
+                    // Store the display value in default currency
                     newRow.Cells[i].Value = useEmpty
                         ? ReadOnlyVariables.EmptyCell
-                        : Math.Round(decimalValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero);
+                        : Math.Round(sourceValue * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero);
                 }
                 else
                 {
                     newRow.Cells[i].Value = value;
                 }
+            }
+
+            // Store the original currency information in TagData
+            tagData.OriginalCurrency = sourceCurrency;
+            if (exchangeRateToUSD != 0)
+            {
+                tagData.OriginalPricePerUnit = tagData.PricePerUnitUSD > 0 ? Math.Round(tagData.PricePerUnitUSD / exchangeRateToUSD, 2) : 0;
+                tagData.OriginalShipping = Math.Round(tagData.ShippingUSD / exchangeRateToUSD, 2);
+                tagData.OriginalTax = Math.Round(tagData.TaxUSD / exchangeRateToUSD, 2);
+                tagData.OriginalFee = Math.Round(tagData.FeeUSD / exchangeRateToUSD, 2);
+                tagData.OriginalDiscount = Math.Round(tagData.DiscountUSD / exchangeRateToUSD, 2);
+                tagData.OriginalChargedDifference = Math.Round(tagData.ChargedDifferenceUSD / exchangeRateToUSD, 2);
+                tagData.OriginalChargedOrCredited = Math.Round(tagData.ChargedOrCreditedUSD / exchangeRateToUSD, 2);
             }
 
             // Set the note
@@ -932,13 +952,23 @@ namespace Sales_Tracker.Classes
             newRow.Tag = tagData;
             return ImportTransactionResult.Success;
         }
-        private static ImportTransactionResult ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction, int baseRowNumber, string worksheetName, ImportSession session = null)
+        private static ImportTransactionResult ImportItemsInTransaction(IXLRow row, DataGridViewRow transaction, int baseRowNumber, string worksheetName, string sourceCurrency = "USD", ImportSession session = null)
         {
             if (session?.IsCancelled == true) { return ImportTransactionResult.Cancel; }
 
             TagData tagData = (TagData)transaction.Tag;
             List<string> items = [];
             int currentRowOffset = 0;
+
+            // Get exchange rates
+            string date = transaction.Cells[6].Value?.ToString() ?? DateTime.Today.ToString("yyyy-MM-dd");
+            decimal exchangeRateToUSD = Currency.GetExchangeRate(sourceCurrency, "USD", date, false);
+            decimal exchangeRateToDefault = Currency.GetExchangeRate(sourceCurrency, DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType), date, false);
+
+            if (exchangeRateToUSD == -1 || exchangeRateToDefault == -1)
+            {
+                return ImportTransactionResult.Failed;
+            }
 
             while (true)
             {
@@ -1000,8 +1030,11 @@ namespace Sales_Tracker.Classes
                         return ImportTransactionResult.Skip;
 
                     decimal quantity = quantityResult.Value;
-                    decimal pricePerUnit = priceResult.Value;
-                    decimal totalPrice = Math.Round(quantity * pricePerUnit, 2, MidpointRounding.AwayFromZero);
+                    decimal sourcePricePerUnit = priceResult.Value;
+
+                    // Convert prices to default currency for display and USD for storage
+                    decimal defaultPricePerUnit = Math.Round(sourcePricePerUnit * exchangeRateToDefault, 2, MidpointRounding.AwayFromZero);
+                    decimal usdPricePerUnit = Math.Round(sourcePricePerUnit * exchangeRateToUSD, 2, MidpointRounding.AwayFromZero);
 
                     string item = string.Join(",",
                         productName,
@@ -1009,8 +1042,8 @@ namespace Sales_Tracker.Classes
                         currentCountry,
                         currentCompany,
                         quantity.ToString(),
-                        pricePerUnit.ToString("N2"),  // Format to 2 decimal places
-                        totalPrice.ToString("N2")     // Format to 2 decimal places
+                        defaultPricePerUnit.ToString("F2"),  // Default currency for display
+                        usdPricePerUnit.ToString("F2")       // USD for storage
                     );
 
                     items.Add(item);
