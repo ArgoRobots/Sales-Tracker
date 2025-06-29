@@ -56,12 +56,9 @@
             SelectReceiptsFolder_Button = new Guna.UI2.WinForms.Guna2Button();
             SelectedReceiptsFolder_Label = new Label();
             RemoveReceiptsFolder_ImageButton = new Guna.UI2.WinForms.Guna2ImageButton();
-            SourceCurrency_GroupBox = new GroupBox();
             DetectCurrency_Button = new Guna.UI2.WinForms.Guna2Button();
-            DetectedCurrency_Label = new Label();
-            SourceCurrency_Label = new Label();
-            SourceCurrency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
-            SourceCurrency_GroupBox.SuspendLayout();
+            Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            Currency_Label = new Label();
             SuspendLayout();
             // 
             // ImportSpreadsheet_Label
@@ -262,22 +259,6 @@
             RemoveReceiptsFolder_ImageButton.MouseEnter += RemoveReceiptsFolder_ImageButton_MouseEnter;
             RemoveReceiptsFolder_ImageButton.MouseLeave += RemoveReceiptsFolder_ImageButton_MouseLeave;
             // 
-            // SourceCurrency_GroupBox
-            // 
-            SourceCurrency_GroupBox.Anchor = AnchorStyles.Top;
-            SourceCurrency_GroupBox.Controls.Add(DetectCurrency_Button);
-            SourceCurrency_GroupBox.Controls.Add(DetectedCurrency_Label);
-            SourceCurrency_GroupBox.Controls.Add(SourceCurrency_Label);
-            SourceCurrency_GroupBox.Controls.Add(SourceCurrency_TextBox);
-            SourceCurrency_GroupBox.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SourceCurrency_GroupBox.Location = new Point(314, 190);
-            SourceCurrency_GroupBox.Name = "SourceCurrency_GroupBox";
-            SourceCurrency_GroupBox.Size = new Size(500, 90);
-            SourceCurrency_GroupBox.TabIndex = 9;
-            SourceCurrency_GroupBox.TabStop = false;
-            SourceCurrency_GroupBox.Text = "Source Currency";
-            SourceCurrency_GroupBox.Visible = false;
-            // 
             // DetectCurrency_Button
             // 
             DetectCurrency_Button.BorderColor = Color.FromArgb(217, 221, 226);
@@ -291,62 +272,55 @@
             DetectCurrency_Button.FillColor = Color.White;
             DetectCurrency_Button.Font = new Font("Segoe UI", 9F);
             DetectCurrency_Button.ForeColor = Color.Black;
-            DetectCurrency_Button.Location = new Point(314, 37);
+            DetectCurrency_Button.Location = new Point(611, 195);
             DetectCurrency_Button.Name = "DetectCurrency_Button";
             DetectCurrency_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            DetectCurrency_Button.Size = new Size(148, 36);
+            DetectCurrency_Button.Size = new Size(150, 40);
             DetectCurrency_Button.TabIndex = 3;
             DetectCurrency_Button.Text = "Auto Detect";
             DetectCurrency_Button.Click += DetectCurrency_Button_Click;
             // 
-            // DetectedCurrency_Label
+            // Currency_TextBox
             // 
-            DetectedCurrency_Label.AutoSize = true;
-            DetectedCurrency_Label.Font = new Font("Segoe UI", 9F);
-            DetectedCurrency_Label.Location = new Point(15, 67);
-            DetectedCurrency_Label.Name = "DetectedCurrency_Label";
-            DetectedCurrency_Label.Size = new Size(0, 25);
-            DetectedCurrency_Label.TabIndex = 2;
+            Currency_TextBox.BorderRadius = 5;
+            Currency_TextBox.CustomizableEdges = customizableEdges15;
+            Currency_TextBox.DefaultText = "";
+            Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            Currency_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            Currency_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            Currency_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Font = new Font("Segoe UI", 10F);
+            Currency_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            Currency_TextBox.Location = new Point(454, 197);
+            Currency_TextBox.Margin = new Padding(4, 5, 4, 5);
+            Currency_TextBox.Name = "Currency_TextBox";
+            Currency_TextBox.PlaceholderText = "";
+            Currency_TextBox.SelectedText = "";
+            Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Currency_TextBox.Size = new Size(150, 40);
+            Currency_TextBox.TabIndex = 0;
             // 
-            // SourceCurrency_Label
+            // Currency_Label
             // 
-            SourceCurrency_Label.AutoSize = true;
-            SourceCurrency_Label.Font = new Font("Segoe UI", 10F);
-            SourceCurrency_Label.Location = new Point(15, 40);
-            SourceCurrency_Label.Name = "SourceCurrency_Label";
-            SourceCurrency_Label.Size = new Size(139, 28);
-            SourceCurrency_Label.TabIndex = 1;
-            SourceCurrency_Label.Text = "Data Currency:";
-            // 
-            // SourceCurrency_TextBox
-            // 
-            SourceCurrency_TextBox.BorderRadius = 5;
-            SourceCurrency_TextBox.CustomizableEdges = customizableEdges15;
-            SourceCurrency_TextBox.DefaultText = "";
-            SourceCurrency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
-            SourceCurrency_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
-            SourceCurrency_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
-            SourceCurrency_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
-            SourceCurrency_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
-            SourceCurrency_TextBox.Font = new Font("Segoe UI", 10F);
-            SourceCurrency_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            SourceCurrency_TextBox.Location = new Point(161, 38);
-            SourceCurrency_TextBox.Margin = new Padding(4, 5, 4, 5);
-            SourceCurrency_TextBox.Name = "SourceCurrency_TextBox";
-            SourceCurrency_TextBox.PlaceholderText = "Select currency...";
-            SourceCurrency_TextBox.SelectedText = "";
-            SourceCurrency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            SourceCurrency_TextBox.Size = new Size(146, 35);
-            SourceCurrency_TextBox.TabIndex = 0;
+            Currency_Label.AutoSize = true;
+            Currency_Label.Font = new Font("Segoe UI", 10F);
+            Currency_Label.Location = new Point(354, 199);
+            Currency_Label.Name = "Currency_Label";
+            Currency_Label.Size = new Size(93, 28);
+            Currency_Label.TabIndex = 1;
+            Currency_Label.Text = "Currency:";
             // 
             // ImportSpreadsheet_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1128, 864);
-            Controls.Add(SourceCurrency_GroupBox);
+            Controls.Add(DetectCurrency_Button);
             Controls.Add(RemoveReceiptsFolder_ImageButton);
+            Controls.Add(Currency_Label);
             Controls.Add(SelectedReceiptsFolder_Label);
+            Controls.Add(Currency_TextBox);
             Controls.Add(SelectReceiptsFolder_Button);
             Controls.Add(IncludeHeaderRow_CheckBox);
             Controls.Add(IncludeHeaderRow_Label);
@@ -364,8 +338,6 @@
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += ImportSpreadSheets_Form_FormClosed;
             Shown += ImportSpreadSheets_Form_Shown;
-            SourceCurrency_GroupBox.ResumeLayout(false);
-            SourceCurrency_GroupBox.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -383,10 +355,8 @@
         public Guna.UI2.WinForms.Guna2Button SelectReceiptsFolder_Button;
         private Label SelectedReceiptsFolder_Label;
         private Guna.UI2.WinForms.Guna2ImageButton RemoveReceiptsFolder_ImageButton;
-        private GroupBox SourceCurrency_GroupBox;
-        private Guna.UI2.WinForms.Guna2TextBox SourceCurrency_TextBox;
-        private Label SourceCurrency_Label;
-        private Label DetectedCurrency_Label;
+        private Guna.UI2.WinForms.Guna2TextBox Currency_TextBox;
         private Guna.UI2.WinForms.Guna2Button DetectCurrency_Button;
+        private Label Currency_Label;
     }
 }

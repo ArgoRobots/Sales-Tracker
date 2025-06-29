@@ -51,9 +51,7 @@ namespace Sales_Tracker
         }
         private void SetDefaultCurrency(string currencyType)
         {
-            List<string> currencies = Currency.GetCurrencyTypesList();
-
-            foreach (string currency in currencies)
+            foreach (string currency in Currency.GetCurrencyTypes())
             {
                 // Check if the currency type matches the item (exact match or starts with)
                 if (currency.Equals(currencyType, StringComparison.OrdinalIgnoreCase) ||

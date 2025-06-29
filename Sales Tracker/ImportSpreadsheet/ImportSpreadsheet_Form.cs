@@ -40,25 +40,19 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void InitCurrencyControls()
         {
-            // Add currency selection controls
             byte searchBoxMaxHeight = 255;
 
-            // Initialize currency textbox with default
-            SourceCurrency_TextBox.Text = GetCurrencyDisplayText(_selectedSourceCurrency);
+            TextBoxManager.Attach(Currency_TextBox);
+            SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
+            Currency_TextBox.TextChanged += SourceCurrency_TextBox_TextChanged;
 
-            TextBoxManager.Attach(SourceCurrency_TextBox);
-            SearchBox.Attach(SourceCurrency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
-
-            SourceCurrency_TextBox.TextChanged += SourceCurrency_TextBox_TextChanged;
-
-            // Initially hide currency controls
-            SourceCurrency_GroupBox.Visible = false;
+            HideCurrencyControls();
         }
         private void SourceCurrency_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(SourceCurrency_TextBox.Text))
+            if (!string.IsNullOrWhiteSpace(Currency_TextBox.Text))
             {
-                _selectedSourceCurrency = SourceCurrency_TextBox.Text.Split(' ')[0];  // Get just the currency code
+                _selectedSourceCurrency = Currency_TextBox.Text.Split(' ')[0];  // Get just the currency code
             }
         }
         private void UpdateTheme()
@@ -72,8 +66,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         private void SetAccessibleDescriptions()
         {
             IncludeHeaderRow_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
-            SourceCurrency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
-            DetectedCurrency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            Currency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
         }
 
         // Form event handlers
@@ -136,30 +129,16 @@ namespace Sales_Tracker.ImportSpreadsheet
                 return;
             }
 
-            LoadingPanel.ShowLoadingScreen(this, "Detecting currency...");
+            CurrencyDetectionResult result = await Task.Run(DetectCurrencyFromSpreadsheet);
 
-            try
+            if (result.ConfidenceLevel > 0)
             {
-                CurrencyDetectionResult result = await Task.Run(DetectCurrencyFromSpreadsheet);
-
-                LoadingPanel.HideLoadingScreen(this);
-
-                if (result.ConfidenceLevel > 0)
-                {
-                    ShowCurrencyDetectionResults(result);
-                }
-                else
-                {
-                    ShowCurrencySelectionDialog();
-                }
+                ShowCurrencyDetectionResults(result);
             }
-            catch (Exception ex)
+            else
             {
-                LoadingPanel.HideLoadingScreen(this);
-                CustomMessageBox.Show("Currency Detection Error",
-                    $"Could not detect currency from spreadsheet: {ex.Message}\nPlease select the currency manually.",
-                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                ShowCurrencySelectionDialog();
+                Currency_TextBox.Text = GetCurrencyDisplayText("USD");
+                ShowCurrencyControls();
             }
         }
         private CurrencyDetectionResult DetectCurrencyFromSpreadsheet()
@@ -296,51 +275,34 @@ namespace Sales_Tracker.ImportSpreadsheet
 
             if (userChoice == CustomMessageBoxResult.Yes)
             {
-                _selectedSourceCurrency = result.DetectedCurrency;
-                SourceCurrency_TextBox.Text = GetCurrencyDisplayText(result.DetectedCurrency);
-                DetectedCurrency_Label.Text = $"✓ Detected: {result.DetectedCurrency}";
-                DetectedCurrency_Label.ForeColor = Color.Green;
+                Currency_TextBox.Text = GetCurrencyDisplayText(result.DetectedCurrency);
                 ShowCurrencyControls();
             }
             else
             {
-                ShowCurrencySelectionDialog();
+                Currency_TextBox.Text = GetCurrencyDisplayText("USD");
+                ShowCurrencyControls();
             }
         }
-        private void ShowCurrencySelectionDialog()
+        private void HideCurrencyControls()
         {
-            _selectedSourceCurrency = "USD";  // Default
-            SourceCurrency_TextBox.Text = GetCurrencyDisplayText("USD");
-            DetectedCurrency_Label.Text = "⚠ Please verify currency selection";
-            DetectedCurrency_Label.ForeColor = Color.Orange;
-            ShowCurrencyControls();
-
-            CustomMessageBox.Show(
-                "Currency Selection Required",
-                "Could not automatically detect the currency from your spreadsheet.\n\n" +
-                "Please select the currency that your spreadsheet data is in using the dropdown below.\n\n" +
-                "This is important for accurate currency conversion.",
-                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            Currency_Label.Visible = false;
+            Currency_TextBox.Visible = false;
+            DetectCurrency_Button.Visible = false;
         }
         private void ShowCurrencyControls()
         {
-            SourceCurrency_GroupBox.Visible = true;
+            Currency_Label.Visible = true;
+            Currency_TextBox.Visible = true;
+            DetectCurrency_Button.Visible = true;
         }
         private static string GetCurrencyDisplayText(string currencyCode)
         {
-            List<string> currencies = Currency.GetCurrencyTypesList();
+            List<string> currencies = Currency.GetCurrencyTypes();
             return currencies.FirstOrDefault(c => c.StartsWith(currencyCode, StringComparison.OrdinalIgnoreCase)) ?? currencyCode;
         }
         private void DetectCurrency_Button_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_spreadsheetFilePath))
-            {
-                CustomMessageBox.Show("No Spreadsheet",
-                    "Please select a spreadsheet first before detecting currency.",
-                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                return;
-            }
-
             _ = DetectCurrencyAsync();
         }
         private void RemoveSpreadsheet_ImageButton_Click(object sender, EventArgs e)
@@ -350,9 +312,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             Import_Button.Enabled = false;
             _receiptsFolderPath = "";
 
-            // Hide currency controls when spreadsheet is removed
-            SourceCurrency_GroupBox.Visible = false;
-            _selectedSourceCurrency = "USD";
+            HideCurrencyControls();
         }
         private void RemoveSpreadhseet_ImageButton_MouseEnter(object sender, EventArgs e)
         {
@@ -500,7 +460,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         {
             if (!ValidateSpreadsheet()) { return; }
 
-            // Additional validation: Check if any checkboxes are selected
+            // Check if any checkboxes are selected
             List<Panel> selectedPanels = _centeredFlowPanel.Controls.OfType<Panel>()
                 .Where(panel => panel.Controls.OfType<Guna2CustomCheckBox>().FirstOrDefault()?.Checked == true)
                 .ToList();
@@ -744,7 +704,6 @@ namespace Sales_Tracker.ImportSpreadsheet
                         break;
 
                     case _purchasesName:
-                        // Pass the source currency to the import method
                         ExcelSheetManager.ImportSummary purchaseSummary = ExcelSheetManager.ImportPurchaseData(
                             worksheet, includeheader, _selectedSourceCurrency, importSession);
 
@@ -753,14 +712,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         aggregatedSummary.Errors.AddRange(purchaseSummary.Errors);
                         aggregatedSummary.PurchaseTransactionsImported += purchaseSummary.PurchaseTransactionsImported;
 
-                        if (purchaseSummary.WasCancelled)
-                        {
-                            aggregatedSummary.WasCancelled = true;
-                            break;
-                        }
-
-                        // Check for cancellation after purchase import
-                        if (importSession.IsCancelled)
+                        if (purchaseSummary.WasCancelled || importSession.IsCancelled)
                         {
                             aggregatedSummary.WasCancelled = true;
                             break;
@@ -775,7 +727,6 @@ namespace Sales_Tracker.ImportSpreadsheet
                         break;
 
                     case _salesName:
-                        // Pass the source currency to the import method
                         ExcelSheetManager.ImportSummary salesSummary = ExcelSheetManager.ImportSalesData(
                             worksheet, includeheader, _selectedSourceCurrency, importSession);
 
@@ -784,14 +735,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         aggregatedSummary.Errors.AddRange(salesSummary.Errors);
                         aggregatedSummary.SaleTransactionsImported += salesSummary.SaleTransactionsImported;
 
-                        if (salesSummary.WasCancelled)
-                        {
-                            aggregatedSummary.WasCancelled = true;
-                            break;
-                        }
-
-                        // Check for cancellation after sales import
-                        if (importSession.IsCancelled)
+                        if (salesSummary.WasCancelled || importSession.IsCancelled)
                         {
                             aggregatedSummary.WasCancelled = true;
                             break;
@@ -903,11 +847,10 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
                 Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
-                Top = 320, // Adjusted to account for currency controls
+                Top = 290,
                 Spacing = _panelPadding
             };
         }
-
         private Panel CreatePanel(List<string> items, string worksheetName)
         {
             Panel outerPanel = new()

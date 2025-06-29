@@ -9,7 +9,7 @@ namespace Tests
         public void TestGetCurrencyTypesList()
         {
             // Act
-            List<string> currencyTypes = Currency.GetCurrencyTypesList();
+            List<string> currencyTypes = Currency.GetCurrencyTypes();
 
             // Assert
             Assert.IsTrue(currencyTypes.Count > 0);

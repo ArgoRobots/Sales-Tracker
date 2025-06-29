@@ -13,6 +13,16 @@ namespace Sales_Tracker.Classes
     public static class Currency
     {
         /// <summary>
+        /// Initializes the currency cache by loading saved exchange rates from disk.
+        /// </summary>
+        static Currency()
+        {
+            LoadExchangeRateCache();
+        }
+
+        private static readonly Dictionary<string, decimal> _exchangeRateCache = [];
+
+        /// <summary>
         /// Enumeration of supported currency types, ordered by relative western geographic location.
         /// Each entry represents a national or regional currency with its ISO 4217 three-letter code.
         /// https://www.iso.org/iso-4217-currency-codes.html
@@ -118,22 +128,9 @@ namespace Sales_Tracker.Classes
         };
 
         /// <summary>
-        /// Cache for exchange rates to minimize API calls.
-        /// </summary>
-        private static readonly Dictionary<string, decimal> _exchangeRateCache = [];
-
-        /// <summary>
-        /// Initializes the currency cache by loading saved exchange rates from disk.
-        /// </summary>
-        static Currency()
-        {
-            LoadExchangeRateCache();
-        }
-
-        /// <summary>
         /// Gets a list of all supported currency type names.
         /// </summary>
-        public static List<string> GetCurrencyTypesList()
+        public static List<string> GetCurrencyTypes()
         {
             return Enum.GetNames<CurrencyTypes>().ToList();
         }
@@ -143,7 +140,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static List<SearchResult> GetSearchResults()
         {
-            return SearchBox.ConvertToSearchResults(GetCurrencyTypesList());
+            return SearchBox.ConvertToSearchResults(GetCurrencyTypes());
         }
 
         /// <summary>
@@ -169,8 +166,7 @@ namespace Sales_Tracker.Classes
         /// Uses a caching mechanism to minimize API calls.
         /// </summary>
         /// <returns>
-        /// The exchange rate as a decimal value. Returns
-        /// 1 if source and target currencies are the same, or
+        /// The exchange rate as a decimal value. Returns 1 if source and target currencies are the same, or
         /// -1 if an error occurs and the rate cannot be retrieved
         /// </returns>
         /// <remarks>
