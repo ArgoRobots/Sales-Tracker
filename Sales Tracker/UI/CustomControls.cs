@@ -110,7 +110,7 @@ namespace Sales_Tracker.UI
                 TextAlign = HorizontalAlignment.Left,
                 Font = new Font("Segoe UI", 10),
                 Text = LanguageManager.TranslateString(text),
-                Name = FormatButtonName(text),
+                Name = FormatControlName(text, "_Button"),
                 Margin = new Padding(0),
                 BorderColor = CustomColors.ControlBorder,
                 PressedColor = CustomColors.PanelBtnHover,
@@ -160,7 +160,7 @@ namespace Sales_Tracker.UI
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = true,
                 Top = 1,
-                Name = text.Replace(" ", "") + "_Label",
+                Name = FormatControlName(text, "_Label"),
                 Text = text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignRight,
                 Anchor = AnchorStyles.Top
@@ -603,17 +603,17 @@ namespace Sales_Tracker.UI
             panel.Height = controlCount * PanelButtonHeight + SpaceForPanel;
             flowPanel.Height = controlCount * PanelButtonHeight;
         }
-        private static string FormatButtonName(string text)
+        private static string FormatControlName(string text, string suffix)
         {
             // Capitalize first letter of each word
             TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-            string titleCaseText = textInfo.ToTitleCase(text.ToLower());
+            string titleCaseText = textInfo.ToTitleCase(text);
 
             // Remove spaces and ellipses
             string cleanText = titleCaseText.Replace(" ", "").Replace("...", "");
 
-            // Add "_Button" suffix
-            return cleanText + "_Button";
+            // Add suffix
+            return cleanText + suffix;
         }
 
         // Validity

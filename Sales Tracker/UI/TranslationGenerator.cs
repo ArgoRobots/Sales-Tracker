@@ -20,29 +20,29 @@ namespace Sales_Tracker.UI
     public static class TranslationGenerator
     {
         // API Translation properties
-        private static readonly HttpClient httpClient = new();
-        private static readonly string translationEndpoint = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
+        private static readonly HttpClient _httpClient = new();
+        private static readonly string _translationEndpoint = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
 
-        // Improved rate limiting and batching
-        private static readonly byte maxBatchSize = 10;
-        private static readonly byte maxRequestsPerMinute = 60;
-        private static readonly byte requestDelay_MS = 100;
-        private static readonly int maxCharactersPerRequest = 45000;  // Safety buffer below 50,000 limit
-        private static readonly int maxCharactersPerHour = 2000000;   // F0 tier limit
-        private static readonly SemaphoreSlim rateLimiter = new(1, 1);
-        private static readonly Queue<DateTime> requestTimestamps = new();
-        private static int charactersUsedThisHour = 0;
-        private static DateTime hourlyResetTime = DateTime.UtcNow.AddHours(1);
+        // Rate limiting and batching
+        private static readonly byte _maxBatchSize = 10;
+        private static readonly byte _maxRequestsPerMinute = 60;
+        private static readonly byte _requestDelay_MS = 100;
+        private static readonly int _maxCharactersPerRequest = 45000;  // Safety buffer below 50,000 limit
+        private static readonly int _maxCharactersPerHour = 2000000;   // F0 tier limit
+        private static readonly SemaphoreSlim _rateLimiter = new(1, 1);
+        private static readonly Queue<DateTime> _requestTimestamps = new();
+        private static int _charactersUsedThisHour = 0;
+        private static DateTime _hourlyResetTime = DateTime.UtcNow.AddHours(1);
 
         // Constants
-        private static readonly string placeholder_text = "Placeholder",
-            item_text = "Item",
-            title_text = "Title",
-            column_text = "Column",
-            before_text = "before",
-            link_text = "link",
-            after_text = "after",
-            full_text = "full";
+        private static readonly string _placeholder_text = "Placeholder",
+            _item_text = "Item",
+            _title_text = "Title",
+            _column_text = "Column",
+            _before_text = "before",
+            _link_text = "link",
+            _after_text = "after",
+            _full_text = "full";
 
         /// <summary>
         /// Initialize the HTTP client with API credentials.
@@ -52,8 +52,7 @@ namespace Sales_Tracker.UI
             string APIKey = DotEnv.Get("MICROSOFT_TRANSLATOR_API_KEY");
 
             // Add headers for the API request
-            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKey);
-            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Region", "canadacentral");
+            _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKey);
         }
 
         /// <summary>
@@ -167,8 +166,8 @@ namespace Sales_Tracker.UI
                 progressForm.Initialize(languages.Count, sourceTexts.Count);
 
                 // Reset hourly tracking
-                charactersUsedThisHour = 0;
-                hourlyResetTime = DateTime.UtcNow.AddHours(1);
+                _charactersUsedThisHour = 0;
+                _hourlyResetTime = DateTime.UtcNow.AddHours(1);
 
                 // Process each language
                 for (int langIndex = 0; langIndex < languages.Count; langIndex++)
@@ -257,7 +256,7 @@ namespace Sales_Tracker.UI
             string targetLanguageAbbreviation, TranslationProgress_Form progressForm, CancellationToken cancellationToken = default)
         {
             Dictionary<string, string> results = [];
-            List<Dictionary<string, string>> batches = CreateBatches(textsToTranslate, maxBatchSize);
+            List<Dictionary<string, string>> batches = CreateBatches(textsToTranslate, _maxBatchSize);
 
             Log.Write(1, $"Starting translation for {targetLanguageAbbreviation}: {textsToTranslate.Count} texts in {batches.Count} batches");
 
@@ -287,7 +286,7 @@ namespace Sales_Tracker.UI
                         }
 
                         // Log progress
-                        Log.Write(1, $"Completed batch {i + 1}/{batches.Count} ({batchCharacters} characters, {charactersUsedThisHour} total this hour)");
+                        Log.Write(1, $"Completed batch {i + 1}/{batches.Count} ({batchCharacters} characters, {_charactersUsedThisHour} total this hour)");
                         break;  // Success, exit retry loop
                     }
                     catch (HttpRequestException ex) when ((ex.Message.Contains("429") || ex.Message.Contains("rate")) && retryCount < maxRetries)
@@ -321,7 +320,7 @@ namespace Sales_Tracker.UI
                 // Small delay between batches
                 if (i < batches.Count - 1)
                 {
-                    await Task.Delay(requestDelay_MS, cancellationToken).ConfigureAwait(false);
+                    await Task.Delay(_requestDelay_MS, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -343,7 +342,7 @@ namespace Sales_Tracker.UI
 
                 // Start new batch if adding this text would exceed limits
                 if ((currentBatch.Count >= batchSize) ||
-                    (currentBatchCharacters + textLength > maxCharactersPerRequest))
+                    (currentBatchCharacters + textLength > _maxCharactersPerRequest))
                 {
                     if (currentBatch.Count > 0)
                     {
@@ -371,60 +370,60 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static async Task WaitForRateLimit(int charactersInBatch, CancellationToken cancellationToken = default)
         {
-            await rateLimiter.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await _rateLimiter.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 DateTime now = DateTime.UtcNow;
 
                 // Reset hourly character counter if needed
-                if (now >= hourlyResetTime)
+                if (now >= _hourlyResetTime)
                 {
-                    charactersUsedThisHour = 0;
-                    hourlyResetTime = now.AddHours(1);
+                    _charactersUsedThisHour = 0;
+                    _hourlyResetTime = now.AddHours(1);
                     Log.Write(1, "Hourly character limit reset");
                 }
 
                 // Check if this batch would exceed hourly character limit
-                if (charactersUsedThisHour + charactersInBatch > maxCharactersPerHour)
+                if (_charactersUsedThisHour + charactersInBatch > _maxCharactersPerHour)
                 {
-                    TimeSpan waitTime = hourlyResetTime - now;
+                    TimeSpan waitTime = _hourlyResetTime - now;
                     if (waitTime > TimeSpan.Zero)
                     {
                         Log.Write(1, $"Hourly character limit would be exceeded. Waiting {waitTime.TotalMinutes:F1} minutes until reset...");
                         // Wait until the hour resets
                         await Task.Delay(waitTime, cancellationToken).ConfigureAwait(false);
-                        charactersUsedThisHour = 0;
-                        hourlyResetTime = DateTime.UtcNow.AddHours(1);
+                        _charactersUsedThisHour = 0;
+                        _hourlyResetTime = DateTime.UtcNow.AddHours(1);
                     }
                 }
 
                 // Remove old request timestamps (older than 1 minute)
                 DateTime cutoff = now.AddMinutes(-1);
-                while (requestTimestamps.Count > 0 && requestTimestamps.Peek() < cutoff)
+                while (_requestTimestamps.Count > 0 && _requestTimestamps.Peek() < cutoff)
                 {
-                    requestTimestamps.Dequeue();
+                    _requestTimestamps.Dequeue();
                 }
 
                 // Wait if we're at the request limit
-                while (requestTimestamps.Count >= maxRequestsPerMinute)
+                while (_requestTimestamps.Count >= _maxRequestsPerMinute)
                 {
-                    DateTime oldestRequest = requestTimestamps.Peek();
+                    DateTime oldestRequest = _requestTimestamps.Peek();
                     TimeSpan waitTime = oldestRequest.AddMinutes(1) - now;
                     if (waitTime > TimeSpan.Zero)
                     {
                         Log.Write(1, $"Request rate limit reached. Waiting {waitTime.TotalSeconds:F0} seconds...");
                         await Task.Delay(waitTime, cancellationToken).ConfigureAwait(false);
                     }
-                    requestTimestamps.Dequeue();
+                    _requestTimestamps.Dequeue();
                 }
 
                 // Add current request timestamp and update character usage
-                requestTimestamps.Enqueue(now);
-                charactersUsedThisHour += charactersInBatch;
+                _requestTimestamps.Enqueue(now);
+                _charactersUsedThisHour += charactersInBatch;
             }
             finally
             {
-                rateLimiter.Release();
+                _rateLimiter.Release();
             }
         }
 
@@ -445,7 +444,7 @@ namespace Sales_Tracker.UI
                 Encoding.UTF8,
                 "application/json");
 
-            HttpResponseMessage response = await httpClient.PostAsync($"{translationEndpoint}&to={targetLanguageAbbreviation}", requestContent, cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response = await _httpClient.PostAsync($"{_translationEndpoint}&to={targetLanguageAbbreviation}", requestContent, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -514,6 +513,7 @@ namespace Sales_Tracker.UI
                 "License verified successfully!",
                 "Move category to purchases",
                 "Move category to sales",
+                "No data",
                 "No recently opened companies",
                 "No results",
                 "Product manager",
@@ -533,7 +533,7 @@ namespace Sales_Tracker.UI
 
             foreach (string str in singleStrings)
             {
-                string key = $"single_string_{str.ToLower()}";
+                string key = LanguageManager.GetStringKey(str);
                 textsToTranslate[key] = str;
             }
 
@@ -575,26 +575,26 @@ namespace Sales_Tracker.UI
 
                 case Guna2TextBox guna2TextBox:
                     AddTextToTranslate(textsToTranslate, controlKey, guna2TextBox.Text);
-                    AddTextToTranslate(textsToTranslate, $"{controlKey}_{placeholder_text}", guna2TextBox.PlaceholderText);
+                    AddTextToTranslate(textsToTranslate, $"{controlKey}_{_placeholder_text}", guna2TextBox.PlaceholderText);
                     break;
 
                 case Guna2ComboBox guna2ComboBox:
                     if (guna2ComboBox.DataSource == null)
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
-                            string itemKey = $"{controlKey}_{item_text}_{i}";
+                            string itemKey = $"{controlKey}_{_item_text}_{i}";
                             AddTextToTranslate(textsToTranslate, itemKey, guna2ComboBox.Items[i].ToString());
                         }
                     break;
 
                 case GunaChart gunaChart:
-                    AddTextToTranslate(textsToTranslate, $"{controlKey}_{title_text}", gunaChart.Title.Text);
+                    AddTextToTranslate(textsToTranslate, $"{controlKey}_{_title_text}", gunaChart.Title.Text);
                     break;
 
                 case Guna2DataGridView gunaDataGridView:
                     foreach (DataGridViewColumn column in gunaDataGridView.Columns)
                     {
-                        string columnKey = $"{controlKey}_{column_text}_{column.Name}";
+                        string columnKey = $"{controlKey}_{_column_text}_{column.Name}";
                         string headerText = column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell
                             ? imageHeaderCell.HeaderText
                             : column.HeaderText;
@@ -625,13 +625,13 @@ namespace Sales_Tracker.UI
                 string textBeforeLink = fullText.Substring(0, linkStart).Trim();
                 string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
 
-                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, before_text), textBeforeLink);
-                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, link_text), linkText);
-                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, after_text), textAfterLink);
+                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, _before_text), textBeforeLink);
+                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, _link_text), linkText);
+                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, _after_text), textAfterLink);
             }
             else
             {
-                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, full_text), fullText.Trim());
+                AddTextToTranslate(textsToTranslate, LanguageManager.GetControlKey(linkLabel, _full_text), fullText.Trim());
             }
         }
 

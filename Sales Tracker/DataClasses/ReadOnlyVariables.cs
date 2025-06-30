@@ -10,7 +10,6 @@
         public static string Receipt_text => "receipt:";
         public static string Show_text => "show";
         public static string CompanyName_text => "CompanyName";
-        public static string NoData_text => "No data";
         public static byte OffsetRightClickPanel => 30;
         public static byte PaddingRightClickPanel => 5;
     }

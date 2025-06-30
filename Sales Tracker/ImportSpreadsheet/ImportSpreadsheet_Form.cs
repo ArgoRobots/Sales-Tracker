@@ -125,7 +125,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             Currency_TextBox.Text = GetCurrencyDisplayText(detectedCurrency ?? "USD");
             ShowCurrencyControls();
 
-            // Stop the SearchBox debounce timer to prevent it from opening
+            // Prevent the SearchBox from opening
             SearchBox.DebounceTimer.Stop();
         }
         private string DetectCurrencyFromSpreadsheet()

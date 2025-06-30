@@ -3,6 +3,7 @@ using Guna.UI2.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using System.Globalization;
 
 namespace Sales_Tracker.UI
 {
@@ -417,7 +418,7 @@ namespace Sales_Tracker.UI
             }
 
             // Use the text itself as the cache key
-            string cacheKey = GetStringKey(text);
+            string cacheKey = GetStringKey(text.Replace(" ", "_"));
 
             // Check if we have this translation cached
             if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
@@ -557,14 +558,14 @@ namespace Sales_Tracker.UI
         {
             try
             {
-                // Create a combined cache object that includes both translation and string caches
-                var combinedCache = (
-                    TranslationCache,
-                    StringControlCache: stringControlCache
-                );
+                var combinedCache = new
+                {
+                    TranslationCache = TranslationCache ?? [],
+                    StringControlCache = stringControlCache ?? []
+                };
 
                 string jsonContent = JsonConvert.SerializeObject(combinedCache, Formatting.Indented);
-                Directories.CreateDirectory(Directories.Cache_dir);
+
                 Directories.WriteTextToFile(Directories.Translations_file, jsonContent);
             }
             catch (Exception ex)
@@ -655,9 +656,16 @@ namespace Sales_Tracker.UI
         /// Gets a unique key for a string using itself.
         /// </summary>
         /// <returns></returns>
-        private static string GetStringKey(string text)
+        public static string GetStringKey(string text)
         {
-            return $"single_string_{text.ToLower()}";
+            // Capitalize first letter of each word
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+            string titleCaseText = textInfo.ToTitleCase(text);
+
+            // Remove spaces and ellipses
+            string cleanText = titleCaseText.Replace(" ", "").Replace("...", "");
+
+            return $"single_string_{cleanText}";
         }
 
         /// <summary>

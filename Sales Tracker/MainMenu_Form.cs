@@ -699,7 +699,6 @@ namespace Sales_Tracker
         }
 
         // Center and resize controls
-        private bool _wasControlsDropDownAdded;
         public void CenterAndResizeControls()
         {
             if (IsProgramLoading) { return; }
@@ -723,12 +722,10 @@ namespace Sales_Tracker
             if (ClientSize.Width < 1500 + Edit_Button.Left + Edit_Button.Width)
             {
                 AddControlsDropDown();
-                _wasControlsDropDownAdded = true;
             }
-            else if (_wasControlsDropDownAdded)
+            else if (MainTop_Panel.Controls.Contains(CustomControls.ControlsDropDown_Button))
             {
                 RemoveControlsDropDown();
-                _wasControlsDropDownAdded = false;
             }
 
             if (Selected == SelectedOption.Analytics)
@@ -840,7 +837,6 @@ namespace Sales_Tracker
             {
                 button.Visible = false;
             }
-            ;
         }
         private void RemoveControlsDropDown()
         {
@@ -850,7 +846,6 @@ namespace Sales_Tracker
             {
                 button.Visible = true;
             }
-            ;
         }
         private Control[] GetMainTopButtons()
         {
