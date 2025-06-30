@@ -10,12 +10,16 @@ namespace Sales_Tracker.Classes
     /// </summary>
     public class AIQueryTranslator
     {
+        // Properties
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly string _apiEndpoint;
         private readonly DataGridViewSchemaInfo _schemaInfo;
+
+        // Getter
         public int LastTokenUsage { get; private set; }
 
+        // Methods
         public AIQueryTranslator(string apiKey, string apiEndpoint = "https://api.openai.com/v1/chat/completions")
         {
             _apiKey = apiKey;

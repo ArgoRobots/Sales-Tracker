@@ -8,13 +8,16 @@ namespace Sales_Tracker.Theme
     /// </summary>
     internal class RegistryWatcher(RegistryHive hive, string keyPath)
     {
+        // Properties
         private readonly RegistryHive _hive = hive;
         private readonly string _keyPath = keyPath;
         private readonly ManualResetEvent _stopEvent = new(false);
         private Thread _thread;
 
+        // Getter
         public event EventHandler RegChanged;
 
+        // Methods
         public void Start()
         {
             _stopEvent.Reset();

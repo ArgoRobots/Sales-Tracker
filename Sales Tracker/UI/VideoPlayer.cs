@@ -46,7 +46,6 @@ namespace Sales_Tracker.UI
             html += $"<iframe id='video' src='https://www.youtube.com/embed/{videoId}' style=\"padding: 0px; width: 100%; height: 100%; border: none; display: block;\"></iframe>";
             html += "</body></html>";
 
-            // Set the HTML content to the webBrowser
             webBrowser.DocumentText = html;
 
             webBrowser.DocumentCompleted += (_, _) =>
@@ -54,8 +53,6 @@ namespace Sales_Tracker.UI
                 StopFailureTimer();
                 webBrowser.Parent.Controls.Remove(loadingPanel);
             };
-
-            //  SetLabelText("Failed to load video. Please check your internet connection");
         }
         /// <summary>
         /// Creates a loading panel with a loading label centered inside.

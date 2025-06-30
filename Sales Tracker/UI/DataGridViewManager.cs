@@ -1045,7 +1045,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Shows a MessageBox if the row is being used by another row.
         /// </summary>
-        /// <returns>True if it's being used by another row.</returns>
+        /// <returns>True if it's being used by another row; Otherwise, false.</returns>
         private static bool IsThisBeingUsedByDataGridView(string type, string columnName, string value, string action)
         {
             foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())

@@ -37,7 +37,7 @@
         /// <summary>
         /// Determines if the application is running in Visual Studio development environment.
         /// </summary>
-        private static bool IsRunningInVisualStudio()
+        public static bool IsRunningInVisualStudio()
         {
             // Check for Visual Studio specific environment variables
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VisualStudioVersion")) ||

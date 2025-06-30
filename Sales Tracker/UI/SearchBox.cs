@@ -26,6 +26,7 @@ namespace Sales_Tracker.UI
         // Getters
         public static Guna2Panel SearchResultBoxContainer { get; private set; }
         public static Guna2Panel SearchResultBox { get; private set; }
+        public static List<Control> SearchResultControls { get; } = [];
         public static Timer DebounceTimer { get; private set; }
 
         /// <summary>
@@ -54,9 +55,6 @@ namespace Sales_Tracker.UI
             textBox.PreviewKeyDown += AllowTabAndEnterKeysInTextBox_PreviewKeyDown;
             textBox.KeyDown += (sender, e) => SearchTextBox_KeyDown(e);
         }
-
-        // List to store and reuse controls
-        public static List<Control> SearchResultControls { get; } = [];
 
         // Init.
         public static void ConstructSearchBox()

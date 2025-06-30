@@ -6,16 +6,17 @@ namespace Sales_Tracker.UI
     public static class TextBoxTooltip
     {
         // Properties
-        private static readonly Dictionary<Control, Guna2HtmlToolTip> tooltips = [];
-        private static readonly Dictionary<Control, bool> tooltipStates = [];
+        private static readonly Dictionary<Control, Guna2HtmlToolTip> _tooltips = [];
+        private static readonly Dictionary<Control, bool> _tooltipStates = [];
 
+        // Methods
         public static void SetOverflowTooltip(Guna2TextBox textBox)
         {
-            if (!tooltips.TryGetValue(textBox, out Guna2HtmlToolTip tooltip))
+            if (!_tooltips.TryGetValue(textBox, out Guna2HtmlToolTip tooltip))
             {
                 tooltip = CreateTooltip();
-                tooltips[textBox] = tooltip;
-                tooltipStates[textBox] = false;
+                _tooltips[textBox] = tooltip;
+                _tooltipStates[textBox] = false;
 
                 textBox.MouseHover += TextBox_MouseHover;
                 textBox.MouseLeave += HandleMouseLeave;
@@ -40,17 +41,17 @@ namespace Sales_Tracker.UI
         {
             Guna2TextBox textBox = (Guna2TextBox)sender;
 
-            if (IsTextOverflowing(textBox) && !tooltipStates[textBox])
+            if (IsTextOverflowing(textBox) && !_tooltipStates[textBox])
             {
-                tooltips[textBox].Show(textBox.Text, textBox);
-                tooltipStates[textBox] = true;
+                _tooltips[textBox].Show(textBox.Text, textBox);
+                _tooltipStates[textBox] = true;
             }
         }
         private static void HandleMouseLeave(object sender, EventArgs e)
         {
             Guna2TextBox textBox = (Guna2TextBox)sender;
-            tooltips[textBox].Hide(textBox);
-            tooltipStates[textBox] = false;
+            _tooltips[textBox].Hide(textBox);
+            _tooltipStates[textBox] = false;
         }
         private static void UpdateTooltip(object sender, EventArgs e)
         {
@@ -58,12 +59,12 @@ namespace Sales_Tracker.UI
 
             if (IsTextOverflowing(textBox))
             {
-                tooltips[textBox].SetToolTip(textBox, textBox.Text);
+                _tooltips[textBox].SetToolTip(textBox, textBox.Text);
             }
             else
             {
-                tooltips[textBox].Hide(textBox);
-                tooltipStates[textBox] = false;
+                _tooltips[textBox].Hide(textBox);
+                _tooltipStates[textBox] = false;
             }
         }
         private static bool IsTextOverflowing(Guna2TextBox textBox)

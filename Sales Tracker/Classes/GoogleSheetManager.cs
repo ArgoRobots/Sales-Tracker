@@ -433,7 +433,6 @@ namespace Sales_Tracker.Classes
                 CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
             );
         }
-
         private static void TrackGoogleSheetsExport(Stopwatch stopwatch)
         {
             stopwatch.Stop();

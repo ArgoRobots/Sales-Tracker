@@ -16,19 +16,27 @@ namespace Sales_Tracker.UI
     public class LanguageManager
     {
         // Properties
-        private static readonly HttpClient httpClient = new();
-        private static readonly string placeholder_text = "Placeholder", item_text = "Item", title_text = "Title", column_text = "Column",
-            before_text = "before", link_text = "link", after_text = "after", full_text = "full";
-        private static readonly Dictionary<string, Rectangle> controlBoundsCache = [];
-        private static readonly Dictionary<Control, float> originalFontSizes = [];
-        private static readonly Dictionary<string, Size> formSizeCache = [];
-        private static readonly Dictionary<string, string> stringControlCache = [];
+        private static readonly HttpClient _httpClient = new();
+        private static readonly Dictionary<string, Rectangle> _controlBoundsCache = [];
+        private static readonly Dictionary<Control, float> _originalFontSizes = [];
+        private static readonly Dictionary<string, Size> _formSizeCache = [];
+        private static readonly Dictionary<string, string> _stringControlCache = [];
+
+        // Constants
+        private static readonly string
+            _placeholder_text = "Placeholder",
+            _item_text = "Item",
+            _title_text = "Title",
+            _column_text = "Column",
+            _before_text = "before",
+            _link_text = "link",
+            _after_text = "after",
+            _full_text = "full";
 
         // Getters and setters
         public static Dictionary<string, Dictionary<string, string>> TranslationCache { get; set; }
 
         // Init.
-
         /// <summary>
         /// Initializes the LanguageManager by loading cached translation data from the translations file.
         /// </summary>
@@ -65,7 +73,7 @@ namespace Sales_Tracker.UI
                 {
                     foreach (var kvp in loadedStringCache)
                     {
-                        stringControlCache[kvp.Key] = kvp.Value;
+                        _stringControlCache[kvp.Key] = kvp.Value;
                     }
                 }
             }
@@ -105,7 +113,7 @@ namespace Sales_Tracker.UI
 
                 Log.Write(1, $"Downloading language file from: {downloadUrl}");
 
-                HttpResponseMessage response = await httpClient.GetAsync(downloadUrl, cancellationToken);
+                HttpResponseMessage response = await _httpClient.GetAsync(downloadUrl, cancellationToken);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -308,7 +316,7 @@ namespace Sales_Tracker.UI
 
                 case Guna2TextBox guna2TextBox:
                     guna2TextBox.Text = GetCachedTranslation(targetLanguageAbbreviation, controlKey, guna2TextBox.Text);
-                    string placeholderKey = $"{controlKey}_{placeholder_text}";
+                    string placeholderKey = $"{controlKey}_{_placeholder_text}";
                     guna2TextBox.PlaceholderText = GetCachedTranslation(targetLanguageAbbreviation, placeholderKey, guna2TextBox.PlaceholderText);
                     break;
 
@@ -319,7 +327,7 @@ namespace Sales_Tracker.UI
                         List<object> translatedItems = [];
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
-                            string itemKey = $"{controlKey}_{item_text}_{i}";
+                            string itemKey = $"{controlKey}_{_item_text}_{i}";
                             translatedItems.Add(GetCachedTranslation(targetLanguageAbbreviation, itemKey, guna2ComboBox.Items[i].ToString()));
                         }
                         guna2ComboBox.Items.Clear();
@@ -332,13 +340,13 @@ namespace Sales_Tracker.UI
                     break;
 
                 case GunaChart gunaChart:
-                    gunaChart.Title.Text = GetCachedTranslation(targetLanguageAbbreviation, $"{controlKey}_{title_text}", gunaChart.Title.Text);
+                    gunaChart.Title.Text = GetCachedTranslation(targetLanguageAbbreviation, $"{controlKey}_{_title_text}", gunaChart.Title.Text);
                     break;
 
                 case Guna2DataGridView gunaDataGridView:
                     foreach (DataGridViewColumn column in gunaDataGridView.Columns)
                     {
-                        string columnKey = $"{controlKey}_{column_text}_{column.Name}";
+                        string columnKey = $"{controlKey}_{_column_text}_{column.Name}";
                         if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
                         {
                             string translatedHeaderText = GetCachedTranslation(targetLanguageAbbreviation, columnKey, imageHeaderCell.HeaderText);
@@ -387,9 +395,9 @@ namespace Sales_Tracker.UI
 
             if (linkLength > 0)
             {
-                string controlKeyBefore = GetControlKey(linkLabel, before_text);
-                string controlKeyLink = GetControlKey(linkLabel, link_text);
-                string controlKeyAfter = GetControlKey(linkLabel, after_text);
+                string controlKeyBefore = GetControlKey(linkLabel, _before_text);
+                string controlKeyLink = GetControlKey(linkLabel, _link_text);
+                string controlKeyAfter = GetControlKey(linkLabel, _after_text);
 
                 string textBeforeLink = fullText.Substring(0, linkStart).Trim();
                 string linkText = fullText.Substring(linkStart, linkLength).Trim();
@@ -408,7 +416,7 @@ namespace Sales_Tracker.UI
             }
             else
             {
-                string controlKeyFull = GetControlKey(linkLabel, full_text);
+                string controlKeyFull = GetControlKey(linkLabel, _full_text);
                 string translatedFullText = GetCachedTranslation(targetLanguageAbbreviation, controlKeyFull, fullText.Trim());
                 linkLabel.Text = translatedFullText;
             }
@@ -453,7 +461,7 @@ namespace Sales_Tracker.UI
         {
             string controlKey = GetControlKey(label);
 
-            if (!controlBoundsCache.TryGetValue(controlKey, out Rectangle originalBounds))
+            if (!_controlBoundsCache.TryGetValue(controlKey, out Rectangle originalBounds))
             {
                 return;
             }
@@ -465,7 +473,7 @@ namespace Sales_Tracker.UI
             string formKey = GetFormKey(parentForm);
 
             // Get the original form size when bounds were cached
-            if (!formSizeCache.TryGetValue(formKey, out Size originalFormSize))
+            if (!_formSizeCache.TryGetValue(formKey, out Size originalFormSize))
             {
                 return;
             }
@@ -498,12 +506,12 @@ namespace Sales_Tracker.UI
         }
         public static void AdjustButtonFontSize(Guna2Button button, string text)
         {
-            if (!originalFontSizes.ContainsKey(button))
+            if (!_originalFontSizes.ContainsKey(button))
             {
-                originalFontSizes[button] = button.Font.Size;
+                _originalFontSizes[button] = button.Font.Size;
             }
 
-            float originalFontSize = originalFontSizes[button];
+            float originalFontSize = _originalFontSizes[button];
             float minFontSize = 3.0f;
             float maxFontSize = originalFontSize;
 
@@ -543,26 +551,26 @@ namespace Sales_Tracker.UI
             {
                 // Cache as string instead
                 string stringCacheKey = GetStringKey(control.Text);
-                if (!stringControlCache.ContainsKey(stringCacheKey))
+                if (!_stringControlCache.ContainsKey(stringCacheKey))
                 {
-                    stringControlCache[stringCacheKey] = control.Text;
+                    _stringControlCache[stringCacheKey] = control.Text;
                 }
                 return;  // Don't proceed with normal bounds caching
             }
 
             string controlKey = GetControlKey(control);
-            if (!controlBoundsCache.ContainsKey(controlKey))
+            if (!_controlBoundsCache.ContainsKey(controlKey))
             {
-                controlBoundsCache[controlKey] = control.Bounds;
+                _controlBoundsCache[controlKey] = control.Bounds;
 
                 // Also cache the form size
                 Form parentForm = control.FindForm();
                 if (parentForm != null)
                 {
                     string formKey = GetFormKey(parentForm);
-                    if (!formSizeCache.ContainsKey(formKey))
+                    if (!_formSizeCache.ContainsKey(formKey))
                     {
-                        formSizeCache[formKey] = parentForm.ClientSize;
+                        _formSizeCache[formKey] = parentForm.ClientSize;
                     }
                 }
             }
@@ -574,7 +582,7 @@ namespace Sales_Tracker.UI
                 var combinedCache = new
                 {
                     TranslationCache = TranslationCache ?? [],
-                    StringControlCache = stringControlCache ?? []
+                    StringControlCache = _stringControlCache ?? []
                 };
 
                 string jsonContent = JsonConvert.SerializeObject(combinedCache, Formatting.Indented);
@@ -623,6 +631,7 @@ namespace Sales_Tracker.UI
 
             return searchResults;
         }
+
         /// <summary>
         /// Gets a list of supported languages with their corresponding ISO language codes, sorted alphabetically.
         /// </summary>

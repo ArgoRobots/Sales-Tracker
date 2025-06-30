@@ -6,33 +6,34 @@ namespace Sales_Tracker.UI
     public static class CascadingMenu
     {
         // Properties
-        private static Guna2Panel menuToHide;
-        private static readonly Timer HideMenu_timer = new();
+        private static Guna2Panel _menuToHide;
+        private static readonly Timer _hideMenu_timer = new();
 
+        // Methods
         public static void Init()
         {
-            HideMenu_timer.Interval = 800;
-            HideMenu_timer.Tick += HideMenu_timer_Tick;
+            _hideMenu_timer.Interval = 800;
+            _hideMenu_timer.Tick += HideMenu_timer_Tick;
         }
         private static void HideMenu_timer_Tick(object sender, EventArgs e)
         {
-            menuToHide.Parent?.Controls.Remove(menuToHide);
-            HideMenu_timer.Enabled = false;
+            _menuToHide.Parent?.Controls.Remove(_menuToHide);
+            _hideMenu_timer.Enabled = false;
         }
         public static void OpenMenu()
         {
-            HideMenu_timer.Enabled = false;
+            _hideMenu_timer.Enabled = false;
         }
         public static void CloseMenu(object sender, EventArgs e)
         {
             Guna2Button btn = (Guna2Button)sender;
-            menuToHide = (Guna2Panel)btn.Tag;
-            HideMenu_timer.Enabled = false;
-            HideMenu_timer.Enabled = true;
+            _menuToHide = (Guna2Panel)btn.Tag;
+            _hideMenu_timer.Enabled = false;
+            _hideMenu_timer.Enabled = true;
         }
         public static void KeepMenuOpen()
         {
-            HideMenu_timer.Enabled = false;
+            _hideMenu_timer.Enabled = false;
         }
         public static bool IsThisACascadingMenu(Guna2Panel panel)
         {

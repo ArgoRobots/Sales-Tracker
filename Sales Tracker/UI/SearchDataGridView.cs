@@ -228,7 +228,7 @@ namespace Sales_Tracker.UI
                     }
 
                     double similarity = CalculateNormalizedSimilarity(sourceWord, targetWord);
-                    if (similarity >= 0.6) // Using the threshold of 0.6
+                    if (similarity >= 0.6)  // Using the threshold of 0.6
                     {
                         wordMatched = true;
                         break;
@@ -318,7 +318,6 @@ namespace Sales_Tracker.UI
         // AI search
         private static bool FilterRowByStructuredSearch(DataGridViewRow row, string searchText, SearchOptions searchOptions = null)
         {
-            // Parse the search text into structured terms
             List<StructuredSearchTerm> structuredTerms = ParseStructuredSearchTerms(searchText);
 
             // Parse any remaining free-text terms that aren't in field:value format
@@ -333,7 +332,6 @@ namespace Sales_Tracker.UI
                 return true;
             }
 
-            // Get all searchable content from the row
             List<string> searchableContent = GetSearchableContent(row);
 
             // Check structured field-specific terms

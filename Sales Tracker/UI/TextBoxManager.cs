@@ -17,7 +17,7 @@ namespace Sales_Tracker.UI
         private static Point mouseDownLocation;
 
         /// <summary>
-        /// Represents the state of a TextBox, including its text content and cursor position
+        /// Represents the state of a TextBox, including its text content and cursor position.
         /// </summary>
         private class TextState(string text, int cursorPosition)
         {
@@ -29,7 +29,6 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Attaches keyboard shortcut functionality (copy, paste, undo, redo) and other custom behavior to a Guna2TextBox.
         /// </summary>
-        /// <param name="textBoxes">One or more Guna2TextBox controls to attach functionality to.</param>
         public static void Attach(params Guna2TextBox[] textBoxes)
         {
             foreach (Guna2TextBox textBox in textBoxes)

@@ -8,12 +8,13 @@ namespace Sales_Tracker.Classes
     /// </summary>
     internal partial class ArgoFiles
     {
-        public static readonly string ArgoCompanyFileExtension = ".ArgoSales",
-                                      TxtFileExtension = ".txt",
-                                      JsonFileExtension = ".json",
-                                      XlsxFileExtension = ".xlsx",
-                                      PngFileExtension = ".png",
-                                      ZipExtension = ".zip";
+        public static readonly string
+            ArgoCompanyFileExtension = ".ArgoSales",
+            TxtFileExtension = ".txt",
+            JsonFileExtension = ".json",
+            XlsxFileExtension = ".xlsx",
+            PngFileExtension = ".png",
+            ZipExtension = ".zip";
 
         /// <summary>
         /// Import for the Windows Shell32 API function to notify the system of association changes.

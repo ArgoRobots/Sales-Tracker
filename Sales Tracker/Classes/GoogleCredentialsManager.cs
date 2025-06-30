@@ -6,7 +6,7 @@ namespace Sales_Tracker.Classes
     public class GoogleCredentialsManager
     {
         /// <summary>
-        /// Gets Google credentials from environment variables with the appropriate scopes
+        /// Gets Google credentials from environment variables with the appropriate scopes.
         /// </summary>
         public static GoogleCredential GetCredentialsFromEnvironment()
         {

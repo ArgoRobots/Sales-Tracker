@@ -9,7 +9,7 @@ namespace Sales_Tracker.UI
     public static class CustomTooltip
     {
         // Properties
-        private static readonly Dictionary<Control, Guna2HtmlToolTip> tooltips = [];
+        private static readonly Dictionary<Control, Guna2HtmlToolTip> _tooltips = [];
 
         // Methods
         /// <summary>
@@ -41,10 +41,10 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static void SetToolTip(Control control, string title, string message)
         {
-            if (!tooltips.TryGetValue(control, out Guna2HtmlToolTip tooltip))
+            if (!_tooltips.TryGetValue(control, out Guna2HtmlToolTip tooltip))
             {
                 tooltip = CreateTooltip();
-                tooltips[control] = tooltip;
+                _tooltips[control] = tooltip;
             }
 
             tooltip.ToolTipTitle = title;

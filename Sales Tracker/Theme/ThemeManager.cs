@@ -232,7 +232,7 @@ namespace Sales_Tracker.Theme
                         break;
                 }
 
-                // Recursively apply theming to child controls if any
+                // Recursively apply theme to any child controls
                 if (control.HasChildren)
                 {
                     List<Control> childControls = [];
@@ -364,7 +364,7 @@ namespace Sales_Tracker.Theme
                 return;
             }
 
-            // Update charts and other controls
+            // Update charts and controls
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts(false);
 

@@ -17,7 +17,7 @@ namespace Sales_Tracker
     public partial class MainMenu_Form : Form
     {
         // Admin mode can only be enabled by directly setting it to true here
-        public readonly static bool EnableAdminMode = true;
+        public readonly static bool EnableAdminMode = true && DotEnv.IsRunningInVisualStudio();
 
         // Proprties
         private static MainMenu_Form _instance;
@@ -75,13 +75,6 @@ namespace Sales_Tracker
 
             LoadChart.ConfigureChartForPie(_purchaseDistribution_Chart);
             LoadChart.ConfigureChartForPie(_saleDistribution_Chart);
-
-            // Set initial visibility - only show sale charts by default
-            _purchaseTotals_Chart.Visible = false;
-            _purchaseDistribution_Chart.Visible = false;
-            _saleTotals_Chart.Visible = true;
-            _saleDistribution_Chart.Visible = true;
-            Profits_Chart.Visible = true;
 
             _purchaseTotals_Chart.Tag = ChartDataType.TotalRevenue;
             _purchaseDistribution_Chart.Tag = ChartDataType.DistributionOfRevenue;
@@ -877,8 +870,7 @@ namespace Sales_Tracker
         private static bool AskUserToSaveBeforeClosing()
         {
             CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Save changes",
-                "Save changes to the following items?",
+                "Save changes", "Save changes to the following items?",
                 CustomMessageBoxIcon.None, CustomMessageBoxButtons.SaveDontSaveCancel);
 
             switch (result)
@@ -950,10 +942,10 @@ namespace Sales_Tracker
                 CustomControls.CloseAllPanels();
                 button.Image = whiteImage;
 
-                // Calculate X position based on alignment
-                int xPosition = alignRight ?
-                    button.Left - menu.Width + button.Width :
-                    button.Left;
+                // Calculate X position based on left or right alignment
+                int xPosition = alignRight
+                    ? button.Left - menu.Width + button.Width
+                    : button.Left;
 
                 menu.Location = new Point(xPosition, Top_Panel.Height);
                 Controls.Add(menu);
@@ -1607,16 +1599,19 @@ namespace Sales_Tracker
             Category? category = GetCategoryCategoryNameIsFrom(sourceList, categoryName);
             return category != null && category.ProductList.Count > 0;
         }
+
         /// <summary>
         /// Gets a list of formatted product names for items available for sale.
         /// Format: "CompanyOfOrigin > CategoryName > ProductName"
         /// </summary>
         public List<string> GetProductSaleNames() => GetFormattedProductNames(CategorySaleList);
+
         /// <summary>
         /// Gets a list of formatted product names for items available for purchase.
         /// Format: "CompanyOfOrigin > CategoryName > ProductName"
         /// </summary>
         public List<string> GetProductPurchaseNames() => GetFormattedProductNames(CategoryPurchaseList);
+
         /// <summary>
         /// Helper method to format product names from a category list.
         /// </summary>
@@ -2005,10 +2000,6 @@ namespace Sales_Tracker
                 control.Visible = false;
             }
         }
-
-        /// <summary>
-        /// Constructs analytics charts if they have not been constructed already.
-        /// </summary>
         private void ConstructControlsForAnalytics()
         {
             CountriesOfOrigin_Chart = ConstructAnalyticsChart("countriesOfOrigin_Chart");
@@ -2032,7 +2023,7 @@ namespace Sales_Tracker
             _includeFreeShipping_Label = new Label
             {
                 Text = "Include transactions with free shipping",
-                Name = "IncludeFreeShipping_Label",  // This is needed for language translation
+                Name = "IncludeFreeShipping_Label",  // This is needed for the language translation
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10),
                 Padding = new Padding(5),
