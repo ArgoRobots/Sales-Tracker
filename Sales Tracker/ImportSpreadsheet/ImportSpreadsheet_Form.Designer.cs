@@ -72,6 +72,7 @@
             ImportSpreadsheet_Label.Size = new Size(306, 45);
             ImportSpreadsheet_Label.TabIndex = 0;
             ImportSpreadsheet_Label.Text = "Import spreadsheet";
+            ImportSpreadsheet_Label.Click += CloseAllPanels;
             // 
             // SelectSpreadsheet_Button
             // 
@@ -149,6 +150,7 @@
             SelectedSpreadsheet_Label.Size = new Size(86, 28);
             SelectedSpreadsheet_Label.TabIndex = 0;
             SelectedSpreadsheet_Label.Text = "Selected";
+            SelectedSpreadsheet_Label.Click += CloseAllPanels;
             // 
             // OpenTutorial_Button
             // 
@@ -239,6 +241,7 @@
             SelectedReceiptsFolder_Label.Size = new Size(86, 28);
             SelectedReceiptsFolder_Label.TabIndex = 7;
             SelectedReceiptsFolder_Label.Text = "Selected";
+            SelectedReceiptsFolder_Label.Click += CloseAllPanels;
             // 
             // RemoveReceiptsFolder_ImageButton
             // 
@@ -310,6 +313,7 @@
             Currency_Label.Size = new Size(93, 28);
             Currency_Label.TabIndex = 1;
             Currency_Label.Text = "Currency:";
+            Currency_Label.Click += CloseAllPanels;
             // 
             // ImportSpreadsheet_Form
             // 
@@ -338,6 +342,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             FormClosed += ImportSpreadSheets_Form_FormClosed;
             Shown += ImportSpreadSheets_Form_Shown;
+            Click += CloseAllPanels;
             ResumeLayout(false);
             PerformLayout();
         }

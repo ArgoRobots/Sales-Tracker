@@ -38,7 +38,6 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        // Error handling classes
         public enum InvalidValueAction
         {
             Skip,
@@ -86,7 +85,7 @@ namespace Sales_Tracker.Classes
             public bool HasAnyImports => TotalSuccessfulImports > 0;
         }
 
-        // Import spreadsheet methods with immediate cancellation support
+        // Import data with rollback and cancellation support
         public static bool ImportAccountantsData(IXLWorksheet worksheet, bool includeHeader, ImportSession session)
         {
             if (session.IsCancelled == true) { return false; }

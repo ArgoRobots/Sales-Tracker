@@ -97,18 +97,20 @@ namespace Sales_Tracker.Classes
 
         public static readonly Dictionary<string, List<string>> CurrencyPatterns = new()
         {
-            { "ALL", new List<string> { "L", "ALL", "Lek", "Albanian" } },
+            { "USD", new List<string> { "$", "USD", "US$", "Dollar" } },
+            { "EUR", new List<string> { "€", "EUR", "Euro" } },
+            { "CAD", new List<string> { "$", "CAD", "C$", "Canadian" } },
             { "AUD", new List<string> { "$", "AUD", "A$", "Australian" } },
+
+            { "ALL", new List<string> { "L", "ALL", "Lek", "Albanian" } },
             { "BAM", new List<string> { "KM", "BAM", "Mark", "Bosnia" } },
             { "BGN", new List<string> { "лв", "BGN", "Lev", "Bulgarian" } },
             { "BRL", new List<string> { "R$", "BRL", "Real" } },
             { "BYN", new List<string> { "Br", "BYN", "Ruble", "Belarusian" } },
-            { "CAD", new List<string> { "$", "CAD", "C$", "Canadian" } },
             { "CHF", new List<string> { "CHF", "Swiss" } },
             { "CNY", new List<string> { "¥", "CNY", "Yuan", "RMB" } },
             { "CZK", new List<string> { "Kč", "CZK", "Koruna" } },
             { "DKK", new List<string> { "kr", "DKK", "Krone" } },
-            { "EUR", new List<string> { "€", "EUR", "Euro" } },
             { "GBP", new List<string> { "£", "GBP", "Pound" } },
             { "HUF", new List<string> { "Ft", "HUF", "Forint" } },
             { "ISK", new List<string> { "kr", "ISK", "Krona", "Icelandic" } },
@@ -123,8 +125,7 @@ namespace Sales_Tracker.Classes
             { "SEK", new List<string> { "kr", "SEK", "Krona" } },
             { "TRY", new List<string> { "₺", "TRY", "Lira", "Turkish" } },
             { "TWD", new List<string> { "NT$", "TWD", "Taiwan", "Dollar" } },
-            { "UAH", new List<string> { "₴", "UAH", "Hryvnia", "Ukrainian" } },
-            { "USD", new List<string> { "$", "USD", "US$", "Dollar" } }
+            { "UAH", new List<string> { "₴", "UAH", "Hryvnia", "Ukrainian" } }
         };
 
         /// <summary>

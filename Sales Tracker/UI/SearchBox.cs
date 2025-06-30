@@ -14,7 +14,6 @@ namespace Sales_Tracker.UI
     public class SearchBox
     {
         // Properties
-        private static Timer _debounceTimer;
         private static Label _noResults_Label;
         private static Control _searchBoxParent;
         private static Guna2TextBox _searchTextBox;
@@ -27,6 +26,7 @@ namespace Sales_Tracker.UI
         // Getters
         public static Guna2Panel SearchResultBoxContainer { get; private set; }
         public static Guna2Panel SearchResultBox { get; private set; }
+        public static Timer DebounceTimer { get; private set; }
 
         /// <summary>
         /// Attaches events to a Guna2TextBox to add a SearchBox.
@@ -78,11 +78,11 @@ namespace Sales_Tracker.UI
             SearchResultBoxContainer.Controls.Add(SearchResultBox);
             ThemeManager.CustomizeScrollBar(SearchResultBox);
 
-            _debounceTimer = new Timer
+            DebounceTimer = new Timer
             {
                 Interval = 300
             };
-            _debounceTimer.Tick += DebounceTimer_Tick;
+            DebounceTimer.Tick += DebounceTimer_Tick;
 
             _noResults_Label = new()
             {
@@ -98,7 +98,7 @@ namespace Sales_Tracker.UI
         // Event handlers
         private static void DebounceTimer_Tick(object sender, EventArgs e)
         {
-            _debounceTimer.Stop();
+            DebounceTimer.Stop();
             ShowSearchBox(_searchBoxParent, _searchTextBox, () => _resultList, _maxHeight, true, _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically);
         }
 
@@ -243,7 +243,7 @@ namespace Sales_Tracker.UI
                         {
                             Guna2Button button = (Guna2Button)sender;
                             _searchTextBox.Text = button.Text;
-                            _debounceTimer.Stop();
+                            DebounceTimer.Stop();
                             CustomControls.CloseAllPanels();
                         };
 
@@ -340,7 +340,7 @@ namespace Sales_Tracker.UI
         {
             return names.Select(name => new SearchResult(name, null, 0)).ToList();
         }
-        private static void SearchTextBoxChanged(object sender, EventArgs e)
+        public static void SearchTextBoxChanged(object sender, EventArgs e)
         {
             if (_resultList == null) { return; }
 
@@ -349,8 +349,8 @@ namespace Sales_Tracker.UI
 
             TextBoxManager.RightClickTextBox_Panel.Parent?.Controls.Remove(TextBoxManager.RightClickTextBox_Panel);
 
-            _debounceTimer.Stop();
-            _debounceTimer.Start();
+            DebounceTimer.Stop();
+            DebounceTimer.Start();
         }
 
         // Methods
@@ -419,7 +419,7 @@ namespace Sales_Tracker.UI
                     if (btn.BorderThickness == 1)
                     {
                         _searchTextBox.Text = btn.Text;
-                        _debounceTimer.Stop();
+                        DebounceTimer.Stop();
                         isResultSelected = true;
                         CustomControls.CloseAllPanels();
                         break;

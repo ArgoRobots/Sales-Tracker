@@ -14,15 +14,6 @@ namespace Sales_Tracker.ImportSpreadsheet
         private readonly MainMenu_Form.SelectedOption _oldOption;
         private string _selectedSourceCurrency = "USD";  // Default to USD
 
-        // Currency Detection Results
-        public class CurrencyDetectionResult
-        {
-            public string DetectedCurrency { get; set; } = "";
-            public List<string> PossibleCurrencies { get; set; } = [];
-            public byte ConfidenceLevel { get; set; } = 0;  // 0 = No detection, 1 = Low confidence, 2 = High confidence
-            public List<string> SampleValues { get; set; } = [];
-        }
-
         // Init.
         public ImportSpreadsheet_Form()
         {
@@ -82,6 +73,8 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Select spreadsheet
         private async void SelectSpreadsheet_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             // File selection dialog
             OpenFileDialog dialog = new()
             {
@@ -97,9 +90,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 AutoDetectReceiptsFolder();
                 ShowSpreadsheetLabel(dialog.SafeFileName);
 
-                // Detect currency from spreadsheet
                 await DetectCurrencyAsync();
-
                 await RefreshPanelsAsync();
             }
         }
@@ -129,160 +120,55 @@ namespace Sales_Tracker.ImportSpreadsheet
                 return;
             }
 
-            CurrencyDetectionResult result = await Task.Run(DetectCurrencyFromSpreadsheet);
+            string detectedCurrency = await Task.Run(DetectCurrencyFromSpreadsheet);
 
-            if (result.ConfidenceLevel > 0)
-            {
-                ShowCurrencyDetectionResults(result);
-            }
-            else
-            {
-                Currency_TextBox.Text = GetCurrencyDisplayText("USD");
-                ShowCurrencyControls();
-            }
+            Currency_TextBox.Text = GetCurrencyDisplayText(detectedCurrency ?? "USD");
+            ShowCurrencyControls();
+
+            // Stop the SearchBox debounce timer to prevent it from opening
+            SearchBox.DebounceTimer.Stop();
         }
-        private CurrencyDetectionResult DetectCurrencyFromSpreadsheet()
+        private string DetectCurrencyFromSpreadsheet()
         {
-            CurrencyDetectionResult result = new();
+            using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using XLWorkbook workbook = new(stream);
 
-            try
+            foreach (IXLWorksheet worksheet in workbook.Worksheets)
             {
-                using FileStream stream = new(_spreadsheetFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using XLWorkbook workbook = new(stream);
+                // Skip if worksheet is empty
+                if (!worksheet.RowsUsed().Any()) { continue; }
 
-                Dictionary<string, int> currencySymbolCounts = [];
-                Dictionary<string, List<string>> currencySamples = [];
+                // Get the first data row (skip header if needed)
+                IXLRow dataRow = worksheet.RowsUsed().Skip(IncludeHeaderRow_CheckBox.Checked ? 0 : 1).FirstOrDefault();
+                if (dataRow == null) { continue; }
 
-                // Check each worksheet for currency indicators
-                foreach (IXLWorksheet worksheet in workbook.Worksheets)
+                // Check currency columns (8-14)
+                for (int col = 8; col <= 14; col++)
                 {
-                    // Skip if worksheet is empty
-                    if (!worksheet.RowsUsed().Any()) { continue; }
+                    IXLCell cell = dataRow.Cell(col);
+                    if (cell.IsEmpty()) { continue; }
 
-                    // Look for currency symbols in monetary columns
-                    foreach (IXLRow row in worksheet.RowsUsed().Take(10))  // Check first 10 rows
+                    // Check the cell's number format for currency symbols
+                    string numberFormat = cell.Style.NumberFormat.Format;
+
+                    // Find currency pattern in the number format
+                    foreach (KeyValuePair<string, List<string>> currencyPattern in Currency.CurrencyPatterns)
                     {
-                        for (int col = 8; col <= 15; col++)
+                        string currency = currencyPattern.Key;
+                        List<string> patterns = currencyPattern.Value;
+
+                        foreach (string pattern in patterns)
                         {
-                            try
+                            if (numberFormat.Contains(pattern))
                             {
-                                string cellValue = row.Cell(col).GetValue<string>();
-                                if (string.IsNullOrEmpty(cellValue)) { continue; }
-
-                                foreach (KeyValuePair<string, List<string>> currencyPattern in Currency.CurrencyPatterns)
-                                {
-                                    string currency = currencyPattern.Key;
-                                    List<string> patterns = currencyPattern.Value;
-
-                                    foreach (string pattern in patterns)
-                                    {
-                                        if (cellValue.Contains(pattern))
-                                        {
-                                            // Use TryGetValue to fix CA1854 - avoid double lookup
-                                            if (!currencySymbolCounts.TryGetValue(currency, out int count))
-                                            {
-                                                currencySymbolCounts[currency] = 1;
-                                            }
-                                            else
-                                            {
-                                                currencySymbolCounts[currency] = count + 1;
-                                            }
-
-                                            if (!currencySamples.TryGetValue(currency, out List<string>? samples))
-                                            {
-                                                currencySamples[currency] = [cellValue];
-                                            }
-                                            else if (samples.Count < 3)
-                                            {
-                                                samples.Add(cellValue);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                                // Continue if cell read fails
-                                continue;
-                            }
-                        }
-                    }
-
-                    // Also check header row for currency indicators
-                    if (worksheet.RowsUsed().Any())
-                    {
-                        IXLRow headerRow = worksheet.RowsUsed().First();
-                        foreach (IXLCell cell in headerRow.CellsUsed())
-                        {
-                            string headerValue = cell.GetValue<string>();
-                            foreach (KeyValuePair<string, List<string>> currencyPattern in Currency.CurrencyPatterns)
-                            {
-                                string currency = currencyPattern.Key;
-                                List<string> patterns = currencyPattern.Value;
-
-                                foreach (string pattern in patterns)
-                                {
-                                    if (headerValue.Contains(pattern, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        // Use TryGetValue to fix CA1854 - avoid double lookup
-                                        if (!currencySymbolCounts.TryGetValue(currency, out int count))
-                                        {
-                                            currencySymbolCounts[currency] = 5;  // Weight headers more heavily
-                                        }
-                                        else
-                                        {
-                                            currencySymbolCounts[currency] = count + 5;
-                                        }
-                                    }
-                                }
+                                return currency;
                             }
                         }
                     }
                 }
-
-                // Analyze results
-                if (currencySymbolCounts.Count != 0)
-                {
-                    KeyValuePair<string, int> topCurrency = currencySymbolCounts.OrderByDescending(x => x.Value).First();
-                    result.DetectedCurrency = topCurrency.Key;
-                    result.PossibleCurrencies = currencySymbolCounts.Keys.ToList();
-                    result.SampleValues = currencySamples.TryGetValue(topCurrency.Key, out List<string>? value) ? value : [];
-
-                    // Determine confidence level
-                    if (topCurrency.Value >= 10)
-                    {
-                        result.ConfidenceLevel = 2;  // High confidence
-                    }
-                    else if (topCurrency.Value >= 3)
-                    {
-                        result.ConfidenceLevel = 1;  // Low confidence
-                    }
-                }
-
-                return result;
             }
-            catch (Exception ex)
-            {
-                Log.Write(1, $"Currency detection failed: {ex.Message}");
-                return result;
-            }
-        }
-        private void ShowCurrencyDetectionResults(CurrencyDetectionResult result)
-        {
-            CustomMessageBoxResult userChoice = CustomMessageBox.Show(
-                "Currency Detection", $"Detected Currency: {result.DetectedCurrency}. Is this correct?",
-                CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
 
-            if (userChoice == CustomMessageBoxResult.Yes)
-            {
-                Currency_TextBox.Text = GetCurrencyDisplayText(result.DetectedCurrency);
-                ShowCurrencyControls();
-            }
-            else
-            {
-                Currency_TextBox.Text = GetCurrencyDisplayText("USD");
-                ShowCurrencyControls();
-            }
+            return "";
         }
         private void HideCurrencyControls()
         {
@@ -303,10 +189,12 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private void DetectCurrency_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             _ = DetectCurrencyAsync();
         }
         private void RemoveSpreadsheet_ImageButton_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             RemoveSpreadsheetLabel();
             Controls.Remove(_centeredFlowPanel);
             Import_Button.Enabled = false;
@@ -326,6 +214,8 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Select receipts folder
         private void SelectReceiptsFolder_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             FolderBrowserDialog dialog = new()
             {
                 Description = "Select folder containing receipt files",
@@ -350,6 +240,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private async void RemoveReceiptsFolder_ImageButton_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             RemoveReceiptsFolderLabel();
             await RefreshPanelsAsync();
         }
@@ -455,9 +346,10 @@ namespace Sales_Tracker.ImportSpreadsheet
             _centeredFlowPanel.Left = (ClientSize.Width - _centeredFlowPanel.Width) / 2;
         }
 
-        // Import with rollback support
+        // Import data with rollback and cancellation support
         private async void Import_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             if (!ValidateSpreadsheet()) { return; }
 
             // Check if any checkboxes are selected
@@ -791,14 +683,17 @@ namespace Sales_Tracker.ImportSpreadsheet
         // Other event handlers
         private void OpenTutorial_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             Tools.OpenLink("https://argorobots.com/documentation/index.html#spreadsheets");
         }
         private async void IncludeHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             await RefreshPanelsAsync();
         }
         private void IncludeHeaderRow_Label_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             IncludeHeaderRow_CheckBox.Checked = !IncludeHeaderRow_CheckBox.Checked;
         }
         private void AutoDetectReceiptsFolder()
@@ -840,14 +735,13 @@ namespace Sales_Tracker.ImportSpreadsheet
         private readonly byte _panelPadding = 25, _panelHeight = 240;
         private readonly short _panelWidth = 300;
         private CenteredFlowLayoutPanel _centeredFlowPanel;
-
         private void InitContainerPanel()
         {
             _centeredFlowPanel = new()
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
                 Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
-                Top = 290,
+                Top = 280,
                 Spacing = _panelPadding
             };
         }
@@ -1200,6 +1094,12 @@ namespace Sales_Tracker.ImportSpreadsheet
             imageButton.Location = new Point(
                 label.Right + CustomControls.SpaceBetweenControls,
                 button.Bottom + (imageButton.Height - label.Height) / 2);
+        }
+
+        // Other methods
+        private void CloseAllPanels(object sender, EventArgs e)
+        {
+            CustomControls.CloseAllPanels();
         }
     }
 }
