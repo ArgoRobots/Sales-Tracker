@@ -63,7 +63,6 @@ namespace Sales_Tracker
             UpdateMainMenuFormText();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
-            IncludeFreeShipping_CheckBox.Checked = Properties.Settings.Default.IncludeFreeShipping;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ConstructMainCharts()
@@ -828,7 +827,6 @@ namespace Sales_Tracker
         {
             chart.Size = size;
             chart.Location = new Point(left, top);
-            LabelManager.CenterNoDataLabelInControl(chart);
         }
         private void AddControlsDropDown()
         {
@@ -2014,7 +2012,8 @@ namespace Sales_Tracker
 
             IncludeFreeShipping_CheckBox = new Guna2CustomCheckBox
             {
-                Size = new Size(20, 20)
+                Size = new Size(20, 20),
+                Checked = Properties.Settings.Default.IncludeFreeShipping
             };
             IncludeFreeShipping_CheckBox.CheckedChanged += IncludeFreeShippingCheckBox_CheckedChanged;
             Controls.Add(IncludeFreeShipping_CheckBox);
