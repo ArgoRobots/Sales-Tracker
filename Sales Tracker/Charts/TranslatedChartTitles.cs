@@ -4,7 +4,7 @@ namespace Sales_Tracker.Charts
 {
     public static class TranslatedChartTitles
     {
-        private static string Translate(string key) => LanguageManager.TranslateString(key);
+        private static string Translate(string str) => LanguageManager.TranslateString(str);
 
         public static string TotalRevenue => Translate("Total revenue");
         public static string TotalExpenses => Translate("Total expenses");

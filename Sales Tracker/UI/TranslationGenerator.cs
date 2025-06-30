@@ -509,6 +509,7 @@ namespace Sales_Tracker.UI
                 "Export",
                 "General",
                 "Generate translations",
+                "generating translations",
                 "Invalid licese key",
                 "Invalid licese",
                 "License verified successfully!",
@@ -529,6 +530,22 @@ namespace Sales_Tracker.UI
                 "Total expenses",
                 "Total sales",
                 "Verify license",
+
+                // Chart titles
+                "Average shipping costs",
+                "Average transaction value",
+                "Companies of origin for purchased products",
+                "Countries of destination for sold products",
+                "Countries of origin for purchased products",
+                "Distribution of expenses",
+                "Distribution of revenue",
+                "Expenses and revenue growth rates",
+                "Total expenses",
+                "Total expenses vs. total sales",
+                "Total profits",
+                "Total revenue",
+                "Total transactions",
+                "Transactions managed by accountants"
             ];
 
             Dictionary<string, string> textsToTranslate = [];
