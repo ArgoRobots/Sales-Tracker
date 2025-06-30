@@ -3,6 +3,7 @@ using Guna.UI2.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Settings.Menus;
 using System.Globalization;
 
 namespace Sales_Tracker.UI
@@ -248,6 +249,11 @@ namespace Sales_Tracker.UI
                 Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.RefreshLogColoring));
             }
 
+            if (Tools.IsFormOpen<General_Form>() && General_Form.Instance.IsHandleCreated)
+            {
+                General_Form.Instance.BeginInvoke(new Action(General_Form.Instance.PopulateThemeComboBox));
+            }
+
             if (MainMenu_Form.Instance.IsHandleCreated)
             {
                 MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
@@ -360,6 +366,13 @@ namespace Sales_Tracker.UI
                 if (controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
                 {
                     return cachedTranslation;
+                }
+
+                // Try string-based translation
+                string stringKey = GetStringKey(originalText);
+                if (controlTranslations.TryGetValue(stringKey, out string stringTranslation))
+                {
+                    return stringTranslation;
                 }
             }
 
@@ -610,64 +623,6 @@ namespace Sales_Tracker.UI
 
             return searchResults;
         }
-        public static string GetControlKey(Control control, string section = null)
-        {
-            List<string> parentNames = [];
-            Control currentControl = control;
-
-            // Loop through all parent controls and add their names to the list
-            while (currentControl != null)
-            {
-                if (!string.IsNullOrEmpty(currentControl.Name))
-                {
-                    parentNames.Insert(0, currentControl.Name);  // Add the parent names in reverse order (top-down)
-                }
-
-                // Stop if we encounter a form that is not the current control (a form within a form)
-                if (currentControl is Form && currentControl != control)
-                {
-                    break;
-                }
-
-                currentControl = currentControl.Parent;
-            }
-
-            // Join the parent names with a period
-            string key = string.Join(".", parentNames);
-
-            // Append section (before, link, after) if provided
-            if (!string.IsNullOrEmpty(section))
-            {
-                key += $"_{section}";
-            }
-
-            return key;
-        }
-
-        /// <summary>
-        /// Gets a unique key for a form to cache its size.
-        /// </summary>
-        private static string GetFormKey(Form form)
-        {
-            return $"Form_{form.Name ?? form.GetType().Name}";
-        }
-
-        /// <summary>
-        /// Gets a unique key for a string using itself.
-        /// </summary>
-        /// <returns></returns>
-        public static string GetStringKey(string text)
-        {
-            // Capitalize first letter of each word
-            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-            string titleCaseText = textInfo.ToTitleCase(text);
-
-            // Remove spaces and ellipses
-            string cleanText = titleCaseText.Replace(" ", "").Replace("...", "");
-
-            return $"single_string_{cleanText}";
-        }
-
         /// <summary>
         /// Gets a list of supported languages with their corresponding ISO language codes, sorted alphabetically.
         /// </summary>
@@ -734,6 +689,67 @@ namespace Sales_Tracker.UI
             {
                 return languageAbbreviation;
             }
+        }
+
+        // Get keys
+        /// <summary>
+        /// Gets a unique key for a control.
+        /// </summary>
+        public static string GetControlKey(Control control, string section = null)
+        {
+            List<string> parentNames = [];
+            Control currentControl = control;
+
+            // Loop through all parent controls and add their names to the list
+            while (currentControl != null)
+            {
+                if (!string.IsNullOrEmpty(currentControl.Name))
+                {
+                    parentNames.Insert(0, currentControl.Name);  // Add the parent names in reverse order (top-down)
+                }
+
+                // Stop if we encounter a form that is not the current control (a form within a form)
+                if (currentControl is Form && currentControl != control)
+                {
+                    break;
+                }
+
+                currentControl = currentControl.Parent;
+            }
+
+            // Join the parent names with a period
+            string key = string.Join(".", parentNames);
+
+            // Append section (before, link, after) if provided
+            if (!string.IsNullOrEmpty(section))
+            {
+                key += $"_{section}";
+            }
+
+            return key;
+        }
+
+        /// <summary>
+        /// Gets a unique key for a form to cache its size.
+        /// </summary>
+        private static string GetFormKey(Form form)
+        {
+            return $"Form_{form.Name ?? form.GetType().Name}";
+        }
+
+        /// <summary>
+        /// Gets a unique key for a string using itself.
+        /// </summary>
+        public static string GetStringKey(string text)
+        {
+            // Capitalize first letter of each word
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+            string titleCaseText = textInfo.ToTitleCase(text);
+
+            // Remove spaces and ellipses
+            string cleanText = titleCaseText.Replace(" ", "").Replace("...", "");
+
+            return $"single_string_{cleanText}";
         }
     }
 }

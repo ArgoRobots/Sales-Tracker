@@ -115,7 +115,6 @@ namespace Sales_Tracker.Settings
 
             SetButtonsEnabled(true);
 
-            // Only close the form if changes were successfully applied
             if (success)
             {
                 Close();
@@ -130,9 +129,15 @@ namespace Sales_Tracker.Settings
             CustomControls.CloseAllPanels();
             SetButtonsEnabled(false);
 
-            await ApplyChanges();
+            bool success = await ApplyChanges();
 
             SetButtonsEnabled(true);
+
+            if (success && HasLanguageChanged())
+            {
+                CustomMessageBox.Show("Translation Complete", "Language has been successfully updated.",
+                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+            }
         }
 
         // Methods
@@ -143,7 +148,6 @@ namespace Sales_Tracker.Settings
             Cancel_Button.Enabled = enabled;
             ResetToDefault_Button.Enabled = enabled;
 
-            // Also disable the left menu buttons
             General_Button.Enabled = enabled;
             Security_Button.Enabled = enabled;
             Updates_Button.Enabled = enabled;
@@ -206,8 +210,6 @@ namespace Sales_Tracker.Settings
                         _originalLanguage = General_Form.Instance.Language_TextBox.Text;
                         UpdateLanguage();
                         LoadingPanel.HideLoadingScreen(this);
-                        CustomMessageBox.Show("Translation Complete", "Language has been successfully updated.",
-                            CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                         return true;
                     }
                     else

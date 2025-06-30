@@ -498,6 +498,7 @@ namespace Sales_Tracker.UI
                 "Close",
                 "Companies",
                 "Countries",
+                "Dark",
                 "Date",
                 "Debug",
                 "Disable Windows hello",
@@ -511,6 +512,7 @@ namespace Sales_Tracker.UI
                 "Invalid licese key",
                 "Invalid licese",
                 "License verified successfully!",
+                "Light",
                 "Move category to purchases",
                 "Move category to sales",
                 "No data",
@@ -580,11 +582,13 @@ namespace Sales_Tracker.UI
 
                 case Guna2ComboBox guna2ComboBox:
                     if (guna2ComboBox.DataSource == null)
+                    {
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
                             string itemKey = $"{controlKey}_{_item_text}_{i}";
                             AddTextToTranslate(textsToTranslate, itemKey, guna2ComboBox.Items[i].ToString());
                         }
+                    }
                     break;
 
                 case GunaChart gunaChart:

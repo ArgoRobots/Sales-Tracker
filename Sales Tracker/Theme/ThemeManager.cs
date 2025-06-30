@@ -48,7 +48,7 @@ namespace Sales_Tracker.Theme
             return CurrentTheme == ThemeType.Dark ||
                    (CurrentTheme == ThemeType.Windows && IsWindowsThemeDark());
         }
-        public static bool IsWindowsThemeDark()
+        private static bool IsWindowsThemeDark()
         {
             int? value = (int?)Registry.GetValue(
                 @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",

@@ -21,8 +21,8 @@ namespace Sales_Tracker.Classes
             Properties.Settings settings = Properties.Settings.Default;
             General_Form form = General_Form.Instance;
 
-            // Handle theme change
-            if (settings.ColorTheme != form.ColorTheme_ComboBox.Text)
+            // Handle theme change - Use SelectedIndex instead of Text to work with translations
+            if (settings.ColorTheme != GetThemeNameFromIndex(form.ColorTheme_ComboBox.SelectedIndex))
             {
                 UpdateTheme();
             }
@@ -82,30 +82,40 @@ namespace Sales_Tracker.Classes
 
             return true;  // All settings were successfully saved
         }
+
+        /// <summary>
+        /// Gets theme name from ComboBox index to work with translations.
+        /// </summary>
+        private static string GetThemeNameFromIndex(int index)
+        {
+            ThemeManager.ThemeType[] themes = Enum.GetValues<ThemeManager.ThemeType>();
+            if (index >= 0 && index < themes.Length)
+            {
+                return themes[index].ToString();
+            }
+            return ThemeManager.ThemeType.Windows.ToString(); // Default fallback
+        }
         public static void UpdateSetting(string settingName, bool currentValue, bool newValue, Action<bool> setter)
         {
             if (currentValue != newValue)
             {
                 setter(newValue);
-                string message = $"Changed the '{settingName}' setting";
+                string message = LanguageManager.TranslateString($"Changed the '{settingName}' setting");
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, message);
             }
         }
         private static void UpdateTheme()
         {
-            string newTheme = General_Form.Instance.ColorTheme_ComboBox.Text;
+            int selectedIndex = General_Form.Instance.ColorTheme_ComboBox.SelectedIndex;
+            ThemeManager.ThemeType[] themes = Enum.GetValues<ThemeManager.ThemeType>();
 
-            if (newTheme == ThemeManager.ThemeType.Dark.ToString())
+            if (selectedIndex >= 0 && selectedIndex < themes.Length)
             {
-                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Dark;
+                ThemeManager.CurrentTheme = themes[selectedIndex];
             }
-            else if (newTheme == ThemeManager.ThemeType.Light.ToString())
+            else
             {
-                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Light;
-            }
-            else // Windows theme
-            {
-                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Windows;
+                ThemeManager.CurrentTheme = ThemeManager.ThemeType.Windows; // Default fallback
             }
 
             CustomColors.SetColors();
@@ -117,7 +127,9 @@ namespace Sales_Tracker.Classes
             string message = "Changed the color theme to";
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
 
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"{message} {newTheme}");
+            // Get the theme name for logging (use enum name, not translated text)
+            string themeName = ThemeManager.CurrentTheme.ToString();
+            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, $"{message} {themeName}");
         }
         private static async Task<bool> UpdateCurrencyAsync(string oldCurrency)
         {

@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Theme;
+﻿using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.UI
 {
@@ -106,6 +107,7 @@ namespace Sales_Tracker.UI
                         ForeColor = CustomColors.Text,
                         Text = LanguageManager.TranslateString("No data"),
                         AutoSize = true,
+                        AccessibleDescription = AccessibleDescriptionManager.DoNotCache,
                         BackColor = Color.Transparent,
                         Name = _noDataLabelName
                     };

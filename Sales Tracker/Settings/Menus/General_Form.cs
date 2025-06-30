@@ -20,7 +20,6 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             _instance = this;
 
-            InitComboBoxDataSources();
             InitializeAdminModeControls();
             ThemeManager.SetThemeForForm(this);
             SetAccessibleDescription();
@@ -29,9 +28,29 @@ namespace Sales_Tracker.Settings.Menus
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        private void InitComboBoxDataSources()
+        public void PopulateThemeComboBox()
         {
-            ColorTheme_ComboBox.DataSource = Enum.GetValues<ThemeManager.ThemeType>();
+            // Clear and repopulate with translated text
+            ColorTheme_ComboBox.Items.Clear();
+
+            foreach (ThemeManager.ThemeType theme in Enum.GetValues<ThemeManager.ThemeType>())
+            {
+                string displayText = GetThemeDisplayText(theme);
+                ColorTheme_ComboBox.Items.Add(displayText);
+            }
+
+            // Restore selection
+            ColorTheme_ComboBox.SelectedItem = GetThemeDisplayText(ThemeManager.CurrentTheme);
+        }
+        private static string GetThemeDisplayText(ThemeManager.ThemeType theme)
+        {
+            return theme switch
+            {
+                ThemeManager.ThemeType.Light => LanguageManager.TranslateString("Light"),
+                ThemeManager.ThemeType.Dark => LanguageManager.TranslateString("Dark"),
+                ThemeManager.ThemeType.Windows => "Windows",  // Keep Windows untranslated
+                _ => theme.ToString()
+            };
         }
         private void SetAccessibleDescription()
         {
@@ -49,6 +68,9 @@ namespace Sales_Tracker.Settings.Menus
 
             Language_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+
+            // Prevent automatic translation since we handle it manually
+            ColorTheme_ComboBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -74,7 +96,8 @@ namespace Sales_Tracker.Settings.Menus
             {
                 Text = LanguageManager.TranslateString("Generate Translations"),
                 Size = new Size(200, 40),
-                Location = new Point((Width - 200) / 2, EnableAISearch_CheckBox.Bottom + 80)
+                Location = new Point((Width - 200) / 2, EnableAISearch_CheckBox.Bottom + 80),
+                Anchor = AnchorStyles.Top
             };
             generateTranslationsButton.Click += GenerateTranslationsButton_Click;
             ThemeManager.MakeGButtonBlueSecondary(generateTranslationsButton);
@@ -193,7 +216,10 @@ namespace Sales_Tracker.Settings.Menus
         {
             Language_TextBox.Text = Properties.Settings.Default.Language;
             Currency_TextBox.Text = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
-            ColorTheme_ComboBox.Text = ThemeManager.CurrentTheme.ToString();
+
+            // Refresh ComboBox with current translations and set selection
+            PopulateThemeComboBox();
+
             ShowTooltips_CheckBox.Checked = Properties.Settings.Default.ShowTooltips;
             ShowDebugInfo_CheckBox.Checked = Properties.Settings.Default.ShowDebugInfo;
             SendAnonymousInformation_CheckBox.Checked = Properties.Settings.Default.SendAnonymousInformation;
