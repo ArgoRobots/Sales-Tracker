@@ -22,6 +22,7 @@ namespace Sales_Tracker
             AddEventHandlersToTextBoxes();
             SetControls();
             UpdateTheme();
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -78,6 +79,11 @@ namespace Sales_Tracker
             {
                 ThreeDots_Button.Image = Resources.ThreeDotsBlack;
             }
+        }
+        private void SetAccessibleDescriptions()
+        {
+            Name_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            Directory_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
         private void AddEventHandlersToTextBoxes()
         {

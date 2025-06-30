@@ -306,6 +306,22 @@ namespace Sales_Tracker
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             Price_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             LineGraph_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+
+            // Chart titles are saved in cache using a string, not the control
+            _purchaseTotals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            _purchaseDistribution_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            _saleTotals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            _saleDistribution_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+
+            CountriesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            CountriesOfDestination_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            CompaniesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            Accountants_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            GrowthRates_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            SalesVsExpenses_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            AverageTransactionValue_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            TotalTransactions_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            AverageShippingCosts_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
         private void InitChartTags()
         {
@@ -1267,7 +1283,7 @@ namespace Sales_Tracker
             Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
         }
 
-        private static readonly Dictionary<TimeSpan, string> TimeSpanMappings = new()
+        private static readonly Dictionary<TimeSpan, string> _timeSpanMappings = new()
         {
             { TimeSpan.MaxValue, "All Time" },
             { TimeSpan.FromDays(1), "1 day" },
@@ -1439,7 +1455,7 @@ namespace Sales_Tracker
         /// </summary>
         private static string? GetTimeSpanText(TimeSpan timeSpan)
         {
-            return TimeSpanMappings.TryGetValue(timeSpan, out string? text) ? text : null;
+            return _timeSpanMappings.TryGetValue(timeSpan, out string? text) ? text : null;
         }
         public void HideShowingResultsForLabel()
         {
@@ -1619,8 +1635,8 @@ namespace Sales_Tracker
 
         // DataGridView properties
         public SelectedOption Selected;
-        private GunaChart _purchaseTotals_Chart, _purchaseDistribution_Chart;
-        private GunaChart _saleTotals_Chart, _saleDistribution_Chart;
+        private GunaChart _purchaseTotals_Chart, _purchaseDistribution_Chart,
+            _saleTotals_Chart, _saleDistribution_Chart;
 
         // DataGridView getters
         public Guna2DataGridView Purchase_DataGridView { get; private set; }

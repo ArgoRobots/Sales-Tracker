@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.Runtime.InteropServices;
@@ -24,8 +25,8 @@ namespace Sales_Tracker
             ThemeManager.SetThemeForForm(this);
             ThemeManager.CustomizeScrollBar(Log_RichTextBox);
             Log_RichTextBox.Text = Log.LogText;
+            Log_RichTextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
 
-            // Initialize translated log levels
             InitializeTranslatedLogLevels();
 
             LanguageManager.UpdateLanguageForControl(this);
