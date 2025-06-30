@@ -22,6 +22,7 @@ namespace Sales_Tracker.UI
         private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
         private static readonly short extraWidth = 350;
         public const string AddLine = "ADD LINE CONTROL";
+        private static Action _validationCallback;
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer { get; private set; }
@@ -362,6 +363,13 @@ namespace Sales_Tracker.UI
             {
                 SetTextBoxToInvalid(textBox);
             }
+
+            // Trigger validation callback if it exists
+            _validationCallback?.Invoke();
+        }
+        public static void SetValidationCallback(Action callback)
+        {
+            _validationCallback = callback;
         }
         private static void SearchTextBox_KeyDown(KeyEventArgs e)
         {

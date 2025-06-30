@@ -10,6 +10,10 @@ namespace Sales_Tracker.Startup.Menus
 {
     public partial class ConfigureCompany_Form : Form
     {
+        // Properties
+        private static Action _validationCallback;
+        private static bool _isProgramLoading;
+
         // Init.
         public ConfigureCompany_Form()
         {
@@ -18,9 +22,11 @@ namespace Sales_Tracker.Startup.Menus
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
+            _isProgramLoading = true;
             SetDefaultCompanyDirectory();
             SetDefaultTextInTextBoxes();
             AddEventHandlersToTextBoxes();
+            _isProgramLoading = false;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void UpdateTheme()
@@ -46,14 +52,14 @@ namespace Sales_Tracker.Startup.Menus
             byte searchBoxMaxHeight = 200;
 
             TextBoxManager.Attach(CompanyName_TextBox);
-            CompanyName_TextBox.TextChanged += (_, _) => ValidateInputs();
-
             TextBoxManager.Attach(Directory_TextBox);
-            Directory_TextBox.TextChanged += (_, _) => ValidateInputs();
-
             TextBoxManager.Attach(Currency_TextBox);
+
+            // Set the validation callback before attaching SearchBox
+            _validationCallback = ValidateInputs;
+            SearchBox.SetValidationCallback(_validationCallback);
+
             SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
-            Currency_TextBox.TextChanged += (_, _) => ValidateInputs();
         }
         private void SetDefaultTextInTextBoxes()
         {
@@ -212,6 +218,8 @@ namespace Sales_Tracker.Startup.Menus
                 CustomControls.SetGTextBoxToValid(CompanyName_TextBox);
                 HideWarningForCompanyName();
             }
+
+            ValidateInputs();
         }
         private void Directory_textBox_TextChanged(object sender, EventArgs e)
         {
@@ -246,6 +254,8 @@ namespace Sales_Tracker.Startup.Menus
                 CustomControls.SetGTextBoxToValid(Directory_TextBox);
                 HideWarningForDirectory();
             }
+
+            ValidateInputs();
         }
 
         // Warning labels
@@ -273,9 +283,11 @@ namespace Sales_Tracker.Startup.Menus
         // Methods
         private void ValidateInputs()
         {
-            Create_Button.Enabled = CompanyName_TextBox.BorderColor != Color.Red &&
-                Directory_TextBox.BorderColor != Color.Red &&
-                Currency_TextBox.BorderColor != Color.Red;
+            if (_isProgramLoading) { return; }
+
+            Create_Button.Enabled = CompanyName_TextBox.BorderColor != Color.Red
+                && Directory_TextBox.BorderColor != Color.Red
+                && !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {

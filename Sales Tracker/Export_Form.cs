@@ -12,6 +12,8 @@ namespace Sales_Tracker
     {
         // Properties
         private int _originalDirectoryLabelY, _originalDirectoryTextBoxY, _originalWarningDirLabelY, _originalWarningDirPictureBoxY;
+        private static Action _validationCallback;
+        private static bool _isProgramLoading = true;
 
         // Init.
         public Export_Form()
@@ -23,6 +25,7 @@ namespace Sales_Tracker
             SetControls();
             UpdateTheme();
             SetAccessibleDescriptions();
+            _isProgramLoading = false;
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -91,8 +94,12 @@ namespace Sales_Tracker
 
             TextBoxManager.Attach(Name_TextBox);
             TextBoxManager.Attach(Directory_TextBox);
-
             TextBoxManager.Attach(Currency_TextBox);
+
+            // Set the validation callback before attaching SearchBox
+            _validationCallback = ValidateInputs;
+            SearchBox.SetValidationCallback(_validationCallback);
+
             SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
         }
 
@@ -104,15 +111,10 @@ namespace Sales_Tracker
         }
 
         // Event handlers
-        private void ValidateInputs(object sender, EventArgs e)
+        private void Name_TextBox_TextChanged(object sender, EventArgs e)
         {
             bool isNameValid = !("/#%&*|;".Any(Name_TextBox.Text.Contains) || Name_TextBox.Text == "");
-            bool isDirectoryValid = !("/#%&*|;".Any(Directory_TextBox.Text.Contains) ||
-                Directory_TextBox.Text == "" ||
-                !Directory.Exists(Directory_TextBox.Text.TrimEnd('\\')));
-            bool isCurrencyValid = !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
 
-            // Update Name validation UI
             if (isNameValid)
             {
                 CustomControls.SetGTextBoxToValid(Name_TextBox);
@@ -126,7 +128,14 @@ namespace Sales_Tracker
                 WarningName_PictureBox.Visible = true;
             }
 
-            // Update Directory validation UI
+            ValidateInputs();
+        }
+        private void Directory_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            bool isDirectoryValid = !("/#%&*|;".Any(Directory_TextBox.Text.Contains) ||
+                Directory_TextBox.Text == "" ||
+                !Directory.Exists(Directory_TextBox.Text.TrimEnd('\\')));
+
             if (isDirectoryValid)
             {
                 Directory_TextBox.BorderColor = CustomColors.ControlBorder;
@@ -142,17 +151,7 @@ namespace Sales_Tracker
                 WarningDir_PictureBox.Visible = true;
             }
 
-            // Update Currency validation UI
-            if (isCurrencyValid)
-            {
-                CustomControls.SetGTextBoxToValid(Currency_TextBox);
-            }
-            else
-            {
-                CustomControls.SetGTextBoxToInvalid(Currency_TextBox);
-            }
-
-            Export_Button.Enabled = isNameValid && isDirectoryValid && isCurrencyValid;
+            ValidateInputs();
         }
         private void FileType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -207,16 +206,24 @@ namespace Sales_Tracker
         }
 
         // Methods
+        private void ValidateInputs()
+        {
+            if (_isProgramLoading) { return; }
+
+            Export_Button.Enabled = Name_TextBox.BorderColor != Color.Red
+                && Directory_TextBox.BorderColor != Color.Red
+                && !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
+        }
         private void SetExportSpreadsheetControls()
         {
             bool isExcelSelected = FileType_ComboBox.Text == "Excel spreadsheet (.xlsx)";
 
             if (isExcelSelected)
             {
-                SpreadsheetOptions_GroupBox.Visible = true;
+                SetSpreadsheetOptionControlVisibility(true);
 
                 // Move directory controls down to make room for the GroupBox
-                byte space = 70;
+                byte space = 50;
                 Directory_Label.Top = _originalDirectoryLabelY + space;
                 Directory_TextBox.Top = _originalDirectoryTextBoxY + space;
                 ThreeDots_Button.Top = _originalDirectoryTextBoxY + space;
@@ -225,7 +232,7 @@ namespace Sales_Tracker
             }
             else
             {
-                SpreadsheetOptions_GroupBox.Visible = false;
+                SetSpreadsheetOptionControlVisibility(false);
 
                 // Move directory controls back to original positions
                 Directory_Label.Top = _originalDirectoryLabelY;
@@ -234,6 +241,13 @@ namespace Sales_Tracker
                 WarningDir_Label.Top = _originalWarningDirLabelY;
                 WarningDir_PictureBox.Top = _originalWarningDirPictureBoxY;
             }
+        }
+        private void SetSpreadsheetOptionControlVisibility(bool visible)
+        {
+            ExportReceipts_CheckBox.Visible = visible;
+            ExportReceipts_Label.Visible = visible;
+            Currency_Label.Visible = visible;
+            Currency_TextBox.Visible = visible;
         }
         private void Export(string fileType, string directoryPath, string fileName, bool exportReceipts, string currency)
         {
