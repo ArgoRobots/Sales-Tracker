@@ -910,6 +910,29 @@ namespace Sales_Tracker.Classes
 
             string transactionId = row.Cell(1).GetValue<string>();  // Get transaction ID for error reporting
 
+            string productName = row.Cell(3).GetValue<string>();
+            string categoryName = row.Cell(4).GetValue<string>();
+            bool isPurchase = worksheetName.Equals("Purchases", StringComparison.OrdinalIgnoreCase);
+
+            // Make sure the product exists
+            InvalidValueAction productValidationResult = ValidateProductExists(
+                productName,
+                categoryName,
+                isPurchase,
+                transactionId,
+                rowNumber,
+                worksheetName);
+
+            switch (productValidationResult)
+            {
+                case InvalidValueAction.Cancel:
+                    return ImportTransactionResult.Cancel;
+                case InvalidValueAction.Skip:
+                    return ImportTransactionResult.Skip;
+                case InvalidValueAction.Continue:
+                    break; // Continue processing
+            }
+
             int noteCellIndex = Properties.Settings.Default.ShowHasReceiptColumn ? newRow.Cells.Count - 2 : newRow.Cells.Count - 1;
             for (int i = 0; i < noteCellIndex; i++)
             {
@@ -1081,7 +1104,7 @@ namespace Sales_Tracker.Classes
                     string currentCountry = nextRow.Cell(5).Value.ToString();
                     string currentCompany = nextRow.Cell(6).Value.ToString();
 
-                    // Validate that the product exists
+                    // Make sure the product exists
                     string transactionId = transaction.Cells[0].Value?.ToString() ?? "Unknown";
                     InvalidValueAction productValidationResult = ValidateProductExists(
                         productName,
