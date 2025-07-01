@@ -514,7 +514,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeperator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Sales_Button.Text, btnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddSale_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -523,7 +523,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeperator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Purchases_Button.Text, btnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.AddPurchase_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
