@@ -365,6 +365,7 @@ namespace Sales_Tracker.Startup.Menus
         public void ShowMainMenu()
         {
             DisposeAllFileWatchers();
+            Startup_Form.CanExitApp = false;
             Startup_Form.Instance.Close();
 
             MainMenu_Form formMainMenu = new();

@@ -7,6 +7,7 @@ namespace Sales_Tracker.Startup
     {
         // Properties
         private static Startup_Form _instance;
+        public static bool CanExitApp { get; set; } = true;
 
         // Getters
         public static Startup_Form Instance => _instance;
@@ -38,6 +39,13 @@ namespace Sales_Tracker.Startup
             form.TopLevel = false;
             Controls.Add(form);
             form.Show();
+        }
+        private void Startup_Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (CanExitApp)
+            {
+                Application.Exit();
+            }
         }
     }
 }

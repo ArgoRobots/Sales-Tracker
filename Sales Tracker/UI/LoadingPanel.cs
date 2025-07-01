@@ -119,7 +119,7 @@ namespace Sales_Tracker.UI
         public static void ShowLoadingScreen(Control control, string message, bool showCancelButton = false, CancellationTokenSource cancellationTokenSource = null)
         {
             string translatedMessage = LanguageManager.TranslateString(message);
-            LoadingPanel._cancellationTokenSource = cancellationTokenSource;
+            _cancellationTokenSource = cancellationTokenSource;
             _currentControl = control;
 
             LoadingPanelInstance.Size = control.Size;

@@ -153,6 +153,7 @@ namespace Sales_Tracker.Startup.Menus
             ArgoCompany.SaveAll();
             ArgoCompany.CreateMutex(CompanyName_TextBox.Text);
 
+            Startup_Form.CanExitApp = false;
             Startup_Form.Instance.Close();
 
             // The user is starting Argo Sales Tracker

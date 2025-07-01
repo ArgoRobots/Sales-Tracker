@@ -223,7 +223,7 @@ namespace Sales_Tracker
                 SetSpreadsheetOptionControlVisibility(true);
 
                 // Move directory controls down to make room for the GroupBox
-                byte space = 50;
+                byte space = 30;
                 Directory_Label.Top = _originalDirectoryLabelY + space;
                 Directory_TextBox.Top = _originalDirectoryTextBoxY + space;
                 ThreeDots_Button.Top = _originalDirectoryTextBoxY + space;

@@ -21,7 +21,7 @@ namespace Sales_Tracker
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 
             CustomColors.SetColors();
             LoadingPanel.InitBlankLoadingPanel();
