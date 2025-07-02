@@ -61,6 +61,7 @@ namespace Sales_Tracker
             InitializeAISearch();
             RemoveUpgradeButtonIfFullVersion();
             UpdateMainMenuFormText();
+            SetChargedDifferenceColumnVisibility();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -378,6 +379,10 @@ namespace Sales_Tracker
                     Log.Write(1, "AI Search disabled: No API key found");
                 }
             }
+        }
+        public void SetChargedDifferenceColumnVisibility()
+        {
+            Sale_DataGridView.Columns[Column.ChargedDifference.ToString()].Visible = false;
         }
 
         // Add rows from file
@@ -1710,7 +1715,7 @@ namespace Sales_Tracker
             { Column.Tax, "Tax" },
             { Column.Fee, "Fee" },
             { Column.Discount, "Discount" },
-            { Column.ChargedDifference, "Charged difference" },
+            { Column.ChargedDifference, "" },  // This column will be hidden, but is still needed for the indexing
             { Column.Total, "Total revenue" },
             { Column.Note, "Notes" },
             { Column.HasReceipt, "Has receipt" }
