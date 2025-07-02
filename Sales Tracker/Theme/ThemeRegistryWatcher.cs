@@ -48,14 +48,19 @@ namespace Sales_Tracker.Theme
                     // Read the specific value we care about
                     object currentValue = key.GetValue("AppsUseLightTheme");
 
-                    // Only trigger the event if the value has changed or this is the first check
-                    if (firstRun || !Equals(currentValue, previousValue))
+                    // If the value has changed
+                    if (!firstRun && !Equals(currentValue, previousValue))
                     {
-                        firstRun = false;
-                        previousValue = currentValue;
                         RegChanged?.Invoke(this, EventArgs.Empty);
                         Log.Write(1, $"Windows theme changed to: {(currentValue?.ToString() == "0" ? "Dark" : "Light")}");
                     }
+
+                    // Update tracking variables
+                    if (firstRun)
+                    {
+                        firstRun = false;
+                    }
+                    previousValue = currentValue;
                 }
                 catch (Exception ex)
                 {
