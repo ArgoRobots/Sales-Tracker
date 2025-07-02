@@ -275,6 +275,7 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.UpdateTotalLabels();
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.HideShowingResultsForLabel();
+            MainMenu_Form.Instance.UpdateMainMenuFormText();
 
             Tools.CloseAllOpenForms();
 

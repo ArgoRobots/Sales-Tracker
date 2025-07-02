@@ -2155,7 +2155,7 @@ namespace Sales_Tracker
                 RightClickGunaChartMenu.RightClickGunaChart_Panel
             }.Where(panel => panel != null).ToList();
         }
-        private void UpdateMainMenuFormText()
+        public void UpdateMainMenuFormText()
         {
             Text = $"Argo Sales Tracker {Tools.GetVersionNumber()} - {Directories.CompanyName}";
         }

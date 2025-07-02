@@ -171,6 +171,7 @@ namespace Sales_Tracker.Startup.Menus
                 MainMenu_Form.Instance.SetCompanyLabel();
                 MainMenu_Form.Instance.UpdateTotalLabels();
                 MainMenu_Form.Instance.HideShowingResultsForLabel();
+                MainMenu_Form.Instance.UpdateMainMenuFormText();
 
                 // Clear charts
                 foreach (GunaChart chart in MainMenu_Form.Instance.GetAllCharts())
