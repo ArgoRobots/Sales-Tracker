@@ -102,7 +102,6 @@ namespace Sales_Tracker
             Accountant_TextBox.Margin = new Padding(4, 5, 4, 5);
             Accountant_TextBox.MaxLength = 32;
             Accountant_TextBox.Name = "Accountant_TextBox";
-            Accountant_TextBox.PasswordChar = '\0';
             Accountant_TextBox.PlaceholderText = "";
             Accountant_TextBox.SelectedText = "";
             Accountant_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -166,7 +165,6 @@ namespace Sales_Tracker
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
-            Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for accountants";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;

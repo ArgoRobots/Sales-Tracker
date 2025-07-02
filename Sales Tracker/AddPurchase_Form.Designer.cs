@@ -121,7 +121,6 @@ namespace Sales_Tracker
             OrderNumber_TextBox.Margin = new Padding(4, 5, 4, 5);
             OrderNumber_TextBox.MaxLength = 50;
             OrderNumber_TextBox.Name = "OrderNumber_TextBox";
-            OrderNumber_TextBox.PasswordChar = '\0';
             OrderNumber_TextBox.PlaceholderText = "";
             OrderNumber_TextBox.SelectedText = "";
             OrderNumber_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -184,7 +183,6 @@ namespace Sales_Tracker
             AccountantName_TextBox.Margin = new Padding(4, 5, 4, 5);
             AccountantName_TextBox.MaxLength = 50;
             AccountantName_TextBox.Name = "AccountantName_TextBox";
-            AccountantName_TextBox.PasswordChar = '\0';
             AccountantName_TextBox.PlaceholderText = "";
             AccountantName_TextBox.SelectedText = "";
             AccountantName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -221,7 +219,6 @@ namespace Sales_Tracker
             ProductName_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductName_TextBox.MaxLength = 50;
             ProductName_TextBox.Name = "ProductName_TextBox";
-            ProductName_TextBox.PasswordChar = '\0';
             ProductName_TextBox.PlaceholderText = "";
             ProductName_TextBox.SelectedText = "";
             ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -258,7 +255,6 @@ namespace Sales_Tracker
             Quantity_TextBox.Margin = new Padding(4, 5, 4, 5);
             Quantity_TextBox.MaxLength = 10;
             Quantity_TextBox.Name = "Quantity_TextBox";
-            Quantity_TextBox.PasswordChar = '\0';
             Quantity_TextBox.PlaceholderText = "";
             Quantity_TextBox.SelectedText = "";
             Quantity_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
@@ -296,7 +292,6 @@ namespace Sales_Tracker
             PricePerUnit_TextBox.Margin = new Padding(4, 5, 4, 5);
             PricePerUnit_TextBox.MaxLength = 10;
             PricePerUnit_TextBox.Name = "PricePerUnit_TextBox";
-            PricePerUnit_TextBox.PasswordChar = '\0';
             PricePerUnit_TextBox.PlaceholderText = "";
             PricePerUnit_TextBox.SelectedText = "";
             PricePerUnit_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
@@ -334,7 +329,6 @@ namespace Sales_Tracker
             Shipping_TextBox.Margin = new Padding(4, 5, 4, 5);
             Shipping_TextBox.MaxLength = 10;
             Shipping_TextBox.Name = "Shipping_TextBox";
-            Shipping_TextBox.PasswordChar = '\0';
             Shipping_TextBox.PlaceholderText = "";
             Shipping_TextBox.SelectedText = "";
             Shipping_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
@@ -372,7 +366,6 @@ namespace Sales_Tracker
             Tax_TextBox.Margin = new Padding(4, 5, 4, 5);
             Tax_TextBox.MaxLength = 10;
             Tax_TextBox.Name = "Tax_TextBox";
-            Tax_TextBox.PasswordChar = '\0';
             Tax_TextBox.PlaceholderText = "";
             Tax_TextBox.SelectedText = "";
             Tax_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
@@ -490,7 +483,6 @@ namespace Sales_Tracker
             Fee_TextBox.Margin = new Padding(4, 5, 4, 5);
             Fee_TextBox.MaxLength = 10;
             Fee_TextBox.Name = "Fee_TextBox";
-            Fee_TextBox.PasswordChar = '\0';
             Fee_TextBox.PlaceholderText = "";
             Fee_TextBox.SelectedText = "";
             Fee_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges20;
@@ -568,7 +560,6 @@ namespace Sales_Tracker
             Charged_TextBox.Margin = new Padding(4, 5, 4, 5);
             Charged_TextBox.MaxLength = 10;
             Charged_TextBox.Name = "Charged_TextBox";
-            Charged_TextBox.PasswordChar = '\0';
             Charged_TextBox.PlaceholderText = "";
             Charged_TextBox.SelectedText = "";
             Charged_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges22;
@@ -589,7 +580,7 @@ namespace Sales_Tracker
             Receipt_Button.FillColor = Color.White;
             Receipt_Button.Font = new Font("Segoe UI", 10F);
             Receipt_Button.ForeColor = Color.Black;
-            Receipt_Button.Location = new Point(1191, 153);
+            Receipt_Button.Location = new Point(1191, 154);
             Receipt_Button.Name = "Receipt_Button";
             Receipt_Button.ShadowDecoration.CustomizableEdges = customizableEdges24;
             Receipt_Button.Size = new Size(210, 50);
@@ -653,7 +644,6 @@ namespace Sales_Tracker
             Discount_TextBox.Margin = new Padding(4, 5, 4, 5);
             Discount_TextBox.MaxLength = 10;
             Discount_TextBox.Name = "Discount_TextBox";
-            Discount_TextBox.PasswordChar = '\0';
             Discount_TextBox.PlaceholderText = "";
             Discount_TextBox.SelectedText = "";
             Discount_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges27;
@@ -694,7 +684,6 @@ namespace Sales_Tracker
             Notes_TextBox.MinimumSize = new Size(525, 105);
             Notes_TextBox.Multiline = true;
             Notes_TextBox.Name = "Notes_TextBox";
-            Notes_TextBox.PasswordChar = '\0';
             Notes_TextBox.PlaceholderText = "";
             Notes_TextBox.SelectedText = "";
             Notes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges29;
@@ -752,7 +741,6 @@ namespace Sales_Tracker
             Currency_TextBox.Margin = new Padding(4, 5, 4, 5);
             Currency_TextBox.MaxLength = 50;
             Currency_TextBox.Name = "Currency_TextBox";
-            Currency_TextBox.PasswordChar = '\0';
             Currency_TextBox.PlaceholderText = "";
             Currency_TextBox.SelectedText = "";
             Currency_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges33;

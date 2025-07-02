@@ -102,7 +102,6 @@ namespace Sales_Tracker
             Company_TextBox.Margin = new Padding(4, 5, 4, 5);
             Company_TextBox.MaxLength = 32;
             Company_TextBox.Name = "Company_TextBox";
-            Company_TextBox.PasswordChar = '\0';
             Company_TextBox.PlaceholderText = "";
             Company_TextBox.SelectedText = "";
             Company_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -165,7 +164,6 @@ namespace Sales_Tracker
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
-            Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for companies";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;

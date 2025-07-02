@@ -105,7 +105,6 @@ namespace Sales_Tracker
             CountryOfOrigin_TextBox.Margin = new Padding(4, 5, 4, 5);
             CountryOfOrigin_TextBox.MaxLength = 32;
             CountryOfOrigin_TextBox.Name = "CountryOfOrigin_TextBox";
-            CountryOfOrigin_TextBox.PasswordChar = '\0';
             CountryOfOrigin_TextBox.PlaceholderText = "";
             CountryOfOrigin_TextBox.SelectedText = "";
             CountryOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
@@ -154,7 +153,6 @@ namespace Sales_Tracker
             ProductName_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductName_TextBox.MaxLength = 50;
             ProductName_TextBox.Name = "ProductName_TextBox";
-            ProductName_TextBox.PasswordChar = '\0';
             ProductName_TextBox.PlaceholderText = "";
             ProductName_TextBox.SelectedText = "";
             ProductName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -213,7 +211,6 @@ namespace Sales_Tracker
             ProductCategory_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductCategory_TextBox.MaxLength = 32;
             ProductCategory_TextBox.Name = "ProductCategory_TextBox";
-            ProductCategory_TextBox.PasswordChar = '\0';
             ProductCategory_TextBox.PlaceholderText = "";
             ProductCategory_TextBox.SelectedText = "";
             ProductCategory_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
@@ -238,7 +235,6 @@ namespace Sales_Tracker
             ProductID_TextBox.Margin = new Padding(4, 5, 4, 5);
             ProductID_TextBox.MaxLength = 50;
             ProductID_TextBox.Name = "ProductID_TextBox";
-            ProductID_TextBox.PasswordChar = '\0';
             ProductID_TextBox.PlaceholderText = "";
             ProductID_TextBox.SelectedText = "";
             ProductID_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
@@ -322,7 +318,6 @@ namespace Sales_Tracker
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.MaxLength = 32;
             Search_TextBox.Name = "Search_TextBox";
-            Search_TextBox.PasswordChar = '\0';
             Search_TextBox.PlaceholderText = "Search for products";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
@@ -385,7 +380,6 @@ namespace Sales_Tracker
             CompanyOfOrigin_TextBox.Margin = new Padding(4, 5, 4, 5);
             CompanyOfOrigin_TextBox.MaxLength = 32;
             CompanyOfOrigin_TextBox.Name = "CompanyOfOrigin_TextBox";
-            CompanyOfOrigin_TextBox.PasswordChar = '\0';
             CompanyOfOrigin_TextBox.PlaceholderText = "";
             CompanyOfOrigin_TextBox.SelectedText = "";
             CompanyOfOrigin_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
