@@ -993,12 +993,7 @@ namespace Sales_Tracker
             _saleDistribution_Chart.Visible = false;
 
             CenterAndResizeControls();
-
-            // Only refresh if the purchase charts haven't been loaded yet
-            if (_purchaseTotals_Chart.Datasets.Count == 0)
-            {
-                RefreshDataGridViewAndCharts();
-            }
+            RefreshDataGridViewAndCharts();
 
             Purchase_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
@@ -1026,12 +1021,7 @@ namespace Sales_Tracker
             _purchaseDistribution_Chart.Visible = false;
 
             CenterAndResizeControls();
-
-            // Only refresh if the sale charts haven't been loaded yet
-            if (_saleTotals_Chart.Datasets.Count == 0)
-            {
-                RefreshDataGridViewAndCharts();
-            }
+            RefreshDataGridViewAndCharts();
 
             Sale_DataGridView.ColumnWidthChanged += DataGridViewManager.DataGridView_ColumnWidthChanged;
             AlignTotalLabels();
