@@ -41,6 +41,7 @@ namespace Sales_Tracker
             IsProgramLoading = true;
             CurrencySymbol = Currency.GetSymbol();
 
+            InitializePerformanceMonitoring();
             CustomControls.ConstructControls();
             ConstructMainCharts();
             ConstructControlsForAnalytics();
@@ -65,6 +66,10 @@ namespace Sales_Tracker
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        private static void InitializePerformanceMonitoring()
+        {
+            ChartPerformanceMonitor.SetEnabled(Properties.Settings.Default.ShowDebugInfo);
         }
         private void ConstructMainCharts()
         {
@@ -181,6 +186,8 @@ namespace Sales_Tracker
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
+            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadMainCharts", Selected.ToString(), 200);
+
             bool isLine = LineGraph_ToggleSwitch.Checked;
 
             if (Purchase_DataGridView.Visible)
@@ -704,6 +711,7 @@ namespace Sales_Tracker
                 }
             }
 
+            ChartPerformanceMonitor.LogPerformanceStatistics();
             AnonymousDataManager.TrackSessionEnd();
             ThemeChangeDetector.StopListeningForThemeChanges();
             Log.SaveLogs();
@@ -1333,6 +1341,8 @@ namespace Sales_Tracker
                 !string.IsNullOrEmpty(effectiveSearchText);
 
             bool hasVisibleRows = false;
+            int totalRows = SelectedDataGridView.Rows.Count;
+            int visibleRows = 0;
 
             if (filterExists)
             {
@@ -1354,8 +1364,11 @@ namespace Sales_Tracker
                     if (row.Visible)
                     {
                         hasVisibleRows = true;
+                        visibleRows++;
                     }
                 }
+
+                Log.Write(3, $"[CHART PERF] Filter applied: {visibleRows}/{totalRows} rows visible");
             }
             else
             {
@@ -2104,6 +2117,8 @@ namespace Sales_Tracker
         }
         public void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts)
         {
+            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadAnalyticsCharts", "", 300);
+
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
             if (!onlyRefreshForLineCharts)
