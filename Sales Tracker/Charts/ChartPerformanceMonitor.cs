@@ -28,6 +28,14 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
+        /// Enables or disables performance monitoring.
+        /// </summary>
+        public static void SetEnabled(bool enabled)
+        {
+            IsEnabled = enabled;
+        }
+
+        /// <summary>
         /// Times a chart operation and logs only if it's a main chart operation.
         /// </summary>
         public static IDisposable TimeChartOperation(string chartName, string chartType = "", int recordCount = 0)
@@ -56,7 +64,7 @@ namespace Sales_Tracker.Charts
         {
             if (!IsEnabled || _performanceData.Count == 0) { return; }
 
-            Log.Write(2, "=== CHART PERFORMANCE SUMMARY ===");
+            Log.Write(1, "=== CHART PERFORMANCE SUMMARY ===");
 
             List<ChartPerformanceData> sortedData = _performanceData.Values
                 .Where(d => d.OperationName.Contains("Chart"))
@@ -65,16 +73,8 @@ namespace Sales_Tracker.Charts
 
             foreach (ChartPerformanceData data in sortedData)
             {
-                Log.Write(2, $"[CHART PERF] {data.OperationName}: {data.AverageMilliseconds:F0}ms avg ({data.TotalExecutions} times, max: {data.MaxMilliseconds}ms)");
+                Log.Write(1, $"[CHART PERF] {data.OperationName}: {data.AverageMilliseconds:F0}ms avg ({data.TotalExecutions} times, max: {data.MaxMilliseconds}ms)");
             }
-        }
-
-        /// <summary>
-        /// Enables or disables performance monitoring.
-        /// </summary>
-        public static void SetEnabled(bool enabled)
-        {
-            IsEnabled = enabled;
         }
         private static void UpdatePerformanceData(string operationName, long elapsedMs)
         {
@@ -160,7 +160,7 @@ namespace Sales_Tracker.Charts
 
                     // Log
                     string displayName = string.IsNullOrEmpty(_context) ? _operationName : $"{_operationName} ({_context})";
-                    Log.Write(2, $"[PERF] {displayName}: {elapsedMs}ms");
+                    Log.Write(1, $"[PERF] {displayName}: {elapsedMs}ms");
                     UpdatePerformanceData(displayName, elapsedMs);
 
                     _disposed = true;

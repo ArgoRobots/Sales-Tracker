@@ -17,7 +17,7 @@ namespace Sales_Tracker.Classes
         public static string ArgoCompany_file { get; private set; }
         public static string AppData_dir { get; private set; }
         public static string Downloads_dir { get; private set; }
-        public static string AppDataSettings_file { get; private set; }
+        public static string CompanyData_file { get; private set; }
         public static string Purchases_file { get; private set; }
         public static string Sales_file { get; private set; }
         public static string CategoryPurchases_file { get; private set; }
@@ -34,6 +34,7 @@ namespace Sales_Tracker.Classes
         public static string ExchangeRates_file { get; private set; }
         public static string English_file { get; set; }
         public static string SecretsFilePath { get; private set; }
+        public static string CompanyDataFileName => "appSettings" + ArgoFiles.TxtFileExtension;
 
         // Methods
         /// <summary>
@@ -65,7 +66,7 @@ namespace Sales_Tracker.Classes
             Receipts_dir = AppData_dir + companyName + @"\receipts\";
 
             // Misc.
-            AppDataSettings_file = TempCompany_dir + "appSettings" + ArgoFiles.TxtFileExtension;
+            CompanyData_file = TempCompany_dir + CompanyDataFileName;
         }
 
         /// <summary>

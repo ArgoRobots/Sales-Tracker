@@ -36,7 +36,7 @@
             return typeof(TEnum) switch
             {
                 _ when typeof(TEnum) == typeof(GlobalAppDataSettings) => Directories.GlobalAppDataSettings_file,
-                _ when typeof(TEnum) == typeof(AppDataSettings) => Directories.AppDataSettings_file,
+                _ when typeof(TEnum) == typeof(AppDataSettings) => Directories.CompanyData_file,
                 _ => throw new ArgumentException("Unsupported enum type", nameof(TEnum))
             };
         }

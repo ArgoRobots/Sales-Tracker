@@ -358,7 +358,8 @@ namespace Sales_Tracker.Classes
                 if (company + @"\" == Directories.Cache_dir) { continue; }
 
                 // If there are no changes
-                string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade, company + @"\info" + ArgoFiles.TxtFileExtension);
+                string filepath = Path.Combine(company, Directories.CompanyDataFileName);
+                string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade, filepath);
                 if (bool.TryParse(value, out bool boolResult) && !boolResult)
                 {
                     // Delete the temp folder
