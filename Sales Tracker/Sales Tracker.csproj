@@ -34,10 +34,10 @@
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
     <PackageReference Include="ClosedXML" Version="0.105.0" />
-    <PackageReference Include="EPPlus" Version="8.0.6" />
+    <PackageReference Include="EPPlus" Version="8.0.7" />
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3783" />
-    <PackageReference Include="Google.Apis.Iam.v1" Version="1.70.0.3822" />
+    <PackageReference Include="Google.Apis.Iam.v1" Version="1.70.0.3830" />
     <PackageReference Include="Google.Apis.ServiceUsage.v1" Version="1.69.0.3787" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.70.0.3819" />
     <PackageReference Include="Guna.Charts.WinForms" Version="1.1.0" />
