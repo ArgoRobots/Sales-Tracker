@@ -611,6 +611,9 @@ namespace Sales_Tracker
 
             SortTheDataGridViewByDate();
             CenterAndResizeControls();
+
+            Total_Panel.Location = new Point(SelectedDataGridView.Left, SelectedDataGridView.Top + SelectedDataGridView.Height);
+            Total_Panel.Width = SelectedDataGridView.Width;
         }
         private void MainMenu_form_Shown(object sender, EventArgs e)
         {
@@ -724,18 +727,13 @@ namespace Sales_Tracker
         {
             if (IsProgramLoading) { return; }
 
-            if (ClientSize.Height > 1400)
+            int height = ClientSize.Height switch
             {
-                SetMainChartsHeight(500);
-            }
-            else if (ClientSize.Height > 1000)
-            {
-                SetMainChartsHeight(400);
-            }
-            else
-            {
-                SetMainChartsHeight(300);
-            }
+                > 1400 => 500,
+                > 1000 => 400,
+                _ => 300
+            };
+            SetMainChartsHeight(height);
 
             byte spaceBetweenCharts = 20, chartWidthOffset = 35;
 
@@ -817,14 +815,11 @@ namespace Sales_Tracker
                 SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, distributionChart.Top);
                 SetChartPosition(Profits_Chart, new Size(chartWidth, chartHeight), rightX, Profits_Chart.Top);
 
-                // Position DataGridView and Total Panel
+                // Position DataGridView
                 SelectedDataGridView.Size = new Size(ClientSize.Width - 65,
                     ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - chartHeight - totalsChart.Top + 35);
                 SelectedDataGridView.Location = new Point((ClientSize.Width - SelectedDataGridView.Width) / 2,
                     ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - SelectedDataGridView.Height + 50);
-
-                Total_Panel.Location = new Point(SelectedDataGridView.Left, SelectedDataGridView.Top + SelectedDataGridView.Height);
-                Total_Panel.Width = SelectedDataGridView.Width;
             }
         }
         private void SetMainChartsHeight(int height)
