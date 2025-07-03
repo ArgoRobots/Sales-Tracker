@@ -65,27 +65,6 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Gets performance data for a specific operation.
-        /// </summary>
-        public static (long executions, double averageMs, long minMs, long maxMs, DateTime lastExecution)? GetPerformanceData(string operationName)
-        {
-            if (!_performanceData.TryGetValue(operationName, out ChartPerformanceData? data))
-            {
-                return null;
-            }
-
-            return (data.TotalExecutions, data.AverageMilliseconds, data.MinMilliseconds, data.MaxMilliseconds, data.LastExecution);
-        }
-
-        /// <summary>
-        /// Clears all performance statistics.
-        /// </summary>
-        public static void ClearStatistics()
-        {
-            _performanceData.Clear();
-        }
-
-        /// <summary>
         /// Enables or disables performance monitoring.
         /// </summary>
         public static void SetEnabled(bool enabled)

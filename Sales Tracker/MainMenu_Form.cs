@@ -849,24 +849,30 @@ namespace Sales_Tracker
         }
         private void AddControlsDropDown()
         {
-            CustomControls.ControlsDropDown_Button.Location = new Point(
-                MainTop_Panel.Width - CustomControls.ControlsDropDown_Button.Width - 11,
-                (MainTop_Panel.Height - CustomControls.ControlsDropDown_Button.Height) / 2);
-
-            MainTop_Panel.Controls.Add(CustomControls.ControlsDropDown_Button);
-
-            foreach (Control button in GetMainTopButtons())
+            if (!MainTop_Panel.Controls.Contains(CustomControls.ControlsDropDown_Button))
             {
-                button.Visible = false;
+                CustomControls.ControlsDropDown_Button.Location = new Point(
+                    MainTop_Panel.Width - CustomControls.ControlsDropDown_Button.Width - 11,
+                    (MainTop_Panel.Height - CustomControls.ControlsDropDown_Button.Height) / 2);
+
+                MainTop_Panel.Controls.Add(CustomControls.ControlsDropDown_Button);
+
+                foreach (Control button in GetMainTopButtons())
+                {
+                    button.Visible = false;
+                }
             }
         }
         private void RemoveControlsDropDown()
         {
-            MainTop_Panel.Controls.Remove(CustomControls.ControlsDropDown_Button);
-
-            foreach (Control button in GetMainTopButtons())
+            if (MainTop_Panel.Controls.Contains(CustomControls.ControlsDropDown_Button))
             {
-                button.Visible = true;
+                MainTop_Panel.Controls.Remove(CustomControls.ControlsDropDown_Button);
+
+                foreach (Control button in GetMainTopButtons())
+                {
+                    button.Visible = true;
+                }
             }
         }
         private Control[] GetMainTopButtons()
@@ -1042,6 +1048,7 @@ namespace Sales_Tracker
             Selected = SelectedOption.Analytics;
             ShowAnalyticsControls();
             CenterAndResizeControls();
+            LoadOrRefreshAnalyticsCharts(false);
 
             SelectButton(Analytics_Button);
         }
@@ -2104,8 +2111,6 @@ namespace Sales_Tracker
         }
         private void ShowAnalyticsControls()
         {
-            LoadOrRefreshAnalyticsCharts(false);
-
             foreach (Control control in _analyticsControls)
             {
                 control.Visible = true;
