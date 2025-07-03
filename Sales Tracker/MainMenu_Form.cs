@@ -813,15 +813,9 @@ namespace Sales_Tracker
                 GunaChart totalsChart = Sale_DataGridView.Visible ? _saleTotals_Chart : _purchaseTotals_Chart;
                 GunaChart distributionChart = Sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
 
-                // Set positions for visible charts
-                totalsChart.Size = new Size(chartWidth, chartHeight);
-                totalsChart.Left = leftX;
-
-                distributionChart.Size = new Size(chartWidth, chartHeight);
-                distributionChart.Left = middleX;
-
-                Profits_Chart.Size = new Size(chartWidth, chartHeight);
-                Profits_Chart.Left = rightX;
+                SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, totalsChart.Top);
+                SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, distributionChart.Top);
+                SetChartPosition(Profits_Chart, new Size(chartWidth, chartHeight), rightX, Profits_Chart.Top);
 
                 // Position DataGridView and Total Panel
                 SelectedDataGridView.Size = new Size(ClientSize.Width - 65,
@@ -845,6 +839,11 @@ namespace Sales_Tracker
         {
             chart.Size = size;
             chart.Location = new Point(left, top);
+
+            if (chart.Datasets.Count > 0 && chart.Datasets[0] is GunaPieDataset)
+            {
+                chart.Legend.Position = LoadChart.GetLegendPosition(chart);
+            }
         }
         private void AddControlsDropDown()
         {

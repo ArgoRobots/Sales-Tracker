@@ -51,7 +51,13 @@ namespace Sales_Tracker.Charts
         public static void ConfigureChartForPie(GunaChart chart)
         {
             ClearChart(chart);
-            chart.Legend.Position = LegendPosition.Right;
+            chart.Legend.Position = GetLegendPosition(chart);
+        }
+        public static LegendPosition GetLegendPosition(GunaChart chart)
+        {
+            // Use a ratio to allow Bottom legend even if height is slightly less than width
+            double ratio = (double)chart.Height / chart.Width;
+            return ratio >= 0.8 ? LegendPosition.Bottom : LegendPosition.Right;
         }
 
         // Main charts
