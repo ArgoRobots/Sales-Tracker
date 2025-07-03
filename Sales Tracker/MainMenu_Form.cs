@@ -186,8 +186,7 @@ namespace Sales_Tracker
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadMainCharts", Selected.ToString(), 200);
-
+            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadMainCharts", Selected.ToString());
             bool isLine = LineGraph_ToggleSwitch.Checked;
 
             if (Purchase_DataGridView.Visible)
@@ -2122,8 +2121,7 @@ namespace Sales_Tracker
         }
         public void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadAnalyticsCharts", "", 300);
-
+            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadAnalyticsCharts", "");
             bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
             if (!onlyRefreshForLineCharts)

@@ -4,12 +4,17 @@ using System.Diagnostics;
 namespace Sales_Tracker.Charts
 {
     /// <summary>
-    /// Simplified chart performance monitoring that only logs essential chart timing.
+    /// Chart performance monitoring that logs chart timing if enabled.
     /// </summary>
     public static class ChartPerformanceMonitor
     {
         private static readonly Dictionary<string, ChartPerformanceData> _performanceData = [];
         private static readonly Dictionary<string, Stopwatch> _activeTimers = [];
+
+        /// <summary>
+        /// Gets whether performance monitoring is currently enabled.
+        /// </summary>
+        public static bool IsEnabled { get; private set; } = true;
 
         private class ChartPerformanceData
         {
@@ -34,14 +39,14 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Times any operation but only logs if it takes longer than threshold.
+        /// Times any operation.
         /// </summary>
-        public static IDisposable TimeOperation(string operationName, string context = "", int thresholdMs = 100)
+        public static IDisposable TimeOperation(string operationName, string context = "")
         {
             if (!IsEnabled) { return new NoOpTimer(); }
 
             string operationKey = $"{operationName}_{Guid.NewGuid():N}";
-            return new SilentTimer(operationKey, operationName, context, thresholdMs);
+            return new SilentTimer(operationKey, operationName, context);
         }
 
         /// <summary>
@@ -71,12 +76,6 @@ namespace Sales_Tracker.Charts
         {
             IsEnabled = enabled;
         }
-
-        /// <summary>
-        /// Gets whether performance monitoring is currently enabled.
-        /// </summary>
-        public static bool IsEnabled { get; private set; } = true;
-
         private static void UpdatePerformanceData(string operationName, long elapsedMs)
         {
             if (!_performanceData.TryGetValue(operationName, out ChartPerformanceData? data))
@@ -93,7 +92,7 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Timer for chart operations - always logs.
+        /// Timer for chart operations.
         /// </summary>
         private class ChartTimer : IDisposable
         {
@@ -111,7 +110,6 @@ namespace Sales_Tracker.Charts
                 _stopwatch = Stopwatch.StartNew();
                 _activeTimers[timerKey] = _stopwatch;
             }
-
             public void Dispose()
             {
                 if (!_disposed)
@@ -137,25 +135,22 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Timer for non-chart operations - only logs if over threshold.
+        /// Timer for non-chart operations.
         /// </summary>
         private class SilentTimer : IDisposable
         {
             private readonly Stopwatch _stopwatch;
             private readonly string _operationName;
             private readonly string _context;
-            private readonly int _thresholdMs;
             private bool _disposed = false;
 
-            public SilentTimer(string timerKey, string operationName, string context, int thresholdMs)
+            public SilentTimer(string timerKey, string operationName, string context)
             {
                 _operationName = operationName;
                 _context = context;
-                _thresholdMs = thresholdMs;
                 _stopwatch = Stopwatch.StartNew();
                 _activeTimers[timerKey] = _stopwatch;
             }
-
             public void Dispose()
             {
                 if (!_disposed)
@@ -163,19 +158,15 @@ namespace Sales_Tracker.Charts
                     _stopwatch.Stop();
                     long elapsedMs = _stopwatch.ElapsedMilliseconds;
 
-                    // Only log if over threshold
-                    if (elapsedMs >= _thresholdMs)
-                    {
-                        string displayName = string.IsNullOrEmpty(_context) ? _operationName : $"{_operationName} ({_context})";
-                        Log.Write(2, $"[PERF] {displayName}: {elapsedMs}ms");
-                        UpdatePerformanceData(displayName, elapsedMs);
-                    }
+                    // Log
+                    string displayName = string.IsNullOrEmpty(_context) ? _operationName : $"{_operationName} ({_context})";
+                    Log.Write(2, $"[PERF] {displayName}: {elapsedMs}ms");
+                    UpdatePerformanceData(displayName, elapsedMs);
 
                     _disposed = true;
                 }
             }
         }
-
         private class NoOpTimer : IDisposable
         {
             public void Dispose() { }
