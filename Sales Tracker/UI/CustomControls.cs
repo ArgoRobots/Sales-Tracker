@@ -447,7 +447,8 @@ namespace Sales_Tracker.UI
                 Size = new Size(225, 60),
                 TabIndex = 13,
                 Text = "Controls",
-                TextOffset = new Point(-10, 0)
+                TextOffset = new Point(-10, 0),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             ControlsDropDown_Button.Click += ControlsDropDownButton_Click;
         }
