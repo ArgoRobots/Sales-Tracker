@@ -19,7 +19,7 @@ namespace Sales_Tracker
         // Admin mode can only be enabled by directly setting it to true here
         public readonly static bool EnableAdminMode = false && DotEnv.IsRunningInVisualStudio();
 
-        // Proprties
+        // Properties
         private static MainMenu_Form _instance;
         public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
 
@@ -1037,7 +1037,7 @@ namespace Sales_Tracker
             Selected = SelectedOption.Analytics;
             ShowAnalyticsControls();
             CenterAndResizeControls();
-            LoadOrRefreshAnalyticsCharts(false);
+            LoadOrRefreshAnalyticsCharts();
 
             SelectButton(Analytics_Button);
         }
@@ -1310,26 +1310,26 @@ namespace Sales_Tracker
         // Search DataGridView methods
         public void RefreshDataGridViewAndCharts()
         {
-            ApplyFiltersToDataGridView();
-
             if (Selected == SelectedOption.Analytics)
             {
-                LoadOrRefreshAnalyticsCharts(false);
+                ApplyFiltersToDataGridView(Purchase_DataGridView);
+                ApplyFiltersToDataGridView(Sale_DataGridView);
+                LoadOrRefreshAnalyticsCharts();
             }
             else
             {
+                ApplyFiltersToDataGridView(SelectedDataGridView);
                 LoadOrRefreshMainCharts();
                 SelectedDataGridView.ClearSelection();
             }
         }
-        private void ApplyFiltersToDataGridView()
+        private void ApplyFiltersToDataGridView(DataGridView dataGridView)
         {
             if (SortFromDate != null && SortToDate != null)
             {
-                FilterDataGridViewByDateRange(SelectedDataGridView);
+                FilterDataGridViewByDateRange(dataGridView);
             }
 
-            // Get the effective search text, which might be AI-translated
             string displayedSearchText = Search_TextBox.Text.Trim();
             string effectiveSearchText = AISearchExtensions.GetEffectiveSearchQuery(displayedSearchText);
 
@@ -1337,14 +1337,12 @@ namespace Sales_Tracker
                 !string.IsNullOrEmpty(effectiveSearchText);
 
             bool hasVisibleRows = false;
-            int totalRows = SelectedDataGridView.Rows.Count;
-            int visibleRows = 0;
 
             if (filterExists)
             {
                 ShowShowingResultsForLabel();
 
-                foreach (DataGridViewRow row in SelectedDataGridView.Rows)
+                foreach (DataGridViewRow row in dataGridView.Rows)
                 {
                     DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
 
@@ -1354,31 +1352,23 @@ namespace Sales_Tracker
                     bool isVisibleBySearch = string.IsNullOrEmpty(effectiveSearchText) ||
                         SearchDataGridView.FilterRowByAdvancedSearch(row, effectiveSearchText);
 
-                    // Row is visible only if it matches both the date filter and the search filter
                     row.Visible = isVisibleByDate && isVisibleBySearch;
-
-                    if (row.Visible)
-                    {
-                        hasVisibleRows = true;
-                        visibleRows++;
-                    }
+                    hasVisibleRows |= row.Visible;
                 }
-
-                Log.Write(3, $"[CHART PERF] Filter applied: {visibleRows}/{totalRows} rows visible");
             }
             else
             {
                 HideShowingResultsForLabel();
 
-                foreach (DataGridViewRow row in SelectedDataGridView.Rows)
+                foreach (DataGridViewRow row in dataGridView.Rows)
                 {
                     row.Visible = true;
                     hasVisibleRows = true;
                 }
             }
 
-            DataGridViewManager.UpdateAlternatingRowColors(SelectedDataGridView);
-            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, SelectedDataGridView);
+            DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
+            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)
         {
@@ -2109,7 +2099,7 @@ namespace Sales_Tracker
                 control.Visible = false;
             }
         }
-        public void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts)
+        public void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts = false)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadAnalyticsCharts", "");
             bool isLineChart = LineGraph_ToggleSwitch.Checked;

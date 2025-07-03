@@ -366,7 +366,7 @@ namespace Sales_Tracker.Theme
 
             // Update charts and controls
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
-            MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts(false);
+            MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts();
 
             List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();
 
