@@ -612,6 +612,7 @@ namespace Sales_Tracker
             SortTheDataGridViewByDate();
             CenterAndResizeControls();
 
+            // Total_Panel only needs to be set once
             Total_Panel.Location = new Point(SelectedDataGridView.Left, SelectedDataGridView.Top + SelectedDataGridView.Height);
             Total_Panel.Width = SelectedDataGridView.Width;
         }
@@ -727,14 +728,6 @@ namespace Sales_Tracker
         {
             if (IsProgramLoading) { return; }
 
-            int height = ClientSize.Height switch
-            {
-                > 1400 => 500,
-                > 1000 => 400,
-                _ => 300
-            };
-            SetMainChartsHeight(height);
-
             byte spaceBetweenCharts = 20, chartWidthOffset = 35;
 
             // Handle dropdown menu for narrow windows
@@ -796,11 +789,16 @@ namespace Sales_Tracker
             }
             else
             {
+                int chartHeight = ClientSize.Height switch
+                {
+                    > 1400 => 500,
+                    > 1000 => 400,
+                    _ => 300
+                };
+                SetMainChartsHeight(chartHeight);
+
                 // Regular view layout for main charts
                 int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
-
-                // Get current chart height (already set above)
-                int chartHeight = _saleTotals_Chart.Height;
 
                 // Calculate X positions for charts
                 int leftX = (ClientSize.Width - 3 * chartWidth - spaceBetweenCharts * 2) / 2;
