@@ -7,7 +7,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.ImportSpreadsheet
 {
-    public partial class ImportSpreadsheet_Form : Form
+    public partial class ImportSpreadsheet_Form : BaseForm
     {
         // Properties
         private string _spreadsheetFilePath, _receiptsFolderPath;
@@ -390,7 +390,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     ExcelSheetManager.CommitImportSession(importSession);
                     importSuccessful = true;
 
-                    await MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
                     MainMenu_Form.Instance.UpdateTotalLabels();
                     LoadingPanel.HideLoadingScreen(this);
 
@@ -427,7 +427,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 // Refresh the UI if import was not successful
                 if (!importSuccessful)
                 {
-                    await MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
                     MainMenu_Form.Instance.UpdateTotalLabels();
                 }
             }

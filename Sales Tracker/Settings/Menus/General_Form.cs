@@ -6,7 +6,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
 {
-    public partial class General_Form : Form
+    public partial class General_Form : BaseForm
     {
         // Properties
         private static General_Form _instance;

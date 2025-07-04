@@ -4,7 +4,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.ImportSpreadsheet
 {
-    public partial class Tutorial_Form : Form
+    public partial class Tutorial_Form : BaseForm
     {
         // Init.
         public Tutorial_Form()

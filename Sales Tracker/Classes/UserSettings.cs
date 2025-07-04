@@ -223,7 +223,7 @@ namespace Sales_Tracker.Classes
                 // Update UI elements in single operation
                 TaskCompletionSource<bool> uiUpdateTcs = new();
 
-                MainMenu_Form.Instance.BeginInvoke(new Action(async () =>
+                MainMenu_Form.Instance.BeginInvoke(new Action(() =>
                 {
                     try
                     {
@@ -233,7 +233,7 @@ namespace Sales_Tracker.Classes
 
                         // Update totals and charts
                         MainMenu_Form.Instance.UpdateTotalLabels();
-                        await MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+                        MainMenu_Form.Instance.LoadOrRefreshMainCharts();
                         MainMenu_Form.Instance.UpdateChartCurrencyFormats();
 
                         uiUpdateTcs.SetResult(true);

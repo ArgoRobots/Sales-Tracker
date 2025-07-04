@@ -273,7 +273,7 @@ namespace Sales_Tracker.Classes
             // Reset controls
             MainMenu_Form.Instance.SetCompanyLabel();
             MainMenu_Form.Instance.UpdateTotalLabels();
-            await MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+            MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.HideShowingResultsForLabel();
             MainMenu_Form.Instance.UpdateMainMenuFormText();
 

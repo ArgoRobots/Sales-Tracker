@@ -1,9 +1,10 @@
-﻿using Sales_Tracker.Theme;
+﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Passwords
 {
-    public partial class PasswordManager_Form : Form
+    public partial class PasswordManager_Form : BaseForm
     {
         // Init.
         public PasswordManager_Form()

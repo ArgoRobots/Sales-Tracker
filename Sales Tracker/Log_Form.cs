@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Sales_Tracker
 {
-    public partial class Log_Form : Form
+    public partial class Log_Form : BaseForm
     {
         // Properties
         private static Log_Form _instance;

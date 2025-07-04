@@ -7,7 +7,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
-    public partial class AddPurchase_Form : Form
+    public partial class AddPurchase_Form : BaseForm
     {
         // Getter
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];

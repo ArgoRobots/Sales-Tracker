@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Sales_Tracker
 {
-    public partial class Export_Form : Form
+    public partial class Export_Form : BaseForm
     {
         // Properties
         private int _originalDirectoryLabelY, _originalDirectoryTextBoxY, _originalWarningDirLabelY, _originalWarningDirPictureBoxY;

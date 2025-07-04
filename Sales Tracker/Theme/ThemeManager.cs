@@ -354,7 +354,7 @@ namespace Sales_Tracker.Theme
         {
             button.Image = IsDarkTheme() ? Resources.RightArrowWhite : Resources.RightArrowBlack;
         }
-        public static async void UpdateOtherControls()
+        public static void UpdateOtherControls()
         {
             if (MainMenu_Form.Instance == null) { return; }
 
@@ -365,7 +365,7 @@ namespace Sales_Tracker.Theme
             }
 
             // Update charts and controls
-            await MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+            MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.LoadOrRefreshAnalyticsCharts();
 
             List<Guna2Panel> listOfPanels = MainMenu_Form.GetMenus();

@@ -7,7 +7,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
-    public partial class CustomMessage_Form : Form
+    public partial class CustomMessage_Form : BaseForm
     {
         // Getter
         public CustomMessageBoxResult Result { get; private set; }

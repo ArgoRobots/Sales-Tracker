@@ -7,7 +7,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
 {
-    public partial class Security_Form : Form
+    public partial class Security_Form : BaseForm
     {
         // Properties
         private static Security_Form _instance;

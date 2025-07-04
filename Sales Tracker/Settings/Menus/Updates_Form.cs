@@ -1,9 +1,10 @@
-﻿using Sales_Tracker.Theme;
+﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
 {
-    public partial class Updates_Form : Form
+    public partial class Updates_Form : BaseForm
     {
         // Properties
         private static Updates_Form _instance;

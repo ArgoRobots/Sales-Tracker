@@ -1,8 +1,9 @@
-﻿using Sales_Tracker.Theme;
+﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ImportSpreadsheet
 {
-    public partial class Setup_Form : Form
+    public partial class Setup_Form : BaseForm
     {
         // Properties
         private static Setup_Form _instance;

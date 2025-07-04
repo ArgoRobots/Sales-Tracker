@@ -6,7 +6,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
-    public partial class Upgrade_Form : Form
+    public partial class Upgrade_Form : BaseForm
     {
         // Init.
         public Upgrade_Form()

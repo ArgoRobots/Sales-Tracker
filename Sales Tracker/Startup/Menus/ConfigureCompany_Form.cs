@@ -8,7 +8,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup.Menus
 {
-    public partial class ConfigureCompany_Form : Form
+    public partial class ConfigureCompany_Form : BaseForm
     {
         // Properties
         private static Action _validationCallback;

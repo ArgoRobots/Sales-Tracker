@@ -6,7 +6,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
-    public partial class Accountants_Form : Form
+    public partial class Accountants_Form : BaseForm
     {
         // Properties
         private static Accountants_Form _instance;

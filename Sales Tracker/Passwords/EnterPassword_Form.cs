@@ -6,7 +6,7 @@ using Windows.Security.Credentials;
 
 namespace Sales_Tracker.Passwords
 {
-    public partial class EnterPassword_Form : Form
+    public partial class EnterPassword_Form : BaseForm
     {
         // Init.
         public EnterPassword_Form() : this(true) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()

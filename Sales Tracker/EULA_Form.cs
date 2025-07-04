@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Sales_Tracker
 {
-    public partial class EULA_Form : Form
+    public partial class EULA_Form : BaseForm
     {
         private bool _userActionTaken = false;
 

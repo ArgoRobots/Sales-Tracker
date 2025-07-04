@@ -6,7 +6,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
-    public partial class Products_Form : Form
+    public partial class Products_Form : BaseForm
     {
         private static Products_Form _instance;
         private static bool _isProgramLoading;

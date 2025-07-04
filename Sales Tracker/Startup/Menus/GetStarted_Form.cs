@@ -9,7 +9,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Startup.Menus
 {
-    public partial class GetStarted_Form : Form
+    public partial class GetStarted_Form : BaseForm
     {
         // Properties
         private static GetStarted_Form _instance;

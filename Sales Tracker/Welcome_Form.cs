@@ -5,7 +5,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker
 {
-    public partial class Welcome_Form : Form
+    public partial class Welcome_Form : BaseForm
     {
         // Init.
         public Welcome_Form()

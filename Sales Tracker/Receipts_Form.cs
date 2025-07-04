@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace Sales_Tracker
 {
-    public partial class Receipts_Form : Form
+    public partial class Receipts_Form : BaseForm
     {
         // Properties
         private static Receipts_Form _instance;

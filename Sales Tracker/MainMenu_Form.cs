@@ -14,7 +14,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
 {
-    public partial class MainMenu_Form : Form
+    public partial class MainMenu_Form : BaseForm
     {
         // Admin mode can only be enabled by directly setting it to true here
         public readonly static bool EnableAdminMode = false && DotEnv.IsRunningInVisualStudio();

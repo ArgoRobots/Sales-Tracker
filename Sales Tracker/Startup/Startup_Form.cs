@@ -1,9 +1,10 @@
-﻿using Sales_Tracker.Startup.Menus;
+﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.Startup
 {
-    public partial class Startup_Form : Form
+    public partial class Startup_Form : BaseForm
     {
         // Properties
         private static Startup_Form _instance;

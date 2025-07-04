@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Sales_Tracker
 {
-    public partial class ItemsInTransaction_Form : Form
+    public partial class ItemsInTransaction_Form : BaseForm
     {
         // Properties
         private readonly MainMenu_Form.SelectedOption _oldOption;
