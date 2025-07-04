@@ -109,7 +109,8 @@ namespace Sales_Tracker
             {
                 Anchor = AnchorStyles.Top,
                 Size = new Size(350, 50),
-                PlaceholderText = "Enter license"
+                PlaceholderText = "Enter license",
+                ShortcutsEnabled = false
             };
             TextBoxManager.Attach(license_TextBox);
             EnterKey_Panel.Controls.Add(license_TextBox);
