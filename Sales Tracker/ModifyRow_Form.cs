@@ -1098,7 +1098,7 @@ namespace Sales_Tracker
         /// <summary>
         /// When changes are made to Categories_Form, Accountants_Form, etc., the changes are reflected in MainMenu_Form's lists and DataGridViews.
         /// </summary>
-        private void SaveInListsAndUpdateMainMenuForm()
+        private async void SaveInListsAndUpdateMainMenuForm()
         {
             if (_selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
@@ -1127,7 +1127,7 @@ namespace Sales_Tracker
             if (hasChanges && _selectedTag != MainMenu_Form.SelectedOption.ItemsInPurchase.ToString())
             {
                 MainMenu_Form.Instance.UpdateTotalLabels();
-                MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+                await MainMenu_Form.Instance.LoadOrRefreshMainCharts();
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.SelectedOption.Purchases);
                 MainMenu_Form.SaveDataGridViewToFileAsJson(MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.SelectedOption.Sales);
             }

@@ -220,7 +220,7 @@ namespace Sales_Tracker
                 LanguageManager.UpdateLanguageForControl(_saleDistribution_Chart);
             }
 
-            // Always load profits chart (it combines both)
+            // Always load profits chart
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
             Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
             LanguageManager.UpdateLanguageForControl(Profits_Chart);
@@ -714,7 +714,6 @@ namespace Sales_Tracker
                 }
             }
 
-            ChartPerformanceMonitor.LogPerformanceStatistics();
             AnonymousDataManager.TrackSessionEnd();
             ThemeChangeDetector.StopListeningForThemeChanges();
             Log.SaveLogs();

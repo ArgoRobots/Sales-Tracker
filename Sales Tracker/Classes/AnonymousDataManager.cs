@@ -246,7 +246,7 @@ namespace Sales_Tracker.Classes
                 if (response.IsSuccessStatusCode)
                 {
                     string result = await response.Content.ReadAsStringAsync();
-                    Log.Write(1, "Successfully uploaded anonymous data: " + result);
+                    Log.Write(1, "Successfully uploaded anonymous data");
                 }
                 else
                 {

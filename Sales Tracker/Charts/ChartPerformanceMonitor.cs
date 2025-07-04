@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.Charts.WinForms;
+using Sales_Tracker.Classes;
 using System.Diagnostics;
 
 namespace Sales_Tracker.Charts
@@ -8,24 +9,12 @@ namespace Sales_Tracker.Charts
     /// </summary>
     public static class ChartPerformanceMonitor
     {
-        private static readonly Dictionary<string, ChartPerformanceData> _performanceData = [];
         private static readonly Dictionary<string, Stopwatch> _activeTimers = [];
 
         /// <summary>
         /// Gets whether performance monitoring is currently enabled.
         /// </summary>
         public static bool IsEnabled { get; private set; } = true;
-
-        private class ChartPerformanceData
-        {
-            public string OperationName { get; set; }
-            public long TotalExecutions { get; set; }
-            public long TotalMilliseconds { get; set; }
-            public long MinMilliseconds { get; set; } = long.MaxValue;
-            public long MaxMilliseconds { get; set; }
-            public double AverageMilliseconds => TotalExecutions > 0 ? (double)TotalMilliseconds / TotalExecutions : 0;
-            public DateTime LastExecution { get; set; }
-        }
 
         /// <summary>
         /// Enables or disables performance monitoring.
@@ -34,21 +23,13 @@ namespace Sales_Tracker.Charts
         {
             IsEnabled = enabled;
         }
-
-        /// <summary>
-        /// Times a chart operation and logs only if it's a main chart operation.
-        /// </summary>
         public static IDisposable TimeChartOperation(string chartName, string chartType = "", int recordCount = 0)
         {
             if (!IsEnabled) { return new NoOpTimer(); }
 
             string operationKey = $"{chartType}_{chartName}_{Guid.NewGuid():N}";
-            return new ChartTimer(operationKey, chartName, chartType, recordCount);
+            return new ChartTimer(operationKey, chartType, recordCount);
         }
-
-        /// <summary>
-        /// Times any operation.
-        /// </summary>
         public static IDisposable TimeOperation(string operationName, string context = "")
         {
             if (!IsEnabled) { return new NoOpTimer(); }
@@ -58,53 +39,17 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Logs performance statistics for all monitored chart operations.
-        /// </summary>
-        public static void LogPerformanceStatistics()
-        {
-            if (!IsEnabled || _performanceData.Count == 0) { return; }
-
-            Log.Write(1, "=== CHART PERFORMANCE SUMMARY ===");
-
-            List<ChartPerformanceData> sortedData = _performanceData.Values
-                .Where(d => d.OperationName.Contains("Chart"))
-                .OrderByDescending(d => d.AverageMilliseconds)
-                .ToList();
-
-            foreach (ChartPerformanceData data in sortedData)
-            {
-                Log.Write(1, $"[CHART PERF] {data.OperationName}: {data.AverageMilliseconds:F0}ms avg ({data.TotalExecutions} times, max: {data.MaxMilliseconds}ms)");
-            }
-        }
-        private static void UpdatePerformanceData(string operationName, long elapsedMs)
-        {
-            if (!_performanceData.TryGetValue(operationName, out ChartPerformanceData? data))
-            {
-                data = new ChartPerformanceData { OperationName = operationName };
-                _performanceData[operationName] = data;
-            }
-
-            data.TotalExecutions++;
-            data.TotalMilliseconds += elapsedMs;
-            data.MinMilliseconds = Math.Min(data.MinMilliseconds, elapsedMs);
-            data.MaxMilliseconds = Math.Max(data.MaxMilliseconds, elapsedMs);
-            data.LastExecution = DateTime.Now;
-        }
-
-        /// <summary>
         /// Timer for chart operations.
         /// </summary>
         private class ChartTimer : IDisposable
         {
             private readonly Stopwatch _stopwatch;
-            private readonly string _chartName;
             private readonly string _chartType;
             private readonly int _recordCount;
             private bool _disposed = false;
 
-            public ChartTimer(string timerKey, string chartName, string chartType, int recordCount)
+            public ChartTimer(string timerKey, string chartType, int recordCount)
             {
-                _chartName = chartName;
                 _chartType = chartType;
                 _recordCount = recordCount;
                 _stopwatch = Stopwatch.StartNew();
@@ -117,10 +62,10 @@ namespace Sales_Tracker.Charts
                     _stopwatch.Stop();
                     long elapsedMs = _stopwatch.ElapsedMilliseconds;
 
-                    string displayName = string.IsNullOrEmpty(_chartType) ? _chartName : $"{_chartType} ({_chartName})";
+                    string displayName = string.IsNullOrEmpty(_chartType) ? "Chart" : _chartType;
 
-                    // Always log chart operations
-                    string logMessage = $"[CHART] {displayName}: {elapsedMs}ms";
+                    // Log chart operations
+                    string logMessage = $"[CHART] {displayName}: {elapsedMs} ms";
                     if (_recordCount > 0)
                     {
                         logMessage += $" ({_recordCount} records)";
@@ -128,7 +73,6 @@ namespace Sales_Tracker.Charts
 
                     Log.Write(1, logMessage);
 
-                    UpdatePerformanceData(displayName, elapsedMs);
                     _disposed = true;
                 }
             }
@@ -140,8 +84,7 @@ namespace Sales_Tracker.Charts
         private class SilentTimer : IDisposable
         {
             private readonly Stopwatch _stopwatch;
-            private readonly string _operationName;
-            private readonly string _context;
+            private readonly string _operationName, _context;
             private bool _disposed = false;
 
             public SilentTimer(string timerKey, string operationName, string context)
@@ -158,10 +101,8 @@ namespace Sales_Tracker.Charts
                     _stopwatch.Stop();
                     long elapsedMs = _stopwatch.ElapsedMilliseconds;
 
-                    // Log
                     string displayName = string.IsNullOrEmpty(_context) ? _operationName : $"{_operationName} ({_context})";
-                    Log.Write(1, $"[PERF] {displayName}: {elapsedMs}ms");
-                    UpdatePerformanceData(displayName, elapsedMs);
+                    Log.Write(1, $"[PERF] {displayName}: {elapsedMs} ms");
 
                     _disposed = true;
                 }
@@ -170,6 +111,30 @@ namespace Sales_Tracker.Charts
         private class NoOpTimer : IDisposable
         {
             public void Dispose() { }
+        }
+    }
+
+    public static class ChartUpdateManager
+    {
+        public static void UpdateChartWithRendering(GunaChart chart, Action<GunaChart> updateAction = null)
+        {
+            Stopwatch renderTimer = Stopwatch.StartNew();
+            string chartName = chart.Name;
+
+            // Execute the update action if provided
+            updateAction?.Invoke(chart);
+
+            // Track when rendering actually completes
+            void OnApplicationIdle(object sender, EventArgs e)
+            {
+                Application.Idle -= OnApplicationIdle;
+                renderTimer.Stop();
+                Log.Write(1, $"[CHART RENDER] {chartName}: {renderTimer.ElapsedMilliseconds} ms");
+            }
+
+            Application.Idle += OnApplicationIdle;
+            chart.Update();
+            Application.DoEvents();
         }
     }
 }

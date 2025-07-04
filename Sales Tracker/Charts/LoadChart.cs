@@ -979,14 +979,18 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            chart.Datasets.Clear();
-            chart.Datasets.Add(expensesDataset);
-            chart.Datasets.Add(salesDataset);
+            ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+            {
+                chart.Datasets.Clear();
+                chart.Datasets.Add(expensesDataset);
+                chart.Datasets.Add(salesDataset);
 
-            ApplyCurrencyFormatToDataset(expensesDataset);
-            ApplyCurrencyFormatToDataset(salesDataset);
+                ApplyCurrencyFormatToDataset(expensesDataset);
+                ApplyCurrencyFormatToDataset(salesDataset);
 
-            chart.Update();
+                chart.Update();
+                Application.DoEvents();
+            });
         }
         public static SalesExpensesChartData LoadAverageTransactionValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -1139,14 +1143,18 @@ namespace Sales_Tracker.Charts
                     }
                 }
 
-                chart.Datasets.Clear();
-                chart.Datasets.Add(purchasesDataset);
-                chart.Datasets.Add(salesDataset);
+                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+                {
+                    chart.Datasets.Clear();
+                    chart.Datasets.Add(purchasesDataset);
+                    chart.Datasets.Add(salesDataset);
 
-                ApplyCurrencyFormatToDataset(purchasesDataset);
-                ApplyCurrencyFormatToDataset(salesDataset);
+                    ApplyCurrencyFormatToDataset(purchasesDataset);
+                    ApplyCurrencyFormatToDataset(salesDataset);
 
-                chart.Update();
+                    chart.Update();
+                    Application.DoEvents();
+                });
             }
 
             return new SalesExpensesChartData(avgPurchasesByDate, avgSalesByDate, sortedDates);
@@ -1296,11 +1304,15 @@ namespace Sales_Tracker.Charts
                     }
                 }
 
-                chart.Datasets.Clear();
-                chart.Datasets.Add(purchasesDataset);
-                chart.Datasets.Add(salesDataset);
+                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+                {
+                    chart.Datasets.Clear();
+                    chart.Datasets.Add(purchasesDataset);
+                    chart.Datasets.Add(salesDataset);
 
-                chart.Update();
+                    chart.Update();
+                    Application.DoEvents();
+                });
             }
 
             return new SalesExpensesChartData(purchasesByDate, salesByDate, sortedDates);
@@ -1465,14 +1477,18 @@ namespace Sales_Tracker.Charts
                     }
                 }
 
-                chart.Datasets.Clear();
-                chart.Datasets.Add(purchasesDataset);
-                chart.Datasets.Add(salesDataset);
+                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+                {
+                    chart.Datasets.Clear();
+                    chart.Datasets.Add(purchasesDataset);
+                    chart.Datasets.Add(salesDataset);
 
-                ApplyCurrencyFormatToDataset(purchasesDataset);
-                ApplyCurrencyFormatToDataset(salesDataset);
+                    ApplyCurrencyFormatToDataset(purchasesDataset);
+                    ApplyCurrencyFormatToDataset(salesDataset);
 
-                chart.Update();
+                    chart.Update();
+                    Application.DoEvents();
+                });
             }
 
             // Calculate overall averages for the return value
@@ -1643,15 +1659,19 @@ namespace Sales_Tracker.Charts
                     revenueDataset.DataPoints.Add(date, revenueValue);
                 }
 
-                chart.Datasets.Clear();
-                chart.Datasets.Add(expenseDataset);
-                chart.Datasets.Add(revenueDataset);
+                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+                {
+                    chart.Datasets.Clear();
+                    chart.Datasets.Add(expenseDataset);
+                    chart.Datasets.Add(revenueDataset);
 
-                // Set Y-axis format to show percentage
-                revenueDataset.YFormat = "{0:0.0}%";
-                expenseDataset.YFormat = "{0:0.0}%";
+                    // Set Y-axis format to show percentage
+                    revenueDataset.YFormat = "{0:0.0}%";
+                    expenseDataset.YFormat = "{0:0.0}%";
 
-                chart.Update();
+                    chart.Update();
+                    Application.DoEvents();
+                });
             }
 
             return new SalesExpensesChartData(expenseGrowth, revenueGrowth, sortedDates);
@@ -1822,11 +1842,13 @@ namespace Sales_Tracker.Charts
         {
             chart.Datasets.Clear();
             chart.Datasets.Add(dataset);
+
             if (formatCurrency)
             {
                 ApplyCurrencyFormatToDataset(dataset);
             }
-            chart.Update();
+
+            ChartUpdateManager.UpdateChartWithRendering(chart);
         }
         public static void ApplyCurrencyFormatToDataset(object dataset)
         {

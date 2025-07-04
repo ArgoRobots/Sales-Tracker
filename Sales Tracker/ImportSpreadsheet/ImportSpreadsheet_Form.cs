@@ -390,7 +390,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                     ExcelSheetManager.CommitImportSession(importSession);
                     importSuccessful = true;
 
-                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                    await MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
                     MainMenu_Form.Instance.UpdateTotalLabels();
                     LoadingPanel.HideLoadingScreen(this);
 
@@ -427,7 +427,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 // Refresh the UI if import was not successful
                 if (!importSuccessful)
                 {
-                    MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                    await MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
                     MainMenu_Form.Instance.UpdateTotalLabels();
                 }
             }

@@ -151,12 +151,12 @@ namespace Sales_Tracker.UI
                 _removedRow = null;
             }
         }
-        public static void DataGridViewRowChanged(Guna2DataGridView dataGridView, MainMenu_Form.SelectedOption selected)
+        public static async void DataGridViewRowChanged(Guna2DataGridView dataGridView, MainMenu_Form.SelectedOption selected)
         {
             if (selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
                 MainMenu_Form.Instance.UpdateTotalLabels();
-                MainMenu_Form.Instance.LoadOrRefreshMainCharts();
+                await MainMenu_Form.Instance.LoadOrRefreshMainCharts();
                 MainMenu_Form.SaveDataGridViewToFileAsJson(dataGridView, selected);
             }
             else if (selected is MainMenu_Form.SelectedOption.CategoryPurchases or MainMenu_Form.SelectedOption.CategorySales or
@@ -752,7 +752,7 @@ namespace Sales_Tracker.UI
 
             if (MainMenu_Form.Instance.Selected is MainMenu_Form.SelectedOption.Purchases or MainMenu_Form.SelectedOption.Sales)
             {
-                MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+                MainMenu_Form.Instance.RefreshDataGridViewAndCharts().GetAwaiter().GetResult();
             }
 
             // Calculate the middle index
