@@ -118,21 +118,25 @@ namespace Sales_Tracker.Charts
     {
         public static void UpdateChartWithRendering(GunaChart chart, Action<GunaChart> updateAction = null)
         {
-            Stopwatch renderTimer = Stopwatch.StartNew();
-            string chartName = chart.Name;
-
             // Execute the update action if provided
             updateAction?.Invoke(chart);
 
-            // Track when rendering actually completes
-            void OnApplicationIdle(object sender, EventArgs e)
+            if (ChartPerformanceMonitor.IsEnabled)
             {
-                Application.Idle -= OnApplicationIdle;
-                renderTimer.Stop();
-                Log.Write(1, $"[CHART RENDER] {chartName}: {renderTimer.ElapsedMilliseconds} ms");
+                Stopwatch renderTimer = Stopwatch.StartNew();
+                string chartName = chart.Name;
+
+                // Track when rendering actually completes
+                void OnApplicationIdle(object sender, EventArgs e)
+                {
+                    Application.Idle -= OnApplicationIdle;
+                    renderTimer.Stop();
+                    Log.Write(1, $"[CHART RENDER] {chartName}: {renderTimer.ElapsedMilliseconds} ms");
+                }
+
+                Application.Idle += OnApplicationIdle;
             }
 
-            Application.Idle += OnApplicationIdle;
             chart.Update();
             Application.DoEvents();
         }
