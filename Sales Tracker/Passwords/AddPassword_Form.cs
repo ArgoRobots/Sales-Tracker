@@ -17,11 +17,6 @@ namespace Sales_Tracker.Passwords
             AlignValidationLabels();
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
-
-            // Center the label
-            PasswordsMatch_Label.Width = ClientSize.Width;
-            PasswordsMatch_Label.Left = 0;
-
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AlignValidationLabels()
@@ -87,6 +82,7 @@ namespace Sales_Tracker.Passwords
         private void AddPassword_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
+            Password_TextBox.Focus();
         }
 
         // Event handlers

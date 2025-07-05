@@ -220,6 +220,7 @@
             // 
             // PasswordEye_Button
             // 
+            PasswordEye_Button.Anchor = AnchorStyles.Top;
             PasswordEye_Button.DisabledState.BorderColor = Color.DarkGray;
             PasswordEye_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             PasswordEye_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -240,6 +241,7 @@
             // 
             // ConfirmPasswordEye_Button
             // 
+            ConfirmPasswordEye_Button.Anchor = AnchorStyles.Top;
             ConfirmPasswordEye_Button.DisabledState.BorderColor = Color.DarkGray;
             ConfirmPasswordEye_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             ConfirmPasswordEye_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);

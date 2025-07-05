@@ -30,6 +30,7 @@ namespace Sales_Tracker.Passwords
         private void EnterPassword_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
+            Password_TextBox.Focus();
         }
 
         // Event handlers
