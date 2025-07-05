@@ -294,7 +294,7 @@ namespace Sales_Tracker.Charts
 
                 if (canUpdateChart)
                 {
-                    dataset.FillColors = GetChartColors();
+                    dataset.FillColors = _chartColors;
                     UpdateChart(chart, dataset, true);
                 }
             }
@@ -520,7 +520,7 @@ namespace Sales_Tracker.Charts
 
                 if (canUpdateChart)
                 {
-                    dataset.FillColors = GetChartColors();
+                    dataset.FillColors = _chartColors;
                     UpdateChart(chart, dataset, false);
                 }
             }
@@ -623,7 +623,7 @@ namespace Sales_Tracker.Charts
 
                 if (canUpdateChart)
                 {
-                    dataset.FillColors = GetChartColors();
+                    dataset.FillColors = _chartColors;
                     UpdateChart(chart, dataset, false);
                 }
             }
@@ -726,7 +726,7 @@ namespace Sales_Tracker.Charts
 
                 if (canUpdateChart)
                 {
-                    dataset.FillColors = GetChartColors();
+                    dataset.FillColors = _chartColors;
                     UpdateChart(chart, dataset, false);
                 }
             }
@@ -819,7 +819,7 @@ namespace Sales_Tracker.Charts
 
                 if (canUpdateChart)
                 {
-                    dataset.FillColors = GetChartColors();
+                    dataset.FillColors = _chartColors;
                     UpdateChart(chart, dataset, false);
                 }
             }
@@ -1717,28 +1717,25 @@ namespace Sales_Tracker.Charts
             dataset.PointBorderColors = [color];
             dataset.BorderWidth = 5;
         }
-        private static ColorCollection GetChartColors()
-        {
-            return
-            [
-                CustomColors.PastelBlue,
-                CustomColors.PastelGreen,
-                Color.FromArgb(102, 204, 153),  // Muted teal
-                Color.FromArgb(204, 102, 153),  // Soft pink
-                Color.FromArgb(153, 102, 204),  // Soft purple
-                Color.FromArgb(204, 153, 102),  // Soft orange
-                Color.FromArgb(102, 178, 178),  // Sea green
-                Color.FromArgb(204, 102, 102),  // Soft red
-                Color.FromArgb(153, 153, 204),  // Muted lavender
-                Color.FromArgb(153, 204, 153),  // Soft sage
-                Color.FromArgb(204, 204, 153),  // Muted gold
-                Color.FromArgb(178, 102, 178),  // Soft magenta
-                Color.FromArgb(102, 127, 204),  // Ocean blue
-                Color.FromArgb(204, 153, 204),  // Soft lilac
-                Color.FromArgb(153, 153, 153),  // Muted gray
-                Color.FromArgb(178, 178, 102),  // Olive gold
-            ];
-        }
+        private static readonly ColorCollection _chartColors =
+        [
+            CustomColors.PastelBlue,
+            CustomColors.PastelGreen,
+            Color.FromArgb(102, 204, 153),  // Muted teal
+            Color.FromArgb(204, 102, 153),  // Soft pink
+            Color.FromArgb(153, 102, 204),  // Soft purple
+            Color.FromArgb(204, 153, 102),  // Soft orange
+            Color.FromArgb(102, 178, 178),  // Sea green
+            Color.FromArgb(204, 102, 102),  // Soft red
+            Color.FromArgb(153, 153, 204),  // Muted lavender
+            Color.FromArgb(153, 204, 153),  // Soft sage
+            Color.FromArgb(204, 204, 153),  // Muted gold
+            Color.FromArgb(178, 102, 178),  // Soft magenta
+            Color.FromArgb(102, 127, 204),  // Ocean blue
+            Color.FromArgb(204, 153, 204),  // Soft lilac
+            Color.FromArgb(153, 153, 153),  // Muted gray
+            Color.FromArgb(178, 178, 102),  // Olive gold
+        ];
         private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
         {
             // Sort the dictionary by date keys
