@@ -23,12 +23,12 @@ namespace Sales_Tracker.Charts
         {
             IsEnabled = enabled;
         }
-        public static IDisposable TimeChartOperation(string chartName, string chartType = "", int recordCount = 0)
+        public static IDisposable TimeChartOperation(string chartName, int recordCount = 0)
         {
             if (!IsEnabled) { return new NoOpTimer(); }
 
-            string operationKey = $"{chartType}_{chartName}_{Guid.NewGuid():N}";
-            return new ChartTimer(operationKey, chartType, recordCount);
+            string operationKey = $"{chartName}_{Guid.NewGuid():N}";
+            return new ChartTimer(operationKey, chartName, recordCount);
         }
         public static IDisposable TimeOperation(string operationName, string context = "")
         {
@@ -44,13 +44,13 @@ namespace Sales_Tracker.Charts
         private class ChartTimer : IDisposable
         {
             private readonly Stopwatch _stopwatch;
-            private readonly string _chartType;
+            private readonly string _chartName;
             private readonly int _recordCount;
             private bool _disposed = false;
 
-            public ChartTimer(string timerKey, string chartType, int recordCount)
+            public ChartTimer(string timerKey, string chartName, int recordCount)
             {
-                _chartType = chartType;
+                _chartName = chartName;
                 _recordCount = recordCount;
                 _stopwatch = Stopwatch.StartNew();
                 _activeTimers[timerKey] = _stopwatch;
@@ -62,7 +62,7 @@ namespace Sales_Tracker.Charts
                     _stopwatch.Stop();
                     long elapsedMs = _stopwatch.ElapsedMilliseconds;
 
-                    string displayName = string.IsNullOrEmpty(_chartType) ? "Chart" : _chartType;
+                    string displayName = string.IsNullOrEmpty(_chartName) ? "Chart" : _chartName;
 
                     // Log chart operations
                     string logMessage = $"[CHART] {displayName}: {elapsedMs} ms";
