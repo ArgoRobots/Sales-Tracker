@@ -2010,7 +2010,8 @@ namespace Sales_Tracker
             IncludeFreeShipping_CheckBox = new Guna2CustomCheckBox
             {
                 Size = new Size(20, 20),
-                Checked = Properties.Settings.Default.IncludeFreeShipping
+                Checked = Properties.Settings.Default.IncludeFreeShipping,
+                Animated = true
             };
             IncludeFreeShipping_CheckBox.CheckedChanged += IncludeFreeShippingCheckBox_CheckedChanged;
             Controls.Add(IncludeFreeShipping_CheckBox);
