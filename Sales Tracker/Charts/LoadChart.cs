@@ -109,15 +109,15 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total))
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
                 {
                     continue;
                 }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.TotalItems.ToString()].Value);
-                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                int quantity = Convert.ToInt32(row.Cells[ReadOnlyVariables.TotalItems_column].Value);
+                double shipping = Convert.ToDouble(row.Cells[ReadOnlyVariables.Shipping_column].Value);
+                double tax = Convert.ToDouble(row.Cells[ReadOnlyVariables.Tax_column].Value);
                 grandTotal += total;
                 string formattedDate = date.ToString(dateFormat);
 
@@ -188,16 +188,16 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double cost))
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double cost))
                 {
                     continue;
                 }
 
-                double shipping = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value);
-                double tax = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Tax.ToString()].Value);
-                double fee = Convert.ToDouble(row.Cells[MainMenu_Form.Column.Fee.ToString()].Value);
-                int quantity = Convert.ToInt32(row.Cells[MainMenu_Form.Column.TotalItems.ToString()].Value);
-                string category = row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString();
+                double shipping = Convert.ToDouble(row.Cells[ReadOnlyVariables.Shipping_column].Value);
+                double tax = Convert.ToDouble(row.Cells[ReadOnlyVariables.Tax_column].Value);
+                double fee = Convert.ToDouble(row.Cells[ReadOnlyVariables.Fee_column].Value);
+                int quantity = Convert.ToInt32(row.Cells[ReadOnlyVariables.TotalItems_column].Value);
+                string category = row.Cells[ReadOnlyVariables.Category_column].Value.ToString();
 
                 totalTax += tax;
                 totalShipping += shipping;
@@ -352,12 +352,12 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total))
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
                 {
                     continue;
                 }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
 
                 if (profitByDate.ContainsKey(formattedDate))
@@ -375,12 +375,12 @@ namespace Sales_Tracker.Charts
             {
                 if (!row.Visible) { continue; }
 
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total))
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
                 {
                     continue;
                 }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
 
                 if (profitByDate.TryGetValue(formattedDate, out double value))
@@ -477,7 +477,7 @@ namespace Sales_Tracker.Charts
                 else
                 {
                     // Process the row normally if Tag is not set
-                    string country = row.Cells[MainMenu_Form.Column.Country.ToString()].Value.ToString();
+                    string country = row.Cells[ReadOnlyVariables.Country_column].Value.ToString();
                     if (countryCounts.TryGetValue(country, out double value))
                     {
                         countryCounts[country] = ++value;
@@ -580,7 +580,7 @@ namespace Sales_Tracker.Charts
                 else
                 {
                     // Process the row normally if Tag is not set
-                    string company = row.Cells[MainMenu_Form.Column.Company.ToString()].Value.ToString();
+                    string company = row.Cells[ReadOnlyVariables.Company_column].Value.ToString();
                     if (companyCounts.TryGetValue(company, out double value))
                     {
                         companyCounts[company] = ++value;
@@ -683,7 +683,7 @@ namespace Sales_Tracker.Charts
                 else
                 {
                     // Process the row normally if Tag is not set
-                    string country = row.Cells[MainMenu_Form.Column.Country.ToString()].Value.ToString();
+                    string country = row.Cells[ReadOnlyVariables.Country_column].Value.ToString();
                     if (countryCounts.TryGetValue(country, out double value))
                     {
                         countryCounts[country] = ++value;
@@ -772,7 +772,7 @@ namespace Sales_Tracker.Charts
                     if (!row.Visible) { continue; }
                     anyRowsVisible = true;
 
-                    string accountant = row.Cells[MainMenu_Form.Column.Accountant.ToString()].Value.ToString();
+                    string accountant = row.Cells[ReadOnlyVariables.Accountant_column].Value.ToString();
 
                     if (!string.IsNullOrEmpty(accountant))
                     {
@@ -882,9 +882,9 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -902,9 +902,9 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1048,9 +1048,9 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1069,9 +1069,9 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1218,7 +1218,7 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1238,7 +1238,7 @@ namespace Sales_Tracker.Charts
                 if (!row.Visible) { continue; }
                 anyRowsVisible = true;
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1373,11 +1373,11 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Shipping.ToString()], out double shipping)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) { continue; }
                 // Only skip free shipping if includeZeroShipping is false
                 if (shipping == 0 && !includeZeroShipping) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1396,11 +1396,11 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Shipping.ToString()], out double shipping)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) { continue; }
                 // Only skip free shipping if includeZeroShipping is false
                 if (shipping == 0 && !includeZeroShipping) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1544,9 +1544,9 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1564,9 +1564,9 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!row.Visible) { continue; }
-                if (!TryGetValue(row.Cells[MainMenu_Form.Column.Total.ToString()], out double total)) { continue; }
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
-                DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
                 allDates.Add(formattedDate);
 
@@ -1828,9 +1828,9 @@ namespace Sales_Tracker.Charts
                 {
                     if (!row.Visible) { continue; }
 
-                    if (row.Cells[MainMenu_Form.Column.Date.ToString()].Value != null)
+                    if (row.Cells[ReadOnlyVariables.Date_column].Value != null)
                     {
-                        DateTime date = Convert.ToDateTime(row.Cells[MainMenu_Form.Column.Date.ToString()].Value);
+                        DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                         if (date < minDate) { minDate = date; }
                         if (date > maxDate) { maxDate = date; }
                     }

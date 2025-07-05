@@ -236,7 +236,7 @@ namespace Sales_Tracker.UI
             if (IsNoteCell(e, dataGridView))
             {
                 DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                string idCell = dataGridView.Rows[e.RowIndex].Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString();
+                string idCell = dataGridView.Rows[e.RowIndex].Cells[ReadOnlyVariables.ID_column].Value.ToString();
 
                 if (IsClickOnText(cell, out Rectangle hitbox))
                 {
@@ -320,22 +320,26 @@ namespace Sales_Tracker.UI
                 }
             }
         }
+        private static readonly HashSet<string> MoneyColumns =
+        [
+            ReadOnlyVariables.PricePerUnit_column,
+            ReadOnlyVariables.Shipping_column,
+            ReadOnlyVariables.Tax_column,
+            ReadOnlyVariables.Fee_column,
+            ReadOnlyVariables.Discount_column,
+            ReadOnlyVariables.ChargedDifference_column,
+            ReadOnlyVariables.Accountant_column
+        ];
         private static bool IsMoneyColumn(string columnName)
         {
-            return columnName == MainMenu_Form.Column.PricePerUnit.ToString() ||
-                   columnName == MainMenu_Form.Column.Shipping.ToString() ||
-                   columnName == MainMenu_Form.Column.Tax.ToString() ||
-                   columnName == MainMenu_Form.Column.Fee.ToString() ||
-                   columnName == MainMenu_Form.Column.Discount.ToString() ||
-                   columnName == MainMenu_Form.Column.ChargedDifference.ToString() ||
-                   columnName == MainMenu_Form.Column.Total.ToString();
+            return MoneyColumns.Contains(columnName);
         }
 
         // Methods for DataGridView_UserDeletingRow
         private static void HandlePurchasesDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "purchase";
-            string columnName = MainMenu_Form.Column.ID.ToString();
+            string columnName = ReadOnlyVariables.ID_column;
             string name = e.Row.Cells[columnName].Value?.ToString();
 
             string message = $"Deleted {type} '{name}'";
@@ -344,7 +348,7 @@ namespace Sales_Tracker.UI
         private static void HandleSalesDeletion(DataGridViewRowCancelEventArgs e)
         {
             string type = "sale";
-            string columnName = MainMenu_Form.Column.ID.ToString();
+            string columnName = ReadOnlyVariables.ID_column;
             string name = e.Row.Cells[columnName].Value?.ToString();
 
             string message = $"Deleted {type} '{name}'";
@@ -356,7 +360,7 @@ namespace Sales_Tracker.UI
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, _deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, ReadOnlyVariables.Product_column, valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -378,7 +382,7 @@ namespace Sales_Tracker.UI
             string columnName = Products_Form.Column.ProductName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Product.ToString(), valueBeingRemoved, _deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, ReadOnlyVariables.Product_column, valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -444,7 +448,7 @@ namespace Sales_Tracker.UI
             string columnName = Accountants_Form.Column.AccountantName.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Accountant.ToString(), valueBeingRemoved, _deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, ReadOnlyVariables.Accountant_column, valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -465,7 +469,7 @@ namespace Sales_Tracker.UI
             string columnName = Companies_Form.Column.Company.ToString();
             string valueBeingRemoved = e.Row.Cells[columnName].Value?.ToString();
 
-            if (IsThisBeingUsedByDataGridView(type, MainMenu_Form.Column.Company.ToString(), valueBeingRemoved, _deleteAction))
+            if (IsThisBeingUsedByDataGridView(type, ReadOnlyVariables.Company_column, valueBeingRemoved, _deleteAction))
             {
                 e.Cancel = true;
                 return;
@@ -482,7 +486,7 @@ namespace Sales_Tracker.UI
         }
         private static void HandleItemsDeletion(object sender, DataGridViewRowCancelEventArgs e)
         {
-            string columnName = MainMenu_Form.Column.Product.ToString();
+            string columnName = ReadOnlyVariables.Product_column;
             string productName = e.Row.Cells[columnName].Value?.ToString();
 
             if (!(SelectedRowInMainMenu.Tag is (List<string> itemList, TagData)))
@@ -880,16 +884,16 @@ namespace Sales_Tracker.UI
             string country = isCountryConsistent ? firstCountry : ReadOnlyVariables.EmptyCell;
             string company = isCompanyConsistent ? firstCompany : ReadOnlyVariables.EmptyCell;
 
-            selectedRow.Cells[MainMenu_Form.Column.Category.ToString()].Value = categoryName;
-            selectedRow.Cells[MainMenu_Form.Column.Country.ToString()].Value = country;
-            selectedRow.Cells[MainMenu_Form.Column.Company.ToString()].Value = company;
-            selectedRow.Cells[MainMenu_Form.Column.TotalItems.ToString()].Value = totalQuantity;
+            selectedRow.Cells[ReadOnlyVariables.Category_column].Value = categoryName;
+            selectedRow.Cells[ReadOnlyVariables.Country_column].Value = country;
+            selectedRow.Cells[ReadOnlyVariables.Company_column].Value = company;
+            selectedRow.Cells[ReadOnlyVariables.TotalItems_column].Value = totalQuantity;
 
             // Update charged difference
-            decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
-            decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
-            decimal fee = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Fee.ToString()].Value.ToString());
-            decimal discount = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Discount.ToString()].Value.ToString());
+            decimal shipping = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Shipping_column].Value.ToString());
+            decimal tax = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Tax_column].Value.ToString());
+            decimal fee = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Fee_column].Value.ToString());
+            decimal discount = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Discount_column].Value.ToString());
 
             bool isSale = selectedRow.DataGridView == MainMenu_Form.Instance.Sale_DataGridView;
             decimal expectedTotal;
@@ -904,20 +908,20 @@ namespace Sales_Tracker.UI
             }
 
             // Calculate charged difference: Actual Total - Expected Total
-            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value);
+            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[ReadOnlyVariables.Accountant_column].Value);
             decimal chargedDifference = actualTotal - expectedTotal;
 
-            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
+            selectedRow.Cells[ReadOnlyVariables.ChargedDifference_column].Value = chargedDifference.ToString("N2");
         }
         public static void UpdateRowWithNoItems(DataGridViewRow selectedRow)
         {
             // Update charged difference
-            int quantity = int.Parse(selectedRow.Cells[MainMenu_Form.Column.TotalItems.ToString()].Value.ToString());
-            decimal pricePerUnit = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value.ToString());
-            decimal shipping = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Shipping.ToString()].Value.ToString());
-            decimal tax = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Tax.ToString()].Value.ToString());
-            decimal fee = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Fee.ToString()].Value.ToString());
-            decimal discount = decimal.Parse(selectedRow.Cells[MainMenu_Form.Column.Discount.ToString()].Value.ToString());
+            int quantity = int.Parse(selectedRow.Cells[ReadOnlyVariables.TotalItems_column].Value.ToString());
+            decimal pricePerUnit = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.PricePerUnit_column].Value.ToString());
+            decimal shipping = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Shipping_column].Value.ToString());
+            decimal tax = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Tax_column].Value.ToString());
+            decimal fee = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Fee_column].Value.ToString());
+            decimal discount = decimal.Parse(selectedRow.Cells[ReadOnlyVariables.Discount_column].Value.ToString());
 
             bool isSale = selectedRow.DataGridView == MainMenu_Form.Instance.Sale_DataGridView;
             decimal expectedTotal;
@@ -932,10 +936,10 @@ namespace Sales_Tracker.UI
             }
 
             // Calculate charged difference: Actual Total - Expected Total
-            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[MainMenu_Form.Column.Total.ToString()].Value);
+            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[ReadOnlyVariables.Accountant_column].Value);
             decimal chargedDifference = actualTotal - expectedTotal;
 
-            selectedRow.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = chargedDifference.ToString("N2");
+            selectedRow.Cells[ReadOnlyVariables.ChargedDifference_column].Value = chargedDifference.ToString("N2");
         }
         public static void AddNoteToCell(Guna2DataGridView grid, int newRowIndex, string note)
         {
@@ -1057,7 +1061,7 @@ namespace Sales_Tracker.UI
                 }
 
                 // Skip if we are not checking a product name
-                if (columnName != MainMenu_Form.Column.Product.ToString()) { continue; }
+                if (columnName != ReadOnlyVariables.Product_column) { continue; }
 
                 // Skip if transaction does not have multiple items
                 if (row.Tag is not (List<string> items, TagData)) { continue; }
@@ -1390,7 +1394,7 @@ namespace Sales_Tracker.UI
         {
             foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
             {
-                if (row.Cells[MainMenu_Form.Column.Category.ToString()].Value?.ToString() == categoryName)
+                if (row.Cells[ReadOnlyVariables.Category_column].Value?.ToString() == categoryName)
                 {
                     return true;
                 }

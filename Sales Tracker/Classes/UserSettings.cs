@@ -298,7 +298,7 @@ namespace Sales_Tracker.Classes
                     else
                     {
                         // Only get exchange rate when needed
-                        string rowDate = row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString();
+                        string rowDate = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
                         decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate, false);
                         if (USDToDefault == -1) { return; }
 
@@ -315,7 +315,7 @@ namespace Sales_Tracker.Classes
                     else
                     {
                         // Only get exchange rate when needed
-                        string rowDate = row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString();
+                        string rowDate = row.Cells[ReadOnlyVariables.Date_column].Value.ToString();
                         decimal USDToDefault = Currency.GetExchangeRate("USD", defaultCurrency, rowDate, false);
                         if (USDToDefault == -1) { return; }
 
@@ -331,39 +331,39 @@ namespace Sales_Tracker.Classes
         }
         private static void UpdateRowWithOriginalValues(DataGridViewRow row, TagData tagData)
         {
-            row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = tagData.OriginalPricePerUnit.ToString("N2");
-            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = tagData.OriginalShipping.ToString("N2");
-            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tagData.OriginalTax.ToString("N2");
-            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = tagData.OriginalFee.ToString("N2");
-            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = tagData.OriginalChargedDifference.ToString("N2");
-            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = tagData.OriginalChargedOrCredited.ToString("N2");
+            row.Cells[ReadOnlyVariables.PricePerUnit_column].Value = tagData.OriginalPricePerUnit.ToString("N2");
+            row.Cells[ReadOnlyVariables.Shipping_column].Value = tagData.OriginalShipping.ToString("N2");
+            row.Cells[ReadOnlyVariables.Tax_column].Value = tagData.OriginalTax.ToString("N2");
+            row.Cells[ReadOnlyVariables.Fee_column].Value = tagData.OriginalFee.ToString("N2");
+            row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = tagData.OriginalChargedDifference.ToString("N2");
+            row.Cells[ReadOnlyVariables.Accountant_column].Value = tagData.OriginalChargedOrCredited.ToString("N2");
         }
         private static void UpdateRowWithConvertedValues(DataGridViewRow row, TagData tagData, decimal USDToDefault)
         {
-            row.Cells[MainMenu_Form.Column.PricePerUnit.ToString()].Value = (tagData.PricePerUnitUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = (tagData.ShippingUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.PricePerUnit_column].Value = (tagData.PricePerUnitUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Shipping_column].Value = (tagData.ShippingUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Tax_column].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Fee_column].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Accountant_column].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
         }
         private static void UpdateMultiItemRowWithOriginalValues(DataGridViewRow row, TagData tagData, List<string> itemList)
         {
-            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = tagData.OriginalShipping.ToString("N2");
-            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = tagData.OriginalTax.ToString("N2");
-            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = tagData.OriginalFee.ToString("N2");
-            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = tagData.OriginalChargedDifference.ToString("N2");
-            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = tagData.OriginalChargedOrCredited.ToString("N2");
+            row.Cells[ReadOnlyVariables.Shipping_column].Value = tagData.OriginalShipping.ToString("N2");
+            row.Cells[ReadOnlyVariables.Tax_column].Value = tagData.OriginalTax.ToString("N2");
+            row.Cells[ReadOnlyVariables.Fee_column].Value = tagData.OriginalFee.ToString("N2");
+            row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = tagData.OriginalChargedDifference.ToString("N2");
+            row.Cells[ReadOnlyVariables.Accountant_column].Value = tagData.OriginalChargedOrCredited.ToString("N2");
 
             UpdateItemList(row, itemList, useOriginalPrice: true, tagData);
         }
         private static void UpdateMultiItemRowWithConvertedValues(DataGridViewRow row, TagData tagData, List<string> itemList, decimal USDToDefault)
         {
-            row.Cells[MainMenu_Form.Column.Shipping.ToString()].Value = (tagData.ShippingUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.Tax.ToString()].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.Fee.ToString()].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.ChargedDifference.ToString()].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
-            row.Cells[MainMenu_Form.Column.Total.ToString()].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Shipping_column].Value = (tagData.ShippingUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Tax_column].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Fee_column].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Accountant_column].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
 
             UpdateItemList(row, itemList, useOriginalPrice: false, tagData, USDToDefault);
         }

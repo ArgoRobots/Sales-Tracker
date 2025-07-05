@@ -224,7 +224,7 @@ namespace Sales_Tracker
 
             // Check if purchase ID already exists
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
-                && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
+                && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, ReadOnlyVariables.ID_column, purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     "Purchase # already exists",
@@ -389,7 +389,7 @@ namespace Sales_Tracker
 
             // Check if purchase ID already exists
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
-                && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, MainMenu_Form.Column.ID.ToString(), purchaseNumber))
+                && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, ReadOnlyVariables.ID_column, purchaseNumber))
             {
                 CustomMessageBoxResult result = CustomMessageBox.Show(
                     "Purchase # already exists",

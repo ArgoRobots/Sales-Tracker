@@ -277,17 +277,17 @@ namespace Sales_Tracker
 
                 Receipts_DataGridView.Rows.Add(
                     translatedType,
-                    row.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString(),
-                    row.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString(),
-                    row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString(),
-                    row.Cells[MainMenu_Form.Column.Company.ToString()].Value.ToString(),
-                    row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString(),
-                    row.Cells[MainMenu_Form.Column.Total.ToString()].Value.ToString());
+                    row.Cells[ReadOnlyVariables.ID_column].Value.ToString(),
+                    row.Cells[ReadOnlyVariables.Product_column].Value.ToString(),
+                    row.Cells[ReadOnlyVariables.Category_column].Value.ToString(),
+                    row.Cells[ReadOnlyVariables.Company_column].Value.ToString(),
+                    row.Cells[ReadOnlyVariables.Date_column].Value.ToString(),
+                    row.Cells[ReadOnlyVariables.Accountant_column].Value.ToString());
 
                 Receipts_DataGridView.Rows[^1].Tag = receipt;
 
                 // Get oldest date
-                DateTime currentDate = DateTime.Parse(row.Cells[MainMenu_Form.Column.Date.ToString()].Value.ToString());
+                DateTime currentDate = DateTime.Parse(row.Cells[ReadOnlyVariables.Date_column].Value.ToString());
                 if (_oldestDate == default || _oldestDate > currentDate)
                 {
                     _oldestDate = currentDate;

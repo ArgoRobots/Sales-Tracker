@@ -553,7 +553,7 @@ namespace Sales_Tracker
                         secondRow = true;
                         if (cellValue == ReadOnlyVariables.EmptyCell) { continue; }
 
-                        string productName = _selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString();
+                        string productName = _selectedRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
 
                         if (productName == ReadOnlyVariables.MultipleItems_text)
                         {
@@ -683,8 +683,8 @@ namespace Sales_Tracker
         }
         private static string GetFullProductPath(DataGridViewRow row, string productName)
         {
-            string company = row.Cells[MainMenu_Form.Column.Company.ToString()].Value.ToString();
-            string category = row.Cells[MainMenu_Form.Column.Category.ToString()].Value.ToString();
+            string company = row.Cells[ReadOnlyVariables.Company_column].Value.ToString();
+            string category = row.Cells[ReadOnlyVariables.Category_column].Value.ToString();
             return $"{company} > {category} > {productName}";
         }
 
@@ -773,15 +773,15 @@ namespace Sales_Tracker
                 {
                     string column = textBox.Name;
 
-                    if (column == MainMenu_Form.Column.PricePerUnit.ToString() ||
-                        column == MainMenu_Form.Column.Shipping.ToString() ||
-                        column == MainMenu_Form.Column.Tax.ToString() ||
-                        column == MainMenu_Form.Column.Fee.ToString() ||
-                        column == MainMenu_Form.Column.Total.ToString())
+                    if (column == ReadOnlyVariables.PricePerUnit_column ||
+                        column == ReadOnlyVariables.Shipping_column ||
+                        column == ReadOnlyVariables.Tax_column ||
+                        column == ReadOnlyVariables.Fee_column ||
+                        column == ReadOnlyVariables.Accountant_column)
                     {
                         ProcessNumericColumn(textBox, column);
                     }
-                    else if (column == MainMenu_Form.Column.Product.ToString())
+                    else if (column == ReadOnlyVariables.Product_column)
                     {
                         ProcessProductColumn(textBox);
                     }
@@ -789,7 +789,7 @@ namespace Sales_Tracker
                     {
                         ProcessProductCategoryColumn(textBox, allControls);
                     }
-                    else if (column == MainMenu_Form.Column.Note.ToString())
+                    else if (column == ReadOnlyVariables.Note_column)
                     {
                         ProcessNoteColumn(textBox);
                     }
@@ -832,15 +832,15 @@ namespace Sales_Tracker
             }
             else if (selected is MainMenu_Form.SelectedOption.ItemsInPurchase or MainMenu_Form.SelectedOption.ItemsInSale)
             {
-                _selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value = productName;
+                _selectedRow.Cells[ReadOnlyVariables.Product_column].Value = productName;
 
                 Product product = MainMenu_Form.GetProductProductNameIsFrom(categoryList, productName, companyName);
                 Category category = MainMenu_Form.GetCategoryProductNameIsFrom(categoryList, productName, companyName);
 
                 DataGridViewCellCollection cells = _selectedRow.Cells;
-                cells[MainMenu_Form.Column.Category.ToString()].Value = category.Name;
-                cells[MainMenu_Form.Column.Country.ToString()].Value = product.CountryOfOrigin;
-                cells[MainMenu_Form.Column.Company.ToString()].Value = product.CompanyOfOrigin;
+                cells[ReadOnlyVariables.Category_column].Value = category.Name;
+                cells[ReadOnlyVariables.Country_column].Value = product.CountryOfOrigin;
+                cells[ReadOnlyVariables.Company_column].Value = product.CompanyOfOrigin;
             }
         }
         private static (string ProductName, string CompanyName) ParseProductInfo(string text)
@@ -899,8 +899,8 @@ namespace Sales_Tracker
                 newCategory.ProductList.Add(product);
 
                 // Update all instances in DataGridViews
-                string categoryColumn = MainMenu_Form.Column.Category.ToString();
-                string nameColumn = MainMenu_Form.Column.Product.ToString();
+                string categoryColumn = ReadOnlyVariables.Category_column;
+                string nameColumn = ReadOnlyVariables.Product_column;
                 foreach (DataGridViewRow row in MainMenu_Form.Instance.GetAllRows())
                 {
                     if (row.Cells[categoryColumn].Value.ToString() == category.Name
@@ -924,7 +924,7 @@ namespace Sales_Tracker
         }
         private void ProcessNoteColumn(Guna2TextBox textBox)
         {
-            DataGridViewCell cell = _selectedRow.Cells[MainMenu_Form.Column.Note.ToString()];
+            DataGridViewCell cell = _selectedRow.Cells[ReadOnlyVariables.Note_column];
 
             if (textBox.Text == "")
             {
@@ -978,18 +978,18 @@ namespace Sales_Tracker
         }
         private void UpdateItemsInTransaction(string productName, string companyName, List<Category> categoryList, bool isProduct)
         {
-            string productColumn = isProduct ? Products_Form.Column.ProductName.ToString() : MainMenu_Form.Column.Product.ToString();
+            string productColumn = isProduct ? Products_Form.Column.ProductName.ToString() : ReadOnlyVariables.Product_column;
             _selectedRow.Cells[productColumn].Value = productName;
 
-            string categoryColumn = isProduct ? Products_Form.Column.ProductCategory.ToString() : MainMenu_Form.Column.Category.ToString();
+            string categoryColumn = isProduct ? Products_Form.Column.ProductCategory.ToString() : ReadOnlyVariables.Category_column;
             string category = MainMenu_Form.GetCategoryNameProductIsFrom(categoryList, productName, companyName);
             _selectedRow.Cells[categoryColumn].Value = category;
 
-            string countryColumn = isProduct ? Products_Form.Column.CountryOfOrigin.ToString() : MainMenu_Form.Column.Country.ToString();
+            string countryColumn = isProduct ? Products_Form.Column.CountryOfOrigin.ToString() : ReadOnlyVariables.Country_column;
             string country = MainMenu_Form.GetCountryProductIsFrom(categoryList, productName, companyName);
             _selectedRow.Cells[countryColumn].Value = country;
 
-            string companyColumn = isProduct ? Products_Form.Column.CompanyOfOrigin.ToString() : MainMenu_Form.Column.Company.ToString();
+            string companyColumn = isProduct ? Products_Form.Column.CompanyOfOrigin.ToString() : ReadOnlyVariables.Company_column;
             string company = MainMenu_Form.GetCompanyProductIsFrom(categoryList, productName, companyName);
             _selectedRow.Cells[companyColumn].Value = company;
 
@@ -1027,7 +1027,7 @@ namespace Sales_Tracker
             {
                 MainMenu_Form.IsProgramLoading = true;
 
-                string productName = _selectedRow.Cells[MainMenu_Form.Column.Product.ToString()].Value.ToString();
+                string productName = _selectedRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
 
                 if (productName == ReadOnlyVariables.MultipleItems_text)
                 {
@@ -1103,7 +1103,7 @@ namespace Sales_Tracker
             if (_selectedTag == MainMenu_Form.DataGridViewTag.SaleOrPurchase.ToString())
             {
                 string type = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale";
-                string id = _selectedRow.Cells[MainMenu_Form.Column.ID.ToString()].Value.ToString();
+                string id = _selectedRow.Cells[ReadOnlyVariables.ID_column].Value.ToString();
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, $"Modified {type} '{id}'");
                 return;
             }
@@ -1153,7 +1153,7 @@ namespace Sales_Tracker
             string newCategory = textBox.Text;
             category.Name = newCategory;
 
-            UpdateAllDataGridViewRows(MainMenu_Form.Column.Category.ToString(), oldCategory, newCategory, true);
+            UpdateAllDataGridViewRows(ReadOnlyVariables.Category_column, oldCategory, newCategory, true);
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.Instance.Selected);
         }
         private void UpdateProduct()
@@ -1225,7 +1225,7 @@ namespace Sales_Tracker
         }
         private void UpdateProductInDataGridViews(Product product)
         {
-            string productColumn = MainMenu_Form.Column.Product.ToString();
+            string productColumn = ReadOnlyVariables.Product_column;
             string oldName = listOfOldValues[1];
             string oldID = listOfOldValues[0];
             string oldCountry = listOfOldValues[3];
@@ -1241,21 +1241,21 @@ namespace Sales_Tracker
         }
         private static void UpdateProductRowValues(DataGridViewRow row, Product product, string oldID, string oldCountry, string oldCompany)
         {
-            row.Cells[MainMenu_Form.Column.Product.ToString()].Value = product.Name;
+            row.Cells[ReadOnlyVariables.Product_column].Value = product.Name;
 
-            string idColumn = MainMenu_Form.Column.ID.ToString();
+            string idColumn = ReadOnlyVariables.ID_column;
             if (row.Cells[idColumn].Value.ToString() == oldID)
             {
                 row.Cells[idColumn].Value = product.ProductID;
             }
 
-            string countryColumn = MainMenu_Form.Column.Country.ToString();
+            string countryColumn = ReadOnlyVariables.Country_column;
             if (row.Cells[countryColumn].Value.ToString() == oldCountry)
             {
                 row.Cells[countryColumn].Value = product.CountryOfOrigin;
             }
 
-            string companyColumn = MainMenu_Form.Column.Company.ToString();
+            string companyColumn = ReadOnlyVariables.Company_column;
             if (row.Cells[companyColumn].Value.ToString() == oldCompany)
             {
                 row.Cells[companyColumn].Value = product.CompanyOfOrigin;
@@ -1279,7 +1279,7 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategoryPurchases);
             MainMenu_Form.Instance.SaveCategoriesToFile(MainMenu_Form.SelectedOption.CategorySales);
 
-            UpdateAllDataGridViewRows(MainMenu_Form.Column.Company.ToString(), oldCompany, newCompany, true);
+            UpdateAllDataGridViewRows(ReadOnlyVariables.Company_column, oldCompany, newCompany, true);
         }
         private static void UpdateCompanyInProducts(string oldCompany, string newCompany, List<Category> categoryList)
         {
@@ -1307,7 +1307,7 @@ namespace Sales_Tracker
                 MainMenu_Form.Instance.AccountantList[index] = newAccountant;
             }
 
-            UpdateAllDataGridViewRows(MainMenu_Form.Column.Accountant.ToString(), oldAccountant, newAccountant, false);
+            UpdateAllDataGridViewRows(ReadOnlyVariables.Accountant_column, oldAccountant, newAccountant, false);
         }
 
         // Validate TextBoxes in other forms

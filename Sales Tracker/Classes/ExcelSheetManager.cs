@@ -488,7 +488,7 @@ namespace Sales_Tracker.Classes
 
             foreach (DataGridViewRow row in targetDataGridView.Rows)
             {
-                if (row.Cells[MainMenu_Form.Column.ID.ToString()].Value?.ToString() == transactionId)
+                if (row.Cells[ReadOnlyVariables.ID_column].Value?.ToString() == transactionId)
                 {
                     return row;
                 }
@@ -537,7 +537,7 @@ namespace Sales_Tracker.Classes
 
             // Get existing transaction numbers
             HashSet<string> existingTransactionNumbers = new(targetGridView.Rows.Count);
-            string idColumn = MainMenu_Form.Column.ID.ToString();
+            string idColumn = ReadOnlyVariables.ID_column;
 
             foreach (DataGridViewRow row in targetGridView.Rows)
             {
@@ -1369,7 +1369,7 @@ namespace Sales_Tracker.Classes
             for (int i = 0; i < dataGridView.Columns.Count; i++)
             {
                 // Skip the "Has Receipt" column
-                if (dataGridView.Columns[i].Name == MainMenu_Form.Column.HasReceipt.ToString())
+                if (dataGridView.Columns[i].Name == ReadOnlyVariables.HasReceipt_column)
                 {
                     continue;
                 }

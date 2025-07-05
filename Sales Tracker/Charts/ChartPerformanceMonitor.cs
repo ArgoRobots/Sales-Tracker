@@ -138,7 +138,6 @@ namespace Sales_Tracker.Charts
             }
 
             chart.Update();
-            Application.DoEvents();
         }
     }
 }
