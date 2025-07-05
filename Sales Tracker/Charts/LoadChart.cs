@@ -944,53 +944,42 @@ namespace Sales_Tracker.Charts
             }
             else if (canUpdateChart)
             {
-                UpdateChartWithData(chart, sortedDates, salesDataset, expensesDataset, salesByDate, expensesByDate, isLineChart);
+                foreach (string date in sortedDates)
+                {
+                    double salesValue = salesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
+                    double expensesValue = expensesByDate.TryGetValue(date, out double eValue) ? eValue : 0;
+
+                    if (isLineChart)
+                    {
+                        ((GunaLineDataset)expensesDataset).DataPoints.Add(date, expensesValue);
+                        ((GunaLineDataset)salesDataset).DataPoints.Add(date, salesValue);
+                    }
+                    else
+                    {
+                        ((GunaBarDataset)expensesDataset).DataPoints.Add(date, expensesValue);
+                        ((GunaBarDataset)salesDataset).DataPoints.Add(date, salesValue);
+
+                        float barPercentage = salesDataset.DataPointCount + expensesDataset.DataPointCount == 1 ? 0.2f : 0.4f;
+                        ((GunaBarDataset)expensesDataset).BarPercentage = barPercentage;
+                        ((GunaBarDataset)salesDataset).BarPercentage = barPercentage;
+                    }
+                }
+
+                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+                {
+                    chart.Datasets.Clear();
+                    chart.Datasets.Add(expensesDataset);
+                    chart.Datasets.Add(salesDataset);
+
+                    ApplyCurrencyFormatToDataset(expensesDataset);
+                    ApplyCurrencyFormatToDataset(salesDataset);
+
+                    chart.Update();
+                    Application.DoEvents();
+                });
             }
 
             return new SalesExpensesChartData(expensesByDate, salesByDate, sortedDates);
-        }
-        private static void UpdateChartWithData(
-            GunaChart chart,
-            List<string> sortedDates,
-            IGunaDataset salesDataset,
-            IGunaDataset expensesDataset,
-            Dictionary<string, double> salesByDate,
-            Dictionary<string, double> expensesByDate,
-            bool isLineChart)
-        {
-            foreach (string date in sortedDates)
-            {
-                double salesValue = salesByDate.TryGetValue(date, out double sValue) ? sValue : 0;
-                double expensesValue = expensesByDate.TryGetValue(date, out double eValue) ? eValue : 0;
-
-                if (isLineChart)
-                {
-                    ((GunaLineDataset)expensesDataset).DataPoints.Add(date, expensesValue);
-                    ((GunaLineDataset)salesDataset).DataPoints.Add(date, salesValue);
-                }
-                else
-                {
-                    ((GunaBarDataset)expensesDataset).DataPoints.Add(date, expensesValue);
-                    ((GunaBarDataset)salesDataset).DataPoints.Add(date, salesValue);
-
-                    float barPercentage = salesDataset.DataPointCount + expensesDataset.DataPointCount == 1 ? 0.2f : 0.4f;
-                    ((GunaBarDataset)expensesDataset).BarPercentage = barPercentage;
-                    ((GunaBarDataset)salesDataset).BarPercentage = barPercentage;
-                }
-            }
-
-            ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
-            {
-                chart.Datasets.Clear();
-                chart.Datasets.Add(expensesDataset);
-                chart.Datasets.Add(salesDataset);
-
-                ApplyCurrencyFormatToDataset(expensesDataset);
-                ApplyCurrencyFormatToDataset(salesDataset);
-
-                chart.Update();
-                Application.DoEvents();
-            });
         }
         public static SalesExpensesChartData LoadAverageTransactionValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
