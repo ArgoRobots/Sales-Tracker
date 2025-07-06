@@ -62,7 +62,6 @@ namespace Sales_Tracker
             InitializeAISearch();
             RemoveUpgradeButtonIfFullVersion();
             UpdateMainMenuFormText();
-            SetChargedDifferenceColumnVisibility();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -385,10 +384,6 @@ namespace Sales_Tracker
                     Log.Write(1, "AI Search disabled: No API key found");
                 }
             }
-        }
-        public void SetChargedDifferenceColumnVisibility()
-        {
-            Sale_DataGridView.Columns[Column.ChargedDifference.ToString()].Visible = false;
         }
 
         // Add rows from file
@@ -1705,7 +1700,7 @@ namespace Sales_Tracker
             { Column.Tax, "Tax" },
             { Column.Fee, "Fee" },
             { Column.Discount, "Discount" },
-            { Column.ChargedDifference, "" },  // This column will be hidden, but is still needed for the indexing
+            { Column.ChargedDifference, "Charged difference" },
             { Column.Total, "Total revenue" },
             { Column.Note, "Notes" },
             { Column.HasReceipt, "Has receipt" }
@@ -1761,16 +1756,8 @@ namespace Sales_Tracker
             Discount_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[discountColumn].Index, -1, true).Left;
             Discount_Label.Width = SelectedDataGridView.Columns[feeColumn].Width;
 
-            if (SelectedDataGridView == Purchase_DataGridView)
-            {
-                ChargedDifference_Label.Visible = true;
-                ChargedDifference_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
-                ChargedDifference_Label.Width = SelectedDataGridView.Columns[chargedDifference].Width;
-            }
-            else
-            {
-                ChargedDifference_Label.Visible = false;
-            }
+            ChargedDifference_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[chargedDifference].Index, -1, true).Left;
+            ChargedDifference_Label.Width = SelectedDataGridView.Columns[chargedDifference].Width;
 
             Price_Label.Left = SelectedDataGridView.GetCellDisplayRectangle(SelectedDataGridView.Columns[totalPriceColumn].Index, -1, true).Left;
             Price_Label.Width = SelectedDataGridView.Columns[totalPriceColumn].Width;
@@ -1804,10 +1791,7 @@ namespace Sales_Tracker
                 totalShipping += Convert.ToDecimal(row.Cells[Column.Shipping.ToString()].Value);
                 fee += Convert.ToDecimal(row.Cells[Column.Fee.ToString()].Value);
                 discount += Convert.ToDecimal(row.Cells[Column.Discount.ToString()].Value);
-                if (Selected == SelectedOption.Purchases)
-                {
-                    chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
-                }
+                chargedDifference += Convert.ToDecimal(row.Cells[Column.ChargedDifference.ToString()].Value);
                 totalPrice += Convert.ToDecimal(row.Cells[Column.Total.ToString()].Value);
             }
 
