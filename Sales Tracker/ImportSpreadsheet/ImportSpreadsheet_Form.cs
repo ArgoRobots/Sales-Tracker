@@ -776,7 +776,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                 Location = new Point(outerPanel.Width - 30, 10),
                 Animated = true
             };
-            ThemeManager.SetThemeForControl([customCheckBox]);
+            ThemeManager.SetThemeForControls([customCheckBox]);
             outerPanel.Controls.Add(customCheckBox);
 
             // FlowLayoutPanel to hold items

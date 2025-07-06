@@ -56,7 +56,7 @@ namespace Sales_Tracker.Theme
 
             return value == 0;  // If value is 0, Windows is using dark theme
         }
-        public static void SetThemeForControl(List<Control> list)
+        public static void SetThemeForControls(List<Control> list)
         {
             foreach (Control control in list)
             {
@@ -240,7 +240,7 @@ namespace Sales_Tracker.Theme
                     {
                         childControls.Add(childControl);
                     }
-                    SetThemeForControl(childControls);
+                    SetThemeForControls(childControls);
                 }
             }
         }
@@ -346,7 +346,7 @@ namespace Sales_Tracker.Theme
                     list.Add(item);
                 }
 
-                SetThemeForControl(list);
+                SetThemeForControls(list);
                 UseImmersiveDarkMode(form.Handle, IsDarkTheme());
             });
         }
@@ -385,7 +385,7 @@ namespace Sales_Tracker.Theme
             SetRightArrowImageBasedOnTheme(CustomControls.OpenRecentCompany_Button);
 
             // Update other controls
-            SetThemeForControl([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
+            SetThemeForControls([CustomControls.ControlsDropDown_Button, MainMenu_Form.TimeRangePanel]);
 
             DataGridViewManager.RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
 

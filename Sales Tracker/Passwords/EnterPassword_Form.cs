@@ -71,7 +71,7 @@ namespace Sales_Tracker.Passwords
             WindowsHello_Button.Left = (ClientSize.Width - WindowsHello_Button.Width) / 2;
             WindowsHello_Button.Click += WindowsHello_Button_Click;
             Controls.Add(WindowsHello_Button);
-            ThemeManager.SetThemeForControl([WindowsHello_Button]);
+            ThemeManager.SetThemeForControls([WindowsHello_Button]);
         }
         private async void WindowsHello_Button_Click(object sender, EventArgs e)
         {

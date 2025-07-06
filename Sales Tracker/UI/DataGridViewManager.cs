@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using System.ComponentModel;
 
@@ -597,9 +598,9 @@ namespace Sales_Tracker.UI
         private static void ConfigureRightClickDataGridViewMenuButtons(Guna2DataGridView grid)
         {
             FlowLayoutPanel flowPanel = RightClickDataGridView_Panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
-            RightClickDataGridView_Panel.Tag = grid;  // This is used for the button events
+            RightClickDataGridView_Panel.Tag = grid;  // This is used in the button event handlers
 
-            // First, hide all controls
+            // First, hide all buttons
             foreach (Control control in flowPanel.Controls)
             {
                 control.Visible = false;
@@ -630,19 +631,40 @@ namespace Sales_Tracker.UI
                 flowPanel.Controls.SetChildIndex(_rightClickDataGridView_MoveBtn, currentIndex++);
             }
 
-            // Add ShowItemsBtn
-            if (grid.SelectedRows[0].Tag is (List<string>, TagData)
-                && grid.SelectedRows.Count == 1)
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases
+                 || MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
             {
-                _rightClickDataGridView_ShowItemsBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ShowItemsBtn, currentIndex++);
-            }
+                // Add ShowItemsBtn
+                if (grid.SelectedRows[0].Tag is (List<string>, TagData)
+                    && grid.SelectedRows.Count == 1)
+                {
+                    _rightClickDataGridView_ShowItemsBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ShowItemsBtn, currentIndex++);
+                }
 
-            // Add ExportReceiptBtn
-            if (AnySelectedRowHasReceipt(grid))
-            {
-                _rightClickDataGridView_ExportReceiptBtn.Visible = true;
-                flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                // Add ExportReceiptBtn
+                if (AnySelectedRowHasReceipt(grid))
+                {
+                    _rightClickDataGridView_ExportReceiptBtn.Visible = true;
+                    flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ExportReceiptBtn, currentIndex++);
+                }
+
+                // Add ReturnBtn
+                if (grid.SelectedRows.Count == 1)
+                {
+                    bool isReturned = ReturnManager.IsTransactionReturned(grid.SelectedRows[0]);
+
+                    if (isReturned)
+                    {
+                        _rightClickDataGridView_UndoReturnBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_UndoReturnBtn, currentIndex++);
+                    }
+                    else
+                    {
+                        _rightClickDataGridView_ReturnBtn.Visible = true;
+                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ReturnBtn, currentIndex++);
+                    }
+                }
             }
 
             // Add DeleteBtn
@@ -993,27 +1015,22 @@ namespace Sales_Tracker.UI
         }
         public static void UpdateAlternatingRowColors(DataGridView dataGridView)
         {
-            if (dataGridView.Rows.Count == 0)
-            {
-                return;
-            }
-
-            Color defaultBackColor = dataGridView.DefaultCellStyle.BackColor;
-            Color alternatingBackColor = dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
-
             int visibleRowIndex = 0;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (!row.Visible)
-                {
-                    continue;
-                }
+                if (!row.Visible) { continue; }
 
-                // Apply alternating colors only to visible rows
-                row.DefaultCellStyle.BackColor = (visibleRowIndex % 2 == 0)
-                    ? defaultBackColor
-                    : alternatingBackColor;
+                if (ReturnManager.IsTransactionReturned(row))
+                {
+                    ReturnManager.UpdateRowAppearanceForReturn(row, true);
+                }
+                else
+                {
+                    row.DefaultCellStyle.BackColor = (visibleRowIndex % 2 == 0)
+                        ? dataGridView.DefaultCellStyle.BackColor
+                        : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
+                }
 
                 visibleRowIndex++;
             }
@@ -1181,7 +1198,8 @@ namespace Sales_Tracker.UI
         }
 
         private static Guna2Button _rightClickDataGridView_ModifyBtn, _rightClickDataGridView_MoveBtn,
-            _rightClickDataGridView_ExportReceiptBtn, _rightClickDataGridView_ShowItemsBtn;
+            _rightClickDataGridView_ExportReceiptBtn, _rightClickDataGridView_ShowItemsBtn,
+            _rightClickDataGridView_ReturnBtn, _rightClickDataGridView_UndoReturnBtn;
 
         // Right click row getters
         public static Guna2Panel RightClickDataGridView_Panel { get; private set; }
@@ -1208,6 +1226,12 @@ namespace Sales_Tracker.UI
 
             _rightClickDataGridView_ShowItemsBtn = CustomControls.ConstructBtnForMenu("Show items", CustomControls.PanelBtnWidth, true, flowPanel);
             _rightClickDataGridView_ShowItemsBtn.Click += ShowItems;
+
+            _rightClickDataGridView_ReturnBtn = CustomControls.ConstructBtnForMenu("Return product", CustomControls.PanelBtnWidth, true, flowPanel);
+            _rightClickDataGridView_ReturnBtn.Click += ReturnProduct;
+
+            _rightClickDataGridView_UndoReturnBtn = CustomControls.ConstructBtnForMenu("Undo return", CustomControls.PanelBtnWidth, true, flowPanel);
+            _rightClickDataGridView_UndoReturnBtn.Click += UndoReturnProduct;
 
             RightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
@@ -1446,6 +1470,33 @@ namespace Sales_Tracker.UI
         {
             Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             Tools.OpenForm(new ItemsInTransaction_Form(grid.SelectedRows[0]));
+        }
+        private static void ReturnProduct(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow = grid.SelectedRows[0];
+            bool isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
+
+            using ReturnProduct_Form returnForm = new(selectedRow, isPurchase);
+            if (returnForm.ShowDialog() == DialogResult.OK)
+            {
+                CustomControls.CloseAllPanels();
+            }
+        }
+        private static void UndoReturnProduct(object sender, EventArgs e)
+        {
+            Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
+            if (grid.SelectedRows.Count != 1) { return; }
+
+            DataGridViewRow selectedRow = grid.SelectedRows[0];
+
+            using UndoReturn_Form undoForm = new(selectedRow);
+            if (undoForm.ShowDialog() == DialogResult.OK)
+            {
+                CustomControls.CloseAllPanels();
+            }
         }
         private static void DeleteRow(object sender, EventArgs e)
         {

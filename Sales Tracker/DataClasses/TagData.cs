@@ -1,14 +1,13 @@
 ﻿namespace Sales_Tracker.DataClasses
 {
     /// <summary>
-    /// Represents various cost-related data associated with a sales transaction, including pricing, shipping, tax, and total amounts in USD.
+    /// Represents cost-related data associated with a transaction.
     /// This object is stored in the Tag property of each row in the DataGridView.
-    /// 
-    /// Each property in this class is represented in USD, the world reserve currency, to convert to other currencies.
-    /// These USD values are used for calculations, ensuring accurate exchange rate conversions.
+    /// USD values are used to convert to other currencies, because it's the world reserve currency.
     /// </summary>
     public class TagData
     {
+        // Finance related properties
         public decimal PricePerUnitUSD { get; set; }
         public decimal ShippingUSD { get; set; }
         public decimal TaxUSD { get; set; }
@@ -24,5 +23,11 @@
         public decimal OriginalDiscount { get; set; }
         public decimal OriginalChargedDifference { get; set; }
         public decimal OriginalChargedOrCredited { get; set; }
+
+        // Return related properties
+        public bool IsReturned { get; set; } = false;
+        public DateTime? ReturnDate { get; set; }
+        public string ReturnReason { get; set; }
+        public string ReturnedBy { get; set; }
     }
 }

@@ -267,10 +267,9 @@ namespace Sales_Tracker
             Upgrade_Button.FillColor = CustomColors.ToolbarBackground;
             Help_Button.FillColor = CustomColors.ToolbarBackground;
 
-            ShowingResultsFor_Label.ForeColor = CustomColors.Text;
             ReselectButton();
 
-            ThemeManager.SetThemeForControl([
+            ThemeManager.SetThemeForControls([
                 _purchaseTotals_Chart,
                 _purchaseDistribution_Chart,
                 _saleTotals_Chart,
