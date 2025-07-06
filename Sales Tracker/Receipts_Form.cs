@@ -282,7 +282,7 @@ namespace Sales_Tracker
                     row.Cells[ReadOnlyVariables.Category_column].Value.ToString(),
                     row.Cells[ReadOnlyVariables.Company_column].Value.ToString(),
                     row.Cells[ReadOnlyVariables.Date_column].Value.ToString(),
-                    row.Cells[ReadOnlyVariables.Accountant_column].Value.ToString());
+                    row.Cells[ReadOnlyVariables.Total_column].Value.ToString());
 
                 Receipts_DataGridView.Rows[^1].Tag = receipt;
 

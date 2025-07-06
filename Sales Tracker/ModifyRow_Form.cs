@@ -777,7 +777,7 @@ namespace Sales_Tracker
                         column == ReadOnlyVariables.Shipping_column ||
                         column == ReadOnlyVariables.Tax_column ||
                         column == ReadOnlyVariables.Fee_column ||
-                        column == ReadOnlyVariables.Accountant_column)
+                        column == ReadOnlyVariables.Total_column)
                     {
                         ProcessNumericColumn(textBox, column);
                     }

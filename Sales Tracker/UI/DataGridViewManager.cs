@@ -328,7 +328,7 @@ namespace Sales_Tracker.UI
             ReadOnlyVariables.Fee_column,
             ReadOnlyVariables.Discount_column,
             ReadOnlyVariables.ChargedDifference_column,
-            ReadOnlyVariables.Accountant_column
+            ReadOnlyVariables.Total_column
         ];
         private static bool IsMoneyColumn(string columnName)
         {
@@ -908,7 +908,7 @@ namespace Sales_Tracker.UI
             }
 
             // Calculate charged difference: Actual Total - Expected Total
-            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[ReadOnlyVariables.Accountant_column].Value);
+            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[ReadOnlyVariables.Total_column].Value);
             decimal chargedDifference = actualTotal - expectedTotal;
 
             selectedRow.Cells[ReadOnlyVariables.ChargedDifference_column].Value = chargedDifference.ToString("N2");
@@ -936,7 +936,7 @@ namespace Sales_Tracker.UI
             }
 
             // Calculate charged difference: Actual Total - Expected Total
-            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[ReadOnlyVariables.Accountant_column].Value);
+            decimal actualTotal = Convert.ToDecimal(selectedRow.Cells[ReadOnlyVariables.Total_column].Value);
             decimal chargedDifference = actualTotal - expectedTotal;
 
             selectedRow.Cells[ReadOnlyVariables.ChargedDifference_column].Value = chargedDifference.ToString("N2");

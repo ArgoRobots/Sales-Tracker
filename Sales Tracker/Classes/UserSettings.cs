@@ -336,7 +336,7 @@ namespace Sales_Tracker.Classes
             row.Cells[ReadOnlyVariables.Tax_column].Value = tagData.OriginalTax.ToString("N2");
             row.Cells[ReadOnlyVariables.Fee_column].Value = tagData.OriginalFee.ToString("N2");
             row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = tagData.OriginalChargedDifference.ToString("N2");
-            row.Cells[ReadOnlyVariables.Accountant_column].Value = tagData.OriginalChargedOrCredited.ToString("N2");
+            row.Cells[ReadOnlyVariables.Total_column].Value = tagData.OriginalChargedOrCredited.ToString("N2");
         }
         private static void UpdateRowWithConvertedValues(DataGridViewRow row, TagData tagData, decimal USDToDefault)
         {
@@ -345,7 +345,7 @@ namespace Sales_Tracker.Classes
             row.Cells[ReadOnlyVariables.Tax_column].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
             row.Cells[ReadOnlyVariables.Fee_column].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
             row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
-            row.Cells[ReadOnlyVariables.Accountant_column].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Total_column].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
         }
         private static void UpdateMultiItemRowWithOriginalValues(DataGridViewRow row, TagData tagData, List<string> itemList)
         {
@@ -353,7 +353,7 @@ namespace Sales_Tracker.Classes
             row.Cells[ReadOnlyVariables.Tax_column].Value = tagData.OriginalTax.ToString("N2");
             row.Cells[ReadOnlyVariables.Fee_column].Value = tagData.OriginalFee.ToString("N2");
             row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = tagData.OriginalChargedDifference.ToString("N2");
-            row.Cells[ReadOnlyVariables.Accountant_column].Value = tagData.OriginalChargedOrCredited.ToString("N2");
+            row.Cells[ReadOnlyVariables.Total_column].Value = tagData.OriginalChargedOrCredited.ToString("N2");
 
             UpdateItemList(row, itemList, useOriginalPrice: true, tagData);
         }
@@ -363,7 +363,7 @@ namespace Sales_Tracker.Classes
             row.Cells[ReadOnlyVariables.Tax_column].Value = (tagData.TaxUSD * USDToDefault).ToString("N2");
             row.Cells[ReadOnlyVariables.Fee_column].Value = (tagData.FeeUSD * USDToDefault).ToString("N2");
             row.Cells[ReadOnlyVariables.ChargedDifference_column].Value = (tagData.ChargedDifferenceUSD * USDToDefault).ToString("N2");
-            row.Cells[ReadOnlyVariables.Accountant_column].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
+            row.Cells[ReadOnlyVariables.Total_column].Value = (tagData.ChargedOrCreditedUSD * USDToDefault).ToString("N2");
 
             UpdateItemList(row, itemList, useOriginalPrice: false, tagData, USDToDefault);
         }
