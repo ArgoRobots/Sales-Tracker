@@ -116,7 +116,7 @@ namespace Sales_Tracker.Theme
 
             // DataGridView colors
             DataGridViewTheme = DataGridViewPresetThemes.White;
-            ReturnedItemBackground = Color.FromArgb(255, 245, 245);
+            ReturnedItemBackground = Color.FromArgb(255, 215, 215);
             ReturnedItemSelection = Color.FromArgb(240, 220, 220);
             ReturnedItemText = Color.FromArgb(140, 70, 70);
 

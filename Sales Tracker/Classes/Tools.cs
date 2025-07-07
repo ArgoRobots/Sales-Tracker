@@ -118,7 +118,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Truncates text and adds ellipsis (...) to fit within the specified width for controls that don't support AutoEllipsis.
         /// For labels, consider using the AutoEllipsis property instead as it's more efficient and handles resizing automatically.
-        /// </remarks>
+        /// </summary>
         public static string AddEllipsisToString(string text, Font font, int availableWidth)
         {
             using Graphics g = Graphics.FromHwnd(IntPtr.Zero);
