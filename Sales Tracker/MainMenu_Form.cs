@@ -1094,14 +1094,14 @@ namespace Sales_Tracker
                     return;
                 }
 
-                ShowingResultsFor_Label.Text = "AI search in progress...";
+                ShowingResultsFor_Label.Text = LanguageManager.TranslateString("AI search in progress...");
                 CenterShowingResultsLabel();
                 await Search_TextBox.EnhanceSearchAsync();
             }
             // Show AI search prompt for AI queries (but don't start regular search)
             else if (isAIQuery)
             {
-                ShowingResultsFor_Label.Text = "Press enter to begin AI search";
+                ShowingResultsFor_Label.Text = LanguageManager.TranslateString("Press enter to begin AI search");
                 CenterShowingResultsLabel();
             }
             // Start timer for regular searches (only if not an AI query)
