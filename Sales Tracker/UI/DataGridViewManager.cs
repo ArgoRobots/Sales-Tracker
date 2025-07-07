@@ -496,8 +496,7 @@ namespace Sales_Tracker.UI
             }
 
             string transactionType = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase
-                ? "purchase"
-                : "sale";
+                ? "purchase" : "sale";
 
             if (e.Row.DataGridView.Rows.Count == 1)
             {

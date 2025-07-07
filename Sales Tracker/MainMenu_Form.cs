@@ -21,7 +21,7 @@ namespace Sales_Tracker
 
         // Properties
         private static MainMenu_Form _instance;
-        public static readonly string noteTextKey = "note", rowTagKey = "RowTag", itemsKey = "Items", purchaseDataKey = "PurchaseData", tagKey = "Tag";
+        public static readonly string _noteTextKey = "note", _rowTagKey = "RowTag", _itemsKey = "Items", _purchaseDataKey = "PurchaseData", _tagKey = "Tag";
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -443,13 +443,13 @@ namespace Sales_Tracker
         private static string?[] ExtractCellValues(Dictionary<string, object> rowData)
         {
             return rowData
-                .Where(kv => kv.Key != rowTagKey && kv.Key != noteTextKey)
+                .Where(kv => kv.Key != _rowTagKey && kv.Key != _noteTextKey)
                 .Select(kv => kv.Value?.ToString())
                 .ToArray();
         }
         private static void ProcessRowTag(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
         {
-            if (!rowData.TryGetValue(rowTagKey, out object value) || value is not JObject jsonObject)
+            if (!rowData.TryGetValue(_rowTagKey, out object value) || value is not JObject jsonObject)
             {
                 return;
             }
@@ -477,12 +477,12 @@ namespace Sales_Tracker
         {
             rowTag = null;
 
-            if (!tagObject.TryGetValue(itemsKey, out object? itemsElement) || itemsElement is not JArray itemsArray)
+            if (!tagObject.TryGetValue(_itemsKey, out object? itemsElement) || itemsElement is not JArray itemsArray)
             {
                 return false;
             }
 
-            if (!tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement) || purchaseDataElement is not JObject purchaseDataObject)
+            if (!tagObject.TryGetValue(_purchaseDataKey, out object? purchaseDataElement) || purchaseDataElement is not JObject purchaseDataObject)
             {
                 return false;
             }
@@ -502,8 +502,8 @@ namespace Sales_Tracker
         {
             tag = null;
 
-            if (!tagObject.TryGetValue(tagKey, out object? tagStringElement) ||
-                !tagObject.TryGetValue(purchaseDataKey, out object? purchaseDataElement))
+            if (!tagObject.TryGetValue(_tagKey, out object? tagStringElement) ||
+                !tagObject.TryGetValue(_purchaseDataKey, out object? purchaseDataElement))
             {
                 return false;
             }
@@ -529,7 +529,7 @@ namespace Sales_Tracker
         }
         private static void ProcessNoteText(Guna2DataGridView dataGridView, Dictionary<string, object> rowData, int rowIndex)
         {
-            if (!rowData.TryGetValue(noteTextKey, out object noteValue))
+            if (!rowData.TryGetValue(_noteTextKey, out object noteValue))
             {
                 return;
             }
@@ -1821,7 +1821,7 @@ namespace Sales_Tracker
                     DataGridViewCell cell = row.Cells[i];
                     if (cell.Value?.ToString() == ReadOnlyVariables.Show_text && cell.Tag != null)
                     {
-                        rowData[noteTextKey] = cell.Tag;
+                        rowData[_noteTextKey] = cell.Tag;
                     }
                     else
                     {
@@ -1832,7 +1832,7 @@ namespace Sales_Tracker
                 // Add the row tag
                 if (row.Tag is (List<string> tagList, TagData purchaseData))
                 {
-                    rowData[rowTagKey] = new
+                    rowData[_rowTagKey] = new
                     {
                         Items = tagList,
                         PurchaseData = purchaseData
@@ -1840,7 +1840,7 @@ namespace Sales_Tracker
                 }
                 else if (row.Tag is (string tagString, TagData purchaseData1))
                 {
-                    rowData[rowTagKey] = new
+                    rowData[_rowTagKey] = new
                     {
                         Tag = tagString,
                         PurchaseData = purchaseData1
@@ -1848,7 +1848,7 @@ namespace Sales_Tracker
                 }
                 else if (row.Tag is TagData purchaseData2)
                 {
-                    rowData[rowTagKey] = new
+                    rowData[_rowTagKey] = new
                     {
                         PurchaseData = purchaseData2
                     };
