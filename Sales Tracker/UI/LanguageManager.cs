@@ -423,7 +423,8 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Translates a string using cached translations.
+        /// Translates a string using cached translations. 
+        /// The string also needs to be added to TranslationGenerator.CollectStringsToTranslate().
         /// </summary>
         public static string TranslateString(string text)
         {
@@ -439,7 +440,7 @@ namespace Sales_Tracker.UI
             }
 
             // Use the text itself as the cache key
-            string cacheKey = GetStringKey(text.Replace(" ", "_"));
+            string cacheKey = GetStringKey(text);
 
             // Check if we have this translation cached
             if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations) &&
