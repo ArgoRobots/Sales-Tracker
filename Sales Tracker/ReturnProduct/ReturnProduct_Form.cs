@@ -20,6 +20,7 @@ namespace Sales_Tracker.ReturnProduct
 
             LoadTransactionData();
             UpdateTheme();
+            UpdateCharacterCount();
             LanguageManager.UpdateLanguageForControl(this);
         }
         private void LoadTransactionData()
@@ -30,7 +31,7 @@ namespace Sales_Tracker.ReturnProduct
             string date = _transactionRow.Cells[ReadOnlyVariables.Date_column].Value.ToString();
             string transactionType = _isPurchase ? "Purchase" : "Sale";
 
-            TransactinDetails_Label.Text = $"{transactionType} Transaction Details:";
+            TransactionDetails_Label.Text = $"{transactionType} Transaction Details:";
 
             TransactionInfo_Label.Text = $"Transaction ID: {transactionId}\n" +
                                          $"Product: {productName}\n" +
@@ -64,6 +65,38 @@ namespace Sales_Tracker.ReturnProduct
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+        private void AdditionalNotes_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateInputs();
+            UpdateCharacterCount();
+        }
+        private void ReturnReason_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ValidateInputs();
+        }
+
+        // Methods
+        private void ValidateInputs()
+        {
+            ProcessReturn_Button.Enabled = ReturnReason_ComboBox.SelectedIndex != -1;
+        }
+        private void UpdateCharacterCount()
+        {
+            int currentLength = AdditionalNotes_TextBox.Text.Length;
+            int maxLength = AdditionalNotes_TextBox.MaxLength;
+
+            CharacterCount_Label.Text = $"{currentLength}/{maxLength}";
+
+            // Change color to red when at max limit
+            if (currentLength >= maxLength)
+            {
+                CharacterCount_Label.ForeColor = CustomColors.AccentRed;
+            }
+            else
+            {
+                CharacterCount_Label.ForeColor = CustomColors.Text;
+            }
         }
     }
 }

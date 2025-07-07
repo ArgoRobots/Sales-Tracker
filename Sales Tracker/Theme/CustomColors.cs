@@ -31,6 +31,9 @@ namespace Sales_Tracker.Theme
         public static Color ContentPanelBackground { get; private set; }
         public static DataGridViewPresetThemes DataGridViewTheme { get; private set; }
         public static Color AccentGreen { get; private set; }
+        public static Color ReturnedItemBackground { get; private set; }
+        public static Color ReturnedItemSelection { get; private set; }
+        public static Color ReturnedItemText { get; private set; }
 
         /// <summary>
         /// Sets all color values based on the current theme. These colors are used for UI controls throughout the application.
@@ -46,6 +49,7 @@ namespace Sales_Tracker.Theme
                 SetLightThemeColors();
             }
         }
+
         private static void SetDarkThemeColors()
         {
             // Control colors
@@ -74,8 +78,11 @@ namespace Sales_Tracker.Theme
             ToolbarBackground = Color.FromArgb(20, 20, 20);
             ContentPanelBackground = Color.FromArgb(50, 50, 50);
 
-            // Theme
+            // DataGridView colors
             DataGridViewTheme = DataGridViewPresetThemes.Dark;
+            ReturnedItemBackground = Color.FromArgb(80, 45, 45);
+            ReturnedItemSelection = Color.FromArgb(100, 60, 60);
+            ReturnedItemText = Color.FromArgb(255, 180, 180);
 
             // Accent colors
             AccentGreen = Color.FromArgb(168, 233, 203);
@@ -108,8 +115,11 @@ namespace Sales_Tracker.Theme
             ToolbarBackground = Color.FromArgb(204, 204, 204);
             ContentPanelBackground = Color.FromArgb(250, 250, 250);
 
-            // Theme
+            // DataGridView colors
             DataGridViewTheme = DataGridViewPresetThemes.White;
+            ReturnedItemBackground = Color.FromArgb(255, 245, 245);
+            ReturnedItemSelection = Color.FromArgb(240, 220, 220);
+            ReturnedItemText = Color.FromArgb(140, 70, 70);
 
             // Accent colors
             AccentGreen = Color.FromArgb(60, 160, 120);

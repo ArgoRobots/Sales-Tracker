@@ -19,6 +19,7 @@ namespace Sales_Tracker
 
             LoadTransactionData();
             UpdateTheme();
+            UpdateCharacterCount();
             LanguageManager.UpdateLanguageForControl(this);
         }
         private void LoadTransactionData()
@@ -30,7 +31,7 @@ namespace Sales_Tracker
             bool isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
             string transactionType = isPurchase ? "Purchase" : "Sale";
 
-            TransactinDetails_Label.Text = $"{transactionType} Transaction Details:";
+            TransactionDetails_Label.Text = $"{transactionType} Transaction Details:";
 
             TransactionInfo_Label.Text = $"Transaction ID: {transactionId}\n" +
                                          $"Product: {productName}\n" +
@@ -64,6 +65,30 @@ namespace Sales_Tracker
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+        private void UndoReason_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            UndoReturn_Button.Enabled = !string.IsNullOrWhiteSpace(UndoReason_TextBox.Text);
+            UpdateCharacterCount();
+        }
+
+        // Methods
+        private void UpdateCharacterCount()
+        {
+            int currentLength = UndoReason_TextBox.Text.Length;
+            int maxLength = UndoReason_TextBox.MaxLength;
+
+            CharacterCount_Label.Text = $"{currentLength}/{maxLength}";
+
+            // Change color to red when at max limit
+            if (currentLength >= maxLength)
+            {
+                CharacterCount_Label.ForeColor = CustomColors.AccentRed;
+            }
+            else
+            {
+                CharacterCount_Label.ForeColor = CustomColors.Text;
+            }
         }
     }
 }

@@ -87,6 +87,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // General_Label
             // 
+            General_Label.Anchor = AnchorStyles.Top;
             General_Label.AutoSize = true;
             General_Label.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold);
             General_Label.Location = new Point(566, 37);

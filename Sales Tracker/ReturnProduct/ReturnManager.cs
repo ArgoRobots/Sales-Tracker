@@ -1,11 +1,10 @@
 ﻿using Sales_Tracker.DataClasses;
+using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.ReturnProduct
 {
     public static class ReturnManager
     {
-        private static readonly Color ReturnedRowBackColor = Color.FromArgb(250, 235, 235);
-
         /// <summary>
         /// Processes a product return for the specified transaction row.
         /// </summary>
@@ -141,7 +140,7 @@ namespace Sales_Tracker.ReturnProduct
                 return (tagData.ReturnDate, tagData.ReturnReason, tagData.ReturnedBy);
             }
 
-            return (null, null, null);
+            return (null, "error", "error");
         }
 
         /// <summary>
@@ -151,14 +150,16 @@ namespace Sales_Tracker.ReturnProduct
         {
             if (isReturned)
             {
-                row.DefaultCellStyle.BackColor = ReturnedRowBackColor;
-                row.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 200, 255);
+                row.DefaultCellStyle.BackColor = CustomColors.ReturnedItemBackground;
+                row.DefaultCellStyle.SelectionBackColor = CustomColors.ReturnedItemSelection;
+                row.DefaultCellStyle.ForeColor = CustomColors.ReturnedItemText;
             }
             else
             {
-                // Reset to default colors - you may need to adjust these based on your theme
-                row.DefaultCellStyle.BackColor = Color.White;
-                row.DefaultCellStyle.SelectionBackColor = Color.FromArgb(94, 148, 255);
+                // Reset to default colors
+                row.DefaultCellStyle.BackColor = Color.Empty;
+                row.DefaultCellStyle.SelectionBackColor = Color.Empty;
+                row.DefaultCellStyle.ForeColor = Color.Empty;
             }
         }
 

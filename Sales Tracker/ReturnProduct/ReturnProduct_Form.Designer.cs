@@ -54,7 +54,8 @@ namespace Sales_Tracker.ReturnProduct
             AdditionalNotes_TextBox = new Guna2TextBox();
             ProcessReturn_Button = new Guna2Button();
             Cancel_Button = new Guna2Button();
-            TransactinDetails_Label = new Label();
+            TransactionDetails_Label = new Label();
+            CharacterCount_Label = new Label();
             SuspendLayout();
             // 
             // Title_Label
@@ -65,27 +66,27 @@ namespace Sales_Tracker.ReturnProduct
             Title_Label.Location = new Point(241, 30);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(230, 45);
-            Title_Label.TabIndex = 1;
+            Title_Label.TabIndex = 0;
             Title_Label.Text = "Process Return";
             // 
             // TransactionInfo_Label
             // 
             TransactionInfo_Label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             TransactionInfo_Label.Font = new Font("Segoe UI", 11F);
-            TransactionInfo_Label.Location = new Point(72, 120);
+            TransactionInfo_Label.Location = new Point(72, 125);
             TransactionInfo_Label.Name = "TransactionInfo_Label";
-            TransactionInfo_Label.Size = new Size(569, 150);
-            TransactionInfo_Label.TabIndex = 2;
+            TransactionInfo_Label.Size = new Size(569, 145);
+            TransactionInfo_Label.TabIndex = 0;
             TransactionInfo_Label.Text = "Transaction info...";
             // 
             // ReturnReason_Label
             // 
             ReturnReason_Label.AutoSize = true;
             ReturnReason_Label.Font = new Font("Segoe UI", 11F);
-            ReturnReason_Label.Location = new Point(45, 288);
+            ReturnReason_Label.Location = new Point(42, 294);
             ReturnReason_Label.Name = "ReturnReason_Label";
             ReturnReason_Label.Size = new Size(186, 30);
-            ReturnReason_Label.TabIndex = 3;
+            ReturnReason_Label.TabIndex = 0;
             ReturnReason_Label.Text = "Reason for return:";
             // 
             // ReturnReason_ComboBox
@@ -103,12 +104,13 @@ namespace Sales_Tracker.ReturnProduct
             ReturnReason_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             ReturnReason_ComboBox.ItemHeight = 44;
             ReturnReason_ComboBox.Items.AddRange(new object[] { "Defective/Damaged Product", "Wrong Item Received", "Customer Changed Mind", "Quality Issues", "Product Not as Described", "Duplicate Order", "Expired Product", "Missing Parts/Accessories", "Size/Fit Issues", "Other" });
-            ReturnReason_ComboBox.Location = new Point(45, 323);
+            ReturnReason_ComboBox.Location = new Point(44, 329);
             ReturnReason_ComboBox.Margin = new Padding(4, 5, 4, 5);
             ReturnReason_ComboBox.Name = "ReturnReason_ComboBox";
             ReturnReason_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             ReturnReason_ComboBox.Size = new Size(624, 50);
-            ReturnReason_ComboBox.TabIndex = 4;
+            ReturnReason_ComboBox.TabIndex = 1;
+            ReturnReason_ComboBox.SelectedIndexChanged += ReturnReason_ComboBox_SelectedIndexChanged;
             // 
             // AdditionalNotes_Label
             // 
@@ -117,7 +119,7 @@ namespace Sales_Tracker.ReturnProduct
             AdditionalNotes_Label.Location = new Point(42, 408);
             AdditionalNotes_Label.Name = "AdditionalNotes_Label";
             AdditionalNotes_Label.Size = new Size(274, 30);
-            AdditionalNotes_Label.TabIndex = 5;
+            AdditionalNotes_Label.TabIndex = 0;
             AdditionalNotes_Label.Text = "Additional notes (optional):";
             // 
             // AdditionalNotes_TextBox
@@ -136,12 +138,15 @@ namespace Sales_Tracker.ReturnProduct
             AdditionalNotes_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
             AdditionalNotes_TextBox.Location = new Point(42, 446);
             AdditionalNotes_TextBox.Margin = new Padding(6, 8, 6, 8);
+            AdditionalNotes_TextBox.MaxLength = 500;
+            AdditionalNotes_TextBox.Multiline = true;
             AdditionalNotes_TextBox.Name = "AdditionalNotes_TextBox";
             AdditionalNotes_TextBox.PlaceholderText = "";
             AdditionalNotes_TextBox.SelectedText = "";
             AdditionalNotes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            AdditionalNotes_TextBox.Size = new Size(629, 100);
-            AdditionalNotes_TextBox.TabIndex = 6;
+            AdditionalNotes_TextBox.Size = new Size(630, 120);
+            AdditionalNotes_TextBox.TabIndex = 2;
+            AdditionalNotes_TextBox.TextChanged += AdditionalNotes_TextBox_TextChanged;
             // 
             // ProcessReturn_Button
             // 
@@ -154,15 +159,16 @@ namespace Sales_Tracker.ReturnProduct
             ProcessReturn_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             ProcessReturn_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             ProcessReturn_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            ProcessReturn_Button.Enabled = false;
             ProcessReturn_Button.FillColor = Color.White;
             ProcessReturn_Button.Font = new Font("Segoe UI", 10F);
             ProcessReturn_Button.ForeColor = Color.Black;
-            ProcessReturn_Button.Location = new Point(500, 585);
+            ProcessReturn_Button.Location = new Point(500, 625);
             ProcessReturn_Button.Margin = new Padding(4, 5, 4, 5);
             ProcessReturn_Button.Name = "ProcessReturn_Button";
             ProcessReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ProcessReturn_Button.Size = new Size(200, 45);
-            ProcessReturn_Button.TabIndex = 7;
+            ProcessReturn_Button.TabIndex = 4;
             ProcessReturn_Button.Text = "Process Return";
             ProcessReturn_Button.Click += ProcessReturn_Button_Click;
             // 
@@ -180,31 +186,43 @@ namespace Sales_Tracker.ReturnProduct
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(292, 585);
+            Cancel_Button.Location = new Point(292, 625);
             Cancel_Button.Margin = new Padding(4, 5, 4, 5);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             Cancel_Button.Size = new Size(200, 45);
-            Cancel_Button.TabIndex = 8;
+            Cancel_Button.TabIndex = 3;
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
             // 
-            // TransactinDetails_Label
+            // TransactionDetails_Label
             // 
-            TransactinDetails_Label.AutoSize = true;
-            TransactinDetails_Label.Font = new Font("Segoe UI", 11F);
-            TransactinDetails_Label.Location = new Point(42, 90);
-            TransactinDetails_Label.Name = "TransactinDetails_Label";
-            TransactinDetails_Label.Size = new Size(181, 30);
-            TransactinDetails_Label.TabIndex = 9;
-            TransactinDetails_Label.Text = "Transactin details:";
+            TransactionDetails_Label.AutoSize = true;
+            TransactionDetails_Label.Font = new Font("Segoe UI", 11F);
+            TransactionDetails_Label.Location = new Point(42, 90);
+            TransactionDetails_Label.Name = "TransactionDetails_Label";
+            TransactionDetails_Label.Size = new Size(194, 30);
+            TransactionDetails_Label.TabIndex = 0;
+            TransactionDetails_Label.Text = "Transaction details:";
+            // 
+            // CharacterCount_Label
+            // 
+            CharacterCount_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CharacterCount_Label.AutoSize = true;
+            CharacterCount_Label.Font = new Font("Segoe UI", 10F);
+            CharacterCount_Label.Location = new Point(608, 574);
+            CharacterCount_Label.Name = "CharacterCount_Label";
+            CharacterCount_Label.Size = new Size(64, 28);
+            CharacterCount_Label.TabIndex = 0;
+            CharacterCount_Label.Text = "0/500";
             // 
             // ReturnProduct_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(713, 644);
-            Controls.Add(TransactinDetails_Label);
+            ClientSize = new Size(713, 684);
+            Controls.Add(CharacterCount_Label);
+            Controls.Add(TransactionDetails_Label);
             Controls.Add(Title_Label);
             Controls.Add(TransactionInfo_Label);
             Controls.Add(Cancel_Button);
@@ -217,7 +235,7 @@ namespace Sales_Tracker.ReturnProduct
             Margin = new Padding(4, 5, 4, 5);
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(735, 700);
+            MinimumSize = new Size(735, 720);
             Name = "ReturnProduct_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
@@ -227,6 +245,7 @@ namespace Sales_Tracker.ReturnProduct
 
         #endregion
 
-        private Label TransactinDetails_Label;
+        private Label TransactionDetails_Label;
+        private Label CharacterCount_Label;
     }
 }

@@ -50,8 +50,9 @@ namespace Sales_Tracker
             UndoReason_TextBox = new Guna2TextBox();
             UndoReturn_Button = new Guna2Button();
             Cancel_Button = new Guna2Button();
-            TransactinDetails_Label = new Label();
-            label1 = new Label();
+            TransactionDetails_Label = new Label();
+            ReturnInformation_Label = new Label();
+            CharacterCount_Label = new Label();
             SuspendLayout();
             // 
             // Title_Label
@@ -69,9 +70,9 @@ namespace Sales_Tracker
             // 
             TransactionInfo_Label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             TransactionInfo_Label.Font = new Font("Segoe UI", 11F);
-            TransactionInfo_Label.Location = new Point(72, 120);
+            TransactionInfo_Label.Location = new Point(72, 125);
             TransactionInfo_Label.Name = "TransactionInfo_Label";
-            TransactionInfo_Label.Size = new Size(569, 150);
+            TransactionInfo_Label.Size = new Size(569, 145);
             TransactionInfo_Label.TabIndex = 2;
             TransactionInfo_Label.Text = "Transaction info...";
             // 
@@ -79,7 +80,7 @@ namespace Sales_Tracker
             // 
             ReturnInfo_Label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ReturnInfo_Label.Font = new Font("Segoe UI", 11F);
-            ReturnInfo_Label.Location = new Point(72, 298);
+            ReturnInfo_Label.Location = new Point(72, 315);
             ReturnInfo_Label.Name = "ReturnInfo_Label";
             ReturnInfo_Label.Size = new Size(569, 80);
             ReturnInfo_Label.TabIndex = 3;
@@ -89,7 +90,7 @@ namespace Sales_Tracker
             // 
             UndoReason_Label.AutoSize = true;
             UndoReason_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            UndoReason_Label.Location = new Point(44, 433);
+            UndoReason_Label.Location = new Point(42, 408);
             UndoReason_Label.Name = "UndoReason_Label";
             UndoReason_Label.Size = new Size(272, 30);
             UndoReason_Label.TabIndex = 4;
@@ -109,14 +110,17 @@ namespace Sales_Tracker
             UndoReason_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             UndoReason_TextBox.Font = new Font("Segoe UI", 9F);
             UndoReason_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            UndoReason_TextBox.Location = new Point(42, 469);
+            UndoReason_TextBox.Location = new Point(42, 446);
             UndoReason_TextBox.Margin = new Padding(6, 8, 6, 8);
+            UndoReason_TextBox.MaxLength = 500;
+            UndoReason_TextBox.Multiline = true;
             UndoReason_TextBox.Name = "UndoReason_TextBox";
             UndoReason_TextBox.PlaceholderText = "";
             UndoReason_TextBox.SelectedText = "";
             UndoReason_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            UndoReason_TextBox.Size = new Size(629, 100);
+            UndoReason_TextBox.Size = new Size(630, 120);
             UndoReason_TextBox.TabIndex = 5;
+            UndoReason_TextBox.TextChanged += UndoReason_TextBox_TextChanged;
             // 
             // UndoReturn_Button
             // 
@@ -129,10 +133,11 @@ namespace Sales_Tracker
             UndoReturn_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             UndoReturn_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             UndoReturn_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            UndoReturn_Button.Enabled = false;
             UndoReturn_Button.FillColor = Color.White;
             UndoReturn_Button.Font = new Font("Segoe UI", 10F);
             UndoReturn_Button.ForeColor = Color.Black;
-            UndoReturn_Button.Location = new Point(500, 585);
+            UndoReturn_Button.Location = new Point(500, 625);
             UndoReturn_Button.Margin = new Padding(4, 5, 4, 5);
             UndoReturn_Button.Name = "UndoReturn_Button";
             UndoReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -155,7 +160,7 @@ namespace Sales_Tracker
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(292, 585);
+            Cancel_Button.Location = new Point(292, 625);
             Cancel_Button.Margin = new Padding(4, 5, 4, 5);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -164,33 +169,45 @@ namespace Sales_Tracker
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
             // 
-            // TransactinDetails_Label
+            // TransactionDetails_Label
             // 
-            TransactinDetails_Label.AutoSize = true;
-            TransactinDetails_Label.Font = new Font("Segoe UI", 11F);
-            TransactinDetails_Label.Location = new Point(42, 90);
-            TransactinDetails_Label.Name = "TransactinDetails_Label";
-            TransactinDetails_Label.Size = new Size(194, 30);
-            TransactinDetails_Label.TabIndex = 10;
-            TransactinDetails_Label.Text = "Transaction details:";
+            TransactionDetails_Label.AutoSize = true;
+            TransactionDetails_Label.Font = new Font("Segoe UI", 11F);
+            TransactionDetails_Label.Location = new Point(42, 90);
+            TransactionDetails_Label.Name = "TransactionDetails_Label";
+            TransactionDetails_Label.Size = new Size(194, 30);
+            TransactionDetails_Label.TabIndex = 10;
+            TransactionDetails_Label.Text = "Transaction details:";
             // 
-            // label1
+            // ReturnInformation_Label
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 11F);
-            label1.Location = new Point(44, 268);
-            label1.Name = "label1";
-            label1.Size = new Size(199, 30);
-            label1.TabIndex = 11;
-            label1.Text = "Return information:";
+            ReturnInformation_Label.AutoSize = true;
+            ReturnInformation_Label.Font = new Font("Segoe UI", 11F);
+            ReturnInformation_Label.Location = new Point(44, 285);
+            ReturnInformation_Label.Name = "ReturnInformation_Label";
+            ReturnInformation_Label.Size = new Size(199, 30);
+            ReturnInformation_Label.TabIndex = 11;
+            ReturnInformation_Label.Text = "Return information:";
+            // 
+            // CharacterCount_Label
+            // 
+            CharacterCount_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CharacterCount_Label.AutoSize = true;
+            CharacterCount_Label.Font = new Font("Segoe UI", 10F);
+            CharacterCount_Label.Location = new Point(608, 574);
+            CharacterCount_Label.Name = "CharacterCount_Label";
+            CharacterCount_Label.Size = new Size(64, 28);
+            CharacterCount_Label.TabIndex = 12;
+            CharacterCount_Label.Text = "0/500";
             // 
             // UndoReturn_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(713, 644);
-            Controls.Add(label1);
-            Controls.Add(TransactinDetails_Label);
+            ClientSize = new Size(713, 684);
+            Controls.Add(CharacterCount_Label);
+            Controls.Add(ReturnInformation_Label);
+            Controls.Add(TransactionDetails_Label);
             Controls.Add(Title_Label);
             Controls.Add(TransactionInfo_Label);
             Controls.Add(Cancel_Button);
@@ -202,7 +219,7 @@ namespace Sales_Tracker
             Margin = new Padding(4, 5, 4, 5);
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(735, 700);
+            MinimumSize = new Size(735, 720);
             Name = "UndoReturn_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
@@ -212,7 +229,8 @@ namespace Sales_Tracker
 
         #endregion
 
-        private Label TransactinDetails_Label;
-        private Label label1;
+        private Label TransactionDetails_Label;
+        private Label ReturnInformation_Label;
+        private Label CharacterCount_Label;
     }
 }
