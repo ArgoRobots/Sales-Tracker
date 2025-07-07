@@ -78,7 +78,8 @@ namespace Sales_Tracker
             // 
             // ReturnInfo_Label
             // 
-            ReturnInfo_Label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ReturnInfo_Label.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ReturnInfo_Label.AutoEllipsis = true;
             ReturnInfo_Label.Font = new Font("Segoe UI", 11F);
             ReturnInfo_Label.Location = new Point(72, 315);
             ReturnInfo_Label.Name = "ReturnInfo_Label";
@@ -88,6 +89,7 @@ namespace Sales_Tracker
             // 
             // UndoReason_Label
             // 
+            UndoReason_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             UndoReason_Label.AutoSize = true;
             UndoReason_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
             UndoReason_Label.Location = new Point(42, 468);
@@ -98,7 +100,7 @@ namespace Sales_Tracker
             // 
             // UndoReason_TextBox
             // 
-            UndoReason_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            UndoReason_TextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             UndoReason_TextBox.BorderRadius = 6;
             UndoReason_TextBox.Cursor = Cursors.IBeam;
             UndoReason_TextBox.CustomizableEdges = customizableEdges1;
@@ -191,7 +193,7 @@ namespace Sales_Tracker
             // 
             // CharacterCount_Label
             // 
-            CharacterCount_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CharacterCount_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             CharacterCount_Label.AutoSize = true;
             CharacterCount_Label.Font = new Font("Segoe UI", 10F);
             CharacterCount_Label.Location = new Point(608, 634);
