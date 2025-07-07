@@ -4,6 +4,7 @@ using Guna.UI2.WinForms;
 using OfficeOpenXml.Drawing.Chart;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.Data;
@@ -106,7 +107,7 @@ namespace Sales_Tracker.Charts
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
@@ -185,7 +186,7 @@ namespace Sales_Tracker.Charts
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double cost))
@@ -349,7 +350,7 @@ namespace Sales_Tracker.Charts
             // Calculate total revenue from sales
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
@@ -373,7 +374,7 @@ namespace Sales_Tracker.Charts
             // Subtract total cost from purchases
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
                 {
@@ -450,7 +451,7 @@ namespace Sales_Tracker.Charts
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 // Extract countries from the Tag
@@ -553,7 +554,7 @@ namespace Sales_Tracker.Charts
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 // Extract companies from the Tag
@@ -656,7 +657,7 @@ namespace Sales_Tracker.Charts
 
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 // Extract countries from the Tag
@@ -769,7 +770,7 @@ namespace Sales_Tracker.Charts
 
                 foreach (DataGridViewRow row in purchasesDataGridView.Rows)
                 {
-                    if (!row.Visible) { continue; }
+                    if (!IsRowValid(row)) { continue; }
                     anyRowsVisible = true;
 
                     string accountant = row.Cells[ReadOnlyVariables.Accountant_column].Value.ToString();
@@ -881,7 +882,7 @@ namespace Sales_Tracker.Charts
             // Calculate expenses totals by date
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -901,7 +902,7 @@ namespace Sales_Tracker.Charts
             // Calculate sales totals by date
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -1036,7 +1037,7 @@ namespace Sales_Tracker.Charts
             // Process sales data
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -1057,7 +1058,7 @@ namespace Sales_Tracker.Charts
             // Process purchases data
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -1204,7 +1205,7 @@ namespace Sales_Tracker.Charts
             // Process purchase transactions
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -1224,7 +1225,7 @@ namespace Sales_Tracker.Charts
             // Process sale transactions
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 anyRowsVisible = true;
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -1361,7 +1362,7 @@ namespace Sales_Tracker.Charts
             // Process purchase shipping costs
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) { continue; }
                 // Only skip free shipping if includeZeroShipping is false
                 if (shipping == 0 && !includeZeroShipping) { continue; }
@@ -1384,7 +1385,7 @@ namespace Sales_Tracker.Charts
             // Process sale shipping costs
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) { continue; }
                 // Only skip free shipping if includeZeroShipping is false
                 if (shipping == 0 && !includeZeroShipping) { continue; }
@@ -1532,7 +1533,7 @@ namespace Sales_Tracker.Charts
             // Process expense data
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -1552,7 +1553,7 @@ namespace Sales_Tracker.Charts
             // Process revenue data
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (!IsRowValid(row)) { continue; }
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
@@ -1667,6 +1668,10 @@ namespace Sales_Tracker.Charts
         }
 
         // Methods
+        public static bool IsRowValid(DataGridViewRow row)
+        {
+            return row.Visible && !ReturnManager.IsTransactionReturned(row);
+        }
         /// <summary>
         /// Sorts dictionary items by value in descending order and optionally groups smaller items into an "Other" category.
         /// </summary>
@@ -1812,7 +1817,7 @@ namespace Sales_Tracker.Charts
             {
                 foreach (DataGridViewRow row in rows)
                 {
-                    if (!row.Visible) { continue; }
+                    if (!IsRowValid(row)) { continue; }
 
                     if (row.Cells[ReadOnlyVariables.Date_column].Value != null)
                     {

@@ -1782,7 +1782,7 @@ namespace Sales_Tracker
 
             foreach (DataGridViewRow row in SelectedDataGridView.Rows)
             {
-                if (!row.Visible) { continue; }
+                if (LoadChart.IsRowValid(row)) { continue; }
                 totalVisibleRows++;
 
                 totalQuantity += Convert.ToInt32(row.Cells[Column.TotalItems.ToString()].Value);

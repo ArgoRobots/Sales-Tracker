@@ -41,13 +41,14 @@ namespace Sales_Tracker.ReturnProduct
             // Log the return
             string transactionId = row.Cells[ReadOnlyVariables.ID_column].Value?.ToString() ?? "Unknown";
             string productName = row.Cells[ReadOnlyVariables.Product_column].Value?.ToString() ?? "Unknown";
-            string logMessage = $"Returned {(MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale")} " +
-                              $"'{transactionId}' - {productName}. Reason: {reason}";
+            string logMessage = $"Returned {(MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases
+                ? "purchase" : "sale")} '{transactionId}' - {productName}. Reason: {reason}";
 
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, logMessage);
 
             SaveReturnChanges();
             MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+            MainMenu_Form.Instance.UpdateTotalLabels();
         }
 
         /// <summary>
@@ -83,16 +84,14 @@ namespace Sales_Tracker.ReturnProduct
             // Log the undo
             string transactionId = row.Cells[ReadOnlyVariables.ID_column].Value?.ToString() ?? "Unknown";
             string productName = row.Cells[ReadOnlyVariables.Product_column].Value?.ToString() ?? "Unknown";
-            string logMessage = $"Undid return for {(MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale")} " +
-                              $"'{transactionId}' - {productName}. Reason: {undoReason}";
+            string logMessage = $"Undid return for {(MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases
+                ? "purchase" : "sale")} '{transactionId}' - {productName}. Reason: {undoReason}";
 
             CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 2, logMessage);
 
-            // Save changes
             SaveReturnChanges();
-
-            // Refresh UI
             MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+            MainMenu_Form.Instance.UpdateTotalLabels();
         }
 
         /// <summary>

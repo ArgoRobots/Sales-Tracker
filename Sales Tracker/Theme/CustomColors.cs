@@ -49,7 +49,6 @@ namespace Sales_Tracker.Theme
                 SetLightThemeColors();
             }
         }
-
         private static void SetDarkThemeColors()
         {
             // Control colors
