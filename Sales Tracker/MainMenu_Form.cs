@@ -1366,7 +1366,7 @@ namespace Sales_Tracker
         }
         private void ShowShowingResultsForLabel()
         {
-            string text = "Showing results for";
+            string text = LanguageManager.TranslateString("Showing results for");
 
             // Get the appropriate display text for the search
             string displayedSearchText = Search_TextBox.Text.Trim();

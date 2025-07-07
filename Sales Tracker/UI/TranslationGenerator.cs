@@ -527,6 +527,7 @@ namespace Sales_Tracker.UI
                 "Sales",
                 "Search for purchases",
                 "Search for sales",
+                "Showing results for",
                 "Total expenses",
                 "Total sales",
                 "Verify license",
