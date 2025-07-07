@@ -161,25 +161,6 @@ namespace Sales_Tracker.ReturnProduct
                 row.DefaultCellStyle.ForeColor = Color.Empty;
             }
         }
-
-        /// <summary>
-        /// Calculates totals excluding returned transactions.
-        /// </summary>
-        public static decimal CalculateTotalExcludingReturns(DataGridView dataGridView, string totalColumn)
-        {
-            decimal total = 0;
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                if (!IsTransactionReturned(row))
-                {
-                    if (decimal.TryParse(row.Cells[totalColumn].Value?.ToString(), out decimal value))
-                    {
-                        total += value;
-                    }
-                }
-            }
-            return total;
-        }
         private static void SaveReturnChanges()
         {
             // Save both purchase and sale data
