@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             Cancel_Button = new Guna.UI2.WinForms.Guna2Button();
             Operation_Label = new Label();
@@ -45,7 +45,7 @@
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Title_Label.Location = new Point(239, 19);
+            Title_Label.Location = new Point(238, 19);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(350, 45);
             Title_Label.TabIndex = 0;
@@ -58,13 +58,13 @@
             Cancel_Button.BorderColor = Color.LightGray;
             Cancel_Button.BorderRadius = 2;
             Cancel_Button.BorderThickness = 1;
-            Cancel_Button.CustomizableEdges = customizableEdges5;
+            Cancel_Button.CustomizableEdges = customizableEdges1;
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(628, 467);
+            Cancel_Button.Location = new Point(626, 467);
             Cancel_Button.Name = "Cancel_Button";
-            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Cancel_Button.Size = new Size(200, 45);
             Cancel_Button.TabIndex = 1;
             Cancel_Button.Tag = "";
@@ -76,7 +76,7 @@
             Operation_Label.Anchor = AnchorStyles.Top;
             Operation_Label.AutoSize = true;
             Operation_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Operation_Label.Location = new Point(90, 164);
+            Operation_Label.Location = new Point(89, 164);
             Operation_Label.Name = "Operation_Label";
             Operation_Label.Size = new Size(122, 30);
             Operation_Label.TabIndex = 0;
@@ -87,7 +87,7 @@
             CurrentLanguage_Label.Anchor = AnchorStyles.Top;
             CurrentLanguage_Label.AutoSize = true;
             CurrentLanguage_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CurrentLanguage_Label.Location = new Point(90, 210);
+            CurrentLanguage_Label.Location = new Point(89, 210);
             CurrentLanguage_Label.Name = "CurrentLanguage_Label";
             CurrentLanguage_Label.Size = new Size(310, 30);
             CurrentLanguage_Label.TabIndex = 0;
@@ -97,10 +97,10 @@
             // 
             ProgressBar.Anchor = AnchorStyles.Top;
             ProgressBar.BorderRadius = 3;
-            ProgressBar.CustomizableEdges = customizableEdges7;
-            ProgressBar.Location = new Point(90, 261);
+            ProgressBar.CustomizableEdges = customizableEdges3;
+            ProgressBar.Location = new Point(89, 261);
             ProgressBar.Name = "ProgressBar";
-            ProgressBar.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            ProgressBar.ShadowDecoration.CustomizableEdges = customizableEdges4;
             ProgressBar.Size = new Size(646, 30);
             ProgressBar.TabIndex = 0;
             ProgressBar.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
@@ -110,7 +110,7 @@
             ProgressStats_Label.Anchor = AnchorStyles.Top;
             ProgressStats_Label.AutoSize = true;
             ProgressStats_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProgressStats_Label.Location = new Point(90, 304);
+            ProgressStats_Label.Location = new Point(89, 304);
             ProgressStats_Label.Name = "ProgressStats_Label";
             ProgressStats_Label.Size = new Size(283, 30);
             ProgressStats_Label.TabIndex = 2;
@@ -120,7 +120,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(840, 524);
+            ClientSize = new Size(838, 524);
             Controls.Add(ProgressStats_Label);
             Controls.Add(ProgressBar);
             Controls.Add(CurrentLanguage_Label);
@@ -128,6 +128,7 @@
             Controls.Add(Cancel_Button);
             Controls.Add(Title_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MinimumSize = new Size(860, 580);
             Name = "TranslationProgress_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
