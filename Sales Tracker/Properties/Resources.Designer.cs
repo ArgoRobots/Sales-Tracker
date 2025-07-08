@@ -163,6 +163,16 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Earth {
+            get {
+                object obj = ResourceManager.GetObject("Earth", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap EditBlack {
             get {
                 object obj = ResourceManager.GetObject("EditBlack", resourceCulture);
@@ -216,6 +226,26 @@ namespace Sales_Tracker.Properties {
         internal static System.Drawing.Bitmap FileWhite {
             get {
                 object obj = ResourceManager.GetObject("FileWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Financial {
+            get {
+                object obj = ResourceManager.GetObject("Financial", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gear {
+            get {
+                object obj = ResourceManager.GetObject("Gear", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -313,9 +343,29 @@ namespace Sales_Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Overview {
+            get {
+                object obj = ResourceManager.GetObject("Overview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PayPalLogo {
             get {
                 object obj = ResourceManager.GetObject("PayPalLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Performance {
+            get {
+                object obj = ResourceManager.GetObject("Performance", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

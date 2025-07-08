@@ -148,6 +148,9 @@
   <data name="DownArrowFullGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Down arrow full - gray.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Earth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Earth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="EditBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Edit - black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -165,6 +168,12 @@
   </data>
   <data name="FileWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\File - white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Financial" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Financial.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Gear" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Gear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="HelpGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Help - gray.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -193,8 +202,14 @@
   <data name="OpenFolderWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Open folder - white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Overview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Overview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="PayPalLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PayPal-Logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Performance" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Performance.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ProfileGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Profile - gray.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

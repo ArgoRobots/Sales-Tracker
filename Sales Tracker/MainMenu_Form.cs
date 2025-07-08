@@ -22,6 +22,7 @@ namespace Sales_Tracker
         // Properties
         private static MainMenu_Form _instance;
         public static readonly string _noteTextKey = "note", _rowTagKey = "RowTag", _itemsKey = "Items", _purchaseDataKey = "PurchaseData", _tagKey = "Tag";
+        private static readonly byte _chartTop = 219;
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -107,7 +108,7 @@ namespace Sales_Tracker
             chart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
             chart.XAxes.Ticks.Font = new("Segoe UI", 18);
             chart.YAxes.Ticks.Font = new("Segoe UI", 18);
-            chart.Top = 219;
+            chart.Top = _chartTop;
 
             Controls.Add(chart);
             return chart;
@@ -735,50 +736,7 @@ namespace Sales_Tracker
 
             if (Selected == SelectedOption.Analytics)
             {
-                // Calculate chart dimensions
-                int chartWidth = ClientSize.Width / 3 - chartWidthOffset;
-                int availableHeight = ClientSize.Height - Purchases_Button.Bottom;
-                int statChartHeight = availableHeight / 3 - 20 - 20;  // 3 rows with 20px spacing vertically, 20px for checkbox on bottom
-                Size chartSize = new(chartWidth, statChartHeight);
-
-                // Calculate total width needed for all charts
-                int totalWidth = (chartWidth * 3) + (spaceBetweenCharts * 2);
-
-                // Calculate left margin to center all charts
-                int leftMargin = (ClientSize.Width - totalWidth) / 2;
-
-                // Calculate X positions for 3 columns
-                int firstX = leftMargin;
-                int secondX = firstX + chartWidth + spaceBetweenCharts;
-                int thirdX = secondX + chartWidth + spaceBetweenCharts;
-
-                // Calculate vertical spacing
-                int totalChartHeight = statChartHeight * 3;
-                int spaceBetweenRows = (availableHeight - totalChartHeight) / 4;
-
-                // Calculate Y positions for 3 rows
-                int topRowY = Purchases_Button.Bottom + spaceBetweenRows;
-                int middleRowY = topRowY + statChartHeight + spaceBetweenRows - 10;  // 10px to make space for checkbox on bottom
-                int bottomRowY = middleRowY + statChartHeight + spaceBetweenRows - 10;
-
-                // Set positions for top row charts
-                SetChartPosition(CountriesOfOrigin_Chart, chartSize, firstX, topRowY);
-                SetChartPosition(CountriesOfDestination_Chart, chartSize, secondX, topRowY);
-                SetChartPosition(CompaniesOfOrigin_Chart, chartSize, thirdX, topRowY);
-
-                // Set positions for middle row charts
-                SetChartPosition(Accountants_Chart, chartSize, firstX, middleRowY);
-                SetChartPosition(GrowthRates_Chart, chartSize, secondX, middleRowY);
-                SetChartPosition(SalesVsExpenses_Chart, chartSize, thirdX, middleRowY);
-
-                // Set positions for bottom row charts
-                SetChartPosition(TotalTransactions_Chart, chartSize, firstX, bottomRowY);
-                SetChartPosition(AverageTransactionValue_Chart, chartSize, secondX, bottomRowY);
-                SetChartPosition(AverageShippingCosts_Chart, chartSize, thirdX, bottomRowY);
-
-                // Set position for free shipping checkbox
-                IncludeFreeShipping_CheckBox.Location = new Point(AverageShippingCosts_Chart.Left, AverageShippingCosts_Chart.Bottom + 8);
-                _includeFreeShipping_Label.Location = new Point(IncludeFreeShipping_CheckBox.Right - 2, IncludeFreeShipping_CheckBox.Top - 9);
+                LayoutChartsForTab(_selectedTabKey, spaceBetweenCharts);
             }
             else
             {
@@ -811,6 +769,117 @@ namespace Sales_Tracker
                     ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - chartHeight - totalsChart.Top + 35);
                 SelectedDataGridView.Location = new Point((ClientSize.Width - SelectedDataGridView.Width) / 2,
                     ClientSize.Height - MainTop_Panel.Height - Top_Panel.Height - SelectedDataGridView.Height + 50);
+            }
+        }
+        private void LayoutChartsForTab(AnalyticsTab tabKey, int spacing)
+        {
+            int startY = _analyticsTabButtons_Panel.Bottom + 40;
+            int availableHeight = ClientSize.Height - startY - 50;
+
+            // Calculate chart dimensions
+            const int formMargins = 80;
+            int availableWidth = ClientSize.Width - formMargins;
+            int maxChartWidth = (availableWidth - (2 * spacing)) / 3;  // 3 charts with 2 spaces between
+            int maxChartHeight = (int)(maxChartWidth * 2.0 / 3.0);  // Height = 2/3 of width
+
+            List<GunaChart> charts = _tabControls[tabKey].OfType<GunaChart>().Where(c => c.Visible).ToList();
+
+            switch (tabKey)
+            {
+                case AnalyticsTab.Overview:
+                    // 2x2 grid for overview (4 charts)
+                    if (charts.Count >= 4)
+                    {
+                        Size chartSize = new(maxChartWidth, maxChartHeight);
+
+                        // Center the grid horizontally
+                        int startX = (ClientSize.Width - (maxChartWidth * 2 + spacing)) / 2;
+
+                        SetChartPosition(charts[0], chartSize, startX, startY);  // SalesVsExpenses
+                        SetChartPosition(charts[1], chartSize, startX + maxChartWidth + spacing, startY);  // Profits
+                        SetChartPosition(charts[2], chartSize, startX, startY + maxChartHeight + spacing);  // TotalTransactions
+                        SetChartPosition(charts[3], chartSize, startX + maxChartWidth + spacing, startY + maxChartHeight + spacing);  // AverageTransaction
+                    }
+                    break;
+
+                case AnalyticsTab.Geographic:
+                    // 3 charts in a row
+                    if (charts.Count >= 3)
+                    {
+                        Size chartSize = new(maxChartWidth, maxChartHeight);
+
+                        // Center the row horizontally
+                        int totalRowWidth = maxChartWidth * 3 + spacing * 2;
+                        int startX = (ClientSize.Width - totalRowWidth) / 2;
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            int x = startX + (maxChartWidth + spacing) * i;
+                            SetChartPosition(charts[i], chartSize, x, startY);
+                        }
+                    }
+                    break;
+
+                case AnalyticsTab.Financial:
+                    // 2x2 grid for main charts
+                    if (charts.Count >= 4)
+                    {
+                        Size chartSize = new(maxChartWidth, maxChartHeight);
+
+                        // Center the grid horizontally
+                        int startX = (ClientSize.Width - (maxChartWidth * 2 + spacing)) / 2;
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            int x = startX + (maxChartWidth + spacing) * (i % 2);
+                            int y = startY + (maxChartHeight + spacing) * (i / 2);
+                            SetChartPosition(charts[i], chartSize, x, y);
+                        }
+                    }
+                    break;
+
+                case AnalyticsTab.Performance:
+                    // 3 charts in a row
+                    if (charts.Count >= 3)
+                    {
+                        Size chartSize = new(maxChartWidth, maxChartHeight);
+
+                        // Center the row horizontally
+                        int totalRowWidth = maxChartWidth * 3 + spacing * 2;
+                        int startX = (ClientSize.Width - totalRowWidth) / 2;
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            int x = startX + (maxChartWidth + spacing) * i;
+                            SetChartPosition(charts[i], chartSize, x, startY);
+                        }
+                    }
+                    break;
+
+                case AnalyticsTab.Operational:
+                    // 2 charts side by side + controls below
+                    if (charts.Count >= 2)
+                    {
+                        Size chartSize = new(maxChartWidth, maxChartHeight);
+
+                        // Center the charts horizontally
+                        int startX = (ClientSize.Width - (maxChartWidth * 2 + spacing)) / 2;
+
+                        SetChartPosition(charts[0], chartSize, startX, startY);  // Accountants
+                        SetChartPosition(charts[1], chartSize, startX + maxChartWidth + spacing, startY);  // Shipping
+
+                        // Position controls below the shipping chart (second chart)
+                        int shippingChartX = startX + maxChartWidth + spacing;
+                        int controlsY = startY + maxChartHeight + 20;
+
+                        // Position checkbox under the shipping chart
+                        IncludeFreeShipping_CheckBox.Location = new Point(shippingChartX, controlsY);
+
+                        int labelX = IncludeFreeShipping_CheckBox.Right - 2;
+                        int labelY = IncludeFreeShipping_CheckBox.Top + (IncludeFreeShipping_CheckBox.Height / 2) - (_includeFreeShipping_Label.Height / 2);
+                        _includeFreeShipping_Label.Location = new Point(labelX, labelY);
+                    }
+                    break;
             }
         }
         private void SetMainChartsHeight(int height)
@@ -1061,6 +1130,19 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             LoadOrRefreshMainCharts(true);
             LoadOrRefreshAnalyticsCharts(true);
+
+            // Mark all analytics tabs as needing to be reloaded so they refresh 
+            foreach (AnalyticsTab tab in Enum.GetValues<AnalyticsTab>())
+            {
+                _tabChartsLoaded[tab] = false;
+            }
+
+            // If we're currently on analytics, reload the current tab immediately
+            if (Selected == SelectedOption.Analytics)
+            {
+                LoadChartsForTab(_selectedTabKey);
+                _tabChartsLoaded[_selectedTabKey] = true;
+            }
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -1904,9 +1986,23 @@ namespace Sales_Tracker
             Directories.WriteLinesToFile(filePath, list);
         }
 
-        // Chart properties
+        // Analytic chart properties
         private List<Control> _analyticsControls;
         private Label _includeFreeShipping_Label;
+        private Guna2Panel _analyticsTabButtons_Panel;
+        private List<Guna2Button> _tabButtons;
+        private AnalyticsTab _selectedTabKey = AnalyticsTab.Overview;
+        private readonly Dictionary<AnalyticsTab, bool> _tabChartsLoaded = [];
+        private readonly Dictionary<AnalyticsTab, List<Control>> _tabControls = [];
+
+        public enum AnalyticsTab
+        {
+            Overview,
+            Geographic,
+            Financial,
+            Performance,
+            Operational
+        }
         public enum ChartDataType
         {
             TotalRevenue,
@@ -1933,7 +2029,7 @@ namespace Sales_Tracker
         public GunaChart AverageShippingCosts_Chart { get; private set; }
         public Guna2CustomCheckBox IncludeFreeShipping_CheckBox { get; private set; }
 
-        // Analytics charts methods
+        // Analytic chart methods
         public List<Control> GetMainControls()
         {
             return [
@@ -1977,6 +2073,13 @@ namespace Sales_Tracker
             {
                 control.Visible = false;
             }
+
+            // Reset chart positions in case returning from analytics
+            _purchaseTotals_Chart.Top = _chartTop;
+            _purchaseDistribution_Chart.Top = _chartTop;
+            _saleTotals_Chart.Top = _chartTop;
+            _saleDistribution_Chart.Top = _chartTop;
+            Profits_Chart.Top = _chartTop;
         }
         private void ConstructControlsForAnalytics()
         {
@@ -2011,6 +2114,169 @@ namespace Sales_Tracker
             _includeFreeShipping_Label.Click += IncludeFreeShipping_Label_Click;
             Controls.Add(_includeFreeShipping_Label);
 
+            CreateAnalyticsTabControl();
+            OrganizeChartsIntoTabs();
+
+            MouseClickChartManager.InitCharts(_analyticsControls.OfType<GunaChart>().ToArray());
+        }
+        private void CreateAnalyticsTabControl()
+        {
+            // Initialize the dictionaries with enum values
+            foreach (AnalyticsTab tab in Enum.GetValues<AnalyticsTab>())
+            {
+                _tabChartsLoaded[tab] = false;
+                _tabControls[tab] = [];
+            }
+
+            // Create a panel to hold all the tab buttons
+            Guna2Panel tabButtonsPanel = new()
+            {
+                Height = 60,
+                FillColor = CustomColors.ContentPanelBackground,
+                BorderColor = CustomColors.ControlBorder,
+                BorderThickness = 1,
+                BorderRadius = 8
+            };
+
+            // Create tab buttons
+            List<Guna2Button> tabButtons = [];
+
+            Guna2Button overviewButton = CreateTabButton("Overview", AnalyticsTab.Overview, Resources.Overview);
+            tabButtons.Add(overviewButton);
+
+            Guna2Button geographicButton = CreateTabButton("Geographic", AnalyticsTab.Geographic, Resources.Earth);
+            tabButtons.Add(geographicButton);
+
+            Guna2Button financialButton = CreateTabButton("Financial", AnalyticsTab.Financial, Resources.Financial);
+            tabButtons.Add(financialButton);
+
+            Guna2Button performanceButton = CreateTabButton("Performance", AnalyticsTab.Performance, Resources.Performance);
+            tabButtons.Add(performanceButton);
+
+            Guna2Button operationalButton = CreateTabButton("Operational", AnalyticsTab.Operational, Resources.Gear);
+            tabButtons.Add(operationalButton);
+
+            // Position buttons
+            byte buttonWidth = 200, buttonSpacing = 12, startX = 10;
+
+            for (int i = 0; i < tabButtons.Count; i++)
+            {
+                Guna2Button button = tabButtons[i];
+                button.Location = new Point(i * (buttonWidth + buttonSpacing) + startX, 10);
+                tabButtonsPanel.Controls.Add(button);
+            }
+
+            _analyticsTabButtons_Panel = tabButtonsPanel;
+            _analyticsTabButtons_Panel.Size = new Size(tabButtons.Count * (buttonWidth + buttonSpacing) + startX, 60);
+            _analyticsTabButtons_Panel.Location = new Point((Width - _analyticsTabButtons_Panel.Width) / 2, Purchases_Button.Bottom + 20);
+
+            _tabButtons = tabButtons;
+
+            // Select the first tab by default
+            SelectTabButton(AnalyticsTab.Overview);
+
+            Controls.Add(tabButtonsPanel);
+        }
+        private Guna2Button CreateTabButton(string title, AnalyticsTab tabKey, Image icon)
+        {
+            Guna2Button button = new()
+            {
+                Name = $"{tabKey}TabButton",
+                Text = title,
+                Tag = tabKey,
+                Image = icon,
+                Size = new Size(200, 40),
+                ImageOffset = new Point(-3, 0),
+                ImageSize = new Size(20, 20),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = CustomColors.Text,
+                FillColor = Color.Transparent,
+                BorderColor = CustomColors.ControlBorder,
+                BorderRadius = 6,
+                HoverState = { FillColor = CustomColors.ControlPanelBorder }
+            };
+
+            button.Click += TabButton_Click;
+            return button;
+        }
+        private void TabButton_Click(object sender, EventArgs e)
+        {
+            if (sender is Guna2Button clickedButton && clickedButton.Tag is AnalyticsTab tabKey)
+            {
+                SelectTabButton(tabKey);
+
+                if (!_tabChartsLoaded[tabKey])
+                {
+                    LoadChartsForTab(tabKey);
+                    _tabChartsLoaded[tabKey] = true;
+                }
+
+                ShowControlsForTab(tabKey);
+                CenterAndResizeControls();
+            }
+        }
+        private void SelectTabButton(AnalyticsTab selectedTabKey)
+        {
+            _selectedTabKey = selectedTabKey;
+
+            foreach (Guna2Button button in _tabButtons)
+            {
+                if (button.Tag is AnalyticsTab buttonTab && buttonTab == selectedTabKey)
+                {
+                    // Selected state
+                    button.FillColor = CustomColors.AccentBlue;
+                    button.ForeColor = Color.White;
+                    button.BorderThickness = 0;
+                }
+                else
+                {
+                    // Unselected state
+                    button.FillColor = Color.Transparent;
+                    button.ForeColor = CustomColors.Text;
+                    button.BorderThickness = 0;
+                }
+            }
+        }
+        private void OrganizeChartsIntoTabs()
+        {
+            _tabControls[AnalyticsTab.Overview].AddRange(
+            [
+                SalesVsExpenses_Chart,
+                Profits_Chart,
+                TotalTransactions_Chart,
+                AverageTransactionValue_Chart
+            ]);
+
+            _tabControls[AnalyticsTab.Geographic].AddRange(
+            [
+                CountriesOfOrigin_Chart,
+                CountriesOfDestination_Chart,
+                CompaniesOfOrigin_Chart
+            ]);
+
+            _tabControls[AnalyticsTab.Financial].AddRange(
+            [
+                _saleTotals_Chart,
+                _purchaseTotals_Chart,
+                _saleDistribution_Chart,
+                _purchaseDistribution_Chart
+            ]);
+
+            _tabControls[AnalyticsTab.Performance].AddRange(
+            [
+                GrowthRates_Chart,
+                AverageTransactionValue_Chart,
+                TotalTransactions_Chart
+            ]);
+
+            _tabControls[AnalyticsTab.Operational].AddRange(
+            [
+                Accountants_Chart,
+                AverageShippingCosts_Chart,
+                IncludeFreeShipping_CheckBox,
+                _includeFreeShipping_Label
+            ]);
+
             _analyticsControls =
             [
                 CountriesOfOrigin_Chart,
@@ -2023,10 +2289,87 @@ namespace Sales_Tracker
                 AverageShippingCosts_Chart,
                 GrowthRates_Chart,
                 IncludeFreeShipping_CheckBox,
-                _includeFreeShipping_Label
+                _includeFreeShipping_Label,
+                _analyticsTabButtons_Panel
             ];
+        }
+        private void LoadChartsForTab(AnalyticsTab tabKey)
+        {
+            bool isLineChart = LineGraph_ToggleSwitch.Checked;
 
-            MouseClickChartManager.InitCharts(_analyticsControls.OfType<GunaChart>().ToArray());
+            switch (tabKey)
+            {
+                case AnalyticsTab.Overview:
+                    LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLineChart);
+                    SalesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
+
+                    LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLineChart);
+                    TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
+
+                    LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLineChart);
+                    AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
+
+                    // Load profits chart
+                    ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLineChart);
+                    Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
+                    break;
+
+                case AnalyticsTab.Geographic:
+                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
+                    CountriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
+
+                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(CountriesOfDestination_Chart, PieChartGrouping.Top8);
+                    CountriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
+
+                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
+                    CompaniesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
+                    break;
+
+                case AnalyticsTab.Financial:
+                    LoadOrRefreshMainCharts();
+                    break;
+
+                case AnalyticsTab.Performance:
+                    LoadChart.LoadGrowthRateChart(GrowthRates_Chart);
+                    GrowthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
+
+                    // Load shared charts if not already loaded
+                    if (!_tabChartsLoaded[AnalyticsTab.Overview])
+                    {
+                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLineChart);
+                        AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
+
+                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLineChart);
+                        TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
+                    }
+                    break;
+
+                case AnalyticsTab.Operational:
+                    LoadChart.LoadAccountantsIntoChart(Accountants_Chart, PieChartGrouping.Top8);
+                    Accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
+
+                    LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLineChart,
+                        includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
+                    AverageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
+                    break;
+            }
+        }
+        private void ShowControlsForTab(AnalyticsTab tabKey)
+        {
+            // Hide all analytics charts first
+            foreach (List<Control> controlList in _tabControls.Values)
+            {
+                foreach (Control control in controlList)
+                {
+                    control.Visible = false;
+                }
+            }
+
+            // Show controls for the selected tab
+            foreach (Control control in _tabControls[tabKey])
+            {
+                control.Visible = true;
+            }
         }
         private void IncludeFreeShipping_Label_Click(object? sender, EventArgs e)
         {
@@ -2065,58 +2408,58 @@ namespace Sales_Tracker
         }
         private void ShowAnalyticsControls()
         {
-            foreach (Control control in _analyticsControls)
-            {
-                control.Visible = true;
-            }
+            // Hide main controls
             foreach (Control control in GetMainControls())
             {
                 control.Visible = false;
             }
+
+            _analyticsTabButtons_Panel.Visible = true;
+
+            // Load overview tab by default if not loaded
+            if (!_tabChartsLoaded[AnalyticsTab.Overview])
+            {
+                LoadChartsForTab(AnalyticsTab.Overview);
+                _tabChartsLoaded[AnalyticsTab.Overview] = true;
+            }
+
+            ShowControlsForTab(_selectedTabKey);
         }
         public void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts = false)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadAnalyticsCharts", "");
-            bool isLineChart = LineGraph_ToggleSwitch.Checked;
+            if (Selected != SelectedOption.Analytics) return;
 
-            if (!onlyRefreshForLineCharts)
+            AnalyticsTab currentTabKey = _selectedTabKey;
+
+            if (onlyRefreshForLineCharts)
             {
-                LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
-                CountriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
-                LanguageManager.UpdateLanguageForControl(CountriesOfOrigin_Chart);
+                // Only reload line/bar charts when toggle switches
+                switch (currentTabKey)
+                {
+                    case AnalyticsTab.Overview:
+                    case AnalyticsTab.Performance:
+                        LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, LineGraph_ToggleSwitch.Checked);
+                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, LineGraph_ToggleSwitch.Checked);
+                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, LineGraph_ToggleSwitch.Checked);
 
-                LoadChart.LoadCompaniesOfOriginForProductsIntoChart(CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
-                CompaniesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
-                LanguageManager.UpdateLanguageForControl(CompaniesOfOrigin_Chart);
-
-                LoadChart.LoadCountriesOfDestinationForProductsIntoChart(CountriesOfDestination_Chart, PieChartGrouping.Top8);
-                CountriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
-                LanguageManager.UpdateLanguageForControl(CountriesOfDestination_Chart);
-
-                LoadChart.LoadAccountantsIntoChart(Accountants_Chart, PieChartGrouping.Top8);
-                Accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
-                LanguageManager.UpdateLanguageForControl(Accountants_Chart);
-
-                LoadChart.LoadGrowthRateChart(GrowthRates_Chart);
-                GrowthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
-                LanguageManager.UpdateLanguageForControl(GrowthRates_Chart);
+                        // Always refresh profits chart
+                        ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, LineGraph_ToggleSwitch.Checked);
+                        Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
+                        break;
+                    case AnalyticsTab.Financial:
+                        LoadOrRefreshMainCharts(true);
+                        break;
+                    case AnalyticsTab.Operational:
+                        LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, LineGraph_ToggleSwitch.Checked,
+                            includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
+                        break;
+                }
             }
-
-            LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLineChart);
-            SalesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
-            LanguageManager.UpdateLanguageForControl(SalesVsExpenses_Chart);
-
-            LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLineChart);
-            TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
-            LanguageManager.UpdateLanguageForControl(TotalTransactions_Chart);
-
-            LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLineChart);
-            AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
-            LanguageManager.UpdateLanguageForControl(AverageTransactionValue_Chart);
-
-            LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLineChart, includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
-            AverageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
-            LanguageManager.UpdateLanguageForControl(AverageShippingCosts_Chart);
+            else
+            {
+                // Full reload
+                LoadChartsForTab(currentTabKey);
+            }
         }
 
         // Misc.
