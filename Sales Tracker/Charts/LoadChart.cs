@@ -58,7 +58,7 @@ namespace Sales_Tracker.Charts
         {
             // Use a ratio to allow Bottom legend even if height is slightly less than width
             double ratio = (double)chart.Height / chart.Width;
-            return ratio >= 0.8 ? LegendPosition.Bottom : LegendPosition.Right;
+            return ratio >= 0.8 || chart.Width < 550 ? LegendPosition.Bottom : LegendPosition.Right;
         }
 
         // Main charts
