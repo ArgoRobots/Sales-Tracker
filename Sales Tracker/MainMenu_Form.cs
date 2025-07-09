@@ -2243,7 +2243,6 @@ namespace Sales_Tracker
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = CustomColors.Text,
                 FillColor = Color.Transparent,
-                BorderColor = CustomColors.ControlBorder,
                 BorderRadius = 6,
                 HoverState = { FillColor = CustomColors.ControlPanelBorder }
             };
@@ -2277,15 +2276,11 @@ namespace Sales_Tracker
                 {
                     // Selected state
                     button.FillColor = CustomColors.AccentBlue;
-                    button.ForeColor = Color.White;
-                    button.BorderThickness = 0;
                 }
                 else
                 {
                     // Unselected state
                     button.FillColor = Color.Transparent;
-                    button.ForeColor = CustomColors.Text;
-                    button.BorderThickness = 0;
                 }
             }
         }
@@ -2366,22 +2361,21 @@ namespace Sales_Tracker
         }
         private void LoadChartsForTab(AnalyticsTab tabKey)
         {
-            bool isLineChart = LineGraph_ToggleSwitch.Checked;
+            bool isLine = LineGraph_ToggleSwitch.Checked;
 
             switch (tabKey)
             {
                 case AnalyticsTab.Overview:
-                    LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLineChart);
+                    LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLine);
                     SalesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
 
-                    LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLineChart);
+                    LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
                     TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
 
-                    LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLineChart);
+                    LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
                     AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
 
-                    // Load profits chart
-                    ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLineChart);
+                    ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
                     Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
                     break;
 
@@ -2407,10 +2401,10 @@ namespace Sales_Tracker
                     // Load shared charts if not already loaded
                     if (!_tabChartsLoaded[AnalyticsTab.Overview])
                     {
-                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLineChart);
+                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
                         AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
 
-                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLineChart);
+                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
                         TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
                     }
                     break;
@@ -2419,19 +2413,19 @@ namespace Sales_Tracker
                     LoadChart.LoadAccountantsIntoChart(Accountants_Chart, PieChartGrouping.Top8);
                     Accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
 
-                    LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLineChart,
+                    LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLine,
                         includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
                     AverageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
                     break;
 
                 case AnalyticsTab.Returns:
-                    LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLineChart);
+                    LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
                     ReturnsOverTime_Chart.Title.Text = TranslatedChartTitles.ReturnsOverTime;
 
                     LoadChart.LoadReturnReasonsChart(ReturnReasons_Chart, PieChartGrouping.Top8);
                     ReturnReasons_Chart.Title.Text = TranslatedChartTitles.ReturnReasons;
 
-                    LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLineChart);
+                    LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
                     ReturnFinancialImpact_Chart.Title.Text = TranslatedChartTitles.ReturnFinancialImpact;
 
                     LoadChart.LoadReturnsByCategoryChart(ReturnsByCategory_Chart, PieChartGrouping.Top8);
@@ -2518,9 +2512,10 @@ namespace Sales_Tracker
         }
         public void LoadOrRefreshAnalyticsCharts(bool onlyRefreshForLineCharts = false)
         {
-            if (Selected != SelectedOption.Analytics) return;
+            if (Selected != SelectedOption.Analytics) { return; }
 
             AnalyticsTab currentTabKey = _selectedTabKey;
+            bool isLine = LineGraph_ToggleSwitch.Checked;
 
             if (onlyRefreshForLineCharts)
             {
@@ -2529,12 +2524,11 @@ namespace Sales_Tracker
                 {
                     case AnalyticsTab.Overview:
                     case AnalyticsTab.Performance:
-                        LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, LineGraph_ToggleSwitch.Checked);
-                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, LineGraph_ToggleSwitch.Checked);
-                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, LineGraph_ToggleSwitch.Checked);
+                        LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLine);
+                        LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
+                        LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
 
-                        // Always refresh profits chart
-                        ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, LineGraph_ToggleSwitch.Checked);
+                        ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
                         Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
                         break;
 
@@ -2543,13 +2537,13 @@ namespace Sales_Tracker
                         break;
 
                     case AnalyticsTab.Operational:
-                        LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, LineGraph_ToggleSwitch.Checked,
+                        LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLine,
                             includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
                         break;
 
                     case AnalyticsTab.Returns:
-                        LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, LineGraph_ToggleSwitch.Checked);
-                        LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, LineGraph_ToggleSwitch.Checked);
+                        LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
+                        LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
                         break;
                 }
             }
