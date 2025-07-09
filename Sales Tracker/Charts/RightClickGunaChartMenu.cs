@@ -126,6 +126,30 @@ namespace Sales_Tracker.Charts
                 case MainMenu_Form.ChartDataType.GrowthRates:
                     LoadChart.LoadGrowthRateChart(MainMenu_Form.Instance.GrowthRates_Chart, true, directory);
                     break;
+
+                case MainMenu_Form.ChartDataType.ReturnsOverTime:
+                    LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.ReturnReasons:
+                    LoadChart.LoadReturnReasonsChart(MainMenu_Form.Instance.ReturnReasons_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
+                    LoadChart.LoadReturnFinancialImpactChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart, isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.ReturnsByCategory:
+                    LoadChart.LoadReturnsByCategoryChart(MainMenu_Form.Instance.ReturnsByCategory_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.ReturnsByProduct:
+                    LoadChart.LoadReturnsByProductChart(MainMenu_Form.Instance.ReturnsByProduct_Chart, PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
+                    LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, true, directory);
+                    break;
             }
         }
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
@@ -341,6 +365,78 @@ namespace Sales_Tracker.Charts
                             GoogleSheetManager.ChartType chartType = GoogleSheetManager.ChartType.Spline;
 
                             await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, name, chartType);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.ReturnsOverTime:
+                        {
+                            ChartData chartData = LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.ReturnsOverTime;
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+                            string first = LanguageManager.TranslateString("Date");
+                            string second = LanguageManager.TranslateString("Returns");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.ReturnReasons:
+                        {
+                            ChartData chartData = LoadChart.LoadReturnReasonsChart(MainMenu_Form.Instance.ReturnReasons_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.ReturnReasons;
+                            string first = LanguageManager.TranslateString("Reasons");
+                            string second = LanguageManager.TranslateString("# of returns");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
+                        {
+                            ChartData chartData = LoadChart.LoadReturnFinancialImpactChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart, isLine, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.ReturnFinancialImpact;
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+                            string first = LanguageManager.TranslateString("Date");
+                            string second = LanguageManager.TranslateString("Return value");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.ReturnsByCategory:
+                        {
+                            ChartData chartData = LoadChart.LoadReturnsByCategoryChart(MainMenu_Form.Instance.ReturnsByCategory_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.ReturnsByCategory;
+                            string first = LanguageManager.TranslateString("Categories");
+                            string second = LanguageManager.TranslateString("# of returns");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.ReturnsByProduct:
+                        {
+                            ChartData chartData = LoadChart.LoadReturnsByProductChart(MainMenu_Form.Instance.ReturnsByProduct_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.ReturnsByProduct;
+                            string first = LanguageManager.TranslateString("Products");
+                            string second = LanguageManager.TranslateString("# of returns");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
+                        {
+                            ChartData chartData = LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.PurchaseVsSaleReturns;
+                            string first = LanguageManager.TranslateString("Transaction Type");
+                            string second = LanguageManager.TranslateString("# of returns");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
                 }

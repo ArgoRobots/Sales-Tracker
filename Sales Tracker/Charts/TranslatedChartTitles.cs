@@ -20,5 +20,11 @@ namespace Sales_Tracker.Charts
         public static string TotalTransactions => Translate("Total transactions");
         public static string AverageShippingCosts => Translate("Average shipping costs");
         public static string GrowthRates => Translate("Expenses and revenue growth rates");
+        public static string ReturnsOverTime => Translate("Returns Over Time");
+        public static string ReturnReasons => Translate("Return Reasons Distribution");
+        public static string ReturnFinancialImpact => Translate("Financial Impact of Returns");
+        public static string ReturnsByCategory => Translate("Returns by Category");
+        public static string ReturnsByProduct => Translate("Returns by Product");
+        public static string PurchaseVsSaleReturns => Translate("Purchase vs Sale Returns");
     }
 }

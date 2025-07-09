@@ -189,9 +189,9 @@ namespace Sales_Tracker
             using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadMainCharts", Selected.ToString());
             bool isLine = LineGraph_ToggleSwitch.Checked;
 
-            if (Purchase_DataGridView.Visible)
+            // Load purchase charts
+            if (Selected == SelectedOption.Analytics || Purchase_DataGridView.Visible)
             {
-                // Load purchase charts
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(Purchase_DataGridView, _purchaseTotals_Chart, isLine);
                 _purchaseTotals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.Total:N2}";
 
@@ -204,9 +204,10 @@ namespace Sales_Tracker
                 LanguageManager.UpdateLanguageForControl(_purchaseTotals_Chart);
                 LanguageManager.UpdateLanguageForControl(_purchaseDistribution_Chart);
             }
-            else if (Sale_DataGridView.Visible)
+
+            // Load sale charts
+            if (Selected == SelectedOption.Analytics || Sale_DataGridView.Visible)
             {
-                // Load sale charts
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(Sale_DataGridView, _saleTotals_Chart, isLine);
                 _saleTotals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.Total:N2}";
 
@@ -321,6 +322,12 @@ namespace Sales_Tracker
             AverageTransactionValue_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             TotalTransactions_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             AverageShippingCosts_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            ReturnsOverTime_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            ReturnReasons_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            ReturnFinancialImpact_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            ReturnsByCategory_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            ReturnsByProduct_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            PurchaseVsSaleReturns_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
         private void InitChartTags()
         {
@@ -341,6 +348,12 @@ namespace Sales_Tracker
             TotalTransactions_Chart.Tag = ChartDataType.TotalTransactions;
             AverageTransactionValue_Chart.Tag = ChartDataType.AverageOrderValue;
             AverageShippingCosts_Chart.Tag = ChartDataType.AverageShippingCosts;
+            ReturnsOverTime_Chart.Tag = ChartDataType.ReturnsOverTime;
+            ReturnReasons_Chart.Tag = ChartDataType.ReturnReasons;
+            ReturnFinancialImpact_Chart.Tag = ChartDataType.ReturnFinancialImpact;
+            ReturnsByCategory_Chart.Tag = ChartDataType.ReturnsByCategory;
+            ReturnsByProduct_Chart.Tag = ChartDataType.ReturnsByProduct;
+            PurchaseVsSaleReturns_Chart.Tag = ChartDataType.PurchaseVsSaleReturns;
         }
         private void AddEventHandlersToTextBoxes()
         {
@@ -787,7 +800,7 @@ namespace Sales_Tracker
             switch (tabKey)
             {
                 case AnalyticsTab.Overview:
-                    // 2x2 grid for overview (4 charts)
+                    // 2x2 grid for overview
                     if (charts.Count >= 4)
                     {
                         Size chartSize = new(maxChartWidth, maxChartHeight);
@@ -878,6 +891,27 @@ namespace Sales_Tracker
                         int labelX = IncludeFreeShipping_CheckBox.Right - 2;
                         int labelY = IncludeFreeShipping_CheckBox.Top + (IncludeFreeShipping_CheckBox.Height / 2) - (_includeFreeShipping_Label.Height / 2);
                         _includeFreeShipping_Label.Location = new Point(labelX, labelY);
+                    }
+                    break;
+
+                case AnalyticsTab.Returns:
+                    // 2x3 grid layout for returns
+                    if (charts.Count >= 6)
+                    {
+                        Size chartSize = new(maxChartWidth, maxChartHeight);
+
+                        // Center the grid horizontally
+                        int startX = (ClientSize.Width - (maxChartWidth * 3 + spacing * 2)) / 2;
+
+                        // Top row - 3 charts
+                        SetChartPosition(charts[0], chartSize, startX, startY);  // ReturnsOverTime
+                        SetChartPosition(charts[1], chartSize, startX + maxChartWidth + spacing, startY);  // ReturnReasons
+                        SetChartPosition(charts[2], chartSize, startX + (maxChartWidth + spacing) * 2, startY);  // ReturnFinancialImpact
+
+                        // Bottom row - 3 charts
+                        SetChartPosition(charts[3], chartSize, startX, startY + maxChartHeight + spacing);  // ReturnsByCategory
+                        SetChartPosition(charts[4], chartSize, startX + maxChartWidth + spacing, startY + maxChartHeight + spacing);  // ReturnsByProduct
+                        SetChartPosition(charts[5], chartSize, startX + (maxChartWidth + spacing) * 2, startY + maxChartHeight + spacing);  // PurchaseVsSaleReturns
                     }
                     break;
             }
@@ -2001,7 +2035,8 @@ namespace Sales_Tracker
             Geographic,
             Financial,
             Performance,
-            Operational
+            Operational,
+            Returns
         }
         public enum ChartDataType
         {
@@ -2016,7 +2051,13 @@ namespace Sales_Tracker
             AverageOrderValue,
             TotalTransactions,
             AverageShippingCosts,
-            GrowthRates
+            GrowthRates,
+            ReturnsOverTime,
+            ReturnReasons,
+            ReturnFinancialImpact,
+            ReturnsByCategory,
+            ReturnsByProduct,
+            PurchaseVsSaleReturns
         }
         public GunaChart CountriesOfOrigin_Chart { get; private set; }
         public GunaChart CountriesOfDestination_Chart { get; private set; }
@@ -2028,6 +2069,12 @@ namespace Sales_Tracker
         public GunaChart TotalTransactions_Chart { get; private set; }
         public GunaChart AverageShippingCosts_Chart { get; private set; }
         public Guna2CustomCheckBox IncludeFreeShipping_CheckBox { get; private set; }
+        public GunaChart ReturnsOverTime_Chart { get; private set; }
+        public GunaChart ReturnReasons_Chart { get; private set; }
+        public GunaChart ReturnFinancialImpact_Chart { get; private set; }
+        public GunaChart ReturnsByCategory_Chart { get; private set; }
+        public GunaChart ReturnsByProduct_Chart { get; private set; }
+        public GunaChart PurchaseVsSaleReturns_Chart { get; private set; }
 
         // Analytic chart methods
         public List<Control> GetMainControls()
@@ -2059,7 +2106,13 @@ namespace Sales_Tracker
                 AverageTransactionValue_Chart,
                 TotalTransactions_Chart,
                 AverageShippingCosts_Chart,
-                GrowthRates_Chart];
+                GrowthRates_Chart,
+                ReturnsOverTime_Chart,
+                ReturnReasons_Chart,
+                ReturnFinancialImpact_Chart,
+                ReturnsByCategory_Chart,
+                ReturnsByProduct_Chart,
+                PurchaseVsSaleReturns_Chart];
         }
         private void ShowMainControls()
         {
@@ -2092,6 +2145,12 @@ namespace Sales_Tracker
             TotalTransactions_Chart = ConstructAnalyticsChart("totalTransactions_Chart");
             AverageShippingCosts_Chart = ConstructAnalyticsChart("averageShippingCosts_Chart");
             GrowthRates_Chart = ConstructAnalyticsChart("growthRates_Chart");
+            ReturnsOverTime_Chart = ConstructAnalyticsChart("returnsOverTime_Chart");
+            ReturnReasons_Chart = ConstructAnalyticsChart("returnReasons_Chart");
+            ReturnFinancialImpact_Chart = ConstructAnalyticsChart("returnFinancialImpact_Chart");
+            ReturnsByCategory_Chart = ConstructAnalyticsChart("returnsByCategory_Chart");
+            ReturnsByProduct_Chart = ConstructAnalyticsChart("returnsByProduct_Chart");
+            PurchaseVsSaleReturns_Chart = ConstructAnalyticsChart("purchaseVsSaleReturns_Chart");
 
             IncludeFreeShipping_CheckBox = new Guna2CustomCheckBox
             {
@@ -2135,7 +2194,8 @@ namespace Sales_Tracker
                 FillColor = CustomColors.ContentPanelBackground,
                 BorderColor = CustomColors.ControlBorder,
                 BorderThickness = 1,
-                BorderRadius = 8
+                BorderRadius = 8,
+                Anchor = AnchorStyles.Top
             };
 
             // Create tab buttons
@@ -2156,6 +2216,9 @@ namespace Sales_Tracker
             Guna2Button operationalButton = CreateTabButton("Operational", AnalyticsTab.Operational, Resources.Gear);
             tabButtons.Add(operationalButton);
 
+            Guna2Button returnsButton = CreateTabButton("Returns", AnalyticsTab.Returns, Resources.Return);
+            tabButtons.Add(returnsButton);
+
             // Position buttons
             byte buttonWidth = 200, buttonSpacing = 12, startX = 10;
 
@@ -2167,7 +2230,7 @@ namespace Sales_Tracker
             }
 
             _analyticsTabButtons_Panel = tabButtonsPanel;
-            _analyticsTabButtons_Panel.Size = new Size(tabButtons.Count * (buttonWidth + buttonSpacing) + startX, 60);
+            _analyticsTabButtons_Panel.Size = new Size(tabButtons.Count * (buttonWidth + buttonSpacing) + startX, 65);
             _analyticsTabButtons_Panel.Location = new Point((Width - _analyticsTabButtons_Panel.Width) / 2, Purchases_Button.Bottom + 20);
 
             _tabButtons = tabButtons;
@@ -2185,9 +2248,9 @@ namespace Sales_Tracker
                 Text = title,
                 Tag = tabKey,
                 Image = icon,
-                Size = new Size(200, 40),
-                ImageOffset = new Point(-3, 0),
-                ImageSize = new Size(20, 20),
+                Size = new Size(200, 45),
+                ImageOffset = new Point(-5, 0),
+                ImageSize = new Size(25, 25),
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = CustomColors.Text,
                 FillColor = Color.Transparent,
@@ -2277,6 +2340,16 @@ namespace Sales_Tracker
                 _includeFreeShipping_Label
             ]);
 
+            _tabControls[AnalyticsTab.Returns].AddRange(
+            [
+                ReturnsOverTime_Chart,
+                ReturnReasons_Chart,
+                ReturnFinancialImpact_Chart,
+                ReturnsByCategory_Chart,
+                ReturnsByProduct_Chart,
+                PurchaseVsSaleReturns_Chart
+            ]);
+
             _analyticsControls =
             [
                 CountriesOfOrigin_Chart,
@@ -2288,6 +2361,15 @@ namespace Sales_Tracker
                 TotalTransactions_Chart,
                 AverageShippingCosts_Chart,
                 GrowthRates_Chart,
+                ReturnsOverTime_Chart,
+                ReturnReasons_Chart,
+                ReturnFinancialImpact_Chart,
+                ReturnsByCategory_Chart,
+                ReturnsByProduct_Chart,
+                PurchaseVsSaleReturns_Chart,
+                IncludeFreeShipping_CheckBox,
+                _includeFreeShipping_Label,
+                _analyticsTabButtons_Panel,
                 IncludeFreeShipping_CheckBox,
                 _includeFreeShipping_Label,
                 _analyticsTabButtons_Panel
@@ -2351,6 +2433,26 @@ namespace Sales_Tracker
                     LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLineChart,
                         includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
                     AverageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
+                    break;
+
+                case AnalyticsTab.Returns:
+                    LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLineChart);
+                    ReturnsOverTime_Chart.Title.Text = TranslatedChartTitles.ReturnsOverTime;
+
+                    LoadChart.LoadReturnReasonsChart(ReturnReasons_Chart, PieChartGrouping.Top8);
+                    ReturnReasons_Chart.Title.Text = TranslatedChartTitles.ReturnReasons;
+
+                    LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLineChart);
+                    ReturnFinancialImpact_Chart.Title.Text = TranslatedChartTitles.ReturnFinancialImpact;
+
+                    LoadChart.LoadReturnsByCategoryChart(ReturnsByCategory_Chart, PieChartGrouping.Top8);
+                    ReturnsByCategory_Chart.Title.Text = TranslatedChartTitles.ReturnsByCategory;
+
+                    LoadChart.LoadReturnsByProductChart(ReturnsByProduct_Chart, PieChartGrouping.Top8);
+                    ReturnsByProduct_Chart.Title.Text = TranslatedChartTitles.ReturnsByProduct;
+
+                    LoadChart.LoadPurchaseVsSaleReturnsChart(PurchaseVsSaleReturns_Chart);
+                    PurchaseVsSaleReturns_Chart.Title.Text = TranslatedChartTitles.PurchaseVsSaleReturns;
                     break;
             }
         }
@@ -2446,12 +2548,19 @@ namespace Sales_Tracker
                         ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, LineGraph_ToggleSwitch.Checked);
                         Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
                         break;
+
                     case AnalyticsTab.Financial:
                         LoadOrRefreshMainCharts(true);
                         break;
+
                     case AnalyticsTab.Operational:
                         LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, LineGraph_ToggleSwitch.Checked,
                             includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
+                        break;
+
+                    case AnalyticsTab.Returns:
+                        LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, LineGraph_ToggleSwitch.Checked);
+                        LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, LineGraph_ToggleSwitch.Checked);
                         break;
                 }
             }

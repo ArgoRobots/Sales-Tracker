@@ -1666,6 +1666,627 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(expenseGrowth, revenueGrowth, sortedDates);
         }
+        public static ChartData LoadReturnsOverTimeChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
+
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("Returns");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
+            }
+
+            chart.Legend.Display = false;
+
+            IGunaDataset dataset;
+            if (isLineChart) { dataset = new GunaLineDataset { Label = label }; }
+            else { dataset = new GunaBarDataset { Label = label }; }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.AccentRed);
+            }
+
+            double grandTotal = 0;
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
+            string dateFormat = GetDateFormat(maxDate - minDate);
+            Dictionary<string, double> returnsByDate = [];
+            bool anyRowsVisible = false;
+
+            // Process both purchase and sale returns
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible) { continue; }
+
+                    // Only count returned transactions
+                    if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                    anyRowsVisible = true;
+
+                    DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                    string formattedDate = date.ToString(dateFormat);
+
+                    if (returnsByDate.TryGetValue(formattedDate, out double value))
+                    {
+                        returnsByDate[formattedDate] = value + 1;
+                    }
+                    else
+                    {
+                        returnsByDate[formattedDate] = 1;
+                    }
+                    grandTotal++;
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
+                string chartTitle = TranslatedChartTitles.ReturnsOverTime;
+                string date = LanguageManager.TranslateString("Date");
+
+                ExcelSheetManager.ExportChartToExcel(returnsByDate, filePath, chartType, chartTitle, date, label);
+            }
+            else if (canUpdateChart)
+            {
+                SortAndAddDatasetAndSetBarPercentage(returnsByDate, dateFormat, dataset, isLineChart);
+                UpdateChart(chart, dataset, false); // No currency formatting for count data
+            }
+
+            return new ChartData(grandTotal, returnsByDate);
+        }
+        public static ChartData LoadReturnReasonsChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
+
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of returns");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureChartForPie(chart);
+            }
+
+            GunaPieDataset dataset = new() { Label = label };
+            Dictionary<string, double> reasonCounts = [];
+            bool anyRowsVisible = false;
+
+            // Process both purchase and sale returns
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible) { continue; }
+
+                    // Only process returned transactions
+                    if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                    anyRowsVisible = true;
+
+                    // Get return reason from TagData
+                    (DateTime? returnDate, string returnReason, string returnedBy) = ReturnManager.GetReturnInfo(row);
+
+                    if (string.IsNullOrEmpty(returnReason))
+                    {
+                        returnReason = "No reason provided";
+                    }
+
+                    // Extract base reason if it contains additional notes (format: "reason - notes")
+                    string baseReason = returnReason.Split(" - ")[0];
+
+                    if (reasonCounts.TryGetValue(baseReason, out double value))
+                    {
+                        reasonCounts[baseReason] = value + 1;
+                    }
+                    else
+                    {
+                        reasonCounts[baseReason] = 1;
+                    }
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            // Get total count to calculate percentages
+            double totalCount = reasonCounts.Values.Sum();
+
+            // Group reasons if needed
+            Dictionary<string, double> groupedReasonCounts = SortAndGroupData(reasonCounts, grouping);
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                string chartTitle = TranslatedChartTitles.ReturnReasons;
+                string reasons = LanguageManager.TranslateString("Reasons");
+
+                ExcelSheetManager.ExportChartToExcel(groupedReasonCounts, filePath, eChartType.Pie, chartTitle, reasons, label);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> reasonCount in groupedReasonCounts)
+                {
+                    double percentage = reasonCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(reasonCount.Key, reasonCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{reasonCount.Key} ({percentage:F2}%)";
+                }
+
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = _chartColors;
+                    UpdateChart(chart, dataset, false);
+                }
+            }
+
+            return new ChartData(totalCount, groupedReasonCounts);
+        }
+        public static ChartData LoadReturnFinancialImpactChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
+
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("Return value");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
+            }
+
+            chart.Legend.Display = false;
+
+            IGunaDataset dataset;
+            if (isLineChart) { dataset = new GunaLineDataset { Label = label }; }
+            else { dataset = new GunaBarDataset { Label = label }; }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.AccentRed);
+            }
+
+            double grandTotal = 0;
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
+            string dateFormat = GetDateFormat(maxDate - minDate);
+            Dictionary<string, double> returnValueByDate = [];
+            bool anyRowsVisible = false;
+
+            // Process both purchase and sale returns
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible) { continue; }
+
+                    // Only count returned transactions
+                    if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                    anyRowsVisible = true;
+
+                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
+                    {
+                        continue;
+                    }
+
+                    DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                    string formattedDate = date.ToString(dateFormat);
+
+                    if (returnValueByDate.TryGetValue(formattedDate, out double value))
+                    {
+                        returnValueByDate[formattedDate] = Math.Round(value + total, 2);
+                    }
+                    else
+                    {
+                        returnValueByDate[formattedDate] = Math.Round(total, 2);
+                    }
+                    grandTotal += total;
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
+                string chartTitle = TranslatedChartTitles.ReturnFinancialImpact;
+                string date = LanguageManager.TranslateString("Date");
+
+                ExcelSheetManager.ExportChartToExcel(returnValueByDate, filePath, chartType, chartTitle, date, label);
+            }
+            else if (canUpdateChart)
+            {
+                SortAndAddDatasetAndSetBarPercentage(returnValueByDate, dateFormat, dataset, isLineChart);
+                UpdateChart(chart, dataset, true); // Use currency formatting
+            }
+
+            return new ChartData(grandTotal, returnValueByDate);
+        }
+        public static ChartData LoadReturnsByCategoryChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
+
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of returns");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureChartForPie(chart);
+            }
+
+            GunaPieDataset dataset = new() { Label = label };
+            Dictionary<string, double> categoryCounts = [];
+            bool anyRowsVisible = false;
+
+            // Process both purchase and sale returns
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible) { continue; }
+
+                    // Only process returned transactions
+                    if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                    anyRowsVisible = true;
+
+                    string category = row.Cells[ReadOnlyVariables.Category_column].Value.ToString();
+
+                    if (category == ReadOnlyVariables.EmptyCell)
+                    {
+                        // Extract categories from the Tag for multi-item transactions
+                        if (row.Tag is (List<string> items, TagData))
+                        {
+                            foreach (string item in items)
+                            {
+                                // Items are in the format: "itemName,categoryName,country,company,quantity,pricePerUnit,totalPrice"
+                                string[] itemDetails = item.Split(',');
+                                if (itemDetails.Length > 1)
+                                {
+                                    string itemCategory = itemDetails[1];
+                                    if (categoryCounts.TryGetValue(itemCategory, out double itemValue))
+                                    {
+                                        categoryCounts[itemCategory] = itemValue + 1;
+                                    }
+                                    else
+                                    {
+                                        categoryCounts[itemCategory] = 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (categoryCounts.TryGetValue(category, out double value))
+                        {
+                            categoryCounts[category] = value + 1;
+                        }
+                        else
+                        {
+                            categoryCounts[category] = 1;
+                        }
+                    }
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            // Get total count to calculate percentages
+            double totalCount = categoryCounts.Values.Sum();
+
+            // Group categories if needed
+            Dictionary<string, double> groupedCategoryCounts = SortAndGroupData(categoryCounts, grouping);
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                string chartTitle = TranslatedChartTitles.ReturnsByCategory;
+                string categories = LanguageManager.TranslateString("Categories");
+
+                ExcelSheetManager.ExportChartToExcel(groupedCategoryCounts, filePath, eChartType.Pie, chartTitle, categories, label);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> categoryCount in groupedCategoryCounts)
+                {
+                    double percentage = categoryCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(categoryCount.Key, categoryCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{categoryCount.Key} ({percentage:F2}%)";
+                }
+
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = _chartColors;
+                    UpdateChart(chart, dataset, false);
+                }
+            }
+
+            return new ChartData(totalCount, groupedCategoryCounts);
+        }
+        public static ChartData LoadPurchaseVsSaleReturnsChart(GunaChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
+
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of returns");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureChartForPie(chart);
+            }
+
+            GunaPieDataset dataset = new() { Label = label };
+            Dictionary<string, double> returnCounts = [];
+            bool anyRowsVisible = false;
+
+            // Count purchase returns
+            double purchaseReturns = 0;
+            foreach (DataGridViewRow row in purchasesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+
+                if (ReturnManager.IsTransactionReturned(row))
+                {
+                    purchaseReturns++;
+                    anyRowsVisible = true;
+                }
+            }
+
+            // Count sale returns
+            double saleReturns = 0;
+            foreach (DataGridViewRow row in salesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+
+                if (ReturnManager.IsTransactionReturned(row))
+                {
+                    saleReturns++;
+                    anyRowsVisible = true;
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            // Add to dictionary
+            if (purchaseReturns > 0)
+            {
+                returnCounts.Add(LanguageManager.TranslateString("Purchase Returns"), purchaseReturns);
+            }
+            if (saleReturns > 0)
+            {
+                returnCounts.Add(LanguageManager.TranslateString("Sale Returns"), saleReturns);
+            }
+
+            double totalCount = returnCounts.Values.Sum();
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                string chartTitle = TranslatedChartTitles.PurchaseVsSaleReturns;
+                string type = LanguageManager.TranslateString("Transaction Type");
+
+                ExcelSheetManager.ExportChartToExcel(returnCounts, filePath, eChartType.Pie, chartTitle, type, label);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> returnCount in returnCounts)
+                {
+                    double percentage = returnCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(returnCount.Key, returnCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{returnCount.Key} ({percentage:F2}%)";
+                }
+
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = _chartColors;
+                    UpdateChart(chart, dataset, false);
+                }
+            }
+
+            return new ChartData(totalCount, returnCounts);
+        }
+        public static ChartData LoadReturnsByProductChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
+
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            string label = LanguageManager.TranslateString("# of returns");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureChartForPie(chart);
+            }
+
+            GunaPieDataset dataset = new() { Label = label };
+            Dictionary<string, double> productCounts = [];
+            bool anyRowsVisible = false;
+
+            // Process both purchase and sale returns
+            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+
+            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (!row.Visible) { continue; }
+
+                    // Only process returned transactions
+                    if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                    anyRowsVisible = true;
+
+                    string product = row.Cells[ReadOnlyVariables.Product_column].Value.ToString();
+
+                    if (product == ReadOnlyVariables.EmptyCell)
+                    {
+                        // Extract products from the Tag for multi-item transactions
+                        if (row.Tag is (List<string> items, TagData))
+                        {
+                            foreach (string item in items)
+                            {
+                                // Items are in the format: "itemName,categoryName,country,company,quantity,pricePerUnit,totalPrice"
+                                string[] itemDetails = item.Split(',');
+                                if (itemDetails.Length > 0)
+                                {
+                                    string itemProduct = itemDetails[0];
+                                    if (productCounts.TryGetValue(itemProduct, out double itemValue))
+                                    {
+                                        productCounts[itemProduct] = itemValue + 1;
+                                    }
+                                    else
+                                    {
+                                        productCounts[itemProduct] = 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (productCounts.TryGetValue(product, out double value))
+                        {
+                            productCounts[product] = value + 1;
+                        }
+                        else
+                        {
+                            productCounts[product] = 1;
+                        }
+                    }
+                }
+            }
+
+            if (!anyRowsVisible)
+            {
+                ClearChart(chart);
+                return ChartData.Empty;
+            }
+
+            // Get total count to calculate percentages
+            double totalCount = productCounts.Values.Sum();
+
+            // Group products if needed
+            Dictionary<string, double> groupedProductCounts = SortAndGroupData(productCounts, grouping);
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                string chartTitle = TranslatedChartTitles.ReturnsByProduct;
+                string products = LanguageManager.TranslateString("Products");
+
+                ExcelSheetManager.ExportChartToExcel(groupedProductCounts, filePath, eChartType.Pie, chartTitle, products, label);
+            }
+            else
+            {
+                // Add data points to the dataset with percentage labels
+                foreach (KeyValuePair<string, double> productCount in groupedProductCounts)
+                {
+                    double percentage = productCount.Value / totalCount * 100;
+                    dataset.DataPoints.Add(productCount.Key, productCount.Value);
+                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{productCount.Key} ({percentage:F2}%)";
+                }
+
+                if (canUpdateChart)
+                {
+                    dataset.FillColors = _chartColors;
+                    UpdateChart(chart, dataset, false);
+                }
+            }
+
+            return new ChartData(totalCount, groupedProductCounts);
+        }
 
         // Methods
         public static bool IsRowValid(DataGridViewRow row)
