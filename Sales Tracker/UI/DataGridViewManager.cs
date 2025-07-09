@@ -998,6 +998,20 @@ namespace Sales_Tracker.UI
             }
             return false;
         }
+        public static bool HasVisibleRowsForReturn(params Guna2DataGridView[] dataGridViews)
+        {
+            foreach (DataGridView dataGridView in dataGridViews)
+            {
+                foreach (DataGridViewRow row in dataGridView.Rows)
+                {
+                    if (row.Visible && !ReturnManager.IsTransactionReturned(row))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         private static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
         {
             if (dataGridView.SortedColumn == null)

@@ -93,7 +93,7 @@ namespace Sales_Tracker.Classes
             {
                 return themes[index].ToString();
             }
-            return ThemeManager.ThemeType.Windows.ToString(); // Default fallback
+            return ThemeManager.ThemeType.Windows.ToString();  // Default fallback
         }
         public static void UpdateSetting(string settingName, bool currentValue, bool newValue, Action<bool> setter)
         {

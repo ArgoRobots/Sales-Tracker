@@ -103,12 +103,10 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(dataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
             Dictionary<string, double> revenueByDate = [];
-            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
                 {
@@ -130,12 +128,6 @@ namespace Sales_Tracker.Charts
                 {
                     revenueByDate[formattedDate] = Math.Round(total, 2);
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
@@ -182,12 +174,10 @@ namespace Sales_Tracker.Charts
             double totalShipping = 0;
             double totalFee = 0;
             Dictionary<string, double> allData = [];
-            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double cost))
                 {
@@ -241,12 +231,6 @@ namespace Sales_Tracker.Charts
                         allData[category] = cost;
                     }
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             totalTax = Math.Round(totalTax, 2);
@@ -345,13 +329,11 @@ namespace Sales_Tracker.Charts
 
             // Group and sum the total profit based on the determined date format
             Dictionary<string, double> profitByDate = [];
-            bool anyRowsVisible = false;
 
             // Calculate total revenue from sales
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
                 {
@@ -392,12 +374,6 @@ namespace Sales_Tracker.Charts
                 {
                     profitByDate[formattedDate] = Math.Round(-total, 2);
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Get grandTotal
@@ -447,12 +423,10 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> countryCounts = [];
-            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 // Extract countries from the Tag
                 if (row.Tag is (List<string> items, TagData))
@@ -488,12 +462,6 @@ namespace Sales_Tracker.Charts
                         countryCounts[country] = 1;
                     }
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Get total count to calculate percentages
@@ -550,12 +518,10 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> companyCounts = [];
-            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 // Extract companies from the Tag
                 if (row.Tag is (List<string> items, TagData))
@@ -591,12 +557,6 @@ namespace Sales_Tracker.Charts
                         companyCounts[company] = 1;
                     }
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Get total count to calculate percentages
@@ -653,12 +613,10 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> countryCounts = [];
-            bool anyRowsVisible = false;
 
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 // Extract countries from the Tag
                 if (row.Tag is (List<string> items, TagData))
@@ -694,12 +652,6 @@ namespace Sales_Tracker.Charts
                         countryCounts[country] = 1;
                     }
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Get total count to calculate percentages
@@ -759,7 +711,6 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> accountantCounts = [];
-            bool anyRowsVisible = false;
 
             foreach (Guna2DataGridView purchasesDataGridView in dataGridViews)
             {
@@ -771,7 +722,6 @@ namespace Sales_Tracker.Charts
                 foreach (DataGridViewRow row in purchasesDataGridView.Rows)
                 {
                     if (!IsRowValid(row)) { continue; }
-                    anyRowsVisible = true;
 
                     string accountant = row.Cells[ReadOnlyVariables.Accountant_column].Value.ToString();
 
@@ -787,12 +737,6 @@ namespace Sales_Tracker.Charts
                         }
                     }
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Get total count to calculate percentages
@@ -1200,13 +1144,11 @@ namespace Sales_Tracker.Charts
 
             Dictionary<string, double> purchasesByDate = [], salesByDate = [];
             HashSet<string> allDates = [];
-            bool anyRowsVisible = false;
 
             // Process purchase transactions
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
@@ -1226,7 +1168,6 @@ namespace Sales_Tracker.Charts
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
                 if (!IsRowValid(row)) { continue; }
-                anyRowsVisible = true;
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
@@ -1240,12 +1181,6 @@ namespace Sales_Tracker.Charts
                 {
                     salesByDate[formattedDate] = 1;
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return SalesExpensesChartData.Empty;
             }
 
             // Sort dates chronologically
@@ -1314,7 +1249,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(salesDataGridView, purchasesDataGridView);
             string purchaseLabel = LanguageManager.TranslateString("Purchases");
             string saleLabel = LanguageManager.TranslateString("Sales");
 
@@ -1498,7 +1433,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView, purchasesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(salesDataGridView, purchasesDataGridView);
             string expensesLabel = LanguageManager.TranslateString("Expenses growth %");
             string revenueLabel = LanguageManager.TranslateString("Revenue growth %");
 
@@ -1673,7 +1608,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("Returns");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -1707,7 +1642,6 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
             Dictionary<string, double> returnsByDate = [];
-            bool anyRowsVisible = false;
 
             // Process both purchase and sale returns
             Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
@@ -1720,8 +1654,6 @@ namespace Sales_Tracker.Charts
 
                     // Only count returned transactions
                     if (!ReturnManager.IsTransactionReturned(row)) { continue; }
-
-                    anyRowsVisible = true;
 
                     DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                     string formattedDate = date.ToString(dateFormat);
@@ -1738,12 +1670,6 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
-            }
-
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
@@ -1755,7 +1681,7 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 SortAndAddDatasetAndSetBarPercentage(returnsByDate, dateFormat, dataset, isLineChart);
-                UpdateChart(chart, dataset, false); // No currency formatting for count data
+                UpdateChart(chart, dataset, false);
             }
 
             return new ChartData(grandTotal, returnsByDate);
@@ -1767,7 +1693,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -1783,7 +1709,6 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> reasonCounts = [];
-            bool anyRowsVisible = false;
 
             // Process both purchase and sale returns
             Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
@@ -1796,8 +1721,6 @@ namespace Sales_Tracker.Charts
 
                     // Only process returned transactions
                     if (!ReturnManager.IsTransactionReturned(row)) { continue; }
-
-                    anyRowsVisible = true;
 
                     // Get return reason from TagData
                     (DateTime? returnDate, string returnReason, string returnedBy) = ReturnManager.GetReturnInfo(row);
@@ -1819,12 +1742,6 @@ namespace Sales_Tracker.Charts
                         reasonCounts[baseReason] = 1;
                     }
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Get total count to calculate percentages
@@ -1866,7 +1783,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("Return value");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -1900,7 +1817,6 @@ namespace Sales_Tracker.Charts
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
             Dictionary<string, double> returnValueByDate = [];
-            bool anyRowsVisible = false;
 
             // Process both purchase and sale returns
             Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
@@ -1913,8 +1829,6 @@ namespace Sales_Tracker.Charts
 
                     // Only count returned transactions
                     if (!ReturnManager.IsTransactionReturned(row)) { continue; }
-
-                    anyRowsVisible = true;
 
                     if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
                     {
@@ -1936,12 +1850,6 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
-            }
-
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
@@ -1953,7 +1861,7 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 SortAndAddDatasetAndSetBarPercentage(returnValueByDate, dateFormat, dataset, isLineChart);
-                UpdateChart(chart, dataset, true); // Use currency formatting
+                UpdateChart(chart, dataset, true);
             }
 
             return new ChartData(grandTotal, returnValueByDate);
@@ -1965,7 +1873,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -1981,7 +1889,6 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> categoryCounts = [];
-            bool anyRowsVisible = false;
 
             // Process both purchase and sale returns
             Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
@@ -1994,8 +1901,6 @@ namespace Sales_Tracker.Charts
 
                     // Only process returned transactions
                     if (!ReturnManager.IsTransactionReturned(row)) { continue; }
-
-                    anyRowsVisible = true;
 
                     string category = row.Cells[ReadOnlyVariables.Category_column].Value.ToString();
 
@@ -2037,12 +1942,6 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
-            }
-
             // Get total count to calculate percentages
             double totalCount = categoryCounts.Values.Sum();
 
@@ -2082,7 +1981,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -2098,7 +1997,6 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> returnCounts = [];
-            bool anyRowsVisible = false;
 
             // Count purchase returns
             double purchaseReturns = 0;
@@ -2109,7 +2007,6 @@ namespace Sales_Tracker.Charts
                 if (ReturnManager.IsTransactionReturned(row))
                 {
                     purchaseReturns++;
-                    anyRowsVisible = true;
                 }
             }
 
@@ -2122,14 +2019,7 @@ namespace Sales_Tracker.Charts
                 if (ReturnManager.IsTransactionReturned(row))
                 {
                     saleReturns++;
-                    anyRowsVisible = true;
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Add to dictionary
@@ -2177,7 +2067,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
-            bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView, salesDataGridView);
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
             string label = LanguageManager.TranslateString("# of returns");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
@@ -2193,7 +2083,6 @@ namespace Sales_Tracker.Charts
 
             GunaPieDataset dataset = new() { Label = label };
             Dictionary<string, double> productCounts = [];
-            bool anyRowsVisible = false;
 
             // Process both purchase and sale returns
             Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
@@ -2206,8 +2095,6 @@ namespace Sales_Tracker.Charts
 
                     // Only process returned transactions
                     if (!ReturnManager.IsTransactionReturned(row)) { continue; }
-
-                    anyRowsVisible = true;
 
                     string product = row.Cells[ReadOnlyVariables.Product_column].Value.ToString();
 
@@ -2247,12 +2134,6 @@ namespace Sales_Tracker.Charts
                         }
                     }
                 }
-            }
-
-            if (!anyRowsVisible)
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
             }
 
             // Get total count to calculate percentages

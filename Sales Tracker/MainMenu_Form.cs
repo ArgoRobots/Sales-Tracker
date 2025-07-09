@@ -1164,19 +1164,8 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             LoadOrRefreshMainCharts(true);
             LoadOrRefreshAnalyticsCharts(true);
-
-            // Mark all analytics tabs as needing to be reloaded so they refresh 
-            foreach (AnalyticsTab tab in Enum.GetValues<AnalyticsTab>())
-            {
-                _tabChartsLoaded[tab] = false;
-            }
-
-            // If we're currently on analytics, reload the current tab immediately
-            if (Selected == SelectedOption.Analytics)
-            {
-                LoadChartsForTab(_selectedTabKey);
-                _tabChartsLoaded[_selectedTabKey] = true;
-            }
+            SetAllAnalyticTabsAsNotLoaded();
+            ReloadCurrentAnalyticTab();
         }
         private void Edit_Button_Click(object sender, EventArgs e)
         {
@@ -2568,6 +2557,21 @@ namespace Sales_Tracker
             {
                 // Full reload
                 LoadChartsForTab(currentTabKey);
+            }
+        }
+        public void SetAllAnalyticTabsAsNotLoaded()
+        {
+            foreach (AnalyticsTab tab in Enum.GetValues<AnalyticsTab>())
+            {
+                _tabChartsLoaded[tab] = false;
+            }
+        }
+        public void ReloadCurrentAnalyticTab()
+        {
+            if (Selected == SelectedOption.Analytics)
+            {
+                LoadChartsForTab(_selectedTabKey);
+                _tabChartsLoaded[_selectedTabKey] = true;
             }
         }
 

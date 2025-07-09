@@ -218,7 +218,7 @@ namespace Sales_Tracker.Classes
         /// Opens a new company from the specified file path when another company is already open.
         /// Handles saving current company's changes if necessary.
         /// </summary>
-        public static async void OpenCompanyWhenACompanyIsAlreadyOpenFromPath(string filePath, bool overrideCompanyAlreadyOpen = false)
+        public static void OpenCompanyWhenACompanyIsAlreadyOpenFromPath(string filePath, bool overrideCompanyAlreadyOpen = false)
         {
             // Validate the file path
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
@@ -276,6 +276,8 @@ namespace Sales_Tracker.Classes
             MainMenu_Form.Instance.LoadOrRefreshMainCharts();
             MainMenu_Form.Instance.HideShowingResultsForLabel();
             MainMenu_Form.Instance.UpdateMainMenuFormText();
+            MainMenu_Form.Instance.SetAllAnalyticTabsAsNotLoaded();
+            MainMenu_Form.Instance.ReloadCurrentAnalyticTab();
 
             Tools.CloseAllOpenForms();
 
