@@ -193,38 +193,42 @@ namespace Sales_Tracker
             if (Selected == SelectedOption.Analytics || Purchase_DataGridView.Visible)
             {
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(Purchase_DataGridView, _purchaseTotals_Chart, isLine);
-                _purchaseTotals_Chart.Title.Text = $"Total expenses: {CurrencySymbol}{totalsData.Total:N2}";
+                string translatedExpenses = LanguageManager.TranslateString("Total expenses");
+                _purchaseTotals_Chart.Title.Text = $"{translatedExpenses}: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
                     LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, _purchaseDistribution_Chart, PieChartGrouping.Top12);
-                    _purchaseDistribution_Chart.Title.Text = "Distribution of expenses";
+                    _purchaseDistribution_Chart.Title.Text = TranslatedChartTitles.ExpensesDistribution;
                 }
 
                 LanguageManager.UpdateLanguageForControl(_purchaseTotals_Chart);
-                LanguageManager.UpdateLanguageForControl(_purchaseDistribution_Chart);
             }
 
             // Load sale charts
             if (Selected == SelectedOption.Analytics || Sale_DataGridView.Visible)
             {
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(Sale_DataGridView, _saleTotals_Chart, isLine);
-                _saleTotals_Chart.Title.Text = $"Total revenue: {CurrencySymbol}{totalsData.Total:N2}";
+                string translatedRevenue = LanguageManager.TranslateString("Total revenue");
+                _saleTotals_Chart.Title.Text = $"{translatedRevenue}: {CurrencySymbol}{totalsData.Total:N2}";
 
                 if (!onlyLoadForLineCharts)
                 {
                     LoadChart.LoadDistributionIntoChart(Sale_DataGridView, _saleDistribution_Chart, PieChartGrouping.Top12);
-                    _saleDistribution_Chart.Title.Text = "Distribution of revenue";
+                    _saleDistribution_Chart.Title.Text = TranslatedChartTitles.RevenueDistribution;
                 }
 
                 LanguageManager.UpdateLanguageForControl(_saleTotals_Chart);
-                LanguageManager.UpdateLanguageForControl(_saleDistribution_Chart);
             }
 
             // Always load profits chart
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
-            Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
-            LanguageManager.UpdateLanguageForControl(Profits_Chart);
+            SetProfitsChartTitle(profitsData.Total);
+        }
+        private void SetProfitsChartTitle(double total)
+        {
+            string translatedPrefix = LanguageManager.TranslateString("Total profits");
+            Profits_Chart.Title.Text = $"{translatedPrefix}: {CurrencySymbol}{total:N2}";
         }
         public void UpdateChartCurrencyFormats()
         {
@@ -2376,7 +2380,7 @@ namespace Sales_Tracker
                     AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
 
                     ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
-                    Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
+                    SetProfitsChartTitle(profitsData.Total);
                     break;
 
                 case AnalyticsTab.Geographic:
@@ -2529,7 +2533,7 @@ namespace Sales_Tracker
                         LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
 
                         ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
-                        Profits_Chart.Title.Text = $"Total profits: {CurrencySymbol}{profitsData.Total:N2}";
+                        SetProfitsChartTitle(profitsData.Total);
                         break;
 
                     case AnalyticsTab.Financial:
