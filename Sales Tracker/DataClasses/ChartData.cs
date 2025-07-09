@@ -23,14 +23,13 @@
     /// <summary>
     /// Represents chart data containing a total value as an integer and associated data points for visualization.
     /// </summary>
-    internal class ChartCountData(double grandTotal, Dictionary<string, int> data)
+    internal class ChartCountData(Dictionary<string, int> data)
     {
         // Getters
-        public double GrandTotal { get; } = grandTotal;
         public IReadOnlyDictionary<string, int> Data { get; } = data ?? [];
 
         // Static factory method for creating empty ChartData
-        public static ChartCountData Empty => new(0, []);
+        public static ChartCountData Empty => new([]);
     }
 
     /// <summary>

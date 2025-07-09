@@ -1684,9 +1684,8 @@ namespace Sales_Tracker.Charts
                 UpdateChart(chart, dataset, false);
             }
 
-            return new ChartCountData(grandTotal, returnsByDate);
+            return new ChartCountData(returnsByDate);
         }
-
         public static ChartCountData LoadReturnReasonsChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
@@ -1775,7 +1774,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            return new ChartCountData(totalCount, groupedReasonCounts);
+            return new ChartCountData(groupedReasonCounts);
         }
         public static ChartData LoadReturnFinancialImpactChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -1867,8 +1866,6 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(grandTotal, returnValueByDate);
         }
-        // Additional return chart methods to update in LoadChart.cs
-
         public static ChartCountData LoadReturnsByCategoryChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
@@ -1970,7 +1967,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            return new ChartCountData(totalCount, groupedCategoryCounts);
+            return new ChartCountData(groupedCategoryCounts);
         }
         public static ChartCountData LoadReturnsByProductChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -2073,7 +2070,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            return new ChartCountData(totalCount, groupedProductCounts);
+            return new ChartCountData(groupedProductCounts);
         }
         public static ChartCountData LoadPurchaseVsSaleReturnsChart(GunaChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -2158,7 +2155,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            return new ChartCountData(totalCount, returnCounts);
+            return new ChartCountData(returnCounts);
         }
 
         // Methods
