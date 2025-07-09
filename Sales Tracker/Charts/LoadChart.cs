@@ -920,7 +920,6 @@ namespace Sales_Tracker.Charts
                     ApplyCurrencyFormatToDataset(salesDataset);
 
                     chart.Update();
-                    Application.DoEvents();
                 });
             }
 
@@ -1087,7 +1086,6 @@ namespace Sales_Tracker.Charts
                     ApplyCurrencyFormatToDataset(salesDataset);
 
                     chart.Update();
-                    Application.DoEvents();
                 });
             }
 
@@ -1236,7 +1234,6 @@ namespace Sales_Tracker.Charts
                     chart.Datasets.Add(salesDataset);
 
                     chart.Update();
-                    Application.DoEvents();
                 });
             }
 
@@ -1412,7 +1409,6 @@ namespace Sales_Tracker.Charts
                     ApplyCurrencyFormatToDataset(salesDataset);
 
                     chart.Update();
-                    Application.DoEvents();
                 });
             }
 
@@ -1595,7 +1591,6 @@ namespace Sales_Tracker.Charts
                     expenseDataset.YFormat = "{0:0.0}%";
 
                     chart.Update();
-                    Application.DoEvents();
                 });
             }
 

@@ -10,6 +10,7 @@ using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using System.ComponentModel;
+using System.Reflection;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
@@ -109,6 +110,9 @@ namespace Sales_Tracker
             chart.XAxes.Ticks.Font = new("Segoe UI", 18);
             chart.YAxes.Ticks.Font = new("Segoe UI", 18);
             chart.Top = _chartTop;
+
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(chart, true, null);
 
             Controls.Add(chart);
             return chart;
@@ -2476,24 +2480,28 @@ namespace Sales_Tracker
         }
         private GunaChart ConstructAnalyticsChart(string name)
         {
-            GunaChart gunaChart = new()
+            GunaChart chart = new()
             {
                 Name = name,  // This is needed for the language translation
                 Height = 490
             };
 
-            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.ContentPanelBackground);
-            LoadChart.ConfigureChartForPie(gunaChart);
-            gunaChart.Title.Display = true;
-            gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
-            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
-            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
-            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
-            gunaChart.XAxes.Ticks.Font = new("Segoe UI", 18);
-            gunaChart.YAxes.Ticks.Font = new("Segoe UI", 18);
-            Controls.Add(gunaChart);
+            chart.ApplyConfig(ChartColors.Config(), CustomColors.ContentPanelBackground);
+            LoadChart.ConfigureChartForPie(chart);
+            chart.Title.Display = true;
+            chart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
+            chart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
+            chart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
+            chart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
+            chart.XAxes.Ticks.Font = new("Segoe UI", 18);
+            chart.YAxes.Ticks.Font = new("Segoe UI", 18);
 
-            return gunaChart;
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(chart, true, null);
+
+            Controls.Add(chart);
+
+            return chart;
         }
         private void ShowAnalyticsControls()
         {
