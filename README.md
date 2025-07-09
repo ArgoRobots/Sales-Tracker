@@ -17,14 +17,14 @@
 
 ## Technologies used
 
-- **C# .NET 8**: Core framework for the application's logic and UI.
+- **C# .NET 9**: Core framework for the application's logic and UI.
 - **WinForms**: Windows Forms is used for the graphical interface.
 - **Guna UI**: Enhances the look and feel of the application with modern controls and components.
 - **Guna Charts**: Used to visualize data through beautiful and interactive charts.
 
 ## Prerequisites
 
-- **.NET 8 SDK**: Make sure you have the latest .NET 8 SDK installed on your machine. You can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
+- **.NET 9 SDK**: Make sure you have the latest .NET 8 SDK installed on your machine. You can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 - **Visual Studio 2022 or later**: This project is developed using Visual Studio.
 - **API Keys**: You'll need to obtain the .env file containing the API keys from the project manager.  You can request the .env file from Evan Di Placido.
 
