@@ -21,6 +21,19 @@
     }
 
     /// <summary>
+    /// Represents chart data containing a total value as an integer and associated data points for visualization.
+    /// </summary>
+    internal class ChartCountData(double grandTotal, Dictionary<string, int> data)
+    {
+        // Getters
+        public double GrandTotal { get; } = grandTotal;
+        public IReadOnlyDictionary<string, int> Data { get; } = data ?? [];
+
+        // Static factory method for creating empty ChartData
+        public static ChartCountData Empty => new(0, []);
+    }
+
+    /// <summary>
     /// Represents chart data specifically for sales vs expenses comparisons, containing separate datasets
     /// for expenses and sales along with their chronological ordering.
     /// </summary>

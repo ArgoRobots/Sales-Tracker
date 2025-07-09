@@ -1722,6 +1722,57 @@ namespace Sales_Tracker.Classes
 
             TrackChartExport(stopwatch, filePath, isSpline ? ExportType.GoogleSheetsChart : ExportType.ExcelSheetsChart);
         }
+        public static void ExportCountChartToExcel(Dictionary<string, int> data, string filePath, eChartType chartType, string chartTitle, string column1Header, string column2Header)
+        {
+            // Convert int data to double for existing export logic
+            Dictionary<string, double> doubleData = data.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value);
+
+            ExcelPackage.License.SetNonCommercialPersonal("Argo");
+            using ExcelPackage package = new();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Chart Data");
+
+            // Set headers
+            worksheet.Cells[1, 1].Value = column1Header;
+            worksheet.Cells[1, 2].Value = column2Header;
+
+            // Format headers
+            using (ExcelRange headerRange = worksheet.Cells[1, 1, 1, 2])
+            {
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
+            }
+
+            // Add data
+            int row = 2;
+            foreach (KeyValuePair<string, double> kvp in doubleData.OrderBy(x => x.Key))
+            {
+                worksheet.Cells[row, 1].Value = kvp.Key;
+                worksheet.Cells[row, 2].Value = kvp.Value;
+
+                // Format as whole numbers (no decimals, no currency)
+                worksheet.Cells[row, 2].Style.Numberformat.Format = "#,##0";
+
+                row++;
+            }
+
+            // Auto-fit columns
+            worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+            // Add chart
+            ExcelChart chart = worksheet.Drawings.AddChart(chartTitle, chartType);
+            chart.Title.Text = chartTitle;
+            chart.SetPosition(0, 0, 3, 0);
+            chart.SetSize(600, 400);
+
+            // Set chart data range
+            chart.Series.Add(worksheet.Cells[2, 2, row - 1, 2], worksheet.Cells[2, 1, row - 1, 1]);
+            chart.Series[0].Header = column2Header;
+
+            // Save the file
+            FileInfo fileInfo = new(filePath);
+            package.SaveAs(fileInfo);
+        }
         public static void ExportMultiDataSetChartToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle, bool isSpline = false)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();

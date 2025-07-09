@@ -228,6 +228,190 @@ namespace Sales_Tracker.Classes
             }
         }
 
+        // Export single dataset chart with integer as value
+        public static async Task ExportCountChartToGoogleSheetsAsync(
+            IReadOnlyDictionary<string, int> data,
+            string chartTitle,
+            ChartType chartType,
+            string column1Text,
+            string column2Text,
+            CancellationToken cancellationToken = default)
+        {
+            // Convert int data to double for existing export logic
+            Dictionary<string, double> doubleData = data.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value);
+
+            if (_sheetsService == null && !InitializeService())
+            {
+                return;
+            }
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            string operationMessage = "Exporting chart to Google Sheets...";
+
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            CancellationToken activeCancellationToken = combinedCts.Token;
+
+            Loading_Form.ShowLoading(operationMessage, combinedCts);
+
+            try
+            {
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Create a new spreadsheet
+                Spreadsheet spreadsheet = new()
+                {
+                    Properties = new SpreadsheetProperties
+                    {
+                        Title = $"{Directories.CompanyName} - {chartTitle} - {DateTime.Now:yyyy-MM-dd}"
+                    },
+                    Sheets = [
+                        new Sheet
+                        {
+                            Properties = new SheetProperties
+                            {
+                                Title = LanguageManager.TranslateString("Chart Data"),
+                                SheetId = 0
+                            }
+                        }
+                    ]
+                };
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                spreadsheet = await _sheetsService.Spreadsheets
+                    .Create(spreadsheet)
+                    .ExecuteAsync(activeCancellationToken);
+
+                string spreadsheetId = spreadsheet.SpreadsheetId;
+                string sheetName = LanguageManager.TranslateString("Chart Data");
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Create drive service
+                DriveService driveService = new(new BaseClientService.Initializer
+                {
+                    HttpClientInitializer = _sheetsService.HttpClientInitializer,
+                    ApplicationName = "Sales Tracker"
+                });
+
+                // Set file permissions to be accessible by anyone with the link
+                Permission permission = new()
+                {
+                    Type = "anyone",
+                    Role = "writer",
+                    AllowFileDiscovery = false
+                };
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                await driveService.Permissions
+                    .Create(permission, spreadsheetId)
+                    .ExecuteAsync(activeCancellationToken);
+
+                // Prepare the data
+                List<IList<object>> values =
+                [
+                    [
+                        LanguageManager.TranslateString(column1Text),
+                        LanguageManager.TranslateString(column2Text)
+                    ]
+                ];
+
+                foreach (KeyValuePair<string, int> item in data.OrderBy(x => x.Key))
+                {
+                    activeCancellationToken.ThrowIfCancellationRequested();
+                    values.Add([item.Key, item.Value]);
+                }
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Write data to sheet
+                string range = $"'{sheetName}'!A1:B{values.Count}";
+                ValueRange valueRange = new() { Values = values };
+
+                SpreadsheetsResource.ValuesResource.UpdateRequest updateRequest =
+                    _sheetsService.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
+                updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+
+                await updateRequest.ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Format headers - use number format for counts, not currency
+                List<Request> requests =
+                [
+                    CreateHeaderFormatRequest(0, 0, 0, 1),
+                    CreateNumberFormatRequest(1, values.Count - 1, 1, 1, "#,##0") // No decimal places for counts
+                ];
+
+                // Add chart
+                Request chartRequest = CreateChartRequest(
+                    chartType,
+                    chartTitle,
+                    0, values.Count - 1,
+                    [("A", "B")]
+                );
+                requests.Add(chartRequest);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Execute all formatting requests
+                BatchUpdateSpreadsheetRequest batchUpdateRequest = new()
+                {
+                    Requests = requests
+                };
+
+                await _sheetsService.Spreadsheets
+                    .BatchUpdate(batchUpdateRequest, spreadsheetId)
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Auto-resize columns
+                DimensionRange dimensionRange = new()
+                {
+                    SheetId = 0,
+                    Dimension = "COLUMNS",
+                    StartIndex = 0,
+                    EndIndex = 2
+                };
+
+                Request autoResizeRequest = new()
+                {
+                    AutoResizeDimensions = new AutoResizeDimensionsRequest
+                    {
+                        Dimensions = dimensionRange
+                    }
+                };
+
+                await _sheetsService.Spreadsheets
+                    .BatchUpdate(new BatchUpdateSpreadsheetRequest
+                    {
+                        Requests = [autoResizeRequest]
+                    }, spreadsheetId)
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                OpenGoogleSheet(spreadsheetId);
+                TrackGoogleSheetsExport(stopwatch);
+            }
+            catch (OperationCanceledException)
+            {
+                // Don't show error message for cancellation
+                throw;
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessageOnUIThread("Export Error", $"Failed to export chart to Google Sheets: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                Loading_Form.CompleteOperation(operationMessage);
+            }
+        }
+
         // Export multiple dataset charts
         public static async Task ExportMultiDataSetChartToGoogleSheetsAsync(
             Dictionary<string, Dictionary<string, double>> data,

@@ -370,7 +370,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnsOverTime:
                         {
-                            ChartData chartData = LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ReturnsOverTime;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
@@ -378,18 +378,18 @@ namespace Sales_Tracker.Charts
                             string first = LanguageManager.TranslateString("Date");
                             string second = LanguageManager.TranslateString("Returns");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.ReturnReasons:
                         {
-                            ChartData chartData = LoadChart.LoadReturnReasonsChart(MainMenu_Form.Instance.ReturnReasons_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadReturnReasonsChart(MainMenu_Form.Instance.ReturnReasons_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ReturnReasons;
                             string first = LanguageManager.TranslateString("Reasons");
                             string second = LanguageManager.TranslateString("# of returns");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
@@ -409,34 +409,34 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnsByCategory:
                         {
-                            ChartData chartData = LoadChart.LoadReturnsByCategoryChart(MainMenu_Form.Instance.ReturnsByCategory_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadReturnsByCategoryChart(MainMenu_Form.Instance.ReturnsByCategory_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ReturnsByCategory;
                             string first = LanguageManager.TranslateString("Categories");
                             string second = LanguageManager.TranslateString("# of returns");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.ReturnsByProduct:
                         {
-                            ChartData chartData = LoadChart.LoadReturnsByProductChart(MainMenu_Form.Instance.ReturnsByProduct_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadReturnsByProductChart(MainMenu_Form.Instance.ReturnsByProduct_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ReturnsByProduct;
                             string first = LanguageManager.TranslateString("Products");
                             string second = LanguageManager.TranslateString("# of returns");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
 
                     case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
                         {
-                            ChartData chartData = LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.PurchaseVsSaleReturns;
                             string first = LanguageManager.TranslateString("Transaction Type");
                             string second = LanguageManager.TranslateString("# of returns");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
                         break;
                 }
