@@ -159,7 +159,8 @@ namespace Sales_Tracker
         // Validate accountant name
         public void VaidateAccountantTextBox()
         {
-            bool exists = MainMenu_Form.Instance.AccountantList.Any(a => string.Equals(a, Accountant_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+            bool exists = MainMenu_Form.Instance.AccountantList.Any(a =>
+                string.Equals(a, Accountant_TextBox.Text.Trim(), StringComparison.OrdinalIgnoreCase));
 
             if (exists)
             {
@@ -201,7 +202,8 @@ namespace Sales_Tracker
         {
             if (AddAccountant_Button.Tag is bool and true)
             {
-                AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text) && Accountant_TextBox.Tag.ToString() != "0";
+                AddAccountant_Button.Enabled = !string.IsNullOrWhiteSpace(Accountant_TextBox.Text)
+                    && Accountant_TextBox.Tag.ToString() != "0";
             }
         }
         private void CloseAllPanels(object sender, EventArgs? e)

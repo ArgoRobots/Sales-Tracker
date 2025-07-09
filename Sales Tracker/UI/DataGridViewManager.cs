@@ -1249,8 +1249,6 @@ namespace Sales_Tracker.UI
             RightClickDataGridView_DeleteBtn = CustomControls.ConstructBtnForMenu("Delete", CustomControls.PanelBtnWidth, true, flowPanel);
             RightClickDataGridView_DeleteBtn.ForeColor = CustomColors.AccentRed;
             RightClickDataGridView_DeleteBtn.Click += DeleteRow;
-
-            CustomControls.ConstructKeyShortcut("Del", RightClickDataGridView_DeleteBtn);
         }
         private static void ModifyRow(object sender, EventArgs e)
         {
