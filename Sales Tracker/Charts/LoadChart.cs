@@ -2442,40 +2442,6 @@ namespace Sales_Tracker.Charts
                 }
             }
         }
-        private static void SortAndAddCountDatasetAndSetBarPercentage(Dictionary<string, int> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
-        {
-            // Sort the dictionary by date keys
-            IOrderedEnumerable<KeyValuePair<string, int>> sortedCountByDate = list.OrderBy(kvp => DateTime.ParseExact(kvp.Key, dateFormat, null));
-
-            // Add dataset
-            if (isLineChart)
-            {
-                foreach (KeyValuePair<string, int> kvp in sortedCountByDate)
-                {
-                    ((GunaLineDataset)dataset).DataPoints.Add(kvp.Key, kvp.Value);
-                }
-            }
-            else
-            {
-                foreach (KeyValuePair<string, int> kvp in sortedCountByDate)
-                {
-                    ((GunaBarDataset)dataset).DataPoints.Add(kvp.Key, kvp.Value);
-                }
-            }
-
-            // Set BarPercentage for bar charts
-            if (!isLineChart)
-            {
-                if (dataset.DataPointCount == 1)
-                {
-                    ((GunaBarDataset)dataset).BarPercentage = 0.2f;
-                }
-                else
-                {
-                    ((GunaBarDataset)dataset).BarPercentage = 0.4f;
-                }
-            }
-        }
         private static bool TryGetValue<T>(DataGridViewCell cell, out T value)
         {
             value = default;
