@@ -1837,6 +1837,66 @@ namespace Sales_Tracker.Classes
 
             TrackChartExport(stopwatch, filePath, isSpline ? ExportType.GoogleSheetsChart : ExportType.ExcelSheetsChart);
         }
+        public static void ExportMultiDataSetCountChartToExcel(Dictionary<string, Dictionary<string, double>> data, string filePath, eChartType chartType, string chartTitle)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            ExcelPackage.License.SetNonCommercialPersonal("Argo");
+            using ExcelPackage package = new();
+            string worksheetName = LanguageManager.TranslateString("Chart Data");
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(worksheetName);
+
+            // Get all series names
+            List<string> seriesNames = data.First().Value.Keys.ToList();
+
+            // Add headers
+            worksheet.Cells[1, 1].Value = LanguageManager.TranslateString("Date");
+            for (int i = 0; i < seriesNames.Count; i++)
+            {
+                worksheet.Cells[1, i + 2].Value = seriesNames[i];
+            }
+
+            // Format headers
+            ExcelRange headerRange = worksheet.Cells[1, 1, 1, seriesNames.Count + 1];
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightSkyBlue);
+
+            // Add data
+            int row = 2;
+            foreach (KeyValuePair<string, Dictionary<string, double>> dateEntry in data.OrderBy(x => x.Key))
+            {
+                worksheet.Cells[row, 1].Value = dateEntry.Key;
+
+                for (int i = 0; i < seriesNames.Count; i++)
+                {
+                    worksheet.Cells[row, i + 2].Value = dateEntry.Value[seriesNames[i]];
+
+                    // Use number formatting for counts (no decimals, no currency)
+                    worksheet.Cells[row, i + 2].Style.Numberformat.Format = _numberFormatPattern;
+                }
+                row++;
+            }
+
+            // Create chart
+            ExcelChart chart = CreateChart(worksheet, chartTitle, chartType, true);
+            chart.Legend.Position = eLegendPosition.Top;
+
+            // Add series to chart
+            for (int i = 0; i < seriesNames.Count; i++)
+            {
+                ExcelChartSerie series = chart.Series.Add(
+                    worksheet.Cells[2, i + 2, row - 1, i + 2], // Y values
+                    worksheet.Cells[2, 1, row - 1, 1]          // X values
+                );
+                series.Header = seriesNames[i];
+            }
+
+            worksheet.Columns.AutoFit();
+            package.SaveAs(new FileInfo(filePath));
+
+            TrackChartExport(stopwatch, filePath, ExportType.ExcelSheetsChart);
+        }
         private static void TrackChartExport(Stopwatch stopwatch, string filePath, ExportType exportType)
         {
             stopwatch.Stop();

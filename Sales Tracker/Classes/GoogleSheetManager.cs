@@ -46,7 +46,7 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        // Export single dataset charts
+        // Export single dataset chart
         public static async Task ExportChartToGoogleSheetsAsync(
             IReadOnlyDictionary<string, double> data,
             string chartTitle,
@@ -412,7 +412,7 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        // Export multiple dataset charts
+        // Export multiple dataset chart
         public static async Task ExportMultiDataSetChartToGoogleSheetsAsync(
             Dictionary<string, Dictionary<string, double>> data,
             string chartTitle,
@@ -603,6 +603,203 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 ShowErrorMessageOnUIThread("Export Error", $"Failed to export multi-dataset chart to Google Sheets: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                Loading_Form.CompleteOperation(operationMessage);
+            }
+        }
+
+        // Export multiple dataset chart with integer as value
+        public static async Task ExportMultiDataSetCountChartToGoogleSheetsAsync(
+            Dictionary<string, Dictionary<string, double>> data,
+            string chartTitle,
+            ChartType chartType,
+            CancellationToken cancellationToken = default)
+        {
+            if (_sheetsService == null && !InitializeService())
+            {
+                return;
+            }
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            string operationMessage = "Exporting multi-dataset count chart to Google Sheets...";
+
+            using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            CancellationToken activeCancellationToken = combinedCts.Token;
+
+            Loading_Form.ShowLoading(operationMessage, combinedCts);
+
+            try
+            {
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                string sheetName = LanguageManager.TranslateString("Chart Data");
+
+                // Create a new spreadsheet
+                Spreadsheet spreadsheet = new()
+                {
+                    Properties = new SpreadsheetProperties
+                    {
+                        Title = $"{Directories.CompanyName} - {chartTitle} - {DateTime.Now:yyyy-MM-dd}"
+                    },
+                    Sheets = [
+                        new Sheet
+                {
+                    Properties = new SheetProperties
+                    {
+                        Title = sheetName,
+                        SheetId = 0
+                    }
+                }
+                    ]
+                };
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                spreadsheet = await _sheetsService.Spreadsheets
+                    .Create(spreadsheet)
+                    .ExecuteAsync(activeCancellationToken);
+
+                string spreadsheetId = spreadsheet.SpreadsheetId;
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Create drive service
+                DriveService driveService = new(new BaseClientService.Initializer
+                {
+                    HttpClientInitializer = _sheetsService.HttpClientInitializer,
+                    ApplicationName = "Sales Tracker"
+                });
+
+                // Set file permissions to be accessible by anyone with the link
+                Permission permission = new()
+                {
+                    Type = "anyone",
+                    Role = "writer",
+                    AllowFileDiscovery = false
+                };
+
+                await driveService.Permissions
+                    .Create(permission, spreadsheetId)
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Get series names and prepare headers
+                List<string> seriesNames = data.First().Value.Keys.ToList();
+                List<string> orderedSeriesNames = seriesNames
+                    .OrderBy(x => x.Contains("Sales"))  // This puts "Total Sales" last
+                    .ToList();
+                List<object> headers = [LanguageManager.TranslateString("Date"), .. orderedSeriesNames];
+
+                // Prepare the data
+                List<IList<object>> values = [headers];
+
+                foreach (KeyValuePair<string, Dictionary<string, double>> dateEntry in data.OrderBy(x => x.Key))
+                {
+                    activeCancellationToken.ThrowIfCancellationRequested();
+
+                    List<object> row = [dateEntry.Key];
+                    foreach (string seriesName in orderedSeriesNames)
+                    {
+                        row.Add(dateEntry.Value[seriesName]);
+                    }
+                    values.Add(row);
+                }
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Write data to sheet
+                string range = $"{sheetName}!A1:{(char)('A' + seriesNames.Count)}{values.Count}";
+                ValueRange valueRange = new() { Values = values };
+
+                SpreadsheetsResource.ValuesResource.UpdateRequest updateRequest = _sheetsService.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
+                updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+                await updateRequest.ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Format headers and numbers
+                List<Request> requests =
+                [
+                    CreateHeaderFormatRequest(0, 0, 0, seriesNames.Count),
+        ];
+
+                // Format number columns (no decimals for counts)
+                for (int i = 1; i <= seriesNames.Count; i++)
+                {
+                    activeCancellationToken.ThrowIfCancellationRequested();
+                    requests.Add(CreateNumberFormatRequest(1, values.Count - 1, i, i, "#,##0")); // No decimals
+                }
+
+                // Add chart with multiple series
+                List<(string, string)> seriesRanges = [];
+                for (int i = 0; i < seriesNames.Count; i++)
+                {
+                    seriesRanges.Add(($"A", $"{(char)('B' + i)}"));
+                }
+
+                Request chartRequest = CreateChartRequest(
+                    chartType,
+                    chartTitle,
+                    0,
+                    values.Count - 1,
+                    seriesRanges.ToArray()
+                );
+                requests.Add(chartRequest);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Execute all formatting requests
+                BatchUpdateSpreadsheetRequest batchUpdateRequest = new()
+                {
+                    Requests = requests
+                };
+
+                await _sheetsService.Spreadsheets
+                    .BatchUpdate(batchUpdateRequest, spreadsheetId)
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                // Auto-resize columns
+                DimensionRange dimensionRange = new()
+                {
+                    SheetId = 0,
+                    Dimension = "COLUMNS",
+                    StartIndex = 0,
+                    EndIndex = seriesNames.Count + 1
+                };
+
+                Request autoResizeRequest = new()
+                {
+                    AutoResizeDimensions = new AutoResizeDimensionsRequest
+                    {
+                        Dimensions = dimensionRange
+                    }
+                };
+
+                await _sheetsService.Spreadsheets
+                    .BatchUpdate(new BatchUpdateSpreadsheetRequest
+                    {
+                        Requests = [autoResizeRequest]
+                    }, spreadsheetId)
+                    .ExecuteAsync(activeCancellationToken);
+
+                activeCancellationToken.ThrowIfCancellationRequested();
+
+                OpenGoogleSheet(spreadsheetId);
+                TrackGoogleSheetsExport(stopwatch);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessageOnUIThread("Export Error", $"Failed to export multi-dataset count chart to Google Sheets: {ex.Message}");
                 throw;
             }
             finally

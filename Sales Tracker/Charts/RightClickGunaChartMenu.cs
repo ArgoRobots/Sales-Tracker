@@ -370,15 +370,24 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnsOverTime:
                         {
-                            ChartCountData chartData = LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateString("Purchase returns")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sale returns")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
                             string chartTitle = TranslatedChartTitles.ReturnsOverTime;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string first = LanguageManager.TranslateString("Date");
-                            string second = LanguageManager.TranslateString("Returns");
 
-                            await GoogleSheetManager.ExportCountChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportMultiDataSetCountChartToGoogleSheetsAsync(combinedData, chartTitle, chartType);
                         }
                         break;
 
@@ -395,15 +404,24 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
                         {
-                            ChartData chartData = LoadChart.LoadReturnFinancialImpactChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadReturnFinancialImpactChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart, isLine, canUpdateChart: false);
+                            Dictionary<string, Dictionary<string, double>> combinedData = [];
+
+                            foreach (string date in chartData.GetDateOrder())
+                            {
+                                combinedData[date] = new Dictionary<string, double>
+                                {
+                                    [LanguageManager.TranslateString("Purchase return value")] = chartData.GetExpensesForDate(date),
+                                    [LanguageManager.TranslateString("Sale return value")] = chartData.GetSalesForDate(date)
+                                };
+                            }
+
                             string chartTitle = TranslatedChartTitles.ReturnFinancialImpact;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
-                            string first = LanguageManager.TranslateString("Date");
-                            string second = LanguageManager.TranslateString("Return value");
 
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
+                            await GoogleSheetManager.ExportMultiDataSetChartToGoogleSheetsAsync(combinedData, chartTitle, chartType);
                         }
                         break;
 

@@ -1596,7 +1596,7 @@ namespace Sales_Tracker.Charts
 
             return new SalesExpensesChartData(expenseGrowth, revenueGrowth, sortedDates);
         }
-        public static ChartCountData LoadReturnsOverTimeChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadReturnsOverTimeChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1604,12 +1604,13 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
-            string label = LanguageManager.TranslateString("Returns");
+            string purchaseReturnsLabel = LanguageManager.TranslateString("Purchase returns");
+            string saleReturnsLabel = LanguageManager.TranslateString("Sale returns");
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
                 ClearChart(chart);
-                return ChartCountData.Empty;
+                return SalesExpensesChartData.Empty;
             }
 
             if (!exportToExcel && canUpdateChart)
@@ -1621,65 +1622,316 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            chart.Legend.Display = false;
-
-            IGunaDataset dataset;
-            if (isLineChart) { dataset = new GunaLineDataset { Label = label }; }
-            else { dataset = new GunaBarDataset { Label = label }; }
+            // Create datasets for purchase returns and sale returns
+            IGunaDataset purchaseReturnsDataset, saleReturnsDataset;
+            if (isLineChart)
+            {
+                purchaseReturnsDataset = new GunaLineDataset { Label = purchaseReturnsLabel };
+                saleReturnsDataset = new GunaLineDataset { Label = saleReturnsLabel };
+            }
+            else
+            {
+                purchaseReturnsDataset = new GunaBarDataset { Label = purchaseReturnsLabel };
+                saleReturnsDataset = new GunaBarDataset { Label = saleReturnsLabel };
+            }
 
             if (!exportToExcel && canUpdateChart)
             {
-                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.AccentRed);
+                ApplyStyleToBarOrLineDataSet(purchaseReturnsDataset, isLineChart, CustomColors.PastelGreen);
+                ApplyStyleToBarOrLineDataSet(saleReturnsDataset, isLineChart, CustomColors.PastelBlue);
             }
 
-            int grandTotal = 0;
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
-            Dictionary<string, int> returnsByDate = [];
 
-            // Process both purchase and sale returns
-            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
+            Dictionary<string, int> purchaseReturnsByDate = [], saleReturnsByDate = [];
+            HashSet<string> allDates = [];
 
-            foreach (Guna2DataGridView dataGridView in dataGridViews)
+            // Process purchase returns
+            foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                foreach (DataGridViewRow row in dataGridView.Rows)
+                if (!row.Visible) { continue; }
+
+                // Only count returned transactions
+                if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (purchaseReturnsByDate.TryGetValue(formattedDate, out int value))
                 {
-                    if (!row.Visible) { continue; }
-
-                    // Only count returned transactions
-                    if (!ReturnManager.IsTransactionReturned(row)) { continue; }
-
-                    DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
-                    string formattedDate = date.ToString(dateFormat);
-
-                    if (returnsByDate.TryGetValue(formattedDate, out int value))
-                    {
-                        returnsByDate[formattedDate] = value + 1;
-                    }
-                    else
-                    {
-                        returnsByDate[formattedDate] = 1;
-                    }
-                    grandTotal++;
+                    purchaseReturnsByDate[formattedDate] = value + 1;
+                }
+                else
+                {
+                    purchaseReturnsByDate[formattedDate] = 1;
                 }
             }
 
+            // Process sale returns
+            foreach (DataGridViewRow row in salesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+
+                // Only count returned transactions
+                if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (saleReturnsByDate.TryGetValue(formattedDate, out int value))
+                {
+                    saleReturnsByDate[formattedDate] = value + 1;
+                }
+                else
+                {
+                    saleReturnsByDate[formattedDate] = 1;
+                }
+            }
+
+            if (allDates.Count == 0)
+            {
+                ClearChart(chart);
+                return SalesExpensesChartData.Empty;
+            }
+
+            // Sort dates chronologically
+            List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
+
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string chartTitle = TranslatedChartTitles.ReturnsOverTime;
-                string date = LanguageManager.TranslateString("Date");
+                Dictionary<string, Dictionary<string, double>> combinedData = [];
+                foreach (string date in sortedDates)
+                {
+                    combinedData[date] = new Dictionary<string, double>
+                    {
+                        { purchaseReturnsLabel, purchaseReturnsByDate.TryGetValue(date, out int pValue) ? pValue : 0 },
+                        { saleReturnsLabel, saleReturnsByDate.TryGetValue(date, out int sValue) ? sValue : 0 }
+                    };
+                }
 
-                ExcelSheetManager.ExportCountChartToExcel(returnsByDate, filePath, chartType, chartTitle, date, label);
+                string chartTitle = TranslatedChartTitles.ReturnsOverTime;
+                ExcelSheetManager.ExportMultiDataSetCountChartToExcel(
+                    combinedData,
+                    filePath,
+                    isLineChart ? eChartType.Line : eChartType.ColumnClustered,
+                    chartTitle
+                );
             }
             else if (canUpdateChart)
             {
-                SortAndAddCountDatasetAndSetBarPercentage(returnsByDate, dateFormat, dataset, isLineChart);
-                UpdateChart(chart, dataset, false);
+                foreach (string date in sortedDates)
+                {
+                    int purchaseValue = purchaseReturnsByDate.TryGetValue(date, out int pValue) ? pValue : 0;
+                    int saleValue = saleReturnsByDate.TryGetValue(date, out int sValue) ? sValue : 0;
+
+                    if (isLineChart)
+                    {
+                        ((GunaLineDataset)purchaseReturnsDataset).DataPoints.Add(date, purchaseValue);
+                        ((GunaLineDataset)saleReturnsDataset).DataPoints.Add(date, saleValue);
+                    }
+                    else
+                    {
+                        ((GunaBarDataset)purchaseReturnsDataset).DataPoints.Add(date, purchaseValue);
+                        ((GunaBarDataset)saleReturnsDataset).DataPoints.Add(date, saleValue);
+
+                        float barPercentage = purchaseReturnsDataset.DataPointCount + saleReturnsDataset.DataPointCount == 1 ? 0.2f : 0.4f;
+                        ((GunaBarDataset)purchaseReturnsDataset).BarPercentage = barPercentage;
+                        ((GunaBarDataset)saleReturnsDataset).BarPercentage = barPercentage;
+                    }
+                }
+
+                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+                {
+                    chart.Datasets.Clear();
+                    chart.Datasets.Add(purchaseReturnsDataset);
+                    chart.Datasets.Add(saleReturnsDataset);
+
+                    chart.Update();
+                });
             }
 
-            return new ChartCountData(returnsByDate);
+            // Convert int dictionaries to double dictionaries for SalesExpensesChartData
+            Dictionary<string, double> purchaseReturnsDouble = purchaseReturnsByDate.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value);
+            Dictionary<string, double> saleReturnsDouble = saleReturnsByDate.ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value);
+
+            return new SalesExpensesChartData(purchaseReturnsDouble, saleReturnsDouble, sortedDates);
+        }
+        public static SalesExpensesChartData LoadReturnFinancialImpactChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
+
+            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
+            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
+
+            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
+            string purchaseReturnValueLabel = LanguageManager.TranslateString("Purchase return value");
+            string saleReturnValueLabel = LanguageManager.TranslateString("Sale return value");
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
+            {
+                ClearChart(chart);
+                return SalesExpensesChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                if (isLineChart)
+                {
+                    ConfigureChartForLine(chart);
+                }
+                else { ConfigureChartForBar(chart); }
+            }
+
+            // Create datasets for purchase return value and sale return value
+            IGunaDataset purchaseReturnValueDataset, saleReturnValueDataset;
+            if (isLineChart)
+            {
+                purchaseReturnValueDataset = new GunaLineDataset { Label = purchaseReturnValueLabel };
+                saleReturnValueDataset = new GunaLineDataset { Label = saleReturnValueLabel };
+            }
+            else
+            {
+                purchaseReturnValueDataset = new GunaBarDataset { Label = purchaseReturnValueLabel };
+                saleReturnValueDataset = new GunaBarDataset { Label = saleReturnValueLabel };
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ApplyStyleToBarOrLineDataSet(purchaseReturnValueDataset, isLineChart, CustomColors.PastelGreen);
+                ApplyStyleToBarOrLineDataSet(saleReturnValueDataset, isLineChart, CustomColors.PastelBlue);
+            }
+
+            DateTime minDate, maxDate;
+            (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
+            string dateFormat = GetDateFormat(maxDate - minDate);
+
+            Dictionary<string, double> purchaseReturnValueByDate = [], saleReturnValueByDate = [];
+            HashSet<string> allDates = [];
+
+            // Process purchase returns
+            foreach (DataGridViewRow row in purchasesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+
+                // Only count returned transactions
+                if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
+                {
+                    continue;
+                }
+
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (purchaseReturnValueByDate.TryGetValue(formattedDate, out double value))
+                {
+                    purchaseReturnValueByDate[formattedDate] = Math.Round(value + total, 2);
+                }
+                else
+                {
+                    purchaseReturnValueByDate[formattedDate] = Math.Round(total, 2);
+                }
+            }
+
+            // Process sale returns
+            foreach (DataGridViewRow row in salesDataGridView.Rows)
+            {
+                if (!row.Visible) { continue; }
+
+                // Only count returned transactions
+                if (!ReturnManager.IsTransactionReturned(row)) { continue; }
+
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
+                {
+                    continue;
+                }
+
+                DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
+                string formattedDate = date.ToString(dateFormat);
+                allDates.Add(formattedDate);
+
+                if (saleReturnValueByDate.TryGetValue(formattedDate, out double value))
+                {
+                    saleReturnValueByDate[formattedDate] = Math.Round(value + total, 2);
+                }
+                else
+                {
+                    saleReturnValueByDate[formattedDate] = Math.Round(total, 2);
+                }
+            }
+
+            if (allDates.Count == 0)
+            {
+                ClearChart(chart);
+                return SalesExpensesChartData.Empty;
+            }
+
+            // Sort dates chronologically
+            List<string> sortedDates = allDates.OrderBy(date => DateTime.ParseExact(date, dateFormat, null)).ToList();
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                Dictionary<string, Dictionary<string, double>> combinedData = [];
+                foreach (string date in sortedDates)
+                {
+                    combinedData[date] = new Dictionary<string, double>
+                    {
+                        { purchaseReturnValueLabel, purchaseReturnValueByDate.TryGetValue(date, out double pValue) ? pValue : 0 },
+                        { saleReturnValueLabel, saleReturnValueByDate.TryGetValue(date, out double sValue) ? sValue : 0 }
+                    };
+                }
+
+                string chartTitle = TranslatedChartTitles.ReturnFinancialImpact;
+                ExcelSheetManager.ExportMultiDataSetChartToExcel(
+                    combinedData,
+                    filePath,
+                    isLineChart ? eChartType.Line : eChartType.ColumnClustered,
+                    chartTitle
+                );
+            }
+            else if (canUpdateChart)
+            {
+                foreach (string date in sortedDates)
+                {
+                    double purchaseValue = purchaseReturnValueByDate.TryGetValue(date, out double pValue) ? pValue : 0;
+                    double saleValue = saleReturnValueByDate.TryGetValue(date, out double sValue) ? sValue : 0;
+
+                    if (isLineChart)
+                    {
+                        ((GunaLineDataset)purchaseReturnValueDataset).DataPoints.Add(date, purchaseValue);
+                        ((GunaLineDataset)saleReturnValueDataset).DataPoints.Add(date, saleValue);
+                    }
+                    else
+                    {
+                        ((GunaBarDataset)purchaseReturnValueDataset).DataPoints.Add(date, purchaseValue);
+                        ((GunaBarDataset)saleReturnValueDataset).DataPoints.Add(date, saleValue);
+
+                        float barPercentage = purchaseReturnValueDataset.DataPointCount + saleReturnValueDataset.DataPointCount == 1 ? 0.2f : 0.4f;
+                        ((GunaBarDataset)purchaseReturnValueDataset).BarPercentage = barPercentage;
+                        ((GunaBarDataset)saleReturnValueDataset).BarPercentage = barPercentage;
+                    }
+                }
+
+                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
+                {
+                    chart.Datasets.Clear();
+                    chart.Datasets.Add(purchaseReturnValueDataset);
+                    chart.Datasets.Add(saleReturnValueDataset);
+
+                    ApplyCurrencyFormatToDataset(purchaseReturnValueDataset);
+                    ApplyCurrencyFormatToDataset(saleReturnValueDataset);
+
+                    chart.Update();
+                });
+            }
+
+            return new SalesExpensesChartData(purchaseReturnValueByDate, saleReturnValueByDate, sortedDates);
         }
         public static ChartCountData LoadReturnReasonsChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -1770,96 +2022,6 @@ namespace Sales_Tracker.Charts
             }
 
             return new ChartCountData(groupedReasonCounts);
-        }
-        public static ChartData LoadReturnFinancialImpactChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
-        {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
-            Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
-            Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
-
-            bool hasData = DataGridViewManager.HasVisibleRowsForReturn(purchasesDataGridView, salesDataGridView);
-            string label = LanguageManager.TranslateString("Return value");
-
-            if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
-            {
-                ClearChart(chart);
-                return ChartData.Empty;
-            }
-
-            if (!exportToExcel && canUpdateChart)
-            {
-                if (isLineChart)
-                {
-                    ConfigureChartForLine(chart);
-                }
-                else { ConfigureChartForBar(chart); }
-            }
-
-            chart.Legend.Display = false;
-
-            IGunaDataset dataset;
-            if (isLineChart) { dataset = new GunaLineDataset { Label = label }; }
-            else { dataset = new GunaBarDataset { Label = label }; }
-
-            if (!exportToExcel && canUpdateChart)
-            {
-                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, CustomColors.AccentRed);
-            }
-
-            double grandTotal = 0;
-            DateTime minDate, maxDate;
-            (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
-            string dateFormat = GetDateFormat(maxDate - minDate);
-            Dictionary<string, double> returnValueByDate = [];
-
-            // Process both purchase and sale returns
-            Guna2DataGridView[] dataGridViews = [purchasesDataGridView, salesDataGridView];
-
-            foreach (Guna2DataGridView dataGridView in dataGridViews)
-            {
-                foreach (DataGridViewRow row in dataGridView.Rows)
-                {
-                    if (!row.Visible) { continue; }
-
-                    // Only count returned transactions
-                    if (!ReturnManager.IsTransactionReturned(row)) { continue; }
-
-                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total))
-                    {
-                        continue;
-                    }
-
-                    DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
-                    string formattedDate = date.ToString(dateFormat);
-
-                    if (returnValueByDate.TryGetValue(formattedDate, out double value))
-                    {
-                        returnValueByDate[formattedDate] = Math.Round(value + total, 2);
-                    }
-                    else
-                    {
-                        returnValueByDate[formattedDate] = Math.Round(total, 2);
-                    }
-                    grandTotal += total;
-                }
-            }
-
-            if (exportToExcel && !string.IsNullOrEmpty(filePath))
-            {
-                eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string chartTitle = TranslatedChartTitles.ReturnFinancialImpact;
-                string date = LanguageManager.TranslateString("Date");
-
-                ExcelSheetManager.ExportChartToExcel(returnValueByDate, filePath, chartType, chartTitle, date, label);
-            }
-            else if (canUpdateChart)
-            {
-                SortAndAddDatasetAndSetBarPercentage(returnValueByDate, dateFormat, dataset, isLineChart);
-                UpdateChart(chart, dataset, true);
-            }
-
-            return new ChartData(grandTotal, returnValueByDate);
         }
         public static ChartCountData LoadReturnsByCategoryChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -2401,17 +2563,27 @@ namespace Sales_Tracker.Charts
         }
         public static void ClearChart(GunaChart chart)
         {
-            chart.Zoom = ZoomMode.Y;
-            chart.XAxes.Display = false;
-            chart.XAxes.GridLines.Display = false;
-            chart.XAxes.Ticks.Display = false;
+            // Suspend updates during clearing
+            chart.SuspendLayout();
 
-            chart.YAxes.Display = false;
-            chart.YAxes.GridLines.Display = false;
-            chart.YAxes.Ticks.Display = false;
+            try
+            {
+                chart.Zoom = ZoomMode.Y;
+                chart.XAxes.Display = false;
+                chart.XAxes.GridLines.Display = false;
+                chart.XAxes.Ticks.Display = false;
 
-            chart.Datasets.Clear();
-            chart.Update();
+                chart.YAxes.Display = false;
+                chart.YAxes.GridLines.Display = false;
+                chart.YAxes.Ticks.Display = false;
+
+                chart.Datasets.Clear();
+            }
+            finally
+            {
+                chart.ResumeLayout(false);  // Don't perform layout yet
+                chart.Update();  // Single update call
+            }
         }
     }
 }

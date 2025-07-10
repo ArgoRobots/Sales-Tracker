@@ -98,7 +98,8 @@ namespace Sales_Tracker
         {
             GunaChart chart = new()
             {
-                Name = name
+                Name = name,
+                Top = _chartTop
             };
 
             chart.ApplyConfig(ChartColors.Config(), CustomColors.ContentPanelBackground);
@@ -109,7 +110,6 @@ namespace Sales_Tracker
             chart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
             chart.XAxes.Ticks.Font = new("Segoe UI", 18);
             chart.YAxes.Ticks.Font = new("Segoe UI", 18);
-            chart.Top = _chartTop;
 
             typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?.SetValue(chart, true, null);
@@ -1423,6 +1423,9 @@ namespace Sales_Tracker
         }
         private void ApplyFiltersToDataGridView(DataGridView dataGridView)
         {
+            // Suspend layout updates during filtering for better performance
+            dataGridView.SuspendLayout();
+
             if (SortFromDate != null && SortToDate != null)
             {
                 FilterDataGridViewByDateRange(dataGridView);
@@ -1467,6 +1470,8 @@ namespace Sales_Tracker
 
             DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
+
+            dataGridView.ResumeLayout(true);
         }
         private void FilterDataGridViewByDateRange(DataGridView dataGridView)
         {
@@ -2482,8 +2487,7 @@ namespace Sales_Tracker
         {
             GunaChart chart = new()
             {
-                Name = name,  // This is needed for the language translation
-                Height = 490
+                Name = name  // This is needed for the language translation
             };
 
             chart.ApplyConfig(ChartColors.Config(), CustomColors.ContentPanelBackground);
