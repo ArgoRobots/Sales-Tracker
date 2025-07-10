@@ -36,7 +36,7 @@
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="EPPlus" Version="8.0.7" />
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3783" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.70.0.3834" />
     <PackageReference Include="Google.Apis.Iam.v1" Version="1.70.0.3830" />
     <PackageReference Include="Google.Apis.ServiceUsage.v1" Version="1.69.0.3787" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.70.0.3819" />
@@ -45,8 +45,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
     <PackageReference Include="SharpCompress" Version="0.40.0" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.6" />
-    <PackageReference Include="System.IO.Packaging" Version="9.0.6" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.7" />
+    <PackageReference Include="System.IO.Packaging" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>
