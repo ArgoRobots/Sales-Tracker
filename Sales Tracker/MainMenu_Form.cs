@@ -199,11 +199,13 @@ namespace Sales_Tracker
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(Purchase_DataGridView, _purchaseTotals_Chart, isLine);
                 string translatedExpenses = LanguageManager.TranslateString("Total expenses");
                 _purchaseTotals_Chart.Title.Text = $"{translatedExpenses}: {CurrencySymbol}{totalsData.Total:N2}";
+                Purchase_DataGridView.Refresh();
 
                 if (!onlyLoadForLineCharts)
                 {
                     LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, _purchaseDistribution_Chart, PieChartGrouping.Top12);
                     _purchaseDistribution_Chart.Title.Text = TranslatedChartTitles.ExpensesDistribution;
+                    _purchaseDistribution_Chart.Refresh();
                 }
 
                 LanguageManager.UpdateLanguageForControl(_purchaseTotals_Chart);
@@ -215,11 +217,13 @@ namespace Sales_Tracker
                 ChartData totalsData = LoadChart.LoadTotalsIntoChart(Sale_DataGridView, _saleTotals_Chart, isLine);
                 string translatedRevenue = LanguageManager.TranslateString("Total revenue");
                 _saleTotals_Chart.Title.Text = $"{translatedRevenue}: {CurrencySymbol}{totalsData.Total:N2}";
+                Sale_DataGridView.Refresh();
 
                 if (!onlyLoadForLineCharts)
                 {
                     LoadChart.LoadDistributionIntoChart(Sale_DataGridView, _saleDistribution_Chart, PieChartGrouping.Top12);
                     _saleDistribution_Chart.Title.Text = TranslatedChartTitles.RevenueDistribution;
+                    _saleDistribution_Chart.Refresh();
                 }
 
                 LanguageManager.UpdateLanguageForControl(_saleTotals_Chart);
@@ -228,6 +232,7 @@ namespace Sales_Tracker
             // Always load profits chart
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
             SetProfitsChartTitle(profitsData.Total);
+            Profits_Chart.Refresh();
         }
         private void SetProfitsChartTitle(double total)
         {
@@ -2390,26 +2395,33 @@ namespace Sales_Tracker
                 case AnalyticsTab.Overview:
                     LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLine);
                     SalesVsExpenses_Chart.Title.Text = TranslatedChartTitles.SalesVsExpenses;
+                    SalesVsExpenses_Chart.Refresh();
 
                     LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
                     TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
+                    TotalTransactions_Chart.Refresh();
 
                     LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
                     AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
+                    AverageTransactionValue_Chart.Refresh();
 
                     ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
                     SetProfitsChartTitle(profitsData.Total);
+                    Profits_Chart.Refresh();
                     break;
 
                 case AnalyticsTab.Geographic:
                     LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart, PieChartGrouping.Top8);
                     CountriesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CountriesOfOrigin;
+                    CountriesOfOrigin_Chart.Refresh();
 
                     LoadChart.LoadCountriesOfDestinationForProductsIntoChart(CountriesOfDestination_Chart, PieChartGrouping.Top8);
                     CountriesOfDestination_Chart.Title.Text = TranslatedChartTitles.CountriesOfDestination;
+                    CountriesOfDestination_Chart.Refresh();
 
                     LoadChart.LoadCompaniesOfOriginForProductsIntoChart(CompaniesOfOrigin_Chart, PieChartGrouping.Top8);
                     CompaniesOfOrigin_Chart.Title.Text = TranslatedChartTitles.CompaniesOfOrigin;
+                    CompaniesOfOrigin_Chart.Refresh();
                     break;
 
                 case AnalyticsTab.Financial:
@@ -2419,45 +2431,56 @@ namespace Sales_Tracker
                 case AnalyticsTab.Performance:
                     LoadChart.LoadGrowthRateChart(GrowthRates_Chart);
                     GrowthRates_Chart.Title.Text = TranslatedChartTitles.GrowthRates;
+                    GrowthRates_Chart.Refresh();
 
                     // Load shared charts if not already loaded
                     if (!_tabChartsLoaded[AnalyticsTab.Overview])
                     {
                         LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
                         AverageTransactionValue_Chart.Title.Text = TranslatedChartTitles.AverageTransactionValue;
+                        AverageTransactionValue_Chart.Refresh();
 
                         LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
                         TotalTransactions_Chart.Title.Text = TranslatedChartTitles.TotalTransactions;
+                        TotalTransactions_Chart.Refresh();
                     }
                     break;
 
                 case AnalyticsTab.Operational:
                     LoadChart.LoadAccountantsIntoChart(Accountants_Chart, PieChartGrouping.Top8);
                     Accountants_Chart.Title.Text = TranslatedChartTitles.AccountantsTransactions;
+                    Accountants_Chart.Refresh();
 
                     LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLine,
                         includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
                     AverageShippingCosts_Chart.Title.Text = TranslatedChartTitles.AverageShippingCosts;
+                    AverageShippingCosts_Chart.Refresh();
                     break;
 
                 case AnalyticsTab.Returns:
                     LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
                     ReturnsOverTime_Chart.Title.Text = TranslatedChartTitles.ReturnsOverTime;
+                    ReturnsOverTime_Chart.Refresh();
 
                     LoadChart.LoadReturnReasonsChart(ReturnReasons_Chart, PieChartGrouping.Top8);
                     ReturnReasons_Chart.Title.Text = TranslatedChartTitles.ReturnReasons;
+                    ReturnReasons_Chart.Refresh();
 
                     LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
                     ReturnFinancialImpact_Chart.Title.Text = TranslatedChartTitles.ReturnFinancialImpact;
+                    ReturnFinancialImpact_Chart.Refresh();
 
                     LoadChart.LoadReturnsByCategoryChart(ReturnsByCategory_Chart, PieChartGrouping.Top8);
                     ReturnsByCategory_Chart.Title.Text = TranslatedChartTitles.ReturnsByCategory;
+                    ReturnsByCategory_Chart.Refresh();
 
                     LoadChart.LoadReturnsByProductChart(ReturnsByProduct_Chart, PieChartGrouping.Top8);
                     ReturnsByProduct_Chart.Title.Text = TranslatedChartTitles.ReturnsByProduct;
+                    ReturnsByProduct_Chart.Refresh();
 
                     LoadChart.LoadPurchaseVsSaleReturnsChart(PurchaseVsSaleReturns_Chart);
                     PurchaseVsSaleReturns_Chart.Title.Text = TranslatedChartTitles.PurchaseVsSaleReturns;
+                    PurchaseVsSaleReturns_Chart.Refresh();
                     break;
             }
         }
@@ -2550,11 +2573,15 @@ namespace Sales_Tracker
                     case AnalyticsTab.Overview:
                     case AnalyticsTab.Performance:
                         LoadChart.LoadSalesVsExpensesChart(SalesVsExpenses_Chart, isLine);
+                        SalesVsExpenses_Chart.Refresh();
                         LoadChart.LoadTotalTransactionsChart(TotalTransactions_Chart, isLine);
+                        TotalTransactions_Chart.Refresh();
                         LoadChart.LoadAverageTransactionValueChart(AverageTransactionValue_Chart, isLine);
+                        AverageTransactionValue_Chart.Refresh();
 
                         ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart, isLine);
                         SetProfitsChartTitle(profitsData.Total);
+                        Profits_Chart.Refresh();
                         break;
 
                     case AnalyticsTab.Financial:
@@ -2564,11 +2591,14 @@ namespace Sales_Tracker
                     case AnalyticsTab.Operational:
                         LoadChart.LoadAverageShippingCostsChart(AverageShippingCosts_Chart, isLine,
                             includeZeroShipping: IncludeFreeShipping_CheckBox.Checked);
+                        AverageShippingCosts_Chart.Refresh();
                         break;
 
                     case AnalyticsTab.Returns:
                         LoadChart.LoadReturnsOverTimeChart(ReturnsOverTime_Chart, isLine);
+                        ReturnsOverTime_Chart.Refresh();
                         LoadChart.LoadReturnFinancialImpactChart(ReturnFinancialImpact_Chart, isLine);
+                        ReturnFinancialImpact_Chart.Refresh();
                         break;
                 }
             }
