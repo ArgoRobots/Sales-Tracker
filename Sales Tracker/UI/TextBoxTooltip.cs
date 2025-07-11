@@ -65,6 +65,7 @@ namespace Sales_Tracker.UI
             {
                 _tooltips[textBox].Hide(textBox);
                 _tooltipStates[textBox] = false;
+                _tooltips[textBox].SetToolTip(textBox, "");
             }
         }
         private static bool IsTextOverflowing(Guna2TextBox textBox)
