@@ -28,20 +28,6 @@ namespace Sales_Tracker.Settings.Menus
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        public void PopulateThemeComboBox()
-        {
-            // Clear and repopulate with translated text
-            ColorTheme_ComboBox.Items.Clear();
-
-            foreach (ThemeManager.ThemeType theme in Enum.GetValues<ThemeManager.ThemeType>())
-            {
-                string displayText = GetThemeDisplayText(theme);
-                ColorTheme_ComboBox.Items.Add(displayText);
-            }
-
-            // Restore selection
-            ColorTheme_ComboBox.SelectedItem = GetThemeDisplayText(ThemeManager.CurrentTheme);
-        }
         private static string GetThemeDisplayText(ThemeManager.ThemeType theme)
         {
             return theme switch
@@ -223,8 +209,6 @@ namespace Sales_Tracker.Settings.Menus
         {
             Language_TextBox.Text = Properties.Settings.Default.Language;
             Currency_TextBox.Text = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
-
-            // Refresh ComboBox with current translations and set selection
             PopulateThemeComboBox();
 
             ShowTooltips_CheckBox.Checked = Properties.Settings.Default.ShowTooltips;
@@ -235,6 +219,20 @@ namespace Sales_Tracker.Settings.Menus
             AnimateButtons_CheckBox.Checked = Properties.Settings.Default.AnimateButtons;
             ShowHasReceiptColumn_CheckBox.Checked = Properties.Settings.Default.ShowHasReceiptColumn;
             EnableAISearch_CheckBox.Checked = Properties.Settings.Default.AISearchEnabled;
+        }
+        public void PopulateThemeComboBox()
+        {
+            // Clear and repopulate with translated text
+            ColorTheme_ComboBox.Items.Clear();
+
+            foreach (ThemeManager.ThemeType theme in Enum.GetValues<ThemeManager.ThemeType>())
+            {
+                string displayText = GetThemeDisplayText(theme);
+                ColorTheme_ComboBox.Items.Add(displayText);
+            }
+
+            // Restore selection
+            ColorTheme_ComboBox.SelectedItem = GetThemeDisplayText(ThemeManager.CurrentTheme);
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {

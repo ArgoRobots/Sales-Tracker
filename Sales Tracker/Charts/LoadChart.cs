@@ -225,8 +225,6 @@ namespace Sales_Tracker.Charts
                     ApplyCurrencyFormatToDataset(dataset1);
                     ApplyCurrencyFormatToDataset(dataset2);
                 }
-
-                chart.Update();
             });
         }
 
@@ -1021,7 +1019,7 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, purchasesByDate, salesByDate, purchasesDataset, salesDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset, false); // No currency formatting for count data
+                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset, false);
             }
 
             return new SalesExpensesChartData(purchasesByDate, salesByDate, sortedDates);
@@ -1229,8 +1227,6 @@ namespace Sales_Tracker.Charts
                     // Set Y-axis format to show percentage
                     revenueDataset.YFormat = "{0:0.0}%";
                     expenseDataset.YFormat = "{0:0.0}%";
-
-                    chart.Update();
                 });
             }
 
@@ -1315,7 +1311,7 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, purchaseReturnsDouble, saleReturnsDouble, purchaseReturnsDataset, saleReturnsDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, purchaseReturnsDataset, saleReturnsDataset, false); // No currency formatting for count data
+                UpdateChartWithTwoDatasets(chart, purchaseReturnsDataset, saleReturnsDataset, false);
             }
 
             return new SalesExpensesChartData(purchaseReturnsDouble, saleReturnsDouble, sortedDates);
@@ -1905,27 +1901,16 @@ namespace Sales_Tracker.Charts
         }
         public static void ClearChart(GunaChart chart)
         {
-            // Suspend updates during clearing
-            chart.SuspendLayout();
+            chart.Zoom = ZoomMode.Y;
+            chart.XAxes.Display = false;
+            chart.XAxes.GridLines.Display = false;
+            chart.XAxes.Ticks.Display = false;
 
-            try
-            {
-                chart.Zoom = ZoomMode.Y;
-                chart.XAxes.Display = false;
-                chart.XAxes.GridLines.Display = false;
-                chart.XAxes.Ticks.Display = false;
+            chart.YAxes.Display = false;
+            chart.YAxes.GridLines.Display = false;
+            chart.YAxes.Ticks.Display = false;
 
-                chart.YAxes.Display = false;
-                chart.YAxes.GridLines.Display = false;
-                chart.YAxes.Ticks.Display = false;
-
-                chart.Datasets.Clear();
-            }
-            finally
-            {
-                chart.ResumeLayout(false);  // Don't perform layout yet
-                chart.Update();  // Single update call
-            }
+            chart.Datasets.Clear();
         }
     }
 }
