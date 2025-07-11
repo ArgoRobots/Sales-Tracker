@@ -40,7 +40,7 @@ namespace Sales_Tracker.Charts
         }
         private static void SaveImage(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+            Chart chart = (Chart)RightClickGunaChart_Panel.Tag;
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
@@ -54,40 +54,19 @@ namespace Sales_Tracker.Charts
                 SaveChartAsImage(chart, dialog.FileName);
             }
         }
-        private static void SaveChartAsImage(Control chart, string fileName)
+        private static void SaveChartAsImage(Chart chart, string fileName)
         {
             try
             {
-                switch (chart)
-                {
-                    case CartesianChart cartesianChart:
-                        SaveCartesianChartAsImage(cartesianChart, fileName);
-                        break;
-                    case PieChart pieChart:
-                        SavePieChartAsImage(pieChart, fileName);
-                        break;
-                    default:
-                        throw new NotSupportedException($"Chart type {chart.GetType().Name} is not supported for image export");
-                }
+                // Capture the chart as a bitmap
+                using Bitmap bitmap = new(chart.Width, chart.Height);
+                chart.DrawToBitmap(bitmap, new Rectangle(0, 0, chart.Width, chart.Height));
+                bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
             }
             catch (Exception ex)
             {
                 Log.Error_ExportingChart($"Failed to save chart image: {ex.Message}");
             }
-        }
-        private static void SaveCartesianChartAsImage(CartesianChart chart, string fileName)
-        {
-            // Capture the chart as a bitmap
-            using Bitmap bitmap = new(chart.Width, chart.Height);
-            chart.DrawToBitmap(bitmap, new Rectangle(0, 0, chart.Width, chart.Height));
-            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
-        }
-        private static void SavePieChartAsImage(PieChart chart, string fileName)
-        {
-            // Capture the chart as a bitmap
-            using Bitmap bitmap = new(chart.Width, chart.Height);
-            chart.DrawToBitmap(bitmap, new Rectangle(0, 0, chart.Width, chart.Height));
-            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
         }
         private static void ExportToMicrosoftExcel(object sender, EventArgs e)
         {
@@ -190,7 +169,7 @@ namespace Sales_Tracker.Charts
         }
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+            Chart chart = (Chart)RightClickGunaChart_Panel.Tag;
             Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? MainMenu_Form.Instance.Sale_DataGridView
                 : MainMenu_Form.Instance.Purchase_DataGridView;
@@ -507,44 +486,25 @@ namespace Sales_Tracker.Charts
         }
         private static void ResetZoom(object sender, EventArgs e)
         {
-            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+            Chart chart = (Chart)RightClickGunaChart_Panel.Tag;
 
-            try
+            if (chart is CartesianChart cartesianChart)
             {
-                switch (chart)
-                {
-                    case CartesianChart cartesianChart:
-                        ResetCartesianChartZoom(cartesianChart);
-                        break;
-                    case PieChart pieChart:
-                        // Pie charts don't typically have zoom functionality
-                        // But we can refresh them
-                        pieChart.Invalidate();
-                        break;
-                    default:
-                        throw new NotSupportedException($"Chart type {chart.GetType().Name} is not supported for zoom reset");
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error_ExportingChart($"Failed to reset chart zoom: {ex.Message}");
+                ResetCartesianChartZoom(cartesianChart);
             }
         }
         private static void ResetCartesianChartZoom(CartesianChart chart)
         {
-            // LiveCharts doesn't have a built-in ResetZoom method like Guna
-            // We need to reset the axes to their default state
             if (chart.XAxes != null)
             {
                 chart.XAxes = chart.XAxes.Select(axis => new Axis
                 {
-                    IsVisible = axis.IsVisible,
                     TextSize = axis.TextSize,
                     SeparatorsPaint = axis.SeparatorsPaint,
                     LabelsPaint = axis.LabelsPaint,
                     TicksPaint = axis.TicksPaint,
                     Labeler = axis.Labeler,
-                    // Reset any zoom-related properties
+                    // Reset zoom-related properties
                     MinLimit = null,
                     MaxLimit = null
                 }).ToArray();
@@ -554,13 +514,12 @@ namespace Sales_Tracker.Charts
             {
                 chart.YAxes = chart.YAxes.Select(axis => new Axis
                 {
-                    IsVisible = axis.IsVisible,
                     TextSize = axis.TextSize,
                     SeparatorsPaint = axis.SeparatorsPaint,
                     LabelsPaint = axis.LabelsPaint,
                     TicksPaint = axis.TicksPaint,
                     Labeler = axis.Labeler,
-                    // Reset any zoom-related properties
+                    // Reset zoom-related properties
                     MinLimit = null,
                     MaxLimit = null
                 }).ToArray();
@@ -570,7 +529,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Other methods
-        public static void ShowMenu(Control chart, Point mousePosition)
+        public static void ShowMenu(Chart chart, Point mousePosition)
         {
             if (!ChartHasData(chart)) { return; }
 

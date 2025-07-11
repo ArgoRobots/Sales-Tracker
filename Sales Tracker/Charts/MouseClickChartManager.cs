@@ -14,22 +14,6 @@ namespace Sales_Tracker.Charts
         private static CustomMessageFilter _messageFilter;
 
         /// <summary>
-        /// Initializes the click manager for specified LiveCharts controls and assigns actions to be called on left and right mouse clicks.
-        /// </summary>
-        public static void InitCharts(CartesianChart[] cartesianCharts, PieChart[] pieCharts = null)
-        {
-            static void leftClickAction(Chart chartControl) => CustomControls.CloseAllPanels();
-
-            List<Chart> allCharts = [.. cartesianCharts];
-            if (pieCharts != null)
-            {
-                allCharts.AddRange(pieCharts);
-            }
-
-            Initialize(allCharts.ToArray(), leftClickAction, RightClickGunaChartMenu.ShowMenu);
-        }
-
-        /// <summary>
         /// Initializes the click manager for mixed chart types.
         /// </summary>
         public static void InitCharts(Chart[] charts)

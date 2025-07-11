@@ -31,6 +31,7 @@ namespace Sales_Tracker.Charts
             // Configure tooltip
             chart.TooltipTextPaint = new SolidColorPaint(foreColor);
             chart.TooltipBackgroundPaint = new SolidColorPaint(backgroundColor);
+            chart.TooltipTextSize = 18;
         }
 
         /// <summary>
@@ -53,6 +54,7 @@ namespace Sales_Tracker.Charts
             // Configure tooltip
             chart.TooltipTextPaint = new SolidColorPaint(foreColor);
             chart.TooltipBackgroundPaint = new SolidColorPaint(backgroundColor);
+            chart.TooltipTextSize = 18;
         }
 
         /// <summary>

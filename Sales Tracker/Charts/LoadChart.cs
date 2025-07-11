@@ -37,7 +37,6 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    IsVisible = true,
                     TextSize = 20,
                     LabelsPaint = new SolidColorPaint(textColor)
                 }
@@ -47,7 +46,6 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    IsVisible = true,
                     TextSize = 20,
                     SeparatorsPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f },
                     LabelsPaint = new SolidColorPaint(textColor),
@@ -68,7 +66,6 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    IsVisible = true,
                     TextSize = 20,
                     LabelsPaint = new SolidColorPaint(textColor)
                 }
@@ -78,7 +75,6 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    IsVisible = true,
                     TextSize = 20,
                     SeparatorsPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f },
                     LabelsPaint = new SolidColorPaint(textColor),
@@ -280,7 +276,7 @@ namespace Sales_Tracker.Charts
             Percentage = 2
         }
 
-        public static void ApplyPercentageFormatToChart(CartesianChart chart)
+        private static void ApplyPercentageFormatToChart(CartesianChart chart)
         {
             // Set Y-axis formatter for percentage
             if (chart.YAxes != null && chart.YAxes.Any())
@@ -288,7 +284,6 @@ namespace Sales_Tracker.Charts
                 chart.YAxes = chart.YAxes.Select(axis => new Axis
                 {
                     Labeler = value => $"{value:F1}%",
-                    IsVisible = axis.IsVisible,
                     TextSize = axis.TextSize,
                     SeparatorsPaint = axis.SeparatorsPaint,
                     LabelsPaint = axis.LabelsPaint,
@@ -306,7 +301,6 @@ namespace Sales_Tracker.Charts
                 chart.YAxes = chart.YAxes.Select(axis => new Axis
                 {
                     Labeler = value => $"{currencySymbol}{value:N2}",
-                    IsVisible = axis.IsVisible,
                     TextSize = axis.TextSize,
                     SeparatorsPaint = axis.SeparatorsPaint,
                     LabelsPaint = axis.LabelsPaint,
@@ -330,7 +324,6 @@ namespace Sales_Tracker.Charts
                 chart.XAxes = [new Axis
                 {
                     Labels = sortedDates.ToArray(),
-                    IsVisible = true,
                     TextSize = 20,
                     LabelsPaint = new SolidColorPaint(textColor)
                 }];
@@ -1365,14 +1358,12 @@ namespace Sales_Tracker.Charts
                 // Properly set X-axis labels with dates
                 chart.XAxes = [new Axis {
                     Labels = sortedDates.ToArray(),
-                    IsVisible = true,
                     TextSize = 20,
                     LabelsPaint = new SolidColorPaint(foreColor),
                 }];
 
                 // Set Y-axis with percentage formatting
                 chart.YAxes = [new Axis {
-                    IsVisible = true,
                     TextSize = 20,
                     LabelsPaint = new SolidColorPaint(foreColor),
                     SeparatorsPaint = new SolidColorPaint(foreColor) { StrokeThickness = 1 },
@@ -1939,7 +1930,6 @@ namespace Sales_Tracker.Charts
             chart.XAxes = [new Axis
             {
                 Labels = labels.ToArray(),
-                IsVisible = true,
                 TextSize = 20,
                 LabelsPaint = new SolidColorPaint(textColor)
             }];
@@ -2014,8 +2004,8 @@ namespace Sales_Tracker.Charts
         public static void ClearChart(CartesianChart chart)
         {
             chart.Series = [];
-            chart.XAxes = [new Axis { IsVisible = false }];
-            chart.YAxes = [new Axis { IsVisible = false }];
+            chart.XAxes = [new Axis { }];
+            chart.YAxes = [new Axis { }];
         }
         public static void ClearPieChart(PieChart chart)
         {

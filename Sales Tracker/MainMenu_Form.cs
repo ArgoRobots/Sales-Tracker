@@ -306,15 +306,6 @@ namespace Sales_Tracker
             Help_Button.FillColor = CustomColors.ToolbarBackground;
 
             ReselectButton();
-
-            ThemeManager.SetThemeForControls([
-                _purchaseTotals_Chart,
-                _purchaseDistribution_Chart,
-                _saleTotals_Chart,
-                _saleDistribution_Chart,
-                Profits_Chart,
-                Total_Panel
-            ]);
         }
         private void ReselectButton()
         {
@@ -2216,7 +2207,7 @@ namespace Sales_Tracker
             CreateAnalyticsTabControl();
             OrganizeChartsIntoTabs();
 
-            MouseClickChartManager.InitCharts(_analyticsControls.Where(c => c is Chart).Cast<Chart>().ToArray());
+            MouseClickChartManager.InitCharts(_analyticsControls.OfType<Chart>().ToArray<Chart>());
         }
         private void CreateAnalyticsTabControl()
         {
@@ -2258,7 +2249,6 @@ namespace Sales_Tracker
 
             Guna2Button returnsButton = CreateTabButton("Returns", AnalyticsTab.Returns, Resources.Return);
             tabButtons.Add(returnsButton);
-
             // Position buttons
             byte buttonWidth = 200, buttonSpacing = 12, startX = 10;
 
@@ -2274,6 +2264,8 @@ namespace Sales_Tracker
             _analyticsTabButtons_Panel.Location = new Point((Width - _analyticsTabButtons_Panel.Width) / 2, Purchases_Button.Bottom + 20);
 
             _tabButtons = tabButtons;
+
+            ThemeManager.SetThemeForControls([tabButtonsPanel]);
 
             // Select the first tab by default
             SelectTabButton(AnalyticsTab.Overview);
@@ -2292,10 +2284,7 @@ namespace Sales_Tracker
                 ImageOffset = new Point(-5, 0),
                 ImageSize = new Size(25, 25),
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = CustomColors.Text,
-                FillColor = Color.Transparent,
                 BorderRadius = 6,
-                HoverState = { FillColor = CustomColors.ControlPanelBorder }
             };
 
             button.Click += TabButton_Click;
@@ -2327,11 +2316,13 @@ namespace Sales_Tracker
                 {
                     // Selected state
                     button.FillColor = CustomColors.AccentBlue;
+                    button.ForeColor = Color.White;
                 }
                 else
                 {
                     // Unselected state
                     button.FillColor = Color.Transparent;
+                    button.ForeColor = CustomColors.Text;
                 }
             }
         }
