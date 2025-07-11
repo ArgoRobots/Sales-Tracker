@@ -1,5 +1,4 @@
-﻿using Guna.Charts.WinForms;
-using Sales_Tracker.Classes;
+﻿using Sales_Tracker.Classes;
 using System.Diagnostics;
 
 namespace Sales_Tracker.Charts
@@ -111,33 +110,6 @@ namespace Sales_Tracker.Charts
         private class NoOpTimer : IDisposable
         {
             public void Dispose() { }
-        }
-    }
-
-    public static class ChartUpdateManager
-    {
-        public static void UpdateChartWithRendering(GunaChart chart, Action<GunaChart> updateAction = null)
-        {
-            // Execute the update action if provided
-            updateAction?.Invoke(chart);
-
-            if (ChartPerformanceMonitor.IsEnabled)
-            {
-                Stopwatch renderTimer = Stopwatch.StartNew();
-                string chartName = chart.Name;
-
-                // Track when rendering actually completes
-                void OnApplicationIdle(object sender, EventArgs e)
-                {
-                    Application.Idle -= OnApplicationIdle;
-                    renderTimer.Stop();
-                    Log.Write(1, $"[CHART RENDER] {chartName}: {renderTimer.ElapsedMilliseconds} ms");
-                }
-
-                Application.Idle += OnApplicationIdle;
-            }
-
-            chart.Update();
         }
     }
 }

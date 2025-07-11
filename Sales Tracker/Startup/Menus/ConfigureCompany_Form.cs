@@ -1,4 +1,4 @@
-﻿using Guna.Charts.WinForms;
+﻿using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -174,10 +174,19 @@ namespace Sales_Tracker.Startup.Menus
                 MainMenu_Form.Instance.UpdateMainMenuFormText();
 
                 // Clear charts
-                foreach (GunaChart chart in MainMenu_Form.Instance.GetAllCharts())
+                foreach (Control chart in MainMenu_Form.Instance.GetAllCharts())
                 {
-                    LoadChart.ClearChart(chart);
-                    LabelManager.ManageNoDataLabelOnControl(false, chart);
+                    switch (chart)
+                    {
+                        case CartesianChart cartesianChart:
+                            LoadChart.ClearChart(cartesianChart);
+                            LabelManager.ManageNoDataLabelOnControl(false, cartesianChart);
+                            break;
+                        case PieChart pieChart:
+                            LoadChart.ClearPieChart(pieChart);
+                            LabelManager.ManageNoDataLabelOnControl(false, pieChart);
+                            break;
+                    }
                 }
 
                 Tools.CloseAllOpenForms();
@@ -206,14 +215,12 @@ namespace Sales_Tracker.Startup.Menus
             if (string.IsNullOrEmpty(CompanyName_TextBox.Text))
             {
                 CustomControls.SetGTextBoxToInvalid(CompanyName_TextBox);
-                ShowWarningForCompanyName();
-                WarningName_Label.Text = "Company name cannot be empty";
+                ShowWarningForCompanyName("Company name cannot be empty");
             }
             else if (invalidChars.Any(CompanyName_TextBox.Text.Contains))
             {
                 CustomControls.SetGTextBoxToInvalid(CompanyName_TextBox);
-                ShowWarningForCompanyName();
-                WarningName_Label.Text = "Company name contains invalid characters";
+                ShowWarningForCompanyName("Company name contains invalid characters");
             }
             else
             {
@@ -230,26 +237,22 @@ namespace Sales_Tracker.Startup.Menus
             if (string.IsNullOrEmpty(Directory_TextBox.Text))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory();
-                WarningDir_Label.Text = "Directory cannot be empty";
+                ShowWarningForDirectory("Directory cannot be empty");
             }
             else if (invalidChars.Any(Directory_TextBox.Text.Contains))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory();
-                WarningDir_Label.Text = "Directory contains invalid characters";
+                ShowWarningForDirectory("Directory contains invalid characters");
             }
             else if (!Directory_TextBox.Text.Contains('\\'))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory();
-                WarningDir_Label.Text = "Directory must contain a backslash (\\)";
+                ShowWarningForDirectory("Directory must contain a backslash (\\)");
             }
             else if (!Directory.Exists(Directory_TextBox.Text))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory();
-                WarningDir_Label.Text = "Directory does not exist";
+                ShowWarningForDirectory("Directory does not exist");
             }
             else
             {
@@ -261,8 +264,9 @@ namespace Sales_Tracker.Startup.Menus
         }
 
         // Warning labels
-        private void ShowWarningForDirectory()
+        private void ShowWarningForDirectory(string text)
         {
+            WarningDir_Label.Text = LanguageManager.TranslateString(text);
             WarningDir_PictureBox.Visible = true;
             WarningDir_Label.Visible = true;
         }
@@ -271,8 +275,9 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_PictureBox.Visible = false;
             WarningDir_Label.Visible = false;
         }
-        private void ShowWarningForCompanyName()
+        private void ShowWarningForCompanyName(string text)
         {
+            WarningName_Label.Text = LanguageManager.TranslateString(text);
             WarningName_PictureBox.Visible = true;
             WarningName_Label.Visible = true;
         }
@@ -287,8 +292,8 @@ namespace Sales_Tracker.Startup.Menus
         {
             if (_isProgramLoading) { return; }
 
-            Create_Button.Enabled = CompanyName_TextBox.BorderColor != Color.Red
-                && Directory_TextBox.BorderColor != Color.Red
+            Create_Button.Enabled = CustomControls.IsGTextBoxInvalid(CompanyName_TextBox)
+                && CustomControls.IsGTextBoxInvalid(Directory_TextBox)
                 && !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
         }
         private void CloseAllPanels(object sender, EventArgs e)

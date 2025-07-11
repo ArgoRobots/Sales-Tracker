@@ -1,5 +1,5 @@
-﻿using Guna.Charts.WinForms;
-using Guna.UI2.WinForms;
+﻿using Guna.UI2.WinForms;
+using LiveChartsCore.SkiaSharpView.WinForms;
 using Microsoft.Win32;
 using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
@@ -197,38 +197,12 @@ namespace Sales_Tracker.Theme
                         guna2DateTimePicker.HoverState.BorderColor = CustomColors.AccentBlue;
                         break;
 
-                    case GunaChart gunaChart:
-                        try
-                        {
-                            gunaChart.ApplyConfig(ChartColors.Config(), CustomColors.ContentPanelBackground);
+                    case CartesianChart cartesianChart:
+                        ChartColors.ApplyTheme(cartesianChart);
+                        break;
 
-                            if (gunaChart.Datasets.Count > 0)
-                            {
-                                if (gunaChart.Datasets[0] is GunaBarDataset)
-                                {
-                                    LoadChart.ConfigureChartForBar(gunaChart);
-                                }
-                                else if (gunaChart.Datasets[0] is GunaLineDataset)
-                                {
-                                    LoadChart.ConfigureChartForLine(gunaChart);
-                                }
-                                else if (gunaChart.Datasets[0] is GunaPieDataset)
-                                {
-                                    LoadChart.ConfigureChartForPie(gunaChart);
-                                }
-                            }
-
-                            gunaChart.Title.Font = new ChartFont("Segoe UI", 20, ChartFontStyle.Bold);
-                            gunaChart.Legend.LabelFont = new ChartFont("Segoe UI", 18);
-                            gunaChart.Tooltips.TitleFont = new ChartFont("Segoe UI", 18, ChartFontStyle.Bold);
-                            gunaChart.Tooltips.BodyFont = new ChartFont("Segoe UI", 18);
-                            gunaChart.XAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
-                            gunaChart.YAxes.Ticks.Font = new ChartFont("Segoe UI", 18);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Write(1, $"Did not apply theme to chart: {ex.Message}");
-                        }
+                    case PieChart pieChart:
+                        ChartColors.ApplyTheme(pieChart);
                         break;
                 }
 

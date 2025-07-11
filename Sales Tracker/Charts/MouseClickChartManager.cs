@@ -1,30 +1,46 @@
-﻿using Guna.Charts.WinForms;
+﻿using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Charts
 {
     /// <summary>
-    /// Manages mouse click detection for GunaChart controls and invokes specific actions, because unfortunately Guna Charts does not support this.
+    /// Manages mouse click detection for LiveCharts controls and invokes specific actions.
     /// </summary>
     public static class MouseClickChartManager
     {
-        private static readonly HashSet<GunaChart> _registeredCharts = [];
-        private static Action<GunaChart> _onLeftClick;
-        private static Action<GunaChart, Point> _onRightClick;
+        private static readonly HashSet<Chart> _registeredCharts = [];
+        private static Action<Chart> _onLeftClick;
+        private static Action<Chart, Point> _onRightClick;
         private static CustomMessageFilter _messageFilter;
 
         /// <summary>
-        /// Initializes the click manager for specified GunaChart controls and assigns actions to be called on left and right mouse clicks.
+        /// Initializes the click manager for specified LiveCharts controls and assigns actions to be called on left and right mouse clicks.
         /// </summary>
-        public static void InitCharts(GunaChart[] charts)
+        public static void InitCharts(CartesianChart[] cartesianCharts, PieChart[] pieCharts = null)
         {
-            static void leftClickAction(GunaChart statisticsControls) => CustomControls.CloseAllPanels();
+            static void leftClickAction(Chart chartControl) => CustomControls.CloseAllPanels();
+
+            List<Chart> allCharts = [.. cartesianCharts];
+            if (pieCharts != null)
+            {
+                allCharts.AddRange(pieCharts);
+            }
+
+            Initialize(allCharts.ToArray(), leftClickAction, RightClickGunaChartMenu.ShowMenu);
+        }
+
+        /// <summary>
+        /// Initializes the click manager for mixed chart types.
+        /// </summary>
+        public static void InitCharts(Chart[] charts)
+        {
+            static void leftClickAction(Chart chartControl) => CustomControls.CloseAllPanels();
             Initialize(charts, leftClickAction, RightClickGunaChartMenu.ShowMenu);
         }
-        private static void Initialize(GunaChart[] charts, Action<GunaChart> onLeftClick, Action<GunaChart, Point> onRightClick)
+        private static void Initialize(Control[] charts, Action<Chart> onLeftClick, Action<Chart, Point> onRightClick)
         {
             // Add new charts to the collection
-            foreach (GunaChart chart in charts)
+            foreach (Chart chart in charts)
             {
                 _registeredCharts.Add(chart);
             }
@@ -41,8 +57,16 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
+        /// Checks if a control is a supported chart type.
+        /// </summary>
+        private static bool IsChartControl(Control control)
+        {
+            return control is CartesianChart or PieChart;
+        }
+
+        /// <summary>
         /// Custom IMessageFilter implementation that detects mouse clicks and determines
-        /// whether a left or right click occurred on a GunaChart control.
+        /// whether a left or right click occurred on a LiveCharts control.
         /// </summary>
         public class CustomMessageFilter : IMessageFilter
         {
@@ -67,7 +91,7 @@ namespace Sales_Tracker.Charts
                     return false;
                 }
 
-                // Create a list of controls
+                // Create a list of controls to ignore
                 List<Control> controlsList =
                 [
                     CustomControls.FileMenu,
@@ -98,12 +122,12 @@ namespace Sales_Tracker.Charts
                     }
                 }
 
-                // Check if the click happened on any of the charts
-                foreach (GunaChart chart in _registeredCharts)
+                // Check if the click happened on any of the registered charts
+                foreach (Chart chart in _registeredCharts)
                 {
-                    if (!chart.Visible)
+                    if (!chart.Visible || !IsChartControl(chart))
                     {
-                        // For the analyticss charts if they are not shown
+                        // Skip charts that are not visible or not supported chart types
                         continue;
                     }
 
@@ -127,7 +151,7 @@ namespace Sales_Tracker.Charts
             }
 
             /// <summary>
-            /// Checks if there is another form at the specified position
+            /// Checks if there is another form at the specified position.
             /// </summary>
             private static bool IsAnotherFormAtPosition(Point screenPosition)
             {

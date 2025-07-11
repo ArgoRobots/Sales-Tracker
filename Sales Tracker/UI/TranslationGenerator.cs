@@ -568,7 +568,20 @@ namespace Sales_Tracker.UI
                 "File",
                 "Help",
                 "Save",
-                "Upgrade to full version"
+                "Upgrade to full version",
+
+                // ConfigureCompany_Form
+                "Company name cannot be empty",
+                "Company name contains invalid characters",
+                "Directory cannot be empty",
+                "Directory contains invalid characters",
+                "Directory does not exist",
+                "Directory must contain a backslash (\\)",
+
+                // ModifyRow_Form
+                "Accountant already exists",
+                "Category already exists",
+                "Company already exists"
             ];
 
             Dictionary<string, string> textsToTranslate = [];

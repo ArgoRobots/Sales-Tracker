@@ -628,6 +628,10 @@ namespace Sales_Tracker.UI
             textBox.BorderColor = Color.Red;
             textBox.FocusedState.BorderColor = Color.Red;
         }
+        public static bool IsGTextBoxInvalid(Guna2TextBox textBox)
+        {
+            return textBox.BorderColor == Color.Red;
+        }
 
         // Animate buttons
         public static void AnimateButtons(IEnumerable<Guna2Button> buttons, bool animate)

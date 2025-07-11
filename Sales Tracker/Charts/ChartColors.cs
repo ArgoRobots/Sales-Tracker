@@ -1,38 +1,74 @@
-﻿using Guna.Charts.WinForms;
+﻿using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Theme;
+using SkiaSharp;
 
 namespace Sales_Tracker.Charts
 {
     /// <summary>
-    /// Provides configuration for consistent theming of charts.
-    /// Configures title, legend, and axis colors to match the application's current theme.
+    /// Provides configuration for consistent theming of LiveCharts.
+    /// Configures colors and styles to match the application's current theme.
     /// </summary>
     internal class ChartColors
     {
-        public static ChartConfig Config()
+        /// <summary>
+        /// Applies consistent theming to a CartesianChart.
+        /// </summary>
+        public static void ApplyTheme(CartesianChart chart)
         {
-            ChartConfig config = new();
-            Color gridColor = CustomColors.GrayText;
-            Color foreColor = CustomColors.Text;
+            SKColor foreColor = ToSKColor(CustomColors.Text);
+            SKColor backgroundColor = ToSKColor(CustomColors.ContentPanelBackground);
 
-            config.Title.ForeColor = foreColor;
+            chart.BackColor = CustomColors.ContentPanelBackground;
 
-            config.Legend.LabelForeColor = foreColor;
+            // Configure legend
+            chart.LegendTextPaint = new SolidColorPaint(foreColor);
+            chart.LegendBackgroundPaint = new SolidColorPaint(backgroundColor);
 
-            config.XAxes.GridLines.Color = gridColor;
-            config.XAxes.GridLines.ZeroLineColor = gridColor;
-            config.XAxes.Ticks.ForeColor = foreColor;
+            // Configure title
+            chart.ForeColor = CustomColors.Text;
 
-            config.YAxes.GridLines.Color = gridColor;
-            config.YAxes.GridLines.ZeroLineColor = gridColor;
-            config.YAxes.Ticks.ForeColor = foreColor;
+            // Configure tooltip
+            chart.TooltipTextPaint = new SolidColorPaint(foreColor);
+            chart.TooltipBackgroundPaint = new SolidColorPaint(backgroundColor);
+        }
 
-            config.ZAxes.GridLines.Color = gridColor;
-            config.ZAxes.GridLines.ZeroLineColor = gridColor;
-            config.ZAxes.Ticks.ForeColor = foreColor;
-            config.ZAxes.PointLabels.ForeColor = foreColor;
+        /// <summary>
+        /// Applies consistent theming to a PieChart.
+        /// </summary>
+        public static void ApplyTheme(PieChart chart)
+        {
+            SKColor foreColor = ToSKColor(CustomColors.Text);
+            SKColor backgroundColor = ToSKColor(CustomColors.ContentPanelBackground);
 
-            return config;
+            chart.BackColor = CustomColors.ContentPanelBackground;
+
+            // Configure legend
+            chart.LegendTextPaint = new SolidColorPaint(foreColor);
+            chart.LegendBackgroundPaint = new SolidColorPaint(backgroundColor);
+
+            // Configure title
+            chart.ForeColor = CustomColors.Text;
+
+            // Configure tooltip
+            chart.TooltipTextPaint = new SolidColorPaint(foreColor);
+            chart.TooltipBackgroundPaint = new SolidColorPaint(backgroundColor);
+        }
+
+        /// <summary>
+        /// Converts Color to SKColor.
+        /// </summary>
+        public static SKColor ToSKColor(Color color)
+        {
+            return new SKColor(color.R, color.G, color.B, color.A);
+        }
+
+        /// <summary>
+        /// Creates a solid color paint for chart elements using SKColor.
+        /// </summary>
+        public static SolidColorPaint CreateSolidColorPaint(SKColor color, float strokeThickness = 1)
+        {
+            return new SolidColorPaint(color) { StrokeThickness = strokeThickness };
         }
     }
 }

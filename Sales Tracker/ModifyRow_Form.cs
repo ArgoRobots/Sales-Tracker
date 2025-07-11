@@ -741,9 +741,11 @@ namespace Sales_Tracker
         {
             Warning_PictureBox.Top = textBox.Top + textBox.Height + CustomControls.SpaceBetweenControls;
             Warning_PictureBox.Left = textBox.Left;
+
             Warning_Label.Top = Warning_PictureBox.Top;
             Warning_Label.Left = Warning_PictureBox.Right + CustomControls.SpaceBetweenControls;
-            Warning_Label.Text = text;
+            Warning_Label.Text = LanguageManager.TranslateString(text);
+
             Panel.Controls.Add(Warning_PictureBox);
             Panel.Controls.Add(Warning_Label);
         }

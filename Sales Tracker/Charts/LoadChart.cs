@@ -1,12 +1,16 @@
-﻿using Guna.Charts.Interfaces;
-using Guna.Charts.WinForms;
-using Guna.UI2.WinForms;
+﻿using Guna.UI2.WinForms;
+using LiveChartsCore;
+using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.WinForms;
 using OfficeOpenXml.Drawing.Chart;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using SkiaSharp;
 using System.Data;
 
 namespace Sales_Tracker.Charts
@@ -19,42 +23,84 @@ namespace Sales_Tracker.Charts
     }
 
     /// <summary>
-    /// Provides methods to configure, clear, and load data into GunaCharts.
+    /// Provides methods to configure, clear, and load data into LiveCharts.
     /// </summary>
     internal class LoadChart
     {
         // Configuration
-        public static void ConfigureChartForBar(GunaChart chart)
+        public static void ConfigureChartForBar(CartesianChart chart)
         {
             ClearChart(chart);
+            SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
 
-            chart.XAxes.Display = true;
-            chart.XAxes.Ticks.Display = true;
+            chart.XAxes =
+            [
+                new Axis
+                {
+                    IsVisible = true,
+                    TextSize = 20,
+                    LabelsPaint = new SolidColorPaint(textColor)
+                }
+            ];
 
-            chart.YAxes.Display = true;
-            chart.YAxes.GridLines.Display = true;
-            chart.YAxes.Ticks.Display = true;
-            chart.Legend.Position = LegendPosition.Top;
+            chart.YAxes =
+            [
+                new Axis
+                {
+                    IsVisible = true,
+                    TextSize = 20,
+                    SeparatorsPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f },
+                    LabelsPaint = new SolidColorPaint(textColor),
+                    TicksPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f }
+                }
+            ];
+
+            chart.LegendPosition = LegendPosition.Top;
+            chart.LegendTextPaint = new SolidColorPaint(textColor);
+            chart.LegendTextSize = 20;
         }
-        public static void ConfigureChartForLine(GunaChart chart)
+        public static void ConfigureChartForLine(CartesianChart chart)
         {
             ClearChart(chart);
+            SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
 
-            chart.XAxes.Display = true;
-            chart.XAxes.GridLines.Display = true;
-            chart.XAxes.Ticks.Display = true;
+            chart.XAxes =
+            [
+                new Axis
+                {
+                    IsVisible = true,
+                    TextSize = 20,
+                    LabelsPaint = new SolidColorPaint(textColor)
+                }
+            ];
 
-            chart.YAxes.Display = true;
-            chart.YAxes.GridLines.Display = true;
-            chart.YAxes.Ticks.Display = true;
-            chart.Legend.Position = LegendPosition.Top;
+            chart.YAxes =
+            [
+                new Axis
+                {
+                    IsVisible = true,
+                    TextSize = 20,
+                    SeparatorsPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f },
+                    LabelsPaint = new SolidColorPaint(textColor),
+                    TicksPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f }
+                }
+            ];
+
+            chart.LegendPosition = LegendPosition.Top;
+            chart.LegendTextPaint = new SolidColorPaint(textColor);
+            chart.LegendTextSize = 20;
         }
-        public static void ConfigureChartForPie(GunaChart chart)
+        public static void ConfigureChartForPie(PieChart chart)
         {
-            ClearChart(chart);
-            chart.Legend.Position = GetLegendPosition(chart);
+            ClearPieChart(chart);
+
+            SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
+
+            chart.LegendPosition = GetLegendPosition(chart);
+            chart.LegendTextPaint = new SolidColorPaint(textColor);
+            chart.LegendTextSize = 20;
         }
-        public static LegendPosition GetLegendPosition(GunaChart chart)
+        public static LegendPosition GetLegendPosition(PieChart chart)
         {
             // Use a ratio to allow Bottom legend even if height is slightly less than width
             double ratio = (double)chart.Height / chart.Width;
@@ -62,18 +108,29 @@ namespace Sales_Tracker.Charts
         }
 
         // Helper methods
-        private static IGunaDataset CreateStyledDataset(string label, bool isLineChart, Color color, bool exportToExcel, bool canUpdateChart)
+        private static ISeries CreateStyledDataset(string label, bool isLineChart, SKColor color)
         {
-            IGunaDataset dataset = isLineChart
-                ? new GunaLineDataset { Label = label }
-                : new GunaBarDataset { Label = label };
-
-            if (!exportToExcel && canUpdateChart)
+            if (isLineChart)
             {
-                ApplyStyleToBarOrLineDataSet(dataset, isLineChart, color);
+                return new LineSeries<double>
+                {
+                    Name = label,
+                    Values = [],
+                    Stroke = new SolidColorPaint(color) { StrokeThickness = 5 },
+                    GeometryStroke = new SolidColorPaint(color) { StrokeThickness = 5 },
+                    Fill = null,
+                    GeometrySize = 15
+                };
             }
-
-            return dataset;
+            else
+            {
+                return new ColumnSeries<double>
+                {
+                    Name = label,
+                    Values = [],
+                    Fill = new SolidColorPaint(color)
+                };
+            }
         }
 
         private static Dictionary<string, double> ProcessRowsForTimeData(
@@ -168,14 +225,14 @@ namespace Sales_Tracker.Charts
         private static void ProcessPieChartData<T>(
             Dictionary<string, T> data,
             PieChartGrouping grouping,
-            GunaPieDataset dataset,
+            List<PieSeries<double>> dataset,
             bool exportToExcel,
             string filePath,
             string chartTitle,
             string categoryLabel,
             string valueLabel,
             bool canUpdateChart,
-            GunaChart chart) where T : struct, IConvertible
+            PieChart chart) where T : struct, IConvertible
         {
             double totalCount = data.Values.Sum(x => Convert.ToDouble(x));
 
@@ -200,61 +257,130 @@ namespace Sales_Tracker.Charts
                 foreach (KeyValuePair<string, double> item in groupedData)
                 {
                     double percentage = item.Value / totalCount * 100;
-                    dataset.DataPoints.Add(item.Key, item.Value);
-                    dataset.DataPoints[dataset.DataPoints.Count - 1].Label = $"{item.Key} ({percentage:F2}%)";
+                    PieSeries<double> pieSeries = new()
+                    {
+                        Name = $"{item.Key} ({percentage:F2}%)",
+                        Values = [item.Value],
+                        Fill = new SolidColorPaint(GetColorForIndex(dataset.Count))
+                    };
+                    dataset.Add(pieSeries);
                 }
 
                 if (canUpdateChart)
                 {
-                    dataset.FillColors = _chartColors;
-                    UpdateChart(chart, dataset, false);
+                    UpdatePieChart(chart, dataset);
                 }
             }
         }
 
-        private static void UpdateChartWithTwoDatasets(GunaChart chart, IGunaDataset dataset1, IGunaDataset dataset2, bool formatAsCurrency = true)
+        public enum ChartFormatting
         {
-            ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
-            {
-                chart.Datasets.Clear();
-                chart.Datasets.Add(dataset1);
-                chart.Datasets.Add(dataset2);
+            None = 0,
+            Currency = 1,
+            Percentage = 2
+        }
 
-                if (formatAsCurrency)
+        public static void ApplyPercentageFormatToChart(CartesianChart chart)
+        {
+            // Set Y-axis formatter for percentage
+            if (chart.YAxes != null && chart.YAxes.Any())
+            {
+                chart.YAxes = chart.YAxes.Select(axis => new Axis
                 {
-                    ApplyCurrencyFormatToDataset(dataset1);
-                    ApplyCurrencyFormatToDataset(dataset2);
-                }
-            });
+                    Labeler = value => $"{value:F1}%",
+                    IsVisible = axis.IsVisible,
+                    TextSize = axis.TextSize,
+                    SeparatorsPaint = axis.SeparatorsPaint,
+                    LabelsPaint = axis.LabelsPaint,
+                    TicksPaint = axis.TicksPaint
+                }).ToArray();
+            }
+        }
+        public static void ApplyCurrencyFormatToChart(CartesianChart chart)
+        {
+            string currencySymbol = MainMenu_Form.CurrencySymbol;
+
+            // Set Y-axis formatter for currency
+            if (chart.YAxes != null && chart.YAxes.Any())
+            {
+                chart.YAxes = chart.YAxes.Select(axis => new Axis
+                {
+                    Labeler = value => $"{currencySymbol}{value:N2}",
+                    IsVisible = axis.IsVisible,
+                    TextSize = axis.TextSize,
+                    SeparatorsPaint = axis.SeparatorsPaint,
+                    LabelsPaint = axis.LabelsPaint,
+                    TicksPaint = axis.TicksPaint
+                }).ToArray();
+            }
+        }
+        private static void UpdateChartWithTwoDatasets(
+            CartesianChart chart,
+            ISeries dataset1,
+            ISeries dataset2,
+            List<string> sortedDates = null,
+            ChartFormatting formatting = ChartFormatting.Currency)
+        {
+            chart.Series = [dataset1, dataset2];
+
+            // Set X-axis labels if provided
+            if (sortedDates != null && sortedDates.Count > 0)
+            {
+                SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
+                chart.XAxes = [new Axis
+                {
+                    Labels = sortedDates.ToArray(),
+                    IsVisible = true,
+                    TextSize = 20,
+                    LabelsPaint = new SolidColorPaint(textColor)
+                }];
+            }
+
+            // Apply the appropriate formatting
+            switch (formatting)
+            {
+                case ChartFormatting.Currency:
+                    ApplyCurrencyFormatToChart(chart);
+                    break;
+                case ChartFormatting.Percentage:
+                    ApplyPercentageFormatToChart(chart);
+                    break;
+                case ChartFormatting.None:
+                    break;
+            }
         }
 
         private static void AddDataPointsToDatasets(
             List<string> sortedDates,
             Dictionary<string, double> data1,
             Dictionary<string, double> data2,
-            IGunaDataset dataset1,
-            IGunaDataset dataset2,
+            ISeries dataset1,
+            ISeries dataset2,
             bool isLineChart)
         {
+            List<double> values1 = [];
+            List<double> values2 = [];
+            List<string> labels = [];
+
             foreach (string date in sortedDates)
             {
                 double value1 = data1.TryGetValue(date, out double v1) ? v1 : 0;
                 double value2 = data2.TryGetValue(date, out double v2) ? v2 : 0;
 
-                if (isLineChart)
-                {
-                    ((GunaLineDataset)dataset1).DataPoints.Add(date, value1);
-                    ((GunaLineDataset)dataset2).DataPoints.Add(date, value2);
-                }
-                else
-                {
-                    ((GunaBarDataset)dataset1).DataPoints.Add(date, value1);
-                    ((GunaBarDataset)dataset2).DataPoints.Add(date, value2);
+                values1.Add(value1);
+                values2.Add(value2);
+                labels.Add(date);
+            }
 
-                    float barPercentage = dataset1.DataPointCount + dataset2.DataPointCount == 1 ? 0.2f : 0.4f;
-                    ((GunaBarDataset)dataset1).BarPercentage = barPercentage;
-                    ((GunaBarDataset)dataset2).BarPercentage = barPercentage;
-                }
+            if (isLineChart)
+            {
+                ((LineSeries<double>)dataset1).Values = values1;
+                ((LineSeries<double>)dataset2).Values = values2;
+            }
+            else
+            {
+                ((ColumnSeries<double>)dataset1).Values = values1;
+                ((ColumnSeries<double>)dataset2).Values = values2;
             }
         }
 
@@ -301,7 +427,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Main charts
-        public static ChartData LoadTotalsIntoChart(Guna2DataGridView dataGridView, GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadTotalsIntoChart(Guna2DataGridView dataGridView, CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name, visibleRows);
@@ -323,15 +449,13 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            chart.Legend.Display = false;
-
-            IGunaDataset dataset = CreateStyledDataset(label, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries dataset = CreateStyledDataset(label, isLineChart, GetDefaultColor());
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(dataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            // Use consolidated method for processing rows
+            // Process rows
             Dictionary<string, double> revenueByDate = ProcessRowsForTimeData(
                 dataGridView.Rows,
                 dateFormat,
@@ -352,13 +476,13 @@ namespace Sales_Tracker.Charts
             }
             else if (canUpdateChart)
             {
-                SortAndAddDatasetAndSetBarPercentage(revenueByDate, dateFormat, dataset, isLineChart);
+                SortAndAddDatasetAndSetLabels(revenueByDate, dateFormat, dataset, isLineChart, chart);
                 UpdateChart(chart, dataset, true);
             }
 
             return new ChartData(grandTotal, revenueByDate);
         }
-        public static ChartData LoadDistributionIntoChart(Guna2DataGridView dataGridView, GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadDistributionIntoChart(Guna2DataGridView dataGridView, PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name, visibleRows);
@@ -370,7 +494,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartData.Empty;
             }
 
@@ -379,7 +503,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             double totalTax = 0;
             double totalShipping = 0;
             double totalFee = 0;
@@ -463,7 +587,7 @@ namespace Sales_Tracker.Charts
                 allData.Add(MainMenu_Form.Instance.SalesColumnHeaders[MainMenu_Form.Column.Fee], totalFee);
             }
 
-            // Use consolidated pie chart processing
+            // Pie chart processing
             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? TranslatedChartTitles.RevenueDistribution
                 : TranslatedChartTitles.ExpensesDistribution;
@@ -473,7 +597,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCost, SortAndGroupData(allData, grouping));
         }
-        public static ChartData LoadProfitsIntoChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadProfitsIntoChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -495,9 +619,7 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            chart.Legend.Display = false;
-
-            IGunaDataset dataset = CreateStyledDataset(label, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries dataset = CreateStyledDataset(label, isLineChart, GetDefaultColor());
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows, purchasesDataGridView.Rows);
@@ -542,7 +664,7 @@ namespace Sales_Tracker.Charts
             }
             else if (canUpdateChart)
             {
-                SortAndAddDatasetAndSetBarPercentage(profitByDate, dateFormat, dataset, isLineChart);
+                SortAndAddDatasetAndSetLabels(profitByDate, dateFormat, dataset, isLineChart, chart);
                 UpdateChart(chart, dataset, true);
             }
 
@@ -550,7 +672,7 @@ namespace Sales_Tracker.Charts
         }
 
         // Statistics charts
-        public static ChartData LoadCountriesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCountriesOfOriginForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -561,7 +683,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartData.Empty;
             }
 
@@ -570,7 +692,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> countryCounts = [];
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
@@ -621,7 +743,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadCompaniesOfOriginForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCompaniesOfOriginForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -632,7 +754,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartData.Empty;
             }
 
@@ -641,7 +763,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> companyCounts = [];
 
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
@@ -692,7 +814,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(companyCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadCountriesOfDestinationForProductsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadCountriesOfDestinationForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -703,7 +825,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartData.Empty;
             }
 
@@ -712,7 +834,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> countryCounts = [];
 
             foreach (DataGridViewRow row in salesDataGridView.Rows)
@@ -763,7 +885,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadAccountantsIntoChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadAccountantsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -777,7 +899,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartData.Empty;
             }
 
@@ -786,7 +908,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> accountantCounts = [];
 
             foreach (Guna2DataGridView purchasesDataGridView in dataGridViews)
@@ -824,7 +946,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(accountantCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static SalesExpensesChartData LoadSalesVsExpensesChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadSalesVsExpensesChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -847,14 +969,14 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset expensesDataset = CreateStyledDataset(expensesLabel, isLineChart, CustomColors.PastelGreen, exportToExcel, canUpdateChart);
-            IGunaDataset salesDataset = CreateStyledDataset(salesLabel, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries expensesDataset = CreateStyledDataset(expensesLabel, isLineChart, GetColorForIndex(1));
+            ISeries salesDataset = CreateStyledDataset(salesLabel, isLineChart, GetColorForIndex(0));
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            // Use consolidated methods for processing data
+            // Process data
             Dictionary<string, double> expensesByDate = ProcessRowsForTimeData(
                 purchasesDataGridView.Rows,
                 dateFormat,
@@ -883,12 +1005,12 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, expensesByDate, salesByDate, expensesDataset, salesDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, expensesDataset, salesDataset);
+                UpdateChartWithTwoDatasets(chart, expensesDataset, salesDataset, sortedDates);
             }
 
             return new SalesExpensesChartData(expensesByDate, salesByDate, sortedDates);
         }
-        public static SalesExpensesChartData LoadAverageTransactionValueChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadAverageTransactionValueChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -911,14 +1033,14 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset purchasesDataset = CreateStyledDataset(purchaseLabel, isLineChart, CustomColors.PastelGreen, exportToExcel, canUpdateChart);
-            IGunaDataset salesDataset = CreateStyledDataset(saleLabel, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries purchasesDataset = CreateStyledDataset(purchaseLabel, isLineChart, GetColorForIndex(1));
+            ISeries salesDataset = CreateStyledDataset(saleLabel, isLineChart, GetColorForIndex(0));
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            // Use consolidated methods for processing average data
+            // Process average data
             Dictionary<string, (double total, int count)> salesAggregateByDate = ProcessRowsForAverageData(
                 salesDataGridView.Rows,
                 dateFormat,
@@ -957,12 +1079,12 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, avgPurchasesByDate, avgSalesByDate, purchasesDataset, salesDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset);
+                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset, sortedDates);
             }
 
             return new SalesExpensesChartData(avgPurchasesByDate, avgSalesByDate, sortedDates);
         }
-        public static SalesExpensesChartData LoadTotalTransactionsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadTotalTransactionsChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -985,24 +1107,24 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset purchasesDataset = CreateStyledDataset(purchasesLabel, isLineChart, CustomColors.PastelGreen, exportToExcel, canUpdateChart);
-            IGunaDataset salesDataset = CreateStyledDataset(salesLabel, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries purchasesDataset = CreateStyledDataset(purchasesLabel, isLineChart, GetColorForIndex(1));
+            ISeries salesDataset = CreateStyledDataset(salesLabel, isLineChart, GetColorForIndex(0));
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(salesDataGridView.Rows, purchasesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            // Use consolidated methods for counting transactions
+            // Count transactions
             Dictionary<string, int> purchaseCountsByDate = ProcessRowsForCountData(
                 purchasesDataGridView.Rows,
                 dateFormat,
-                row => IsRowValid(row)
+                IsRowValid
             );
 
             Dictionary<string, int> salesCountsByDate = ProcessRowsForCountData(
                 salesDataGridView.Rows,
                 dateFormat,
-                row => IsRowValid(row)
+                IsRowValid
             );
 
             // Convert to double dictionaries
@@ -1019,12 +1141,12 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, purchasesByDate, salesByDate, purchasesDataset, salesDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset, false);
+                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset, sortedDates, ChartFormatting.None);
             }
 
             return new SalesExpensesChartData(purchasesByDate, salesByDate, sortedDates);
         }
-        public static SalesExpensesChartData LoadAverageShippingCostsChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, bool includeZeroShipping = false)
+        public static SalesExpensesChartData LoadAverageShippingCostsChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, bool includeZeroShipping = false)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1047,21 +1169,21 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset purchasesDataset = CreateStyledDataset(purchaseLabel, isLineChart, CustomColors.PastelGreen, exportToExcel, canUpdateChart);
-            IGunaDataset salesDataset = CreateStyledDataset(saleLabel, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries purchasesDataset = CreateStyledDataset(purchaseLabel, isLineChart, GetColorForIndex(1));
+            ISeries salesDataset = CreateStyledDataset(saleLabel, isLineChart, GetColorForIndex(0));
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            // Use consolidated methods for processing shipping data
+            // Process shipping data
             Dictionary<string, (double total, int count)> purchaseShippingAggregateByDate = ProcessRowsForAverageData(
                 purchasesDataGridView.Rows,
                 dateFormat,
                 row =>
                 {
-                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) return null;
-                    if (shipping == 0 && !includeZeroShipping) return null;
+                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) { return null; }
+                    if (shipping == 0 && !includeZeroShipping) { return null; }
                     return shipping;
                 }
             );
@@ -1071,8 +1193,8 @@ namespace Sales_Tracker.Charts
                 dateFormat,
                 row =>
                 {
-                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) return null;
-                    if (shipping == 0 && !includeZeroShipping) return null;
+                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Shipping_column], out double shipping)) { return null; }
+                    if (shipping == 0 && !includeZeroShipping) { return null; }
                     return shipping;
                 }
             );
@@ -1103,12 +1225,12 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, avgPurchaseShipping, avgSalesShipping, purchasesDataset, salesDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset);
+                UpdateChartWithTwoDatasets(chart, purchasesDataset, salesDataset, sortedDates);
             }
 
             return new SalesExpensesChartData(avgPurchaseShipping, avgSalesShipping, sortedDates);
         }
-        public static SalesExpensesChartData LoadGrowthRateChart(GunaChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadGrowthRateChart(CartesianChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1130,21 +1252,33 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForLine(chart);
             }
 
-            // Create spline datasets for revenue and expense growth
-            GunaSplineDataset expenseDataset = new() { Label = expensesLabel };
-            GunaSplineDataset revenueDataset = new() { Label = revenueLabel };
-
-            if (!exportToExcel && canUpdateChart)
+            // Create line datasets
+            LineSeries<double> expenseDataset = new()
             {
-                ApplyStyleToSplineDataset(revenueDataset, CustomColors.PastelBlue);
-                ApplyStyleToSplineDataset(expenseDataset, CustomColors.PastelGreen);
-            }
+                Name = revenueLabel,
+                Values = [],
+                Stroke = new SolidColorPaint(GetColorForIndex(1)) { StrokeThickness = 5 },
+                Fill = null,
+                GeometryStroke = new SolidColorPaint(GetColorForIndex(1)) { StrokeThickness = 5 },
+                GeometrySize = 15,
+                LineSmoothness = 0.5
+            };
+            LineSeries<double> revenueDataset = new()
+            {
+                Name = revenueLabel,
+                Values = [],
+                Stroke = new SolidColorPaint(GetColorForIndex(0)) { StrokeThickness = 5 },
+                Fill = null,
+                GeometryStroke = new SolidColorPaint(GetColorForIndex(0)) { StrokeThickness = 5 },
+                GeometrySize = 15,
+                LineSmoothness = 0.5
+            };
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            // Use consolidated methods for processing base data
+            // Process base data
             Dictionary<string, double> expensesByDate = ProcessRowsForTimeData(
                 purchasesDataGridView.Rows,
                 dateFormat,
@@ -1209,30 +1343,46 @@ namespace Sales_Tracker.Charts
             }
             else if (canUpdateChart)
             {
+                List<double> expenseValues = [];
+                List<double> revenueValues = [];
+
                 foreach (string date in sortedDates)
                 {
                     double expenseValue = expenseGrowth.TryGetValue(date, out double eValue) ? eValue : 0;
                     double revenueValue = revenueGrowth.TryGetValue(date, out double rValue) ? rValue : 0;
 
-                    expenseDataset.DataPoints.Add(date, expenseValue);
-                    revenueDataset.DataPoints.Add(date, revenueValue);
+                    expenseValues.Add(expenseValue);
+                    revenueValues.Add(revenueValue);
                 }
 
-                ChartUpdateManager.UpdateChartWithRendering(chart, (c) =>
-                {
-                    chart.Datasets.Clear();
-                    chart.Datasets.Add(expenseDataset);
-                    chart.Datasets.Add(revenueDataset);
+                expenseDataset.Values = expenseValues;
+                revenueDataset.Values = revenueValues;
 
-                    // Set Y-axis format to show percentage
-                    revenueDataset.YFormat = "{0:0.0}%";
-                    expenseDataset.YFormat = "{0:0.0}%";
-                });
+                chart.Series = [expenseDataset, revenueDataset];
+
+                SKColor foreColor = ChartColors.ToSKColor(CustomColors.Text);
+
+                // Properly set X-axis labels with dates
+                chart.XAxes = [new Axis {
+                    Labels = sortedDates.ToArray(),
+                    IsVisible = true,
+                    TextSize = 20,
+                    LabelsPaint = new SolidColorPaint(foreColor),
+                }];
+
+                // Set Y-axis with percentage formatting
+                chart.YAxes = [new Axis {
+                    IsVisible = true,
+                    TextSize = 20,
+                    LabelsPaint = new SolidColorPaint(foreColor),
+                    SeparatorsPaint = new SolidColorPaint(foreColor) { StrokeThickness = 1 },
+                    Labeler = value => $"{value:F1}%"  // Format as percentage
+                }];
             }
 
             return new SalesExpensesChartData(expenseGrowth, revenueGrowth, sortedDates);
         }
-        public static SalesExpensesChartData LoadReturnsOverTimeChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadReturnsOverTimeChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1255,24 +1405,24 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset purchaseReturnsDataset = CreateStyledDataset(purchaseReturnsLabel, isLineChart, CustomColors.PastelGreen, exportToExcel, canUpdateChart);
-            IGunaDataset saleReturnsDataset = CreateStyledDataset(saleReturnsLabel, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries purchaseReturnsDataset = CreateStyledDataset(purchaseReturnsLabel, isLineChart, GetColorForIndex(1));
+            ISeries saleReturnsDataset = CreateStyledDataset(saleReturnsLabel, isLineChart, GetColorForIndex(0));
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
             string dateFormat = GetDateFormat(maxDate - minDate);
 
-            // Use consolidated methods for counting returns
+            // Count returns
             Dictionary<string, int> purchaseReturnCountsByDate = ProcessRowsForCountData(
                 purchasesDataGridView.Rows,
                 dateFormat,
-                row => ReturnManager.IsTransactionReturned(row)
+                ReturnManager.IsTransactionReturned
             );
 
             Dictionary<string, int> saleReturnCountsByDate = ProcessRowsForCountData(
                 salesDataGridView.Rows,
                 dateFormat,
-                row => ReturnManager.IsTransactionReturned(row)
+                ReturnManager.IsTransactionReturned
             );
 
             if (purchaseReturnCountsByDate.Count == 0 && saleReturnCountsByDate.Count == 0)
@@ -1294,10 +1444,10 @@ namespace Sales_Tracker.Charts
                 foreach (string date in sortedDates)
                 {
                     combinedData[date] = new Dictionary<string, double>
-                    {
-                        { purchaseReturnsLabel, purchaseReturnsDouble.TryGetValue(date, out double pValue) ? pValue : 0 },
-                        { saleReturnsLabel, saleReturnsDouble.TryGetValue(date, out double sValue) ? sValue : 0 }
-                    };
+            {
+                { purchaseReturnsLabel, purchaseReturnsDouble.TryGetValue(date, out double pValue) ? pValue : 0 },
+                { saleReturnsLabel, saleReturnsDouble.TryGetValue(date, out double sValue) ? sValue : 0 }
+            };
                 }
 
                 string chartTitle = TranslatedChartTitles.ReturnsOverTime;
@@ -1311,12 +1461,12 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, purchaseReturnsDouble, saleReturnsDouble, purchaseReturnsDataset, saleReturnsDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, purchaseReturnsDataset, saleReturnsDataset, false);
+                UpdateChartWithTwoDatasets(chart, purchaseReturnsDataset, saleReturnsDataset, sortedDates, ChartFormatting.None);
             }
 
             return new SalesExpensesChartData(purchaseReturnsDouble, saleReturnsDouble, sortedDates);
         }
-        public static SalesExpensesChartData LoadReturnFinancialImpactChart(GunaChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static SalesExpensesChartData LoadReturnFinancialImpactChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1339,8 +1489,8 @@ namespace Sales_Tracker.Charts
                 else { ConfigureChartForBar(chart); }
             }
 
-            IGunaDataset purchaseReturnValueDataset = CreateStyledDataset(purchaseReturnValueLabel, isLineChart, CustomColors.PastelGreen, exportToExcel, canUpdateChart);
-            IGunaDataset saleReturnValueDataset = CreateStyledDataset(saleReturnValueLabel, isLineChart, CustomColors.PastelBlue, exportToExcel, canUpdateChart);
+            ISeries purchaseReturnValueDataset = CreateStyledDataset(purchaseReturnValueLabel, isLineChart, GetColorForIndex(1));
+            ISeries saleReturnValueDataset = CreateStyledDataset(saleReturnValueLabel, isLineChart, GetColorForIndex(0));
 
             DateTime minDate, maxDate;
             (minDate, maxDate) = GetMinMaxDate(purchasesDataGridView.Rows, salesDataGridView.Rows);
@@ -1406,12 +1556,12 @@ namespace Sales_Tracker.Charts
             else if (canUpdateChart)
             {
                 AddDataPointsToDatasets(sortedDates, purchaseReturnValueByDate, saleReturnValueByDate, purchaseReturnValueDataset, saleReturnValueDataset, isLineChart);
-                UpdateChartWithTwoDatasets(chart, purchaseReturnValueDataset, saleReturnValueDataset);
+                UpdateChartWithTwoDatasets(chart, purchaseReturnValueDataset, saleReturnValueDataset, sortedDates);
             }
 
             return new SalesExpensesChartData(purchaseReturnValueByDate, saleReturnValueByDate, sortedDates);
         }
-        public static ChartCountData LoadReturnReasonsChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadReturnReasonsChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1423,7 +1573,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartCountData.Empty;
             }
 
@@ -1432,7 +1582,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> reasonCounts = [];
 
             // Process both purchase and sale returns
@@ -1473,7 +1623,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(reasonCounts, grouping));
         }
-        public static ChartCountData LoadReturnsByCategoryChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadReturnsByCategoryChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1485,7 +1635,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartCountData.Empty;
             }
 
@@ -1494,7 +1644,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> categoryCounts = [];
 
             // Process both purchase and sale returns
@@ -1552,7 +1702,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(categoryCounts, grouping));
         }
-        public static ChartCountData LoadReturnsByProductChart(GunaChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadReturnsByProductChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1564,7 +1714,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartCountData.Empty;
             }
 
@@ -1573,7 +1723,7 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> productCounts = [];
 
             // Process both purchase and sale returns
@@ -1631,7 +1781,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartCountData(SortAndGroupCountData(productCounts, grouping));
         }
-        public static ChartCountData LoadPurchaseVsSaleReturnsChart(GunaChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartCountData LoadPurchaseVsSaleReturnsChart(PieChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
 
@@ -1643,7 +1793,7 @@ namespace Sales_Tracker.Charts
 
             if (!LabelManager.ManageNoDataLabelOnControl(hasData, chart))
             {
-                ClearChart(chart);
+                ClearPieChart(chart);
                 return ChartCountData.Empty;
             }
 
@@ -1652,20 +1802,20 @@ namespace Sales_Tracker.Charts
                 ConfigureChartForPie(chart);
             }
 
-            GunaPieDataset dataset = new() { Label = label };
+            List<PieSeries<double>> dataset = [];
             Dictionary<string, int> returnCounts = [];
 
-            // Count returns using the consolidated method
+            // Count returns
             int purchaseReturns = ProcessRowsForCountData(
                 purchasesDataGridView.Rows,
                 "dummy", // Not used for counting
-                row => ReturnManager.IsTransactionReturned(row)
+                ReturnManager.IsTransactionReturned
             ).Values.Sum();
 
             int saleReturns = ProcessRowsForCountData(
                 salesDataGridView.Rows,
                 "dummy", // Not used for counting
-                row => ReturnManager.IsTransactionReturned(row)
+                ReturnManager.IsTransactionReturned
             ).Values.Sum();
 
             // Add to dictionary
@@ -1734,85 +1884,65 @@ namespace Sales_Tracker.Charts
 
             return result;
         }
-        private static void ApplyStyleToBarOrLineDataSet(IGunaDataset dataset, bool isLineChart, Color color)
-        {
-            if (isLineChart)
-            {
-                ((GunaLineDataset)dataset).FillColor = color;
-                ((GunaLineDataset)dataset).BorderColor = color;
-                ((GunaLineDataset)dataset).PointRadius = 8;
-                ((GunaLineDataset)dataset).PointStyle = PointStyle.Circle;
-                ((GunaLineDataset)dataset).PointFillColors = [color];
-                ((GunaLineDataset)dataset).PointBorderColors = [color];
-                ((GunaLineDataset)dataset).BorderWidth = 5;
-            }
-            else
-            {
-                ((GunaBarDataset)dataset).FillColors = [color];
-            }
-        }
-        private static void ApplyStyleToSplineDataset(GunaSplineDataset dataset, Color color)
-        {
-            dataset.FillColor = color;
-            dataset.BorderColor = color;
-            dataset.PointRadius = 8;
-            dataset.PointStyle = PointStyle.Circle;
-            dataset.PointFillColors = [color];
-            dataset.PointBorderColors = [color];
-            dataset.BorderWidth = 5;
-        }
-        private static readonly ColorCollection _chartColors =
+
+        private static readonly Color[] _chartColors =
         [
             CustomColors.PastelBlue,
             CustomColors.PastelGreen,
-            Color.FromArgb(102, 204, 153),  // Muted teal
-            Color.FromArgb(204, 102, 153),  // Soft pink
-            Color.FromArgb(153, 102, 204),  // Soft purple
-            Color.FromArgb(204, 153, 102),  // Soft orange
-            Color.FromArgb(102, 178, 178),  // Sea green
-            Color.FromArgb(204, 102, 102),  // Soft red
-            Color.FromArgb(153, 153, 204),  // Muted lavender
-            Color.FromArgb(153, 204, 153),  // Soft sage
-            Color.FromArgb(204, 204, 153),  // Muted gold
-            Color.FromArgb(178, 102, 178),  // Soft magenta
-            Color.FromArgb(102, 127, 204),  // Ocean blue
-            Color.FromArgb(204, 153, 204),  // Soft lilac
-            Color.FromArgb(153, 153, 153),  // Muted gray
-            Color.FromArgb(178, 178, 102),  // Olive gold
+            Color.FromArgb(102, 204, 153), // Muted teal
+            Color.FromArgb(204, 102, 153), // Soft pink
+            Color.FromArgb(153, 102, 204), // Soft purple
+            Color.FromArgb(204, 153, 102), // Soft orange
+            Color.FromArgb(102, 178, 178), // Sea green
+            Color.FromArgb(204, 102, 102), // Soft red
+            Color.FromArgb(153, 153, 204), // Muted lavender
+            Color.FromArgb(153, 204, 153), // Soft sage
+            Color.FromArgb(204, 204, 153), // Muted gold
+            Color.FromArgb(178, 102, 178), // Soft magenta
+            Color.FromArgb(102, 127, 204), // Ocean blue
+            Color.FromArgb(204, 153, 204), // Soft lilac
+            Color.FromArgb(153, 153, 153), // Muted gray
+            Color.FromArgb(178, 178, 102), // Olive gold
         ];
-        private static void SortAndAddDatasetAndSetBarPercentage(Dictionary<string, double> list, string dateFormat, IGunaDataset dataset, bool isLineChart)
+        private static SKColor GetColorForIndex(int index)
+        {
+            return ChartColors.ToSKColor(_chartColors[index % _chartColors.Length]);
+        }
+        private static SKColor GetDefaultColor()
+        {
+            return ChartColors.ToSKColor(CustomColors.PastelBlue);
+        }
+        private static void SortAndAddDatasetAndSetLabels(Dictionary<string, double> list, string dateFormat, ISeries dataset, bool isLineChart, CartesianChart chart)
         {
             // Sort the dictionary by date keys
             IOrderedEnumerable<KeyValuePair<string, double>> sortedProfitByDate = list.OrderBy(kvp => DateTime.ParseExact(kvp.Key, dateFormat, null));
 
-            // Add dataset
+            List<double> values = [];
+            List<string> labels = [];
+
+            foreach (KeyValuePair<string, double> kvp in sortedProfitByDate)
+            {
+                values.Add(kvp.Value);
+                labels.Add(kvp.Key);
+            }
+
             if (isLineChart)
             {
-                foreach (KeyValuePair<string, double> kvp in sortedProfitByDate)
-                {
-                    ((GunaLineDataset)dataset).DataPoints.Add(kvp.Key, kvp.Value);
-                }
+                ((LineSeries<double>)dataset).Values = values;
             }
             else
             {
-                foreach (KeyValuePair<string, double> kvp in sortedProfitByDate)
-                {
-                    ((GunaBarDataset)dataset).DataPoints.Add(kvp.Key, kvp.Value);
-                }
+                ((ColumnSeries<double>)dataset).Values = values;
             }
 
-            // Set BarPercentage for bar charts
-            if (!isLineChart)
+            SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
+            chart.XAxes = [new Axis
             {
-                if (dataset.DataPointCount == 1)
-                {
-                    ((GunaBarDataset)dataset).BarPercentage = 0.2f;
-                }
-                else
-                {
-                    ((GunaBarDataset)dataset).BarPercentage = 0.4f;
-                }
-            }
+                Labels = labels.ToArray(),
+                IsVisible = true,
+                TextSize = 20,
+                LabelsPaint = new SolidColorPaint(textColor)
+            }];
         }
         private static bool TryGetValue<T>(DataGridViewCell cell, out T value)
         {
@@ -1868,49 +1998,28 @@ namespace Sales_Tracker.Charts
             }
             return (minDate, maxDate);
         }
-        private static void UpdateChart(GunaChart chart, IGunaDataset dataset, bool formatCurrency)
+        private static void UpdateChart(CartesianChart chart, ISeries dataset, bool formatCurrency)
         {
-            chart.Datasets.Clear();
-            chart.Datasets.Add(dataset);
+            chart.Series = [dataset];
 
             if (formatCurrency)
             {
-                ApplyCurrencyFormatToDataset(dataset);
-            }
-
-            ChartUpdateManager.UpdateChartWithRendering(chart);
-        }
-        public static void ApplyCurrencyFormatToDataset(object dataset)
-        {
-            string currencySymbol = MainMenu_Form.CurrencySymbol;
-
-            switch (dataset)
-            {
-                case GunaBarDataset barDataset:
-                    barDataset.YFormat = $"{currencySymbol}{{0:N2}}";
-                    break;
-
-                case GunaLineDataset lineDataset:
-                    lineDataset.YFormat = $"{currencySymbol}{{0:N2}}";
-                    break;
-
-                case GunaPieDataset pieDataset:
-                    pieDataset.YFormat = $"{currencySymbol}{{0:N2}}";
-                    break;
+                ApplyCurrencyFormatToChart(chart);
             }
         }
-        public static void ClearChart(GunaChart chart)
+        private static void UpdatePieChart(PieChart chart, List<PieSeries<double>> dataset)
         {
-            chart.Zoom = ZoomMode.Y;
-            chart.XAxes.Display = false;
-            chart.XAxes.GridLines.Display = false;
-            chart.XAxes.Ticks.Display = false;
-
-            chart.YAxes.Display = false;
-            chart.YAxes.GridLines.Display = false;
-            chart.YAxes.Ticks.Display = false;
-
-            chart.Datasets.Clear();
+            chart.Series = dataset.Cast<ISeries>().ToArray();
+        }
+        public static void ClearChart(CartesianChart chart)
+        {
+            chart.Series = [];
+            chart.XAxes = [new Axis { IsVisible = false }];
+            chart.YAxes = [new Axis { IsVisible = false }];
+        }
+        public static void ClearPieChart(PieChart chart)
+        {
+            chart.Series = [];
         }
     }
 }

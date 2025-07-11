@@ -1,5 +1,6 @@
-﻿using Guna.Charts.WinForms;
-using Guna.UI2.WinForms;
+﻿using Guna.UI2.WinForms;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
@@ -39,7 +40,7 @@ namespace Sales_Tracker.Charts
         }
         private static void SaveImage(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickGunaChart_Panel.Tag;
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
@@ -50,17 +51,52 @@ namespace Sales_Tracker.Charts
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                chart.Export(dialog.FileName);
+                SaveChartAsImage(chart, dialog.FileName);
             }
+        }
+        private static void SaveChartAsImage(Control chart, string fileName)
+        {
+            try
+            {
+                switch (chart)
+                {
+                    case CartesianChart cartesianChart:
+                        SaveCartesianChartAsImage(cartesianChart, fileName);
+                        break;
+                    case PieChart pieChart:
+                        SavePieChartAsImage(pieChart, fileName);
+                        break;
+                    default:
+                        throw new NotSupportedException($"Chart type {chart.GetType().Name} is not supported for image export");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error_ExportingChart($"Failed to save chart image: {ex.Message}");
+            }
+        }
+        private static void SaveCartesianChartAsImage(CartesianChart chart, string fileName)
+        {
+            // Capture the chart as a bitmap
+            using Bitmap bitmap = new(chart.Width, chart.Height);
+            chart.DrawToBitmap(bitmap, new Rectangle(0, 0, chart.Width, chart.Height));
+            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
+        }
+        private static void SavePieChartAsImage(PieChart chart, string fileName)
+        {
+            // Capture the chart as a bitmap
+            using Bitmap bitmap = new(chart.Width, chart.Height);
+            chart.DrawToBitmap(bitmap, new Rectangle(0, 0, chart.Width, chart.Height));
+            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
         }
         private static void ExportToMicrosoftExcel(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickGunaChart_Panel.Tag;
             string directory = "";
 
             using SaveFileDialog dialog = new();
             string date = Tools.FormatDate(DateTime.Now);
-            string name = chart.Title.Text.Split(':')[0];
+            string name = GetChartTitle(chart).Split(':')[0];
             dialog.FileName = $"{Directories.CompanyName} {name} {date}";
             dialog.DefaultExt = ArgoFiles.XlsxFileExtension;
             dialog.Filter = $"XLSX spreadsheet|*{ArgoFiles.XlsxFileExtension}";
@@ -80,81 +116,81 @@ namespace Sales_Tracker.Charts
             switch (chart.Tag)
             {
                 case MainMenu_Form.ChartDataType.TotalRevenue:
-                    LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.GetTotalsChart(), isLine, true, directory);
+                    LoadChart.LoadTotalsIntoChart(activeDataGridView, GetCartesianChart(MainMenu_Form.Instance.GetTotalsChart()), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.DistributionOfRevenue:
-                    LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.GetDistributionChart(), PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadDistributionIntoChart(activeDataGridView, GetPieChart(MainMenu_Form.Instance.GetDistributionChart()), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.TotalProfits:
-                    LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, true, directory);
+                    LoadChart.LoadProfitsIntoChart(GetCartesianChart(MainMenu_Form.Instance.Profits_Chart), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.CountriesOfOrigin:
-                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadCountriesOfOriginForProductsIntoChart(GetPieChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
-                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadCompaniesOfOriginForProductsIntoChart(GetPieChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.CountriesOfDestination:
-                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadCountriesOfDestinationForProductsIntoChart(GetPieChart(MainMenu_Form.Instance.CountriesOfDestination_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.Accountants:
-                    LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadAccountantsIntoChart(GetPieChart(MainMenu_Form.Instance.Accountants_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
-                    LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.SalesVsExpenses_Chart, isLine, true, directory);
+                    LoadChart.LoadSalesVsExpensesChart(GetCartesianChart(MainMenu_Form.Instance.SalesVsExpenses_Chart), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.AverageOrderValue:
-                    LoadChart.LoadAverageTransactionValueChart(MainMenu_Form.Instance.AverageTransactionValue_Chart, isLine, true, directory);
+                    LoadChart.LoadAverageTransactionValueChart(GetCartesianChart(MainMenu_Form.Instance.AverageTransactionValue_Chart), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.TotalTransactions:
-                    LoadChart.LoadTotalTransactionsChart(MainMenu_Form.Instance.TotalTransactions_Chart, isLine, true, directory);
+                    LoadChart.LoadTotalTransactionsChart(GetCartesianChart(MainMenu_Form.Instance.TotalTransactions_Chart), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.AverageShippingCosts:
-                    LoadChart.LoadAverageShippingCostsChart(MainMenu_Form.Instance.AverageShippingCosts_Chart, isLine, true, directory);
+                    LoadChart.LoadAverageShippingCostsChart(GetCartesianChart(MainMenu_Form.Instance.AverageShippingCosts_Chart), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.GrowthRates:
-                    LoadChart.LoadGrowthRateChart(MainMenu_Form.Instance.GrowthRates_Chart, true, directory);
+                    LoadChart.LoadGrowthRateChart(GetCartesianChart(MainMenu_Form.Instance.GrowthRates_Chart), true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.ReturnsOverTime:
-                    LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, true, directory);
+                    LoadChart.LoadReturnsOverTimeChart(GetCartesianChart(MainMenu_Form.Instance.ReturnsOverTime_Chart), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.ReturnReasons:
-                    LoadChart.LoadReturnReasonsChart(MainMenu_Form.Instance.ReturnReasons_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadReturnReasonsChart(GetPieChart(MainMenu_Form.Instance.ReturnReasons_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
-                    LoadChart.LoadReturnFinancialImpactChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart, isLine, true, directory);
+                    LoadChart.LoadReturnFinancialImpactChart(GetCartesianChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart), isLine, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.ReturnsByCategory:
-                    LoadChart.LoadReturnsByCategoryChart(MainMenu_Form.Instance.ReturnsByCategory_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadReturnsByCategoryChart(GetPieChart(MainMenu_Form.Instance.ReturnsByCategory_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.ReturnsByProduct:
-                    LoadChart.LoadReturnsByProductChart(MainMenu_Form.Instance.ReturnsByProduct_Chart, PieChartGrouping.Unlimited, true, directory);
+                    LoadChart.LoadReturnsByProductChart(GetPieChart(MainMenu_Form.Instance.ReturnsByProduct_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
-                    LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, true, directory);
+                    LoadChart.LoadPurchaseVsSaleReturnsChart(GetPieChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart), true, directory);
                     break;
             }
         }
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
+            Control chart = (Control)RightClickGunaChart_Panel.Tag;
             Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? MainMenu_Form.Instance.Sale_DataGridView
                 : MainMenu_Form.Instance.Purchase_DataGridView;
@@ -166,7 +202,7 @@ namespace Sales_Tracker.Charts
                 {
                     case MainMenu_Form.ChartDataType.TotalRevenue:
                         {
-                            ChartData chartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, MainMenu_Form.Instance.GetTotalsChart(), isLine, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, GetCartesianChart(MainMenu_Form.Instance.GetTotalsChart()), isLine, canUpdateChart: false);
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.TotalRevenue
                                 : TranslatedChartTitles.TotalExpenses;
@@ -184,7 +220,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.DistributionOfRevenue:
                         {
-                            ChartData chartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, MainMenu_Form.Instance.GetDistributionChart(), PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, GetPieChart(MainMenu_Form.Instance.GetDistributionChart()), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
                                 ? TranslatedChartTitles.RevenueDistribution
                                 : TranslatedChartTitles.ExpensesDistribution;
@@ -199,7 +235,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.TotalProfits:
                         {
-                            ChartData chartData = LoadChart.LoadProfitsIntoChart(MainMenu_Form.Instance.Profits_Chart, isLine, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadProfitsIntoChart(GetCartesianChart(MainMenu_Form.Instance.Profits_Chart), isLine, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.TotalProfits;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
@@ -213,7 +249,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CountriesOfOrigin:
                         {
-                            ChartData chartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadCountriesOfOriginForProductsIntoChart(GetPieChart(MainMenu_Form.Instance.CountriesOfOrigin_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfOrigin;
                             string first = LanguageManager.TranslateString("Countries");
                             string second = LanguageManager.TranslateString("# of items");
@@ -224,7 +260,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CompaniesOfOrigin:
                         {
-                            ChartData chartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadCompaniesOfOriginForProductsIntoChart(GetPieChart(MainMenu_Form.Instance.CompaniesOfOrigin_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CompaniesOfOrigin;
                             string first = LanguageManager.TranslateString("Companies");
                             string second = LanguageManager.TranslateString("# of items");
@@ -235,7 +271,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.CountriesOfDestination:
                         {
-                            ChartData chartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(MainMenu_Form.Instance.CountriesOfDestination_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadCountriesOfDestinationForProductsIntoChart(GetPieChart(MainMenu_Form.Instance.CountriesOfDestination_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.CountriesOfDestination;
                             string first = LanguageManager.TranslateString("Countries");
                             string second = LanguageManager.TranslateString("# of items");
@@ -246,7 +282,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.Accountants:
                         {
-                            ChartData chartData = LoadChart.LoadAccountantsIntoChart(MainMenu_Form.Instance.Accountants_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartData chartData = LoadChart.LoadAccountantsIntoChart(GetPieChart(MainMenu_Form.Instance.Accountants_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.AccountantsTransactions;
                             string first = LanguageManager.TranslateString("Accountants");
                             string second = LanguageManager.TranslateString("# of transactions");
@@ -257,7 +293,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.TotalExpensesVsSales:
                         {
-                            SalesExpensesChartData salesExpensesData = LoadChart.LoadSalesVsExpensesChart(MainMenu_Form.Instance.SalesVsExpenses_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData salesExpensesData = LoadChart.LoadSalesVsExpensesChart(GetCartesianChart(MainMenu_Form.Instance.SalesVsExpenses_Chart), isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
                             foreach (string date in salesExpensesData.GetDateOrder())
@@ -280,7 +316,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.AverageOrderValue:
                         {
-                            SalesExpensesChartData chartData = LoadChart.LoadAverageTransactionValueChart(MainMenu_Form.Instance.AverageTransactionValue_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadAverageTransactionValueChart(GetCartesianChart(MainMenu_Form.Instance.AverageTransactionValue_Chart), isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
                             foreach (string date in chartData.GetDateOrder())
@@ -303,7 +339,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.TotalTransactions:
                         {
-                            SalesExpensesChartData chartData = LoadChart.LoadTotalTransactionsChart(MainMenu_Form.Instance.TotalTransactions_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadTotalTransactionsChart(GetCartesianChart(MainMenu_Form.Instance.TotalTransactions_Chart), isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
                             foreach (string date in chartData.GetDateOrder())
@@ -326,7 +362,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.AverageShippingCosts:
                         {
-                            SalesExpensesChartData chartData = LoadChart.LoadAverageShippingCostsChart(MainMenu_Form.Instance.AverageShippingCosts_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadAverageShippingCostsChart(GetCartesianChart(MainMenu_Form.Instance.AverageShippingCosts_Chart), isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
                             foreach (string date in chartData.GetDateOrder())
@@ -349,7 +385,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.GrowthRates:
                         {
-                            SalesExpensesChartData chartData = LoadChart.LoadGrowthRateChart(MainMenu_Form.Instance.GrowthRates_Chart, exportToExcel: false, filePath: null, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadGrowthRateChart(GetCartesianChart(MainMenu_Form.Instance.GrowthRates_Chart), exportToExcel: false, filePath: null, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
                             foreach (string date in chartData.GetDateOrder())
@@ -370,7 +406,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnsOverTime:
                         {
-                            SalesExpensesChartData chartData = LoadChart.LoadReturnsOverTimeChart(MainMenu_Form.Instance.ReturnsOverTime_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadReturnsOverTimeChart(GetCartesianChart(MainMenu_Form.Instance.ReturnsOverTime_Chart), isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
                             foreach (string date in chartData.GetDateOrder())
@@ -393,7 +429,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnReasons:
                         {
-                            ChartCountData chartData = LoadChart.LoadReturnReasonsChart(MainMenu_Form.Instance.ReturnReasons_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadReturnReasonsChart(GetPieChart(MainMenu_Form.Instance.ReturnReasons_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ReturnReasons;
                             string first = LanguageManager.TranslateString("Reasons");
                             string second = LanguageManager.TranslateString("# of returns");
@@ -404,7 +440,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnFinancialImpact:
                         {
-                            SalesExpensesChartData chartData = LoadChart.LoadReturnFinancialImpactChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart, isLine, canUpdateChart: false);
+                            SalesExpensesChartData chartData = LoadChart.LoadReturnFinancialImpactChart(GetCartesianChart(MainMenu_Form.Instance.ReturnFinancialImpact_Chart), isLine, canUpdateChart: false);
                             Dictionary<string, Dictionary<string, double>> combinedData = [];
 
                             foreach (string date in chartData.GetDateOrder())
@@ -427,7 +463,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnsByCategory:
                         {
-                            ChartCountData chartData = LoadChart.LoadReturnsByCategoryChart(MainMenu_Form.Instance.ReturnsByCategory_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadReturnsByCategoryChart(GetPieChart(MainMenu_Form.Instance.ReturnsByCategory_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ReturnsByCategory;
                             string first = LanguageManager.TranslateString("Categories");
                             string second = LanguageManager.TranslateString("# of returns");
@@ -438,7 +474,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.ReturnsByProduct:
                         {
-                            ChartCountData chartData = LoadChart.LoadReturnsByProductChart(MainMenu_Form.Instance.ReturnsByProduct_Chart, PieChartGrouping.Unlimited, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadReturnsByProductChart(GetPieChart(MainMenu_Form.Instance.ReturnsByProduct_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.ReturnsByProduct;
                             string first = LanguageManager.TranslateString("Products");
                             string second = LanguageManager.TranslateString("# of returns");
@@ -449,7 +485,7 @@ namespace Sales_Tracker.Charts
 
                     case MainMenu_Form.ChartDataType.PurchaseVsSaleReturns:
                         {
-                            ChartCountData chartData = LoadChart.LoadPurchaseVsSaleReturnsChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart, canUpdateChart: false);
+                            ChartCountData chartData = LoadChart.LoadPurchaseVsSaleReturnsChart(GetPieChart(MainMenu_Form.Instance.PurchaseVsSaleReturns_Chart), canUpdateChart: false);
                             string chartTitle = TranslatedChartTitles.PurchaseVsSaleReturns;
                             string first = LanguageManager.TranslateString("Transaction Type");
                             string second = LanguageManager.TranslateString("# of returns");
@@ -471,14 +507,72 @@ namespace Sales_Tracker.Charts
         }
         private static void ResetZoom(object sender, EventArgs e)
         {
-            GunaChart chart = (GunaChart)RightClickGunaChart_Panel.Tag;
-            chart.ResetZoom();
+            Control chart = (Control)RightClickGunaChart_Panel.Tag;
+
+            try
+            {
+                switch (chart)
+                {
+                    case CartesianChart cartesianChart:
+                        ResetCartesianChartZoom(cartesianChart);
+                        break;
+                    case PieChart pieChart:
+                        // Pie charts don't typically have zoom functionality
+                        // But we can refresh them
+                        pieChart.Invalidate();
+                        break;
+                    default:
+                        throw new NotSupportedException($"Chart type {chart.GetType().Name} is not supported for zoom reset");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error_ExportingChart($"Failed to reset chart zoom: {ex.Message}");
+            }
+        }
+        private static void ResetCartesianChartZoom(CartesianChart chart)
+        {
+            // LiveCharts doesn't have a built-in ResetZoom method like Guna
+            // We need to reset the axes to their default state
+            if (chart.XAxes != null)
+            {
+                chart.XAxes = chart.XAxes.Select(axis => new Axis
+                {
+                    IsVisible = axis.IsVisible,
+                    TextSize = axis.TextSize,
+                    SeparatorsPaint = axis.SeparatorsPaint,
+                    LabelsPaint = axis.LabelsPaint,
+                    TicksPaint = axis.TicksPaint,
+                    Labeler = axis.Labeler,
+                    // Reset any zoom-related properties
+                    MinLimit = null,
+                    MaxLimit = null
+                }).ToArray();
+            }
+
+            if (chart.YAxes != null)
+            {
+                chart.YAxes = chart.YAxes.Select(axis => new Axis
+                {
+                    IsVisible = axis.IsVisible,
+                    TextSize = axis.TextSize,
+                    SeparatorsPaint = axis.SeparatorsPaint,
+                    LabelsPaint = axis.LabelsPaint,
+                    TicksPaint = axis.TicksPaint,
+                    Labeler = axis.Labeler,
+                    // Reset any zoom-related properties
+                    MinLimit = null,
+                    MaxLimit = null
+                }).ToArray();
+            }
+
+            chart.Invalidate();
         }
 
         // Other methods
-        public static void ShowMenu(GunaChart chart, Point mousePosition)
+        public static void ShowMenu(Control chart, Point mousePosition)
         {
-            if (chart.DatasetCount == 0) { return; }
+            if (!ChartHasData(chart)) { return; }
 
             Form form = chart.FindForm();
             RightClickGunaChart_Panel.Tag = chart;
@@ -489,7 +583,7 @@ namespace Sales_Tracker.Charts
             byte padding = ReadOnlyVariables.PaddingRightClickPanel;
 
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)RightClickGunaChart_Panel.Controls[0];
-            if (chart.Datasets[0] is GunaPieDataset)
+            if (IsPieChart(chart))
             {
                 flowPanel.Controls.Remove(_resetZoomButton);
             }
@@ -528,6 +622,40 @@ namespace Sales_Tracker.Charts
 
             form.Controls.Add(RightClickGunaChart_Panel);
             RightClickGunaChart_Panel.BringToFront();
+        }
+
+        // Helper methods for chart type handling
+        private static bool ChartHasData(Control chart)
+        {
+            return chart switch
+            {
+                CartesianChart cartesianChart => cartesianChart.Series?.Any() == true,
+                PieChart pieChart => pieChart.Series?.Any() == true,
+                _ => false
+            };
+        }
+        private static bool IsPieChart(Control chart)
+        {
+            return chart is PieChart;
+        }
+        private static string GetChartTitle(Control chart)
+        {
+            return chart switch
+            {
+                CartesianChart cartesianChart => cartesianChart.Title.ToString() ?? chart.Name ?? "Chart",
+                PieChart pieChart => pieChart.Title.ToString() ?? chart.Name ?? "Chart",
+                _ => chart.Name ?? "Chart"
+            };
+        }
+
+        // Helper methods to safely cast charts for LoadChart methods
+        private static CartesianChart GetCartesianChart(object chart)
+        {
+            return chart as CartesianChart ?? throw new ArgumentException("Expected CartesianChart", nameof(chart));
+        }
+        private static PieChart GetPieChart(object chart)
+        {
+            return chart as PieChart ?? throw new ArgumentException("Expected PieChart", nameof(chart));
         }
     }
 }
