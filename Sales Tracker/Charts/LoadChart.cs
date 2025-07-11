@@ -1357,9 +1357,9 @@ namespace Sales_Tracker.Charts
             // Process purchase returns
             foreach (DataGridViewRow row in purchasesDataGridView.Rows)
             {
-                if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) continue;
+                if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
-                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) continue;
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
@@ -1377,9 +1377,9 @@ namespace Sales_Tracker.Charts
             // Process sale returns
             foreach (DataGridViewRow row in salesDataGridView.Rows)
             {
-                if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) continue;
+                if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
-                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) continue;
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
 
                 DateTime date = Convert.ToDateTime(row.Cells[ReadOnlyVariables.Date_column].Value);
                 string formattedDate = date.ToString(dateFormat);
@@ -1446,7 +1446,7 @@ namespace Sales_Tracker.Charts
             {
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) continue;
+                    if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
                     // Get return reason from TagData
                     (DateTime? returnDate, string returnReason, string returnedBy) = ReturnManager.GetReturnInfo(row);
@@ -1508,7 +1508,7 @@ namespace Sales_Tracker.Charts
             {
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) continue;
+                    if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
                     string category = row.Cells[ReadOnlyVariables.Category_column].Value.ToString();
 
@@ -1587,7 +1587,7 @@ namespace Sales_Tracker.Charts
             {
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) continue;
+                    if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
                     string product = row.Cells[ReadOnlyVariables.Product_column].Value.ToString();
 

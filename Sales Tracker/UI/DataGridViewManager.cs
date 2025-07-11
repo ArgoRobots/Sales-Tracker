@@ -1004,7 +1004,7 @@ namespace Sales_Tracker.UI
             {
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    if (row.Visible && !ReturnManager.IsTransactionReturned(row))
+                    if (row.Visible && ReturnManager.IsTransactionReturned(row))
                     {
                         return true;
                     }
