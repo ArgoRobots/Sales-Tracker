@@ -41,6 +41,9 @@ namespace Sales_Tracker.UI
         /// </summary>
         public static void SetToolTip(Control control, string title, string message)
         {
+            title = LanguageManager.TranslateString(title);
+            message = LanguageManager.TranslateString(message);
+
             if (!_tooltips.TryGetValue(control, out Guna2HtmlToolTip tooltip))
             {
                 tooltip = CreateTooltip();

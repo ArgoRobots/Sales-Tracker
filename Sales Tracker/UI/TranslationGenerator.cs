@@ -562,7 +562,13 @@ namespace Sales_Tracker.UI
                 "Total profits",
                 "Total revenue",
                 "Total transactions",
-                "Transactions managed by accountants"
+                "Transactions managed by accountants",
+
+                // Tooltips
+                "File",
+                "Help",
+                "Save",
+                "Upgrade to full version"
             ];
 
             Dictionary<string, string> textsToTranslate = [];
