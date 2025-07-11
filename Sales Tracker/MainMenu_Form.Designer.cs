@@ -93,8 +93,8 @@
             Fee_Label = new Label();
             Sales_Button = new Guna.UI2.WinForms.Guna2Button();
             Purchases_Button = new Guna.UI2.WinForms.Guna2Button();
-            LineGraph_Label = new Label();
-            LineGraph_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
+            LineChart_Label = new Label();
+            LineChart_ToggleSwitch = new Guna.UI2.WinForms.Guna2ToggleSwitch();
             Analytics_Button = new Guna.UI2.WinForms.Guna2Button();
             Search_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             ShowingResultsFor_Label = new Label();
@@ -559,42 +559,42 @@
             Purchases_Button.Text = "Purchases";
             Purchases_Button.Click += Purchases_Button_Click;
             // 
-            // LineGraph_Label
+            // LineChart_Label
             // 
-            LineGraph_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            LineGraph_Label.AutoSize = true;
-            LineGraph_Label.BackColor = Color.Transparent;
-            LineGraph_Label.Font = new Font("Segoe UI", 11.25F);
-            LineGraph_Label.Location = new Point(1659, 156);
-            LineGraph_Label.Name = "LineGraph_Label";
-            LineGraph_Label.Size = new Size(123, 31);
-            LineGraph_Label.TabIndex = 16;
-            LineGraph_Label.Text = "Line graph";
+            LineChart_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            LineChart_Label.AutoSize = true;
+            LineChart_Label.BackColor = Color.Transparent;
+            LineChart_Label.Font = new Font("Segoe UI", 11.25F);
+            LineChart_Label.Location = new Point(1666, 156);
+            LineChart_Label.Name = "LineChart_Label";
+            LineChart_Label.Size = new Size(114, 31);
+            LineChart_Label.TabIndex = 16;
+            LineChart_Label.Text = "Line chart";
             // 
-            // LineGraph_ToggleSwitch
+            // LineChart_ToggleSwitch
             // 
-            LineGraph_ToggleSwitch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            LineGraph_ToggleSwitch.AutoRoundedCorners = true;
-            LineGraph_ToggleSwitch.BackColor = Color.Transparent;
-            LineGraph_ToggleSwitch.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
-            LineGraph_ToggleSwitch.CheckedState.BorderRadius = 14;
-            LineGraph_ToggleSwitch.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
-            LineGraph_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
-            LineGraph_ToggleSwitch.CheckedState.InnerBorderRadius = 10;
-            LineGraph_ToggleSwitch.CheckedState.InnerColor = Color.White;
-            LineGraph_ToggleSwitch.CustomizableEdges = customizableEdges31;
-            LineGraph_ToggleSwitch.Location = new Point(1786, 156);
-            LineGraph_ToggleSwitch.Name = "LineGraph_ToggleSwitch";
-            LineGraph_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges32;
-            LineGraph_ToggleSwitch.Size = new Size(60, 30);
-            LineGraph_ToggleSwitch.TabIndex = 15;
-            LineGraph_ToggleSwitch.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
-            LineGraph_ToggleSwitch.UncheckedState.BorderRadius = 14;
-            LineGraph_ToggleSwitch.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
-            LineGraph_ToggleSwitch.UncheckedState.InnerBorderColor = Color.White;
-            LineGraph_ToggleSwitch.UncheckedState.InnerBorderRadius = 10;
-            LineGraph_ToggleSwitch.UncheckedState.InnerColor = Color.White;
-            LineGraph_ToggleSwitch.CheckedChanged += LineGraph_ToggleSwitch_CheckedChanged;
+            LineChart_ToggleSwitch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            LineChart_ToggleSwitch.AutoRoundedCorners = true;
+            LineChart_ToggleSwitch.BackColor = Color.Transparent;
+            LineChart_ToggleSwitch.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
+            LineChart_ToggleSwitch.CheckedState.BorderRadius = 14;
+            LineChart_ToggleSwitch.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
+            LineChart_ToggleSwitch.CheckedState.InnerBorderColor = Color.White;
+            LineChart_ToggleSwitch.CheckedState.InnerBorderRadius = 10;
+            LineChart_ToggleSwitch.CheckedState.InnerColor = Color.White;
+            LineChart_ToggleSwitch.CustomizableEdges = customizableEdges31;
+            LineChart_ToggleSwitch.Location = new Point(1786, 156);
+            LineChart_ToggleSwitch.Name = "LineChart_ToggleSwitch";
+            LineChart_ToggleSwitch.ShadowDecoration.CustomizableEdges = customizableEdges32;
+            LineChart_ToggleSwitch.Size = new Size(60, 30);
+            LineChart_ToggleSwitch.TabIndex = 15;
+            LineChart_ToggleSwitch.UncheckedState.BorderColor = Color.FromArgb(125, 137, 149);
+            LineChart_ToggleSwitch.UncheckedState.BorderRadius = 14;
+            LineChart_ToggleSwitch.UncheckedState.FillColor = Color.FromArgb(125, 137, 149);
+            LineChart_ToggleSwitch.UncheckedState.InnerBorderColor = Color.White;
+            LineChart_ToggleSwitch.UncheckedState.InnerBorderRadius = 10;
+            LineChart_ToggleSwitch.UncheckedState.InnerColor = Color.White;
+            LineChart_ToggleSwitch.CheckedChanged += LineChart_ToggleSwitch_CheckedChanged;
             // 
             // Analytics_Button
             // 
@@ -691,8 +691,8 @@
             Controls.Add(ShowingResultsFor_Label);
             Controls.Add(Search_TextBox);
             Controls.Add(Analytics_Button);
-            Controls.Add(LineGraph_Label);
-            Controls.Add(LineGraph_ToggleSwitch);
+            Controls.Add(LineChart_Label);
+            Controls.Add(LineChart_ToggleSwitch);
             Controls.Add(Top_Panel);
             Controls.Add(MainTop_Panel);
             Controls.Add(Total_Panel);
@@ -738,8 +738,8 @@
         public Label Tax_Label;
         public Guna.UI2.WinForms.Guna2Button Sales_Button;
         public Guna.UI2.WinForms.Guna2Button Purchases_Button;
-        private Label LineGraph_Label;
-        public Guna.UI2.WinForms.Guna2ToggleSwitch LineGraph_ToggleSwitch;
+        private Label LineChart_Label;
+        public Guna.UI2.WinForms.Guna2ToggleSwitch LineChart_ToggleSwitch;
         public Guna.UI2.WinForms.Guna2Button ManageProducts_Button;
         public Guna.UI2.WinForms.Guna2Button AddSale_Button;
         public Guna.UI2.WinForms.Guna2Button AddPurchase_Button;

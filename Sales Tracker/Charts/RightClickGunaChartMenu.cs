@@ -75,7 +75,7 @@ namespace Sales_Tracker.Charts
                 ? MainMenu_Form.Instance.Sale_DataGridView
                 : MainMenu_Form.Instance.Purchase_DataGridView;
 
-            bool isLine = MainMenu_Form.Instance.LineGraph_ToggleSwitch.Checked;
+            bool isLine = MainMenu_Form.Instance.LineChart_ToggleSwitch.Checked;
 
             switch (chart.Tag)
             {
@@ -158,7 +158,7 @@ namespace Sales_Tracker.Charts
             Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
                 ? MainMenu_Form.Instance.Sale_DataGridView
                 : MainMenu_Form.Instance.Purchase_DataGridView;
-            bool isLine = MainMenu_Form.Instance.LineGraph_ToggleSwitch.Checked;
+            bool isLine = MainMenu_Form.Instance.LineChart_ToggleSwitch.Checked;
 
             try
             {

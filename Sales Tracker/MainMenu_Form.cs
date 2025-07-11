@@ -191,7 +191,7 @@ namespace Sales_Tracker
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadMainCharts", Selected.ToString());
-            bool isLine = LineGraph_ToggleSwitch.Checked;
+            bool isLine = LineChart_ToggleSwitch.Checked;
 
             // Load purchase charts
             if (Selected == SelectedOption.Analytics || Purchase_DataGridView.Visible)
@@ -313,7 +313,7 @@ namespace Sales_Tracker
             Discount_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             ChargedDifference_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             Price_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
-            LineGraph_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            LineChart_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
 
             // Chart titles are saved in cache using a string, not the control
             _purchaseTotals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
@@ -755,6 +755,11 @@ namespace Sales_Tracker
                 RemoveControlsDropDown();
             }
 
+            if (Search_TextBox.Text != "")
+            {
+                CenterShowingResultsLabel();
+            }
+
             if (Selected == SelectedOption.Analytics)
             {
                 LayoutChartsForTab(_selectedTabKey, spaceBetweenCharts);
@@ -1167,7 +1172,7 @@ namespace Sales_Tracker
             CloseAllPanels(null, null);
             Tools.OpenForm(new Categories_Form(true));
         }
-        private void LineGraph_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
+        private void LineChart_ToggleSwitch_CheckedChanged(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
             LoadOrRefreshMainCharts(true);
@@ -1470,6 +1475,7 @@ namespace Sales_Tracker
 
             DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
+            UpdateTotalLabels();
 
             dataGridView.ResumeLayout(true);
         }
@@ -1538,19 +1544,22 @@ namespace Sales_Tracker
             // Update label text and location
             ShowingResultsFor_Label.Text = text;
             CenterShowingResultsLabel();
-            ShowingResultsFor_Label.Visible = true;
         }
         private void CenterShowingResultsLabel()
         {
-            GunaChart visibleDistributionChart = Sale_DataGridView.Visible ? _saleDistribution_Chart : _purchaseDistribution_Chart;
+            bool visible = ShowingResultsFor_Label.Right < LineChart_Label.Left - 5;
+            ShowingResultsFor_Label.Visible = visible;
 
-            ShowingResultsFor_Label.Location = new Point(
-                (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
-                MainTop_Panel.Bottom + (visibleDistributionChart.Top - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
+            if (visible)
+            {
+                ShowingResultsFor_Label.Location = new Point(
+                    (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
+                    MainTop_Panel.Bottom + (_chartTop - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
+            }
         }
 
         /// <summary>
-        /// Helper function to convert TimeSpan into human-readable text
+        /// Helper function to convert TimeSpan into human-readable text.
         /// </summary>
         private static string? GetTimeSpanText(TimeSpan timeSpan)
         {
@@ -2374,7 +2383,7 @@ namespace Sales_Tracker
         }
         private void LoadChartsForTab(AnalyticsTab tabKey)
         {
-            bool isLine = LineGraph_ToggleSwitch.Checked;
+            bool isLine = LineChart_ToggleSwitch.Checked;
 
             switch (tabKey)
             {
@@ -2475,7 +2484,7 @@ namespace Sales_Tracker
         }
         private void IncludeFreeShippingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            bool isLineChart = LineGraph_ToggleSwitch.Checked;
+            bool isLineChart = LineChart_ToggleSwitch.Checked;
             bool zeroShipping = IncludeFreeShipping_CheckBox.Checked;
 
             UserSettings.UpdateSetting("Include free shipping in chart", Properties.Settings.Default.IncludeFreeShipping, zeroShipping,
@@ -2531,7 +2540,7 @@ namespace Sales_Tracker
             if (Selected != SelectedOption.Analytics) { return; }
 
             AnalyticsTab currentTabKey = _selectedTabKey;
-            bool isLine = LineGraph_ToggleSwitch.Checked;
+            bool isLine = LineChart_ToggleSwitch.Checked;
 
             if (onlyRefreshForLineCharts)
             {
