@@ -10,11 +10,11 @@ namespace Sales_Tracker.UI
     internal class TextBoxManager
     {
         // Dictionaries to hold undo/redo stacks and flags for each TextBox
-        private static readonly Dictionary<Guna2TextBox, Stack<TextState>> undoStacks = [];
-        private static readonly Dictionary<Guna2TextBox, Stack<TextState>> redoStacks = [];
-        private static readonly Dictionary<Guna2TextBox, bool> isTextChangedByUserFlags = [];
-        private const byte maxStackSize = 250;
-        private static Point mouseDownLocation;
+        private static readonly Dictionary<Guna2TextBox, Stack<TextState>> _undoStacks = [];
+        private static readonly Dictionary<Guna2TextBox, Stack<TextState>> _redoStacks = [];
+        private static readonly Dictionary<Guna2TextBox, bool> _isTextChangedByUserFlags = [];
+        private const byte _maxStackSize = 250;
+        private static Point _mouseDownLocation;
 
         /// <summary>
         /// Represents the state of a TextBox, including its text content and cursor position.
@@ -46,10 +46,10 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void InitializeTextBox(Guna2TextBox textBox)
         {
-            undoStacks[textBox] = new Stack<TextState>();
-            redoStacks[textBox] = new Stack<TextState>();
-            isTextChangedByUserFlags[textBox] = true;
-            undoStacks[textBox].Push(new TextState(textBox.Text, textBox.SelectionStart));
+            _undoStacks[textBox] = new Stack<TextState>();
+            _redoStacks[textBox] = new Stack<TextState>();
+            _isTextChangedByUserFlags[textBox] = true;
+            _undoStacks[textBox].Push(new TextState(textBox.Text, textBox.SelectionStart));
         }
         private static void AttachEventHandlers(Guna2TextBox textBox)
         {
@@ -59,7 +59,7 @@ namespace Sales_Tracker.UI
             textBox.MouseDown += TextBox_MouseDown;
             textBox.MouseUp += TextBox_MouseUp;
         }
-        private static bool IsAttached(Guna2TextBox textBox) => undoStacks.ContainsKey(textBox);
+        private static bool IsAttached(Guna2TextBox textBox) => _undoStacks.ContainsKey(textBox);
 
         // TextBox event handlers
         /// <summary>
@@ -69,10 +69,10 @@ namespace Sales_Tracker.UI
         {
             Guna2TextBox textBox = (Guna2TextBox)sender;
 
-            if (!isTextChangedByUserFlags[textBox]) { return; }
+            if (!_isTextChangedByUserFlags[textBox]) { return; }
 
-            Stack<TextState> undoStack = undoStacks[textBox];
-            Stack<TextState> redoStack = redoStacks[textBox];
+            Stack<TextState> undoStack = _undoStacks[textBox];
+            Stack<TextState> redoStack = _redoStacks[textBox];
 
             if (undoStack.Count == 0 || undoStack.Peek().Text != textBox.Text)
             {
@@ -141,7 +141,7 @@ namespace Sales_Tracker.UI
         {
             if (e.Button == MouseButtons.Right)
             {
-                mouseDownLocation = e.Location;
+                _mouseDownLocation = e.Location;
             }
         }
         private static void TextBox_MouseUp(object sender, MouseEventArgs e)
@@ -152,8 +152,8 @@ namespace Sales_Tracker.UI
 
                 // Check if mouse hasn't moved too far from the down location
                 byte threshold = 3;
-                if (Math.Abs(e.Location.X - mouseDownLocation.X) <= threshold &&
-                    Math.Abs(e.Location.Y - mouseDownLocation.Y) <= threshold)
+                if (Math.Abs(e.Location.X - _mouseDownLocation.X) <= threshold &&
+                    Math.Abs(e.Location.Y - _mouseDownLocation.Y) <= threshold)
                 {
                     Guna2TextBox textBox = (Guna2TextBox)sender;
                     ShowRightClickMenu(textBox, e.Location);
@@ -198,7 +198,7 @@ namespace Sales_Tracker.UI
         {
             undoStack.Push(new TextState(textBox.Text, textBox.SelectionStart));
 
-            if (undoStack.Count > maxStackSize)
+            if (undoStack.Count > _maxStackSize)
             {
                 LimitStackSize(textBox);
             }
@@ -210,14 +210,14 @@ namespace Sales_Tracker.UI
         private static void LimitStackSize(Guna2TextBox textBox)
         {
             Stack<TextState> tempStack = new();
-            Stack<TextState> currentStack = undoStacks[textBox];
+            Stack<TextState> currentStack = _undoStacks[textBox];
 
-            for (int i = 0; i < maxStackSize && currentStack.Count > 0; i++)
+            for (int i = 0; i < _maxStackSize && currentStack.Count > 0; i++)
             {
                 tempStack.Push(currentStack.Pop());
             }
 
-            undoStacks[textBox] = new Stack<TextState>(tempStack.Reverse());
+            _undoStacks[textBox] = new Stack<TextState>(tempStack.Reverse());
         }
 
         /// <summary>
@@ -225,8 +225,8 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void Undo(Guna2TextBox textBox)
         {
-            Stack<TextState> undoStack = undoStacks[textBox];
-            Stack<TextState> redoStack = redoStacks[textBox];
+            Stack<TextState> undoStack = _undoStacks[textBox];
+            Stack<TextState> redoStack = _redoStacks[textBox];
 
             if (undoStack.Count > 1)
             {
@@ -241,8 +241,8 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void Redo(Guna2TextBox textBox)
         {
-            Stack<TextState> undoStack = undoStacks[textBox];
-            Stack<TextState> redoStack = redoStacks[textBox];
+            Stack<TextState> undoStack = _undoStacks[textBox];
+            Stack<TextState> redoStack = _redoStacks[textBox];
 
             if (redoStack.Count > 0)
             {
@@ -257,10 +257,10 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void UpdateTextBoxContent(Guna2TextBox textBox, string newText, int cursorPosition)
         {
-            isTextChangedByUserFlags[textBox] = false;
+            _isTextChangedByUserFlags[textBox] = false;
             textBox.Text = newText;
             textBox.SelectionStart = cursorPosition;
-            isTextChangedByUserFlags[textBox] = true;
+            _isTextChangedByUserFlags[textBox] = true;
         }
 
         // Right click menu
