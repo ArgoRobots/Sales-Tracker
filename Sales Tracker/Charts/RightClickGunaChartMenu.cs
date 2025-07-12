@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -85,21 +86,26 @@ namespace Sales_Tracker.Charts
             {
                 directory = dialog.FileName;
             }
-
-            Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                ? MainMenu_Form.Instance.Sale_DataGridView
-                : MainMenu_Form.Instance.Purchase_DataGridView;
+            else { return; }
 
             bool isLine = MainMenu_Form.Instance.LineChart_ToggleSwitch.Checked;
 
             switch (chart.Tag)
             {
-                case MainMenu_Form.ChartDataType.TotalRevenue:
-                    LoadChart.LoadTotalsIntoChart(activeDataGridView, GetCartesianChart(MainMenu_Form.Instance.GetTotalsChart()), isLine, true, directory);
+                case MainMenu_Form.ChartDataType.TotalSales:
+                    LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Sale_DataGridView, GetCartesianChart(MainMenu_Form.Instance.SaleTotals_Chart), isLine, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.DistributionOfRevenue:
-                    LoadChart.LoadDistributionIntoChart(activeDataGridView, GetPieChart(MainMenu_Form.Instance.GetDistributionChart()), PieChartGrouping.Unlimited, true, directory);
+                case MainMenu_Form.ChartDataType.TotalPurchases:
+                    LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, GetCartesianChart(MainMenu_Form.Instance.PurchaseTotals_Chart), isLine, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.DistributionOfSales:
+                    LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Sale_DataGridView, GetPieChart(MainMenu_Form.Instance.SaleDistribution_Chart), PieChartGrouping.Unlimited, true, directory);
+                    break;
+
+                case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                    LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, GetPieChart(MainMenu_Form.Instance.PurchaseDistribution_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
                 case MainMenu_Form.ChartDataType.TotalProfits:
@@ -170,43 +176,57 @@ namespace Sales_Tracker.Charts
         private static async void ExportToGoogleSheets(object sender, EventArgs e)
         {
             Chart chart = (Chart)RightClickGunaChart_Panel.Tag;
-            Guna2DataGridView activeDataGridView = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                ? MainMenu_Form.Instance.Sale_DataGridView
-                : MainMenu_Form.Instance.Purchase_DataGridView;
             bool isLine = MainMenu_Form.Instance.LineChart_ToggleSwitch.Checked;
 
             try
             {
                 switch (chart.Tag)
                 {
-                    case MainMenu_Form.ChartDataType.TotalRevenue:
+                    case MainMenu_Form.ChartDataType.TotalSales:
                         {
-                            ChartData chartData = LoadChart.LoadTotalsIntoChart(activeDataGridView, GetCartesianChart(MainMenu_Form.Instance.GetTotalsChart()), isLine, canUpdateChart: false);
-                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                                ? TranslatedChartTitles.TotalRevenue
-                                : TranslatedChartTitles.TotalExpenses;
+                            ChartData chartData = LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Sale_DataGridView, GetCartesianChart(MainMenu_Form.Instance.SaleTotals_Chart), isLine, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.TotalRevenue;
                             GoogleSheetManager.ChartType chartType = isLine
                                 ? GoogleSheetManager.ChartType.Line
                                 : GoogleSheetManager.ChartType.Column;
                             string first = LanguageManager.TranslateString("Date");
-                            string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                                ? LanguageManager.TranslateString("Revenue")
-                                : LanguageManager.TranslateString("Expenses");
+                            string second = LanguageManager.TranslateString("Revenue");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
                         }
                         break;
 
-                    case MainMenu_Form.ChartDataType.DistributionOfRevenue:
+                    case MainMenu_Form.ChartDataType.TotalPurchases:
                         {
-                            ChartData chartData = LoadChart.LoadDistributionIntoChart(activeDataGridView, GetPieChart(MainMenu_Form.Instance.GetDistributionChart()), PieChartGrouping.Unlimited, canUpdateChart: false);
-                            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                                ? TranslatedChartTitles.RevenueDistribution
-                                : TranslatedChartTitles.ExpensesDistribution;
+                            ChartData chartData = LoadChart.LoadTotalsIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, GetCartesianChart(MainMenu_Form.Instance.PurchaseTotals_Chart), isLine, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.TotalExpenses;
+                            GoogleSheetManager.ChartType chartType = isLine
+                                ? GoogleSheetManager.ChartType.Line
+                                : GoogleSheetManager.ChartType.Column;
+                            string first = LanguageManager.TranslateString("Date");
+                            string second = LanguageManager.TranslateString("Expenses");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, chartType, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.DistributionOfSales:
+                        {
+                            ChartData chartData = LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Sale_DataGridView, GetPieChart(MainMenu_Form.Instance.SaleDistribution_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.RevenueDistribution;
                             string first = LanguageManager.TranslateString("Category");
-                            string second = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                               ? LanguageManager.TranslateString("Revenue")
-                               : LanguageManager.TranslateString("Expenses");
+                            string second = LanguageManager.TranslateString("Revenue");
+
+                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
+                        }
+                        break;
+
+                    case MainMenu_Form.ChartDataType.DistributionOfPurchases:
+                        {
+                            ChartData chartData = LoadChart.LoadDistributionIntoChart(MainMenu_Form.Instance.Purchase_DataGridView, GetPieChart(MainMenu_Form.Instance.PurchaseDistribution_Chart), PieChartGrouping.Unlimited, canUpdateChart: false);
+                            string chartTitle = TranslatedChartTitles.ExpensesDistribution;
+                            string first = LanguageManager.TranslateString("Category");
+                            string second = LanguageManager.TranslateString("Expenses");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
                         }
@@ -581,18 +601,26 @@ namespace Sales_Tracker.Charts
         {
             return chart switch
             {
-                CartesianChart cartesianChart => cartesianChart.Title.ToString() ?? chart.Name ?? "Chart",
-                PieChart pieChart => pieChart.Title.ToString() ?? chart.Name ?? "Chart",
+                CartesianChart cartesianChart => GetTitleText(cartesianChart.Title) ?? chart.Name ?? "Chart",
+                PieChart pieChart => GetTitleText(pieChart.Title) ?? chart.Name ?? "Chart",
                 _ => chart.Name ?? "Chart"
             };
         }
+        private static string? GetTitleText(object title)
+        {
+            if (title is LabelVisual labelVisual)
+            {
+                return labelVisual.Text;
+            }
+            return null;
+        }
 
         // Helper methods to safely cast charts for LoadChart methods
-        private static CartesianChart GetCartesianChart(object chart)
+        private static CartesianChart GetCartesianChart(Chart chart)
         {
             return chart as CartesianChart ?? throw new ArgumentException("Expected CartesianChart", nameof(chart));
         }
-        private static PieChart GetPieChart(object chart)
+        private static PieChart GetPieChart(Chart chart)
         {
             return chart as PieChart ?? throw new ArgumentException("Expected PieChart", nameof(chart));
         }

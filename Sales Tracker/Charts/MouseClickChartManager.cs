@@ -41,14 +41,6 @@ namespace Sales_Tracker.Charts
         }
 
         /// <summary>
-        /// Checks if a control is a supported chart type.
-        /// </summary>
-        private static bool IsChartControl(Control control)
-        {
-            return control is CartesianChart or PieChart;
-        }
-
-        /// <summary>
         /// Custom IMessageFilter implementation that detects mouse clicks and determines
         /// whether a left or right click occurred on a LiveCharts control.
         /// </summary>
@@ -109,7 +101,7 @@ namespace Sales_Tracker.Charts
                 // Check if the click happened on any of the registered charts
                 foreach (Chart chart in _registeredCharts)
                 {
-                    if (!chart.Visible || !IsChartControl(chart))
+                    if (!chart.Visible)
                     {
                         // Skip charts that are not visible or not supported chart types
                         continue;

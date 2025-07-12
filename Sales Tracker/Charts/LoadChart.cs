@@ -462,9 +462,10 @@ namespace Sales_Tracker.Charts
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
                 eChartType chartType = isLineChart ? eChartType.Line : eChartType.ColumnClustered;
-                string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
-                    ? TranslatedChartTitles.TotalRevenue
-                    : TranslatedChartTitles.TotalExpenses;
+                bool isSalesData = dataGridView == MainMenu_Form.Instance.Sale_DataGridView;
+                string chartTitle = isSalesData
+                     ? TranslatedChartTitles.TotalRevenue
+                     : TranslatedChartTitles.TotalExpenses;
                 string date = LanguageManager.TranslateString("Date");
 
                 ExcelSheetManager.ExportChartToExcel(revenueByDate, filePath, chartType, chartTitle, date, label);
@@ -583,7 +584,8 @@ namespace Sales_Tracker.Charts
             }
 
             // Pie chart processing
-            string chartTitle = MainMenu_Form.Instance.Sale_DataGridView.Visible
+            bool isSalesData = dataGridView == MainMenu_Form.Instance.Sale_DataGridView;
+            string chartTitle = isSalesData
                 ? TranslatedChartTitles.RevenueDistribution
                 : TranslatedChartTitles.ExpensesDistribution;
             string category1 = LanguageManager.TranslateString("Category");
@@ -1443,12 +1445,11 @@ namespace Sales_Tracker.Charts
             };
                 }
 
-                string chartTitle = TranslatedChartTitles.ReturnsOverTime;
                 ExcelSheetManager.ExportMultiDataSetCountChartToExcel(
                     combinedData,
                     filePath,
                     isLineChart ? eChartType.Line : eChartType.ColumnClustered,
-                    chartTitle
+                    TranslatedChartTitles.ReturnsOverTime
                 );
             }
             else if (canUpdateChart)
