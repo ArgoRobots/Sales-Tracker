@@ -23,7 +23,6 @@ namespace Sales_Tracker.Charts
 
             // Configure legend
             chart.LegendTextPaint = new SolidColorPaint(foreColor);
-            chart.LegendBackgroundPaint = new SolidColorPaint(backgroundColor);
 
             // Configure title
             chart.ForeColor = CustomColors.Text;
@@ -46,7 +45,6 @@ namespace Sales_Tracker.Charts
 
             // Configure legend
             chart.LegendTextPaint = new SolidColorPaint(foreColor);
-            chart.LegendBackgroundPaint = new SolidColorPaint(backgroundColor);
 
             // Configure title
             chart.ForeColor = CustomColors.Text;
