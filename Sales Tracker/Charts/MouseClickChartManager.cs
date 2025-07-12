@@ -21,7 +21,7 @@ namespace Sales_Tracker.Charts
             static void leftClickAction(Chart chartControl) => CustomControls.CloseAllPanels();
             Initialize(charts, leftClickAction, RightClickGunaChartMenu.ShowMenu);
         }
-        private static void Initialize(Control[] charts, Action<Chart> onLeftClick, Action<Chart, Point> onRightClick)
+        private static void Initialize(Chart[] charts, Action<Chart> onLeftClick, Action<Chart, Point> onRightClick)
         {
             // Add new charts to the collection
             foreach (Chart chart in charts)

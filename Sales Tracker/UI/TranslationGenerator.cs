@@ -1,5 +1,5 @@
-﻿using Guna.Charts.WinForms;
-using Guna.UI2.WinForms;
+﻿using Guna.UI2.WinForms;
+using LiveChartsCore.SkiaSharpView.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -644,8 +644,8 @@ namespace Sales_Tracker.UI
                     }
                     break;
 
-                case GunaChart gunaChart:
-                    AddTextToTranslate(textsToTranslate, $"{controlKey}_{_title_text}", gunaChart.Title.Text);
+                case Chart chart:
+                    AddTextToTranslate(textsToTranslate, $"{controlKey}_{_title_text}", chart.Title.ToString());
                     break;
 
                 case Guna2DataGridView gunaDataGridView:

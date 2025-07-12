@@ -19,7 +19,7 @@ namespace Sales_Tracker
     public partial class MainMenu_Form : BaseForm
     {
         // Admin mode can only be enabled by directly setting it to true here
-        public readonly static bool EnableAdminMode = false && DotEnv.IsRunningInVisualStudio();
+        public readonly static bool EnableAdminMode = true && DotEnv.IsRunningInVisualStudio();
 
         // Properties
         private static MainMenu_Form _instance;
@@ -217,8 +217,6 @@ namespace Sales_Tracker
                     LoadChart.LoadDistributionIntoChart(Purchase_DataGridView, _purchaseDistribution_Chart as PieChart, PieChartGrouping.Top12);
                     SetChartTitle(_purchaseDistribution_Chart, TranslatedChartTitles.ExpensesDistribution);
                 }
-
-                LanguageManager.UpdateLanguageForControl(_purchaseTotals_Chart);
             }
 
             // Load sale charts
@@ -233,15 +231,13 @@ namespace Sales_Tracker
                     LoadChart.LoadDistributionIntoChart(Sale_DataGridView, _saleDistribution_Chart as PieChart, PieChartGrouping.Top12);
                     SetChartTitle(_saleDistribution_Chart, TranslatedChartTitles.RevenueDistribution);
                 }
-
-                LanguageManager.UpdateLanguageForControl(_saleTotals_Chart);
             }
 
             // Always load profits chart
             ChartData profitsData = LoadChart.LoadProfitsIntoChart(Profits_Chart as CartesianChart, isLine);
             SetProfitsChartTitle(profitsData.Total);
         }
-        private static void SetChartTitle(Chart chart, string title)
+        public static void SetChartTitle(Chart chart, string title)
         {
             chart.Title = CreateChartTitle(title);
         }

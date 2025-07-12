@@ -1,5 +1,5 @@
 ﻿using Guna.UI2.WinForms;
-using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -495,37 +495,17 @@ namespace Sales_Tracker.Charts
         }
         private static void ResetCartesianChartZoom(CartesianChart chart)
         {
-            if (chart.XAxes != null)
+            foreach (ICartesianAxis axis in chart.XAxes)
             {
-                chart.XAxes = chart.XAxes.Select(axis => new Axis
-                {
-                    TextSize = axis.TextSize,
-                    SeparatorsPaint = axis.SeparatorsPaint,
-                    LabelsPaint = axis.LabelsPaint,
-                    TicksPaint = axis.TicksPaint,
-                    Labeler = axis.Labeler,
-                    // Reset zoom-related properties
-                    MinLimit = null,
-                    MaxLimit = null
-                }).ToArray();
+                axis.MinLimit = null;
+                axis.MaxLimit = null;
             }
 
-            if (chart.YAxes != null)
+            foreach (ICartesianAxis axis in chart.YAxes)
             {
-                chart.YAxes = chart.YAxes.Select(axis => new Axis
-                {
-                    TextSize = axis.TextSize,
-                    SeparatorsPaint = axis.SeparatorsPaint,
-                    LabelsPaint = axis.LabelsPaint,
-                    TicksPaint = axis.TicksPaint,
-                    Labeler = axis.Labeler,
-                    // Reset zoom-related properties
-                    MinLimit = null,
-                    MaxLimit = null
-                }).ToArray();
+                axis.MinLimit = null;
+                axis.MaxLimit = null;
             }
-
-            chart.Invalidate();
         }
 
         // Other methods
