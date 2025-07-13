@@ -125,7 +125,8 @@ namespace Sales_Tracker.Charts
                     break;
 
                 case MainMenu_Form.ChartDataType.WorldMap:
-                    LoadChart.LoadWorldMapChart(MainMenu_Form.Instance.WorldMap_GeoMap, true, directory);
+                    MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.Instance.GetSelectedGeoMapDataType();
+                    LoadChart.LoadWorldMapChart(MainMenu_Form.Instance.WorldMap_GeoMap, true, directory, dataType: dataType);
                     break;
 
                 case MainMenu_Form.ChartDataType.Accountants:

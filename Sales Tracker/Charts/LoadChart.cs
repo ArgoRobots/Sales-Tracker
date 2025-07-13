@@ -884,14 +884,17 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadWorldMapChart(GeoMap geoMap, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        public static ChartData LoadWorldMapChart(GeoMap geoMap, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.GeoMapDataType.Combined)
         {
             using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(geoMap.Name);
 
-            Guna2DataGridView[] dataGridViews = [
-                MainMenu_Form.Instance.Sale_DataGridView,
-                MainMenu_Form.Instance.Purchase_DataGridView
-            ];
+            Guna2DataGridView[] dataGridViews = dataType switch
+            {
+                MainMenu_Form.GeoMapDataType.PurchasesOnly => [MainMenu_Form.Instance.Purchase_DataGridView],
+                MainMenu_Form.GeoMapDataType.SalesOnly => [MainMenu_Form.Instance.Sale_DataGridView],
+                MainMenu_Form.GeoMapDataType.Combined => [MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.Purchase_DataGridView],
+                _ => [MainMenu_Form.Instance.Sale_DataGridView, MainMenu_Form.Instance.Purchase_DataGridView]
+            };
 
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
 
@@ -906,52 +909,64 @@ namespace Sales_Tracker.Charts
                 ConfigureGeoMap(geoMap);
             }
 
-            // Collect country data from both purchases and sales
+            // Collect country data based on selected type
             Dictionary<string, double> countryData = [];
 
-            // Process purchase data (country of origin)
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchase_DataGridView.Rows)
+            if (dataType == MainMenu_Form.GeoMapDataType.Combined || dataType == MainMenu_Form.GeoMapDataType.PurchasesOnly)
             {
-                if (!IsRowValid(row)) { continue; }
-
-                string country = GetCountryFromRow(row);
-                if (string.IsNullOrEmpty(country) || country == ReadOnlyVariables.EmptyCell) { continue; }
-
-                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
-
-                if (countryData.TryGetValue(country, out double existing))
+                // Process purchase data (country of origin)
+                foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchase_DataGridView.Rows)
                 {
-                    countryData[country] = existing + total;
-                }
-                else
-                {
-                    countryData[country] = total;
+                    if (!IsRowValid(row)) { continue; }
+
+                    string country = GetCountryFromRow(row);
+                    if (string.IsNullOrEmpty(country) || country == ReadOnlyVariables.EmptyCell) { continue; }
+
+                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
+
+                    if (countryData.TryGetValue(country, out double existing))
+                    {
+                        countryData[country] = existing + total;
+                    }
+                    else
+                    {
+                        countryData[country] = total;
+                    }
                 }
             }
 
-            // Process sales data (country of destination)
-            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sale_DataGridView.Rows)
+            if (dataType == MainMenu_Form.GeoMapDataType.Combined || dataType == MainMenu_Form.GeoMapDataType.SalesOnly)
             {
-                if (!IsRowValid(row)) { continue; }
-
-                string country = GetCountryFromRow(row);
-                if (string.IsNullOrEmpty(country) || country == ReadOnlyVariables.EmptyCell) { continue; }
-
-                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
-
-                if (countryData.TryGetValue(country, out double existing))
+                // Process sales data (country of destination)
+                foreach (DataGridViewRow row in MainMenu_Form.Instance.Sale_DataGridView.Rows)
                 {
-                    countryData[country] = existing + total;
-                }
-                else
-                {
-                    countryData[country] = total;
+                    if (!IsRowValid(row)) { continue; }
+
+                    string country = GetCountryFromRow(row);
+                    if (string.IsNullOrEmpty(country) || country == ReadOnlyVariables.EmptyCell) { continue; }
+
+                    if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
+
+                    if (countryData.TryGetValue(country, out double existing))
+                    {
+                        countryData[country] = existing + total;
+                    }
+                    else
+                    {
+                        countryData[country] = total;
+                    }
                 }
             }
 
             if (exportToExcel && !string.IsNullOrEmpty(filePath))
             {
-                string chartTitle = TranslatedChartTitles.WorldMap;
+                string chartTitle = dataType switch
+                {
+                    MainMenu_Form.GeoMapDataType.PurchasesOnly => LanguageManager.TranslateString("Purchase Origins Map"),
+                    MainMenu_Form.GeoMapDataType.SalesOnly => LanguageManager.TranslateString("Sales Destinations Map"),
+                    MainMenu_Form.GeoMapDataType.Combined => LanguageManager.TranslateString("Global Transaction Map"),
+                    _ => LanguageManager.TranslateString("Global Transaction Map")
+                };
                 string countries = LanguageManager.TranslateString("Countries");
                 string value = LanguageManager.TranslateString("Total Value");
 
