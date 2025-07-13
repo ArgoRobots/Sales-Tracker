@@ -20,14 +20,9 @@ namespace Sales_Tracker.Charts
             SKColor backgroundColor = ToSKColor(CustomColors.ContentPanelBackground);
 
             chart.BackColor = CustomColors.ContentPanelBackground;
-
-            // Configure legend
             chart.LegendTextPaint = new SolidColorPaint(foreColor);
-
-            // Configure title
             chart.ForeColor = CustomColors.Text;
 
-            // Configure tooltip
             chart.TooltipTextPaint = new SolidColorPaint(foreColor);
             chart.TooltipBackgroundPaint = new SolidColorPaint(backgroundColor);
             chart.TooltipTextSize = 18;
@@ -42,17 +37,20 @@ namespace Sales_Tracker.Charts
             SKColor backgroundColor = ToSKColor(CustomColors.ContentPanelBackground);
 
             chart.BackColor = CustomColors.ContentPanelBackground;
-
-            // Configure legend
             chart.LegendTextPaint = new SolidColorPaint(foreColor);
-
-            // Configure title
             chart.ForeColor = CustomColors.Text;
 
-            // Configure tooltip
             chart.TooltipTextPaint = new SolidColorPaint(foreColor);
             chart.TooltipBackgroundPaint = new SolidColorPaint(backgroundColor);
             chart.TooltipTextSize = 18;
+        }
+
+        /// <summary>
+        /// Applies consistent theming to a GeoMap.
+        /// </summary>
+        public static void ApplyTheme(GeoMap geoMap)
+        {
+            geoMap.BackColor = CustomColors.ContentPanelBackground;
         }
 
         /// <summary>

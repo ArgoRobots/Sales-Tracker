@@ -328,6 +328,7 @@ namespace Sales_Tracker
             CountriesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CountriesOfDestination_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CompaniesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            WorldMap_GeoMap.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Accountants_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             GrowthRates_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             SalesVsExpenses_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
@@ -354,6 +355,7 @@ namespace Sales_Tracker
             CountriesOfOrigin_Chart.Tag = ChartDataType.CountriesOfOrigin;
             CompaniesOfOrigin_Chart.Tag = ChartDataType.CompaniesOfOrigin;
             CountriesOfDestination_Chart.Tag = ChartDataType.CountriesOfDestination;
+            WorldMap_GeoMap.Tag = ChartDataType.WorldMap;
             Accountants_Chart.Tag = ChartDataType.Accountants;
             GrowthRates_Chart.Tag = ChartDataType.GrowthRates;
             SalesVsExpenses_Chart.Tag = ChartDataType.TotalExpensesVsSales;
@@ -812,7 +814,9 @@ namespace Sales_Tracker
             int maxChartWidth = (availableWidth - (2 * spacing)) / 3;  // 3 charts with 2 spaces between
             int maxChartHeight = (int)(maxChartWidth * 2.0 / 3.0);  // Height = 2/3 of width
 
-            List<Control> charts = _tabControls[tabKey].OfType<Control>().Where(c => c.Visible && (c is CartesianChart || c is PieChart)).ToList();
+            List<Control> charts = _tabControls[tabKey].OfType<Control>()
+                .Where(c => c.Visible && (c is CartesianChart || c is PieChart || c is GeoMap))
+                .ToList();
 
             switch (tabKey)
             {
@@ -833,19 +837,37 @@ namespace Sales_Tracker
                     break;
 
                 case AnalyticsTab.Geographic:
-                    // 3 charts in a row
-                    if (charts.Count >= 3)
+                    if (charts.Count >= 4)
                     {
-                        Size chartSize = new(maxChartWidth, maxChartHeight);
+                        Control geoMap = charts[0];
 
-                        // Center the row horizontally
-                        int totalRowWidth = maxChartWidth * 3 + spacing * 2;
-                        int startX = (ClientSize.Width - totalRowWidth) / 2;
+                        // Calculate small chart dimensions first
+                        int smallChartWidth = (availableWidth - (2 * spacing)) / 3;
+                        int smallChartHeight = (int)(smallChartWidth * 0.55);
 
-                        for (int i = 0; i < 3; i++)
+                        // Make GeoMap width match the total width of the small charts
+                        int totalSmallRowWidth = smallChartWidth * 3 + spacing * 2;
+                        int geoMapWidth = totalSmallRowWidth;  // Match the bottom row width
+                        int geoMapHeight = (int)(availableHeight * 0.6);  // 60% of available height
+
+                        SetChartPosition(geoMap, new Size(geoMapWidth, geoMapHeight),
+                            (ClientSize.Width - geoMapWidth) / 2, startY);
+
+                        // Smaller charts below in a row (skip the geomap)
+                        List<Control> pieCharts = charts.Skip(1).Take(3).ToList();
+
+                        if (pieCharts.Count == 3)
                         {
-                            int x = startX + (maxChartWidth + spacing) * i;
-                            SetChartPosition(charts[i], chartSize, x, startY);
+                            int smallChartsY = startY + geoMapHeight + spacing + 20;
+
+                            // Center the row of small charts to match GeoMap
+                            int smallChartsStartX = (ClientSize.Width - totalSmallRowWidth) / 2;
+
+                            for (int i = 0; i < pieCharts.Count; i++)
+                            {
+                                int x = smallChartsStartX + (smallChartWidth + spacing) * i;
+                                SetChartPosition(pieCharts[i], new Size(smallChartWidth, smallChartHeight), x, smallChartsY);
+                            }
                         }
                     }
                     break;
@@ -2064,7 +2086,8 @@ namespace Sales_Tracker
             ReturnFinancialImpact,
             ReturnsByCategory,
             ReturnsByProduct,
-            PurchaseVsSaleReturns
+            PurchaseVsSaleReturns,
+            WorldMap
         }
 
         public Chart CountriesOfOrigin_Chart { get; private set; }
@@ -2087,6 +2110,7 @@ namespace Sales_Tracker
         public Chart PurchaseDistribution_Chart { get; private set; }
         public Chart SaleTotals_Chart { get; private set; }
         public Chart SaleDistribution_Chart { get; private set; }
+        public GeoMap WorldMap_GeoMap { get; private set; }
 
         // Analytic chart methods
         public List<Control> GetMainControls()
@@ -2113,6 +2137,7 @@ namespace Sales_Tracker
                 CountriesOfOrigin_Chart,
                 CompaniesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
+                WorldMap_GeoMap,
                 Accountants_Chart,
                 SalesVsExpenses_Chart,
                 AverageTransactionValue_Chart,
@@ -2151,6 +2176,7 @@ namespace Sales_Tracker
             CountriesOfOrigin_Chart = ConstructAnalyticsChart("countriesOfOrigin_Chart", false);
             CompaniesOfOrigin_Chart = ConstructAnalyticsChart("companiesOfOrigin_Chart", false);
             CountriesOfDestination_Chart = ConstructAnalyticsChart("countriesOfDestination_Chart", false);
+            WorldMap_GeoMap = ConstructGeoMap("worldMap_GeoMap");
             Accountants_Chart = ConstructAnalyticsChart("accountants_Chart", false);
             SalesVsExpenses_Chart = ConstructAnalyticsChart("salesVsExpenses_Chart", true);
             AverageTransactionValue_Chart = ConstructAnalyticsChart("averageOrderValue_Chart", true);
@@ -2188,7 +2214,7 @@ namespace Sales_Tracker
             CreateAnalyticsTabControl();
             OrganizeChartsIntoTabs();
 
-            MouseClickChartManager.InitCharts(_analyticsControls.OfType<Chart>().ToArray<Chart>());
+            MouseClickChartManager.InitCharts(_analyticsControls.OfType<Chart>().ToArray());
         }
         private void CreateAnalyticsTabControl()
         {
@@ -2319,6 +2345,7 @@ namespace Sales_Tracker
 
             _tabControls[AnalyticsTab.Geographic].AddRange(
             [
+                WorldMap_GeoMap,
                 CountriesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
                 CompaniesOfOrigin_Chart
@@ -2362,6 +2389,7 @@ namespace Sales_Tracker
                 CountriesOfOrigin_Chart,
                 CompaniesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
+                WorldMap_GeoMap,
                 Accountants_Chart,
                 SalesVsExpenses_Chart,
                 AverageTransactionValue_Chart,
@@ -2400,6 +2428,8 @@ namespace Sales_Tracker
                     break;
 
                 case AnalyticsTab.Geographic:
+                    LoadChart.LoadWorldMapChart(WorldMap_GeoMap);
+
                     LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart as PieChart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfOrigin_Chart, TranslatedChartTitles.CountriesOfOrigin);
 
@@ -2564,6 +2594,10 @@ namespace Sales_Tracker
                         SetProfitsChartTitle(profitsData.Total);
                         break;
 
+                    case AnalyticsTab.Geographic:
+                        LoadChart.LoadWorldMapChart(WorldMap_GeoMap);
+                        break;
+
                     case AnalyticsTab.Financial:
                         LoadOrRefreshMainCharts(true);
                         break;
@@ -2599,6 +2633,21 @@ namespace Sales_Tracker
                 LoadChartsForTab(_selectedTabKey);
                 _tabChartsLoaded[_selectedTabKey] = true;
             }
+        }
+        private GeoMap ConstructGeoMap(string name)
+        {
+            GeoMap geoMap = new()
+            {
+                Name = name,
+                Visible = false
+            };
+
+            // Enable double buffering
+            typeof(Control).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.SetValue(geoMap, true, null);
+
+            Controls.Add(geoMap);
+            return geoMap;
         }
 
         // Misc.

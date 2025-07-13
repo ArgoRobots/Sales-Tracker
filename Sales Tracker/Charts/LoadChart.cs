@@ -1,7 +1,9 @@
 ﻿using Guna.UI2.WinForms;
 using LiveChartsCore;
+using LiveChartsCore.Geo;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using OfficeOpenXml.Drawing.Chart;
@@ -881,6 +883,87 @@ namespace Sales_Tracker.Charts
             ProcessPieChartData(countryCounts, grouping, dataset, exportToExcel, filePath, chartTitle, countries, label, canUpdateChart, chart);
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
+        }
+        public static ChartData LoadWorldMapChart(GeoMap geoMap, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
+        {
+            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(geoMap.Name);
+
+            Guna2DataGridView[] dataGridViews = [
+                MainMenu_Form.Instance.Sale_DataGridView,
+                MainMenu_Form.Instance.Purchase_DataGridView
+            ];
+
+            bool hasData = DataGridViewManager.HasVisibleRows(dataGridViews);
+
+            if (!LabelManager.ManageNoDataLabelOnControl(hasData, geoMap))
+            {
+                geoMap.Series = [];
+                return ChartData.Empty;
+            }
+
+            if (!exportToExcel && canUpdateChart)
+            {
+                ConfigureGeoMap(geoMap);
+            }
+
+            // Collect country data from both purchases and sales
+            Dictionary<string, double> countryData = [];
+
+            // Process purchase data (country of origin)
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Purchase_DataGridView.Rows)
+            {
+                if (!IsRowValid(row)) { continue; }
+
+                string country = GetCountryFromRow(row);
+                if (string.IsNullOrEmpty(country) || country == ReadOnlyVariables.EmptyCell) { continue; }
+
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
+
+                if (countryData.TryGetValue(country, out double existing))
+                {
+                    countryData[country] = existing + total;
+                }
+                else
+                {
+                    countryData[country] = total;
+                }
+            }
+
+            // Process sales data (country of destination)
+            foreach (DataGridViewRow row in MainMenu_Form.Instance.Sale_DataGridView.Rows)
+            {
+                if (!IsRowValid(row)) { continue; }
+
+                string country = GetCountryFromRow(row);
+                if (string.IsNullOrEmpty(country) || country == ReadOnlyVariables.EmptyCell) { continue; }
+
+                if (!TryGetValue(row.Cells[ReadOnlyVariables.Total_column], out double total)) { continue; }
+
+                if (countryData.TryGetValue(country, out double existing))
+                {
+                    countryData[country] = existing + total;
+                }
+                else
+                {
+                    countryData[country] = total;
+                }
+            }
+
+            if (exportToExcel && !string.IsNullOrEmpty(filePath))
+            {
+                string chartTitle = TranslatedChartTitles.WorldMap;
+                string countries = LanguageManager.TranslateString("Countries");
+                string value = LanguageManager.TranslateString("Total Value");
+
+                ExcelSheetManager.ExportChartToExcel(countryData, filePath, eChartType.ColumnClustered, chartTitle, countries, value);
+            }
+            else if (canUpdateChart)
+            {
+                UpdateGeoMap(geoMap, countryData);
+            }
+
+            double totalValue = countryData.Values.Sum();
+            return new ChartData(totalValue, countryData);
         }
         public static ChartData LoadAccountantsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
@@ -2014,6 +2097,76 @@ namespace Sales_Tracker.Charts
         public static void ClearPieChart(PieChart chart)
         {
             chart.Series = [];
+        }
+
+        // GeoMap helper methods
+        private static string GetCountryFromRow(DataGridViewRow row)
+        {
+            string country = row.Cells[ReadOnlyVariables.Country_column].Value.ToString() ?? "";
+
+            if (country == ReadOnlyVariables.EmptyCell)
+            {
+                // Extract countries from the Tag for multi-item transactions
+                if (row.Tag is (List<string> items, TagData))
+                {
+                    foreach (string item in items)
+                    {
+                        string[] itemDetails = item.Split(',');
+                        if (itemDetails.Length > 2)
+                        {
+                            return itemDetails[2];  // Return first country found
+                        }
+                    }
+                }
+            }
+
+            return country;
+        }
+        private static void ConfigureGeoMap(GeoMap geoMap)
+        {
+            ChartColors.ApplyTheme(geoMap);
+
+            // Configure map properties
+            geoMap.MapProjection = MapProjection.Default;
+        }
+        private static void UpdateGeoMap(GeoMap geoMap, Dictionary<string, double> countryData)
+        {
+            if (countryData.Count == 0)
+            {
+                geoMap.Series = [];
+                return;
+            }
+
+            // Convert country names to proper codes and create weighted map lands
+            HeatLand[] mapLands = countryData
+                .Where(kvp => !string.IsNullOrEmpty(kvp.Key) && kvp.Key != ReadOnlyVariables.EmptyCell)
+                .Select(kvp => new HeatLand
+                {
+                    Name = Country.MapCountryNameToCode(kvp.Key),
+                    Value = (float)kvp.Value
+                })
+                .ToArray();
+
+            if (mapLands.Length == 0)
+            {
+                geoMap.Series = [];
+                return;
+            }
+
+            // Create heat land series
+            HeatLandSeries heatSeries = new()
+            {
+                Name = "Transaction Values",
+                Lands = mapLands,
+                HeatMap =
+                [
+                    new LiveChartsCore.Drawing.LvcColor(173, 216, 230),  // Light blue
+                    new LiveChartsCore.Drawing.LvcColor(100, 149, 237),  // Cornflower blue  
+                    new LiveChartsCore.Drawing.LvcColor(0, 0, 139)       // Dark blue
+                ]
+            };
+
+            geoMap.Series = [heatSeries];
         }
     }
 }
