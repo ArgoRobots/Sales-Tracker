@@ -1870,7 +1870,7 @@ namespace Sales_Tracker.Charts
 
             int saleReturns = ProcessRowsForCountData(
                 salesDataGridView.Rows,
-                "dummy", // Not used for counting
+                "dummy",  // Not used for counting
                 ReturnManager.IsTransactionReturned
             ).Values.Sum();
 
