@@ -2696,10 +2696,8 @@ namespace Sales_Tracker
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
                 Location = new Point(currentX, radioButtonY),
-                Checked = true,
                 Animated = true
             };
-            CombinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
 
             _combinedData_Label = new Label
             {
@@ -2726,7 +2724,6 @@ namespace Sales_Tracker
                 Location = new Point(currentX, radioButtonY),
                 Animated = true
             };
-            PurchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
 
             _purchasesOnly_Label = new Label
             {
@@ -2752,7 +2749,6 @@ namespace Sales_Tracker
                 Location = new Point(currentX, radioButtonY),
                 Animated = true
             };
-            SalesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
 
             _salesOnly_Label = new Label
             {
@@ -2793,6 +2789,11 @@ namespace Sales_Tracker
             ]);
 
             Controls.Add(WorldMapControls_Panel);
+            CombinedData_RadioButton.Checked = true;  // Check it after the control is added to fix a bug with Guna
+
+            SalesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            CombinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+            PurchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
         }
         private void WorldMapDataType_CheckedChanged(object sender, EventArgs e)
         {
