@@ -427,7 +427,6 @@ namespace Sales_Tracker.Charts
         public static ChartData LoadTotalsIntoChart(Guna2DataGridView dataGridView, CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name, visibleRows);
 
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
@@ -483,7 +482,6 @@ namespace Sales_Tracker.Charts
         public static ChartData LoadDistributionIntoChart(Guna2DataGridView dataGridView, PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
             int visibleRows = dataGridView.Rows.Cast<DataGridViewRow>().Count(r => r.Visible);
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name, visibleRows);
 
             bool hasData = DataGridViewManager.HasVisibleRows(dataGridView);
             string label = MainMenu_Form.Instance.Sale_DataGridView.Visible
@@ -598,8 +596,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartData LoadProfitsIntoChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -673,8 +669,6 @@ namespace Sales_Tracker.Charts
         // Statistics charts
         public static ChartData LoadCountriesOfOriginForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
@@ -744,8 +738,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartData LoadCompaniesOfOriginForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(purchasesDataGridView);
@@ -815,8 +807,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartData LoadCountriesOfDestinationForProductsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
             bool hasData = DataGridViewManager.HasVisibleRows(salesDataGridView);
@@ -886,8 +876,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartData LoadWorldMapChart(GeoMap geoMap, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.GeoMapDataType.Combined)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(geoMap.Name);
-
             Guna2DataGridView[] dataGridViews = dataType switch
             {
                 MainMenu_Form.GeoMapDataType.PurchasesOnly => [MainMenu_Form.Instance.Purchase_DataGridView],
@@ -982,8 +970,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartData LoadAccountantsIntoChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView[] dataGridViews = [
                 MainMenu_Form.Instance.Sale_DataGridView,
                 MainMenu_Form.Instance.Purchase_DataGridView
@@ -1043,8 +1029,6 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadSalesVsExpensesChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1107,8 +1091,6 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadAverageTransactionValueChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1181,8 +1163,6 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadTotalTransactionsChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1243,8 +1223,6 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadAverageShippingCostsChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, bool includeZeroShipping = false)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1327,8 +1305,6 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadGrowthRateChart(CartesianChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1477,8 +1453,6 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadReturnsOverTimeChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1560,8 +1534,6 @@ namespace Sales_Tracker.Charts
         }
         public static SalesExpensesChartData LoadReturnFinancialImpactChart(CartesianChart chart, bool isLineChart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1655,8 +1627,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartCountData LoadReturnReasonsChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1687,7 +1657,7 @@ namespace Sales_Tracker.Charts
                     if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
                     // Get return reason from TagData
-                    (DateTime? returnDate, string returnReason, string returnedBy) = ReturnManager.GetReturnInfo(row);
+                    (_, string returnReason, _) = ReturnManager.GetReturnInfo(row);
 
                     if (string.IsNullOrEmpty(returnReason))
                     {
@@ -1717,8 +1687,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartCountData LoadReturnsByCategoryChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1796,8 +1764,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartCountData LoadReturnsByProductChart(PieChart chart, PieChartGrouping grouping, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1875,8 +1841,6 @@ namespace Sales_Tracker.Charts
         }
         public static ChartCountData LoadPurchaseVsSaleReturnsChart(PieChart chart, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeChartOperation(chart.Name);
-
             Guna2DataGridView purchasesDataGridView = MainMenu_Form.Instance.Purchase_DataGridView;
             Guna2DataGridView salesDataGridView = MainMenu_Form.Instance.Sale_DataGridView;
 
@@ -1900,7 +1864,7 @@ namespace Sales_Tracker.Charts
             // Count returns
             int purchaseReturns = ProcessRowsForCountData(
                 purchasesDataGridView.Rows,
-                "dummy", // Not used for counting
+                "dummy",  // Not used for counting
                 ReturnManager.IsTransactionReturned
             ).Values.Sum();
 

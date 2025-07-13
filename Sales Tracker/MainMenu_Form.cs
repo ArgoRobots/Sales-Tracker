@@ -44,7 +44,6 @@ namespace Sales_Tracker
             IsProgramLoading = true;
             CurrencySymbol = Currency.GetSymbol();
 
-            InitializePerformanceMonitoring();
             CustomControls.ConstructControls();
             ConstructMainCharts();
             ConstructControlsForAnalytics();
@@ -68,10 +67,6 @@ namespace Sales_Tracker
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
             LoadingPanel.ShowBlankLoadingPanel(this);
-        }
-        private static void InitializePerformanceMonitoring()
-        {
-            ChartPerformanceMonitor.SetEnabled(Properties.Settings.Default.ShowDebugInfo);
         }
         private void ConstructMainCharts()
         {
@@ -196,7 +191,6 @@ namespace Sales_Tracker
         }
         public void LoadOrRefreshMainCharts(bool onlyLoadForLineCharts = false)
         {
-            using IDisposable timer = ChartPerformanceMonitor.TimeOperation("LoadMainCharts", Selected.ToString());
             bool isLine = LineChart_ToggleSwitch.Checked;
 
             // Load purchase charts
