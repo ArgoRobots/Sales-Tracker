@@ -74,7 +74,8 @@ namespace Sales_Tracker.Charts
                     CustomControls.RecentlyOpenedMenu,
                     CustomControls.HelpMenu,
                     CustomControls.ControlDropDown_Panel,
-                    RightClickGunaChartMenu.RightClickGunaChart_Panel
+                    RightClickGunaChartMenu.RightClickGunaChart_Panel,
+                    TextBoxManager.RightClickTextBox_Panel
                 ];
                 Control mainPanel = DateRange_Form.Instance?.Main_Panel;
                 if (mainPanel != null && MainMenu_Form.Instance.Controls.Contains(mainPanel))
