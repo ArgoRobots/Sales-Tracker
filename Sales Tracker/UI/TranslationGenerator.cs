@@ -53,6 +53,7 @@ namespace Sales_Tracker.UI
 
             // Add headers for the API request
             _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKey);
+            _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Region", "canadacentral");
         }
 
         /// <summary>

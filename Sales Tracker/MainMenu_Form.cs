@@ -2278,6 +2278,7 @@ namespace Sales_Tracker
 
             Guna2Button returnsButton = CreateTabButton("Returns", AnalyticsTab.Returns, Resources.Return);
             tabButtons.Add(returnsButton);
+
             // Position buttons
             byte buttonWidth = 200, buttonSpacing = 12, startX = 10;
 
@@ -2305,7 +2306,7 @@ namespace Sales_Tracker
         {
             Guna2Button button = new()
             {
-                Name = $"{tabKey}TabButton",
+                Name = $"{tabKey}Tab_Button",
                 Text = title,
                 Tag = tabKey,
                 Image = icon,
@@ -2829,12 +2830,11 @@ namespace Sales_Tracker
 
             if (sender is Guna2CustomRadioButton radioButton && radioButton.Checked)
             {
-                // Reload the world map with the selected data type
                 GeoMapDataType dataType = GetSelectedGeoMapDataType();
                 LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
             }
         }
-        public GeoMapDataType GetSelectedGeoMapDataType()
+        private GeoMapDataType GetSelectedGeoMapDataType()
         {
             if (PurchasesOnly_RadioButton.Checked)
             {
