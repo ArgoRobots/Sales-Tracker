@@ -124,11 +124,6 @@ namespace Sales_Tracker.Charts
                     LoadChart.LoadCountriesOfDestinationForProductsIntoChart(GetPieChart(MainMenu_Form.Instance.CountriesOfDestination_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
 
-                case MainMenu_Form.ChartDataType.WorldMap:
-                    MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.Instance.GetSelectedGeoMapDataType();
-                    LoadChart.LoadWorldMapChart(MainMenu_Form.Instance.WorldMap_GeoMap, true, directory, dataType: dataType);
-                    break;
-
                 case MainMenu_Form.ChartDataType.Accountants:
                     LoadChart.LoadAccountantsIntoChart(GetPieChart(MainMenu_Form.Instance.Accountants_Chart), PieChartGrouping.Unlimited, true, directory);
                     break;
@@ -281,17 +276,6 @@ namespace Sales_Tracker.Charts
                             string second = LanguageManager.TranslateString("# of items");
 
                             await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Pie, first, second);
-                        }
-                        break;
-
-                    case MainMenu_Form.ChartDataType.WorldMap:
-                        {
-                            ChartData chartData = LoadChart.LoadWorldMapChart(MainMenu_Form.Instance.WorldMap_GeoMap, canUpdateChart: false);
-                            string chartTitle = TranslatedChartTitles.WorldMap;
-                            string first = LanguageManager.TranslateString("Countries");
-                            string second = LanguageManager.TranslateString("Total Value");
-
-                            await GoogleSheetManager.ExportChartToGoogleSheetsAsync(chartData.Data, chartTitle, GoogleSheetManager.ChartType.Column, first, second);
                         }
                         break;
 

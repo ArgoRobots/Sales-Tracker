@@ -874,7 +874,7 @@ namespace Sales_Tracker.Charts
 
             return new ChartData(totalCount, SortAndGroupCountData(countryCounts, grouping).ToDictionary(kvp => kvp.Key, kvp => (double)kvp.Value));
         }
-        public static ChartData LoadWorldMapChart(GeoMap geoMap, bool exportToExcel = false, string filePath = null, bool canUpdateChart = true, MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.GeoMapDataType.Combined)
+        public static ChartData LoadWorldMapChart(GeoMap geoMap, MainMenu_Form.GeoMapDataType dataType = MainMenu_Form.GeoMapDataType.Combined)
         {
             Guna2DataGridView[] dataGridViews = dataType switch
             {
@@ -892,10 +892,7 @@ namespace Sales_Tracker.Charts
                 return ChartData.Empty;
             }
 
-            if (!exportToExcel && canUpdateChart)
-            {
-                ConfigureGeoMap(geoMap);
-            }
+            ConfigureGeoMap(geoMap);
 
             // Collect country data based on selected type
             Dictionary<string, double> countryData = [];
@@ -946,24 +943,7 @@ namespace Sales_Tracker.Charts
                 }
             }
 
-            if (exportToExcel && !string.IsNullOrEmpty(filePath))
-            {
-                string chartTitle = dataType switch
-                {
-                    MainMenu_Form.GeoMapDataType.PurchasesOnly => LanguageManager.TranslateString("Purchase Origins Map"),
-                    MainMenu_Form.GeoMapDataType.SalesOnly => LanguageManager.TranslateString("Sales Destinations Map"),
-                    MainMenu_Form.GeoMapDataType.Combined => LanguageManager.TranslateString("Global Transaction Map"),
-                    _ => LanguageManager.TranslateString("Global Transaction Map")
-                };
-                string countries = LanguageManager.TranslateString("Countries");
-                string value = LanguageManager.TranslateString("Total Value");
-
-                ExcelSheetManager.ExportChartToExcel(countryData, filePath, eChartType.ColumnClustered, chartTitle, countries, value);
-            }
-            else if (canUpdateChart)
-            {
-                UpdateGeoMap(geoMap, countryData);
-            }
+            UpdateGeoMap(geoMap, countryData);
 
             double totalValue = countryData.Values.Sum();
             return new ChartData(totalValue, countryData);

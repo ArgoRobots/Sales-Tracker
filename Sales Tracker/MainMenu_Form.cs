@@ -2256,6 +2256,7 @@ namespace Sales_Tracker
                 BorderRadius = 8,
                 Anchor = AnchorStyles.Top
             };
+            tabButtonsPanel.Click += (s, e) => { CloseAllPanels(null, null); };
 
             // Create tab buttons
             List<Guna2Button> tabButtons = [];
@@ -2454,7 +2455,7 @@ namespace Sales_Tracker
 
                 case AnalyticsTab.Geographic:
                     GeoMapDataType dataType = GetSelectedGeoMapDataType();
-                    LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType: dataType);
+                    LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
 
                     LoadChart.LoadCountriesOfOriginForProductsIntoChart(CountriesOfOrigin_Chart as PieChart, PieChartGrouping.Top8);
                     SetChartTitle(CountriesOfOrigin_Chart, TranslatedChartTitles.CountriesOfOrigin);
@@ -2695,6 +2696,7 @@ namespace Sales_Tracker
                 ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
+            _worldMapDataType_Label.Click += (s, e) => { CloseAllPanels(null, null); };
             LanguageManager.UpdateLanguageForControl(_worldMapDataType_Label);
 
             int mainLabelY = (panelHeight - _worldMapDataType_Label.PreferredHeight) / 2;
@@ -2722,7 +2724,11 @@ namespace Sales_Tracker
                 ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
-            _combinedData_Label.Click += (s, e) => CombinedData_RadioButton.Checked = true;
+            _combinedData_Label.Click += (s, e) =>
+            {
+                CombinedData_RadioButton.Checked = true;
+                CloseAllPanels(null, null);
+            };
             LanguageManager.UpdateLanguageForControl(_combinedData_Label);
 
             int labelY = (panelHeight - _combinedData_Label.PreferredHeight) / 2;
@@ -2748,7 +2754,11 @@ namespace Sales_Tracker
                 ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
-            _purchasesOnly_Label.Click += (s, e) => PurchasesOnly_RadioButton.Checked = true;
+            _purchasesOnly_Label.Click += (s, e) =>
+            {
+                PurchasesOnly_RadioButton.Checked = true;
+                CloseAllPanels(null, null);
+            };
             LanguageManager.UpdateLanguageForControl(_purchasesOnly_Label);
 
             _purchasesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
@@ -2773,7 +2783,11 @@ namespace Sales_Tracker
                 ForeColor = CustomColors.Text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignLeft
             };
-            _salesOnly_Label.Click += (s, e) => SalesOnly_RadioButton.Checked = true;
+            _salesOnly_Label.Click += (s, e) =>
+            {
+                SalesOnly_RadioButton.Checked = true;
+                CloseAllPanels(null, null);
+            };
             LanguageManager.UpdateLanguageForControl(_salesOnly_Label);
 
             _salesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
@@ -2789,6 +2803,7 @@ namespace Sales_Tracker
                 BorderThickness = 0,
                 Visible = false
             };
+            WorldMapControls_Panel.Click += (s, e) => { CloseAllPanels(null, null); };
 
             // Add all controls to panel
             WorldMapControls_Panel.Controls.AddRange([
@@ -2810,11 +2825,13 @@ namespace Sales_Tracker
         }
         private void WorldMapDataType_CheckedChanged(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             if (sender is Guna2CustomRadioButton radioButton && radioButton.Checked)
             {
                 // Reload the world map with the selected data type
                 GeoMapDataType dataType = GetSelectedGeoMapDataType();
-                LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType: dataType);
+                LoadChart.LoadWorldMapChart(WorldMap_GeoMap, dataType);
             }
         }
         public GeoMapDataType GetSelectedGeoMapDataType()
