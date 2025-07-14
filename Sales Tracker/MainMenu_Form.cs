@@ -2320,6 +2320,8 @@ namespace Sales_Tracker
         }
         private void TabButton_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
+
             if (sender is Guna2Button clickedButton && clickedButton.Tag is AnalyticsTab tabKey)
             {
                 SelectTabButton(tabKey);
