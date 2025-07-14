@@ -24,7 +24,7 @@ namespace Sales_Tracker
         // Properties
         private static MainMenu_Form _instance;
         public static readonly string _noteTextKey = "note", _rowTagKey = "RowTag", _itemsKey = "Items", _purchaseDataKey = "PurchaseData", _tagKey = "Tag";
-        private static readonly byte _chartTop = 219;
+        private static readonly short _chartTop = 310;
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -94,7 +94,6 @@ namespace Sales_Tracker
                 CartesianChart cartesianChart = new()
                 {
                     Name = name,
-                    Top = _chartTop,
                     Title = CreateChartTitle("")
                 };
 
@@ -105,7 +104,6 @@ namespace Sales_Tracker
                 PieChart pieChart = new()
                 {
                     Name = name,
-                    Top = _chartTop,
                     Title = CreateChartTitle("")
                 };
 
@@ -804,10 +802,11 @@ namespace Sales_Tracker
                 // Position the currently visible charts
                 Control totalsChart = Sale_DataGridView.Visible ? SaleTotals_Chart : PurchaseTotals_Chart;
                 Control distributionChart = Sale_DataGridView.Visible ? SaleDistribution_Chart : PurchaseDistribution_Chart;
+                int topChart = 220;
 
-                SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, totalsChart.Top);
-                SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, distributionChart.Top);
-                SetChartPosition(Profits_Chart, new Size(chartWidth, chartHeight), rightX, Profits_Chart.Top);
+                SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, topChart);
+                SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, topChart);
+                SetChartPosition(Profits_Chart, new Size(chartWidth, chartHeight), rightX, topChart);
 
                 // Position DataGridView
                 SelectedDataGridView.Size = new Size(ClientSize.Width - 65,
@@ -818,15 +817,13 @@ namespace Sales_Tracker
         }
         private void LayoutChartsForTab(AnalyticsTab tabKey, int spacing)
         {
-            int startY = _analyticsTabButtons_Panel.Bottom + 10;
-            int availableHeight = ClientSize.Height - startY - 50;
+            int startY = _chartTop;
+            int availableHeight = ClientSize.Height - startY - 10;
             int availableWidth = ClientSize.Width - 80;
             const int maxChartWidth = 800;
             const int maxChartHeight = 550;
 
-            List<Control> charts = _tabControls[tabKey].OfType<Control>()
-                .Where(c => c.Visible && (c is CartesianChart || c is PieChart || c is GeoMap))
-                .ToList();
+            List<Control> charts = _tabControls[tabKey];
 
             switch (tabKey)
             {
@@ -848,14 +845,16 @@ namespace Sales_Tracker
 
                 case AnalyticsTab.Geographic:
                     // Position controls at the top
-                    WorldMapControls_Panel.Location = new Point((ClientSize.Width - WorldMapControls_Panel.Width) / 2, startY);
+                    WorldMapControls_Panel.Location = new Point((
+                        ClientSize.Width - WorldMapControls_Panel.Width) / 2,
+                        _analyticsTabButtons_Panel.Bottom + 10);
 
                     if (charts.Count >= 4)
                     {
                         Control geoMap = charts[0];
 
-                        // GeoMap takes top 60% of space (no max constraint for map)
-                        int geoMapY = startY + WorldMapControls_Panel.Height + 10;
+                        // GeoMap takes top 60% of space
+                        int geoMapY = WorldMapControls_Panel.Bottom + 10;
                         int geoMapHeight = (int)((availableHeight - WorldMapControls_Panel.Height - 20) * 0.6);
                         int geoMapWidth = availableWidth;
 

@@ -39,7 +39,7 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    TextSize = 20,
+                    TextSize = 21,
                     LabelsPaint = new SolidColorPaint(textColor)
                 }
             ];
@@ -48,7 +48,7 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    TextSize = 20,
+                    TextSize = 21,
                     SeparatorsPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f },
                     LabelsPaint = new SolidColorPaint(textColor),
                     TicksPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f }
@@ -57,7 +57,7 @@ namespace Sales_Tracker.Charts
 
             chart.LegendPosition = LegendPosition.Top;
             chart.LegendTextPaint = new SolidColorPaint(textColor);
-            chart.LegendTextSize = 20;
+            chart.LegendTextSize = 21;
             chart.ZoomMode = ZoomAndPanMode.Both;
         }
         public static void ConfigureChartForLine(CartesianChart chart)
@@ -69,7 +69,7 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    TextSize = 20,
+                    TextSize = 21,
                     LabelsPaint = new SolidColorPaint(textColor)
                 }
             ];
@@ -78,7 +78,7 @@ namespace Sales_Tracker.Charts
             [
                 new Axis
                 {
-                    TextSize = 20,
+                    TextSize = 21,
                     SeparatorsPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f },
                     LabelsPaint = new SolidColorPaint(textColor),
                     TicksPaint = new SolidColorPaint(textColor) { StrokeThickness = 1f }
@@ -87,7 +87,7 @@ namespace Sales_Tracker.Charts
 
             chart.LegendPosition = LegendPosition.Top;
             chart.LegendTextPaint = new SolidColorPaint(textColor);
-            chart.LegendTextSize = 20;
+            chart.LegendTextSize = 21;
             chart.ZoomMode = ZoomAndPanMode.Both;
         }
         public static void ConfigureChartForPie(PieChart chart)
@@ -98,7 +98,7 @@ namespace Sales_Tracker.Charts
 
             chart.LegendPosition = GetLegendPosition(chart);
             chart.LegendTextPaint = new SolidColorPaint(textColor);
-            chart.LegendTextSize = 20;
+            chart.LegendTextSize = 21;
         }
         public static LegendPosition GetLegendPosition(PieChart chart)
         {
