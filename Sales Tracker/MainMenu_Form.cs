@@ -2402,6 +2402,7 @@ namespace Sales_Tracker
                 CompaniesOfOrigin_Chart,
                 CountriesOfDestination_Chart,
                 WorldMap_GeoMap,
+                WorldMapControls_Panel,
                 Accountants_Chart,
                 SalesVsExpenses_Chart,
                 AverageTransactionValue_Chart,
