@@ -570,6 +570,7 @@
             LineChart_Label.Size = new Size(114, 31);
             LineChart_Label.TabIndex = 16;
             LineChart_Label.Text = "Line chart";
+            LineChart_Label.Click += CloseAllPanels;
             // 
             // LineChart_ToggleSwitch
             // 
@@ -659,6 +660,7 @@
             ShowingResultsFor_Label.TabIndex = 56;
             ShowingResultsFor_Label.Text = "Showing results for";
             ShowingResultsFor_Label.TextAlign = ContentAlignment.MiddleCenter;
+            ShowingResultsFor_Label.Click += CloseAllPanels;
             // 
             // TimeRange_Button
             // 
