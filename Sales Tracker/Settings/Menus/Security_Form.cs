@@ -191,11 +191,11 @@ namespace Sales_Tracker.Settings.Menus
             string password = PasswordManager.Password;
             if (password == null)
             {
-                AddPassword_Button.Text = "Add password protection";
+                AddPassword_Button.Text = LanguageManager.TranslateString("Add password protection");
             }
             else
             {
-                AddPassword_Button.Text = "Manage password";
+                AddPassword_Button.Text = LanguageManager.TranslateString("Manage password");
                 Controls.Add(EnableWindowsHello_Button);
             }
         }

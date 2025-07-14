@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using LiveChartsCore.SkiaSharpView.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -37,7 +36,6 @@ namespace Sales_Tracker.UI
         // Constants
         private static readonly string _placeholder_text = "Placeholder",
             _item_text = "Item",
-            _title_text = "Title",
             _column_text = "Column",
             _before_text = "before",
             _link_text = "link",
@@ -83,7 +81,7 @@ namespace Sales_Tracker.UI
                     typeof(Tutorial_Form),
 
                     // Passwords
-                    typeof(ImportSpreadsheet_Form),
+                    typeof(AddPassword_Form),
                     typeof(EnterPassword_Form),
                     typeof(PasswordManager_Form),
 
@@ -492,6 +490,7 @@ namespace Sales_Tracker.UI
                 "# of returns",
                 "# of transactions",
                 "Accountants",
+                "Add password protection",
                 "AI search in progress...",
                 "Argo Sales tracker receipts for",
                 "Average purchase value",
@@ -517,6 +516,7 @@ namespace Sales_Tracker.UI
                 "Invalid licese",
                 "License verified successfully!",
                 "Light",
+                "Manage password",
                 "Move category to purchases",
                 "Move category to sales",
                 "No data",
@@ -538,7 +538,6 @@ namespace Sales_Tracker.UI
                 "Search for purchases",
                 "Search for sales",
                 "Showing results for",
-                "Total expenses",
                 "Total sales",
                 "Transaction Type",
                 "Verify license",
@@ -643,10 +642,6 @@ namespace Sales_Tracker.UI
                             AddTextToTranslate(textsToTranslate, itemKey, guna2ComboBox.Items[i].ToString());
                         }
                     }
-                    break;
-
-                case Chart chart:
-                    AddTextToTranslate(textsToTranslate, $"{controlKey}_{_title_text}", chart.Title.ToString());
                     break;
 
                 case Guna2DataGridView gunaDataGridView:

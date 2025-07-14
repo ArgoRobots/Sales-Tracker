@@ -317,6 +317,7 @@ namespace Sales_Tracker
             PurchaseDistribution_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             SaleTotals_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             SaleDistribution_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            Profits_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
 
             CountriesOfOrigin_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             CountriesOfDestination_Chart.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;

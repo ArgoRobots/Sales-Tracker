@@ -1,5 +1,4 @@
 ﻿using Guna.UI2.WinForms;
-using LiveChartsCore.SkiaSharpView.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
@@ -26,7 +25,6 @@ namespace Sales_Tracker.UI
         private static readonly string
             _placeholder_text = "Placeholder",
             _item_text = "Item",
-            _title_text = "Title",
             _column_text = "Column",
             _before_text = "before",
             _link_text = "link",
@@ -162,7 +160,7 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Updates the application's language translation by downloading and merging the language JSON
+        /// Updates the application's language translation by downloading and merging the language JSON.
         /// </summary>
         /// <returns>True if translation was successful, false if failed (e.g., no internet)</returns>
         public static async Task<bool> UpdateApplicationLanguage(string targetLanguageName, CancellationToken cancellationToken = default)
@@ -266,6 +264,8 @@ namespace Sales_Tracker.UI
             {
                 MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             }
+
+            MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
         }
 
         /// <summary>
@@ -337,11 +337,6 @@ namespace Sales_Tracker.UI
                             guna2ComboBox.SelectedIndex = selectedIndex;
                         }
                     }
-                    break;
-
-                case Chart chart:
-                    string newTitle = GetCachedTranslation(targetLanguageAbbreviation, $"{controlKey}_{_title_text}", chart.Title.ToString());
-                    MainMenu_Form.SetChartTitle(chart, newTitle);
                     break;
 
                 case Guna2DataGridView gunaDataGridView:
