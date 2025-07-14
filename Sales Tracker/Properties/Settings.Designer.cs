@@ -226,5 +226,17 @@ namespace Sales_Tracker.Properties {
                 this["IncludeFreeShipping"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AnimateCharts {
+            get {
+                return ((bool)(this["AnimateCharts"]));
+            }
+            set {
+                this["AnimateCharts"] = value;
+            }
+        }
     }
 }

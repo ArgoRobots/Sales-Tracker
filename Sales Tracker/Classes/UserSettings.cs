@@ -61,6 +61,15 @@ namespace Sales_Tracker.Classes
                 }
             }
 
+            // Handle animate charts
+            if (settings.AnimateCharts != form.AnimateCharts_CheckBox.Checked)
+            {
+                UpdateSetting("Animate charts", settings.AnimateCharts, form.AnimateCharts_CheckBox.Checked,
+                    value => settings.AnimateCharts = value);
+
+                MainMenu_Form.Instance.AnimateCharts();
+            }
+
             // Handle receipt column visibility
             if (settings.ShowHasReceiptColumn != form.ShowHasReceiptColumn_CheckBox.Checked)
             {

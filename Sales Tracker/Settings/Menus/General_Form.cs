@@ -217,6 +217,7 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_CheckBox.Checked = Properties.Settings.Default.PurchaseReceipts;
             SalesReceipts_CheckBox.Checked = Properties.Settings.Default.SaleReceipts;
             AnimateButtons_CheckBox.Checked = Properties.Settings.Default.AnimateButtons;
+            AnimateCharts_CheckBox.Checked = Properties.Settings.Default.AnimateCharts;
             ShowHasReceiptColumn_CheckBox.Checked = Properties.Settings.Default.ShowHasReceiptColumn;
             EnableAISearch_CheckBox.Checked = Properties.Settings.Default.AISearchEnabled;
         }

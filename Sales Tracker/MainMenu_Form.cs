@@ -61,6 +61,7 @@ namespace Sales_Tracker
             InitChartTags();
             AddEventHandlersToTextBoxes();
             AnimateButtons();
+            AnimateCharts();
             InitializeAISearch();
             RemoveUpgradeButtonIfFullVersion();
             UpdateMainMenuFormText();
@@ -390,6 +391,24 @@ namespace Sales_Tracker
                TimeRange_Button,
             ];
             CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
+        }
+        public void AnimateCharts()
+        {
+            bool enableAnimations = Properties.Settings.Default.AnimateCharts;
+
+            // Apply to all charts
+            foreach (Control chart in GetAllCharts())
+            {
+                switch (chart)
+                {
+                    case CartesianChart cartesianChart:
+                        cartesianChart.EasingFunction = enableAnimations ? LiveChartsCore.EasingFunctions.QuadraticOut : null;
+                        break;
+                    case PieChart pieChart:
+                        pieChart.EasingFunction = enableAnimations ? LiveChartsCore.EasingFunctions.QuadraticOut : null;
+                        break;
+                }
+            }
         }
         private static void InitializeAISearch()
         {
@@ -901,7 +920,7 @@ namespace Sales_Tracker
                     if (charts.Count >= 2)
                     {
                         int chartWidth = Math.Min(maxChartWidth, (availableWidth - spacing) / 2);
-                        int chartHeight = Math.Min(maxChartHeight, availableHeight - 50); // Leave space for controls
+                        int chartHeight = Math.Min(maxChartHeight, availableHeight - 50);  // Leave space for controls
 
                         int startX = (ClientSize.Width - (chartWidth * 2 + spacing)) / 2;
 
