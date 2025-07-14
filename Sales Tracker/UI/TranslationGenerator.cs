@@ -8,15 +8,19 @@ using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.Startup;
 using Sales_Tracker.Startup.Menus;
+using System.Globalization;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Sales_Tracker.UI
 {
     /// <summary>
     /// Utility class for generating translation JSON files for all application forms and controls.
     /// This class is intended for admin use only and should not be included in the production build.
+    /// Now features fully automated string collection - no manual maintenance required!
     /// </summary>
-    public static class TranslationGenerator
+    public static partial class TranslationGenerator
     {
         // API Translation properties
         private static readonly HttpClient _httpClient = new();
@@ -42,6 +46,12 @@ namespace Sales_Tracker.UI
             _after_text = "after",
             _full_text = "full";
 
+        [GeneratedRegex(@"\{[^}]+\}")]
+        private static partial Regex InterpolationPattern();
+
+        [GeneratedRegex(@"[^\w]")]
+        private static partial Regex NonWordCharacters();
+
         /// <summary>
         /// Initialize the HTTP client with API credentials.
         /// </summary>
@@ -57,6 +67,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Generates translation JSON files for all supported languages based on the current application's text.
         /// Shows a progress dialog with progress tracking.
+        /// Features fully automated string collection from source code.
         /// </summary>
         public static async Task GenerateAllLanguageTranslationFiles()
         {
@@ -146,15 +157,37 @@ namespace Sales_Tracker.UI
 
                 // Collect all texts to translate (English source)
                 progressForm.UpdateLanguage("English", 0);
-                progressForm.UpdateTranslationProgress(0, "Collecting source texts...");
+                progressForm.UpdateTranslationProgress(0, "Collecting UI control texts...");
 
+                // Collect UI control texts
                 Dictionary<string, string> sourceTexts = CollectTextsToTranslate(controlsToTranslate);
 
-                Dictionary<string, string> singleStrings = CollectStringsToTranslate();
-                foreach (KeyValuePair<string, string> kvp in singleStrings)
+                // AUTO-COLLECT: Get all TranslateString calls from source code
+                progressForm.UpdateTranslationProgress(sourceTexts.Count, "Scanning source code for TranslateString calls...");
+                Dictionary<string, string> translateStringCalls = CollectAllTranslateStringCalls();
+
+                // AUTO-COLLECT: Get all CustomMessageBox calls from source code
+                progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count, "Scanning source code for CustomMessageBox calls...");
+                Dictionary<string, string> messageBoxStrings = CollectAllCustomMessageBoxCalls();
+
+                // Merge all collections
+                foreach (KeyValuePair<string, string> kvp in translateStringCalls)
                 {
-                    sourceTexts[kvp.Key] = kvp.Value;
+                    if (!sourceTexts.ContainsKey(kvp.Key))
+                    {
+                        sourceTexts[kvp.Key] = kvp.Value;
+                    }
                 }
+
+                foreach (KeyValuePair<string, string> kvp in messageBoxStrings)
+                {
+                    if (!sourceTexts.ContainsKey(kvp.Key))
+                    {
+                        sourceTexts[kvp.Key] = kvp.Value;
+                    }
+                }
+
+                Log.Write(1, $"Total texts collected: {sourceTexts.Count} ({translateStringCalls.Count} from TranslateString calls, {messageBoxStrings.Count} from CustomMessageBox calls)");
 
                 // Pre-filter and optimize texts
                 sourceTexts = FilterAndOptimizeTexts(sourceTexts);
@@ -210,7 +243,7 @@ namespace Sales_Tracker.UI
                 }
 
                 progressForm.CompleteProgress();
-                Log.Write(1, "Translation generation complete");
+                Log.Write(1, "Translation generation complete - fully automated!");
             }
             catch (OperationCanceledException)
             {
@@ -223,6 +256,8 @@ namespace Sales_Tracker.UI
                 progressForm.Close();
             }
         }
+
+        // API Translation Methods
 
         /// <summary>
         /// Pre-filters and optimizes texts to reduce API usage.
@@ -464,6 +499,8 @@ namespace Sales_Tracker.UI
             return results;
         }
 
+        // UI Control Text Collection
+
         /// <summary>
         /// Collects all translatable texts from the given controls.
         /// </summary>
@@ -474,122 +511,6 @@ namespace Sales_Tracker.UI
             foreach (Control control in controls)
             {
                 CollectTextsRecursively(control, textsToTranslate);
-            }
-
-            return textsToTranslate;
-        }
-
-        /// <summary>
-        /// Collects all translatable strings used by TranslateString() method.
-        /// These are standalone strings that need translation but aren't tied to specific UI controls.
-        /// </summary>
-        private static Dictionary<string, string> CollectStringsToTranslate()
-        {
-            string[] singleStrings = [
-                "# of items",
-                "# of returns",
-                "# of transactions",
-                "Accountants",
-                "Add password protection",
-                "AI search in progress...",
-                "Argo Sales tracker receipts for",
-                "Average purchase value",
-                "Average sale value",
-                "Categories",
-                "Chart data",
-                "Close",
-                "Companies",
-                "Countries",
-                "Dark",
-                "Date",
-                "Debug",
-                "Disable Windows hello",
-                "Enable windows hello",
-                "Error",
-                "Expenses",
-                "Expenses growth %",
-                "Export",
-                "General",
-                "Generate translations",
-                "generating translations",
-                "Invalid licese key",
-                "Invalid licese",
-                "License verified successfully!",
-                "Light",
-                "Manage password",
-                "Move category to purchases",
-                "Move category to sales",
-                "No data",
-                "No recently opened companies",
-                "No results",
-                "Press enter to begin AI search",
-                "Product manager",
-                "Products",
-                "Profits",
-                "Purchase Returns",
-                "Purchases",
-                "Reasons",
-                "Return value",
-                "Returns",
-                "Revenue",
-                "Revenue growth %",
-                "Sale Returns",
-                "Sales",
-                "Search for purchases",
-                "Search for sales",
-                "Showing results for",
-                "Total sales",
-                "Transaction Type",
-                "Verify license",
-
-                // Chart titles
-                "Average shipping costs",
-                "Average transaction value",
-                "Companies of origin for purchased products",
-                "Countries of destination for sold products",
-                "Countries of origin for purchased products",
-                "Distribution of expenses",
-                "Distribution of revenue",
-                "Expenses and revenue growth rates",
-                "Financial Impact of Returns",
-                "Purchase vs Sale Returns",
-                "Return Reasons Distribution",
-                "Returns by Category",
-                "Returns by Product",
-                "Returns Over Time",
-                "Total expenses",
-                "Total expenses vs. total sales",
-                "Total profits",
-                "Total revenue",
-                "Total transactions",
-                "Transactions managed by accountants",
-
-                // Tooltips
-                "File",
-                "Help",
-                "Save",
-                "Upgrade to full version",
-
-                // ConfigureCompany_Form
-                "Company name cannot be empty",
-                "Company name contains invalid characters",
-                "Directory cannot be empty",
-                "Directory contains invalid characters",
-                "Directory does not exist",
-                "Directory must contain a backslash (\\)",
-
-                // ModifyRow_Form
-                "Accountant already exists",
-                "Category already exists",
-                "Company already exists"
-            ];
-
-            Dictionary<string, string> textsToTranslate = [];
-
-            foreach (string str in singleStrings)
-            {
-                string key = LanguageManager.GetStringKey(str);
-                textsToTranslate[key] = str;
             }
 
             return textsToTranslate;
@@ -698,6 +619,314 @@ namespace Sales_Tracker.UI
                 textsToTranslate[key] = text;
             }
         }
+
+        // Automated Source Code Scanning
+
+        /// <summary>
+        /// Automatically scans source files for LanguageManager.TranslateString calls and extracts string literals.
+        /// This completely replaces the need for manual string collection.
+        /// </summary>
+        private static Dictionary<string, string> CollectAllTranslateStringCalls()
+        {
+            Dictionary<string, string> collectedStrings = [];
+
+            try
+            {
+                string projectDirectory = FindProjectDirectory();
+
+                if (projectDirectory == null)
+                {
+                    Log.Write(1, "Could not find source directory for TranslateString collection");
+                    return collectedStrings;
+                }
+
+                // Search all .cs files for LanguageManager.TranslateString calls
+                string[] csFiles = Directory.GetFiles(projectDirectory, "*.cs", SearchOption.AllDirectories);
+
+                foreach (string file in csFiles)
+                {
+                    if (ShouldSkipFile(file)) continue;
+
+                    string content = File.ReadAllText(file);
+                    ExtractTranslateStringCalls(content, collectedStrings, Path.GetFileName(file));
+                }
+
+                Log.Write(1, $"Auto-collected {collectedStrings.Count} TranslateString calls from source code");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(1, $"Error collecting TranslateString calls: {ex.Message}");
+            }
+
+            return collectedStrings;
+        }
+
+        /// <summary>
+        /// Automatically scans source files for CustomMessageBox.Show calls and extracts title/message strings.
+        /// </summary>
+        private static Dictionary<string, string> CollectAllCustomMessageBoxCalls()
+        {
+            Dictionary<string, string> messageBoxStrings = [];
+
+            try
+            {
+                string projectDirectory = FindProjectDirectory();
+
+                if (projectDirectory == null)
+                {
+                    Log.Write(1, "Could not find source directory for CustomMessageBox collection");
+                    return messageBoxStrings;
+                }
+
+                // Search all .cs files for CustomMessageBox.Show calls
+                string[] csFiles = Directory.GetFiles(projectDirectory, "*.cs", SearchOption.AllDirectories);
+
+                foreach (string file in csFiles)
+                {
+                    if (ShouldSkipFile(file)) continue;
+
+                    string content = File.ReadAllText(file);
+                    ExtractCustomMessageBoxCalls(content, messageBoxStrings, Path.GetFileName(file));
+                }
+
+                Log.Write(1, $"Auto-collected {messageBoxStrings.Count} CustomMessageBox calls from source code");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(1, $"Error collecting CustomMessageBox calls: {ex.Message}");
+            }
+
+            return messageBoxStrings;
+        }
+
+        /// <summary>
+        /// Finds the project directory containing source files
+        /// </summary>
+        private static string? FindProjectDirectory()
+        {
+            string currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            // Go up directories to find source files
+            while (currentDirectory != null)
+            {
+                // Look for .cs files or .csproj files to identify project root
+                if (Directory.GetFiles(currentDirectory, "*.cs", SearchOption.TopDirectoryOnly).Length != 0 ||
+                    Directory.GetFiles(currentDirectory, "*.csproj", SearchOption.TopDirectoryOnly).Length != 0)
+                {
+                    return currentDirectory;
+                }
+
+                currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Determines if a file should be skipped during scanning
+        /// </summary>
+        private static bool ShouldSkipFile(string filePath)
+        {
+            return filePath.Contains("bin\\") ||
+                   filePath.Contains("obj\\") ||
+                   filePath.Contains("\\Debug\\") ||
+                   filePath.Contains("\\Release\\") ||
+                   Path.GetFileName(filePath) == "TranslationGenerator.cs";  // Skip self to avoid recursion
+        }
+
+        /// <summary>
+        /// Extracts LanguageManager.TranslateString call strings from source code content
+        /// </summary>
+        private static void ExtractTranslateStringCalls(string content, Dictionary<string, string> collectedStrings, string fileName)
+        {
+            // Pattern 1: Simple string literals
+            // LanguageManager.TranslateString("text")
+            string simplePattern = @"LanguageManager\.TranslateString\s*\(\s*""([^""]*)""\s*\)";
+            ExtractMatches(content, simplePattern, collectedStrings, fileName);
+
+            // Pattern 2: String interpolation (basic)
+            // LanguageManager.TranslateString($"text")
+            string interpolationPattern = @"LanguageManager\.TranslateString\s*\(\s*\$""([^""]*)""\s*\)";
+            ExtractMatches(content, interpolationPattern, collectedStrings, fileName, true);
+
+            // Pattern 3: Multi-line strings with @
+            // LanguageManager.TranslateString(@"text")
+            string verbatimPattern = @"LanguageManager\.TranslateString\s*\(\s*@""([^""]*)""\s*\)";
+            ExtractMatches(content, verbatimPattern, collectedStrings, fileName);
+
+            // Pattern 4: Constants or readonly strings assigned to TranslateString calls
+            ExtractVariableReferences(content, collectedStrings, fileName);
+        }
+
+        /// <summary>
+        /// Extracts CustomMessageBox.Show call strings from source code content
+        /// </summary>
+        private static void ExtractCustomMessageBoxCalls(string content, Dictionary<string, string> messageBoxStrings, string fileName)
+        {
+            // Pattern 1: Basic CustomMessageBox.Show calls
+            // CustomMessageBox.Show("title", "message", icon, buttons)
+            string pattern = @"CustomMessageBox\.Show\s*\(\s*""([^""]*)""\s*,\s*""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, pattern, messageBoxStrings, fileName);
+
+            // Pattern 2: String interpolation
+            // CustomMessageBox.Show("title", $"message", icon, buttons)
+            string interpolationPattern = @"CustomMessageBox\.Show\s*\(\s*""([^""]*)""\s*,\s*\$""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, interpolationPattern, messageBoxStrings, fileName, true);
+
+            // Pattern 3: Multi-line strings
+            string multiLinePattern = @"CustomMessageBox\.Show\s*\(\s*@""([^""]*)""\s*,\s*@""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, multiLinePattern, messageBoxStrings, fileName);
+        }
+
+        /// <summary>
+        /// Extracts matches from regex pattern and adds to collection
+        /// </summary>
+        private static void ExtractMatches(string content, string pattern, Dictionary<string, string> collectedStrings,
+            string fileName, bool isInterpolated = false)
+        {
+            MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 2)
+                {
+                    string text = match.Groups[1].Value.Trim();
+
+                    // Skip empty strings
+                    if (string.IsNullOrWhiteSpace(text)) continue;
+
+                    // Clean up interpolated strings (remove variable placeholders for key generation)
+                    string cleanText = isInterpolated ? CleanInterpolatedString(text) : text;
+
+                    // Generate key and add to collection
+                    string key = GetStringKey(cleanText);
+                    if (!collectedStrings.ContainsKey(key))
+                    {
+                        collectedStrings[key] = cleanText;
+                        Log.Write(2, $"Found TranslateString: '{cleanText}' in {fileName}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extracts CustomMessageBox matches and adds both title and message to collection
+        /// </summary>
+        private static void ExtractMessageBoxMatches(string content, string pattern, Dictionary<string, string> messageBoxStrings,
+            string fileName, bool isInterpolated = false)
+        {
+            MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 3)
+                {
+                    string title = match.Groups[1].Value.Trim();
+                    string message = match.Groups[2].Value.Trim();
+
+                    // Process title
+                    if (!string.IsNullOrWhiteSpace(title))
+                    {
+                        string cleanTitle = isInterpolated ? CleanInterpolatedString(title) : title;
+                        string titleKey = GetStringKey(cleanTitle);
+                        if (!messageBoxStrings.ContainsKey(titleKey))
+                        {
+                            messageBoxStrings[titleKey] = cleanTitle;
+                            Log.Write(2, $"Found CustomMessageBox title: '{cleanTitle}' in {fileName}");
+                        }
+                    }
+
+                    // Process message
+                    if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        string cleanMessage = isInterpolated ? CleanInterpolatedString(message) : message;
+                        string messageKey = GetStringKey(cleanMessage);
+                        if (!messageBoxStrings.ContainsKey(messageKey))
+                        {
+                            messageBoxStrings[messageKey] = cleanMessage;
+                            Log.Write(2, $"Found CustomMessageBox message: '{cleanMessage}' in {fileName}");
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cleans interpolated strings by removing variable placeholders
+        /// </summary>
+        private static string CleanInterpolatedString(string interpolatedText)
+        {
+            // Remove common interpolation patterns like {variable}, {property}, etc.
+            string cleaned = InterpolationPattern().Replace(interpolatedText, "[VAR]");
+
+            // Remove [VAR] placeholders for key generation (but keep original for display)
+            return cleaned.Replace("[VAR]", "").Trim();
+        }
+
+        /// <summary>
+        /// Attempts to find variable references passed to TranslateString
+        /// </summary>
+        private static void ExtractVariableReferences(string content, Dictionary<string, string> collectedStrings, string fileName)
+        {
+            // Look for patterns like:
+            // const string SomeText = "value";
+            // static readonly string SomeText = "value";
+            // string someVar = "value";
+            string variablePattern = @"(?:const\s+string|static\s+readonly\s+string|string)\s+(\w+)\s*=\s*""([^""]*)""\s*;";
+            MatchCollection variableMatches = Regex.Matches(content, variablePattern);
+
+            Dictionary<string, string> variables = [];
+            foreach (Match match in variableMatches)
+            {
+                if (match.Groups.Count >= 3)
+                {
+                    string varName = match.Groups[1].Value;
+                    string varValue = match.Groups[2].Value;
+                    variables[varName] = varValue;
+                }
+            }
+
+            // Now find TranslateString calls using these variables
+            foreach (KeyValuePair<string, string> variable in variables)
+            {
+                string usagePattern = $@"LanguageManager\.TranslateString\s*\(\s*{variable.Key}\s*\)";
+                if (Regex.IsMatch(content, usagePattern))
+                {
+                    string key = GetStringKey(variable.Value);
+                    if (!collectedStrings.ContainsKey(key))
+                    {
+                        collectedStrings[key] = variable.Value;
+                        Log.Write(2, $"Found TranslateString variable: '{variable.Value}' ({variable.Key}) in {fileName}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Helper method to get string key (same as LanguageManager.GetStringKey)
+        /// </summary>
+        private static string GetStringKey(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+
+            // Remove common formatting and clean up
+            string cleanText = text
+                .Replace("\\n", " ")
+                .Replace("\\r", "")
+                .Replace("\\t", " ")
+                .Trim();
+
+            // Capitalize first letter of each word
+            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+            string titleCaseText = textInfo.ToTitleCase(cleanText.ToLower());
+
+            // Remove spaces, punctuation, and special characters for key
+            string finalText = NonWordCharacters().Replace(titleCaseText, "");
+
+            return $"single_string_{finalText}";
+        }
+
+        // File Generation
 
         /// <summary>
         /// Generates a JSON file for a specific language with the collected texts.

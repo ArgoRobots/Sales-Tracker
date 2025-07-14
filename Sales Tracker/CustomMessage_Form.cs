@@ -50,9 +50,12 @@ namespace Sales_Tracker
         // Methods
         private void SetMessageBox(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
+            string translatedTitle = LanguageManager.TranslateString(title);
+            string translatedMessage = LanguageManager.TranslateString(message);
+
             // Set text
-            Text = title;
-            Message_Label.Text = message;
+            Text = translatedTitle;
+            Message_Label.Text = translatedMessage;
             Message_Label.LinkArea = new LinkArea(CustomMessageBoxVariables.LinkStart, CustomMessageBoxVariables.LinkLength);
             Message_Label.LinkColor = CustomColors.LinkColor;
             Message_Label.ActiveLinkColor = CustomColors.LinkColor;
