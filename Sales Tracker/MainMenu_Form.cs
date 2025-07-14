@@ -801,12 +801,9 @@ namespace Sales_Tracker
         {
             int startY = _analyticsTabButtons_Panel.Bottom + 10;
             int availableHeight = ClientSize.Height - startY - 50;
-
-            // Calculate chart dimensions
-            const int formMargins = 80;
-            int availableWidth = ClientSize.Width - formMargins;
-            int maxChartWidth = (availableWidth - (2 * spacing)) / 3;  // 3 charts with 2 spaces between
-            int maxChartHeight = (int)(maxChartWidth * 2.0 / 3.0);  // Height = 2/3 of width
+            int availableWidth = ClientSize.Width - 80;
+            const int maxChartWidth = 800;
+            const int maxChartHeight = 550;
 
             List<Control> charts = _tabControls[tabKey].OfType<Control>()
                 .Where(c => c.Visible && (c is CartesianChart || c is PieChart || c is GeoMap))
@@ -818,15 +815,15 @@ namespace Sales_Tracker
                     // 2x2 grid for overview
                     if (charts.Count >= 4)
                     {
-                        Size chartSize = new(maxChartWidth, maxChartHeight);
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - spacing) / 2);
+                        int chartHeight = Math.Min(maxChartHeight, (availableHeight - spacing) / 2);
 
-                        // Center the grid horizontally
-                        int startX = (ClientSize.Width - (maxChartWidth * 2 + spacing)) / 2;
+                        int startX = (ClientSize.Width - (chartWidth * 2 + spacing)) / 2;
 
-                        SetChartPosition(charts[0], chartSize, startX, startY);  // SalesVsExpenses
-                        SetChartPosition(charts[1], chartSize, startX + maxChartWidth + spacing, startY);  // Profits
-                        SetChartPosition(charts[2], chartSize, startX, startY + maxChartHeight + spacing);  // TotalTransactions
-                        SetChartPosition(charts[3], chartSize, startX + maxChartWidth + spacing, startY + maxChartHeight + spacing);  // AverageTransaction
+                        SetChartPosition(charts[0], new Size(chartWidth, chartHeight), startX, startY);
+                        SetChartPosition(charts[1], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY);
+                        SetChartPosition(charts[2], new Size(chartWidth, chartHeight), startX, startY + chartHeight + spacing);
+                        SetChartPosition(charts[3], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY + chartHeight + spacing);
                     }
                     break;
 
@@ -838,25 +835,22 @@ namespace Sales_Tracker
                     {
                         Control geoMap = charts[0];
 
-                        // Calculate small chart dimensions
-                        int smallChartWidth = (availableWidth - (2 * spacing)) / 3;
-                        int smallChartHeight = (int)(smallChartWidth * 0.6);
-
-                        // Position GeoMap below the controls
+                        // GeoMap takes top 60% of space (no max constraint for map)
                         int geoMapY = startY + WorldMapControls_Panel.Height + 10;
-                        int totalSmallRowWidth = smallChartWidth * 3 + spacing * 2;
-                        int geoMapWidth = totalSmallRowWidth;
-                        int geoMapHeight = (int)((availableHeight - WorldMapControls_Panel.Height - 40) * 0.6);
+                        int geoMapHeight = (int)((availableHeight - WorldMapControls_Panel.Height - 20) * 0.6);
+                        int geoMapWidth = availableWidth;
 
                         SetChartPosition(geoMap, new Size(geoMapWidth, geoMapHeight),
                             (ClientSize.Width - geoMapWidth) / 2, geoMapY);
 
-                        // Position pie charts below the GeoMap
+                        // Pie charts take remaining space with max constraints
                         List<Control> pieCharts = charts.Skip(1).Take(3).ToList();
                         if (pieCharts.Count == 3)
                         {
+                            int smallChartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
+                            int smallChartHeight = Math.Min(maxChartHeight, availableHeight - geoMapHeight - WorldMapControls_Panel.Height - 30);
                             int smallChartsY = geoMapY + geoMapHeight + spacing;
-                            int smallChartsStartX = (ClientSize.Width - totalSmallRowWidth) / 2;
+                            int smallChartsStartX = (ClientSize.Width - (smallChartWidth * 3 + spacing * 2)) / 2;
 
                             for (int i = 0; i < pieCharts.Count; i++)
                             {
@@ -868,19 +862,19 @@ namespace Sales_Tracker
                     break;
 
                 case AnalyticsTab.Financial:
-                    // 2x2 grid for main charts
+                    // 2x2 grid for financial
                     if (charts.Count >= 4)
                     {
-                        Size chartSize = new(maxChartWidth, maxChartHeight);
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - spacing) / 2);
+                        int chartHeight = Math.Min(maxChartHeight, (availableHeight - spacing) / 2);
 
-                        // Center the grid horizontally
-                        int startX = (ClientSize.Width - (maxChartWidth * 2 + spacing)) / 2;
+                        int startX = (ClientSize.Width - (chartWidth * 2 + spacing)) / 2;
 
                         for (int i = 0; i < 4; i++)
                         {
-                            int x = startX + (maxChartWidth + spacing) * (i % 2);
-                            int y = startY + (maxChartHeight + spacing) * (i / 2);
-                            SetChartPosition(charts[i], chartSize, x, y);
+                            int x = startX + (chartWidth + spacing) * (i % 2);
+                            int y = startY + (chartHeight + spacing) * (i / 2);
+                            SetChartPosition(charts[i], new Size(chartWidth, chartHeight), x, y);
                         }
                     }
                     break;
@@ -889,37 +883,35 @@ namespace Sales_Tracker
                     // 3 charts in a row
                     if (charts.Count >= 3)
                     {
-                        Size chartSize = new(maxChartWidth, maxChartHeight);
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
+                        int chartHeight = Math.Min(maxChartHeight, availableHeight);
 
-                        // Center the row horizontally
-                        int totalRowWidth = maxChartWidth * 3 + spacing * 2;
-                        int startX = (ClientSize.Width - totalRowWidth) / 2;
+                        int startX = (ClientSize.Width - (chartWidth * 3 + spacing * 2)) / 2;
 
                         for (int i = 0; i < 3; i++)
                         {
-                            int x = startX + (maxChartWidth + spacing) * i;
-                            SetChartPosition(charts[i], chartSize, x, startY);
+                            int x = startX + (chartWidth + spacing) * i;
+                            SetChartPosition(charts[i], new Size(chartWidth, chartHeight), x, startY);
                         }
                     }
                     break;
 
                 case AnalyticsTab.Operational:
-                    // 2 charts side by side + controls below
+                    // 2 charts side by side
                     if (charts.Count >= 2)
                     {
-                        Size chartSize = new(maxChartWidth, maxChartHeight);
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - spacing) / 2);
+                        int chartHeight = Math.Min(maxChartHeight, availableHeight - 50); // Leave space for controls
 
-                        // Center the charts horizontally
-                        int startX = (ClientSize.Width - (maxChartWidth * 2 + spacing)) / 2;
+                        int startX = (ClientSize.Width - (chartWidth * 2 + spacing)) / 2;
 
-                        SetChartPosition(charts[0], chartSize, startX, startY);  // Accountants
-                        SetChartPosition(charts[1], chartSize, startX + maxChartWidth + spacing, startY);  // Shipping
+                        SetChartPosition(charts[0], new Size(chartWidth, chartHeight), startX, startY);
+                        SetChartPosition(charts[1], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY);
 
-                        // Position controls below the shipping chart (second chart)
-                        int shippingChartX = startX + maxChartWidth + spacing;
-                        int controlsY = startY + maxChartHeight + 20;
+                        // Position controls below the shipping chart
+                        int shippingChartX = startX + chartWidth + spacing;
+                        int controlsY = startY + chartHeight + 20;
 
-                        // Position checkbox under the shipping chart
                         IncludeFreeShipping_CheckBox.Location = new Point(shippingChartX, controlsY);
 
                         int labelX = IncludeFreeShipping_CheckBox.Right - 2;
@@ -929,23 +921,23 @@ namespace Sales_Tracker
                     break;
 
                 case AnalyticsTab.Returns:
-                    // 2x3 grid layout for returns
+                    // 2x3 grid layout
                     if (charts.Count >= 6)
                     {
-                        Size chartSize = new(maxChartWidth, maxChartHeight);
+                        int chartWidth = Math.Min(maxChartWidth, (availableWidth - (2 * spacing)) / 3);
+                        int chartHeight = Math.Min(maxChartHeight, (availableHeight - spacing) / 2);
 
-                        // Center the grid horizontally
-                        int startX = (ClientSize.Width - (maxChartWidth * 3 + spacing * 2)) / 2;
+                        int startX = (ClientSize.Width - (chartWidth * 3 + spacing * 2)) / 2;
 
                         // Top row - 3 charts
-                        SetChartPosition(charts[0], chartSize, startX, startY);  // ReturnsOverTime
-                        SetChartPosition(charts[1], chartSize, startX + maxChartWidth + spacing, startY);  // ReturnReasons
-                        SetChartPosition(charts[2], chartSize, startX + (maxChartWidth + spacing) * 2, startY);  // ReturnFinancialImpact
+                        SetChartPosition(charts[0], new Size(chartWidth, chartHeight), startX, startY);
+                        SetChartPosition(charts[1], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY);
+                        SetChartPosition(charts[2], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY);
 
                         // Bottom row - 3 charts
-                        SetChartPosition(charts[3], chartSize, startX, startY + maxChartHeight + spacing);  // ReturnsByCategory
-                        SetChartPosition(charts[4], chartSize, startX + maxChartWidth + spacing, startY + maxChartHeight + spacing);  // ReturnsByProduct
-                        SetChartPosition(charts[5], chartSize, startX + (maxChartWidth + spacing) * 2, startY + maxChartHeight + spacing);  // PurchaseVsSaleReturns
+                        SetChartPosition(charts[3], new Size(chartWidth, chartHeight), startX, startY + chartHeight + spacing);
+                        SetChartPosition(charts[4], new Size(chartWidth, chartHeight), startX + chartWidth + spacing, startY + chartHeight + spacing);
+                        SetChartPosition(charts[5], new Size(chartWidth, chartHeight), startX + (chartWidth + spacing) * 2, startY + chartHeight + spacing);
                     }
                     break;
             }
