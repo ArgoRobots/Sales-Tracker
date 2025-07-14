@@ -49,6 +49,7 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
             SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
             AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
+            AnimateCharts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
             ShowHasReceiptColumn_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
             EnableAISearch_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
 

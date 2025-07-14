@@ -260,12 +260,8 @@ namespace Sales_Tracker.UI
                 General_Form.Instance.BeginInvoke(new Action(General_Form.Instance.PopulateThemeComboBox));
             }
 
-            if (MainMenu_Form.Instance.IsHandleCreated)
-            {
-                MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
-            }
-
-            MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
+            MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
+            MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RefreshDataGridViewAndCharts));
         }
 
         /// <summary>
