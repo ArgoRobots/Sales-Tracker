@@ -553,7 +553,6 @@ namespace Sales_Tracker.UI
                 "Distribution of revenue",
                 "Expenses and revenue growth rates",
                 "Financial Impact of Returns",
-                "Global Transaction Map",
                 "Purchase vs Sale Returns",
                 "Return Reasons Distribution",
                 "Returns by Category",

@@ -17,7 +17,6 @@ namespace Sales_Tracker
         private DateTime _operationStartTime;
         private readonly Queue<DateTime> _progressTimestamps = new();
         private readonly Queue<int> _progressValues = new();
-        private const int _maxSampleSize = 10;  // Number of samples for moving average
 
         // Getters
         public bool IsCancelled { get; private set; } = false;
@@ -125,85 +124,7 @@ namespace Sales_Tracker
 
             ProgressBar.Value = Math.Min(progressPercentage, 100);
 
-            // Update time estimation
-            string timeEstimate = CalculateTimeRemaining(completedTranslations, totalPossibleTranslations);
-
-            ProgressStats_Label.Text = $"{completedTranslations:N0} / {totalPossibleTranslations:N0} translations completed{timeEstimate}";
-        }
-        private string CalculateTimeRemaining(int completedTranslations, int totalTranslations)
-        {
-            if (completedTranslations == 0 || totalTranslations == 0)
-                return "";
-
-            DateTime now = DateTime.Now;
-
-            // Add current progress sample
-            _progressTimestamps.Enqueue(now);
-            _progressValues.Enqueue(completedTranslations);
-
-            // Remove old samples to maintain moving window
-            while (_progressTimestamps.Count > _maxSampleSize)
-            {
-                _progressTimestamps.Dequeue();
-                _progressValues.Dequeue();
-            }
-
-            // Need at least 2 samples to calculate rate
-            if (_progressTimestamps.Count < 2)
-                return "";
-
-            try
-            {
-                // Calculate average rate using linear regression for better accuracy
-                double rate = CalculateProgressRate();
-
-                if (rate <= 0)
-                    return " - Calculating time remaining...";
-
-                int remainingTranslations = totalTranslations - completedTranslations;
-                double estimatedSecondsRemaining = remainingTranslations / rate;
-
-                // Format time remaining
-                TimeSpan timeRemaining = TimeSpan.FromSeconds(estimatedSecondsRemaining);
-
-                string formattedTime;
-                if (timeRemaining.TotalHours >= 1)
-                {
-                    formattedTime = $"{(int)timeRemaining.TotalHours}h {timeRemaining.Minutes}m";
-                }
-                else if (timeRemaining.TotalMinutes >= 1)
-                {
-                    formattedTime = $"{(int)timeRemaining.TotalMinutes}m {timeRemaining.Seconds}s";
-                }
-                else
-                {
-                    formattedTime = $"{(int)timeRemaining.TotalSeconds}s";
-                }
-
-                return $" - {formattedTime} remaining";
-            }
-            catch
-            {
-                return " - Calculating time remaining...";
-            }
-        }
-        private double CalculateProgressRate()
-        {
-            if (_progressTimestamps.Count < 2)
-                return 0;
-
-            // Use simple rate calculation for more stability
-            DateTime firstTime = _progressTimestamps.First();
-            DateTime lastTime = _progressTimestamps.Last();
-            int firstProgress = _progressValues.First();
-            int lastProgress = _progressValues.Last();
-
-            double timeSpanSeconds = (lastTime - firstTime).TotalSeconds;
-            if (timeSpanSeconds <= 0)
-                return 0;
-
-            int progressDifference = lastProgress - firstProgress;
-            return progressDifference / timeSpanSeconds;  // translations per second
+            ProgressStats_Label.Text = $"{completedTranslations:N0} / {totalPossibleTranslations:N0} translations completed";
         }
         public void CompleteProgress()
         {
