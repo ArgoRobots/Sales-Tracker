@@ -186,6 +186,37 @@ namespace Tests
             Assert.AreEqual(languages.Count, languageNames.Count);
         }
 
+        [TestMethod]
+        public void TestTranslateString_ReturnsOriginalIfNoTranslation()
+        {
+            // Arrange
+            Sales_Tracker.Properties.Settings.Default.Language = "French";
+            string messageWithoutTranslation = "This message has no translation available";
+
+            // Act
+            string result = LanguageManager.TranslateString(messageWithoutTranslation);
+
+            // Assert
+            Assert.AreEqual(messageWithoutTranslation, result,
+                "Should return original text when no translation is available");
+        }
+
+        [TestMethod]
+        public void TestTranslateString_ReturnsOriginalForEnglish()
+        {
+            // Arrange
+            Sales_Tracker.Properties.Settings.Default.Language = "English";
+            string originalMessage = "Test message in English";
+
+            // Act
+            string result = LanguageManager.TranslateString(originalMessage);
+
+            // Assert
+            Assert.AreEqual(originalMessage, result,
+                "Should return original text for English language");
+        }
+
+
         [TestCleanup]
         public void Cleanup()
         {
