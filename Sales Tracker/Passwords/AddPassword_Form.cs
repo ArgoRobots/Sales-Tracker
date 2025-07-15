@@ -202,7 +202,7 @@ namespace Sales_Tracker.Passwords
         {
             if (Password_TextBox.Text != ConfirmPassword_TextBox.Text)
             {
-                CustomMessageBox.Show("Error", "Passwords do not match", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Error", "Passwords do not match.", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                 return;
             }
 
@@ -216,7 +216,7 @@ namespace Sales_Tracker.Passwords
                 PasswordManager.Password = Password_TextBox.Text;
                 Security_Form.Instance.SetPasswordButton();
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 4, $"Added password");
-                CustomMessageBox.Show("Password set", "Password set successfully", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Password set", "Password set successfully.", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 Close();
             }
         }

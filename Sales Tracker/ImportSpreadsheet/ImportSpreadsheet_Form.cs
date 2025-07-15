@@ -416,8 +416,10 @@ namespace Sales_Tracker.ImportSpreadsheet
                 ExcelSheetManager.RollbackImportSession(importSession);
                 LoadingPanel.HideLoadingScreen(this);
 
-                CustomMessageBox.Show("Error", $"An error occurred while importing the spreadsheet: {ex.Message}. All changes have been rolled back.",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.ShowWithFormat("Error", "An error occurred while importing the spreadsheet: {0}. All changes have been rolled back.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    ex.Message);
             }
             finally
             {
@@ -553,9 +555,11 @@ namespace Sales_Tracker.ImportSpreadsheet
                 // If the sheet no longer exists
                 if (!workbook.Worksheets.Any(ws => ws.Name.Equals(worksheetName, StringComparison.CurrentCultureIgnoreCase)))
                 {
-                    CustomMessageBox.Show("Sheet no longer exists",
-                        $"The sheet {worksheetName} no longer exists and will not be imported",
-                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.ShowWithFormat("Sheet no longer exists",
+                        "The sheet {0} no longer exists and will not be imported",
+                        CustomMessageBoxIcon.Exclamation,
+                        CustomMessageBoxButtons.Ok,
+                        worksheetName);
                     continue;
                 }
 
@@ -892,9 +896,11 @@ namespace Sales_Tracker.ImportSpreadsheet
                 }
                 catch (Exception ex)
                 {
-                    CustomMessageBox.Show("Error Reading Spreadsheet",
-                        $"An error occurred while reading the spreadsheet: {ex.Message}",
-                        CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.ShowWithFormat("Error Reading Spreadsheet",
+                        "An error occurred while reading the spreadsheet: {0}",
+                        CustomMessageBoxIcon.Error,
+                        CustomMessageBoxButtons.Ok,
+                        ex.Message);
                     return panels;
                 }
             });
@@ -923,9 +929,11 @@ namespace Sales_Tracker.ImportSpreadsheet
         }
         private static void ShowNoDataMessage(string message)
         {
-            CustomMessageBox.Show("No Data Found",
-                $"{message}\n\nPlease check your spreadsheet and ensure it contains data in the expected format.",
-                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            CustomMessageBox.ShowWithFormat("No Data Found",
+                "{0}\n\nPlease check your spreadsheet and ensure it contains data in the expected format.",
+                CustomMessageBoxIcon.Info,
+                CustomMessageBoxButtons.Ok,
+                message);
         }
         private bool ProcessWorksheet<T>(XLWorkbook workbook, string worksheetName,
             Func<IXLWorksheet, List<T>> extractionMethod, List<Panel> panels, List<string> emptyWorksheets)

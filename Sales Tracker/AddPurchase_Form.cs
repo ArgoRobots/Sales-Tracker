@@ -279,10 +279,12 @@ namespace Sales_Tracker
             if (chargedDifference != 0)
             {
                 string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Amount charged is different",
-                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                    "Amount charged ({0}{1} {2}) is not equal to the total price of the purchase ({3}{4} {5}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.OkCancel,
+                    MainMenu_Form.CurrencySymbol, charged, currency, MainMenu_Form.CurrencySymbol, totalPriceDefault, currency);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -393,10 +395,12 @@ namespace Sales_Tracker
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
                 && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, ReadOnlyVariables.ID_column, purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Purchase # already exists",
-                    $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                    "The purchase #{0} already exists. Would you like to add this purchase anyways?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    purchaseNumber);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -502,10 +506,12 @@ namespace Sales_Tracker
             if (totalPriceDefault != charged)
             {
                 string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Amount charged is different",
-                    $"Amount charged ({MainMenu_Form.CurrencySymbol}{charged} {currency}) is not equal to the total price of the purchase ({MainMenu_Form.CurrencySymbol}{totalPriceDefault} {currency}). The difference will be accounted for.",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                    "Amount charged ({0}{1} {2}) is not equal to the total price of the purchase ({3}{4} {5}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.OkCancel,
+                    MainMenu_Form.CurrencySymbol, charged, currency, MainMenu_Form.CurrencySymbol, totalPriceDefault, currency);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {

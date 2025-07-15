@@ -246,7 +246,11 @@ namespace Sales_Tracker.UI
                     {
                         AddUnderlineToCell(cell);
                         string type = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale";
-                        CustomMessageBox.Show($"Note for {type} {idCell}", cell.Tag?.ToString(), CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+
+                        CustomMessageBox.ShowWithFormat("Note for {0} {1}", cell.Tag?.ToString(),
+                            CustomMessageBoxIcon.Info,
+                            CustomMessageBoxButtons.Ok,
+                            type, idCell);
                     }
                 }
             }
@@ -500,10 +504,12 @@ namespace Sales_Tracker.UI
 
             if (e.Row.DataGridView.Rows.Count == 1)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Delete the {transactionType}",
-                    $"Deleting the last item will also delete the {transactionType}.",
-                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Delete the {0}",
+                    "Deleting the last item will also delete the {0}.",
+                    CustomMessageBoxIcon.Info,
+                    CustomMessageBoxButtons.OkCancel,
+                    transactionType);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -1117,11 +1123,12 @@ namespace Sales_Tracker.UI
         }
         private static void ShowInUseMessage(string type, string action)
         {
-            CustomMessageBox.Show(
-                $"Cannot be {action}",
-                $"This {type} is being used by a transaction and cannot be {action}d",
+            CustomMessageBox.ShowWithFormat(
+                "Cannot be {0}",
+                "This {1} is being used by a transaction and cannot be {0}d",
                 CustomMessageBoxIcon.Exclamation,
-                CustomMessageBoxButtons.Ok);
+                CustomMessageBoxButtons.Ok,
+                action, type);
         }
         /// <summary>
         /// Determines whether a category can be moved or deleted by checking if it contains any products.
@@ -1135,11 +1142,12 @@ namespace Sales_Tracker.UI
         {
             if (MainMenu_Form.DoesCategoryHaveProducts(categoryName, categoryList))
             {
-                CustomMessageBox.Show(
-                    $"Cannot {action} category",
-                    $"Cannot {action} category '{categoryName}' because it contains products",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok
-                );
+                CustomMessageBox.ShowWithFormat(
+                    "Cannot {0} category",
+                    "Cannot {0} category '{1}' because it contains products",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    action, action, categoryName);
                 return false;
             }
             return true;
@@ -1319,11 +1327,12 @@ namespace Sales_Tracker.UI
                     string allProductsList = string.Join("\n", category.ProductList.Select(p => $"• {p.Name} ({p.CompanyOfOrigin})"));
 
                     // Ask user if they want to move products
-                    CustomMessageBoxResult result = CustomMessageBox.Show(
-                        $"Move category with {category.ProductList.Count} products",
-                        $"The category '{categoryName}' contains the following products:\n\n{allProductsList}\n\nDo you want to move all these products to the {(fromPurchaseToSale ? "Sales" : "Purchases")} category?",
-                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel
-                    );
+                    CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                        "Move category with {0} products",
+                        "The category '{1}' contains the following products:\n\n{2}\n\nDo you want to move all these products to the {3} category?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.OkCancel,
+                        category.ProductList.Count, categoryName, allProductsList, fromPurchaseToSale ? "Sales" : "Purchases");
 
                     if (result != CustomMessageBoxResult.Ok)
                     {

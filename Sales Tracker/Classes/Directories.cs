@@ -485,10 +485,12 @@ namespace Sales_Tracker.Classes
                     CustomMessageBoxResult? result = null;
                     if (askUserToRename)
                     {
-                        result = CustomMessageBox.Show(
-                            $"Rename Argo company",
-                            $"Do you want to rename '{thingName}' to '{suggestedThingName}'? There is already an Argo company with the same name.",
-                            CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                        result = CustomMessageBox.ShowWithFormat(
+                            "Rename Argo company",
+                            "Do you want to rename '{0}' to '{1}'? There is already an Argo company with the same name.",
+                            CustomMessageBoxIcon.Question,
+                            CustomMessageBoxButtons.YesNo,
+                            thingName, suggestedThingName);
                     }
                     if (result == CustomMessageBoxResult.Yes || !askUserToRename)
                     {

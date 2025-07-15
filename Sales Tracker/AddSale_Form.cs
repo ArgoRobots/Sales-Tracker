@@ -227,10 +227,12 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, ReadOnlyVariables.ID_column, saleNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Sale # already exists",
-                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                    "The sale #{0} already exists. Would you like to add this sale anyways?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    saleNumber);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -268,10 +270,12 @@ namespace Sales_Tracker
 
             if (creditedDifference != 0)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Amount credited is different",
-                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                    "Amount credited ({0}{1}) is not equal to the total price of the sale (${2}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.OkCancel,
+                    MainMenu_Form.CurrencySymbol, credited, totalPrice);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {
@@ -378,10 +382,12 @@ namespace Sales_Tracker
             // Check if sale ID already exists
             if (saleNumber != ReadOnlyVariables.EmptyCell && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Sale_DataGridView, ReadOnlyVariables.ID_column, saleNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Sale # already exists",
-                    $"The sale #{saleNumber} already exists. Would you like to add this sale anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                    "The sale #{0} already exists. Would you like to add this sale anyways?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    saleNumber);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {
@@ -480,10 +486,12 @@ namespace Sales_Tracker
 
             if (creditedDifference != 0)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Amount credited is different",
-                    $"Amount credited ({MainMenu_Form.CurrencySymbol}{credited}) is not equal to the total price of the sale (${totalPrice}). The difference will be accounted for.",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.OkCancel);
+                    "Amount credited ({0}{1}) is not equal to the total price of the sale (${2}). The difference will be accounted for.",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.OkCancel,
+                    MainMenu_Form.CurrencySymbol, credited, totalPrice);
 
                 if (result != CustomMessageBoxResult.Ok)
                 {

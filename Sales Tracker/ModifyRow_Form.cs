@@ -26,7 +26,10 @@ namespace Sales_Tracker
 
             if (_receiptFilePath != "" && !File.Exists(_receiptFilePath))
             {
-                CustomMessageBox.Show("Receipt does not exist", "The receipt no longer exists", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Receipt does not exist",
+                    "The receipt no longer exists.",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+
                 Log.Error_FileDoesNotExist(_receiptFilePath);
             }
 

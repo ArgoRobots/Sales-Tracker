@@ -123,7 +123,10 @@ namespace Sales_Tracker.Settings.Menus
                 if (PasswordManager.EnterPassword(false))
                 {
                     Properties.Settings.Default.WindowsHelloEnabled = false;
-                    CustomMessageBox.Show("Windows Hello disabled", "Windows Hello has been disabled", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+
+                    CustomMessageBox.Show("Windows Hello disabled", "Windows Hello has been disabled.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+
                     string newText = LanguageManager.TranslateString("Enable Windows Hello");
                     EnableWindowsHello_Button.Text = newText;
                     EnableWindowsHello_Button.Tag = "Disabled";
@@ -147,15 +150,20 @@ namespace Sales_Tracker.Settings.Menus
                         CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, message);
 
                         StopPlayingLoadingAnimation();
-                        CustomMessageBox.Show("Windows Hello enabled", "Windows Hello has been enabled. You can now log in with your biometrics",
+
+                        CustomMessageBox.Show("Windows Hello enabled",
+                            "Windows Hello has been enabled. You can now log in with your biometrics.",
                             CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+
                         string newText = LanguageManager.TranslateString("Disable Windows Hello");
                         EnableWindowsHello_Button.Text = newText;
                         EnableWindowsHello_Button.Tag = "Enabled";
                     }
                     else
                     {
-                        CustomMessageBox.Show("Windows Hello error", "Windows Hello failed to initiate. Please try again or contact support", CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                        CustomMessageBox.Show("Windows Hello error",
+                            "Windows Hello failed to initiate. Please try again or contact support.",
+                            CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
                     }
                 }
 

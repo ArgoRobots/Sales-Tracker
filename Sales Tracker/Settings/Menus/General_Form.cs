@@ -151,7 +151,7 @@ namespace Sales_Tracker.Settings.Menus
                     Log.Write(2, $"Exported organized anonymous usage data to '{Path.GetFileName(dialog.FileName)}'");
 
                     CustomMessageBox.Show("Export Successful",
-                        "Successfully exported anonymous usage data",
+                        "Successfully exported anonymous usage data.",
                         CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 }
                 catch (Exception ex)
@@ -170,7 +170,7 @@ namespace Sales_Tracker.Settings.Menus
             {
                 AnonymousDataManager.ClearUserData();
 
-                CustomMessageBox.Show("Export Successful", "Successfully deleted anonymous usage data",
+                CustomMessageBox.Show("Export Successful", "Successfully deleted anonymous usage data.",
                     CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             }
         }
@@ -178,7 +178,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             if (Properties.Settings.Default.Language.ToString() != "English")
             {
-                CustomMessageBox.Show("Success", "The deafult language must be set to English",
+                CustomMessageBox.Show("Success", "The deafult language must be set to English.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
@@ -187,13 +187,15 @@ namespace Sales_Tracker.Settings.Menus
             {
                 await TranslationGenerator.GenerateAllLanguageTranslationFiles();
 
-                CustomMessageBox.Show("Success", "Translation files generated successfully",
+                CustomMessageBox.Show("Success", "Translation files generated successfully.",
                     CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
             catch (Exception ex)
             {
-                CustomMessageBox.Show("Error", $"Error generating translations: {ex.Message}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.ShowWithFormat("Error", "Error generating translations: {0}",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    ex.Message);
             }
         }
 

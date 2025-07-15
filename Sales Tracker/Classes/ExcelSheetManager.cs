@@ -151,10 +151,12 @@ namespace Sales_Tracker.Classes
 
                 if (existingItems.Contains(itemNameLower))
                 {
-                    CustomMessageBox.Show(
-                        $"{itemTypeName} already exists",
-                        $"The {itemTypeName.ToLowerInvariant()} {itemName} already exists and will not be imported",
-                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.ShowWithFormat(
+                        "{0} already exists",
+                        "The {0} {1} already exists and will not be imported.",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.Ok,
+                        itemTypeName, itemTypeName.ToLowerInvariant(), itemName);
                 }
                 else
                 {
@@ -287,10 +289,12 @@ namespace Sales_Tracker.Classes
 
             if (!countryExists)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Country does not exist",
-                    $"Country '{countryName}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+                    "Country '{0}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.YesNo,
+                    countryName);
 
                 return result != CustomMessageBoxResult.Yes;
             }
@@ -343,10 +347,12 @@ namespace Sales_Tracker.Classes
             {
                 string type = purchase ? "purchase" : "sale";
 
-                CustomMessageBox.Show(
+                CustomMessageBox.ShowWithFormat(
                     "Product already exists",
-                    $"The product for {type} '{productName}' already exists and will not be imported",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.Ok);
+                    "The product for {0} '{1}' already exists and will not be imported.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.Ok,
+                    type, productName);
 
                 return true;
             }
@@ -427,10 +433,12 @@ namespace Sales_Tracker.Classes
                 // Check if the receipt file exists
                 if (!File.Exists(receiptFilePath))
                 {
-                    CustomMessageBox.Show(
+                    CustomMessageBox.ShowWithFormat(
                         "Receipt does not exist",
-                         $"The receipt '{receiptFileName}' does not exist in the folder you selected. This receipt will not be added",
-                         CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                        "The receipt '{0}' does not exist in the folder you selected. This receipt will not be added.",
+                        CustomMessageBoxIcon.Exclamation,
+                        CustomMessageBoxButtons.Ok,
+                        receiptFileName);
                     continue;
                 }
 
@@ -447,10 +455,12 @@ namespace Sales_Tracker.Classes
                 if (TransactionHasReceipt(targetRow))
                 {
                     string transactionType = isPurchase ? "purchase" : "sale";
-                    CustomMessageBoxResult result = CustomMessageBox.Show(
+                    CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                         "Transaction already has receipt",
-                        $"{transactionType} {transactionId} already has a receipt. Do you want to replace it?",
-                        CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                        "{0} {1} already has a receipt. Do you want to replace it?",
+                        CustomMessageBoxIcon.Question,
+                        CustomMessageBoxButtons.YesNo,
+                        transactionType, transactionId);
 
                     if (result != CustomMessageBoxResult.Yes)
                     {
@@ -754,21 +764,22 @@ namespace Sales_Tracker.Classes
             string errorDescription)
         {
             string message = "Product not found during transaction import:\n\n" +
-                             $"Worksheet: {worksheetName}\n" +
-                             $"Row: {rowNumber}\n" +
-                             $"Transaction ID: {transactionId}\n" +
-                             $"Product: '{productName}'\n" +
-                             $"Category: '{categoryName}'\n" +
-                             $"Error: {errorDescription}\n\n" +
+                             "Worksheet: {0}\n" +
+                             "Row: {1}\n" +
+                             "Transaction ID: {2}\n" +
+                             "Product: '{3}'\n" +
+                             "Category: '{4}'\n" +
+                             "Error: {5}\n\n" +
                              "The transaction cannot be imported because the product does not exist in the system. " +
                              "Please ensure the product is created before importing transactions that reference it.\n\n" +
                              "How would you like to proceed?";
 
-            CustomMessageBoxResult result = CustomMessageBox.Show(
+            CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                 "Product Not Found - Transaction Import",
                 message,
                 CustomMessageBoxIcon.Error,
-                CustomMessageBoxButtons.SkipCancel); // Only Skip or Cancel, no Retry for missing products
+                CustomMessageBoxButtons.SkipCancel,
+                worksheetName, rowNumber, transactionId, productName, categoryName, errorDescription);
 
             return result switch
             {
@@ -823,18 +834,19 @@ namespace Sales_Tracker.Classes
         private static CustomMessageBoxResult ShowDetailedImportError(ImportError error)
         {
             string message = "Invalid value found during import:\n\n" +
-                             $"Worksheet: {error.WorksheetName}\n" +
-                             $"Row: {error.RowNumber}\n" +
-                             $"Transaction ID: {error.TransactionId}\n" +
-                             $"Field: {error.FieldName}\n" +
-                             $"Invalid Value: '{error.InvalidValue}'\n\n" +
+                             "Worksheet: {0}\n" +
+                             "Row: {1}\n" +
+                             "Transaction ID: {2}\n" +
+                             "Field: {3}\n" +
+                             "Invalid Value: '{4}'\n\n" +
                              "This value cannot be converted to a valid monetary amount. How would you like to proceed?";
 
-            return CustomMessageBox.Show(
+            return CustomMessageBox.ShowWithFormat(
                 "Import Error - Invalid Monetary Value",
                 message,
                 CustomMessageBoxIcon.Error,
-                CustomMessageBoxButtons.SkipRetryCancel);
+                CustomMessageBoxButtons.SkipRetryCancel,
+                error.WorksheetName, error.RowNumber, error.TransactionId, error.FieldName, error.InvalidValue);
         }
 
         /// <summary>
@@ -852,19 +864,23 @@ namespace Sales_Tracker.Classes
 
             if (alreadyExistsInSystem)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"{itemTypeName} # already exists",
-                    $"The {itemTypeName.ToLowerInvariant()} #{itemNumber} already exists. Would you like to add this {itemTypeName.ToLowerInvariant()} anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "{0} # already exists",
+                    "The {1} #{2} already exists. Would you like to add this {3} anyways?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    itemTypeName, itemTypeName.ToLowerInvariant(), itemNumber, itemTypeName.ToLowerInvariant());
 
                 return result == CustomMessageBoxResult.Yes;
             }
             else if (alreadyAddedDuringImport)
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Duplicate {itemTypeName} # in Spreadsheet",
-                    $"The {itemTypeName.ToLowerInvariant()} #{itemNumber} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Duplicate {0} # in Spreadsheet",
+                    "The {1} #{2} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    itemTypeName, itemTypeName.ToLowerInvariant(), itemNumber);
 
                 return result == CustomMessageBoxResult.Yes;
             }

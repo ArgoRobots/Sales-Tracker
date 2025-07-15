@@ -35,9 +35,11 @@ namespace Sales_Tracker.Classes
 
                 string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
 
-                CustomMessageBoxResult result = CustomMessageBox.Show($"Rename receipt",
-                    $"Do you want to rename '{name}' to '{suggestedThingName}'? There is already a receipt with the same name.",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("Rename receipt",
+                    "Do you want to rename '{0}' to '{1}'? There is already a receipt with the same name.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.OkCancel,
+                    name, suggestedThingName);
 
                 if (result == CustomMessageBoxResult.Ok)
                 {
@@ -113,7 +115,7 @@ namespace Sales_Tracker.Classes
             if (receiptFilePath != null && !File.Exists(receiptFilePath.Replace(ReadOnlyVariables.Receipt_text, "")))
             {
                 CustomMessageBox.Show(
-                    "Receipt does not exist", $"The receipt you selected no longer exists",
+                    "Receipt does not exist", "The receipt you selected no longer exists.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return false;
             }

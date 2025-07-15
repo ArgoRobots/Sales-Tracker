@@ -88,8 +88,10 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 // Handle any exceptions
-                CustomMessageBox.Show("License Error", $"Error validating license: {ex.Message}",
-                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.ShowWithFormat("License Error", "Error validating license: {0}",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok,
+                    ex.Message);
 
                 // If we can't validate, default to the stored setting
                 return Properties.Settings.Default.LicenseActivated;
@@ -120,9 +122,11 @@ namespace Sales_Tracker.Classes
         /// </summary>
         private static void ShowAlreadyActivatedMessage(string activationDate)
         {
-            CustomMessageBoxResult result = CustomMessageBox.Show("License Already Active",
-            $"This license key appears to be in use on another device (activated on {activationDate}) Would you like to activate it on this computer instead? This will deactivate the license on the other device.",
-                 CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+            CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("License Already Active",
+                "This license key appears to be in use on another device (activated on {0}) Would you like to activate it on this computer instead? This will deactivate the license on the other device.",
+                CustomMessageBoxIcon.Exclamation,
+                CustomMessageBoxButtons.YesNo,
+                activationDate);
 
             if (result == CustomMessageBoxResult.Yes)
             {

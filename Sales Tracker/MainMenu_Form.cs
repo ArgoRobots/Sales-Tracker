@@ -1378,10 +1378,12 @@ namespace Sales_Tracker
 
                 string suggestedCompanyName = Tools.AddNumberForAStringThatAlreadyExists(name, fileNames);
 
-                CustomMessageBoxResult result = CustomMessageBox.Show(
-                    $"Rename company",
-                    $"Do you want to rename '{name}' to '{suggestedCompanyName}'? There is already a company with the same name.",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                    "Rename company",
+                    "Do you want to rename '{0}' to '{1}'? There is already a company with the same name.",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.OkCancel,
+                    name, suggestedCompanyName);
 
                 if (result == CustomMessageBoxResult.Ok)
                 {

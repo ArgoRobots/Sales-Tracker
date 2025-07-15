@@ -167,9 +167,11 @@ namespace Sales_Tracker
             if (productID != ReadOnlyVariables.EmptyCell &&
                 DataGridViewManager.DoesValueExistInDataGridView(selectedDataGridView, Column.ProductID.ToString(), productID))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show("Product already exists",
-                    $"The product #{productID} already exists. Would you like to add this product anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("Product already exists",
+                    "The product #{0} already exists. Would you like to add this product anyways?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    productID);
 
                 if (result != CustomMessageBoxResult.Yes)
                 {

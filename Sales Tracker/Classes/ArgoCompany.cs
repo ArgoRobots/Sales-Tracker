@@ -187,12 +187,13 @@ namespace Sales_Tracker.Classes
 
             if (totalSizeInBytes > 0)
             {
-                CustomMessageBox.Show("Cleared cache", $"Cleared {totalSizeReadable} of cached data",
-                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.ShowWithFormat("Cleared cache", "Cleared {0} of cached data.",
+                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok,
+                    totalSizeReadable);
             }
             else
             {
-                CustomMessageBox.Show("No cache to clear", $"No cache to clear",
+                CustomMessageBox.Show("No cache to clear", "No cache to clear.",
                     CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
             }
         }
@@ -231,7 +232,7 @@ namespace Sales_Tracker.Classes
             // If this company is already open
             if (Directories.ArgoCompany_file == filePath && !overrideCompanyAlreadyOpen)
             {
-                CustomMessageBox.Show("Company already open", "This company is already open",
+                CustomMessageBox.Show("Company already open", "This company is already open.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
@@ -310,7 +311,7 @@ namespace Sales_Tracker.Classes
             if (!CreateMutex(companyFilePath))
             {
                 CustomMessageBox.Show("Already open",
-                    "This company is already open",
+                    "This company is already open.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 ApplicationMutex?.Dispose();  // Reset
                 return false;
@@ -369,9 +370,11 @@ namespace Sales_Tracker.Classes
                     return;
                 }
 
-                CustomMessageBoxResult result = CustomMessageBox.Show("Unsaved work found",
-                    $"Unsaved work was found. Would you like to recover it? {Path.GetFileName(company)}",
-                    CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat("Unsaved work found",
+                    "Unsaved work was found. Would you like to recover it? {0}",
+                    CustomMessageBoxIcon.Exclamation,
+                    CustomMessageBoxButtons.YesNo,
+                    Path.GetFileName(company));
 
                 if (result == CustomMessageBoxResult.Yes)
                 {

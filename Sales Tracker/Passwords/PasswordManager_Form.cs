@@ -65,21 +65,21 @@ namespace Sales_Tracker.Passwords
             {
                 if (PasswordManager.Password != CurrentPassword_TextBox.Text)
                 {
-                    CustomMessageBox.Show("Incorrect passowrd", "The current password is incorrect", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Incorrect passowrd", "The current password is incorrect.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     CurrentPassword_TextBox.Focus();
                     return;
                 }
 
                 PasswordManager.Password = NewPassword_TextBox.Text;
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 4, $"Removed updated");
-                CustomMessageBox.Show("Password updated", "Password updated successfully", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Password updated", "Password updated successfully.", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 Close();
             }
             else
             {
                 if (PasswordManager.Password != CurrentPassword_TextBox.Text)
                 {
-                    CustomMessageBox.Show("Incorrect passowrd", "The password is incorrect", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                    CustomMessageBox.Show("Incorrect passowrd", "The password is incorrect.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                     return;
                 }
 
@@ -94,7 +94,7 @@ namespace Sales_Tracker.Passwords
 
                 PasswordManager.Password = null;
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.ThingsThatHaveChangedInFile, 4, $"Removed password");
-                CustomMessageBox.Show("Password removed", "Password removed successfully", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                CustomMessageBox.Show("Password removed", "Password removed successfully.", CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
                 Close();
             }
         }
