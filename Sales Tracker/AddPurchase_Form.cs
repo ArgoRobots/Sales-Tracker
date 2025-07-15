@@ -226,10 +226,12 @@ namespace Sales_Tracker
             if (purchaseNumber != ReadOnlyVariables.EmptyCell
                 && DataGridViewManager.DoesValueExistInDataGridView(MainMenu_Form.Instance.Purchase_DataGridView, ReadOnlyVariables.ID_column, purchaseNumber))
             {
-                CustomMessageBoxResult result = CustomMessageBox.Show(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Purchase # already exists",
-                     $"The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
-                    CustomMessageBoxIcon.Question, CustomMessageBoxButtons.YesNo);
+                    "The purchase {0} already exists. Would you like to add this purchase anyways?",
+                    CustomMessageBoxIcon.Question,
+                    CustomMessageBoxButtons.YesNo,
+                    $"#{purchaseNumber}");
 
                 if (result != CustomMessageBoxResult.Yes)
                 {

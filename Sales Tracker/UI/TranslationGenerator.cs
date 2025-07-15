@@ -8,7 +8,6 @@ using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.Startup;
 using Sales_Tracker.Startup.Menus;
-using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,7 +17,6 @@ namespace Sales_Tracker.UI
     /// <summary>
     /// Utility class for generating translation JSON files for all application forms and controls.
     /// This class is intended for admin use only and should not be included in the production build.
-    /// Now features fully automated string collection - no manual maintenance required!
     /// </summary>
     public static partial class TranslationGenerator
     {
@@ -162,11 +160,11 @@ namespace Sales_Tracker.UI
                 // Collect UI control texts
                 Dictionary<string, string> sourceTexts = CollectTextsToTranslate(controlsToTranslate);
 
-                // AUTO-COLLECT: Get all TranslateString calls from source code
+                // Get all TranslateString calls from source code
                 progressForm.UpdateTranslationProgress(sourceTexts.Count, "Scanning source code for TranslateString calls...");
                 Dictionary<string, string> translateStringCalls = CollectAllTranslateStringCalls();
 
-                // AUTO-COLLECT: Get all CustomMessageBox calls from source code
+                // Get all CustomMessageBox calls from source code
                 progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count, "Scanning source code for CustomMessageBox calls...");
                 Dictionary<string, string> messageBoxStrings = CollectAllCustomMessageBoxCalls();
 
@@ -621,10 +619,8 @@ namespace Sales_Tracker.UI
         }
 
         // Automated Source Code Scanning
-
         /// <summary>
         /// Automatically scans source files for LanguageManager.TranslateString calls and extracts string literals.
-        /// This completely replaces the need for manual string collection.
         /// </summary>
         private static Dictionary<string, string> CollectAllTranslateStringCalls()
         {
@@ -700,7 +696,7 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Finds the project directory containing source files
+        /// Finds the project directory containing source files.
         /// </summary>
         private static string? FindProjectDirectory()
         {
@@ -710,8 +706,8 @@ namespace Sales_Tracker.UI
             while (currentDirectory != null)
             {
                 // Look for .cs files or .csproj files to identify project root
-                if (Directory.GetFiles(currentDirectory, "*.cs", SearchOption.TopDirectoryOnly).Length != 0 ||
-                    Directory.GetFiles(currentDirectory, "*.csproj", SearchOption.TopDirectoryOnly).Length != 0)
+                if (Directory.GetFiles(currentDirectory, "*.cs", SearchOption.TopDirectoryOnly).Length != 0
+                    || Directory.GetFiles(currentDirectory, "*.csproj", SearchOption.TopDirectoryOnly).Length != 0)
                 {
                     return currentDirectory;
                 }
@@ -723,7 +719,7 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Determines if a file should be skipped during scanning
+        /// Determines if a file should be skipped during scanning.
         /// </summary>
         private static bool ShouldSkipFile(string filePath)
         {
@@ -735,7 +731,7 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Extracts LanguageManager.TranslateString call strings from source code content
+        /// Extracts LanguageManager.TranslateString call strings from source code content.
         /// </summary>
         private static void ExtractTranslateStringCalls(string content, Dictionary<string, string> collectedStrings, string fileName)
         {
@@ -747,7 +743,7 @@ namespace Sales_Tracker.UI
             // Pattern 2: String interpolation (basic)
             // LanguageManager.TranslateString($"text")
             string interpolationPattern = @"LanguageManager\.TranslateString\s*\(\s*\$""([^""]*)""\s*\)";
-            ExtractMatches(content, interpolationPattern, collectedStrings, fileName, true);
+            ExtractMatches(content, interpolationPattern, collectedStrings, fileName);
 
             // Pattern 3: Multi-line strings with @
             // LanguageManager.TranslateString(@"text")
@@ -759,7 +755,7 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Extracts CustomMessageBox.Show call strings from source code content
+        /// Extracts CustomMessageBox.Show and CustomMessageBox.ShowWithFormat call strings from source code content.
         /// </summary>
         private static void ExtractCustomMessageBoxCalls(string content, Dictionary<string, string> messageBoxStrings, string fileName)
         {
@@ -771,18 +767,41 @@ namespace Sales_Tracker.UI
             // Pattern 2: String interpolation
             // CustomMessageBox.Show("title", $"message", icon, buttons)
             string interpolationPattern = @"CustomMessageBox\.Show\s*\(\s*""([^""]*)""\s*,\s*\$""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, interpolationPattern, messageBoxStrings, fileName, true);
+            ExtractMessageBoxMatches(content, interpolationPattern, messageBoxStrings, fileName);
 
             // Pattern 3: Multi-line strings
             string multiLinePattern = @"CustomMessageBox\.Show\s*\(\s*@""([^""]*)""\s*,\s*@""([^""]*)""\s*,";
             ExtractMessageBoxMatches(content, multiLinePattern, messageBoxStrings, fileName);
+
+            // Pattern 4: Basic CustomMessageBox.ShowWithFormat calls
+            // CustomMessageBox.ShowWithFormat("title", "message", icon, buttons, args)
+            string showWithFormatPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""([^""]*)""\s*,\s*""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatPattern, messageBoxStrings, fileName);
+
+            // Pattern 5: String interpolation for ShowWithFormat
+            // CustomMessageBox.ShowWithFormat("title", $"message", icon, buttons, args)
+            string showWithFormatInterpolationPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""([^""]*)""\s*,\s*\$""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatInterpolationPattern, messageBoxStrings, fileName);
+
+            // Pattern 6: Multi-line strings for ShowWithFormat
+            string showWithFormatMultiLinePattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*@""([^""]*)""\s*,\s*@""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatMultiLinePattern, messageBoxStrings, fileName);
+
+            // Pattern 7: Mixed patterns - Show with interpolated title, ShowWithFormat with regular message
+            // CustomMessageBox.ShowWithFormat($"title", "message", icon, buttons, args)
+            string showWithFormatMixedPattern1 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*\$""([^""]*)""\s*,\s*""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatMixedPattern1, messageBoxStrings, fileName);
+
+            // Pattern 8: Mixed patterns - Show with regular title, ShowWithFormat with verbatim message
+            // CustomMessageBox.ShowWithFormat("title", @"message", icon, buttons, args)
+            string showWithFormatMixedPattern2 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""([^""]*)""\s*,\s*@""([^""]*)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatMixedPattern2, messageBoxStrings, fileName);
         }
 
         /// <summary>
-        /// Extracts matches from regex pattern and adds to collection
+        /// Extracts matches from regex pattern and adds to collection with consistent variable handling.
         /// </summary>
-        private static void ExtractMatches(string content, string pattern, Dictionary<string, string> collectedStrings,
-            string fileName, bool isInterpolated = false)
+        private static void ExtractMatches(string content, string pattern, Dictionary<string, string> collectedStrings, string fileName)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -793,27 +812,23 @@ namespace Sales_Tracker.UI
                     string text = match.Groups[1].Value.Trim();
 
                     // Skip empty strings
-                    if (string.IsNullOrWhiteSpace(text)) continue;
-
-                    // Clean up interpolated strings (remove variable placeholders for key generation)
-                    string cleanText = isInterpolated ? CleanInterpolatedString(text) : text;
+                    if (string.IsNullOrWhiteSpace(text)) { continue; }
 
                     // Generate key and add to collection
-                    string key = GetStringKey(cleanText);
+                    string key = LanguageManager.GetStringKey(text);
                     if (!collectedStrings.ContainsKey(key))
                     {
-                        collectedStrings[key] = cleanText;
-                        Log.Write(2, $"Found TranslateString: '{cleanText}' in {fileName}");
+                        collectedStrings[key] = text;
+                        Log.Write(2, $"Found TranslateString: '{text}' -> Key: '{key}' in {fileName}");
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Extracts CustomMessageBox matches and adds both title and message to collection
+        /// Extracts CustomMessageBox matches and adds both title and message to collection with consistent variable handling.
         /// </summary>
-        private static void ExtractMessageBoxMatches(string content, string pattern, Dictionary<string, string> messageBoxStrings,
-            string fileName, bool isInterpolated = false)
+        private static void ExtractMessageBoxMatches(string content, string pattern, Dictionary<string, string> messageBoxStrings, string fileName)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -827,24 +842,22 @@ namespace Sales_Tracker.UI
                     // Process title
                     if (!string.IsNullOrWhiteSpace(title))
                     {
-                        string cleanTitle = isInterpolated ? CleanInterpolatedString(title) : title;
-                        string titleKey = GetStringKey(cleanTitle);
+                        string titleKey = LanguageManager.GetStringKey(title);
                         if (!messageBoxStrings.ContainsKey(titleKey))
                         {
-                            messageBoxStrings[titleKey] = cleanTitle;
-                            Log.Write(2, $"Found CustomMessageBox title: '{cleanTitle}' in {fileName}");
+                            messageBoxStrings[titleKey] = title;
+                            Log.Write(2, $"Found CustomMessageBox title: '{title}' -> Key: '{titleKey}' in {fileName}");
                         }
                     }
 
                     // Process message
                     if (!string.IsNullOrWhiteSpace(message))
                     {
-                        string cleanMessage = isInterpolated ? CleanInterpolatedString(message) : message;
-                        string messageKey = GetStringKey(cleanMessage);
+                        string messageKey = LanguageManager.GetStringKey(message);
                         if (!messageBoxStrings.ContainsKey(messageKey))
                         {
-                            messageBoxStrings[messageKey] = cleanMessage;
-                            Log.Write(2, $"Found CustomMessageBox message: '{cleanMessage}' in {fileName}");
+                            messageBoxStrings[messageKey] = message;
+                            Log.Write(2, $"Found CustomMessageBox message: '{message}' -> Key: '{messageKey}' in {fileName}");
                         }
                     }
                 }
@@ -852,19 +865,7 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Cleans interpolated strings by removing variable placeholders
-        /// </summary>
-        private static string CleanInterpolatedString(string interpolatedText)
-        {
-            // Remove common interpolation patterns like {variable}, {property}, etc.
-            string cleaned = InterpolationPattern().Replace(interpolatedText, "[VAR]");
-
-            // Remove [VAR] placeholders for key generation (but keep original for display)
-            return cleaned.Replace("[VAR]", "").Trim();
-        }
-
-        /// <summary>
-        /// Attempts to find variable references passed to TranslateString
+        /// Attempts to find variable references passed to TranslateString.
         /// </summary>
         private static void ExtractVariableReferences(string content, Dictionary<string, string> collectedStrings, string fileName)
         {
@@ -892,42 +893,17 @@ namespace Sales_Tracker.UI
                 string usagePattern = $@"LanguageManager\.TranslateString\s*\(\s*{variable.Key}\s*\)";
                 if (Regex.IsMatch(content, usagePattern))
                 {
-                    string key = GetStringKey(variable.Value);
+                    string key = LanguageManager.GetStringKey(variable.Value);
                     if (!collectedStrings.ContainsKey(key))
                     {
                         collectedStrings[key] = variable.Value;
-                        Log.Write(2, $"Found TranslateString variable: '{variable.Value}' ({variable.Key}) in {fileName}");
+                        Log.Write(2, $"Found TranslateString variable: '{variable.Value}' ({variable.Key}) -> Key: '{key}' in {fileName}");
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Helper method to get string key (same as LanguageManager.GetStringKey)
-        /// </summary>
-        private static string GetStringKey(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
-
-            // Remove common formatting and clean up
-            string cleanText = text
-                .Replace("\\n", " ")
-                .Replace("\\r", "")
-                .Replace("\\t", " ")
-                .Trim();
-
-            // Capitalize first letter of each word
-            TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-            string titleCaseText = textInfo.ToTitleCase(cleanText.ToLower());
-
-            // Remove spaces, punctuation, and special characters for key
-            string finalText = NonWordCharacters().Replace(titleCaseText, "");
-
-            return $"single_string_{finalText}";
-        }
-
         // File Generation
-
         /// <summary>
         /// Generates a JSON file for a specific language with the collected texts.
         /// </summary>

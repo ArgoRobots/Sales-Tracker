@@ -4,6 +4,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Settings.Menus;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Sales_Tracker.UI
 {
@@ -12,7 +13,7 @@ namespace Sales_Tracker.UI
     /// Downloads pre-translated JSON files from the server and applies them to UI controls.
     /// Provides caching for offline use and ensures correct text alignment and font size adjustments.
     /// </summary>
-    public class LanguageManager
+    public partial class LanguageManager
     {
         // Properties
         private static readonly HttpClient _httpClient = new();
@@ -30,6 +31,9 @@ namespace Sales_Tracker.UI
             _link_text = "link",
             _after_text = "after",
             _full_text = "full";
+
+        [GeneratedRegex(@"[^\w{}]")]
+        private static partial Regex NonWordCharacters();
 
         // Getters and setters
         public static Dictionary<string, Dictionary<string, string>> TranslationCache { get; set; }
@@ -746,12 +750,11 @@ namespace Sales_Tracker.UI
         {
             // Capitalize first letter of each word
             TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-            string titleCaseText = textInfo.ToTitleCase(text);
+            string titleCaseText = textInfo.ToTitleCase(text.ToLower());
 
-            // Remove spaces and ellipses
-            string cleanText = titleCaseText.Replace(" ", "").Replace("...", "");
-
-            return $"single_string_{cleanText}";
+            // Remove spaces, punctuation, and special characters for key
+            string finalText = NonWordCharacters().Replace(titleCaseText, "");
+            return $"single_string_{finalText}";
         }
     }
 }

@@ -30,7 +30,7 @@
             }
             else
             {
-                Log.Error_ENVFileNotFound($"Encrypted secrets file: {Path.GetFileName(Directories.SecretsFilePath)}");
+                Log.Error_ENVFileNotFound(Path.GetFileName(Directories.SecretsFilePath));
             }
         }
 

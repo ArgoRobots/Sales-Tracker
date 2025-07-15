@@ -163,6 +163,7 @@ namespace Sales_Tracker
 
             MinimumSize = new Size(MinimumSize.Width, Height);
         }
+
         private Panel changed_Panel;
         private Guna2Panel changedBackground_Panel;
         private void AdjustFormHeight(int contentHeight)
@@ -431,6 +432,20 @@ namespace Sales_Tracker
             {
                 _isMessageBoxShowing = false;
             }
+        }
+        public static CustomMessageBoxResult ShowWithFormat(string title, string messageTemplate,
+            CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons, params object[] args)
+        {
+            string translatedMessage = LanguageManager.TranslateString(messageTemplate);
+
+            // If translation was found and has placeholders, use it
+            if (translatedMessage != messageTemplate && translatedMessage.Contains('{'))
+            {
+                return Show(title, string.Format(translatedMessage, args), icon, buttons);
+            }
+
+            // Fall back to original template
+            return Show(title, string.Format(messageTemplate, args), icon, buttons);
         }
     }
 
