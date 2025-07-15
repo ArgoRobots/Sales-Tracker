@@ -654,7 +654,7 @@
             ShowingResultsFor_Label.Anchor = AnchorStyles.Top;
             ShowingResultsFor_Label.AutoSize = true;
             ShowingResultsFor_Label.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ShowingResultsFor_Label.Location = new Point(1077, 146);
+            ShowingResultsFor_Label.Location = new Point(1077, 155);
             ShowingResultsFor_Label.Name = "ShowingResultsFor_Label";
             ShowingResultsFor_Label.Size = new Size(236, 32);
             ShowingResultsFor_Label.TabIndex = 56;

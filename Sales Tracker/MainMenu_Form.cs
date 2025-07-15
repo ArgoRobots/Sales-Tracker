@@ -24,7 +24,7 @@ namespace Sales_Tracker
         // Properties
         private static MainMenu_Form _instance;
         public static readonly string _noteTextKey = "note", _rowTagKey = "RowTag", _itemsKey = "Items", _purchaseDataKey = "PurchaseData", _tagKey = "Tag";
-        private static readonly short _chartTop = 310;
+        private static readonly short _chartTop = 220, _analyticChartTop = 310;
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -803,11 +803,10 @@ namespace Sales_Tracker
                 // Position the currently visible charts
                 Control totalsChart = Sale_DataGridView.Visible ? SaleTotals_Chart : PurchaseTotals_Chart;
                 Control distributionChart = Sale_DataGridView.Visible ? SaleDistribution_Chart : PurchaseDistribution_Chart;
-                int topChart = 220;
 
-                SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, topChart);
-                SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, topChart);
-                SetChartPosition(Profits_Chart, new Size(chartWidth, chartHeight), rightX, topChart);
+                SetChartPosition(totalsChart, new Size(chartWidth, chartHeight), leftX, _chartTop);
+                SetChartPosition(distributionChart, new Size(chartWidth, chartHeight), middleX, _chartTop);
+                SetChartPosition(Profits_Chart, new Size(chartWidth, chartHeight), rightX, _chartTop);
 
                 // Position DataGridView
                 SelectedDataGridView.Size = new Size(ClientSize.Width - 65,
@@ -818,7 +817,7 @@ namespace Sales_Tracker
         }
         private void LayoutChartsForTab(AnalyticsTab tabKey, int spacing)
         {
-            int startY = _chartTop;
+            int startY = _analyticChartTop;
             int availableHeight = ClientSize.Height - startY - 10;
             int availableWidth = ClientSize.Width - 80;
             const int maxChartWidth = 800;
@@ -2187,11 +2186,11 @@ namespace Sales_Tracker
             }
 
             // Reset chart positions in case returning from analytics
-            PurchaseTotals_Chart.Top = _chartTop;
-            PurchaseDistribution_Chart.Top = _chartTop;
-            SaleTotals_Chart.Top = _chartTop;
-            SaleDistribution_Chart.Top = _chartTop;
-            Profits_Chart.Top = _chartTop;
+            PurchaseTotals_Chart.Top = _analyticChartTop;
+            PurchaseDistribution_Chart.Top = _analyticChartTop;
+            SaleTotals_Chart.Top = _analyticChartTop;
+            SaleDistribution_Chart.Top = _analyticChartTop;
+            Profits_Chart.Top = _analyticChartTop;
         }
         private void ConstructControlsForAnalytics()
         {
