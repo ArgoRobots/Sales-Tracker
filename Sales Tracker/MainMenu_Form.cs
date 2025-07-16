@@ -1419,21 +1419,6 @@ namespace Sales_Tracker
             Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
         }
 
-        private static readonly Dictionary<TimeSpan, string> _timeSpanMappings = new()
-        {
-            { TimeSpan.MaxValue, "All Time" },
-            { TimeSpan.FromDays(1), "1 day" },
-            { TimeSpan.FromDays(2), "2 days" },
-            { TimeSpan.FromDays(3), "3 days" },
-            { TimeSpan.FromDays(5), "5 days" },
-            { TimeSpan.FromDays(10), "10 days" },
-            { TimeSpan.FromDays(30), "30 days" },
-            { TimeSpan.FromDays(100), "100 days" },
-            { TimeSpan.FromDays(365), "1 year" },
-            { TimeSpan.FromDays(365 * 2), "2 years" },
-            { TimeSpan.FromDays(365 * 5), "5 years" }
-        };
-
         // Search DataGridView getters and setters
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DateTime? SortFromDate { get; set; } = null;
