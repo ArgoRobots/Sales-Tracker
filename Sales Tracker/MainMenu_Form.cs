@@ -1484,8 +1484,8 @@ namespace Sales_Tracker
                     else
                     {
                         // For time span filters
-                        isVisibleByDate = (SortTimeSpan == null || SortTimeSpan == TimeSpan.MaxValue ||
-                            rowDate >= DateTime.Now - SortTimeSpan);
+                        isVisibleByDate = SortTimeSpan == null || SortTimeSpan == TimeSpan.MaxValue ||
+                            rowDate >= DateTime.Now - SortTimeSpan;
                     }
 
                     bool isVisibleBySearch = string.IsNullOrEmpty(effectiveSearchText) ||
@@ -1555,7 +1555,7 @@ namespace Sales_Tracker
             // Case 2: Time span only
             if (!hasSearchFilter && hasTimeSpanFilter && !hasDateRangeFilter)
             {
-                string timeSpanText = GetTimeSpanText(SortTimeSpan.Value);
+                string timeSpanText = GetTimeSpanText(SortTimeSpan!.Value);
                 string template = LanguageManager.TranslateString("Showing results for\nthe last {0}");
                 return string.Format(template, timeSpanText);
             }
@@ -1563,8 +1563,8 @@ namespace Sales_Tracker
             // Case 3: Custom date range only
             if (!hasSearchFilter && !hasTimeSpanFilter && hasDateRangeFilter)
             {
-                string fromDate = Tools.FormatDate((DateTime)SortFromDate);
-                string toDate = Tools.FormatDate((DateTime)SortToDate);
+                string fromDate = Tools.FormatDate(SortFromDate!.Value);
+                string toDate = Tools.FormatDate(SortToDate!.Value);
                 string template = LanguageManager.TranslateString("Showing results from\n{0} to {1}");
                 return string.Format(template, fromDate, toDate);
             }
@@ -1572,7 +1572,7 @@ namespace Sales_Tracker
             // Case 4: Search term + time span
             if (hasSearchFilter && hasTimeSpanFilter && !hasDateRangeFilter)
             {
-                string timeSpanText = GetTimeSpanText(SortTimeSpan.Value);
+                string timeSpanText = GetTimeSpanText(SortTimeSpan!.Value);
                 string template = LanguageManager.TranslateString("Showing results for '{0}'\nin the last {1}");
                 return string.Format(template, searchDisplay, timeSpanText);
             }
@@ -1580,8 +1580,8 @@ namespace Sales_Tracker
             // Case 5: Search term + custom date range
             if (hasSearchFilter && !hasTimeSpanFilter && hasDateRangeFilter)
             {
-                string fromDate = Tools.FormatDate((DateTime)SortFromDate);
-                string toDate = Tools.FormatDate((DateTime)SortToDate);
+                string fromDate = Tools.FormatDate((DateTime)SortFromDate!);
+                string toDate = Tools.FormatDate((DateTime)SortToDate!);
                 string template = LanguageManager.TranslateString("Showing results for '{0}'\nfrom {1} to {2}");
                 return string.Format(template, searchDisplay, fromDate, toDate);
             }
