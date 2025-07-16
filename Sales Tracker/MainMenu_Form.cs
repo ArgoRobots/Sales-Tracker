@@ -57,7 +57,7 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(this);
             SetToolTips();
             HideShowingResultsForLabel();
-            InitTimeRangePanel();
+            ConstructTimeRangePanel();
             InitChartTags();
             AddEventHandlersToTextBoxes();
             AnimateButtons();
@@ -1280,7 +1280,7 @@ namespace Sales_Tracker
 
         // TimeRange
         public static Guna2Panel TimeRangePanel { get; private set; }
-        private static void InitTimeRangePanel()
+        private static void ConstructTimeRangePanel()
         {
             DateRange_Form dateRange_Form = new();
             TimeRangePanel = dateRange_Form.Main_Panel;
