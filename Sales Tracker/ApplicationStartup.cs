@@ -39,8 +39,66 @@ namespace Sales_Tracker
             SearchBox.ConstructSearchBox();
             CustomControls.ConstructRightClickRename();
 
+            _ = Task.Run(EnsureDefaultLanguageTranslationsAsync);
+
             ThemeChangeDetector.StartListeningForThemeChanges();
             RegisterFileAssociationOnFirstRun();
+        }
+
+        /// <summary>
+        /// Ensures that translations for the default language are available.
+        /// Downloads them if the translations file is missing or doesn't contain the required language.
+        /// </summary>
+        private static async Task EnsureDefaultLanguageTranslationsAsync()
+        {
+            try
+            {
+                string defaultLanguage = Properties.Settings.Default.Language;
+
+                // If default language is English, no need to download translations
+                if (string.IsNullOrEmpty(defaultLanguage) || defaultLanguage.Equals("English", StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                // Get the language abbreviation for the default language
+                List<KeyValuePair<string, string>> languages = LanguageManager.GetLanguages();
+                KeyValuePair<string, string> languageInfo = languages.FirstOrDefault(l => l.Key.Equals(defaultLanguage, StringComparison.OrdinalIgnoreCase));
+
+                if (string.IsNullOrEmpty(languageInfo.Value))
+                {
+                    Log.Write(1, $"Unknown default language: {defaultLanguage}");
+                    return;
+                }
+
+                string languageAbbreviation = languageInfo.Value;
+
+                // Check if translations are already available for this language
+                bool translationsAvailable = LanguageManager.TranslationCache != null &&
+                                           LanguageManager.TranslationCache.ContainsKey(languageAbbreviation) &&
+                                           LanguageManager.TranslationCache[languageAbbreviation].Count > 0;
+
+                if (!translationsAvailable)
+                {
+                    Log.Write(1, $"Translations file missing or empty for default language '{defaultLanguage}'. Downloading...");
+
+                    // Download the language file for the default language
+                    bool downloadSuccess = await LanguageManager.UpdateApplicationLanguage(defaultLanguage);
+
+                    if (downloadSuccess)
+                    {
+                        Log.Write(1, $"Successfully downloaded translations for default language '{defaultLanguage}'");
+                    }
+                    else
+                    {
+                        Log.Write(1, $"Failed to download translations for default language '{defaultLanguage}'. App will use original text.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(0, $"Error ensuring default language translations: {ex.Message}");
+            }
         }
 
         /// <summary>

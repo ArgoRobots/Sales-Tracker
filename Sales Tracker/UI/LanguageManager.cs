@@ -217,15 +217,20 @@ namespace Sales_Tracker.UI
 
             // Add other controls
             controlsList.Add(CustomControls.ControlsDropDown_Button);
-            controlsList.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
-            controlsList.AddRange(MainMenu_Form.Instance.GetMainControls());
-            controlsList.AddRange(DateRange_Form.Instance.GetCustomRangeControls());
+            if (MainMenu_Form.Instance != null)
+            {
+                controlsList.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
+                controlsList.AddRange(MainMenu_Form.Instance.GetMainControls());
+                controlsList.AddRange(DateRange_Form.Instance.GetCustomRangeControls());
+            }
 
             // Apply translations to all controls on UI thread
             List<Task> updateTasks = [];
 
             foreach (Control control in controlsList)
             {
+                if (control == null) { continue; }
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 Tools.EnsureHandleCreated(control);
