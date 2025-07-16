@@ -235,7 +235,7 @@ namespace Sales_Tracker
                 Main_Panel.Height = 420;
             }
         }
-        private List<Control> GetCustomRangeControls()
+        public List<Control> GetCustomRangeControls()
         {
             return [
                 From_Label,
