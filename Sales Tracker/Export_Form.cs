@@ -13,13 +13,14 @@ namespace Sales_Tracker
         // Properties
         private int _originalDirectoryLabelY, _originalDirectoryTextBoxY, _originalWarningDirLabelY, _originalWarningDirPictureBoxY;
         private static Action _validationCallback;
-        private static bool _isProgramLoading = true;
+        private static bool _isProgramLoading;
 
         // Init.
         public Export_Form()
         {
             InitializeComponent();
 
+            _isProgramLoading = true;
             StoreOriginalPositions();
             AddEventHandlersToTextBoxes();
             SetControls();
@@ -192,14 +193,14 @@ namespace Sales_Tracker
             LoadingPanel.ShowLoadingScreen(this, loadingText);
 
             // Capture all UI values on the UI thread
-            string fileType = FileType_ComboBox.Text;
+            int selectedIndex = FileType_ComboBox.SelectedIndex;
             string directoryPath = Directory_TextBox.Text;
             string fileName = Name_TextBox.Text;
             bool exportReceipts = ExportReceipts_CheckBox.Checked && ExportReceipts_CheckBox.Visible;
             string currency = Currency_TextBox.Text;
 
             // Run the export operation
-            await Task.Run(() => Export(fileType, directoryPath, fileName, exportReceipts, currency));
+            await Task.Run(() => Export(selectedIndex, directoryPath, fileName, exportReceipts, currency));
         }
 
         // Methods
@@ -262,14 +263,14 @@ namespace Sales_Tracker
             Currency_Label.Visible = visible;
             Currency_TextBox.Visible = visible;
         }
-        private void Export(string fileType, string directoryPath, string fileName, bool exportReceipts, string currency)
+        private void Export(int selectedIndex, string directoryPath, string fileName, bool exportReceipts, string currency)
         {
             string filePath = Path.Combine(directoryPath, fileName);
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            switch (fileType)
+            switch (selectedIndex)
             {
-                case "ArgoSales (.zip)":
+                case 0:
                     Directories.CreateBackup(filePath);
                     TrackExport(stopwatch, filePath + ArgoFiles.ZipExtension, ExportType.Backup);
 
@@ -277,7 +278,7 @@ namespace Sales_Tracker
                     FinalizeExport(backupMessage);
                     break;
 
-                case "Excel spreadsheet (.xlsx)":
+                case 1:
                     string exportFolder = Path.Combine(directoryPath, fileName);
 
                     // Create export folder
