@@ -148,6 +148,7 @@ namespace Sales_Tracker.UI
                 controlsToTranslate.Add(CustomControls.ControlsDropDown_Button);
                 controlsToTranslate.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
                 controlsToTranslate.AddRange(MainMenu_Form.Instance.GetMainControls());
+                controlsToTranslate.AddRange(DateRange_Form.Instance.GetCustomRangeControls());
 
                 // Create output directory
                 string outputDirectory = Path.Combine(Directories.Downloads_dir, "Sales Tracker Translations");
@@ -735,27 +736,47 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void ExtractTranslateStringCalls(string content, Dictionary<string, string> collectedStrings, string fileName)
         {
-            // Pattern 1: Simple string literals (handles escaped characters including \n, \", etc.)
+            // Pattern 1: Direct LanguageManager.TranslateString calls
             // LanguageManager.TranslateString("text with \n newlines and \" quotes")
             string simplePattern = @"LanguageManager\.TranslateString\s*\(\s*""((?:[^""\\]|\\.)*)""";
             ExtractMatches(content, simplePattern, collectedStrings, fileName, false);
 
-            // Pattern 2: String interpolation (handles escaped characters)
+            // Pattern 2: String interpolation
             // LanguageManager.TranslateString($"text with \n and {variable}")
             string interpolationPattern = @"LanguageManager\.TranslateString\s*\(\s*\$""((?:[^""\\]|\\.)*)""";
             ExtractMatches(content, interpolationPattern, collectedStrings, fileName, false);
 
-            // Pattern 3: Verbatim strings (handles doubled quotes and actual newlines)
-            // LanguageManager.TranslateString(@"text with actual
-            // newlines and "" quotes")
+            // Pattern 3: Verbatim strings
+            // LanguageManager.TranslateString(@"text with actual newlines and "" quotes")
             string verbatimPattern = @"LanguageManager\.TranslateString\s*\(\s*@""((?:[^""]|"""")*)""";
             ExtractMatches(content, verbatimPattern, collectedStrings, fileName, true);
 
-            // Pattern 4: Multi-line regular strings (spans multiple lines)
+            // Pattern 4: Multi-line regular strings
             string multilinePattern = @"LanguageManager\.TranslateString\s*\(\s*""((?:[^""\\]|\\.|[\r\n])*?)""";
             ExtractMatches(content, multilinePattern, collectedStrings, fileName, false);
 
             // Pattern 5: Constants or readonly strings assigned to TranslateString calls
+            ExtractVariableReferences(content, collectedStrings, fileName);
+
+            // Translate("text")
+            string translateSimplePattern = @"Translate\s*\(\s*""((?:[^""\\]|\\.)*)""";
+            ExtractMatches(content, translateSimplePattern, collectedStrings, fileName, false);
+
+            // Pattern 6: Translate() wrapper - string interpolation
+            // Translate($"text with {variable}")
+            string translateInterpolationPattern = @"Translate\s*\(\s*\$""((?:[^""\\]|\\.)*)""";
+            ExtractMatches(content, translateInterpolationPattern, collectedStrings, fileName, false);
+
+            // Pattern 7: Translate() wrapper - verbatim strings
+            // Translate(@"text with actual newlines")
+            string translateVerbatimPattern = @"Translate\s*\(\s*@""((?:[^""]|"""")*)""";
+            ExtractMatches(content, translateVerbatimPattern, collectedStrings, fileName, true);
+
+            // Pattern 8: Translate() wrapper - multi-line strings
+            string translateMultilinePattern = @"Translate\s*\(\s*""((?:[^""\\]|\\.|[\r\n])*?)""";
+            ExtractMatches(content, translateMultilinePattern, collectedStrings, fileName, false);
+
+            // Pattern 9: Constants or readonly strings assigned to TranslateString calls
             ExtractVariableReferences(content, collectedStrings, fileName);
         }
 

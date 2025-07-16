@@ -165,7 +165,7 @@ namespace Sales_Tracker.Settings
 
                 if (!success)
                 {
-                    return false; // Settings save was cancelled or failed
+                    return false;  // Settings save was cancelled or failed
                 }
 
                 if (HasLanguageChanged())
@@ -180,7 +180,7 @@ namespace Sales_Tracker.Settings
                     bool languageSuccess = await UpdateLanguageAsync();
                     if (!languageSuccess)
                     {
-                        return false; // Language update was cancelled or failed
+                        return false;  // Language update was cancelled or failed
                     }
 
                     Security_Form.Instance.CenterEncryptControls();

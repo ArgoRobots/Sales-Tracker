@@ -1284,8 +1284,6 @@ namespace Sales_Tracker
         {
             DateRange_Form dateRange_Form = new();
             TimeRangePanel = dateRange_Form.Main_Panel;
-            TimeRangePanel.BorderColor = CustomColors.ControlPanelBorder;
-            TimeRangePanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         }
         private void TimeRange_Button_Click(object sender, EventArgs e)
         {

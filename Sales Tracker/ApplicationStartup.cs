@@ -75,15 +75,24 @@ namespace Sales_Tracker
 
                 // Check if translations are already available for this language
                 bool translationsAvailable = LanguageManager.TranslationCache != null &&
-                                           LanguageManager.TranslationCache.ContainsKey(languageAbbreviation) &&
-                                           LanguageManager.TranslationCache[languageAbbreviation].Count > 0;
+                                             LanguageManager.TranslationCache.ContainsKey(languageAbbreviation) &&
+                                             LanguageManager.TranslationCache[languageAbbreviation].Count > 0;
 
                 if (!translationsAvailable)
                 {
                     Log.Write(1, $"Translations file missing or empty for default language '{defaultLanguage}'. Downloading...");
 
                     // Download the language file for the default language
-                    bool downloadSuccess = await LanguageManager.UpdateApplicationLanguage(defaultLanguage);
+                    bool downloadSuccess = await LanguageManager.DownloadAndMergeLanguageJson(defaultLanguage);
+
+                    // Apply the translations to any open forms if the startup forms are still shown
+                    if (MainMenu_Form.Instance == null)
+                    {
+                        foreach (Form form in Application.OpenForms)
+                        {
+                            LanguageManager.UpdateLanguageForControl(form);
+                        }
+                    }
 
                     if (downloadSuccess)
                     {

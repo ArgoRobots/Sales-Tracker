@@ -85,7 +85,7 @@ namespace Sales_Tracker.UI
         /// Downloads and merges language JSON for the specified language.
         /// </summary>
         /// <returns>True if successful, false if failed or skipped</returns>
-        private static async Task<bool> DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
+        public static async Task<bool> DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
         {
             string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == languageName).Value;
 
@@ -171,14 +171,13 @@ namespace Sales_Tracker.UI
         {
             bool downloadSuccess = await DownloadAndMergeLanguageJson(targetLanguageName, cancellationToken);
 
-            if (!downloadSuccess)
+            if (downloadSuccess)
             {
-                Log.Write(1, $"Failed to download translations for {targetLanguageName}");
-                return false;
+                await ApplyTranslations(targetLanguageName, cancellationToken);
+                return true;
             }
 
-            await ApplyTranslations(targetLanguageName, cancellationToken);
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -217,12 +216,8 @@ namespace Sales_Tracker.UI
 
             // Add other controls
             controlsList.Add(CustomControls.ControlsDropDown_Button);
-            if (MainMenu_Form.Instance != null)
-            {
-                controlsList.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
-                controlsList.AddRange(MainMenu_Form.Instance.GetMainControls());
-                controlsList.AddRange(DateRange_Form.Instance.GetCustomRangeControls());
-            }
+            controlsList.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
+            controlsList.AddRange(MainMenu_Form.Instance.GetMainControls());
 
             // Apply translations to all controls on UI thread
             List<Task> updateTasks = [];

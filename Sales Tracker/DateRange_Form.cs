@@ -50,6 +50,7 @@ namespace Sales_Tracker
         {
             ThemeManager.SetThemeForForm(this);
             Bottom_Separator.FillColor = CustomColors.ControlBorder;
+            Main_Panel.BorderColor = CustomColors.ControlPanelBorder;
             ThemeManager.MakeGButtonBluePrimary(Apply_Button);
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
         }
