@@ -735,22 +735,27 @@ namespace Sales_Tracker.UI
         /// </summary>
         private static void ExtractTranslateStringCalls(string content, Dictionary<string, string> collectedStrings, string fileName)
         {
-            // Pattern 1: Simple string literals
-            // LanguageManager.TranslateString("text")
-            string simplePattern = @"LanguageManager\.TranslateString\s*\(\s*""([^""]*)""\s*\)";
-            ExtractMatches(content, simplePattern, collectedStrings, fileName);
+            // Pattern 1: Simple string literals (handles escaped characters including \n, \", etc.)
+            // LanguageManager.TranslateString("text with \n newlines and \" quotes")
+            string simplePattern = @"LanguageManager\.TranslateString\s*\(\s*""((?:[^""\\]|\\.)*)""";
+            ExtractMatches(content, simplePattern, collectedStrings, fileName, false);
 
-            // Pattern 2: String interpolation (basic)
-            // LanguageManager.TranslateString($"text")
-            string interpolationPattern = @"LanguageManager\.TranslateString\s*\(\s*\$""([^""]*)""\s*\)";
-            ExtractMatches(content, interpolationPattern, collectedStrings, fileName);
+            // Pattern 2: String interpolation (handles escaped characters)
+            // LanguageManager.TranslateString($"text with \n and {variable}")
+            string interpolationPattern = @"LanguageManager\.TranslateString\s*\(\s*\$""((?:[^""\\]|\\.)*)""";
+            ExtractMatches(content, interpolationPattern, collectedStrings, fileName, false);
 
-            // Pattern 3: Multi-line strings with @
-            // LanguageManager.TranslateString(@"text")
-            string verbatimPattern = @"LanguageManager\.TranslateString\s*\(\s*@""([^""]*)""\s*\)";
-            ExtractMatches(content, verbatimPattern, collectedStrings, fileName);
+            // Pattern 3: Verbatim strings (handles doubled quotes and actual newlines)
+            // LanguageManager.TranslateString(@"text with actual
+            // newlines and "" quotes")
+            string verbatimPattern = @"LanguageManager\.TranslateString\s*\(\s*@""((?:[^""]|"""")*)""";
+            ExtractMatches(content, verbatimPattern, collectedStrings, fileName, true);
 
-            // Pattern 4: Constants or readonly strings assigned to TranslateString calls
+            // Pattern 4: Multi-line regular strings (spans multiple lines)
+            string multilinePattern = @"LanguageManager\.TranslateString\s*\(\s*""((?:[^""\\]|\\.|[\r\n])*?)""";
+            ExtractMatches(content, multilinePattern, collectedStrings, fileName, false);
+
+            // Pattern 5: Constants or readonly strings assigned to TranslateString calls
             ExtractVariableReferences(content, collectedStrings, fileName);
         }
 
@@ -760,48 +765,42 @@ namespace Sales_Tracker.UI
         private static void ExtractCustomMessageBoxCalls(string content, Dictionary<string, string> messageBoxStrings, string fileName)
         {
             // Pattern 1: Basic CustomMessageBox.Show calls
-            // CustomMessageBox.Show("title", "message", icon, buttons)
-            string pattern = @"CustomMessageBox\.Show\s*\(\s*""([^""]*)""\s*,\s*""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, pattern, messageBoxStrings, fileName);
+            string pattern = @"CustomMessageBox\.Show\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
+            ExtractMessageBoxMatches(content, pattern, messageBoxStrings, fileName, false);
 
             // Pattern 2: String interpolation
-            // CustomMessageBox.Show("title", $"message", icon, buttons)
-            string interpolationPattern = @"CustomMessageBox\.Show\s*\(\s*""([^""]*)""\s*,\s*\$""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, interpolationPattern, messageBoxStrings, fileName);
+            string interpolationPattern = @"CustomMessageBox\.Show\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*\$""((?:[^""\\]|\\.)*?)""\s*,";
+            ExtractMessageBoxMatches(content, interpolationPattern, messageBoxStrings, fileName, false);
 
             // Pattern 3: Multi-line strings
-            string multiLinePattern = @"CustomMessageBox\.Show\s*\(\s*@""([^""]*)""\s*,\s*@""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, multiLinePattern, messageBoxStrings, fileName);
+            string multiLinePattern = @"CustomMessageBox\.Show\s*\(\s*@""((?:[^""]|"""")*?)""\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
+            ExtractMessageBoxMatches(content, multiLinePattern, messageBoxStrings, fileName, true);
 
             // Pattern 4: Basic CustomMessageBox.ShowWithFormat calls
-            // CustomMessageBox.ShowWithFormat("title", "message", icon, buttons, args)
-            string showWithFormatPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""([^""]*)""\s*,\s*""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatPattern, messageBoxStrings, fileName);
+            string showWithFormatPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatPattern, messageBoxStrings, fileName, false);
 
             // Pattern 5: String interpolation for ShowWithFormat
-            // CustomMessageBox.ShowWithFormat("title", $"message", icon, buttons, args)
-            string showWithFormatInterpolationPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""([^""]*)""\s*,\s*\$""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatInterpolationPattern, messageBoxStrings, fileName);
+            string showWithFormatInterpolationPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*\$""((?:[^""\\]|\\.)*?)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatInterpolationPattern, messageBoxStrings, fileName, false);
 
             // Pattern 6: Multi-line strings for ShowWithFormat
-            string showWithFormatMultiLinePattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*@""([^""]*)""\s*,\s*@""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatMultiLinePattern, messageBoxStrings, fileName);
+            string showWithFormatMultiLinePattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*@""((?:[^""]|"""")*?)""\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatMultiLinePattern, messageBoxStrings, fileName, true);
 
             // Pattern 7: Mixed patterns - Show with interpolated title, ShowWithFormat with regular message
-            // CustomMessageBox.ShowWithFormat($"title", "message", icon, buttons, args)
-            string showWithFormatMixedPattern1 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*\$""([^""]*)""\s*,\s*""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatMixedPattern1, messageBoxStrings, fileName);
+            string showWithFormatMixedPattern1 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*\$""((?:[^""\\]|\\.)*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatMixedPattern1, messageBoxStrings, fileName, false);
 
             // Pattern 8: Mixed patterns - Show with regular title, ShowWithFormat with verbatim message
-            // CustomMessageBox.ShowWithFormat("title", @"message", icon, buttons, args)
-            string showWithFormatMixedPattern2 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""([^""]*)""\s*,\s*@""([^""]*)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatMixedPattern2, messageBoxStrings, fileName);
+            string showWithFormatMixedPattern2 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
+            ExtractMessageBoxMatches(content, showWithFormatMixedPattern2, messageBoxStrings, fileName, true);
         }
 
         /// <summary>
-        /// Extracts matches from regex pattern and adds to collection with consistent variable handling.
+        /// Extracts matches from regex pattern with improved handling for escaped characters and newlines.
         /// </summary>
-        private static void ExtractMatches(string content, string pattern, Dictionary<string, string> collectedStrings, string fileName)
+        private static void ExtractMatches(string content, string pattern, Dictionary<string, string> collectedStrings, string fileName, bool isVerbatim)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -809,26 +808,31 @@ namespace Sales_Tracker.UI
             {
                 if (match.Groups.Count >= 2)
                 {
-                    string text = match.Groups[1].Value.Trim();
+                    string rawText = match.Groups[1].Value;
+
+                    // Process strings based on type
+                    string processedText = isVerbatim
+                        ? ProcessVerbatimString(rawText).Trim()
+                        : ProcessEscapedCharacters(rawText).Trim();
 
                     // Skip empty strings
-                    if (string.IsNullOrWhiteSpace(text)) { continue; }
+                    if (string.IsNullOrWhiteSpace(processedText)) { continue; }
 
                     // Generate key and add to collection
-                    string key = LanguageManager.GetStringKey(text);
+                    string key = LanguageManager.GetStringKey(processedText);
                     if (!collectedStrings.ContainsKey(key))
                     {
-                        collectedStrings[key] = text;
-                        Log.Write(2, $"Found TranslateString: '{text}' -> Key: '{key}' in {fileName}");
+                        collectedStrings[key] = processedText;
+                        Log.Write(2, $"Found TranslateString: '{processedText}' -> Key: '{key}' in {fileName}");
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Extracts CustomMessageBox matches and adds both title and message to collection with consistent variable handling.
+        /// Extracts CustomMessageBox matches and adds both title and message to collection with proper string handling.
         /// </summary>
-        private static void ExtractMessageBoxMatches(string content, string pattern, Dictionary<string, string> messageBoxStrings, string fileName)
+        private static void ExtractMessageBoxMatches(string content, string pattern, Dictionary<string, string> messageBoxStrings, string fileName, bool isVerbatim)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -838,6 +842,18 @@ namespace Sales_Tracker.UI
                 {
                     string title = match.Groups[1].Value.Trim();
                     string message = match.Groups[2].Value.Trim();
+
+                    // Process strings based on type
+                    if (isVerbatim)
+                    {
+                        title = ProcessVerbatimString(title);
+                        message = ProcessVerbatimString(message);
+                    }
+                    else
+                    {
+                        title = ProcessEscapedCharacters(title);
+                        message = ProcessEscapedCharacters(message);
+                    }
 
                     // Process title
                     if (!string.IsNullOrWhiteSpace(title))
@@ -865,6 +881,76 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
+        /// Processes escaped characters in regular (non-verbatim) strings.
+        /// </summary>
+        private static string ProcessEscapedCharacters(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            StringBuilder result = new();
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i] == '\\' && i + 1 < input.Length)
+                {
+                    char nextChar = input[i + 1];
+                    switch (nextChar)
+                    {
+                        case 'n':
+                            result.Append('\n');
+                            i++;  // Skip the next character
+                            break;
+                        case 'r':
+                            result.Append('\r');
+                            i++;
+                            break;
+                        case 't':
+                            result.Append('\t');
+                            i++;
+                            break;
+                        case '\\':
+                            result.Append('\\');
+                            i++;
+                            break;
+                        case '"':
+                            result.Append('"');
+                            i++;
+                            break;
+                        case '\'':
+                            result.Append('\'');
+                            i++;
+                            break;
+                        default:
+                            // For unknown escape sequences, keep them as-is
+                            result.Append(input[i]);
+                            break;
+                    }
+                }
+                else
+                {
+                    result.Append(input[i]);
+                }
+            }
+
+            return result.ToString();
+        }
+
+        /// <summary>
+        /// Processes verbatim strings (replace doubled quotes with single quotes).
+        /// </summary>
+        private static string ProcessVerbatimString(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            // In verbatim strings, "" becomes "
+            return input.Replace("\"\"", "\"");
+        }
+
+        /// <summary>
         /// Attempts to find variable references passed to TranslateString.
         /// </summary>
         private static void ExtractVariableReferences(string content, Dictionary<string, string> collectedStrings, string fileName)
@@ -873,8 +959,8 @@ namespace Sales_Tracker.UI
             // const string SomeText = "value";
             // static readonly string SomeText = "value";
             // string someVar = "value";
-            string variablePattern = @"(?:const\s+string|static\s+readonly\s+string|string)\s+(\w+)\s*=\s*""([^""]*)""\s*;";
-            MatchCollection variableMatches = Regex.Matches(content, variablePattern);
+            string variablePattern = @"(?:const\s+string|static\s+readonly\s+string|string)\s+(\w+)\s*=\s*""((?:[^""\\]|\\.)*)""(?:\s*;|\s*,)";
+            MatchCollection variableMatches = Regex.Matches(content, variablePattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
             Dictionary<string, string> variables = [];
             foreach (Match match in variableMatches)
@@ -882,7 +968,21 @@ namespace Sales_Tracker.UI
                 if (match.Groups.Count >= 3)
                 {
                     string varName = match.Groups[1].Value;
-                    string varValue = match.Groups[2].Value;
+                    string varValue = ProcessEscapedCharacters(match.Groups[2].Value);
+                    variables[varName] = varValue;
+                }
+            }
+
+            // Also look for verbatim string variables
+            string verbatimVariablePattern = @"(?:const\s+string|static\s+readonly\s+string|string)\s+(\w+)\s*=\s*@""((?:[^""]|"""")*)""(?:\s*;|\s*,)";
+            MatchCollection verbatimVariableMatches = Regex.Matches(content, verbatimVariablePattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in verbatimVariableMatches)
+            {
+                if (match.Groups.Count >= 3)
+                {
+                    string varName = match.Groups[1].Value;
+                    string varValue = ProcessVerbatimString(match.Groups[2].Value);
                     variables[varName] = varValue;
                 }
             }
