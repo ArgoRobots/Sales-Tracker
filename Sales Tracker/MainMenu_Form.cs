@@ -1448,7 +1448,10 @@ namespace Sales_Tracker
             // Suspend layout updates during filtering for better performance
             dataGridView.SuspendLayout();
 
-            if (SortFromDate != null && SortToDate != null)
+            // Check if we're using custom date range
+            bool usingCustomDateRange = SortFromDate != null && SortToDate != null;
+
+            if (usingCustomDateRange)
             {
                 FilterDataGridViewByDateRange(dataGridView);
             }
@@ -1456,7 +1459,8 @@ namespace Sales_Tracker
             string displayedSearchText = Search_TextBox.Text.Trim();
             string effectiveSearchText = AISearchExtensions.GetEffectiveSearchQuery(displayedSearchText);
 
-            bool filterExists = SortTimeSpan != TimeSpan.MaxValue ||
+            bool filterExists = (SortTimeSpan != null && SortTimeSpan != TimeSpan.MaxValue) ||
+                usingCustomDateRange ||
                 !string.IsNullOrEmpty(effectiveSearchText);
 
             bool hasVisibleRows = false;
@@ -1469,8 +1473,20 @@ namespace Sales_Tracker
                 {
                     DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
 
-                    bool isVisibleByDate = (SortTimeSpan == TimeSpan.MaxValue ||
-                        rowDate >= DateTime.Now - SortTimeSpan);
+                    bool isVisibleByDate;
+
+                    if (usingCustomDateRange)
+                    {
+                        // For custom date ranges, the visibility was already set by FilterDataGridViewByDateRange
+                        // So we just use the current visibility state
+                        isVisibleByDate = row.Visible;
+                    }
+                    else
+                    {
+                        // For time span filters
+                        isVisibleByDate = (SortTimeSpan == null || SortTimeSpan == TimeSpan.MaxValue ||
+                            rowDate >= DateTime.Now - SortTimeSpan);
+                    }
 
                     bool isVisibleBySearch = string.IsNullOrEmpty(effectiveSearchText) ||
                         SearchDataGridView.FilterRowByAdvancedSearch(row, effectiveSearchText);
