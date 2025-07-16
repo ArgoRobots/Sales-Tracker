@@ -1520,62 +1520,104 @@ namespace Sales_Tracker
                 row.Visible = isVisible;
             }
         }
+
+        // 'Showing results for' label
         private void ShowShowingResultsForLabel()
         {
-            string text = LanguageManager.TranslateString("Showing results for");
-
-            // Get the appropriate display text for the search
+            string text = BuildShowingResultsText();
+            ShowingResultsFor_Label.Text = text;
+            CenterShowingResultsLabel();
+        }
+        private string BuildShowingResultsText()
+        {
             string displayedSearchText = Search_TextBox.Text.Trim();
             string searchDisplay = AISearchExtensions.GetDisplayQuery(displayedSearchText);
 
-            // Append search text if available
-            if (!string.IsNullOrEmpty(searchDisplay))
+            // Helper methods to check if filters are active
+            bool hasSearchFilter = !string.IsNullOrEmpty(searchDisplay);
+            bool hasTimeSpanFilter = SortTimeSpan != null && SortTimeSpan != TimeSpan.MaxValue;
+            bool hasDateRangeFilter = SortFromDate != null && SortToDate != null;
+
+            // Base case: no search, no time filter, no date range
+            if (!hasSearchFilter && !hasTimeSpanFilter && !hasDateRangeFilter)
             {
-                // Remove the ! prefix if using AI search
-                if (displayedSearchText.StartsWith('!') && AISearchExtensions.IsUsingAIQuery)
-                {
-                    text += $" '{searchDisplay}'";
-                }
-                else
-                {
-                    text += $" '{searchDisplay}'";
-                }
+                return LanguageManager.TranslateString("Showing all results");
             }
 
-            // Handle time span case
-            if (SortTimeSpan != null && SortTimeSpan != TimeSpan.MaxValue)
+            // Case 1: Search term only
+            if (hasSearchFilter && !hasTimeSpanFilter && !hasDateRangeFilter)
+            {
+                string template = LanguageManager.TranslateString("Showing results for '{0}'");
+                return string.Format(template, searchDisplay);
+            }
+
+            // Case 2: Time span only
+            if (!hasSearchFilter && hasTimeSpanFilter && !hasDateRangeFilter)
             {
                 string timeSpanText = GetTimeSpanText(SortTimeSpan.Value);
-
-                if (!string.IsNullOrEmpty(searchDisplay))
-                {
-                    text += $"\nin the last {timeSpanText}";
-                }
-                else
-                {
-                    text = $"Showing results for\nthe last {timeSpanText}";
-                }
+                string template = LanguageManager.TranslateString("Showing results for\nthe last {0}");
+                return string.Format(template, timeSpanText);
             }
 
-            // Handle custom date range case
-            if (SortFromDate != null && SortToDate != null)
+            // Case 3: Custom date range only
+            if (!hasSearchFilter && !hasTimeSpanFilter && hasDateRangeFilter)
             {
                 string fromDate = Tools.FormatDate((DateTime)SortFromDate);
                 string toDate = Tools.FormatDate((DateTime)SortToDate);
-
-                if (!string.IsNullOrEmpty(searchDisplay))
-                {
-                    text += $"\nfrom {fromDate} to {toDate}";
-                }
-                else
-                {
-                    text = $"Showing results from\n{fromDate} to {toDate}";
-                }
+                string template = LanguageManager.TranslateString("Showing results from\n{0} to {1}");
+                return string.Format(template, fromDate, toDate);
             }
 
-            // Update label text and location
-            ShowingResultsFor_Label.Text = text;
-            CenterShowingResultsLabel();
+            // Case 4: Search term + time span
+            if (hasSearchFilter && hasTimeSpanFilter && !hasDateRangeFilter)
+            {
+                string timeSpanText = GetTimeSpanText(SortTimeSpan.Value);
+                string template = LanguageManager.TranslateString("Showing results for '{0}'\nin the last {1}");
+                return string.Format(template, searchDisplay, timeSpanText);
+            }
+
+            // Case 5: Search term + custom date range
+            if (hasSearchFilter && !hasTimeSpanFilter && hasDateRangeFilter)
+            {
+                string fromDate = Tools.FormatDate((DateTime)SortFromDate);
+                string toDate = Tools.FormatDate((DateTime)SortToDate);
+                string template = LanguageManager.TranslateString("Showing results for '{0}'\nfrom {1} to {2}");
+                return string.Format(template, searchDisplay, fromDate, toDate);
+            }
+
+            // Fallback
+            return LanguageManager.TranslateString("Showing results");
+        }
+        private static string GetTimeSpanText(TimeSpan timeSpan)
+        {
+            if (timeSpan.TotalDays >= 365)
+            {
+                int years = (int)(timeSpan.TotalDays / 365);
+                return years == 1
+                    ? LanguageManager.TranslateString("year")
+                    : string.Format(LanguageManager.TranslateString("{0} years"), years);
+            }
+            else if (timeSpan.TotalDays >= 30)
+            {
+                int months = (int)(timeSpan.TotalDays / 30);
+                return months == 1
+                    ? LanguageManager.TranslateString("month")
+                    : string.Format(LanguageManager.TranslateString("{0} months"), months);
+            }
+            else if (timeSpan.TotalDays >= 7)
+            {
+                int weeks = (int)(timeSpan.TotalDays / 7);
+                return weeks == 1
+                    ? LanguageManager.TranslateString("week")
+                    : string.Format(LanguageManager.TranslateString("{0} weeks"), weeks);
+            }
+            else
+            {
+                int days = (int)timeSpan.TotalDays;
+                return days == 1
+                    ? LanguageManager.TranslateString("day")
+                    : string.Format(LanguageManager.TranslateString("{0} days"), days);
+            }
         }
         private void CenterShowingResultsLabel()
         {
@@ -1588,14 +1630,6 @@ namespace Sales_Tracker
                     (ClientSize.Width - ShowingResultsFor_Label.Width) / 2,
                     MainTop_Panel.Bottom + (_chartTop - MainTop_Panel.Bottom - ShowingResultsFor_Label.Height) / 2);
             }
-        }
-
-        /// <summary>
-        /// Helper function to convert TimeSpan into human-readable text.
-        /// </summary>
-        private static string? GetTimeSpanText(TimeSpan timeSpan)
-        {
-            return _timeSpanMappings.TryGetValue(timeSpan, out string? text) ? text : null;
         }
         public void HideShowingResultsForLabel()
         {

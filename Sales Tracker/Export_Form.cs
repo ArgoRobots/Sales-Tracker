@@ -182,16 +182,13 @@ namespace Sales_Tracker
             if (!HasAnyDataToExport())
             {
                 CustomMessageBox.Show(
-                    "No Data to Export",
-                    "There is no data available to export. Please add some transactions, products, companies, or accountants before exporting.",
+                    LanguageManager.TranslateString("No Data to Export"),
+                    LanguageManager.TranslateString("There is no data available to export. Please add some transactions, products, companies, or accountants before exporting."),
                     CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
                 return;
             }
 
-            string loadingText = ExportReceipts_CheckBox.Checked && ExportReceipts_CheckBox.Visible
-                ? $"Exporting {FileType_ComboBox.Text} and receipts..."
-                : $"Exporting {FileType_ComboBox.Text}...";
-
+            string loadingText = GetExportLoadingText();
             LoadingPanel.ShowLoadingScreen(this, loadingText);
 
             // Capture all UI values on the UI thread
@@ -214,9 +211,25 @@ namespace Sales_Tracker
                 && Directory_TextBox.BorderColor != Color.Red
                 && !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
         }
+        private string GetExportLoadingText()
+        {
+            bool shouldExportReceipts = ExportReceipts_CheckBox.Checked && ExportReceipts_CheckBox.Visible;
+            string fileType = FileType_ComboBox.Text;
+
+            if (shouldExportReceipts)
+            {
+                string template = LanguageManager.TranslateString("Exporting {0} and receipts...");
+                return string.Format(template, fileType);
+            }
+            else
+            {
+                string template = LanguageManager.TranslateString("Exporting {0}...");
+                return string.Format(template, fileType);
+            }
+        }
         private void SetExportSpreadsheetControls()
         {
-            bool isExcelSelected = FileType_ComboBox.Text == "Excel spreadsheet (.xlsx)";
+            bool isExcelSelected = FileType_ComboBox.SelectedIndex == 1;
 
             if (isExcelSelected)
             {
@@ -259,7 +272,9 @@ namespace Sales_Tracker
                 case "ArgoSales (.zip)":
                     Directories.CreateBackup(filePath);
                     TrackExport(stopwatch, filePath + ArgoFiles.ZipExtension, ExportType.Backup);
-                    FinalizeExport($"Successfully backed up '{Directories.CompanyName}'");
+
+                    string backupMessage = GetBackupSuccessMessage();
+                    FinalizeExport(backupMessage);
                     break;
 
                 case "Excel spreadsheet (.xlsx)":
@@ -273,26 +288,40 @@ namespace Sales_Tracker
                     string xlsxPath = Path.Combine(exportFolder, fileName + ArgoFiles.XlsxFileExtension);
                     ExcelSheetManager.ExportSpreadsheet(xlsxPath, currency);
 
-                    string successMessage = $"Successfully created spreadsheet for '{Directories.CompanyName}'";
-
-                    // Export receipts if checkbox is checked
-                    if (exportReceipts)
-                    {
-                        try
-                        {
-                            ExportReceiptsToFolder(Path.Combine(exportFolder, fileName));
-                            successMessage += " and exported receipts";
-                        }
-                        catch (Exception ex)
-                        {
-                            successMessage += $", but failed to export receipts: {ex.Message}";
-                        }
-                    }
-
+                    string successMessage = GetSpreadsheetSuccessMessage(exportReceipts, exportFolder, fileName);
                     TrackExport(stopwatch, xlsxPath, ExportType.XLSX);
                     FinalizeExport(successMessage);
                     break;
             }
+        }
+        private static string GetBackupSuccessMessage()
+        {
+            string template = LanguageManager.TranslateString("Successfully backed up '{0}'");
+            return string.Format(template, Directories.CompanyName);
+        }
+        private static string GetSpreadsheetSuccessMessage(bool exportReceipts, string exportFolder, string fileName)
+        {
+            string baseTemplate = LanguageManager.TranslateString("Successfully created spreadsheet for '{0}'");
+            string successMessage = string.Format(baseTemplate, Directories.CompanyName);
+
+            // Export receipts if checkbox is checked
+            if (exportReceipts)
+            {
+                try
+                {
+                    ExportReceiptsToFolder(Path.Combine(exportFolder, fileName));
+                    string receiptsText = LanguageManager.TranslateString(" and exported receipts");
+                    successMessage += receiptsText;
+                }
+                catch (Exception ex)
+                {
+                    string errorTemplate = LanguageManager.TranslateString(", but failed to export receipts: {0}");
+                    string errorText = string.Format(errorTemplate, ex.Message);
+                    successMessage += errorText;
+                }
+            }
+
+            return successMessage;
         }
         private static void ExportReceiptsToFolder(string basePath)
         {
@@ -374,7 +403,8 @@ namespace Sales_Tracker
             Invoke(() =>
             {
                 LoadingPanel.HideLoadingScreen(this);
-                CustomMessageBox.Show("Successfully exported", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                string title = LanguageManager.TranslateString("Successfully exported");
+                CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             });
         }
         private static bool HasAnyDataToExport()
