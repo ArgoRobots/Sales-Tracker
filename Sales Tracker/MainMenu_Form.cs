@@ -586,21 +586,13 @@ namespace Sales_Tracker
             DataGridViewRow row = dataGridView.Rows[rowIndex];
             string? receipt = ReceiptManager.GetReceiptPathFromRow(row);
 
-            if (receipt == null)
-            {
-                string transactionID = row.Cells[Column.ID.ToString()].Value.ToString();
-                Log.Error_CannotProcessReceiptColumn(transactionID);
-                return;
-            }
-
             SetHasReceiptColumn(row, receipt);
         }
-        public static void SetHasReceiptColumn(DataGridViewRow row, string receipt)
+        public static void SetHasReceiptColumn(DataGridViewRow row, string? receipt)
         {
             if (!Properties.Settings.Default.ShowHasReceiptColumn) { return; }
 
-            string newReceipt = ReceiptManager.ProcessReceiptTextFromRowTag(receipt);
-
+            string newReceipt = receipt != null ? ReceiptManager.ProcessReceiptTextFromRowTag(receipt) : null;
             DataGridViewCell lastCell = row.Cells[row.DataGridView.Columns.Count - 1];
             SetReceiptStatusSymbol(lastCell, newReceipt);
         }
