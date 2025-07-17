@@ -93,6 +93,7 @@ namespace Sales_Tracker.Charts
         public static void ConfigureChartForPie(PieChart chart)
         {
             ClearPieChart(chart);
+            chart.Legend = new CustomLegend();
 
             SKColor textColor = ChartColors.ToSKColor(CustomColors.Text);
 
