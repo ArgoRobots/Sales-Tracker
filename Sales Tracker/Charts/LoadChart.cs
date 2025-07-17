@@ -2057,6 +2057,11 @@ namespace Sales_Tracker.Charts
         public static void ClearPieChart(PieChart chart)
         {
             chart.Series = [];
+
+            if (chart.Legend is CustomLegend customLegend)
+            {
+                customLegend.ClearLayout();
+            }
         }
 
         // GeoMap helper methods
