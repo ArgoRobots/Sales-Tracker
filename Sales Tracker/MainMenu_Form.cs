@@ -7,6 +7,7 @@ using Sales_Tracker.Charts;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
+using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -24,7 +25,8 @@ namespace Sales_Tracker
         // Properties
         private static MainMenu_Form _instance;
         public static readonly string _noteTextKey = "note", _rowTagKey = "RowTag", _itemsKey = "Items", _purchaseDataKey = "PurchaseData", _tagKey = "Tag";
-        private static readonly short _chartTop = 220, _analyticChartTop = 310;
+        private static readonly byte _chartTop = 220;
+        private static readonly short _analyticChartTop = 310;
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -445,12 +447,23 @@ namespace Sales_Tracker
                 ProcessRow(dataGridView, rowData);
             }
 
-            bool hasVisibleRows = false;
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRows(dataGridView);
+            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
+
+            ApplyReturnAppearancesToAllRows(dataGridView);
+        }
+        private static void ApplyReturnAppearancesToAllRows(Guna2DataGridView dataGridView)
+        {
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                hasVisibleRows = true;
+                bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(row);
+                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
+
+                if (isFullyReturned || isPartiallyReturned)
+                {
+                    ReturnManager.UpdateRowAppearanceForReturn(row, isFullyReturned, isPartiallyReturned);
+                }
             }
-            LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
         }
         private static bool ValidateFile(string filePath)
         {
@@ -1433,19 +1446,12 @@ namespace Sales_Tracker
                 SelectedDataGridView.ClearSelection();
             }
         }
-        private void ApplyFiltersToDataGridView(DataGridView dataGridView)
+        private void ApplyFiltersToDataGridView(Guna2DataGridView dataGridView)
         {
             // Suspend layout updates during filtering for better performance
             dataGridView.SuspendLayout();
 
-            // Check if we're using custom date range
             bool usingCustomDateRange = SortFromDate != null && SortToDate != null;
-
-            if (usingCustomDateRange)
-            {
-                FilterDataGridViewByDateRange(dataGridView);
-            }
-
             string displayedSearchText = Search_TextBox.Text.Trim();
             string effectiveSearchText = AISearchExtensions.GetEffectiveSearchQuery(displayedSearchText);
 
@@ -1453,36 +1459,35 @@ namespace Sales_Tracker
                 usingCustomDateRange ||
                 !string.IsNullOrEmpty(effectiveSearchText);
 
-            bool hasVisibleRows = false;
-
             if (filterExists)
             {
                 ShowShowingResultsForLabel();
 
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
-                    DateTime rowDate = DateTime.Parse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString());
+                    // Try to parse the date from the correct column depending on which filter is used
+                    if (!DateTime.TryParse(row.Cells[SalesColumnHeaders[Column.Date]].Value.ToString(), out DateTime rowDate) &&
+                        !DateTime.TryParse(row.Cells[PurchaseColumnHeaders[Column.Date]].Value.ToString(), out rowDate))
+                    {
+                        row.Visible = false;
+                        continue;
+                    }
 
-                    bool isVisibleByDate;
+                    bool isVisibleByDate = true;
 
                     if (usingCustomDateRange)
                     {
-                        // For custom date ranges, the visibility was already set by FilterDataGridViewByDateRange
-                        // So we just use the current visibility state
-                        isVisibleByDate = row.Visible;
+                        isVisibleByDate = rowDate >= SortFromDate && rowDate <= SortToDate;
                     }
-                    else
+                    else if (SortTimeSpan != null && SortTimeSpan != TimeSpan.MaxValue)
                     {
-                        // For time span filters
-                        isVisibleByDate = SortTimeSpan == null || SortTimeSpan == TimeSpan.MaxValue ||
-                            rowDate >= DateTime.Now - SortTimeSpan;
+                        isVisibleByDate = rowDate >= DateTime.Now - SortTimeSpan;
                     }
 
                     bool isVisibleBySearch = string.IsNullOrEmpty(effectiveSearchText) ||
                         SearchDataGridView.FilterRowByAdvancedSearch(row, effectiveSearchText);
 
                     row.Visible = isVisibleByDate && isVisibleBySearch;
-                    hasVisibleRows |= row.Visible;
                 }
             }
             else
@@ -1492,27 +1497,17 @@ namespace Sales_Tracker
                 foreach (DataGridViewRow row in dataGridView.Rows)
                 {
                     row.Visible = true;
-                    hasVisibleRows = true;
                 }
             }
 
-            DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
+            bool hasVisibleRows = DataGridViewManager.HasVisibleRows(dataGridView);
+
             LabelManager.ManageNoDataLabelOnControl(hasVisibleRows, dataGridView);
+            DataGridViewManager.UpdateAlternatingRowColors(dataGridView);
             UpdateTotalLabels();
 
             dataGridView.ResumeLayout(true);
         }
-        private void FilterDataGridViewByDateRange(DataGridView dataGridView)
-        {
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                DateTime rowDate = DateTime.Parse(row.Cells[PurchaseColumnHeaders[Column.Date]].Value.ToString());
-                bool isVisible = rowDate >= SortFromDate && rowDate <= SortToDate;
-                row.Visible = isVisible;
-            }
-        }
-
-        // 'Showing results for' label
         private void ShowShowingResultsForLabel()
         {
             string text = BuildShowingResultsText();

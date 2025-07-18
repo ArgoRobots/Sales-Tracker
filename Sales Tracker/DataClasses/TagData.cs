@@ -7,7 +7,7 @@
     /// </summary>
     public class TagData
     {
-        // Finance related properties
+        // USD finance related properties
         public decimal PricePerUnitUSD { get; set; }
         public decimal ShippingUSD { get; set; }
         public decimal TaxUSD { get; set; }
@@ -16,6 +16,8 @@
         public decimal ChargedDifferenceUSD { get; set; }
         public decimal ChargedOrCreditedUSD { get; set; }
         public string OriginalCurrency { get; set; }
+
+        // Finance related properties
         public decimal OriginalPricePerUnit { get; set; }
         public decimal OriginalShipping { get; set; }
         public decimal OriginalTax { get; set; }
@@ -26,8 +28,10 @@
 
         // Return related properties
         public bool IsReturned { get; set; } = false;
+        public bool IsPartiallyReturned { get; set; } = false;
         public DateTime? ReturnDate { get; set; }
         public string ReturnReason { get; set; }
         public string ReturnedBy { get; set; }
+        public List<int> ReturnedItems { get; set; }
     }
 }

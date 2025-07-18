@@ -611,24 +611,30 @@ namespace Sales_Tracker.UI
                 control.Visible = false;
             }
 
+            MainMenu_Form.SelectedOption selectedOption = MainMenu_Form.Instance.Selected;
+            bool isSingleRowSelected = grid.SelectedRows.Count == 1;
+            bool isPurchasesOrSales = selectedOption == MainMenu_Form.SelectedOption.Purchases ||
+                                      selectedOption == MainMenu_Form.SelectedOption.Sales;
+            bool isTransactionView = selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                                     selectedOption == MainMenu_Form.SelectedOption.ItemsInSale;
             int currentIndex = 0;
 
             // Add ModifyBtn
-            if (grid.SelectedRows.Count == 1)
+            if (isSingleRowSelected)
             {
                 _rightClickDataGridView_ModifyBtn.Visible = true;
                 flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ModifyBtn, currentIndex++);
             }
 
             // Add MoveBtn
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategoryPurchases)
+            if (selectedOption == MainMenu_Form.SelectedOption.CategoryPurchases)
             {
                 string text = LanguageManager.TranslateString("Move category to sales");
                 _rightClickDataGridView_MoveBtn.Visible = true;
                 _rightClickDataGridView_MoveBtn.Text = text;
                 flowPanel.Controls.SetChildIndex(_rightClickDataGridView_MoveBtn, currentIndex++);
             }
-            else if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.CategorySales)
+            else if (selectedOption == MainMenu_Form.SelectedOption.CategorySales)
             {
                 string text = LanguageManager.TranslateString("Move category to purchases");
                 _rightClickDataGridView_MoveBtn.Visible = true;
@@ -636,12 +642,10 @@ namespace Sales_Tracker.UI
                 flowPanel.Controls.SetChildIndex(_rightClickDataGridView_MoveBtn, currentIndex++);
             }
 
-            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases
-                 || MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales)
+            if (isPurchasesOrSales)
             {
                 // Add ShowItemsBtn
-                if (grid.SelectedRows[0].Tag is (List<string>, TagData)
-                    && grid.SelectedRows.Count == 1)
+                if (isSingleRowSelected && grid.SelectedRows[0].Tag is (List<string>, TagData))
                 {
                     _rightClickDataGridView_ShowItemsBtn.Visible = true;
                     flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ShowItemsBtn, currentIndex++);
@@ -653,15 +657,43 @@ namespace Sales_Tracker.UI
                     _rightClickDataGridView_ExportReceiptBtn.Visible = true;
                     flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ExportReceiptBtn, currentIndex++);
                 }
+            }
 
-                // Add ReturnBtn
-                if (grid.SelectedRows.Count == 1)
+            if (isPurchasesOrSales || isTransactionView)
+            {
+                // Add ReturnBtn or UndoReturnBtn based on current return status
+                if (isSingleRowSelected)
                 {
-                    bool isReturned = ReturnManager.IsTransactionReturned(grid.SelectedRows[0]);
+                    DataGridViewRow selectedRow;
 
-                    if (isReturned)
+                    // Check if we're in the items view of a transaction
+                    if (selectedOption == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                        selectedOption == MainMenu_Form.SelectedOption.ItemsInSale)
+                    {
+                        // Use the main transaction row for return status checks
+                        selectedRow = SelectedRowInMainMenu;
+                    }
+                    else
+                    {
+                        // Normal case - we're in the main purchases/sales view
+                        selectedRow = grid.SelectedRows[0];
+                    }
+
+                    bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
+                    bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
+
+                    if (isFullyReturned || isPartiallyReturned)
                     {
                         _rightClickDataGridView_UndoReturnBtn.Visible = true;
+                        // Update button text based on return status
+                        if (isPartiallyReturned && !isFullyReturned)
+                        {
+                            _rightClickDataGridView_UndoReturnBtn.Text = "Undo partial return";
+                        }
+                        else
+                        {
+                            _rightClickDataGridView_UndoReturnBtn.Text = "Undo return";
+                        }
                         flowPanel.Controls.SetChildIndex(_rightClickDataGridView_UndoReturnBtn, currentIndex++);
                     }
                     else
@@ -1018,6 +1050,43 @@ namespace Sales_Tracker.UI
             }
             return false;
         }
+
+        /// <summary>
+        /// Updates row appearance for returns in ItemsInTransaction forms.
+        /// Individual returned items will be displayed in red.
+        /// </summary>
+        public static void UpdateItemRowAppearanceForReturns(Guna2DataGridView itemsGrid, DataGridViewRow mainTransactionRow)
+        {
+            if (mainTransactionRow.Tag is not (List<string>, TagData))
+            {
+                return;
+            }
+
+            // Apply return styling to individual item rows
+            for (int i = 0; i < itemsGrid.Rows.Count; i++)
+            {
+                DataGridViewRow itemRow = itemsGrid.Rows[i];
+                bool isItemReturned = ReturnManager.IsItemReturned(mainTransactionRow, i);
+
+                if (isItemReturned)
+                {
+                    // Mark returned items in red
+                    itemRow.DefaultCellStyle.BackColor = CustomColors.ReturnedItemBackground;
+                    itemRow.DefaultCellStyle.SelectionBackColor = CustomColors.ReturnedItemSelection;
+                    itemRow.DefaultCellStyle.ForeColor = CustomColors.ReturnedItemText;
+                }
+                else
+                {
+                    // Reset to default colors for non-returned items
+                    itemRow.DefaultCellStyle.BackColor = Color.Empty;
+                    itemRow.DefaultCellStyle.SelectionBackColor = Color.Empty;
+                    itemRow.DefaultCellStyle.ForeColor = Color.Empty;
+                }
+            }
+
+            // Ensure alternating row colors are maintained for non-returned items
+            UpdateAlternatingRowColors(itemsGrid);
+        }
         private static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
         {
             if (dataGridView.SortedColumn == null)
@@ -1040,15 +1109,30 @@ namespace Sales_Tracker.UI
             {
                 if (!row.Visible) { continue; }
 
-                if (ReturnManager.IsTransactionReturned(row))
+                // Check return status for proper color application
+                bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(row);
+                bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(row);
+
+                if (isFullyReturned)
                 {
-                    ReturnManager.UpdateRowAppearanceForReturn(row, true);
+                    // Fully returned - red background
+                    ReturnManager.UpdateRowAppearanceForReturn(row, true, false);
+                }
+                else if (isPartiallyReturned)
+                {
+                    // Partially returned - orange background
+                    ReturnManager.UpdateRowAppearanceForReturn(row, false, true);
                 }
                 else
                 {
+                    // Not returned - apply alternating colors
                     row.DefaultCellStyle.BackColor = (visibleRowIndex % 2 == 0)
                         ? dataGridView.DefaultCellStyle.BackColor
                         : dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
+
+                    // Reset other styling
+                    row.DefaultCellStyle.SelectionBackColor = Color.Empty;
+                    row.DefaultCellStyle.ForeColor = Color.Empty;
                 }
 
                 visibleRowIndex++;
@@ -1130,6 +1214,7 @@ namespace Sales_Tracker.UI
                 CustomMessageBoxButtons.Ok,
                 action, type);
         }
+
         /// <summary>
         /// Determines whether a category can be moved or deleted by checking if it contains any products.
         /// Shows a message box if the action cannot be performed.
@@ -1496,13 +1581,35 @@ namespace Sales_Tracker.UI
             Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
-            DataGridViewRow selectedRow = grid.SelectedRows[0];
-            bool isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
+            DataGridViewRow selectedRow;
+            bool isPurchase;
+
+            // Check if we're in the items view of a transaction
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                // Use the main transaction row, not the individual item row
+                selectedRow = SelectedRowInMainMenu;
+                isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase;
+            }
+            else
+            {
+                // Normal case - we're in the main purchases/sales view
+                selectedRow = grid.SelectedRows[0];
+                isPurchase = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases;
+            }
 
             using ReturnProduct_Form returnForm = new(selectedRow, isPurchase);
             if (returnForm.ShowDialog() == DialogResult.OK)
             {
                 CustomControls.CloseAllPanels();
+
+                // Refresh ItemsInTransaction_Form if it's open
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
+                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                {
+                    itemsForm.RefreshItemReturnStatus();
+                }
             }
         }
         private static void UndoReturnProduct(object sender, EventArgs e)
@@ -1510,12 +1617,32 @@ namespace Sales_Tracker.UI
             Guna2DataGridView grid = (Guna2DataGridView)RightClickDataGridView_Panel.Tag;
             if (grid.SelectedRows.Count != 1) { return; }
 
-            DataGridViewRow selectedRow = grid.SelectedRows[0];
+            DataGridViewRow selectedRow;
+
+            // Check if we're in the items view of a transaction
+            if (MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInPurchase ||
+                MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.ItemsInSale)
+            {
+                // Use the main transaction row, not the individual item row
+                selectedRow = SelectedRowInMainMenu;
+            }
+            else
+            {
+                // Normal case - we're in the main purchases/sales view
+                selectedRow = grid.SelectedRows[0];
+            }
 
             using UndoReturn_Form undoForm = new(selectedRow);
             if (undoForm.ShowDialog() == DialogResult.OK)
             {
                 CustomControls.CloseAllPanels();
+
+                // Refresh ItemsInTransaction_Form if it's open
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
+                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                {
+                    itemsForm.RefreshItemReturnStatus();
+                }
             }
         }
         private static void DeleteRow(object sender, EventArgs e)

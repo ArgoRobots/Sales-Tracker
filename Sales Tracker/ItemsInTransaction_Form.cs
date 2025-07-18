@@ -73,6 +73,9 @@ namespace Sales_Tracker
                 }
 
                 DataGridViewManager.DataGridViewRowChanged(Items_DataGridView, MainMenu_Form.Instance.Selected);
+
+                // Refresh the main menu to show updated return status
+                MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             }
             MainMenu_Form.IsProgramLoading = false;
         }
@@ -132,6 +135,9 @@ namespace Sales_Tracker
             MainMenu_Form.Instance.Selected = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Sales
                 ? MainMenu_Form.SelectedOption.ItemsInSale
                 : MainMenu_Form.SelectedOption.ItemsInPurchase;
+
+            // Update item appearance for returns
+            DataGridViewManager.UpdateItemRowAppearanceForReturns(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
         }
         private void LoadAllItemsInDataGridView(List<string> itemList)
         {
@@ -157,6 +163,11 @@ namespace Sales_Tracker
                 int rowIndex = Items_DataGridView.Rows.Add(values);
                 Items_DataGridView.Rows[rowIndex].Tag = receiptFilePath;
             }
+        }
+        public void RefreshItemReturnStatus()
+        {
+            // Update item appearance for returns
+            DataGridViewManager.UpdateItemRowAppearanceForReturns(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
         }
     }
 }

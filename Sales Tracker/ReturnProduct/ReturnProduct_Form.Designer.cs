@@ -38,14 +38,14 @@ namespace Sales_Tracker.ReturnProduct
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             TransactionInfo_Label = new Label();
             ReturnReason_Label = new Label();
@@ -63,11 +63,11 @@ namespace Sales_Tracker.ReturnProduct
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Title_Label.Location = new Point(241, 30);
+            Title_Label.Location = new Point(240, 30);
             Title_Label.Name = "Title_Label";
-            Title_Label.Size = new Size(230, 45);
+            Title_Label.Size = new Size(233, 45);
             Title_Label.TabIndex = 0;
-            Title_Label.Text = "Process Return";
+            Title_Label.Text = "Return Product";
             // 
             // TransactionInfo_Label
             // 
@@ -95,7 +95,7 @@ namespace Sales_Tracker.ReturnProduct
             ReturnReason_ComboBox.BackColor = Color.Transparent;
             ReturnReason_ComboBox.BorderColor = Color.FromArgb(213, 218, 223);
             ReturnReason_ComboBox.BorderRadius = 6;
-            ReturnReason_ComboBox.CustomizableEdges = customizableEdges1;
+            ReturnReason_ComboBox.CustomizableEdges = customizableEdges9;
             ReturnReason_ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             ReturnReason_ComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             ReturnReason_ComboBox.FocusedColor = Color.FromArgb(94, 148, 255);
@@ -107,7 +107,7 @@ namespace Sales_Tracker.ReturnProduct
             ReturnReason_ComboBox.Location = new Point(44, 329);
             ReturnReason_ComboBox.Margin = new Padding(4, 5, 4, 5);
             ReturnReason_ComboBox.Name = "ReturnReason_ComboBox";
-            ReturnReason_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            ReturnReason_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ReturnReason_ComboBox.Size = new Size(624, 50);
             ReturnReason_ComboBox.TabIndex = 1;
             ReturnReason_ComboBox.SelectedIndexChanged += ReturnReason_ComboBox_SelectedIndexChanged;
@@ -127,7 +127,7 @@ namespace Sales_Tracker.ReturnProduct
             AdditionalNotes_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             AdditionalNotes_TextBox.BorderRadius = 6;
             AdditionalNotes_TextBox.Cursor = Cursors.IBeam;
-            AdditionalNotes_TextBox.CustomizableEdges = customizableEdges3;
+            AdditionalNotes_TextBox.CustomizableEdges = customizableEdges11;
             AdditionalNotes_TextBox.DefaultText = "";
             AdditionalNotes_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             AdditionalNotes_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -143,7 +143,7 @@ namespace Sales_Tracker.ReturnProduct
             AdditionalNotes_TextBox.Name = "AdditionalNotes_TextBox";
             AdditionalNotes_TextBox.PlaceholderText = "";
             AdditionalNotes_TextBox.SelectedText = "";
-            AdditionalNotes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            AdditionalNotes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             AdditionalNotes_TextBox.Size = new Size(630, 120);
             AdditionalNotes_TextBox.TabIndex = 2;
             AdditionalNotes_TextBox.TextChanged += AdditionalNotes_TextBox_TextChanged;
@@ -154,7 +154,7 @@ namespace Sales_Tracker.ReturnProduct
             ProcessReturn_Button.BorderColor = Color.LightGray;
             ProcessReturn_Button.BorderRadius = 2;
             ProcessReturn_Button.BorderThickness = 1;
-            ProcessReturn_Button.CustomizableEdges = customizableEdges5;
+            ProcessReturn_Button.CustomizableEdges = customizableEdges13;
             ProcessReturn_Button.DisabledState.BorderColor = Color.DarkGray;
             ProcessReturn_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             ProcessReturn_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -166,7 +166,7 @@ namespace Sales_Tracker.ReturnProduct
             ProcessReturn_Button.Location = new Point(500, 625);
             ProcessReturn_Button.Margin = new Padding(4, 5, 4, 5);
             ProcessReturn_Button.Name = "ProcessReturn_Button";
-            ProcessReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            ProcessReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             ProcessReturn_Button.Size = new Size(200, 45);
             ProcessReturn_Button.TabIndex = 4;
             ProcessReturn_Button.Text = "Process Return";
@@ -178,7 +178,7 @@ namespace Sales_Tracker.ReturnProduct
             Cancel_Button.BorderColor = Color.LightGray;
             Cancel_Button.BorderRadius = 2;
             Cancel_Button.BorderThickness = 1;
-            Cancel_Button.CustomizableEdges = customizableEdges7;
+            Cancel_Button.CustomizableEdges = customizableEdges15;
             Cancel_Button.DisabledState.BorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -189,7 +189,7 @@ namespace Sales_Tracker.ReturnProduct
             Cancel_Button.Location = new Point(292, 625);
             Cancel_Button.Margin = new Padding(4, 5, 4, 5);
             Cancel_Button.Name = "Cancel_Button";
-            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
             Cancel_Button.Size = new Size(200, 45);
             Cancel_Button.TabIndex = 3;
             Cancel_Button.Text = "Cancel";
@@ -235,7 +235,7 @@ namespace Sales_Tracker.ReturnProduct
             Margin = new Padding(4, 5, 4, 5);
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(735, 720);
+            MinimumSize = new Size(735, 740);
             Name = "ReturnProduct_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;

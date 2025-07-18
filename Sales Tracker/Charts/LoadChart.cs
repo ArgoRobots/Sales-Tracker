@@ -1638,7 +1638,7 @@ namespace Sales_Tracker.Charts
                     if (!row.Visible || !ReturnManager.IsTransactionReturned(row)) { continue; }
 
                     // Get return reason from TagData
-                    (_, string returnReason, _) = ReturnManager.GetReturnInfo(row);
+                    (_, string returnReason, _, _) = ReturnManager.GetReturnInfo(row);
 
                     if (string.IsNullOrEmpty(returnReason))
                     {

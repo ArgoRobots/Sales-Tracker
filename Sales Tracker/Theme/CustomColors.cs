@@ -34,6 +34,9 @@ namespace Sales_Tracker.Theme
         public static Color ReturnedItemBackground { get; private set; }
         public static Color ReturnedItemSelection { get; private set; }
         public static Color ReturnedItemText { get; private set; }
+        public static Color PartiallyReturnedItemBackground { get; private set; }
+        public static Color PartiallyReturnedItemSelection { get; private set; }
+        public static Color PartiallyReturnedItemText { get; private set; }
 
         /// <summary>
         /// Sets all color values based on the current theme. These colors are used for UI controls throughout the application.
@@ -82,6 +85,9 @@ namespace Sales_Tracker.Theme
             ReturnedItemBackground = Color.FromArgb(80, 45, 45);
             ReturnedItemSelection = Color.FromArgb(100, 60, 60);
             ReturnedItemText = Color.FromArgb(255, 180, 180);
+            PartiallyReturnedItemBackground = Color.FromArgb(100, 60, 20);
+            PartiallyReturnedItemSelection = Color.FromArgb(120, 70, 30);
+            PartiallyReturnedItemText = Color.FromArgb(255, 200, 150);
 
             // Accent colors
             AccentGreen = Color.FromArgb(168, 233, 203);
@@ -119,6 +125,9 @@ namespace Sales_Tracker.Theme
             ReturnedItemBackground = Color.FromArgb(255, 215, 215);
             ReturnedItemSelection = Color.FromArgb(240, 220, 220);
             ReturnedItemText = Color.FromArgb(140, 70, 70);
+            PartiallyReturnedItemBackground = Color.FromArgb(255, 235, 200);
+            PartiallyReturnedItemSelection = Color.FromArgb(240, 220, 180);
+            PartiallyReturnedItemText = Color.FromArgb(160, 90, 40);
 
             // Accent colors
             AccentGreen = Color.FromArgb(60, 160, 120);

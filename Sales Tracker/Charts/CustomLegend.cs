@@ -227,12 +227,11 @@ namespace Sales_Tracker.Charts
             // Default sizes
             const float defaultBulletSize = 14f;
             const float defaultTextSize = 20f;
-            const float defaultTextPadding = 25f;
+            const float defaultTextPadding = 10f;
 
             // Minimum sizes
             const float minBulletSize = 10f;
             const float minTextSize = 14f;
-            const float minTextPadding = 15f;
 
             if (chartHeight >= normalHeight)
             {
@@ -240,7 +239,7 @@ namespace Sales_Tracker.Charts
             }
             else if (chartHeight <= minHeight)
             {
-                return (minBulletSize, minTextSize, minTextPadding);
+                return (minBulletSize, minTextSize, defaultTextPadding);
             }
             else
             {
@@ -248,9 +247,8 @@ namespace Sales_Tracker.Charts
                 float ratio = (chartHeight - minHeight) / (normalHeight - minHeight);
                 float bulletSize = minBulletSize + (defaultBulletSize - minBulletSize) * ratio;
                 float textSize = minTextSize + (defaultTextSize - minTextSize) * ratio;
-                float textPadding = minTextPadding + (defaultTextPadding - minTextPadding) * ratio;
 
-                return (bulletSize, textSize, textPadding);
+                return (bulletSize, textSize, defaultTextPadding);
             }
         }
     }
