@@ -53,18 +53,18 @@ namespace Sales_Tracker.ReturnProduct
             string productName = _transactionRow.Cells[ReadOnlyVariables.Product_column].Value.ToString();
             string categoryName = _transactionRow.Cells[ReadOnlyVariables.Category_column].Value.ToString();
             string date = _transactionRow.Cells[ReadOnlyVariables.Date_column].Value.ToString();
-            string transactionType = _isPurchase ? "Purchase" : "Sale";
+            string transactionType = _isPurchase ? LanguageManager.TranslateString("Purchase") : LanguageManager.TranslateString("Sale");
 
             // Check if there are already returned items
             bool hasReturnedItems = ReturnManager.IsTransactionPartiallyReturned(_transactionRow);
 
             if (hasReturnedItems)
             {
-                TransactionDetails_Label.Text = $"Return Additional Items from {transactionType}:";
+                TransactionDetails_Label.Text = $"{LanguageManager.TranslateString("Return Additional Items from")} {transactionType}:";
             }
             else
             {
-                TransactionDetails_Label.Text = $"{transactionType} Transaction Details:";
+                TransactionDetails_Label.Text = $"{transactionType} {LanguageManager.TranslateString("Transaction Details:")}";
             }
 
             if (_hasMultipleItems)
@@ -88,20 +88,21 @@ namespace Sales_Tracker.ReturnProduct
                     }
                 }
 
-                string returnInfo = hasReturnedItems ? $"\nAlready Returned: {returnedCount} items" : "";
+                string returnInfo = hasReturnedItems ?
+                    $"\n{LanguageManager.TranslateString("Already Returned:")}: {returnedCount} {LanguageManager.TranslateString("items")}" : "";
 
-                TransactionInfo_Label.Text = $"Transaction ID: {transactionId}\n" +
-                                             $"Multiple Items Transaction\n" +
-                                             $"Total Items: {totalItems}{returnInfo}\n" +
-                                             $"Date: {date}";
+                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID:")}: {transactionId}\n" +
+                                             $"{LanguageManager.TranslateString("Multiple Items Transaction")}\n" +
+                                             $"{LanguageManager.TranslateString("Total Items:")}: {totalItems}{returnInfo}\n" +
+                                             $"{LanguageManager.TranslateString("Date:")}: {date}";
             }
             else
             {
                 // For single item, show standard details
-                TransactionInfo_Label.Text = $"Transaction ID: {transactionId}\n" +
-                                             $"Product: {productName}\n" +
-                                             $"Category: {categoryName}\n" +
-                                             $"Date: {date}";
+                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID:")}: {transactionId}\n" +
+                                             $"{LanguageManager.TranslateString("Product:")}: {productName}\n" +
+                                             $"{LanguageManager.TranslateString("Category:")}: {categoryName}\n" +
+                                             $"{LanguageManager.TranslateString("Date:")}: {date}";
             }
         }
         private void CreateItemSelectionControls()
@@ -112,7 +113,7 @@ namespace Sales_Tracker.ReturnProduct
             // Create label for item selection
             _selectItemsLabel = new Label
             {
-                Text = hasReturnedItems ? "Select additional items to return:" : "Select items to return:",
+                Text = hasReturnedItems ? LanguageManager.TranslateString("Select additional items to return:") : LanguageManager.TranslateString("Select items to return:"),
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = CustomColors.Text,
                 AutoSize = true,
@@ -127,19 +128,18 @@ namespace Sales_Tracker.ReturnProduct
                 itemsToShow--;
             }
 
-            // Calculate dynamic panel height based on number of items
-            const int itemHeight = 35;       // Height per item
-            const int panelPadding = 20;     // Top and bottom padding
-            const int maxPanelHeight = 300;  // Maximum height before scrolling
-
-            int calculatedHeight = (itemsToShow * itemHeight) + panelPadding;
-            int panelHeight = Math.Min(calculatedHeight, maxPanelHeight);
+            // Calculate total height needed for all items (will be calculated dynamically)
+            const int checkBoxHeight = 20;
+            const int minItemHeight = 35;      // Minimum height per item
+            const int itemPadding = 5;         // Padding between items
+            const int panelPadding = 20;       // Top and bottom padding
+            const int maxPanelHeight = 300;    // Maximum height before scrolling
 
             // Create panel to hold item checkboxes
             _itemsPanel = new Guna2Panel
             {
                 Location = new Point(TransactionInfo_Label.Left, _selectItemsLabel.Bottom + 10),
-                Size = new Size(TransactionInfo_Label.Width, panelHeight),
+                Size = new Size(TransactionInfo_Label.Width, minItemHeight), // Temporary size, will be adjusted
                 FillColor = CustomColors.ControlBack,
                 AutoScroll = true
             };
@@ -148,6 +148,7 @@ namespace Sales_Tracker.ReturnProduct
             // Create checkboxes for each item
             _itemCheckboxes = [];
             int yPosition = 10;
+            int totalCalculatedHeight = panelPadding;
 
             for (int i = 0; i < itemsToShow; i++)
             {
@@ -187,13 +188,20 @@ namespace Sales_Tracker.ReturnProduct
 
                 if (isItemReturned)
                 {
-                    itemLabel.Text += " (Already Returned)";
+                    itemLabel.Text += " (" + LanguageManager.TranslateString("Already returned") + ")";
                 }
 
-                // Position label vertically centered with checkbox after AutoSize
-                const int checkBoxHeight = 20;
-                int labelYOffset = (checkBoxHeight - itemLabel.PreferredHeight) / 2;
+                // Calculate the actual height needed for this item
+                int labelHeight = itemLabel.PreferredHeight;
+                int actualItemHeight = Math.Max(minItemHeight, Math.Max(checkBoxHeight, labelHeight) + itemPadding);
+
+                // Position label vertically centered with checkbox
+                int labelYOffset = (actualItemHeight - labelHeight) / 2;
                 itemLabel.Location = new Point(35, yPosition + labelYOffset);
+
+                // Position checkbox vertically centered
+                int checkBoxYOffset = (actualItemHeight - checkBoxHeight) / 2;
+                itemCheckBox.Location = new Point(10, yPosition + checkBoxYOffset);
 
                 // Handle label click to toggle checkbox
                 itemLabel.Click += (s, e) =>
@@ -209,8 +217,13 @@ namespace Sales_Tracker.ReturnProduct
                 _itemsPanel.Controls.Add(itemCheckBox);
                 _itemsPanel.Controls.Add(itemLabel);
 
-                yPosition += itemHeight;
+                yPosition += actualItemHeight;
+                totalCalculatedHeight += actualItemHeight;
             }
+
+            // Set the final panel height
+            int finalPanelHeight = Math.Min(totalCalculatedHeight, maxPanelHeight);
+            _itemsPanel.Size = new Size(_itemsPanel.Width, finalPanelHeight);
 
             // Adjust form height to accommodate new controls
             int additionalHeight = _itemsPanel.Bottom - TransactionInfo_Label.Bottom;

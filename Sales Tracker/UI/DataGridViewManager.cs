@@ -1604,7 +1604,17 @@ namespace Sales_Tracker.UI
             }
 
             using ReturnProduct_Form returnForm = new(selectedRow, isPurchase);
-            returnForm.ShowDialog();
+            if (returnForm.ShowDialog() == DialogResult.OK)
+            {
+                CustomControls.CloseAllPanels();
+
+                // Refresh ItemsInTransaction_Form if it's open
+                if (Tools.IsFormOpen<ItemsInTransaction_Form>() &&
+                    Application.OpenForms[nameof(ItemsInTransaction_Form)] is ItemsInTransaction_Form itemsForm)
+                {
+                    itemsForm.RefreshItemReturnStatus();
+                }
+            }
         }
         private static void UndoReturnProduct(object sender, EventArgs e)
         {
