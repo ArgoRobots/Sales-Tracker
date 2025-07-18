@@ -153,11 +153,11 @@ namespace Sales_Tracker.Charts
 
                 if (dataByDate.TryGetValue(formattedDate, out double existing))
                 {
-                    dataByDate[formattedDate] = existing + value.Value;
+                    dataByDate[formattedDate] = Math.Round(existing + value.Value, 2);
                 }
                 else
                 {
-                    dataByDate[formattedDate] = value.Value;
+                    dataByDate[formattedDate] = Math.Round(value.Value, 2);
                 }
             }
 
@@ -224,16 +224,16 @@ namespace Sales_Tracker.Charts
         }
 
         private static void ProcessPieChartData<T>(
-            Dictionary<string, T> data,
-            PieChartGrouping grouping,
-            List<PieSeries<double>> dataset,
-            bool exportToExcel,
-            string filePath,
-            string chartTitle,
-            string categoryLabel,
-            string valueLabel,
-            bool canUpdateChart,
-            PieChart chart) where T : struct, IConvertible
+       Dictionary<string, T> data,
+       PieChartGrouping grouping,
+       List<PieSeries<double>> dataset,
+       bool exportToExcel,
+       string filePath,
+       string chartTitle,
+       string categoryLabel,
+       string valueLabel,
+       bool canUpdateChart,
+       PieChart chart) where T : struct, IConvertible
         {
             double totalCount = data.Values.Sum(x => Convert.ToDouble(x));
 
@@ -257,11 +257,13 @@ namespace Sales_Tracker.Charts
             {
                 foreach (KeyValuePair<string, double> item in groupedData)
                 {
-                    double percentage = item.Value / totalCount * 100;
+                    double percentage = Math.Round(item.Value / totalCount * 100, 2);
+                    double roundedValue = Math.Round(item.Value, 2);
+
                     PieSeries<double> pieSeries = new()
                     {
                         Name = $"{item.Key} ({percentage:F2}%)",
-                        Values = [item.Value],
+                        Values = [roundedValue], // Use the rounded value
                         Fill = new SolidColorPaint(GetColorForIndex(dataset.Count))
                     };
                     dataset.Add(pieSeries);

@@ -324,7 +324,7 @@ namespace Sales_Tracker.ReturnProduct
                 // Multi-item transaction
                 if (purchaseData.IsReturned)
                 {
-                    return true; // All items returned
+                    return true;  // All items returned
                 }
                 return purchaseData.ReturnedItems?.Contains(itemIndex) ?? false;
             }
