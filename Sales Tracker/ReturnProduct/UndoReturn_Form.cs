@@ -165,59 +165,57 @@ namespace Sales_Tracker
             for (int i = 0; i < itemsToShow; i++)
             {
                 string[] itemDetails = _items[i].Split(',');
-                if (itemDetails.Length >= 6)
+                if (itemDetails.Length < 6) { continue; }
+
+                string productName = itemDetails[0];
+                string categoryName = itemDetails[1];
+                string companyName = itemDetails[3];
+                int quantity = int.Parse(itemDetails[4]);
+                decimal pricePerUnit = decimal.Parse(itemDetails[5]);
+
+                bool isItemReturned = _returnedItems.Contains(i);
+
+                // Only show returned items as they are the ones that can be undone
+                if (!isItemReturned) { continue; }
+
+                // Create custom checkbox
+                Guna2CustomCheckBox itemCheckBox = new()
                 {
-                    string productName = itemDetails[0];
-                    string categoryName = itemDetails[1];
-                    string companyName = itemDetails[3];
-                    int quantity = int.Parse(itemDetails[4]);
-                    decimal pricePerUnit = decimal.Parse(itemDetails[5]);
+                    Size = new Size(20, 20),
+                    Location = new Point(10, yPosition),
+                    Tag = i,  // Store the item index
+                    Animated = true
+                };
 
-                    bool isItemReturned = _returnedItems.Contains(i);
+                // Create label for the checkbox
+                Label itemLabel = new()
+                {
+                    Text = $"{productName} ({companyName}) - Qty: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
+                    MaximumSize = new Size(_itemsPanel.Width - 50, 0),
+                    Font = new Font("Segoe UI", 10),
+                    ForeColor = CustomColors.AccentRed,  // Show in red to indicate it's returned
+                    AutoSize = true,
+                    AutoEllipsis = true,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
 
-                    // Only show returned items as they are the ones that can be undone
-                    if (isItemReturned)
-                    {
-                        // Create custom checkbox
-                        Guna2CustomCheckBox itemCheckBox = new()
-                        {
-                            Size = new Size(20, 20),
-                            Location = new Point(10, yPosition),
-                            Tag = i,  // Store the item index
-                            Animated = true
-                        };
+                // Position label vertically centered with checkbox after AutoSize
+                const int checkBoxHeight = 20;
+                int labelYOffset = (checkBoxHeight - itemLabel.PreferredHeight) / 2;
+                itemLabel.Location = new Point(35, yPosition + labelYOffset);
 
-                        // Create label for the checkbox
-                        Label itemLabel = new()
-                        {
-                            Text = $"{productName} ({companyName}) - Qty: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
-                            MaximumSize = new Size(_itemsPanel.Width - 50, 0),
-                            Font = new Font("Segoe UI", 10),
-                            ForeColor = CustomColors.AccentRed,  // Show in red to indicate it's returned
-                            AutoSize = true,
-                            AutoEllipsis = true,
-                            TextAlign = ContentAlignment.MiddleLeft
-                        };
+                // Handle label click to toggle checkbox
+                itemLabel.Click += (s, e) =>
+                {
+                    itemCheckBox.Checked = !itemCheckBox.Checked;
+                };
 
-                        // Position label vertically centered with checkbox after AutoSize
-                        const int checkBoxHeight = 20;
-                        int labelYOffset = (checkBoxHeight - itemLabel.PreferredHeight) / 2;
-                        itemLabel.Location = new Point(35, yPosition + labelYOffset);
+                itemCheckBox.CheckedChanged += ItemCheckBox_CheckedChanged;
+                _itemCheckboxes.Add(itemCheckBox);
+                _itemsPanel.Controls.Add(itemCheckBox);
+                _itemsPanel.Controls.Add(itemLabel);
 
-                        // Handle label click to toggle checkbox
-                        itemLabel.Click += (s, e) =>
-                        {
-                            itemCheckBox.Checked = !itemCheckBox.Checked;
-                        };
-
-                        itemCheckBox.CheckedChanged += ItemCheckBox_CheckedChanged;
-                        _itemCheckboxes.Add(itemCheckBox);
-                        _itemsPanel.Controls.Add(itemCheckBox);
-                        _itemsPanel.Controls.Add(itemLabel);
-
-                        yPosition += itemHeight;
-                    }
-                }
+                yPosition += itemHeight;
             }
 
             // If no returned items to show, display a message

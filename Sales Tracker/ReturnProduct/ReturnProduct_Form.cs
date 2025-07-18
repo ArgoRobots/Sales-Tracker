@@ -54,7 +54,17 @@ namespace Sales_Tracker.ReturnProduct
             string date = _transactionRow.Cells[ReadOnlyVariables.Date_column].Value.ToString();
             string transactionType = _isPurchase ? "Purchase" : "Sale";
 
-            TransactionDetails_Label.Text = $"{transactionType} Transaction Details:";
+            // Check if there are already returned items
+            bool hasReturnedItems = ReturnManager.IsTransactionPartiallyReturned(_transactionRow);
+
+            if (hasReturnedItems)
+            {
+                TransactionDetails_Label.Text = $"Return Additional Items from {transactionType}:";
+            }
+            else
+            {
+                TransactionDetails_Label.Text = $"{transactionType} Transaction Details:";
+            }
 
             if (_hasMultipleItems)
             {
@@ -67,9 +77,21 @@ namespace Sales_Tracker.ReturnProduct
                     totalItems--;
                 }
 
+                // Count already returned items
+                int returnedCount = 0;
+                for (int i = 0; i < totalItems; i++)
+                {
+                    if (IsItemReturned(i))
+                    {
+                        returnedCount++;
+                    }
+                }
+
+                string returnInfo = hasReturnedItems ? $"\nAlready Returned: {returnedCount} items" : "";
+
                 TransactionInfo_Label.Text = $"Transaction ID: {transactionId}\n" +
                                              $"Multiple Items Transaction\n" +
-                                             $"Total Items: {totalItems}\n" +
+                                             $"Total Items: {totalItems}{returnInfo}\n" +
                                              $"Date: {date}";
             }
             else
@@ -83,10 +105,13 @@ namespace Sales_Tracker.ReturnProduct
         }
         private void CreateItemSelectionControls()
         {
+            // Check if there are already returned items
+            bool hasReturnedItems = ReturnManager.IsTransactionPartiallyReturned(_transactionRow);
+
             // Create label for item selection
             _selectItemsLabel = new Label
             {
-                Text = "Select items to return:",
+                Text = hasReturnedItems ? "Select additional items to return:" : "Select items to return:",
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = CustomColors.Text,
                 AutoSize = true,
@@ -126,65 +151,64 @@ namespace Sales_Tracker.ReturnProduct
             for (int i = 0; i < itemsToShow; i++)
             {
                 string[] itemDetails = _items[i].Split(',');
-                if (itemDetails.Length >= 6)
+                if (itemDetails.Length < 6) { continue; }
+
+                string productName = itemDetails[0];
+                string categoryName = itemDetails[1];
+                string companyName = itemDetails[3];
+                int quantity = int.Parse(itemDetails[4]);
+                decimal pricePerUnit = decimal.Parse(itemDetails[5]);
+
+                // Check if this item is already returned
+                bool isItemReturned = IsItemReturned(i);
+
+                // Create custom checkbox
+                Guna2CustomCheckBox itemCheckBox = new()
                 {
-                    string productName = itemDetails[0];
-                    string categoryName = itemDetails[1];
-                    string companyName = itemDetails[3];
-                    int quantity = int.Parse(itemDetails[4]);
-                    decimal pricePerUnit = decimal.Parse(itemDetails[5]);
+                    Size = new Size(20, 20),
+                    Location = new Point(10, yPosition),
+                    Enabled = !isItemReturned,
+                    Tag = i,  // Store the item index
+                    Animated = true
+                };
 
-                    // Check if this item is already returned
-                    bool isItemReturned = IsItemReturned(i);
+                // Create label for the checkbox
+                Label itemLabel = new()
+                {
+                    Text = $"{productName} ({companyName}) - Qty: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
+                    MaximumSize = new Size(_itemsPanel.Width - 50, 0),
+                    Font = new Font("Segoe UI", 10),
+                    ForeColor = isItemReturned ? CustomColors.AccentRed : CustomColors.Text,
+                    AutoSize = true,
+                    AutoEllipsis = true,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
 
-                    // Create custom checkbox
-                    Guna2CustomCheckBox itemCheckBox = new()
-                    {
-                        Size = new Size(20, 20),
-                        Location = new Point(10, yPosition),
-                        Enabled = !isItemReturned,
-                        Tag = i,  // Store the item index
-                        Animated = true
-                    };
-
-                    // Create label for the checkbox
-                    Label itemLabel = new()
-                    {
-                        Text = $"{productName} ({companyName}) - Qty: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
-                        MaximumSize = new Size(_itemsPanel.Width - 50, 0),
-                        Font = new Font("Segoe UI", 10),
-                        ForeColor = isItemReturned ? CustomColors.AccentRed : CustomColors.Text,
-                        AutoSize = true,
-                        AutoEllipsis = true,
-                        TextAlign = ContentAlignment.MiddleLeft
-                    };
-
-                    if (isItemReturned)
-                    {
-                        itemLabel.Text += " (Already Returned)";
-                    }
-
-                    // Position label vertically centered with checkbox after AutoSize
-                    const int checkBoxHeight = 20;
-                    int labelYOffset = (checkBoxHeight - itemLabel.PreferredHeight) / 2;
-                    itemLabel.Location = new Point(35, yPosition + labelYOffset);
-
-                    // Handle label click to toggle checkbox
-                    itemLabel.Click += (s, e) =>
-                    {
-                        if (itemCheckBox.Enabled)
-                        {
-                            itemCheckBox.Checked = !itemCheckBox.Checked;
-                        }
-                    };
-
-                    itemCheckBox.CheckedChanged += ItemCheckBox_CheckedChanged;
-                    _itemCheckboxes.Add(itemCheckBox);
-                    _itemsPanel.Controls.Add(itemCheckBox);
-                    _itemsPanel.Controls.Add(itemLabel);
-
-                    yPosition += itemHeight;
+                if (isItemReturned)
+                {
+                    itemLabel.Text += " (Already Returned)";
                 }
+
+                // Position label vertically centered with checkbox after AutoSize
+                const int checkBoxHeight = 20;
+                int labelYOffset = (checkBoxHeight - itemLabel.PreferredHeight) / 2;
+                itemLabel.Location = new Point(35, yPosition + labelYOffset);
+
+                // Handle label click to toggle checkbox
+                itemLabel.Click += (s, e) =>
+                {
+                    if (itemCheckBox.Enabled)
+                    {
+                        itemCheckBox.Checked = !itemCheckBox.Checked;
+                    }
+                };
+
+                itemCheckBox.CheckedChanged += ItemCheckBox_CheckedChanged;
+                _itemCheckboxes.Add(itemCheckBox);
+                _itemsPanel.Controls.Add(itemCheckBox);
+                _itemsPanel.Controls.Add(itemLabel);
+
+                yPosition += itemHeight;
             }
 
             // Adjust form height to accommodate new controls

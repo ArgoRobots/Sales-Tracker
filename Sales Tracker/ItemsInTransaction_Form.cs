@@ -32,13 +32,13 @@ namespace Sales_Tracker
 
             SetTitle();
 
+            ThemeManager.SetThemeForForm(this);
+            LanguageManager.UpdateLanguageForControl(this);
+
             if (row.Tag is (List<string> itemList, TagData))
             {
                 SetDataGridView(itemList);
             }
-
-            ThemeManager.SetThemeForForm(this);
-            LanguageManager.UpdateLanguageForControl(this);
 
             // Attach event handlers to detect changes in DataGridView
             Items_DataGridView.CellValueChanged += (_, _) => _hasChanges = true;
@@ -136,8 +136,7 @@ namespace Sales_Tracker
                 ? MainMenu_Form.SelectedOption.ItemsInSale
                 : MainMenu_Form.SelectedOption.ItemsInPurchase;
 
-            // Update item appearance for returns
-            DataGridViewManager.UpdateItemRowAppearanceForReturns(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
+            RefreshItemReturnStatus();
         }
         private void LoadAllItemsInDataGridView(List<string> itemList)
         {
@@ -166,7 +165,6 @@ namespace Sales_Tracker
         }
         public void RefreshItemReturnStatus()
         {
-            // Update item appearance for returns
             DataGridViewManager.UpdateItemRowAppearanceForReturns(Items_DataGridView, DataGridViewManager.SelectedRowInMainMenu);
         }
     }

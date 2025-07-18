@@ -393,25 +393,6 @@ namespace Sales_Tracker.ReturnProduct
         }
 
         /// <summary>
-        /// Gets the return status text for display purposes.
-        /// </summary>
-        public static string GetReturnStatusText(DataGridViewRow row)
-        {
-            if (IsTransactionFullyReturned(row))
-            {
-                return "Fully returned";
-            }
-            else if (IsTransactionPartiallyReturned(row))
-            {
-                return "Partially returned";
-            }
-            else
-            {
-                return "Not returned";
-            }
-        }
-
-        /// <summary>
         /// Gets a list of returned item names for a transaction.
         /// </summary>
         public static List<string> GetReturnedItemNames(DataGridViewRow row)
