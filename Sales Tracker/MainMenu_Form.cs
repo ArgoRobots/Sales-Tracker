@@ -1939,8 +1939,7 @@ namespace Sales_Tracker
 
             Total_Panel.Visible = DataGridViewManager.HasVisibleRows(SelectedDataGridView);
 
-            int totalVisibleRows = 0,
-                totalQuantity = 0;
+            int totalQuantity = 0;
 
             decimal totalTax = 0,
                 totalShipping = 0,
@@ -1952,7 +1951,6 @@ namespace Sales_Tracker
             foreach (DataGridViewRow row in SelectedDataGridView.Rows)
             {
                 if (!LoadChart.IsRowValid(row)) { continue; }
-                totalVisibleRows++;
 
                 totalQuantity += Convert.ToInt32(row.Cells[Column.TotalItems.ToString()].Value);
                 totalTax += Convert.ToDecimal(row.Cells[Column.Tax.ToString()].Value);
@@ -2031,10 +2029,7 @@ namespace Sales_Tracker
         }
         public void SaveCategoriesToFile(SelectedOption option)
         {
-            if (IsProgramLoading)
-            {
-                return;
-            }
+            if (IsProgramLoading) { return; }
 
             string filePath = DataGridViewManager.GetFilePathForDataGridView(option);
 

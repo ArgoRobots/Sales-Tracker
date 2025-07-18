@@ -109,7 +109,6 @@ namespace Sales_Tracker.ReturnProduct
                 tagData.ReturnReason += $"; {newReason}";
             }
 
-            // Update row appearance based on return status
             UpdateRowAppearanceForReturn(row, tagData.IsReturned, tagData.IsPartiallyReturned);
 
             // Log the partial return
@@ -173,7 +172,6 @@ namespace Sales_Tracker.ReturnProduct
                 receiptData.ReturnedItems = null;
             }
 
-            // Update row appearance
             UpdateRowAppearanceForReturn(row, false);
 
             // Log the undo
@@ -219,7 +217,6 @@ namespace Sales_Tracker.ReturnProduct
                 tagData.ReturnedItems = null;
             }
 
-            // Update row appearance
             UpdateRowAppearanceForReturn(row, tagData.IsReturned, tagData.IsPartiallyReturned);
 
             // Log the undo

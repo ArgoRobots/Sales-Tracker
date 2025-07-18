@@ -263,7 +263,7 @@ namespace Sales_Tracker.Charts
                     PieSeries<double> pieSeries = new()
                     {
                         Name = $"{item.Key} ({percentage:F2}%)",
-                        Values = [roundedValue], // Use the rounded value
+                        Values = [roundedValue],
                         Fill = new SolidColorPaint(GetColorForIndex(dataset.Count))
                     };
                     dataset.Add(pieSeries);
