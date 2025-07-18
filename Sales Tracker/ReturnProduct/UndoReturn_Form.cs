@@ -116,7 +116,7 @@ namespace Sales_Tracker
                 itemsToShow--;
             }
 
-            // Count how many items are actually returned (will be shown)
+            // Count how many items are actually returned
             int returnedItemsToShow = 0;
             for (int i = 0; i < itemsToShow; i++)
             {
@@ -126,20 +126,18 @@ namespace Sales_Tracker
                 }
             }
 
-            // Calculate dynamic panel height based on returned items
             const int checkBoxHeight = 20;
-            const int minItemHeight = 35;      // Minimum height per item
-            const int itemPadding = 5;         // Padding between items
-            const int panelPadding = 20;       // Top and bottom padding
-            const int maxPanelHeight = 300;    // Maximum height before scrolling
-            const int minPanelHeight = 60;     // Minimum height for "no items" message
+            const int minItemHeight = 35;
+            const int itemPadding = 5;
+            const int panelPadding = 20;
+            const int maxPanelHeight = 300;
 
             // Create panel to hold item checkboxes
             _itemsPanel = new Guna2Panel
             {
                 Location = new Point(_selectItemsLabel.Left, _selectItemsLabel.Bottom + 10),
-                Size = new Size(Width - 60, minPanelHeight), // Temporary size, will be adjusted
                 FillColor = CustomColors.ControlBack,
+                Width = Width - 60,
                 AutoScroll = true
             };
             Controls.Add(_itemsPanel);
@@ -177,7 +175,7 @@ namespace Sales_Tracker
                 // Create label for the checkbox
                 Label itemLabel = new()
                 {
-                    Text = $"{productName} ({companyName}) - #: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
+                    Text = $"{productName} ({companyName}) - {LanguageManager.TranslateString("Quantity")}: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
                     MaximumSize = new Size(_itemsPanel.Width - 50, 0),
                     Font = new Font("Segoe UI", 10),
                     ForeColor = CustomColors.AccentRed,  // Show in red to indicate it's returned
@@ -214,10 +212,7 @@ namespace Sales_Tracker
             }
 
             // Set the final panel height
-            int finalPanelHeight = returnedItemsToShow > 0
-                ? Math.Min(totalCalculatedHeight, maxPanelHeight)
-                : minPanelHeight;
-            _itemsPanel.Size = new Size(_itemsPanel.Width, finalPanelHeight);
+            _itemsPanel.Height = Math.Min(totalCalculatedHeight, maxPanelHeight);
 
             // Adjust form height to accommodate new controls
             int additionalHeight = _itemsPanel.Bottom - ReturnInfo_Label.Bottom;
@@ -326,14 +321,7 @@ namespace Sales_Tracker
             CharacterCount_Label.Text = $"{currentLength}/{maxLength}";
 
             // Change color to red when at max limit
-            if (currentLength >= maxLength)
-            {
-                CharacterCount_Label.ForeColor = CustomColors.AccentRed;
-            }
-            else
-            {
-                CharacterCount_Label.ForeColor = CustomColors.Text;
-            }
+            CharacterCount_Label.ForeColor = currentLength >= maxLength ? CustomColors.AccentRed : CustomColors.Text;
         }
     }
 }

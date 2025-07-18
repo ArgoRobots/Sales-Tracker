@@ -128,19 +128,18 @@ namespace Sales_Tracker.ReturnProduct
                 itemsToShow--;
             }
 
-            // Calculate total height needed for all items (will be calculated dynamically)
             const int checkBoxHeight = 20;
-            const int minItemHeight = 35;      // Minimum height per item
-            const int itemPadding = 5;         // Padding between items
-            const int panelPadding = 20;       // Top and bottom padding
-            const int maxPanelHeight = 300;    // Maximum height before scrolling
+            const int minItemHeight = 35;
+            const int itemPadding = 5;
+            const int panelPadding = 20;
+            const int maxPanelHeight = 300;
 
             // Create panel to hold item checkboxes
             _itemsPanel = new Guna2Panel
             {
                 Location = new Point(TransactionInfo_Label.Left, _selectItemsLabel.Bottom + 10),
-                Size = new Size(TransactionInfo_Label.Width, minItemHeight), // Temporary size, will be adjusted
                 FillColor = CustomColors.ControlBack,
+                Width = Width - 60,
                 AutoScroll = true
             };
             Controls.Add(_itemsPanel);
@@ -222,8 +221,7 @@ namespace Sales_Tracker.ReturnProduct
             }
 
             // Set the final panel height
-            int finalPanelHeight = Math.Min(totalCalculatedHeight, maxPanelHeight);
-            _itemsPanel.Size = new Size(_itemsPanel.Width, finalPanelHeight);
+            _itemsPanel.Height = Math.Min(totalCalculatedHeight, maxPanelHeight);
 
             // Adjust form height to accommodate new controls
             int additionalHeight = _itemsPanel.Bottom - TransactionInfo_Label.Bottom;
