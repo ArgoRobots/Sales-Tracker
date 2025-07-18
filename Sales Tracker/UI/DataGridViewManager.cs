@@ -661,7 +661,7 @@ namespace Sales_Tracker.UI
 
             if (isPurchasesOrSales || isTransactionView)
             {
-                // Add ReturnBtn or UndoReturnBtn based on current return status
+                // Add ReturnBtn and/or UndoReturnBtn based on current return status
                 if (isSingleRowSelected)
                 {
                     DataGridViewRow selectedRow;
@@ -682,23 +682,29 @@ namespace Sales_Tracker.UI
                     bool isFullyReturned = ReturnManager.IsTransactionFullyReturned(selectedRow);
                     bool isPartiallyReturned = ReturnManager.IsTransactionPartiallyReturned(selectedRow);
 
-                    if (isFullyReturned || isPartiallyReturned)
+                    if (isFullyReturned)
                     {
+                        // Fully returned - only show undo button
                         _rightClickDataGridView_UndoReturnBtn.Visible = true;
-                        // Update button text based on return status
-                        if (isPartiallyReturned && !isFullyReturned)
-                        {
-                            _rightClickDataGridView_UndoReturnBtn.Text = "Undo partial return";
-                        }
-                        else
-                        {
-                            _rightClickDataGridView_UndoReturnBtn.Text = "Undo return";
-                        }
+                        _rightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo return");
+                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_UndoReturnBtn, currentIndex++);
+                    }
+                    else if (isPartiallyReturned)
+                    {
+                        // Partially returned - show both buttons
+                        _rightClickDataGridView_ReturnBtn.Visible = true;
+                        _rightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return more items");
+                        flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ReturnBtn, currentIndex++);
+
+                        _rightClickDataGridView_UndoReturnBtn.Visible = true;
+                        _rightClickDataGridView_UndoReturnBtn.Text = LanguageManager.TranslateString("Undo partial return");
                         flowPanel.Controls.SetChildIndex(_rightClickDataGridView_UndoReturnBtn, currentIndex++);
                     }
                     else
                     {
+                        // Not returned - only show return button
                         _rightClickDataGridView_ReturnBtn.Visible = true;
+                        _rightClickDataGridView_ReturnBtn.Text = LanguageManager.TranslateString("Return product");
                         flowPanel.Controls.SetChildIndex(_rightClickDataGridView_ReturnBtn, currentIndex++);
                     }
                 }
@@ -729,10 +735,11 @@ namespace Sales_Tracker.UI
             int formHeight = parentForm.ClientSize.Height;
             int formWidth = parentForm.ClientSize.Width;
 
+            CustomControls.SetRightClickMenuHeight(RightClickDataGridView_Panel);
+
             SetHorizontalPosition(grid, e, formWidth);
             SetVerticalPosition(grid, info, formHeight);
 
-            CustomControls.SetRightClickMenuHeight(RightClickDataGridView_Panel);
             grid.Parent.Controls.Add(RightClickDataGridView_Panel);
             RightClickDataGridView_Panel.BringToFront();
         }
@@ -1083,9 +1090,6 @@ namespace Sales_Tracker.UI
                     itemRow.DefaultCellStyle.ForeColor = Color.Empty;
                 }
             }
-
-            // Ensure alternating row colors are maintained for non-returned items
-            UpdateAlternatingRowColors(itemsGrid);
         }
         private static void SortDataGridViewByCurrentDirection(DataGridView dataGridView)
         {

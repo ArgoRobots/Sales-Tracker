@@ -123,7 +123,7 @@ namespace Sales_Tracker.ReturnProduct
                     string[] itemDetails = items[index].Split(',');
                     if (itemDetails.Length > 0)
                     {
-                        returnedItemNames.Add(itemDetails[0]); // Product name
+                        returnedItemNames.Add(itemDetails[0]);  // Product name
                     }
                 }
             }

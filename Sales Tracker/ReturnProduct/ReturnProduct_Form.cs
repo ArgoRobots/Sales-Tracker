@@ -45,6 +45,7 @@ namespace Sales_Tracker.ReturnProduct
             UpdateTheme();
             UpdateCharacterCount();
             LanguageManager.UpdateLanguageForControl(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void LoadTransactionData()
         {
@@ -238,6 +239,12 @@ namespace Sales_Tracker.ReturnProduct
 
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
             ThemeManager.MakeGButtonBluePrimary(ProcessReturn_Button);
+        }
+
+        // Form event handlers
+        private void ReturnProduct_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

@@ -49,6 +49,7 @@ namespace Sales_Tracker
             UpdateTheme();
             UpdateCharacterCount();
             LanguageManager.UpdateLanguageForControl(this);
+            LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void LoadTransactionData()
         {
@@ -218,21 +219,6 @@ namespace Sales_Tracker
                 yPosition += itemHeight;
             }
 
-            // If no returned items to show, display a message
-            if (_itemCheckboxes.Count == 0)
-            {
-                Label noItemsLabel = new()
-                {
-                    Text = "No individual items to undo (full transaction return)",
-                    Location = new Point(10, 15),
-                    Size = new Size(_itemsPanel.Width - 20, 30),
-                    Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                    ForeColor = CustomColors.Text,
-                    TextAlign = ContentAlignment.MiddleCenter
-                };
-                _itemsPanel.Controls.Add(noItemsLabel);
-            }
-
             // Adjust form height to accommodate new controls
             int additionalHeight = _itemsPanel.Bottom - ReturnInfo_Label.Bottom;
             Height += additionalHeight;
@@ -252,6 +238,12 @@ namespace Sales_Tracker
 
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
             ThemeManager.MakeGButtonBluePrimary(UndoReturn_Button);
+        }
+
+        // Form event handlers
+        private void UndoReturn_Form_Shown(object sender, EventArgs e)
+        {
+            LoadingPanel.HideBlankLoadingPanel(this);
         }
 
         // Event handlers

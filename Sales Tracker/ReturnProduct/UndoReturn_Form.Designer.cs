@@ -224,6 +224,7 @@ namespace Sales_Tracker
             Name = "UndoReturn_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
+            Shown += UndoReturn_Form_Shown;
             ResumeLayout(false);
             PerformLayout();
         }

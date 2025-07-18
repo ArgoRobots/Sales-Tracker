@@ -73,8 +73,6 @@ namespace Sales_Tracker
                 }
 
                 DataGridViewManager.DataGridViewRowChanged(Items_DataGridView, MainMenu_Form.Instance.Selected);
-
-                // Refresh the main menu to show updated return status
                 MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             }
             MainMenu_Form.IsProgramLoading = false;
