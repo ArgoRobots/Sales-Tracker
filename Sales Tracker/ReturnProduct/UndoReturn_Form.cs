@@ -74,27 +74,27 @@ namespace Sales_Tracker
 
                 List<string> returnedItemNames = ReturnManager.GetReturnedItemNames(_transactionRow);
 
-                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID:")}: {transactionId}\n" +
+                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Multiple Items Transaction")}\n" +
-                                             $"{LanguageManager.TranslateString("Total Items:")}: {totalItems}\n" +
-                                             $"{LanguageManager.TranslateString("Returned items:")}: {string.Join(", ", returnedItemNames)}\n" +
-                                             $"{LanguageManager.TranslateString("Date:")}: {date}";
+                                             $"{LanguageManager.TranslateString("Total Items")}: {totalItems}\n" +
+                                             $"{LanguageManager.TranslateString("Returned items")}: {string.Join(", ", returnedItemNames)}\n" +
+                                             $"{LanguageManager.TranslateString("Date")}: {date}";
             }
             else
             {
                 // For full returns, show standard details
-                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID:")}: {transactionId}\n" +
-                                             $"{LanguageManager.TranslateString("Product:")}: {productName}\n" +
-                                             $"{LanguageManager.TranslateString("Category:")}: {categoryName}\n" +
-                                             $"{LanguageManager.TranslateString("Date:")}: {date}";
+                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
+                                             $"{LanguageManager.TranslateString("Product")}: {productName}\n" +
+                                             $"{LanguageManager.TranslateString("Category")}: {categoryName}\n" +
+                                             $"{LanguageManager.TranslateString("Date")}: {date}";
             }
 
             // Load return information
             (DateTime? returnDate, string returnReason, string returnedBy, _) = ReturnManager.GetReturnInfo(_transactionRow);
 
-            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on:")}: {returnDate?.ToString("MM/dd/yyyy HH:mm") ?? LanguageManager.TranslateString("Unknown")}\n" +
-                                   $"{LanguageManager.TranslateString("Reason:")}: {returnReason ?? LanguageManager.TranslateString("No reason provided")}\n" +
-                                   $"{LanguageManager.TranslateString("Returned by:")}: {returnedBy ?? LanguageManager.TranslateString("Unknown")}";
+            ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnDate?.ToString("MM/dd/yyyy HH:mm") ?? LanguageManager.TranslateString("Unknown")}\n" +
+                                   $"{LanguageManager.TranslateString("Reason")}: {returnReason ?? LanguageManager.TranslateString("No reason provided")}\n" +
+                                   $"{LanguageManager.TranslateString("Returned by")}: {returnedBy ?? LanguageManager.TranslateString("Unknown")}";
         }
         private void CreateItemSelectionControls()
         {

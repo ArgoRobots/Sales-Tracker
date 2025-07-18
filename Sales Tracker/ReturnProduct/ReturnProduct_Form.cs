@@ -91,18 +91,18 @@ namespace Sales_Tracker.ReturnProduct
                 string returnInfo = hasReturnedItems ?
                     $"\n{LanguageManager.TranslateString("Already Returned:")}: {returnedCount} {LanguageManager.TranslateString("items")}" : "";
 
-                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID:")}: {transactionId}\n" +
+                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
                                              $"{LanguageManager.TranslateString("Multiple Items Transaction")}\n" +
-                                             $"{LanguageManager.TranslateString("Total Items:")}: {totalItems}{returnInfo}\n" +
-                                             $"{LanguageManager.TranslateString("Date:")}: {date}";
+                                             $"{LanguageManager.TranslateString("Total Items")}: {totalItems}{returnInfo}\n" +
+                                             $"{LanguageManager.TranslateString("Date")}: {date}";
             }
             else
             {
                 // For single item, show standard details
-                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID:")}: {transactionId}\n" +
-                                             $"{LanguageManager.TranslateString("Product:")}: {productName}\n" +
-                                             $"{LanguageManager.TranslateString("Category:")}: {categoryName}\n" +
-                                             $"{LanguageManager.TranslateString("Date:")}: {date}";
+                TransactionInfo_Label.Text = $"{LanguageManager.TranslateString("Transaction ID")}: {transactionId}\n" +
+                                             $"{LanguageManager.TranslateString("Product")}: {productName}\n" +
+                                             $"{LanguageManager.TranslateString("Category")}: {categoryName}\n" +
+                                             $"{LanguageManager.TranslateString("Date")}: {date}";
             }
         }
         private void CreateItemSelectionControls()
