@@ -231,7 +231,7 @@ namespace Sales_Tracker.Classes
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-h88tzd: Failed to write to file:" +
+            Error("Error-w7f3k2: Failed to write to file:" +
                 $"\n'{filePath}'.",
                 "",
                 lineNumber);
@@ -240,7 +240,7 @@ namespace Sales_Tracker.Classes
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-h88tzd: Failed to read the file:" +
+            Error("Error-r9d5m1: Failed to read the file:" +
                 $"\n'{filePath}'.",
                 "",
                 lineNumber);
@@ -249,7 +249,7 @@ namespace Sales_Tracker.Classes
             string info, string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Failed to save. {info}." +
+            Error($"Error-s4v8n6: Failed to save. {info}." +
                 $"\n'{filePath}'.",
                 "",
                 lineNumber);
@@ -260,14 +260,14 @@ namespace Sales_Tracker.Classes
             string dataGridViewName,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Cell is empty in DataGridView:'{dataGridViewName}'.",
+            Error($"Error-d3g7c4: Cell is empty in DataGridView:'{dataGridViewName}'.",
                 "",
                 lineNumber);
         }
         public static void Error_RowIsOutOfRange(
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-5knt54: Row is out of range.",
+            Error("Error-r6w9o2: Row is out of range.",
                 "",
                 lineNumber);
         }
@@ -277,7 +277,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Error initializing EncryptionHelper. {info}.",
+            Error($"Error-i2e5h8: Error initializing EncryptionHelper. {info}.",
                 "",
                 lineNumber);
         }
@@ -285,7 +285,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Error during encryption. {info}.",
+            Error($"Error-e7n9c1: Error during encryption. {info}.",
                 "",
                 lineNumber);
         }
@@ -293,7 +293,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Error during decryption. {info}.",
+            Error($"Error-d4c8r3: Error during decryption. {info}.",
                 "",
                 lineNumber);
         }
@@ -303,7 +303,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Error getting exchange rates. {info}.",
+            Error($"Error-g8x2r5: Error getting exchange rates. {info}.",
                 "",
                 lineNumber);
         }
@@ -311,7 +311,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: API request failed: {info}.",
+            Error($"Error-t5a7p9: API request failed: {info}.",
                 "",
                 lineNumber);
         }
@@ -319,7 +319,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: Error enhancing search: {info}.",
+            Error($"Error-e3n6s1: Error enhancing search: {info}.",
                 "",
                 lineNumber);
         }
@@ -327,7 +327,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: Failed to export chart: {info}.",
+            Error($"Error-x4p8c2: Failed to export chart: {info}.",
                 "",
                 lineNumber);
         }
@@ -337,7 +337,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-5knt54: Error getting the translation. {info}.",
+            Error($"Error-g9t3l7: Error getting the translation. {info}.",
                 "",
                 lineNumber);
         }
@@ -345,7 +345,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: AI Query Translation failed: {info}.",
+            Error($"Error-t2l8n4: AI Query Translation failed: {info}.",
                 "",
                 lineNumber);
         }
@@ -355,7 +355,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: Error collecting anonymous usage data. {info}.",
+            Error($"Error-a6d5c9: Error collecting anonymous usage data. {info}.",
                 "",
                 lineNumber);
         }
@@ -365,7 +365,7 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: Error registering file associations: {info}.",
+            Error($"Error-r7f2a8: Error registering file associations: {info}.",
                 "",
                 lineNumber);
         }
@@ -375,7 +375,7 @@ namespace Sales_Tracker.Classes
             string fileName,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: ENV file '{fileName}' not found relative to solution.",
+            Error($"Error-v3f6n1: ENV file '{fileName}' not found relative to solution.",
                 "",
                 lineNumber);
         }
@@ -383,7 +383,7 @@ namespace Sales_Tracker.Classes
             string key,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-7kp3xz: ENV key {key} not found.",
+            Error($"Error-v8k4n5: ENV key {key} not found.",
                 "",
                 lineNumber);
         }
