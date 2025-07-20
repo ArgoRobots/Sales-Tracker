@@ -263,7 +263,7 @@ namespace Sales_Tracker.ReturnProduct
         // Event handlers
         private void ProcessReturn_Button_Click(object sender, EventArgs e)
         {
-            // Get current user ... get it from a TextBox or redo the accountant system
+            // Get current user ...  redo the accountant system
             string currentUser = "user";
 
             if (_hasMultipleItems)
