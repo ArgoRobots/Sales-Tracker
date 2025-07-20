@@ -19,9 +19,11 @@ namespace Sales_Tracker
         private Label _selectItemsLabel;
 
         // Init.
+        public UndoReturn_Form() : this(null) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public UndoReturn_Form(DataGridViewRow transactionRow)
         {
             InitializeComponent();
+            if (transactionRow == null) { return; }
 
             _transactionRow = transactionRow;
 

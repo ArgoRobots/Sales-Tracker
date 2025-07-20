@@ -18,8 +18,12 @@ namespace Sales_Tracker.ReturnProduct
         private Label _selectItemsLabel;
 
         // Init.
+        public ReturnProduct_Form() : this(null, false) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
         public ReturnProduct_Form(DataGridViewRow transactionRow, bool isPurchase)
         {
+            InitializeComponent();
+            if (transactionRow == null) { return; }
+
             _transactionRow = transactionRow;
             _isPurchase = isPurchase;
 
@@ -34,8 +38,6 @@ namespace Sales_Tracker.ReturnProduct
             {
                 _items = [];
             }
-
-            InitializeComponent();
 
             LoadTransactionData();
             if (_hasMultipleItems)
@@ -176,7 +178,7 @@ namespace Sales_Tracker.ReturnProduct
                 // Create label for the checkbox
                 Label itemLabel = new()
                 {
-                    Text = $"{productName} ({companyName}) - Qty: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
+                    Text = $"{productName} ({companyName}) - {LanguageManager.TranslateString("Quantity")}: {quantity} @ {MainMenu_Form.CurrencySymbol}{pricePerUnit:N2}",
                     MaximumSize = new Size(_itemsPanel.Width - 50, 0),
                     Font = new Font("Segoe UI", 10),
                     ForeColor = isItemReturned ? CustomColors.AccentRed : CustomColors.Text,

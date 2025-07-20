@@ -4,6 +4,7 @@ using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.ImportSpreadsheet;
 using Sales_Tracker.Passwords;
+using Sales_Tracker.ReturnProduct;
 using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.Startup;
@@ -93,6 +94,10 @@ namespace Sales_Tracker.UI
                     typeof(AddPassword_Form),
                     typeof(EnterPassword_Form),
                     typeof(PasswordManager_Form),
+
+                    // ReturnProduct
+                    typeof(ReturnProduct_Form),
+                    typeof(UndoReturn_Form),
 
                     // Settings
                     typeof(General_Form),

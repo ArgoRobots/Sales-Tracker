@@ -63,7 +63,7 @@ namespace Sales_Tracker.ReturnProduct
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Title_Label.Location = new Point(240, 30);
+            Title_Label.Location = new Point(260, 30);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(233, 45);
             Title_Label.TabIndex = 0;
@@ -75,7 +75,7 @@ namespace Sales_Tracker.ReturnProduct
             TransactionInfo_Label.Font = new Font("Segoe UI", 11F);
             TransactionInfo_Label.Location = new Point(72, 125);
             TransactionInfo_Label.Name = "TransactionInfo_Label";
-            TransactionInfo_Label.Size = new Size(569, 145);
+            TransactionInfo_Label.Size = new Size(609, 145);
             TransactionInfo_Label.TabIndex = 0;
             TransactionInfo_Label.Text = "Transaction info...";
             // 
@@ -108,7 +108,7 @@ namespace Sales_Tracker.ReturnProduct
             ReturnReason_ComboBox.Margin = new Padding(4, 5, 4, 5);
             ReturnReason_ComboBox.Name = "ReturnReason_ComboBox";
             ReturnReason_ComboBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            ReturnReason_ComboBox.Size = new Size(624, 50);
+            ReturnReason_ComboBox.Size = new Size(664, 50);
             ReturnReason_ComboBox.TabIndex = 1;
             ReturnReason_ComboBox.SelectedIndexChanged += ReturnReason_ComboBox_SelectedIndexChanged;
             // 
@@ -144,7 +144,7 @@ namespace Sales_Tracker.ReturnProduct
             AdditionalNotes_TextBox.PlaceholderText = "";
             AdditionalNotes_TextBox.SelectedText = "";
             AdditionalNotes_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            AdditionalNotes_TextBox.Size = new Size(630, 120);
+            AdditionalNotes_TextBox.Size = new Size(670, 120);
             AdditionalNotes_TextBox.TabIndex = 2;
             AdditionalNotes_TextBox.TextChanged += AdditionalNotes_TextBox_TextChanged;
             // 
@@ -163,7 +163,7 @@ namespace Sales_Tracker.ReturnProduct
             ProcessReturn_Button.FillColor = Color.White;
             ProcessReturn_Button.Font = new Font("Segoe UI", 10F);
             ProcessReturn_Button.ForeColor = Color.Black;
-            ProcessReturn_Button.Location = new Point(500, 625);
+            ProcessReturn_Button.Location = new Point(540, 625);
             ProcessReturn_Button.Margin = new Padding(4, 5, 4, 5);
             ProcessReturn_Button.Name = "ProcessReturn_Button";
             ProcessReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -186,7 +186,7 @@ namespace Sales_Tracker.ReturnProduct
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(292, 625);
+            Cancel_Button.Location = new Point(332, 625);
             Cancel_Button.Margin = new Padding(4, 5, 4, 5);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
@@ -210,7 +210,7 @@ namespace Sales_Tracker.ReturnProduct
             CharacterCount_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             CharacterCount_Label.AutoSize = true;
             CharacterCount_Label.Font = new Font("Segoe UI", 10F);
-            CharacterCount_Label.Location = new Point(608, 574);
+            CharacterCount_Label.Location = new Point(648, 574);
             CharacterCount_Label.Name = "CharacterCount_Label";
             CharacterCount_Label.Size = new Size(64, 28);
             CharacterCount_Label.TabIndex = 0;
@@ -220,7 +220,7 @@ namespace Sales_Tracker.ReturnProduct
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(713, 684);
+            ClientSize = new Size(753, 684);
             Controls.Add(CharacterCount_Label);
             Controls.Add(TransactionDetails_Label);
             Controls.Add(Title_Label);
@@ -235,7 +235,7 @@ namespace Sales_Tracker.ReturnProduct
             Margin = new Padding(4, 5, 4, 5);
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(735, 740);
+            MinimumSize = new Size(775, 740);
             Name = "ReturnProduct_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;

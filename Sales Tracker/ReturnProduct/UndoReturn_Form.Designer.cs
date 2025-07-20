@@ -60,7 +60,7 @@ namespace Sales_Tracker
             Title_Label.Anchor = AnchorStyles.Top;
             Title_Label.AutoSize = true;
             Title_Label.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Title_Label.Location = new Point(196, 30);
+            Title_Label.Location = new Point(216, 30);
             Title_Label.Name = "Title_Label";
             Title_Label.Size = new Size(320, 45);
             Title_Label.TabIndex = 1;
@@ -72,7 +72,7 @@ namespace Sales_Tracker
             TransactionInfo_Label.Font = new Font("Segoe UI", 11F);
             TransactionInfo_Label.Location = new Point(72, 125);
             TransactionInfo_Label.Name = "TransactionInfo_Label";
-            TransactionInfo_Label.Size = new Size(569, 145);
+            TransactionInfo_Label.Size = new Size(609, 145);
             TransactionInfo_Label.TabIndex = 2;
             TransactionInfo_Label.Text = "Transaction info...";
             // 
@@ -83,7 +83,7 @@ namespace Sales_Tracker
             ReturnInfo_Label.Font = new Font("Segoe UI", 11F);
             ReturnInfo_Label.Location = new Point(72, 315);
             ReturnInfo_Label.Name = "ReturnInfo_Label";
-            ReturnInfo_Label.Size = new Size(569, 145);
+            ReturnInfo_Label.Size = new Size(609, 145);
             ReturnInfo_Label.TabIndex = 3;
             ReturnInfo_Label.Text = "Return info...";
             // 
@@ -119,7 +119,7 @@ namespace Sales_Tracker
             UndoReason_TextBox.PlaceholderText = "";
             UndoReason_TextBox.SelectedText = "";
             UndoReason_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            UndoReason_TextBox.Size = new Size(630, 120);
+            UndoReason_TextBox.Size = new Size(670, 120);
             UndoReason_TextBox.TabIndex = 5;
             UndoReason_TextBox.TextChanged += UndoReason_TextBox_TextChanged;
             // 
@@ -138,7 +138,7 @@ namespace Sales_Tracker
             UndoReturn_Button.FillColor = Color.White;
             UndoReturn_Button.Font = new Font("Segoe UI", 10F);
             UndoReturn_Button.ForeColor = Color.Black;
-            UndoReturn_Button.Location = new Point(500, 685);
+            UndoReturn_Button.Location = new Point(540, 685);
             UndoReturn_Button.Margin = new Padding(4, 5, 4, 5);
             UndoReturn_Button.Name = "UndoReturn_Button";
             UndoReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
@@ -161,7 +161,7 @@ namespace Sales_Tracker
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(292, 685);
+            Cancel_Button.Location = new Point(332, 685);
             Cancel_Button.Margin = new Padding(4, 5, 4, 5);
             Cancel_Button.Name = "Cancel_Button";
             Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
@@ -195,7 +195,7 @@ namespace Sales_Tracker
             CharacterCount_Label.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             CharacterCount_Label.AutoSize = true;
             CharacterCount_Label.Font = new Font("Segoe UI", 10F);
-            CharacterCount_Label.Location = new Point(608, 634);
+            CharacterCount_Label.Location = new Point(648, 634);
             CharacterCount_Label.Name = "CharacterCount_Label";
             CharacterCount_Label.Size = new Size(64, 28);
             CharacterCount_Label.TabIndex = 12;
@@ -205,7 +205,7 @@ namespace Sales_Tracker
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(713, 744);
+            ClientSize = new Size(753, 744);
             Controls.Add(CharacterCount_Label);
             Controls.Add(ReturnInformation_Label);
             Controls.Add(TransactionDetails_Label);
@@ -220,7 +220,7 @@ namespace Sales_Tracker
             Margin = new Padding(4, 5, 4, 5);
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(735, 800);
+            MinimumSize = new Size(775, 800);
             Name = "UndoReturn_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
