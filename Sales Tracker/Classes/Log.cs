@@ -1,14 +1,18 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace Sales_Tracker.Classes
 {
     /// <summary>
     /// Provides logging functionality with different log levels and error handling mechanisms.
     /// </summary>
-    internal class Log
+    internal partial class Log
     {
         // Properties
         public static string LogText { get; set; }
+
+        [GeneratedRegex(@"Error-[a-zA-Z0-9]+")]
+        private static partial Regex ErrorCodeRegex();
 
         // Save logs
         public static void SaveLogs()
@@ -119,9 +123,39 @@ namespace Sales_Tracker.Classes
                 );
             }
         }
+
+        /// <summary>
+        /// Extracts error code from error message (e.g., "Error-3vknm9" from the message)
+        /// </summary>
+        private static string ExtractErrorCode(string message)
+        {
+            Match match = ErrorCodeRegex().Match(message);
+            return match.Success ? match.Value : "Unknown";
+        }
+
+        /// <summary>
+        /// Determines error category based on the method name that called the error
+        /// </summary>
+        private static string DetermineErrorCategory([CallerMemberName] string callerMethod = "")
+        {
+            return callerMethod switch
+            {
+                string method when method.Contains("File") => "File",
+                string method when method.Contains("DataGridView") => "DataGridView",
+                string method when method.Contains("Encryption") => "Encryption",
+                string method when method.Contains("API") || method.Contains("ExchangeRate") || method.Contains("Translation") => "API",
+                string method when method.Contains("Language") || method.Contains("Translation") => "Translation",
+                string method when method.Contains("AnonymousData") => "AnonymousData",
+                string method when method.Contains("FileAssociation") => "FileAssociation",
+                string method when method.Contains("ENV") => "Environment",
+                _ => "General"
+            };
+        }
+
         private static void Error(
             string message, string link,
-            [CallerLineNumber] int lineNumber = 0)
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string callerMethod = "")
         {
             // Add link
             if (link != "")
@@ -139,6 +173,18 @@ namespace Sales_Tracker.Classes
 
             // Log error with debug info
             Write(0, message + debugInfo);
+
+            // Add to anonymous data collection
+            try
+            {
+                string errorCode = ExtractErrorCode(message);
+                string errorCategory = DetermineErrorCategory(callerMethod);
+                AnonymousDataManager.AddErrorData(errorCode, errorCategory, lineNumber);
+            }
+            catch
+            {
+                // Silently fail to avoid recursive error logging
+            }
 
             CustomMessageBox.Show("Error", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
         }
@@ -158,15 +204,6 @@ namespace Sales_Tracker.Classes
             [CallerLineNumber] int lineNumber = 0)
         {
             Error("Error-djrr3r: File already exists:" +
-                $"\n'{filePath}'.",
-                "",
-                lineNumber);
-        }
-        public static void Error_DirectoryAlreadyExists(
-            string filePath,
-            [CallerLineNumber] int lineNumber = 0)
-        {
-            Error("Error-cmr45a: Directory already exists:" +
                 $"\n'{filePath}'.",
                 "",
                 lineNumber);
@@ -234,14 +271,6 @@ namespace Sales_Tracker.Classes
                 "",
                 lineNumber);
         }
-        public static void Error_CannotProcessReceiptColumn(
-            string transactionID,
-           [CallerLineNumber] int lineNumber = 0)
-        {
-            Error($"Error-5knt54: Cannot process receipt column for transaction {transactionID}",
-                "",
-                lineNumber);
-        }
 
         // Encryption errors
         public static void Error_InitEncryptionHelper(
@@ -304,14 +333,6 @@ namespace Sales_Tracker.Classes
         }
 
         // Language translation errors
-        public static void Error_EnglishCacheDoesNotExist(
-            string controlKey,
-            [CallerLineNumber] int lineNumber = 0)
-        {
-            Error($"Error-5knt54: Error getting the English cache with the value: {controlKey}",
-                "",
-                lineNumber);
-        }
         public static void Error_GetTranslation(
             string info,
             [CallerLineNumber] int lineNumber = 0)

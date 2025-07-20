@@ -10,7 +10,8 @@ namespace Sales_Tracker.Classes
         OpenAI,
         OpenExchangeRates,
         GoogleSheets,
-        Session
+        Session,
+        Error
     }
     public enum ExportDataField
     {
@@ -97,6 +98,23 @@ namespace Sales_Tracker.Classes
             AppendToDataFile(dataPoint);
         }
 
+        /// <summary>
+        /// Adds error occurrence data to the anonymous data log.
+        /// </summary>
+        public static void AddErrorData(string errorCode, string errorCategory, int lineNumber)
+        {
+            Dictionary<string, object> dataPoint = new()
+            {
+                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
+                ["dataType"] = DataPointType.Error.ToString(),
+                ["ErrorCode"] = errorCode,
+                ["ErrorCategory"] = errorCategory,
+                ["LineNumber"] = lineNumber
+            };
+
+            AppendToDataFile(dataPoint, false);  // Don't log errors to prevent recursion
+        }
+
         private static DateTime? _sessionStartTime;
         public static void TrackSessionStart()
         {
@@ -122,7 +140,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Appends a data point to the anonymous data cache file.
         /// </summary>
-        private static void AppendToDataFile(Dictionary<string, object> dataPoint)
+        private static void AppendToDataFile(Dictionary<string, object> dataPoint, bool logErrors = true)
         {
             try
             {
@@ -136,7 +154,10 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Error_AnonymousDataCollection($"Failed to log anonymous data: {ex.Message}");
+                if (logErrors)
+                {
+                    Log.Error_AnonymousDataCollection($"Failed to log anonymous data: {ex.Message}");
+                }
             }
         }
 
@@ -174,7 +195,8 @@ namespace Sales_Tracker.Classes
                     ["OpenAI"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenAI.ToString())),
                     ["OpenExchangeRates"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.OpenExchangeRates.ToString())),
                     ["GoogleSheets"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.GoogleSheets.ToString())),
-                    ["Session"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Session.ToString()))
+                    ["Session"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Session.ToString())),
+                    ["Error"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Error.ToString()))
                 }
             };
 
