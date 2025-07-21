@@ -31,7 +31,7 @@ namespace Sales_Tracker.Startup.Menus
             ConstructRightClickOpenRecentMenu();
             LoadListOfRecentCompanies();
             SetFlowLayoutPanel();
-            SetTheme();
+            UpdateTheme();
             ValidateKeyAsync();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
@@ -46,7 +46,7 @@ namespace Sales_Tracker.Startup.Menus
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Enabled = false;
             OpenRecent_FlowLayoutPanel.HorizontalScroll.Visible = false;
         }
-        private void SetTheme()
+        private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
             ThemeManager.UpdateThemeForPanel([RightClickOpenRecent_Panel]);

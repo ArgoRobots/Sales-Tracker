@@ -29,7 +29,7 @@ namespace Sales_Tracker
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
             CenterDataGridView();
-            SetTheme();
+            UpdateTheme();
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
             LabelManager.ShowTotalLabel(Total_Label, selectedDataGridView);
@@ -59,7 +59,7 @@ namespace Sales_Tracker
             ShowingResultsFor_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
-        private void SetTheme()
+        private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
         }

@@ -22,7 +22,7 @@ namespace Sales_Tracker
             Date_DateTimePicker.MaxDate = DateTime.Now;
             CheckIfProductsExist();
             CheckIfAccountantsExist();
-            SetTheme();
+            UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             RemoveReceiptLabel();
@@ -106,7 +106,7 @@ namespace Sales_Tracker
 
             SelectedReceipt_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
         }
-        private void SetTheme()
+        private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
             CustomControls.InitHoverEffectForImageButton(RemoveReceipt_ImageButton);

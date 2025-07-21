@@ -39,7 +39,7 @@ namespace Sales_Tracker
             }
             MainMenu_Form.IsProgramLoading = false;
 
-            SetTheme();
+            UpdateTheme();
             LabelManager.ShowTotalLabel(Total_Label, Receipts_DataGridView, true);
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
@@ -65,7 +65,7 @@ namespace Sales_Tracker
             IncludeSaleReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
             Total_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
-        private void SetTheme()
+        private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
             ThemeManager.MakeGButtonBlueSecondary(SelectAll_Button);
