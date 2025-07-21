@@ -184,6 +184,7 @@ namespace Sales_Tracker.Settings
                     }
 
                     Security_Form.Instance.CenterEncryptControls();
+                    MainMenu_Form.Instance?.RecalculateWorldMapControlsLayout();
                 }
 
                 return true;

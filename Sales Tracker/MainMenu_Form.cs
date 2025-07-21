@@ -2697,12 +2697,7 @@ namespace Sales_Tracker
         }
         private void ConstructWorldMapDataControls()
         {
-            // Constants
             const int radioButtonSize = 20;
-            const int radioLabelSpacing = -2;  // Space between radio button and its label
-            const int optionSpacing = 30;
-            const int panelHeight = 55;
-            int currentX = 0;
 
             // Create main label
             _worldMapDataType_Label = new Label
@@ -2717,18 +2712,10 @@ namespace Sales_Tracker
             _worldMapDataType_Label.Click += (s, e) => { CloseAllPanels(null, null); };
             LanguageManager.UpdateLanguageForControl(_worldMapDataType_Label);
 
-            int mainLabelY = (panelHeight - _worldMapDataType_Label.PreferredHeight) / 2;
-            _worldMapDataType_Label.Location = new Point(currentX, mainLabelY);
-
-            currentX += _worldMapDataType_Label.PreferredWidth + optionSpacing;
-
-            int radioButtonY = (panelHeight - radioButtonSize) / 2;
-
             // Combined data option
             CombinedData_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
-                Location = new Point(currentX, radioButtonY),
                 Animated = true
             };
 
@@ -2749,16 +2736,10 @@ namespace Sales_Tracker
             };
             LanguageManager.UpdateLanguageForControl(_combinedData_Label);
 
-            int labelY = (panelHeight - _combinedData_Label.PreferredHeight) / 2;
-            _combinedData_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
-
-            currentX += radioButtonSize + radioLabelSpacing + _combinedData_Label.PreferredWidth + optionSpacing;
-
             // Purchases only option
             PurchasesOnly_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
-                Location = new Point(currentX, radioButtonY),
                 Animated = true
             };
 
@@ -2779,15 +2760,10 @@ namespace Sales_Tracker
             };
             LanguageManager.UpdateLanguageForControl(_purchasesOnly_Label);
 
-            _purchasesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
-
-            currentX += radioButtonSize + radioLabelSpacing + _purchasesOnly_Label.PreferredWidth + optionSpacing;
-
             // Sales only option
             SalesOnly_RadioButton = new Guna2CustomRadioButton
             {
                 Size = new Size(radioButtonSize, radioButtonSize),
-                Location = new Point(currentX, radioButtonY),
                 Animated = true
             };
 
@@ -2808,15 +2784,9 @@ namespace Sales_Tracker
             };
             LanguageManager.UpdateLanguageForControl(_salesOnly_Label);
 
-            _salesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
-
-            // Calculate total panel width based on actual control widths
-            int totalWidth = currentX + radioButtonSize + radioLabelSpacing + _salesOnly_Label.PreferredWidth;
-
-            // Create panel with calculated dimensions
+            // Create panel (size will be calculated in RecalculateWorldMapControlsLayout)
             WorldMapControls_Panel = new Guna2Panel
             {
-                Size = new Size(totalWidth, panelHeight),
                 FillColor = Color.Transparent,
                 BorderThickness = 0,
                 Visible = false
@@ -2835,11 +2805,67 @@ namespace Sales_Tracker
             ]);
 
             Controls.Add(WorldMapControls_Panel);
-            CombinedData_RadioButton.Checked = true;  // Check it after the control is added to fix a bug with Guna
+            CombinedData_RadioButton.Checked = true;  // Check it after the control is added
 
+            // Set up event handlers
             SalesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
             CombinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
             PurchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
+
+            // Calculate initial layout
+            RecalculateWorldMapControlsLayout();
+        }
+
+        /// <summary>
+        /// Recalculates and repositions the world map controls.
+        /// This should be called after language changes or during initial construction.
+        /// </summary>
+        public void RecalculateWorldMapControlsLayout()
+        {
+            if (WorldMapControls_Panel == null || _worldMapDataType_Label == null)
+                return;
+
+            // Constants
+            const int radioButtonSize = 20;
+            const int radioLabelSpacing = -2;
+            const int optionSpacing = 30;
+            const int panelHeight = 55;
+            int currentX = 0;
+
+            // Recalculate main label position
+            int mainLabelY = (panelHeight - _worldMapDataType_Label.PreferredHeight) / 2;
+            _worldMapDataType_Label.Location = new Point(currentX, mainLabelY);
+            currentX += _worldMapDataType_Label.PreferredWidth + optionSpacing;
+
+            int radioButtonY = (panelHeight - radioButtonSize) / 2;
+            int labelY = (panelHeight - _combinedData_Label.PreferredHeight) / 2;
+
+            // Reposition Combined data option
+            CombinedData_RadioButton.Location = new Point(currentX, radioButtonY);
+            _combinedData_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
+            currentX += radioButtonSize + radioLabelSpacing + _combinedData_Label.PreferredWidth + optionSpacing;
+
+            // Reposition Purchases only option
+            PurchasesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
+            _purchasesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
+            currentX += radioButtonSize + radioLabelSpacing + _purchasesOnly_Label.PreferredWidth + optionSpacing;
+
+            // Reposition Sales only option
+            SalesOnly_RadioButton.Location = new Point(currentX, radioButtonY);
+            _salesOnly_Label.Location = new Point(currentX + radioButtonSize + radioLabelSpacing, labelY);
+
+            // Recalculate total panel width
+            int totalWidth = currentX + radioButtonSize + radioLabelSpacing + _salesOnly_Label.PreferredWidth;
+
+            // Update panel size
+            WorldMapControls_Panel.Size = new Size(totalWidth, panelHeight);
+
+            // Position the panel itself (both for initial construction and language updates)
+            if (_analyticsTabButtons_Panel != null)
+            {
+                WorldMapControls_Panel.Location = new Point((ClientSize.Width - WorldMapControls_Panel.Width) / 2,
+                    _analyticsTabButtons_Panel.Bottom + 10);
+            }
         }
         private void WorldMapDataType_CheckedChanged(object sender, EventArgs e)
         {
