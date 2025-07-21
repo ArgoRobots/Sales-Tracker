@@ -9,13 +9,18 @@ namespace Sales_Tracker
 {
     public partial class AddPurchase_Form : BaseForm
     {
+        // Properties
+        private static AddPurchase_Form _instance;
+
         // Getter
+        public static AddPurchase_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
         // Init.
         public AddPurchase_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             AddEventHandlersToTextBoxes();
             Date_DateTimePicker.Value = DateTime.Now;
@@ -25,6 +30,7 @@ namespace Sales_Tracker
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
+            RecalculateMultipleItemsLayout();
             RemoveReceiptLabel();
             Charged_Label.Text = $"{MainMenu_Form.CurrencySymbol} charged ({DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType)})";
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -1034,6 +1040,10 @@ namespace Sales_Tracker
         }
 
         // Misc.
+        public void RecalculateMultipleItemsLayout()
+        {
+            LayoutUtils.RecalculateCheckboxLabelLayout(MultipleItems_CheckBox, MultipleItems_Label, this);
+        }
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(OrderNumber_TextBox.Text) &&

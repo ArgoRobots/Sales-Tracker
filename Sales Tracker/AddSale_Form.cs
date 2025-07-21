@@ -9,13 +9,18 @@ namespace Sales_Tracker
 {
     public partial class AddSale_Form : BaseForm
     {
+        // Properties
+        private static AddSale_Form _instance;
+
         // Getter
+        public static AddSale_Form Instance => _instance;
         public static List<string> ThingsThatHaveChangedInFile { get; } = [];
 
         // Init.
         public AddSale_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             AddEventHandlersToTextBoxes();
             Date_DateTimePicker.Value = DateTime.Now;
@@ -25,6 +30,7 @@ namespace Sales_Tracker
             ThemeManager.SetThemeForForm(this);
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
+            RecalculateMultipleItemsLayout();
             RemoveReceiptLabel();
             string currency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
             Credited_Label.Text = $"{MainMenu_Form.CurrencySymbol} credited ({currency})";
@@ -1009,6 +1015,10 @@ namespace Sales_Tracker
         }
 
         // Misc.
+        public void RecalculateMultipleItemsLayout()
+        {
+            LayoutUtils.RecalculateCheckboxLabelLayout(MultipleItems_CheckBox, MultipleItems_Label, this);
+        }
         private void ValidateInputs(object sender, EventArgs e)
         {
             bool allFieldsFilled = !string.IsNullOrWhiteSpace(SaleNumber_TextBox.Text) &&

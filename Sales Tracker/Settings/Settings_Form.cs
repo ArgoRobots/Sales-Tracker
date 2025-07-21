@@ -185,6 +185,8 @@ namespace Sales_Tracker.Settings
 
                     Security_Form.Instance.CenterEncryptControls();
                     MainMenu_Form.Instance?.RecalculateWorldMapControlsLayout();
+                    AddPurchase_Form.Instance?.RecalculateMultipleItemsLayout();
+                    AddSale_Form.Instance?.RecalculateMultipleItemsLayout();
                 }
 
                 return true;

@@ -2823,7 +2823,9 @@ namespace Sales_Tracker
         public void RecalculateWorldMapControlsLayout()
         {
             if (WorldMapControls_Panel == null || _worldMapDataType_Label == null)
+            {
                 return;
+            }
 
             // Constants
             const int radioButtonSize = 20;
