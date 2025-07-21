@@ -45,6 +45,7 @@ namespace Sales_Tracker.ReturnProduct
                 CreateItemSelectionControls();
             }
             UpdateTheme();
+            SetAccessibleDescriptions();
             UpdateCharacterCount();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -252,6 +253,10 @@ namespace Sales_Tracker.ReturnProduct
 
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
             ThemeManager.MakeGButtonBluePrimary(ProcessReturn_Button);
+        }
+        private void SetAccessibleDescriptions()
+        {
+            TransactionInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
 
         // Form event handlers

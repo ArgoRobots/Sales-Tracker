@@ -48,6 +48,7 @@ namespace Sales_Tracker
                 CreateItemSelectionControls();
             }
             UpdateTheme();
+            SetAccessibleDescriptions();
             UpdateCharacterCount();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -238,6 +239,11 @@ namespace Sales_Tracker
 
             ThemeManager.MakeGButtonBlueSecondary(Cancel_Button);
             ThemeManager.MakeGButtonBluePrimary(UndoReturn_Button);
+        }
+        private void SetAccessibleDescriptions()
+        {
+            TransactionInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            ReturnInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
 
         // Form event handlers
