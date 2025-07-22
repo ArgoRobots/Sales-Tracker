@@ -39,6 +39,7 @@ namespace Sales_Tracker.ReturnProduct
                 _items = [];
             }
 
+            ReturnReason_ComboBox.Items.AddRange(ReturnReasons.GetReturnReasons().Cast<object>().ToArray());
             LoadTransactionData();
             if (_hasMultipleItems)
             {
@@ -257,6 +258,7 @@ namespace Sales_Tracker.ReturnProduct
         private void SetAccessibleDescriptions()
         {
             TransactionInfo_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+            ReturnReason_ComboBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
         // Form event handlers

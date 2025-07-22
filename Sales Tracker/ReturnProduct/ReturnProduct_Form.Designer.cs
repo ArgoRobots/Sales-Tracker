@@ -103,7 +103,6 @@ namespace Sales_Tracker.ReturnProduct
             ReturnReason_ComboBox.Font = new Font("Segoe UI", 10F);
             ReturnReason_ComboBox.ForeColor = Color.FromArgb(68, 88, 112);
             ReturnReason_ComboBox.ItemHeight = 44;
-            ReturnReason_ComboBox.Items.AddRange(new object[] { "Defective/Damaged Product", "Wrong Item Received", "Customer Changed Mind", "Quality Issues", "Product Not as Described", "Duplicate Order", "Expired Product", "Missing Parts/Accessories", "Size/Fit Issues", "Other" });
             ReturnReason_ComboBox.Location = new Point(44, 329);
             ReturnReason_ComboBox.Margin = new Padding(4, 5, 4, 5);
             ReturnReason_ComboBox.Name = "ReturnReason_ComboBox";

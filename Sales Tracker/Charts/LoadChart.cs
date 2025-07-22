@@ -1644,19 +1644,21 @@ namespace Sales_Tracker.Charts
 
                     if (string.IsNullOrEmpty(returnReason))
                     {
-                        returnReason = "No reason provided";
+                        returnReason = LanguageManager.TranslateString("No reason provided");
                     }
 
                     // Extract base reason if it contains additional notes (format: "reason - notes")
                     string baseReason = returnReason.Split(" - ")[0];
 
-                    if (reasonCounts.TryGetValue(baseReason, out int value))
+                    string translatedReason = LanguageManager.TranslateString(baseReason);
+
+                    if (reasonCounts.TryGetValue(translatedReason, out int value))
                     {
-                        reasonCounts[baseReason] = value + 1;
+                        reasonCounts[translatedReason] = value + 1;
                     }
                     else
                     {
-                        reasonCounts[baseReason] = 1;
+                        reasonCounts[translatedReason] = 1;
                     }
                 }
             }
