@@ -646,13 +646,13 @@ namespace Sales_Tracker.Classes
                     },
                     Sheets = [
                         new Sheet
-                {
-                    Properties = new SheetProperties
-                    {
-                        Title = sheetName,
-                        SheetId = 0
-                    }
-                }
+                        {
+                            Properties = new SheetProperties
+                            {
+                                Title = sheetName,
+                                SheetId = 0
+                            }
+                        }
                     ]
                 };
 

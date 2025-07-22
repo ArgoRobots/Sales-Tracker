@@ -51,14 +51,8 @@ namespace Sales_Tracker.Classes
 
                 Settings_Form.Instance.AnimateButtons();
                 MainMenu_Form.Instance.AnimateButtons();
-                if (Tools.IsFormOpen<Log_Form>())
-                {
-                    Log_Form.Instance.AnimateButtons();
-                }
-                if (Tools.IsFormOpen<Receipts_Form>())
-                {
-                    Receipts_Form.Instance.AnimateButtons();
-                }
+                Log_Form.Instance?.AnimateButtons();
+                Receipts_Form.Instance?.AnimateButtons();
             }
 
             // Handle animate charts
