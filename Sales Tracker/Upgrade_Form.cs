@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
@@ -14,6 +15,7 @@ namespace Sales_Tracker
             InitializeComponent();
             ConstructIEnterKeyPanel();
             UpdateTheme();
+            SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
             CenterControls();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -54,6 +56,12 @@ namespace Sales_Tracker
                 Square_ImageButton.Image = Resources.SquareLogoBlack;
                 backButton.Image = Resources.BackArrowBlack;
             }
+        }
+        private void SetAccessibleDescriptions()
+        {
+            UnlimitedProducts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            WindowsHello_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
+            PriorityCustomerSupport_Label.AccessibleDescription = AccessibleDescriptionManager.AlignLeft;
         }
 
         // Form event handlers
