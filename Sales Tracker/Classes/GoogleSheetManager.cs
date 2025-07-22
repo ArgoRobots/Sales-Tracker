@@ -425,7 +425,7 @@ namespace Sales_Tracker.Classes
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            string operationMessage = "Exporting multi-dataset chart to Google Sheets...";
+            string operationMessage = LanguageManager.TranslateString("Exporting multi-dataset chart to Google Sheets...");
 
             // Create a new cancellation token source that combines with the provided token
             using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -624,7 +624,7 @@ namespace Sales_Tracker.Classes
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            string operationMessage = "Exporting multi-dataset count chart to Google Sheets...";
+            string operationMessage = LanguageManager.TranslateString("Exporting multi-dataset chart to Google Sheets...");
 
             using CancellationTokenSource combinedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             CancellationToken activeCancellationToken = combinedCts.Token;
