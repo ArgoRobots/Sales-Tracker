@@ -38,12 +38,13 @@ namespace Sales_Tracker.UI
             RightClickGunaChartMenu.ConstructRightClickGunaChartMenu();
 
             // Set language
-            LanguageManager.UpdateLanguageForControl(FileMenu);
             LanguageManager.UpdateLanguageForControl(RecentlyOpenedMenu);
+            LanguageManager.UpdateLanguageForControl(FileMenu);
             LanguageManager.UpdateLanguageForControl(HelpMenu);
             LanguageManager.UpdateLanguageForControl(ControlsDropDown_Button);
             LanguageManager.UpdateLanguageForControl(ControlDropDown_Panel);
             LanguageManager.UpdateLanguageForControl(DataGridViewManager.RightClickDataGridView_Panel);
+            LanguageManager.UpdateLanguageForControl(RightClickGunaChartMenu.RightClickGunaChart_Panel);
         }
 
         // Properties

@@ -13,7 +13,7 @@ namespace Sales_Tracker
         public Upgrade_Form()
         {
             InitializeComponent();
-            ConstructIEnterKeyPanel();
+            ConstructEnterKeyPanel();
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
@@ -43,18 +43,18 @@ namespace Sales_Tracker
             ThemeManager.MakeGButtonBlueSecondary(EnterKey_Button);
 
             // For EnterKey_Panel
-            ThemeManager.MakeGButtonBluePrimary(verifyLicense_Button);
-            backButton.FillColor = CustomColors.MainBackground;
+            ThemeManager.MakeGButtonBluePrimary(_verifyLicense_Button);
+            _backButton.FillColor = CustomColors.MainBackground;
 
             if (ThemeManager.IsDarkTheme())
             {
                 Square_ImageButton.Image = Resources.SquareLogoWhite;
-                backButton.Image = Resources.BackArrowWhite;
+                _backButton.Image = Resources.BackArrowWhite;
             }
             else
             {
                 Square_ImageButton.Image = Resources.SquareLogoBlack;
-                backButton.Image = Resources.BackArrowBlack;
+                _backButton.Image = Resources.BackArrowBlack;
             }
         }
         private void SetAccessibleDescriptions()
@@ -77,8 +77,8 @@ namespace Sales_Tracker
         }
         private void EnterKey_Button_Click(object sender, EventArgs e)
         {
-            EnterKey_Panel.Visible = true;
-            EnterKey_Panel.BringToFront();
+            _enterKey_Panel.Visible = true;
+            _enterKey_Panel.BringToFront();
         }
         private void LearnMore_Button_Click(object sender, EventArgs e)
         {
@@ -86,20 +86,20 @@ namespace Sales_Tracker
         }
 
         // EnterKey_Panel
-        private Panel EnterKey_Panel;
-        private Guna2Button verifyLicense_Button, backButton;
-        private Label errorLabel;
-        private Guna2TextBox license_TextBox;
-        private void ConstructIEnterKeyPanel()
+        private Panel _enterKey_Panel;
+        private Guna2Button _verifyLicense_Button, _backButton;
+        private Label _errorLabel;
+        private Guna2TextBox _license_TextBox;
+        private void ConstructEnterKeyPanel()
         {
-            EnterKey_Panel = new()
+            _enterKey_Panel = new()
             {
                 BackColor = CustomColors.MainBackground,
                 Visible = false,
                 Dock = DockStyle.Fill,
                 Size = ClientSize
             };
-            Controls.Add(EnterKey_Panel);
+            Controls.Add(_enterKey_Panel);
 
             Label title_Label = new()
             {
@@ -111,19 +111,19 @@ namespace Sales_Tracker
                 Name = "EnterYourLicense_Label",
                 Anchor = AnchorStyles.Top
             };
-            EnterKey_Panel.Controls.Add(title_Label);
+            _enterKey_Panel.Controls.Add(title_Label);
 
-            license_TextBox = new()
+            _license_TextBox = new()
             {
                 Anchor = AnchorStyles.Top,
                 Size = new Size(350, 50),
                 PlaceholderText = "Enter license",
                 ShortcutsEnabled = false
             };
-            TextBoxManager.Attach(license_TextBox);
-            EnterKey_Panel.Controls.Add(license_TextBox);
+            TextBoxManager.Attach(_license_TextBox);
+            _enterKey_Panel.Controls.Add(_license_TextBox);
 
-            verifyLicense_Button = new()
+            _verifyLicense_Button = new()
             {
                 Anchor = AnchorStyles.Top,
                 Size = new Size(350, 50),
@@ -133,30 +133,30 @@ namespace Sales_Tracker
                 BorderThickness = 1,
                 Name = "VerifyLicense_Button",
             };
-            verifyLicense_Button.Click += VerifyLicense_Button_Click;
-            EnterKey_Panel.Controls.Add(verifyLicense_Button);
+            _verifyLicense_Button.Click += VerifyLicense_Button_Click;
+            _enterKey_Panel.Controls.Add(_verifyLicense_Button);
 
-            backButton = new()
+            _backButton = new()
             {
                 Size = new Size(50, 45),
                 ImageSize = new Size(40, 40),
                 Location = new Point(title_Label.Top, title_Label.Top)
             };
-            backButton.Click += BackButton_Click;
-            EnterKey_Panel.Controls.Add((backButton));
+            _backButton.Click += BackButton_Click;
+            _enterKey_Panel.Controls.Add((_backButton));
 
             // Set locations
-            license_TextBox.Location = new Point((
-                EnterKey_Panel.Width - license_TextBox.Width) / 2,
-                ((EnterKey_Panel.Height - license_TextBox.Height - CustomControls.SpaceBetweenControls - verifyLicense_Button.Height)) / 2);
+            _license_TextBox.Location = new Point((
+                _enterKey_Panel.Width - _license_TextBox.Width) / 2,
+                (_enterKey_Panel.Height - _license_TextBox.Height - CustomControls.SpaceBetweenControls - _verifyLicense_Button.Height) / 2);
 
-            verifyLicense_Button.Location = new Point(license_TextBox.Left, license_TextBox.Bottom + CustomControls.SpaceBetweenControls);
+            _verifyLicense_Button.Location = new Point(_license_TextBox.Left, _license_TextBox.Bottom + CustomControls.SpaceBetweenControls);
 
-            title_Label.Left = (EnterKey_Panel.Width - title_Label.Width) / 2;
+            title_Label.Left = (_enterKey_Panel.Width - title_Label.Width) / 2;
         }
         private async void VerifyLicense_Button_Click(object sender, EventArgs e)
         {
-            string key = license_TextBox.Text.Trim().ToUpper();
+            string key = _license_TextBox.Text.Trim().ToUpper();
             LicenseManager licenseManager = new();
             bool iskeyValid = await licenseManager.ValidateKeyAsync(key);
 
@@ -174,7 +174,7 @@ namespace Sales_Tracker
                 BackColor = CustomColors.MainBackground,
                 Dock = DockStyle.Fill
             };
-            EnterKey_Panel.Controls.Add(animationPanel);
+            _enterKey_Panel.Controls.Add(animationPanel);
             animationPanel.BringToFront();
 
             Guna2CircleProgressBar progressCircle = new()
@@ -202,7 +202,7 @@ namespace Sales_Tracker
 
             Guna2Button closeButton = new()
             {
-                Size = verifyLicense_Button.Size,
+                Size = _verifyLicense_Button.Size,
                 Anchor = AnchorStyles.Top,
                 Text = LanguageManager.TranslateString("Close"),
                 Font = new Font("Segoe UI", 10),
@@ -256,9 +256,9 @@ namespace Sales_Tracker
         private void SetLicenseInvalid()
         {
             // Create error label if it doesn't exist
-            if (errorLabel == null)
+            if (_errorLabel == null)
             {
-                errorLabel = new()
+                _errorLabel = new()
                 {
                     AutoSize = true,
                     Font = new Font("Segoe UI", 11),
@@ -266,48 +266,48 @@ namespace Sales_Tracker
                     TextAlign = ContentAlignment.MiddleCenter,
                     Visible = false
                 };
-                EnterKey_Panel.Controls.Add(errorLabel);
+                _enterKey_Panel.Controls.Add(_errorLabel);
             }
 
             // Set label properties
-            errorLabel.Text = LanguageManager.TranslateString("Invalid license key");
-            errorLabel.Location = new Point(
-                (EnterKey_Panel.Width - errorLabel.Width) / 2,
-                verifyLicense_Button.Bottom + 10
+            _errorLabel.Text = LanguageManager.TranslateString("Invalid license key");
+            _errorLabel.Location = new Point(
+                (_enterKey_Panel.Width - _errorLabel.Width) / 2,
+                _verifyLicense_Button.Bottom + 10
             );
-            errorLabel.Visible = true;
+            _errorLabel.Visible = true;
 
             // Disable button
-            verifyLicense_Button.Enabled = false;
-            verifyLicense_Button.Text = LanguageManager.TranslateString("Invalid License");
+            _verifyLicense_Button.Enabled = false;
+            _verifyLicense_Button.Text = LanguageManager.TranslateString("Invalid License");
 
             _ = ShowErrorAndShake();
 
             // Reset to allow user to try again
-            verifyLicense_Button.Enabled = true;
-            errorLabel.Visible = false;
+            _verifyLicense_Button.Enabled = true;
+            _errorLabel.Visible = false;
         }
         private async Task ShowErrorAndShake()
         {
-            int originalX = verifyLicense_Button.Left;
+            int originalX = _verifyLicense_Button.Left;
             for (int i = 0; i < 6; i++)
             {
-                verifyLicense_Button.Left = originalX + (i % 2 == 0 ? -5 : 5);
+                _verifyLicense_Button.Left = originalX + (i % 2 == 0 ? -5 : 5);
                 await Task.Delay(50);
             }
-            verifyLicense_Button.Left = originalX;
+            _verifyLicense_Button.Left = originalX;
 
             // Wait before hiding error message
             await Task.Delay(3000);
 
             // Hide error message and reset button
-            errorLabel.Visible = false;
-            verifyLicense_Button.Enabled = true;
-            verifyLicense_Button.Text = LanguageManager.TranslateString("Verify License");
+            _errorLabel.Visible = false;
+            _verifyLicense_Button.Enabled = true;
+            _verifyLicense_Button.Text = LanguageManager.TranslateString("Verify License");
         }
         private void BackButton_Click(object sender, EventArgs e)
         {
-            EnterKey_Panel.Visible = false;
+            _enterKey_Panel.Visible = false;
         }
     }
 }
