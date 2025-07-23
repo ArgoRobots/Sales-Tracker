@@ -31,6 +31,7 @@ namespace Sales_Tracker
             Directories.EnsureAppDataDirectoriesExist();
             ArgoCompany.InitCacheFiles();
             EncryptionManager.Initialize();
+            AutoUpdateManager.Initialize();
             DotEnv.Load();
             PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
             LanguageManager.InitLanguageManager();

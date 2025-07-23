@@ -69,6 +69,7 @@ namespace Sales_Tracker
             UpdateMainMenuFormText();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
+            AutoUpdateManager.CheckForUpdates();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ConstructMainCharts()

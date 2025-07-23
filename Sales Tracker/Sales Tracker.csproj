@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="EPPlus" Version="8.0.7" />
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />

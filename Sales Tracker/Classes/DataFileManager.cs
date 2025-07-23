@@ -7,7 +7,8 @@
         ImportSpreadsheetTutorial,  // bool
         RecentCompanies,  // string[]
         EULAAccepted,  // bool
-        UploadTime_AnonymousData  // DateTime string
+        UploadTime_AnonymousData,  // DateTime string
+        LastUpdateCheck  // bool
     }
     public enum AppDataSettings
     {

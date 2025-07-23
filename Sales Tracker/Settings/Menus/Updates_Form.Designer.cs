@@ -101,6 +101,7 @@ namespace Sales_Tracker.Settings.Menus
             Controls.Add(Updates_Label);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Updates_Form";
+            FormClosing += Updates_Form_FormClosing;
             Shown += Updates_Form_Shown;
             ResumeLayout(false);
             PerformLayout();

@@ -350,7 +350,7 @@ namespace Sales_Tracker.UI
                 ArgoCompany.SaveAll();
                 MainMenu_Form.Instance.Saved_Label.Text = "Saved";
             }
-            else if (Tools.IsFormOpen<MainMenu_Form>())
+            else
             {
                 MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.Text;
                 MainMenu_Form.Instance.Saved_Label.Text = "No changes found";
