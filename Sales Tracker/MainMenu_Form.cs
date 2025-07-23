@@ -20,7 +20,7 @@ namespace Sales_Tracker
     public partial class MainMenu_Form : BaseForm
     {
         // Admin mode can only be enabled by directly setting it to true here
-        public readonly static bool EnableAdminMode = true && DotEnv.IsRunningInVisualStudio();
+        public readonly static bool EnableAdminMode = true && Tools.IsRunningInVisualStudio();
 
         // Properties
         private static MainMenu_Form _instance;
@@ -2812,7 +2812,6 @@ namespace Sales_Tracker
             CombinedData_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
             PurchasesOnly_RadioButton.CheckedChanged += WorldMapDataType_CheckedChanged;
 
-            // Calculate initial layout
             RecalculateWorldMapControlsLayout();
         }
 

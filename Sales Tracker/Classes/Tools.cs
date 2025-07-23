@@ -79,6 +79,18 @@ namespace Sales_Tracker.Classes
             Process.Start("explorer.exe", $"/select,\"{filePath}\"");
         }
 
+        /// <summary>
+        /// Determines if the application is running in Visual Studio development environment.
+        /// </summary>
+        public static bool IsRunningInVisualStudio()
+        {
+            // Check for Visual Studio specific environment variables
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VisualStudioVersion")) ||
+                   !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSAPPIDDIR")) ||
+                   System.Diagnostics.Debugger.IsAttached ||
+                   Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == null;
+        }
+
         // Strings
         public static string AddNumberForAStringThatAlreadyExists(string name, List<string> list)
         {

@@ -14,7 +14,7 @@
         /// </summary>
         public static void Load()
         {
-            if (IsRunningInVisualStudio())
+            if (Tools.IsRunningInVisualStudio())
             {
                 string envFilePath = FindEnvRelativeToSolution();
 
@@ -32,18 +32,6 @@
             {
                 Log.Error_ENVFileNotFound(Path.GetFileName(Directories.SecretsFilePath));
             }
-        }
-
-        /// <summary>
-        /// Determines if the application is running in Visual Studio development environment.
-        /// </summary>
-        public static bool IsRunningInVisualStudio()
-        {
-            // Check for Visual Studio specific environment variables
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VisualStudioVersion")) ||
-                   !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSAPPIDDIR")) ||
-                   System.Diagnostics.Debugger.IsAttached ||
-                   Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == null;
         }
         private static void LoadFromEncryptedSecrets()
         {
