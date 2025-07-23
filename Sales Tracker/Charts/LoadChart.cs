@@ -1930,7 +1930,6 @@ namespace Sales_Tracker.Charts
         [
             CustomColors.PastelBlue,
             CustomColors.PastelGreen,
-            Color.FromArgb(102, 204, 153), // Muted teal
             Color.FromArgb(204, 102, 153), // Soft pink
             Color.FromArgb(153, 102, 204), // Soft purple
             Color.FromArgb(204, 153, 102), // Soft orange

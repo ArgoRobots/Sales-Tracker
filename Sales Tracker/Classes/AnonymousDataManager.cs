@@ -112,7 +112,7 @@ namespace Sales_Tracker.Classes
                 catch (Exception ex)
                 {
                     Log.Write(2, $"Geo-location service {endpoint} failed: {ex.Message}");
-                    continue; // Try next service
+                    continue;  // Try next service
                 }
             }
 
@@ -206,7 +206,7 @@ namespace Sales_Tracker.Classes
         private static string? _sessionHashedIP;
 
         /// <summary>
-        /// Initializes the session with geo-location data
+        /// Initializes the session with geo-location data.
         /// </summary>
         public static async Task InitializeSessionAsync()
         {
@@ -275,7 +275,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Adds export operation data to the anonymous data log (awaitable)
+        /// Adds export operation data to the anonymous data log.
         /// </summary>
         public static async Task AddExportDataAsync(Dictionary<ExportDataField, object> data)
         {
