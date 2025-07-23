@@ -480,7 +480,7 @@ namespace Sales_Tracker.UI
             ControlDropDown_Panel = ConstructPanelForMenu(new Size(300, btnHeight * 6 + 15 + spaceForSeperator * 5), "controlDropDown_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)ControlDropDown_Panel.Controls[0];
 
-            Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageAccountants_Button.Text, btnWidth, true, flowPanel);
+            Guna2Button menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Accountants_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -489,7 +489,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeperator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCompanies_Button.Text, btnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Companies_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -498,7 +498,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeperator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageCategories_Button.Text, btnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Categories_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {
@@ -507,7 +507,7 @@ namespace Sales_Tracker.UI
 
             ConstructSeperator(btnWidth, flowPanel);
 
-            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.ManageProducts_Button.Text, btnWidth, true, flowPanel);
+            menuBtn = ConstructBtnForMenu(MainMenu_Form.Instance.Products_Button.Text, btnWidth, true, flowPanel);
             menuBtn.Height = btnHeight;
             menuBtn.Click += (_, _) =>
             {

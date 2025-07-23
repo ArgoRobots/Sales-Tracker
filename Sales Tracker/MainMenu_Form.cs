@@ -385,10 +385,10 @@ namespace Sales_Tracker
                Analytics_Button,
                AddPurchase_Button,
                AddSale_Button,
-               ManageProducts_Button,
-               ManageCategories_Button,
-               ManageCompanies_Button,
-               ManageAccountants_Button,
+               Products_Button,
+               Categories_Button,
+               Companies_Button,
+               Accountants_Button,
                TimeRange_Button,
             ];
             CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
@@ -1014,8 +1014,8 @@ namespace Sales_Tracker
         private Control[] GetMainTopButtons()
         {
             return [
-                ManageAccountants_Button, ManageCategories_Button, ManageCompanies_Button,
-                ManageProducts_Button, AddSale_Button, AddPurchase_Button];
+                Accountants_Button, Categories_Button, Companies_Button,
+                Products_Button, AddSale_Button, AddPurchase_Button];
         }
 
         /// <summary>
