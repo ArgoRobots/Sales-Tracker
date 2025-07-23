@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Sales_Tracker.UI;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Sales_Tracker.Classes
 {
@@ -28,6 +30,19 @@ namespace Sales_Tracker.Classes
         Receipts
     }
 
+    public class GeoLocationData
+    {
+        public string Country { get; set; } = "Unknown";
+        public string CountryCode { get; set; } = "Unknown";
+        public string Region { get; set; } = "Unknown";
+        public string City { get; set; } = "Unknown";
+        public string Timezone { get; set; } = "Unknown";
+        public string ISP { get; set; } = "Unknown";
+        public bool IsVPN { get; set; } = false;
+        public double Latitude { get; set; } = 0.0;
+        public double Longitude { get; set; } = 0.0;
+    }
+
     public static class ApiConfig
     {
         public static string? ApiKey => DotEnv.Get("UPLOAD_API_KEY");
@@ -35,29 +50,247 @@ namespace Sales_Tracker.Classes
         public static string ServerUrl => "https://argorobots.com/upload_data.php";
     }
 
+    public static class GeoLocationService
+    {
+        private static GeoLocationData? _cachedLocation;
+        private static DateTime _lastFetched = DateTime.MinValue;
+        private static readonly TimeSpan CacheExpiry = TimeSpan.FromHours(12);
+        private static readonly string[] GeoApiEndpoints = [
+            "http://ip-api.com/json/?fields=status,country,countryCode,region,city,timezone,isp,proxy,lat,lon",
+            "https://ipapi.co/json/",
+            "https://ipinfo.io/json"
+        ];
+
+        public static async Task<GeoLocationData> GetLocationAsync()
+        {
+            // Return cached data if still valid
+            if (_cachedLocation != null && (DateTime.Now - _lastFetched) < CacheExpiry)
+            {
+                return _cachedLocation;
+            }
+
+            // Try multiple geo-location services for reliability
+            foreach (string endpoint in GeoApiEndpoints)
+            {
+                try
+                {
+                    using HttpClient client = new();
+                    client.Timeout = TimeSpan.FromSeconds(8);
+                    client.DefaultRequestHeaders.Add("User-Agent", ApiConfig.UserAgent);
+
+                    string response = await client.GetStringAsync(endpoint);
+                    dynamic? locationData = JsonConvert.DeserializeObject<dynamic>(response);
+
+                    GeoLocationData geoData = new();
+
+                    // Parse different API response formats
+                    if (endpoint.Contains("ip-api.com"))
+                    {
+                        if (locationData?.status == "success")
+                        {
+                            geoData = ParseIpApiResponse(locationData);
+                        }
+                    }
+                    else if (endpoint.Contains("ipapi.co"))
+                    {
+                        geoData = ParseIpApiCoResponse(locationData);
+                    }
+                    else if (endpoint.Contains("ipinfo.io"))
+                    {
+                        geoData = ParseIpInfoResponse(locationData);
+                    }
+
+                    if (geoData.Country != "Unknown")
+                    {
+                        _cachedLocation = geoData;
+                        _lastFetched = DateTime.Now;
+
+                        Log.Write(1, $"Geo-location detected: {geoData.City}, {geoData.Region}, {geoData.Country}");
+                        return _cachedLocation;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(2, $"Geo-location service {endpoint} failed: {ex.Message}");
+                    continue; // Try next service
+                }
+            }
+
+            Log.Error_AnonymousDataCollection("All geo-location services failed, using default location");
+            _cachedLocation = new GeoLocationData();
+            return _cachedLocation;
+        }
+        private static GeoLocationData ParseIpApiResponse(dynamic data)
+        {
+            return new GeoLocationData
+            {
+                Country = data.country?.ToString() ?? "Unknown",
+                CountryCode = data.countryCode?.ToString() ?? "Unknown",
+                Region = data.region?.ToString() ?? "Unknown",
+                City = data.city?.ToString() ?? "Unknown",
+                Timezone = data.timezone?.ToString() ?? "Unknown",
+                ISP = data.isp?.ToString() ?? "Unknown",
+                IsVPN = data.proxy == true,
+                Latitude = (double)(data.lat ?? 0.0),
+                Longitude = (double)(data.lon ?? 0.0)
+            };
+        }
+        private static GeoLocationData ParseIpApiCoResponse(dynamic data)
+        {
+            return new GeoLocationData
+            {
+                Country = data.country_name?.ToString() ?? "Unknown",
+                CountryCode = data.country_code?.ToString() ?? "Unknown",
+                Region = data.region?.ToString() ?? "Unknown",
+                City = data.city?.ToString() ?? "Unknown",
+                Timezone = data.timezone?.ToString() ?? "Unknown",
+                ISP = data.org?.ToString() ?? "Unknown",
+                IsVPN = false,  // ipapi.co doesn't provide VPN detection in free tier
+                Latitude = (double)(data.latitude ?? 0.0),
+                Longitude = (double)(data.longitude ?? 0.0)
+            };
+        }
+        private static GeoLocationData ParseIpInfoResponse(dynamic data)
+        {
+            string[]? location = data.loc?.ToString()?.Split(',');
+
+            return new GeoLocationData
+            {
+                Country = data.country?.ToString() ?? "Unknown",
+                CountryCode = data.country?.ToString() ?? "Unknown",
+                Region = data.region?.ToString() ?? "Unknown",
+                City = data.city?.ToString() ?? "Unknown",
+                Timezone = data.timezone?.ToString() ?? "Unknown",
+                ISP = data.org?.ToString() ?? "Unknown",
+                IsVPN = false,  // ipinfo.io doesn't provide VPN detection in free tier
+                Latitude = location?.Length >= 2 && double.TryParse(location[0], out double lat) ? lat : 0.0,
+                Longitude = location?.Length >= 2 && double.TryParse(location[1], out double lon) ? lon : 0.0
+            };
+        }
+        public static string HashIP(string ip, string salt = "AnonymousTracker2025")
+        {
+            try
+            {
+                byte[] hashedBytes = SHA256.HashData(Encoding.UTF8.GetBytes(ip + salt));
+                return Convert.ToBase64String(hashedBytes)[..16];  // Truncate for storage
+            }
+            catch
+            {
+                return "HashFailed";
+            }
+        }
+        public static async Task<string> GetHashedIPAsync()
+        {
+            try
+            {
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(5);
+                client.DefaultRequestHeaders.Add("User-Agent", ApiConfig.UserAgent);
+                string ip = await client.GetStringAsync("https://api.ipify.org");
+                return HashIP(ip.Trim());
+            }
+            catch
+            {
+                return "IPUnavailable";
+            }
+        }
+    }
+
     /// <summary>
-    /// Manages collection and storage of anonymous data points for analytics purposes.
+    /// Manages collection and storage of anonymous data points for analytics purposes with geo-location tracking.
     /// </summary>
     public static class AnonymousDataManager
     {
-        // Methods to add data points
-        /// <summary>
-        /// Adds export operation data to the anonymous data log.
-        /// </summary>
-        /// <param name="data">Dictionary containing export operation metadata</param>
-        public static void AddExportData(Dictionary<ExportDataField, object> data)
-        {
-            ExportType exportType = (ExportType)data[ExportDataField.ExportType];
-            long durationMs = (long)data[ExportDataField.DurationMS];
+        private static GeoLocationData? _sessionLocation;
+        private static DateTime? _sessionStartTime;
+        private static string? _sessionHashedIP;
 
+        /// <summary>
+        /// Initializes the session with geo-location data
+        /// </summary>
+        public static async Task InitializeSessionAsync()
+        {
+            try
+            {
+                _sessionLocation = await GeoLocationService.GetLocationAsync();
+                _sessionHashedIP = await GeoLocationService.GetHashedIPAsync();
+                Log.Write(1, "Anonymous data session initialized with geo-location");
+            }
+            catch (Exception ex)
+            {
+                Log.Error_AnonymousDataCollection($"Failed to initialize session geo-location: {ex.Message}");
+                _sessionLocation = new GeoLocationData();
+                _sessionHashedIP = "InitFailed";
+            }
+        }
+        private static Dictionary<string, object> GetBaseDataPoint(DataPointType dataType)
+        {
             Dictionary<string, object> dataPoint = new()
             {
                 ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.Export.ToString(),
-                ["ExportType"] = exportType.ToString(),
-                ["DurationMS"] = Tools.FormatDuration(durationMs),
-                ["FileSize"] = data[ExportDataField.FileSize]
+                ["dataType"] = dataType.ToString(),
+                ["country"] = _sessionLocation?.Country ?? "Unknown",
+                ["countryCode"] = _sessionLocation?.CountryCode ?? "Unknown",
+                ["region"] = _sessionLocation?.Region ?? "Unknown",
+                ["city"] = _sessionLocation?.City ?? "Unknown",
+                ["timezone"] = _sessionLocation?.Timezone ?? "Unknown",
+                ["isp"] = _sessionLocation?.ISP ?? "Unknown"
             };
+
+            if (_sessionLocation?.IsVPN == true)
+            {
+                dataPoint["isVPN"] = true;
+            }
+
+            if (!string.IsNullOrEmpty(_sessionHashedIP) && _sessionHashedIP != "IPUnavailable")
+            {
+                dataPoint["hashedIP"] = _sessionHashedIP;
+            }
+
+            if (_sessionLocation?.Latitude != 0.0 || _sessionLocation?.Longitude != 0.0)
+            {
+                dataPoint["latitude"] = _sessionLocation?.Latitude ?? 0.0;
+                dataPoint["longitude"] = _sessionLocation?.Longitude ?? 0.0;
+            }
+
+            return dataPoint;
+        }
+
+        /// <summary>
+        /// Adds export operation data to the anonymous data log.
+        /// </summary>
+        public static void AddExportData(Dictionary<ExportDataField, object> data)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await AddExportDataAsync(data);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error_AnonymousDataCollection($"Failed to track export data: {ex.Message}");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Adds export operation data to the anonymous data log (awaitable)
+        /// </summary>
+        public static async Task AddExportDataAsync(Dictionary<ExportDataField, object> data)
+        {
+            if (_sessionLocation == null)
+            {
+                await InitializeSessionAsync();
+            }
+
+            ExportType exportType = (ExportType)data[ExportDataField.ExportType];
+            long durationMs = (long)data[ExportDataField.DurationMS];
+
+            Dictionary<string, object> dataPoint = GetBaseDataPoint(DataPointType.Export);
+            dataPoint["ExportType"] = exportType.ToString();
+            dataPoint["DurationMS"] = Tools.FormatDuration(durationMs);
+            dataPoint["FileSize"] = data[ExportDataField.FileSize];
 
             AppendToDataFile(dataPoint);
         }
@@ -65,19 +298,35 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Adds OpenAI API usage data to the anonymous data log.
         /// </summary>
-        /// <param name="model">The OpenAI model used</param>
-        /// <param name="durationMs">Duration of the API call in milliseconds</param>
-        /// <param name="tokensUsed">Number of tokens consumed in the operation</param>
         public static void AddOpenAIUsageData(string model, long durationMs, int tokensUsed)
         {
-            Dictionary<string, object> dataPoint = new()
+            _ = Task.Run(async () =>
             {
-                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.OpenAI.ToString(),
-                ["Model"] = model,
-                ["DurationMS"] = durationMs,
-                ["TokensUsed"] = tokensUsed
-            };
+                try
+                {
+                    await AddOpenAIUsageDataAsync(model, durationMs, tokensUsed);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error_AnonymousDataCollection($"Failed to track OpenAI usage: {ex.Message}");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Adds OpenAI API usage data to the anonymous data log.
+        /// </summary>
+        public static async Task AddOpenAIUsageDataAsync(string model, long durationMs, int tokensUsed)
+        {
+            if (_sessionLocation == null)
+            {
+                await InitializeSessionAsync();
+            }
+
+            Dictionary<string, object> dataPoint = GetBaseDataPoint(DataPointType.OpenAI);
+            dataPoint["Model"] = model;
+            dataPoint["DurationMS"] = durationMs;
+            dataPoint["TokensUsed"] = tokensUsed;
 
             AppendToDataFile(dataPoint);
         }
@@ -85,15 +334,33 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Adds Open Exchange Rates API usage data to the anonymous data log.
         /// </summary>
-        /// <param name="durationMs">Duration of the API call in milliseconds</param>
         public static void AddOpenExchangeRatesData(long durationMs)
         {
-            Dictionary<string, object> dataPoint = new()
+            _ = Task.Run(async () =>
             {
-                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.OpenExchangeRates.ToString(),
-                ["DurationMS"] = durationMs
-            };
+                try
+                {
+                    await AddOpenExchangeRatesDataAsync(durationMs);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error_AnonymousDataCollection($"Failed to track exchange rates usage: {ex.Message}");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Adds Open Exchange Rates API usage data to the anonymous data log.
+        /// </summary>
+        public static async Task AddOpenExchangeRatesDataAsync(long durationMs)
+        {
+            if (_sessionLocation == null)
+            {
+                await InitializeSessionAsync();
+            }
+
+            Dictionary<string, object> dataPoint = GetBaseDataPoint(DataPointType.OpenExchangeRates);
+            dataPoint["DurationMS"] = durationMs;
 
             AppendToDataFile(dataPoint);
         }
@@ -103,22 +370,46 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void AddErrorData(string errorCode, string errorCategory, int lineNumber)
         {
-            Dictionary<string, object> dataPoint = new()
+            _ = Task.Run(async () =>
             {
-                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.Error.ToString(),
-                ["ErrorCode"] = errorCode,
-                ["ErrorCategory"] = errorCategory,
-                ["LineNumber"] = lineNumber
-            };
+                if (_sessionLocation == null)
+                {
+                    await InitializeSessionAsync();
+                }
 
-            AppendToDataFile(dataPoint, false);  // Don't log errors to prevent recursion
+                Dictionary<string, object> dataPoint = GetBaseDataPoint(DataPointType.Error);
+                dataPoint["ErrorCode"] = errorCode;
+                dataPoint["ErrorCategory"] = errorCategory;
+                dataPoint["LineNumber"] = lineNumber;
+
+                AppendToDataFile(dataPoint, false);  // Don't log errors to prevent recursion
+            });
         }
-
-        private static DateTime? _sessionStartTime;
         public static void TrackSessionStart()
         {
-            _sessionStartTime = DateTime.Now;
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    _sessionStartTime = DateTime.Now;
+
+                    if (_sessionLocation == null)
+                    {
+                        await InitializeSessionAsync();
+                    }
+
+                    Dictionary<string, object> dataPoint = GetBaseDataPoint(DataPointType.Session);
+                    dataPoint["action"] = "SessionStart";
+                    dataPoint["userAgent"] = Environment.OSVersion.ToString();
+                    dataPoint["appVersion"] = Tools.GetVersionNumber();
+
+                    AppendToDataFile(dataPoint);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error_AnonymousDataCollection($"Failed to track session start: {ex.Message}");
+                }
+            });
         }
         public static void TrackSessionEnd()
         {
@@ -126,17 +417,13 @@ namespace Sales_Tracker.Classes
 
             TimeSpan duration = DateTime.Now - _sessionStartTime.Value;
 
-            Dictionary<string, object> dataPoint = new()
-            {
-                ["timestamp"] = Tools.FormatDateTime(DateTime.Now),
-                ["dataType"] = DataPointType.Session.ToString(),
-                ["duration"] = duration.TotalSeconds
-            };
+            Dictionary<string, object> dataPoint = GetBaseDataPoint(DataPointType.Session);
+            dataPoint["action"] = "SessionEnd";
+            dataPoint["duration"] = duration.TotalSeconds;
 
             AppendToDataFile(dataPoint);
         }
 
-        // General methods
         /// <summary>
         /// Appends a data point to the anonymous data cache file.
         /// </summary>
@@ -189,6 +476,7 @@ namespace Sales_Tracker.Classes
             JObject organizedData = new()
             {
                 ["exportTime"] = Tools.FormatDateTime(DateTime.Now),
+                ["geoLocationEnabled"] = true,
                 ["dataPoints"] = new JObject
                 {
                     ["Export"] = new JArray(allDataPoints.Where(d => d["dataType"]?.ToString() == DataPointType.Export.ToString())),
@@ -209,17 +497,17 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Clears the anonymous user data file.
         /// </summary>
-        /// <returns>True if successful, false otherwise</returns>
         public static void ClearUserData()
         {
             Directories.DeleteFile(Directories.AnonymousUserData_file);
             LanguageManager.TranslationCache = [];
+            _sessionLocation = null;
+            _sessionHashedIP = null;
         }
 
         /// <summary>
         /// Gets the size of the anonymous data cache file in bytes.
         /// </summary>
-        /// <returns>Size in bytes, or 0 if the file doesn't exist</returns>
         public static long GetUserDataCacheSize()
         {
             if (File.Exists(Directories.AnonymousUserData_file))
@@ -229,8 +517,6 @@ namespace Sales_Tracker.Classes
             }
             return 0;
         }
-
-        // Upload anonymous data
         private static async Task UploadAnonymousDataAsync()
         {
             if (!File.Exists(Directories.AnonymousUserData_file)) { return; }
