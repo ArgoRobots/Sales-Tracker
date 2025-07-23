@@ -2,17 +2,17 @@
 
 ## Introduction
 
-**Argo Sales Tracker** is a simple, powerful, and effective C# WinForms application designed to track the sales and purchases of products. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, overpriced, and overcomplicated. Argo Sales Tracker offers advanced features while remaining easy to use, filling the gap between basic spreadsheets (e.g., Excel or Google Sheets) and enterprise-level software.
+**Argo Sales Tracker** is an app designed to help small to medium sized companies manage their finances. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, overpriced, and overcomplicated. Argo Sales Tracker offers advanced features while remaining easy to use, filling the gap between basic spreadsheets (e.g., Excel or Google Sheets) and enterprise-level software.
 
 ## Features
 
 - **Importing data from spreadsheets**: import your existing sales, purchases, products, or other data from a spreadsheet.
-- **Track Sales and Purchases**: Add and manage sales and purchases.
+- **Track Purchases and Sales**: Add and manage purchases and sales.
 - **Accept returned products**: Track returned products and the reasons they were returned.
 - **Accountants Integration**: Keep track of accountants working with the sales data.
 - **Product Management**: Add, edit, and organize your products with ease.
 - **Receipts and Exporting**: Export receipts and sales data for your records.
-- **Custom Date Ranges**: Filter sales and purchases with custom date ranges.
+- **Custom Date Ranges**: Filter purchases and sales with custom date ranges.
 - **Charts and Analytics**: Visualize your data using charts to gain insights into sales trends and performance.
 
 ## Technologies used
@@ -20,13 +20,13 @@
 - **C# .NET 9**: Core framework for the application's logic and UI.
 - **WinForms**: Windows Forms is used for the graphical interface.
 - **Guna UI**: Enhances the look and feel of the application with modern controls and components.
-- **Guna Charts**: Used to visualize data through beautiful and interactive charts.
+- **LiveCharts**: Used to visualize data through beautiful and interactive charts.
 
 ## Prerequisites
 
 - **.NET 9 SDK**: Make sure you have the latest .NET 8 SDK installed on your machine. You can download it [here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 - **Visual Studio 2022 or later**: This project is developed using Visual Studio.
-- **API Keys**: You'll need to obtain the .env file containing the API keys from the project manager.  You can request the .env file from Evan Di Placido.
+- **API Keys**: You'll need to obtain the .env file containing the API keys from Evan Di Placido.
 
 ## Installation
 
