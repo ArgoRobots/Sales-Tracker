@@ -53,7 +53,7 @@ namespace Sales_Tracker.Settings.Menus
         // Event handlers
         private async void CheckForUpdates_Button_Click(object sender, EventArgs e)
         {
-            if (NetSparkleUpdateManager.IsChecking || NetSparkleUpdateManager.IsUpdating)
+            if (NetSparkleUpdateManager.IsChecking)
             {
                 return;
             }
@@ -131,12 +131,6 @@ namespace Sales_Tracker.Settings.Menus
                 // Error occurred
                 ResetButtonState();
                 UpdateStatusLabel("Error checking for updates", CustomColors.AccentRed);
-
-                CustomMessageBox.Show(
-                    "Update Check Failed",
-                    $"Error checking for updates: {e.Error}",
-                    CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.Ok);
             }
             else if (e.IsUpdateAvailable)
             {
@@ -255,7 +249,6 @@ namespace Sales_Tracker.Settings.Menus
         {
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Apply Update",
-                "The update is ready to be applied.\n\n" +
                 "Would you like to restart the application now to apply the update?\n" +
                 "Your work will be automatically saved before restarting.",
                 CustomMessageBoxIcon.Question,
