@@ -29,24 +29,24 @@ namespace Sales_Tracker.Settings.Menus
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            UpToDate_Label = new Label();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Status_Label = new Label();
             Updates_Label = new Label();
             LastCheck_Label = new Label();
             CheckForUpdates_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
-            // UpToDate_Label
+            // Status_Label
             // 
-            UpToDate_Label.Anchor = AnchorStyles.Top;
-            UpToDate_Label.AutoSize = true;
-            UpToDate_Label.Font = new Font("Segoe UI", 15F);
-            UpToDate_Label.Location = new Point(409, 338);
-            UpToDate_Label.Name = "UpToDate_Label";
-            UpToDate_Label.Size = new Size(433, 41);
-            UpToDate_Label.TabIndex = 0;
-            UpToDate_Label.Text = "Argo Sales Tracker is up to date";
+            Status_Label.Anchor = AnchorStyles.Top;
+            Status_Label.AutoSize = true;
+            Status_Label.Font = new Font("Segoe UI", 15F);
+            Status_Label.Location = new Point(409, 338);
+            Status_Label.Name = "Status_Label";
+            Status_Label.Size = new Size(433, 41);
+            Status_Label.TabIndex = 0;
+            Status_Label.Text = "Argo Sales Tracker is up to date";
             // 
             // Updates_Label
             // 
@@ -74,7 +74,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             CheckForUpdates_Button.Anchor = AnchorStyles.Top;
             CheckForUpdates_Button.BorderRadius = 3;
-            CheckForUpdates_Button.CustomizableEdges = customizableEdges1;
+            CheckForUpdates_Button.CustomizableEdges = customizableEdges3;
             CheckForUpdates_Button.DisabledState.BorderColor = Color.DarkGray;
             CheckForUpdates_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             CheckForUpdates_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -84,7 +84,7 @@ namespace Sales_Tracker.Settings.Menus
             CheckForUpdates_Button.ForeColor = Color.White;
             CheckForUpdates_Button.Location = new Point(485, 477);
             CheckForUpdates_Button.Name = "CheckForUpdates_Button";
-            CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            CheckForUpdates_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             CheckForUpdates_Button.Size = new Size(280, 45);
             CheckForUpdates_Button.TabIndex = 1;
             CheckForUpdates_Button.Text = "Check for updates";
@@ -96,7 +96,7 @@ namespace Sales_Tracker.Settings.Menus
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
             Controls.Add(CheckForUpdates_Button);
-            Controls.Add(UpToDate_Label);
+            Controls.Add(Status_Label);
             Controls.Add(LastCheck_Label);
             Controls.Add(Updates_Label);
             FormBorderStyle = FormBorderStyle.None;
@@ -108,7 +108,7 @@ namespace Sales_Tracker.Settings.Menus
         }
 
         #endregion
-        private System.Windows.Forms.Label UpToDate_Label;
+        private System.Windows.Forms.Label Status_Label;
         private System.Windows.Forms.Label Updates_Label;
         private System.Windows.Forms.Label LastCheck_Label;
         private Guna.UI2.WinForms.Guna2Button CheckForUpdates_Button;

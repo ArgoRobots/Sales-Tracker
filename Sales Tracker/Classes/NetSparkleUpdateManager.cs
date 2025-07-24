@@ -2,10 +2,14 @@
 using NetSparkleUpdater.Enums;
 using NetSparkleUpdater.SignatureVerifiers;
 using Sales_Tracker.UI;
-using System.Reflection;
+using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
 {
+    /// <summary>
+    /// Manages application updates using the NetSparkle updater framework.
+    /// Handles checking for updates, downloading, and silent installation.
+    /// </summary>
     public static class NetSparkleUpdateManager
     {
         // Events for UI updates
@@ -20,30 +24,42 @@ namespace Sales_Tracker.Classes
         private static bool _isUpdating = false;
         private static bool _updateAvailable = false;
         private static string? _availableVersion;
+        private static string? _installerPath;
         private const string APP_CAST_URL = "https://argorobots.com/update.xml";
+
+        // Installer argument discovered by running: & ".\Argo Sales Tracker Installer V.1.0.4.exe" /?
+        // in the directory where the exe is located
+        // /exenoui - launches the EXE setup without UI (silent installation)
+        // This is the correct argument for installer generated with Advanced Installer
+        private const string SILENT_INSTALL_ARGUMENT = "/exenoui";
 
         // Public properties
         public static bool IsChecking => _isChecking;
         public static bool IsUpdating => _isUpdating;
         public static bool IsUpdateAvailable => _updateAvailable;
-        public static string? AvailableVersion => _availableVersion ?? (_updateAvailable ? "Update Available" : null);
+        public static string? AvailableVersion
+        {
+            get
+            {
+                if (!_updateAvailable) { return null; }
+                return !string.IsNullOrEmpty(_availableVersion) ? _availableVersion : "Unknown";
+            }
+        }
 
         // Init.
         public static void Initialize()
         {
             try
             {
-                // Create Sparkle updater - using no signature checker for now
-                // You can add signature verification later if needed
                 _sparkle = new SparkleUpdater(
                     APP_CAST_URL,
-                    new DSAChecker(SecurityMode.Unsafe) // Use unsafe mode for testing
+                    new DSAChecker(SecurityMode.Strict)
                 )
                 {
                     // Configure for silent operation
                     UserInteractionMode = UserInteractionMode.NotSilent,
                     RelaunchAfterUpdate = false,
-                    CustomInstallerArguments = "/quiet"  // Pass /quiet to Advanced Installer
+                    CustomInstallerArguments = SILENT_INSTALL_ARGUMENT
                 };
 
                 // Subscribe to events with correct signatures
@@ -52,8 +68,6 @@ namespace Sales_Tracker.Classes
                 _sparkle.DownloadStarted += OnDownloadStarted;
                 _sparkle.DownloadFinished += OnDownloadFinished;
                 _sparkle.DownloadHadError += OnDownloadHadError;
-
-                Log.Write(2, "NetSparkleUpdateManager initialized successfully");
             }
             catch (Exception ex)
             {
@@ -78,24 +92,19 @@ namespace Sales_Tracker.Classes
             {
                 _isChecking = true;
 
-                Log.Write(2, $"Checking for updates from: {APP_CAST_URL}");
-                Log.Write(2, $"Current version: {GetCurrentVersion()}");
-
                 // NetSparkle handles the async checking, events will fire
-                var updateInfo = await _sparkle.CheckForUpdatesQuietly();
-
-                Log.Write(2, $"Update check result: {updateInfo?.Status}");
+                UpdateInfo? updateInfo = await _sparkle.CheckForUpdatesQuietly();
 
                 // The events will handle setting _updateAvailable, but we can also check here
                 if (updateInfo != null)
                 {
-                    Log.Write(2, $"Update info status: {updateInfo.Status}");
+                    Log.Write(1, $"Update info status: {updateInfo.Status}");
                     if (updateInfo.Updates != null && updateInfo.Updates.Count > 0)
                     {
-                        Log.Write(2, $"Available updates count: {updateInfo.Updates.Count}");
-                        foreach (var update in updateInfo.Updates)
+                        Log.Write(1, $"Available updates count: {updateInfo.Updates.Count}");
+                        foreach (AppCastItem update in updateInfo.Updates)
                         {
-                            Log.Write(2, $"Available version: {update.Version}");
+                            Log.Write(1, $"Available version: {update.Version}");
                         }
                     }
                 }
@@ -155,11 +164,36 @@ namespace Sales_Tracker.Classes
 
                 Log.Write(2, "Starting update download and installation");
 
-                // Start the download process
-                // NetSparkle will handle downloading and running the installer with /quiet
-                await _sparkle.CheckForUpdatesAtUserRequest();
+                // Method 1: Try direct download using cached app cast items
+                if (_sparkle.LatestAppCastItems != null && _sparkle.LatestAppCastItems.Count > 0)
+                {
+                    AppCastItem updateItem = _sparkle.LatestAppCastItems[0];
+                    Log.Write(2, $"Starting download for version: {updateItem.Version}");
 
-                return true;
+                    try
+                    {
+                        await _sparkle.InitAndBeginDownload(updateItem);
+                        Log.Write(2, "InitAndBeginDownload started successfully");
+                        return true;
+                    }
+                    catch (Exception ex1)
+                    {
+                        Log.Write(0, $"InitAndBeginDownload failed: {ex1.Message}");
+
+                        // Fallback to manual download
+                        try
+                        {
+                            await DownloadUpdateManually(updateItem);
+                            return true;
+                        }
+                        catch (Exception ex2)
+                        {
+                            Log.Write(0, $"Manual download failed: {ex2.Message}");
+                        }
+                    }
+                }
+
+                return false;
             }
             catch (Exception ex)
             {
@@ -178,6 +212,66 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
+        /// Manual download approach as fallback.
+        /// </summary>
+        private static async Task DownloadUpdateManually(AppCastItem updateItem)
+        {
+            try
+            {
+                Log.Write(2, $"Starting manual download from: {updateItem.DownloadLink}");
+
+                // Trigger download started event
+                UpdateDownloadStarted?.Invoke(null, new UpdateDownloadStartedEventArgs(updateItem.Version ?? "Unknown"));
+
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromMinutes(10);  // 10 minute timeout for large files
+
+                // Get the download URL
+                string downloadUrl = updateItem.DownloadLink;
+                if (string.IsNullOrEmpty(downloadUrl))
+                {
+                    throw new InvalidOperationException("No download URL available");
+                }
+
+                // Create temp directory
+                string tempDir = Path.Combine(Path.GetTempPath(), "SalesTrackerUpdate");
+                Directory.CreateDirectory(tempDir);
+
+                // Determine file extension from URL or use .exe as default
+                string fileName = Path.GetFileName(downloadUrl);
+                if (string.IsNullOrEmpty(fileName) || !Path.HasExtension(fileName))
+                {
+                    fileName = $"SalesTrackerUpdate_{updateItem.Version}.exe";
+                }
+
+                string filePath = Path.Combine(tempDir, fileName);
+
+                // Download the file
+                Log.Write(2, $"Downloading to: {filePath}");
+                byte[] fileBytes = await client.GetByteArrayAsync(downloadUrl);
+                await File.WriteAllBytesAsync(filePath, fileBytes);
+
+                Log.Write(2, $"Download completed. File size: {fileBytes.Length} bytes");
+
+                // Store the installer path for later use
+                _installerPath = filePath;
+
+                // Trigger download completed event
+                UpdateDownloadCompleted?.Invoke(null, new UpdateDownloadCompletedEventArgs
+                {
+                    Success = true,
+                    RequiresRestart = true,
+                    IsSilentInstall = true
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Write(0, $"Manual download failed: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Apply the downloaded update and restart the application.
         /// </summary>
         public static void ApplyUpdateAndRestart()
@@ -189,57 +283,112 @@ namespace Sales_Tracker.Classes
                 // Save any pending work before restart
                 CustomControls.SaveAll();
 
-                // For NetSparkle, the installer has already run silently
-                // Just exit the application
+                // If we have a stored installer path, start it with the correct parameters
+                if (!string.IsNullOrEmpty(_installerPath) && File.Exists(_installerPath))
+                {
+                    Log.Write(2, $"Starting installer: {_installerPath}");
+
+                    // Get current executable path for restart
+                    string currentExePath = Application.ExecutablePath;
+
+                    ProcessStartInfo startInfo = new()
+                    {
+                        FileName = _installerPath,
+                        Arguments = SILENT_INSTALL_ARGUMENT,
+                        UseShellExecute = true,
+                        Verb = "runas"  // Run as administrator
+                    };
+
+                    Process installerProcess = Process.Start(startInfo);
+
+                    Log.Write(2, "Installer started, waiting for completion...");
+
+                    // Wait for the installer to complete (with timeout)
+                    bool completed = installerProcess.WaitForExit(300000);  // 5 minute timeout
+
+                    if (completed && installerProcess.ExitCode == 0)
+                    {
+                        Log.Write(2, "Installer completed successfully, restarting application");
+
+                        // Start the application after successful installation
+                        ProcessStartInfo restartInfo = new()
+                        {
+                            FileName = currentExePath,
+                            UseShellExecute = true
+                        };
+
+                        Process.Start(restartInfo);
+                    }
+                    else
+                    {
+                        Log.Write(0, $"Installer did not complete successfully. ExitCode: {installerProcess.ExitCode}");
+
+                        // Show error message to user
+                        CustomMessageBox.Show(
+                            "Update Error",
+                            "The update installation did not complete successfully. Please try running the installer manually.",
+                            CustomMessageBoxIcon.Error,
+                            CustomMessageBoxButtons.Ok);
+
+                        return;  // Don't exit the application
+                    }
+                }
+                else
+                {
+                    Log.Write(1, "No installer path found, trying to restart application directly");
+
+                    // Fallback: try to restart the application directly
+                    ProcessStartInfo startInfo = new()
+                    {
+                        FileName = Application.ExecutablePath,
+                        UseShellExecute = true
+                    };
+
+                    Process.Start(startInfo);
+                }
+
+                // Exit the current application
                 Application.Exit();
             }
             catch (Exception ex)
             {
                 Log.Write(0, $"Error applying update and restarting: {ex.Message}");
+
+                // Show error to user
+                CustomMessageBox.Show(
+                    "Update Error",
+                    $"An error occurred during the update process: {ex.Message}\n\nPlease try running the installer manually.",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok);
+
+                // If installer failed, at least try to restart the current version
+                try
+                {
+                    ProcessStartInfo startInfo = new()
+                    {
+                        FileName = Application.ExecutablePath,
+                        UseShellExecute = true
+                    };
+
+                    Process.Start(startInfo);
+                    Application.Exit();
+                }
+                catch (Exception restartEx)
+                {
+                    Log.Write(0, $"Failed to restart application: {restartEx.Message}");
+                    Application.Exit();
+                }
             }
         }
 
         /// <summary>
-        /// Get the current installed version
+        /// Get current update status for debugging.
         /// </summary>
-        public static string GetCurrentVersion()
+        public static string GetUpdateStatus()
         {
-            try
-            {
-                var version = Assembly.GetExecutingAssembly().GetName().Version;
-                return version?.ToString() ?? "Unknown";
-            }
-            catch
-            {
-                return "Unknown";
-            }
-        }
-
-        /// <summary>
-        /// Debug method to test update checking manually
-        /// </summary>
-        public static async Task<string> DebugUpdateCheck()
-        {
-            try
-            {
-                Log.Write(2, "=== DEBUG UPDATE CHECK ===");
-                Log.Write(2, $"APP_CAST_URL: {APP_CAST_URL}");
-                Log.Write(2, $"Current Version: {GetCurrentVersion()}");
-
-                // Try to download the XML directly
-                using var client = new HttpClient();
-                client.Timeout = TimeSpan.FromSeconds(30);
-                string xmlContent = await client.GetStringAsync(APP_CAST_URL);
-                Log.Write(2, $"XML Content Length: {xmlContent.Length}");
-                Log.Write(2, $"XML Content: {xmlContent}");
-
-                return xmlContent;
-            }
-            catch (Exception ex)
-            {
-                Log.Write(0, $"Debug check failed: {ex.Message}");
-                return $"Error: {ex.Message}";
-            }
+            return $"IsChecking: {IsChecking}, IsUpdating: {IsUpdating}, " +
+                   $"IsUpdateAvailable: {IsUpdateAvailable}, AvailableVersion: {AvailableVersion}, " +
+                   $"CurrentVersion: {Tools.GetVersionNumber()}, InstallerPath: {_installerPath}";
         }
 
         // NetSparkle event handlers with actual correct signatures
@@ -257,17 +406,35 @@ namespace Sales_Tracker.Classes
             if (status == UpdateStatus.UpdateAvailable)
             {
                 _updateAvailable = true;
+
+                // Try to get the available version from the sparkle updater
+                string? availableVersion = null;
+                try
+                {
+                    if (_sparkle != null && _sparkle.LatestAppCastItems != null && _sparkle.LatestAppCastItems.Count > 0)
+                    {
+                        AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
+                        availableVersion = latestItem.Version;
+                        _availableVersion = availableVersion;
+                        Log.Write(2, $"Available version from AppCast: {availableVersion}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(1, $"Could not extract version from AppCast: {ex.Message}");
+                }
+
                 Log.Write(2, "Update is available");
 
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
                     IsUpdateAvailable = true,
-                    AvailableVersion = _availableVersion ?? "New Version Available",
-                    CurrentVersion = GetCurrentVersion(),
+                    AvailableVersion = availableVersion ?? _availableVersion ?? "New Version Available",
+                    CurrentVersion = Tools.GetVersionNumber(),
                     UpdateInfo = new UpdateInfoResult
                     {
-                        CurrentVersion = GetCurrentVersion(),
-                        AvailableVersion = _availableVersion ?? "New Version Available",
+                        CurrentVersion = Tools.GetVersionNumber(),
+                        AvailableVersion = availableVersion ?? _availableVersion ?? "New Version Available",
                         DownloadUrl = APP_CAST_URL
                     }
                 });
@@ -282,7 +449,7 @@ namespace Sales_Tracker.Classes
                 {
                     IsUpdateAvailable = false,
                     ShowNoUpdateMessage = true,
-                    CurrentVersion = GetCurrentVersion()
+                    CurrentVersion = Tools.GetVersionNumber()
                 });
             }
             else
@@ -304,7 +471,7 @@ namespace Sales_Tracker.Classes
                     IsUpdateAvailable = false,
                     Error = errorMessage,
                     ShowNoUpdateMessage = false,
-                    CurrentVersion = GetCurrentVersion()
+                    CurrentVersion = Tools.GetVersionNumber()
                 });
             }
         }
@@ -318,13 +485,14 @@ namespace Sales_Tracker.Classes
         private static void OnDownloadFinished(AppCastItem item, string path)
         {
             _isUpdating = false;
-            Log.Write(2, $"Download finished for version: {item.Version}");
+            _installerPath = path;  // Store the installer path from NetSparkle
+            Log.Write(2, $"Download finished for version: {item.Version}, path: {path}");
 
             UpdateDownloadCompleted?.Invoke(null, new UpdateDownloadCompletedEventArgs
             {
                 Success = true,
                 RequiresRestart = true,
-                IsSilentInstall = true  // NetSparkle runs installer with /quiet
+                IsSilentInstall = true
             });
         }
         private static void OnDownloadHadError(AppCastItem item, string? path, Exception exception)
