@@ -19,6 +19,7 @@ namespace Sales_Tracker
         /// </summary>
         public static void InitializeApplication()
         {
+            NetSparkleUpdateManager.Initialize();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
@@ -31,7 +32,6 @@ namespace Sales_Tracker
             Directories.EnsureAppDataDirectoriesExist();
             ArgoCompany.InitCacheFiles();
             EncryptionManager.Initialize();
-            AutoUpdateManager.Initialize();
             DotEnv.Load();
             PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
             LanguageManager.InitLanguageManager();

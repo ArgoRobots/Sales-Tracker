@@ -282,7 +282,6 @@ namespace Sales_Tracker.Classes
                         {
                             _exchangeRateCache[item.Key] = item.Value;
                         }
-                        Log.Write(1, $"Loaded {cacheData.Count} exchange rates from cache");
                     }
                 }
             }

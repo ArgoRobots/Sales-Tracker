@@ -33,9 +33,8 @@
 
   <ItemGroup>
     <!-- Keep only the necessary packages and remove conflicting SDK references -->
-    <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
     <PackageReference Include="ClosedXML" Version="0.105.0" />
-    <PackageReference Include="EPPlus" Version="8.0.7" />
+    <PackageReference Include="EPPlus" Version="8.0.8" />
     <PackageReference Include="Google.Apis.CloudResourceManager.v1" Version="1.70.0.3809" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.70.0.3834" />
     <PackageReference Include="Google.Apis.Iam.v1" Version="1.70.0.3830" />
@@ -43,6 +42,7 @@
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.70.0.3819" />
     <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.7" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WinForms" Version="2.0.0-rc5.4" />
+    <PackageReference Include="NetSparkleUpdater.SparkleUpdater" Version="3.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Ookii.Dialogs.WinForms" Version="4.0.0" />
     <PackageReference Include="SharpCompress" Version="0.40.0" />

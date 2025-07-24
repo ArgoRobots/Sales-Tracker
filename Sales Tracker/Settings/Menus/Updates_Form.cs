@@ -8,6 +8,7 @@ namespace Sales_Tracker.Settings.Menus
     {
         // Properties
         private readonly string _originalButtonText;
+        private bool _updateReadyForRestart = false;
 
         // Init.
         public Updates_Form()
@@ -21,11 +22,11 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void InitializeUpdateManager()
         {
-            // Subscribe to static events
-            AutoUpdateManager.UpdateCheckStarted += OnUpdateCheckStarted;
-            AutoUpdateManager.UpdateCheckCompleted += OnUpdateCheckCompleted;
-            AutoUpdateManager.UpdateDownloadStarted += OnUpdateDownloadStarted;
-            AutoUpdateManager.UpdateDownloadCompleted += OnUpdateDownloadCompleted;
+            // Subscribe to events
+            NetSparkleUpdateManager.UpdateCheckStarted += OnUpdateCheckStarted;
+            NetSparkleUpdateManager.UpdateCheckCompleted += OnUpdateCheckCompleted;
+            NetSparkleUpdateManager.UpdateDownloadStarted += OnUpdateDownloadStarted;
+            NetSparkleUpdateManager.UpdateDownloadCompleted += OnUpdateDownloadCompleted;
         }
         private void UpdateTheme()
         {
@@ -42,30 +43,37 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void Updates_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Unsubscribe from static events
-            AutoUpdateManager.UpdateCheckStarted -= OnUpdateCheckStarted;
-            AutoUpdateManager.UpdateCheckCompleted -= OnUpdateCheckCompleted;
-            AutoUpdateManager.UpdateDownloadStarted -= OnUpdateDownloadStarted;
-            AutoUpdateManager.UpdateDownloadCompleted -= OnUpdateDownloadCompleted;
+            // Unsubscribe from events
+            NetSparkleUpdateManager.UpdateCheckStarted -= OnUpdateCheckStarted;
+            NetSparkleUpdateManager.UpdateCheckCompleted -= OnUpdateCheckCompleted;
+            NetSparkleUpdateManager.UpdateDownloadStarted -= OnUpdateDownloadStarted;
+            NetSparkleUpdateManager.UpdateDownloadCompleted -= OnUpdateDownloadCompleted;
         }
 
         // Event handlers
         private async void CheckForUpdates_Button_Click(object sender, EventArgs e)
         {
-            if (AutoUpdateManager.IsChecking || AutoUpdateManager.IsUpdating)
+            if (NetSparkleUpdateManager.IsChecking || NetSparkleUpdateManager.IsUpdating)
             {
                 return;
             }
 
-            if (AutoUpdateManager.IsUpdateAvailable && CheckForUpdates_Button.Text.Contains("update to"))
+            if (_updateReadyForRestart)
+            {
+                // Update is ready, show restart options
+                ShowRestartDialog();
+                return;
+            }
+
+            if (NetSparkleUpdateManager.IsUpdateAvailable)
             {
                 // User clicked the "update to V.x.x now" button
-                await AutoUpdateManager.StartUpdateAsync();
+                await NetSparkleUpdateManager.StartUpdateAsync();
             }
             else
             {
                 // User clicked "Check for Updates"
-                await AutoUpdateManager.CheckForUpdatesAsync();
+                await NetSparkleUpdateManager.CheckForUpdatesAsync();
             }
         }
 
@@ -78,7 +86,7 @@ namespace Sales_Tracker.Settings.Menus
                 return;
             }
 
-            CheckForUpdates_Button.Text = "Checking for updates...";
+            CheckForUpdates_Button.Text = LanguageManager.TranslateString("Checking for updates...");
             CheckForUpdates_Button.Enabled = false;
         }
         private void OnUpdateCheckCompleted(object sender, UpdateCheckCompletedEventArgs e)
@@ -89,7 +97,6 @@ namespace Sales_Tracker.Settings.Menus
                 return;
             }
 
-            // Update the last check time regardless of result
             UpdateLastCheckTime();
 
             if (!string.IsNullOrEmpty(e.Error))
@@ -105,7 +112,7 @@ namespace Sales_Tracker.Settings.Menus
             else if (e.IsUpdateAvailable)
             {
                 // Update is available
-                CheckForUpdates_Button.Text = $"Update to v{e.AvailableVersion} now";
+                SetUpdateButtonText();
                 CheckForUpdates_Button.Enabled = true;
                 CheckForUpdates_Button.FillColor = CustomColors.AccentBlue;
 
@@ -139,7 +146,7 @@ namespace Sales_Tracker.Settings.Menus
                 return;
             }
 
-            CheckForUpdates_Button.Text = "Updating...";
+            CheckForUpdates_Button.Text = LanguageManager.TranslateString("Installing update...");
             CheckForUpdates_Button.Enabled = false;
         }
         private void OnUpdateDownloadCompleted(object sender, UpdateDownloadCompletedEventArgs e)
@@ -152,51 +159,73 @@ namespace Sales_Tracker.Settings.Menus
 
             if (!e.Success)
             {
-                // Download failed
+                // Download/Installation failed
                 ResetButtonState();
                 CustomMessageBox.Show(
                     "Update Error",
-                    $"Failed to download update: {e.Error ?? "Unknown error"}",
+                    $"Failed to install update: {e.Error ?? "Unknown error"}",
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok);
             }
             else if (e.RequiresRestart)
             {
-                // Download completed - show restart dialog
-                ShowUpdateCompleteDialog();
+                // Download and installation completed successfully
+                HandleUpdateComplete();
             }
             else
             {
                 ResetButtonState();
             }
         }
-        private void ShowUpdateCompleteDialog()
+
+        // Handle update completion - Velopack downloads and prepares the update
+        private void HandleUpdateComplete()
+        {
+            _updateReadyForRestart = true;
+
+            // Update button to show restart option
+            CheckForUpdates_Button.Text = LanguageManager.TranslateString("Restart to apply update");
+            CheckForUpdates_Button.Enabled = true;
+            CheckForUpdates_Button.FillColor = System.Drawing.Color.Green; // Green to indicate success
+
+            // Hide the "up to date" label since an update is ready
+            UpToDate_Label.Visible = false;
+
+            // Show success message
+            CustomMessageBox.Show(
+                "Update Downloaded Successfully",
+                "The update has been downloaded and is ready to install.\n\nClick 'Restart to apply update' to restart and apply the new version, or restart the application manually when convenient.",
+                CustomMessageBoxIcon.Success,
+                CustomMessageBoxButtons.Ok);
+        }
+        private static void ShowRestartDialog()
         {
             CustomMessageBoxResult result = CustomMessageBox.Show(
-                "Update Ready",
-                "The update has been downloaded and will finish installing the next time the program is opened.\n\nWould you like to restart the application now?",
-                CustomMessageBoxIcon.Success,
+                "Apply Update",
+                "The update is ready to be applied.\n\nWould you like to restart the application now to apply the update? Your work will be saved.",
+                CustomMessageBoxIcon.Question,
                 CustomMessageBoxButtons.YesNo);
 
             if (result == CustomMessageBoxResult.Yes)
             {
-                // Restart now
-                CustomControls.SaveAll();
-                Application.Exit();
+                // Apply update and restart
+                NetSparkleUpdateManager.ApplyUpdateAndRestart();
             }
-            else
-            {
-                // Restart later
-                ResetButtonState();
-            }
+            // If No, just leave the button as "Restart to apply update"
         }
         private void UpdateButtonState()
         {
-            if (AutoUpdateManager.IsUpdateAvailable)
+            if (_updateReadyForRestart)
             {
-                CheckForUpdates_Button.Text = $"Update to v{AutoUpdateManager.AvailableVersion} now";
-                CheckForUpdates_Button.Enabled = !AutoUpdateManager.IsChecking && !AutoUpdateManager.IsUpdating;
-
+                CheckForUpdates_Button.Text = LanguageManager.TranslateString("Restart to apply update");
+                CheckForUpdates_Button.Enabled = true;
+                CheckForUpdates_Button.FillColor = System.Drawing.Color.Green;
+                UpToDate_Label.Visible = false;
+            }
+            else if (NetSparkleUpdateManager.IsUpdateAvailable)
+            {
+                SetUpdateButtonText();
+                CheckForUpdates_Button.Enabled = !NetSparkleUpdateManager.IsChecking && !NetSparkleUpdateManager.IsUpdating;
                 UpToDate_Label.Visible = false;
             }
             else
@@ -207,9 +236,16 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void ResetButtonState()
         {
-            CheckForUpdates_Button.Text = _originalButtonText;
+            _updateReadyForRestart = false;
+            CheckForUpdates_Button.Text = LanguageManager.TranslateString(_originalButtonText);
             CheckForUpdates_Button.Enabled = true;
             CheckForUpdates_Button.FillColor = CustomColors.AccentBlue;
+        }
+        private void SetUpdateButtonText()
+        {
+            CheckForUpdates_Button.Text = LanguageManager.TranslateString("Update to V.")
+                + NetSparkleUpdateManager.AvailableVersion + " "
+                + LanguageManager.TranslateString("now");
         }
 
         // Methods for handling last check label

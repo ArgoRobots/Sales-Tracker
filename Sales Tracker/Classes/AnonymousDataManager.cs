@@ -104,8 +104,6 @@ namespace Sales_Tracker.Classes
                     {
                         _cachedLocation = geoData;
                         _lastFetched = DateTime.Now;
-
-                        Log.Write(1, $"Geo-location detected: {geoData.City}, {geoData.Region}, {geoData.Country}");
                         return _cachedLocation;
                     }
                 }
@@ -214,7 +212,6 @@ namespace Sales_Tracker.Classes
             {
                 _sessionLocation = await GeoLocationService.GetLocationAsync();
                 _sessionHashedIP = await GeoLocationService.GetHashedIPAsync();
-                Log.Write(1, "Anonymous data session initialized with geo-location");
             }
             catch (Exception ex)
             {
@@ -587,10 +584,6 @@ namespace Sales_Tracker.Classes
             {
                 await UploadAnonymousDataAsync();
                 SaveUploadTime(DateTime.Now);
-            }
-            else
-            {
-                Log.Write(1, $"Skipped anonymous data upload; last sent {lastUpload.Value}");
             }
         }
         private static DateTime? GetLastUploadTime()

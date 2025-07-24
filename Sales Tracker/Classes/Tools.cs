@@ -87,8 +87,7 @@ namespace Sales_Tracker.Classes
             // Check for Visual Studio specific environment variables
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VisualStudioVersion")) ||
                    !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSAPPIDDIR")) ||
-                   System.Diagnostics.Debugger.IsAttached ||
-                   Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == null;
+                   Debugger.IsAttached;
         }
 
         // Strings

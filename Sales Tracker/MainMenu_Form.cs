@@ -69,7 +69,7 @@ namespace Sales_Tracker
             UpdateMainMenuFormText();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
-            AutoUpdateManager.CheckForUpdates();
+            NetSparkleUpdateManager.CheckForUpdates();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ConstructMainCharts()
