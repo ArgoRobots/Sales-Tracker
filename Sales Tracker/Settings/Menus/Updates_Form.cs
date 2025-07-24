@@ -60,7 +60,6 @@ namespace Sales_Tracker.Settings.Menus
 
             if (_updateReadyForRestart)
             {
-                // Update is ready, show restart options
                 ShowRestartDialog();
                 return;
             }
