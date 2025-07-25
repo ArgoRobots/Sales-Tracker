@@ -145,9 +145,9 @@ namespace Sales_Tracker.Classes
                 _isUpdating = true;
 
                 AppCastItem updateItem = _sparkle.LatestAppCastItems[0];
-                Log.Write(2, $"Starting download for version: {updateItem.Version}");
+                Log.Write(2, $"Starting download for version {updateItem.Version}");
 
-                await DownloadUpdateManually(updateItem);
+                await DownloadUpdate(updateItem);
                 return true;
             }
             catch (Exception ex)
@@ -165,16 +165,10 @@ namespace Sales_Tracker.Classes
                 return false;
             }
         }
-
-        /// <summary>
-        /// Manual download approach as fallback.
-        /// </summary>
-        private static async Task DownloadUpdateManually(AppCastItem updateItem)
+        private static async Task DownloadUpdate(AppCastItem updateItem)
         {
             try
             {
-                Log.Write(2, $"Starting manual download from: {updateItem.DownloadLink}");
-
                 // Trigger download started event
                 UpdateDownloadStarted?.Invoke(null, new UpdateDownloadStartedEventArgs(updateItem.Version ?? "Unknown"));
 
@@ -192,29 +186,18 @@ namespace Sales_Tracker.Classes
                 string tempDir = Path.Combine(Path.GetTempPath(), "SalesTrackerUpdate");
                 Directory.CreateDirectory(tempDir);
 
-                // FORCE the correct filename based on version - don't rely on URL or headers
                 string fileName = $"Argo Sales Tracker Installer V.{updateItem.Version}.exe";
                 string filePath = Path.Combine(tempDir, fileName);
 
-                Log.Write(2, $"Downloading to: {filePath}");
-                Log.Write(2, $"Forced filename to: {fileName}");
-
                 // Download the file
-                using (var response = await client.GetAsync(downloadUrl))
+                using (HttpResponseMessage response = await client.GetAsync(downloadUrl))
                 {
                     response.EnsureSuccessStatusCode();
-
-                    // Log response headers for debugging
-                    Log.Write(2, $"Response Content-Type: {response.Content.Headers.ContentType}");
-                    if (response.Content.Headers.ContentDisposition != null)
-                    {
-                        Log.Write(2, $"Response Content-Disposition: {response.Content.Headers.ContentDisposition}");
-                    }
 
                     byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
                     await File.WriteAllBytesAsync(filePath, fileBytes);
 
-                    Log.Write(2, $"Download completed. File size: {fileBytes.Length} bytes");
+                    Log.Write(2, $"Download completed. File size: {Tools.ConvertBytesToReadableSize(fileBytes.Length)}");
                 }
 
                 // Verify the file exists and has the correct name
@@ -222,8 +205,6 @@ namespace Sales_Tracker.Classes
                 {
                     throw new InvalidOperationException($"Downloaded file not found at expected path: {filePath}");
                 }
-
-                Log.Write(2, $"File successfully saved as: {fileName}");
 
                 // Store the installer path for later use
                 _installerPath = filePath;
@@ -251,7 +232,6 @@ namespace Sales_Tracker.Classes
             try
             {
                 Log.Write(2, "Applying update and restarting application");
-                Log.Write(2, $"Installer path: {_installerPath}");
 
                 // Save any pending work before restart
                 CustomControls.SaveAll();
@@ -259,10 +239,6 @@ namespace Sales_Tracker.Classes
                 // If we have a stored installer path, start it with the correct parameters
                 if (!string.IsNullOrEmpty(_installerPath) && File.Exists(_installerPath))
                 {
-                    Log.Write(2, $"Starting installer: {_installerPath}");
-                    Log.Write(2, $"File exists check: {File.Exists(_installerPath)}");
-                    Log.Write(2, $"File size: {new FileInfo(_installerPath).Length} bytes");
-
                     ProcessStartInfo startInfo = new()
                     {
                         FileName = _installerPath,
@@ -273,80 +249,24 @@ namespace Sales_Tracker.Classes
                         WindowStyle = ProcessWindowStyle.Hidden
                     };
 
-                    Log.Write(2, $"Process start info - FileName: {startInfo.FileName}");
-                    Log.Write(2, $"Process start info - Arguments: {startInfo.Arguments}");
-                    Log.Write(2, $"Process start info - UseShellExecute: {startInfo.UseShellExecute}");
-                    Log.Write(2, $"Process start info - Verb: {startInfo.Verb}");
+                    Process installerProcess = Process.Start(startInfo);
 
-                    try
+                    if (installerProcess == null)
                     {
-                        Process installerProcess = Process.Start(startInfo);
+                        Log.Write(0, "Failed to start installer process - Process.Start returned null");
 
-                        if (installerProcess == null)
-                        {
-                            Log.Write(0, "Failed to start installer process - Process.Start returned null");
-
-                            // Show error message to user
-                            CustomMessageBox.Show(
-                                "Update Error",
-                                "Failed to start the installer process. Please run the installer manually from:\n" + _installerPath,
-                                CustomMessageBoxIcon.Error,
-                                CustomMessageBoxButtons.Ok);
-                            return;
-                        }
-
-                        Log.Write(2, $"Installer process started with ID: {installerProcess.Id}");
-
-                        // Exit the current application immediately for silent install
-                        Log.Write(2, "Exiting application to allow installer to complete");
-                        Application.Exit();
+                        // Show error message to user
+                        CustomMessageBox.Show(
+                            "Update Error",
+                            "Failed to start the installer process. Please run the installer manually from:\n" + _installerPath,
+                            CustomMessageBoxIcon.Error,
+                            CustomMessageBoxButtons.Ok);
+                        return;
                     }
-                    catch (Exception processEx)
-                    {
-                        Log.Write(0, $"Exception starting installer process: {processEx.Message}");
-                        Log.Write(0, $"Process exception stack trace: {processEx.StackTrace}");
 
-                        // Try without elevation as fallback
-                        Log.Write(1, "Trying to start installer without elevation...");
-                        try
-                        {
-                            ProcessStartInfo fallbackStartInfo = new()
-                            {
-                                FileName = _installerPath,
-                                Arguments = SILENT_INSTALL_ARGUMENT,
-                                UseShellExecute = true,
-                                CreateNoWindow = false
-                            };
-
-                            Process fallbackProcess = Process.Start(fallbackStartInfo);
-                            if (fallbackProcess != null)
-                            {
-                                Log.Write(2, "Installer started without elevation, exiting application");
-                                Application.Exit();
-                            }
-                            else
-                            {
-                                CustomMessageBox.Show(
-                                    "Update Error",
-                                    "Failed to start installer even without elevation",
-                                    CustomMessageBoxIcon.Error,
-                                    CustomMessageBoxButtons.Ok);
-                            }
-                        }
-                        catch (Exception fallbackEx)
-                        {
-                            Log.Write(0, $"Fallback installer start also failed: {fallbackEx.Message}");
-
-                            // Show error message to user with manual instructions
-                            CustomMessageBox.Show(
-                                "Update Error",
-                                $"Could not start the installer automatically.\n\n" +
-                                $"Please run the installer manually:\n{_installerPath}\n\n" +
-                                $"Error: {processEx.Message}",
-                                CustomMessageBoxIcon.Error,
-                                CustomMessageBoxButtons.Ok);
-                        }
-                    }
+                    // Exit the current application immediately for silent install
+                    Log.Write(2, "Exiting application to allow installer to complete");
+                    Application.Exit();
                 }
                 else
                 {
@@ -384,7 +304,6 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 Log.Write(0, $"Error applying update and restarting: {ex.Message}");
-                Log.Write(0, $"Stack trace: {ex.StackTrace}");
 
                 // Show error to user
                 CustomMessageBox.Show(
@@ -400,13 +319,10 @@ namespace Sales_Tracker.Classes
         // NetSparkle event handlers with actual correct signatures
         private static void OnUpdateCheckStarted(object sender)
         {
-            Log.Write(2, "Update check started");
             UpdateCheckStarted?.Invoke(null, new UpdateCheckStartedEventArgs());
         }
         private static void OnUpdateCheckFinished(object sender, UpdateStatus status)
         {
-            Log.Write(2, $"Update check finished with status: {status}");
-
             if (status == UpdateStatus.UpdateAvailable)
             {
                 _updateAvailable = true;
@@ -420,7 +336,6 @@ namespace Sales_Tracker.Classes
                         AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
                         availableVersion = latestItem.Version;
                         _availableVersion = availableVersion;
-                        Log.Write(2, $"Available version from AppCast: {availableVersion}");
                     }
                 }
                 catch (Exception ex)
@@ -447,7 +362,6 @@ namespace Sales_Tracker.Classes
             {
                 _updateAvailable = false;
                 _availableVersion = null;
-                Log.Write(2, "No update available");
 
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {

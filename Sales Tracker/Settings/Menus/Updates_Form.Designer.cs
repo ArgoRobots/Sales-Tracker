@@ -34,7 +34,7 @@ namespace Sales_Tracker.Settings.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Status_Label = new Label();
-            Updates_Button = new Guna.UI2.WinForms.Guna2Button();
+            Update_Button = new Guna.UI2.WinForms.Guna2Button();
             WhatsNew_LinkLabel = new LinkLabel();
             NotNow_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
@@ -50,25 +50,25 @@ namespace Sales_Tracker.Settings.Menus
             Status_Label.TabIndex = 0;
             Status_Label.Text = "Argo Sales Tracker is up to date";
             // 
-            // Updates_Button
+            // Update_Button
             // 
-            Updates_Button.Anchor = AnchorStyles.Top;
-            Updates_Button.BorderRadius = 3;
-            Updates_Button.CustomizableEdges = customizableEdges1;
-            Updates_Button.DisabledState.BorderColor = Color.DarkGray;
-            Updates_Button.DisabledState.CustomBorderColor = Color.DarkGray;
-            Updates_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            Updates_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            Updates_Button.FillColor = Color.FromArgb(0, 103, 192);
-            Updates_Button.Font = new Font("Segoe UI", 9.75F);
-            Updates_Button.ForeColor = Color.White;
-            Updates_Button.Location = new Point(284, 309);
-            Updates_Button.Name = "Updates_Button";
-            Updates_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            Updates_Button.Size = new Size(280, 45);
-            Updates_Button.TabIndex = 1;
-            Updates_Button.Text = "Update";
-            Updates_Button.Click += Update_Button_Click;
+            Update_Button.Anchor = AnchorStyles.Top;
+            Update_Button.BorderRadius = 3;
+            Update_Button.CustomizableEdges = customizableEdges1;
+            Update_Button.DisabledState.BorderColor = Color.DarkGray;
+            Update_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            Update_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            Update_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            Update_Button.FillColor = Color.FromArgb(0, 103, 192);
+            Update_Button.Font = new Font("Segoe UI", 9.75F);
+            Update_Button.ForeColor = Color.White;
+            Update_Button.Location = new Point(284, 309);
+            Update_Button.Name = "Update_Button";
+            Update_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            Update_Button.Size = new Size(280, 45);
+            Update_Button.TabIndex = 1;
+            Update_Button.Text = "Update";
+            Update_Button.Click += Update_Button_Click;
             // 
             // WhatsNew_LinkLabel
             // 
@@ -83,6 +83,7 @@ namespace Sales_Tracker.Settings.Menus
             WhatsNew_LinkLabel.TabStop = true;
             WhatsNew_LinkLabel.Text = "Check out what's new";
             WhatsNew_LinkLabel.UseCompatibleTextRendering = true;
+            WhatsNew_LinkLabel.LinkClicked += WhatsNew_LinkLabel_LinkClicked;
             // 
             // NotNow_Button
             // 
@@ -112,7 +113,7 @@ namespace Sales_Tracker.Settings.Menus
             ClientSize = new Size(848, 544);
             Controls.Add(NotNow_Button);
             Controls.Add(WhatsNew_LinkLabel);
-            Controls.Add(Updates_Button);
+            Controls.Add(Update_Button);
             Controls.Add(Status_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Name = "Updates_Form";
@@ -125,7 +126,7 @@ namespace Sales_Tracker.Settings.Menus
 
         #endregion
         private System.Windows.Forms.Label Status_Label;
-        private Guna.UI2.WinForms.Guna2Button Updates_Button;
+        private Guna.UI2.WinForms.Guna2Button Update_Button;
         private LinkLabel WhatsNew_LinkLabel;
         private Guna.UI2.WinForms.Guna2Button NotNow_Button;
     }

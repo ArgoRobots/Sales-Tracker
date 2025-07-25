@@ -7,7 +7,6 @@ namespace Sales_Tracker.Settings.Menus
     public partial class Updates_Form : BaseForm
     {
         // Properties
-        private readonly string _originalButtonText;
         private bool _updateReadyForRestart = false;
 
         // Init.
@@ -18,7 +17,8 @@ namespace Sales_Tracker.Settings.Menus
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
             InitializeUpdateManager();
-            _originalButtonText = Updates_Button.Text;
+            UpdateButtonState();
+            Update_Button.Text = LanguageManager.TranslateString("Update");
         }
         private void InitializeUpdateManager()
         {
@@ -26,10 +26,32 @@ namespace Sales_Tracker.Settings.Menus
             NetSparkleUpdateManager.UpdateDownloadStarted += OnUpdateDownloadStarted;
             NetSparkleUpdateManager.UpdateDownloadCompleted += OnUpdateDownloadCompleted;
         }
+        private void UpdateButtonState()
+        {
+            if (_updateReadyForRestart)
+            {
+                Update_Button.Text = LanguageManager.TranslateString("Restart to apply update");
+                Update_Button.Enabled = true;
+                Update_Button.FillColor = CustomColors.AccentGreen;
+
+                UpdateStatusLabel(LanguageManager.TranslateString("Update ready - restart required"));
+            }
+            else
+            {
+                SetUpdateButtonText(NetSparkleUpdateManager.AvailableVersion);
+                Update_Button.Enabled = !NetSparkleUpdateManager.IsUpdating;
+
+                string statusText = string.IsNullOrEmpty(NetSparkleUpdateManager.AvailableVersion)
+                    ? LanguageManager.TranslateString("Update available")
+                    : $"{LanguageManager.TranslateString("Version")} {NetSparkleUpdateManager.AvailableVersion} {LanguageManager.TranslateString("is available")}";
+
+                UpdateStatusLabel(statusText);
+            }
+        }
         private void UpdateTheme()
         {
             ThemeManager.SetThemeForForm(this);
-            ThemeManager.MakeGButtonBluePrimary(Updates_Button);
+            ThemeManager.MakeGButtonBluePrimary(Update_Button);
             ThemeManager.MakeGButtonBlueSecondary(NotNow_Button);
         }
 
@@ -37,7 +59,6 @@ namespace Sales_Tracker.Settings.Menus
         private void Updates_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
-            UpdateButtonState();
         }
         private void Updates_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -70,6 +91,10 @@ namespace Sales_Tracker.Settings.Menus
         {
             Close();
         }
+        private void WhatsNew_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Tools.OpenLink("https://argorobots.com/whats-new/index.html");
+        }
 
         // Update Manager Event Handlers
         private void OnUpdateDownloadStarted(object sender, UpdateDownloadStartedEventArgs e)
@@ -80,13 +105,14 @@ namespace Sales_Tracker.Settings.Menus
                 return;
             }
 
-            Updates_Button.Text = LanguageManager.TranslateString("Installing update...");
-            Updates_Button.Enabled = false;
+            Update_Button.Visible = false;
+            NotNow_Button.Visible = false;
 
-            // Update status label
+            // Update status label with proper translation
             string statusText = string.IsNullOrEmpty(e.Version)
-                ? "Downloading update..."
-                : $"Downloading V.{e.Version}...";
+                ? LanguageManager.TranslateString("Downloading update...")
+                : $"{LanguageManager.TranslateString("Downloading")} V.{e.Version}...";
+
             UpdateStatusLabel(statusText);
         }
         private void OnUpdateDownloadCompleted(object sender, UpdateDownloadCompletedEventArgs e)
@@ -99,9 +125,13 @@ namespace Sales_Tracker.Settings.Menus
 
             if (!e.Success)
             {
-                // Download/Installation failed
-                ResetButtonState();
-                UpdateStatusLabel("Update failed");
+                // Download or Installation failed
+                _updateReadyForRestart = false;
+                Update_Button.Text = LanguageManager.TranslateString("Update");
+                Update_Button.Visible = true;
+                NotNow_Button.Visible = true;
+                Update_Button.FillColor = CustomColors.AccentBlue;
+                UpdateStatusLabel(LanguageManager.TranslateString("Update failed"));
 
                 CustomMessageBox.Show(
                     "Update Error",
@@ -123,10 +153,10 @@ namespace Sales_Tracker.Settings.Menus
             _updateReadyForRestart = true;
 
             // Update button to show restart option
-            Updates_Button.Text = LanguageManager.TranslateString("Restart to apply update");
-            Updates_Button.Enabled = true;
+            Update_Button.Text = LanguageManager.TranslateString("Restart to apply update");
+            Update_Button.Visible = true;
 
-            UpdateStatusLabel("Update ready - restart required");
+            UpdateStatusLabel(LanguageManager.TranslateString("Update ready - restart required"));
 
             // Show success message
             CustomMessageBox.Show(
@@ -136,47 +166,21 @@ namespace Sales_Tracker.Settings.Menus
                 CustomMessageBoxIcon.Success,
                 CustomMessageBoxButtons.Ok);
         }
-        private void UpdateButtonState()
-        {
-            if (_updateReadyForRestart)
-            {
-                Updates_Button.Text = LanguageManager.TranslateString("Restart to apply update");
-                Updates_Button.Enabled = true;
-                Updates_Button.FillColor = CustomColors.AccentGreen;
-                UpdateStatusLabel("Update ready - restart required");
-            }
-            else
-            {
-                SetUpdateButtonText(NetSparkleUpdateManager.AvailableVersion);
-                Updates_Button.Enabled = !NetSparkleUpdateManager.IsUpdating;
-
-                string statusText = string.IsNullOrEmpty(NetSparkleUpdateManager.AvailableVersion)
-                    ? "Update available"
-                    : $"Version {NetSparkleUpdateManager.AvailableVersion} is available";
-                UpdateStatusLabel(statusText);
-            }
-        }
-        private void ResetButtonState()
-        {
-            _updateReadyForRestart = false;
-            Updates_Button.Text = LanguageManager.TranslateString(_originalButtonText);
-            Updates_Button.Enabled = true;
-            Updates_Button.FillColor = CustomColors.AccentBlue;
-        }
         private void SetUpdateButtonText(string? availableVersion)
         {
             if (string.IsNullOrEmpty(availableVersion) || availableVersion == "Update Available")
             {
-                Updates_Button.Text = LanguageManager.TranslateString("Download update");
+                Update_Button.Text = LanguageManager.TranslateString("Download update");
             }
             else
             {
-                Updates_Button.Text = LanguageManager.TranslateString("Update to V.") + availableVersion;
+                Update_Button.Text = $"{LanguageManager.TranslateString("Update to")} V.{availableVersion}";
             }
         }
         private void UpdateStatusLabel(string text)
         {
-            Status_Label.Text = LanguageManager.TranslateString(text);
+            // Text is already translated before being passed to this method
+            Status_Label.Text = text;
             Status_Label.Left = (Width - Status_Label.Width) / 2;
         }
     }
