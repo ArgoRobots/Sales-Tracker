@@ -200,13 +200,18 @@ namespace Sales_Tracker.Classes
                     Log.Write(2, $"Download completed. File size: {Tools.ConvertBytesToReadableSize(fileBytes.Length)}");
                 }
 
-                // Verify the file exists and has the correct name
+                // Verify the file exists
                 if (!File.Exists(filePath))
                 {
-                    throw new InvalidOperationException($"Downloaded file not found at expected path: {filePath}");
+                    Log.Write(0, $"Download failed: file does not exist");
+
+                    CustomMessageBox.Show(
+                    "Download Error",
+                    "The update failed to download, please try again or contact support. You can also donwload it directly from agorobots.com",
+                    CustomMessageBoxIcon.Error,
+                    CustomMessageBoxButtons.Ok);
                 }
 
-                // Store the installer path for later use
                 _installerPath = filePath;
 
                 // Trigger download completed event
@@ -219,7 +224,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Manual download failed: {ex.Message}");
+                Log.Write(0, $"Download failed: {ex.Message}");
                 throw;
             }
         }
@@ -236,7 +241,6 @@ namespace Sales_Tracker.Classes
                 // Save any pending work before restart
                 CustomControls.SaveAll();
 
-                // If we have a stored installer path, start it with the correct parameters
                 if (!string.IsNullOrEmpty(_installerPath) && File.Exists(_installerPath))
                 {
                     ProcessStartInfo startInfo = new()
@@ -268,38 +272,6 @@ namespace Sales_Tracker.Classes
                     Log.Write(2, "Exiting application to allow installer to complete");
                     Application.Exit();
                 }
-                else
-                {
-                    string message = string.IsNullOrEmpty(_installerPath)
-                        ? "No installer path found"
-                        : $"Installer file not found: {_installerPath}";
-
-                    Log.Write(1, message);
-
-                    // Show error message to user
-                    CustomMessageBox.Show(
-                        "Update Error",
-                        "The installer file could not be found. Please download the update manually from the website.",
-                        CustomMessageBoxIcon.Error,
-                        CustomMessageBoxButtons.Ok);
-
-                    // Fallback: try to restart the current application
-                    try
-                    {
-                        ProcessStartInfo startInfo = new()
-                        {
-                            FileName = Application.ExecutablePath,
-                            UseShellExecute = true
-                        };
-
-                        Process.Start(startInfo);
-                        Application.Exit();
-                    }
-                    catch (Exception restartEx)
-                    {
-                        Log.Write(0, $"Failed to restart current application: {restartEx.Message}");
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -308,9 +280,8 @@ namespace Sales_Tracker.Classes
                 // Show error to user
                 CustomMessageBox.Show(
                     "Update Error",
-                    $"An error occurred during the update process: {ex.Message}\n\n" +
-                    $"Installer location: {_installerPath}\n\n" +
-                    $"Please try running the installer manually.",
+                    $"An error occurred during the update process." +
+                    "Please run the installer manually from:\n" + _installerPath,
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok);
             }
