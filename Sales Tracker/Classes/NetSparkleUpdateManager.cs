@@ -1,6 +1,7 @@
 ﻿using NetSparkleUpdater;
 using NetSparkleUpdater.Enums;
 using NetSparkleUpdater.SignatureVerifiers;
+using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.UI;
 using System.Diagnostics;
 
@@ -27,16 +28,14 @@ namespace Sales_Tracker.Classes
         private static string? _installerPath;
         private const string APP_CAST_URL = "https://argorobots.com/update.xml";
 
-        // Installer argument discovered by running: & ".\Argo Sales Tracker Installer V.1.0.4.exe" /?
-        // in the directory where the exe is located
-        // /exenoui - launches the EXE setup without UI (silent installation)
-        // This is the correct argument for installer generated with Advanced Installer
-        private const string SILENT_INSTALL_ARGUMENT = "/exenoui";
+        // Installer arguments discovered by running: & ".\Argo Sales Tracker Installer V.1.0.4.exe" /?
+        // in the directory where the exe is located.
+        // These arguements are used for silent installation without user interaction.
+        private const string SILENT_INSTALL_ARGUMENT = "/exenoui /norestart";
 
         // Public properties
         public static bool IsChecking => _isChecking;
         public static bool IsUpdating => _isUpdating;
-        public static bool IsUpdateAvailable => _updateAvailable;
         public static string? AvailableVersion
         {
             get
@@ -80,7 +79,7 @@ namespace Sales_Tracker.Classes
         /// Check for updates asynchronously.
         /// </summary>
         /// <returns>True if update is available, false otherwise</returns>
-        public static async Task<bool> CheckForUpdatesAsync(bool showNoUpdateMessage = true)
+        public static async Task<bool> CheckForUpdatesAsync()
         {
             if (_isChecking || _isUpdating || _sparkle == null)
             {
@@ -119,8 +118,7 @@ namespace Sales_Tracker.Classes
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
                     IsUpdateAvailable = false,
-                    Error = ex.Message,
-                    ShowNoUpdateMessage = showNoUpdateMessage
+                    Error = ex.Message
                 });
 
                 return false;
@@ -128,19 +126,21 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Check for updates in the background.
+        /// Check for updates in the background and show Updates_Form if an update is available.
         /// </summary>
-        public static void CheckForUpdates(bool showNoUpdateMessage = true)
+        public static void CheckForUpdates()
         {
             Task.Run(async () =>
             {
-                try
+                bool updateAvailable = await CheckForUpdatesAsync();
+
+                if (updateAvailable)
                 {
-                    await CheckForUpdatesAsync(showNoUpdateMessage);
-                }
-                catch (Exception ex)
-                {
-                    Log.Write(0, $"Background update check failed: {ex.Message}");
+                    // Use Invoke to ensure UI operations happen on the main thread
+                    MainMenu_Form.Instance?.Invoke(() =>
+                    {
+                        Tools.OpenForm(new Updates_Form());
+                    });
                 }
             });
         }
@@ -287,7 +287,7 @@ namespace Sales_Tracker.Classes
                         UseShellExecute = true,
                         Verb = "runas",  // Run as administrator
                         CreateNoWindow = false,
-                        WindowStyle = ProcessWindowStyle.Normal
+                        WindowStyle = ProcessWindowStyle.Hidden
                     };
 
                     Log.Write(2, $"Process start info - FileName: {startInfo.FileName}");
@@ -414,16 +414,6 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        /// <summary>
-        /// Get current update status for debugging.
-        /// </summary>
-        public static string GetUpdateStatus()
-        {
-            return $"IsChecking: {IsChecking}, IsUpdating: {IsUpdating}, " +
-                   $"IsUpdateAvailable: {IsUpdateAvailable}, AvailableVersion: {AvailableVersion}, " +
-                   $"CurrentVersion: {Tools.GetVersionNumber()}, InstallerPath: {_installerPath}";
-        }
-
         // NetSparkle event handlers with actual correct signatures
         private static void OnUpdateCheckStarted(object sender)
         {
@@ -481,7 +471,6 @@ namespace Sales_Tracker.Classes
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
                     IsUpdateAvailable = false,
-                    ShowNoUpdateMessage = true,
                     CurrentVersion = Tools.GetVersionNumber()
                 });
             }
@@ -502,7 +491,6 @@ namespace Sales_Tracker.Classes
                 {
                     IsUpdateAvailable = false,
                     Error = errorMessage,
-                    ShowNoUpdateMessage = false,
                     CurrentVersion = Tools.GetVersionNumber()
                 });
             }
@@ -549,7 +537,6 @@ namespace Sales_Tracker.Classes
         public string? AvailableVersion { get; set; }
         public string? CurrentVersion { get; set; }
         public string? Error { get; set; }
-        public bool ShowNoUpdateMessage { get; set; } = true;
         public UpdateInfoResult? UpdateInfo { get; set; }
     }
 

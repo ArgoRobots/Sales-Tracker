@@ -43,8 +43,6 @@ namespace Sales_Tracker.Settings
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings_Form));
             General_Button = new Guna.UI2.WinForms.Guna2Button();
             Cancel_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -52,7 +50,6 @@ namespace Sales_Tracker.Settings
             ResetToDefault_Button = new Guna.UI2.WinForms.Guna2Button();
             FormBack_Panel = new Guna.UI2.WinForms.Guna2Panel();
             Security_Button = new Guna.UI2.WinForms.Guna2Button();
-            Updates_Button = new Guna.UI2.WinForms.Guna2Button();
             Apply_Button = new Guna.UI2.WinForms.Guna2Button();
             SuspendLayout();
             // 
@@ -158,36 +155,20 @@ namespace Sales_Tracker.Settings
             Security_Button.TextAlign = HorizontalAlignment.Left;
             Security_Button.Click += SecurityButton_Click;
             // 
-            // Updates_Button
-            // 
-            Updates_Button.CustomizableEdges = customizableEdges13;
-            Updates_Button.FillColor = Color.FromArgb(240, 240, 240);
-            Updates_Button.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            Updates_Button.ForeColor = Color.Black;
-            Updates_Button.Location = new Point(20, 237);
-            Updates_Button.Margin = new Padding(6, 5, 6, 5);
-            Updates_Button.Name = "Updates_Button";
-            Updates_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            Updates_Button.Size = new Size(215, 60);
-            Updates_Button.TabIndex = 3;
-            Updates_Button.Text = "Updates";
-            Updates_Button.TextAlign = HorizontalAlignment.Left;
-            Updates_Button.Click += UpdatesButton_Click;
-            // 
             // Apply_Button
             // 
             Apply_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             Apply_Button.BorderColor = Color.DimGray;
             Apply_Button.BorderRadius = 2;
             Apply_Button.BorderThickness = 1;
-            Apply_Button.CustomizableEdges = customizableEdges15;
+            Apply_Button.CustomizableEdges = customizableEdges13;
             Apply_Button.FillColor = Color.FromArgb(250, 250, 250);
             Apply_Button.Font = new Font("Segoe UI", 10F);
             Apply_Button.ForeColor = Color.Black;
             Apply_Button.Location = new Point(1349, 915);
             Apply_Button.Margin = new Padding(6, 5, 6, 5);
             Apply_Button.Name = "Apply_Button";
-            Apply_Button.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            Apply_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Apply_Button.Size = new Size(150, 45);
             Apply_Button.TabIndex = 7;
             Apply_Button.Text = "Apply";
@@ -206,7 +187,6 @@ namespace Sales_Tracker.Settings
             Controls.Add(ResetToDefault_Button);
             Controls.Add(FormBack_Panel);
             Controls.Add(Security_Button);
-            Controls.Add(Updates_Button);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(6, 5, 6, 5);
@@ -228,6 +208,5 @@ namespace Sales_Tracker.Settings
         public Guna.UI2.WinForms.Guna2Button General_Button;
         public Guna.UI2.WinForms.Guna2Button ResetToDefault_Button;
         public Guna.UI2.WinForms.Guna2Button Security_Button;
-        public Guna.UI2.WinForms.Guna2Button Updates_Button;
     }
 }

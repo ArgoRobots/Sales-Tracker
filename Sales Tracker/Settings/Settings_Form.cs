@@ -12,7 +12,6 @@ namespace Sales_Tracker.Settings
         private static Settings_Form _instance;
         private readonly Form FormGeneral = new General_Form();
         private readonly Form FormSecurity = new Security_Form();
-        private readonly Form FormUpdates = new Updates_Form();
         private string _originalLanguage;
         private CancellationTokenSource _translationCts = new();
 
@@ -46,7 +45,6 @@ namespace Sales_Tracker.Settings
             [
                General_Button,
                Security_Button,
-               Updates_Button,
                ResetToDefault_Button,
                Apply_Button,
             ];
@@ -85,10 +83,6 @@ namespace Sales_Tracker.Settings
         private void SecurityButton_Click(object sender, EventArgs e)
         {
             SwitchForm(FormSecurity, sender);
-        }
-        private void UpdatesButton_Click(object sender, EventArgs e)
-        {
-            SwitchForm(FormUpdates, sender);
         }
 
         // Bottom buttons
@@ -150,7 +144,6 @@ namespace Sales_Tracker.Settings
 
             General_Button.Enabled = enabled;
             Security_Button.Enabled = enabled;
-            Updates_Button.Enabled = enabled;
         }
 
         /// <summary>
