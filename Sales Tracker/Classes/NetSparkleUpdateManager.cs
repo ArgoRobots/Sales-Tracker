@@ -21,7 +21,6 @@ namespace Sales_Tracker.Classes
 
         // Private static fields
         private static SparkleUpdater? _sparkle;
-        private static bool _isChecking = false;
         private static bool _isUpdating = false;
         private static bool _updateAvailable = false;
         private static string? _availableVersion;
@@ -34,7 +33,6 @@ namespace Sales_Tracker.Classes
         private const string SILENT_INSTALL_ARGUMENT = "/exenoui /norestart";
 
         // Public properties
-        public static bool IsChecking => _isChecking;
         public static bool IsUpdating => _isUpdating;
         public static string? AvailableVersion
         {
@@ -81,39 +79,24 @@ namespace Sales_Tracker.Classes
         /// <returns>True if update is available, false otherwise</returns>
         public static async Task<bool> CheckForUpdatesAsync()
         {
-            if (_isChecking || _isUpdating || _sparkle == null)
+            if (_isUpdating || _sparkle == null)
             {
-                Log.Write(1, $"Cannot check for updates: IsChecking={_isChecking}, IsUpdating={_isUpdating}, Sparkle={_sparkle != null}");
+                Log.Write(1, $"Cannot check for updates: IsUpdating={_isUpdating}, Sparkle={_sparkle != null}");
                 return false;
             }
 
             try
             {
-                _isChecking = true;
-
                 // NetSparkle handles the async checking, events will fire
                 UpdateInfo? updateInfo = await _sparkle.CheckForUpdatesQuietly();
 
-                // The events will handle setting _updateAvailable, but we can also check here
-                if (updateInfo != null)
-                {
-                    if (updateInfo.Updates != null && updateInfo.Updates.Count > 0)
-                    {
-                        Log.Write(1, $"Available updates count: {updateInfo.Updates.Count}");
-                        foreach (AppCastItem update in updateInfo.Updates)
-                        {
-                            Log.Write(1, $"Available version: {update.Version}");
-                        }
-                    }
-                }
-
+                // The events will handle setting _updateAvailable
                 return _updateAvailable;
             }
             catch (Exception ex)
             {
                 Log.Write(0, $"Error checking for updates: {ex.Message}");
                 Log.Write(0, $"Stack trace: {ex.StackTrace}");
-                _isChecking = false;
 
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
@@ -151,9 +134,9 @@ namespace Sales_Tracker.Classes
         /// <returns>True if download started successfully</returns>
         public static async Task<bool> StartUpdateAsync()
         {
-            if (!_updateAvailable || _isUpdating || _isChecking || _sparkle == null)
+            if (!_updateAvailable || _isUpdating || _sparkle == null)
             {
-                Log.Write(2, $"Cannot start update: UpdateAvailable={_updateAvailable}, IsUpdating={_isUpdating}, IsChecking={_isChecking}, Sparkle={_sparkle != null}");
+                Log.Write(2, $"Cannot start update: UpdateAvailable={_updateAvailable}, IsUpdating={_isUpdating}, Sparkle={_sparkle != null}");
                 return false;
             }
 
@@ -422,8 +405,6 @@ namespace Sales_Tracker.Classes
         }
         private static void OnUpdateCheckFinished(object sender, UpdateStatus status)
         {
-            _isChecking = false;
-
             Log.Write(2, $"Update check finished with status: {status}");
 
             if (status == UpdateStatus.UpdateAvailable)

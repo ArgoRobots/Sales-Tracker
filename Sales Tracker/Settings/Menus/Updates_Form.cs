@@ -30,6 +30,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             ThemeManager.SetThemeForForm(this);
             ThemeManager.MakeGButtonBluePrimary(Updates_Button);
+            ThemeManager.MakeGButtonBlueSecondary(NotNow_Button);
         }
 
         // Form event handlers
@@ -48,11 +49,6 @@ namespace Sales_Tracker.Settings.Menus
         // Event handlers
         private async void Update_Button_Click(object sender, EventArgs e)
         {
-            if (NetSparkleUpdateManager.IsChecking)
-            {
-                return;
-            }
-
             if (_updateReadyForRestart)
             {
                 NetSparkleUpdateManager.ApplyUpdateAndRestart();
@@ -69,6 +65,10 @@ namespace Sales_Tracker.Settings.Menus
                     CustomMessageBoxIcon.Error,
                     CustomMessageBoxButtons.Ok);
             }
+        }
+        private void NotNow_Button_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
         // Update Manager Event Handlers
@@ -87,7 +87,7 @@ namespace Sales_Tracker.Settings.Menus
             string statusText = string.IsNullOrEmpty(e.Version)
                 ? "Downloading update..."
                 : $"Downloading V.{e.Version}...";
-            UpdateStatusLabel(statusText, CustomColors.AccentBlue);
+            UpdateStatusLabel(statusText);
         }
         private void OnUpdateDownloadCompleted(object sender, UpdateDownloadCompletedEventArgs e)
         {
@@ -101,7 +101,7 @@ namespace Sales_Tracker.Settings.Menus
             {
                 // Download/Installation failed
                 ResetButtonState();
-                UpdateStatusLabel("Update failed", CustomColors.AccentRed);
+                UpdateStatusLabel("Update failed");
 
                 CustomMessageBox.Show(
                     "Update Error",
@@ -115,11 +115,6 @@ namespace Sales_Tracker.Settings.Menus
                 // Download and installation completed successfully
                 HandleUpdateComplete();
             }
-            else
-            {
-                ResetButtonState();
-                UpdateStatusLabel("Update completed", CustomColors.AccentGreen);
-            }
         }
 
         // Handle update completion
@@ -131,7 +126,7 @@ namespace Sales_Tracker.Settings.Menus
             Updates_Button.Text = LanguageManager.TranslateString("Restart to apply update");
             Updates_Button.Enabled = true;
 
-            UpdateStatusLabel("Update ready - restart required", CustomColors.AccentGreen);
+            UpdateStatusLabel("Update ready - restart required");
 
             // Show success message
             CustomMessageBox.Show(
@@ -148,17 +143,17 @@ namespace Sales_Tracker.Settings.Menus
                 Updates_Button.Text = LanguageManager.TranslateString("Restart to apply update");
                 Updates_Button.Enabled = true;
                 Updates_Button.FillColor = CustomColors.AccentGreen;
-                UpdateStatusLabel("Update ready - restart required", CustomColors.AccentGreen);
+                UpdateStatusLabel("Update ready - restart required");
             }
             else
             {
                 SetUpdateButtonText(NetSparkleUpdateManager.AvailableVersion);
-                Updates_Button.Enabled = !NetSparkleUpdateManager.IsChecking && !NetSparkleUpdateManager.IsUpdating;
+                Updates_Button.Enabled = !NetSparkleUpdateManager.IsUpdating;
 
                 string statusText = string.IsNullOrEmpty(NetSparkleUpdateManager.AvailableVersion)
                     ? "Update available"
                     : $"Version {NetSparkleUpdateManager.AvailableVersion} is available";
-                UpdateStatusLabel(statusText, CustomColors.AccentBlue);
+                UpdateStatusLabel(statusText);
             }
         }
         private void ResetButtonState()
@@ -179,10 +174,9 @@ namespace Sales_Tracker.Settings.Menus
                 Updates_Button.Text = LanguageManager.TranslateString("Update to V.") + availableVersion;
             }
         }
-        private void UpdateStatusLabel(string text, Color color)
+        private void UpdateStatusLabel(string text)
         {
             Status_Label.Text = LanguageManager.TranslateString(text);
-            Status_Label.ForeColor = color;
             Status_Label.Left = (Width - Status_Label.Width) / 2;
         }
     }
