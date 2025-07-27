@@ -297,26 +297,22 @@ namespace Sales_Tracker.Classes
         }
         private static void OnUpdateCheckFinished(object sender, UpdateStatus status)
         {
+            string currentVersion = Tools.GetVersionNumber();
+
             if (status == UpdateStatus.UpdateAvailable)
             {
-                _updateAvailable = true;
 
                 // Try to get the available version from the sparkle updater
-                string? availableVersion = null;
                 try
                 {
                     if (_sparkle != null && _sparkle.LatestAppCastItems != null && _sparkle.LatestAppCastItems.Count > 0)
                     {
                         AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
-                        availableVersion = latestItem.Version;
-                        _availableVersion = availableVersion;
-
-                        string currentVersion = Tools.GetVersionNumber();
+                        _availableVersion = latestItem.Version;
 
                         // Skip update if versions are identical
-                        if (currentVersion == availableVersion)
+                        if (currentVersion == _availableVersion)
                         {
-                            _updateAvailable = false;
                             _availableVersion = null;
 
                             UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
@@ -333,17 +329,18 @@ namespace Sales_Tracker.Classes
                     Log.Write(1, $"Could not extract version from AppCast: {ex.Message}");
                 }
 
+                _updateAvailable = true;
                 Log.Write(2, "Update is available");
 
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
                     IsUpdateAvailable = true,
-                    AvailableVersion = availableVersion ?? _availableVersion ?? "New Version Available",
-                    CurrentVersion = Tools.GetVersionNumber(),
+                    AvailableVersion = _availableVersion ?? "New Version Available",
+                    CurrentVersion = currentVersion,
                     UpdateInfo = new UpdateInfoResult
                     {
-                        CurrentVersion = Tools.GetVersionNumber(),
-                        AvailableVersion = availableVersion ?? _availableVersion ?? "New Version Available",
+                        CurrentVersion = currentVersion,
+                        AvailableVersion = _availableVersion ?? "New Version Available",
                         DownloadUrl = APP_CAST_URL
                     }
                 });
@@ -356,7 +353,7 @@ namespace Sales_Tracker.Classes
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
                     IsUpdateAvailable = false,
-                    CurrentVersion = Tools.GetVersionNumber()
+                    CurrentVersion = currentVersion
                 });
             }
             else
@@ -376,7 +373,7 @@ namespace Sales_Tracker.Classes
                 {
                     IsUpdateAvailable = false,
                     Error = errorMessage,
-                    CurrentVersion = Tools.GetVersionNumber()
+                    CurrentVersion = currentVersion
                 });
             }
         }
