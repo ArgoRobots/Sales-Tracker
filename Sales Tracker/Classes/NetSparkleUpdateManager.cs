@@ -241,6 +241,9 @@ namespace Sales_Tracker.Classes
                 // Save any pending work before restart
                 CustomControls.SaveAll();
 
+                // Set a flag to indicate we should auto-open the most recent company
+                DataFileManager.SetValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate, bool.TrueString);
+
                 if (!string.IsNullOrEmpty(_installerPath) && File.Exists(_installerPath))
                 {
                     ProcessStartInfo startInfo = new()
@@ -307,6 +310,22 @@ namespace Sales_Tracker.Classes
                         AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
                         availableVersion = latestItem.Version;
                         _availableVersion = availableVersion;
+
+                        string currentVersion = Tools.GetVersionNumber();
+
+                        // Skip update if versions are identical
+                        if (currentVersion == availableVersion)
+                        {
+                            _updateAvailable = false;
+                            _availableVersion = null;
+
+                            UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
+                            {
+                                IsUpdateAvailable = false,
+                                CurrentVersion = currentVersion
+                            });
+                            return;
+                        }
                     }
                 }
                 catch (Exception ex)

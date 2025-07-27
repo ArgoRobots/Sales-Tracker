@@ -201,5 +201,41 @@ namespace Sales_Tracker
                 return false;
             }
         }
+
+        /// <summary>
+        /// Auto-opens the most recent company after an update if the flag is set.
+        /// </summary>
+        /// <returns>True if a company was automatically opened, false otherwise</returns>
+        public static bool TryAutoOpenRecentCompanyAfterUpdate()
+        {
+            try
+            {
+                // Check if we should auto-open the most recent company
+                string? autoOpenFlag = DataFileManager.GetValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate);
+                if (!bool.TryParse(autoOpenFlag, out bool shouldAutoOpen) || !shouldAutoOpen)
+                {
+                    return false;
+                }
+
+                // Clear the flag
+                DataFileManager.SetValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate, bool.FalseString);
+
+                // Get the most recent company
+                List<string> recentCompanies = ArgoCompany.GetValidRecentCompanyPaths(excludeCurrentCompany: false);
+                if (recentCompanies.Count == 0)
+                {
+                    return false;
+                }
+
+                string mostRecentCompany = recentCompanies[0];
+
+                return TryOpenCompanyFromCommandLine([mostRecentCompany]);
+            }
+            catch
+            {
+                Log.Write(0, $"Error reopening the company after an update");
+                return false;
+            }
+        }
     }
 }

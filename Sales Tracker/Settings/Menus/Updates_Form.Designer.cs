@@ -44,7 +44,7 @@ namespace Sales_Tracker.Settings.Menus
             Status_Label.Anchor = AnchorStyles.Top;
             Status_Label.AutoSize = true;
             Status_Label.Font = new Font("Segoe UI", 15F);
-            Status_Label.Location = new Point(208, 170);
+            Status_Label.Location = new Point(148, 105);
             Status_Label.Name = "Status_Label";
             Status_Label.Size = new Size(433, 41);
             Status_Label.TabIndex = 0;
@@ -62,7 +62,7 @@ namespace Sales_Tracker.Settings.Menus
             Update_Button.FillColor = Color.FromArgb(0, 103, 192);
             Update_Button.Font = new Font("Segoe UI", 9.75F);
             Update_Button.ForeColor = Color.White;
-            Update_Button.Location = new Point(284, 309);
+            Update_Button.Location = new Point(224, 244);
             Update_Button.Name = "Update_Button";
             Update_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Update_Button.Size = new Size(280, 45);
@@ -76,7 +76,7 @@ namespace Sales_Tracker.Settings.Menus
             WhatsNew_LinkLabel.AutoSize = true;
             WhatsNew_LinkLabel.Font = new Font("Segoe UI", 10.5F);
             WhatsNew_LinkLabel.LinkArea = new LinkArea(10, 10);
-            WhatsNew_LinkLabel.Location = new Point(317, 227);
+            WhatsNew_LinkLabel.Location = new Point(257, 162);
             WhatsNew_LinkLabel.Name = "WhatsNew_LinkLabel";
             WhatsNew_LinkLabel.Size = new Size(215, 34);
             WhatsNew_LinkLabel.TabIndex = 2;
@@ -98,7 +98,7 @@ namespace Sales_Tracker.Settings.Menus
             NotNow_Button.FillColor = Color.White;
             NotNow_Button.Font = new Font("Segoe UI", 9.75F);
             NotNow_Button.ForeColor = Color.Black;
-            NotNow_Button.Location = new Point(284, 360);
+            NotNow_Button.Location = new Point(224, 295);
             NotNow_Button.Name = "NotNow_Button";
             NotNow_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             NotNow_Button.Size = new Size(280, 45);
@@ -110,13 +110,15 @@ namespace Sales_Tracker.Settings.Menus
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.White;
-            ClientSize = new Size(848, 544);
+            ClientSize = new Size(728, 444);
             Controls.Add(NotNow_Button);
             Controls.Add(WhatsNew_LinkLabel);
             Controls.Add(Update_Button);
             Controls.Add(Status_Label);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MinimumSize = new Size(750, 500);
             Name = "Updates_Form";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             FormClosing += Updates_Form_FormClosing;
             Shown += Updates_Form_Shown;

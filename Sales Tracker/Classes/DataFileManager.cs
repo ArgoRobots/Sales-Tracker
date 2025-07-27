@@ -8,7 +8,8 @@
         RecentCompanies,  // string[]
         EULAAccepted,  // bool
         UploadTime_AnonymousData,  // DateTime string
-        LastUpdateCheck  // bool
+        LastUpdateCheck,  // bool
+        AutoOpenRecentAfterUpdate  // bool
     }
     public enum AppDataSettings
     {

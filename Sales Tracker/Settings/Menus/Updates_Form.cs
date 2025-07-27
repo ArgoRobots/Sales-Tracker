@@ -1,4 +1,5 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
@@ -8,6 +9,7 @@ namespace Sales_Tracker.Settings.Menus
     {
         // Properties
         private bool _updateReadyForRestart = false;
+        private Guna2WinProgressIndicator _progressIndicator;
 
         // Init.
         public Updates_Form()
@@ -105,8 +107,22 @@ namespace Sales_Tracker.Settings.Menus
                 return;
             }
 
+            // Hide the buttons
             Update_Button.Visible = false;
             NotNow_Button.Visible = false;
+
+            // Create and configure the progress indicator
+            _progressIndicator = new()
+            {
+                AutoStart = true,
+                ProgressColor = CustomColors.AccentBlue,
+            };
+            _progressIndicator.Location = new Point(
+                (Width - _progressIndicator.Width) / 2,
+                 Update_Button.Location.Y
+            );
+
+            Controls.Add(_progressIndicator);
 
             // Update status label with proper translation
             string statusText = string.IsNullOrEmpty(e.Version)
@@ -122,6 +138,10 @@ namespace Sales_Tracker.Settings.Menus
                 Invoke(() => OnUpdateDownloadCompleted(sender, e));
                 return;
             }
+
+            // Hide the progress indicator
+            _progressIndicator.Stop();
+            _progressIndicator.Visible = false;
 
             if (!e.Success)
             {
@@ -152,19 +172,10 @@ namespace Sales_Tracker.Settings.Menus
         {
             _updateReadyForRestart = true;
 
-            // Update button to show restart option
             Update_Button.Text = LanguageManager.TranslateString("Restart to apply update");
             Update_Button.Visible = true;
 
             UpdateStatusLabel(LanguageManager.TranslateString("Update ready - restart required"));
-
-            // Show success message
-            CustomMessageBox.Show(
-                "Update Downloaded Successfully",
-                "The update has been downloaded and is ready to install.\n\n" +
-                "Click 'Restart to apply update', or restart the application manually when convenient.",
-                CustomMessageBoxIcon.Success,
-                CustomMessageBoxButtons.Ok);
         }
         private void SetUpdateButtonText(string? availableVersion)
         {

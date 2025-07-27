@@ -19,6 +19,13 @@ namespace Sales_Tracker
                 return;
             }
 
+            // Check if we should auto-open the most recent company after an update
+            if (ApplicationStartup.TryAutoOpenRecentCompanyAfterUpdate())
+            {
+                Application.Run();
+                return;
+            }
+
             // Otherwise, normal application startup
             Startup_Form startupForm = new(args);
             startupForm.Show();
