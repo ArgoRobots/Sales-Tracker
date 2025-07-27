@@ -238,7 +238,6 @@ namespace Sales_Tracker.Classes
             {
                 Log.Write(2, "Applying update and restarting application");
 
-                // Save any pending work before restart
                 CustomControls.SaveAll(false);
 
                 // Set a flag to indicate we should auto-open the most recent company
@@ -251,7 +250,7 @@ namespace Sales_Tracker.Classes
                         FileName = _installerPath,
                         Arguments = SILENT_INSTALL_ARGUMENT,
                         UseShellExecute = true,
-                        Verb = "runas",  // Run as administrator
+                        Verb = "runas",  // Run as admin
                         CreateNoWindow = false,
                         WindowStyle = ProcessWindowStyle.Hidden
                     };
@@ -271,7 +270,6 @@ namespace Sales_Tracker.Classes
                         return;
                     }
 
-                    // Exit the current application immediately for silent install
                     Log.Write(2, "Exiting application to allow installer to complete");
                     Application.Exit();
                 }

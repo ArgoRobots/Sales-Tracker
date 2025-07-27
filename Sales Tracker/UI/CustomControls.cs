@@ -196,7 +196,7 @@ namespace Sales_Tracker.UI
             KeyShortcut.Left = control.Width - KeyShortcut.Width - offsetForKeyboardShortcutOrArrow;
         }
 
-        // fileMenu
+        // FileMenu
         public static Guna2Panel FileMenu { get; set; }
         public static Guna2Panel RecentlyOpenedMenu { get; set; }
         public static Guna2Button OpenRecentCompany_Button { get; set; }
@@ -335,7 +335,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Controls.Add(RecentlyOpenedMenu);
             RecentlyOpenedMenu.BringToFront();
         }
-        public static bool ShouldShowTutorial()
+        private static bool ShouldShowTutorial()
         {
             string value = DataFileManager.GetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial);
             return bool.TryParse(value, out bool boolResult) && boolResult;
@@ -377,7 +377,7 @@ namespace Sales_Tracker.UI
             timer.Start();
         }
 
-        // helpMenu
+        // HelpMenu
         public static Guna2Panel HelpMenu { get; set; }
         private static void ConstructHelpMenu()
         {

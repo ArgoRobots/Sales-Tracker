@@ -4,6 +4,22 @@ using System.Text.RegularExpressions;
 namespace Sales_Tracker.Classes
 {
     /// <summary>
+    /// Defines the categories of errors that can occur in the application.
+    /// </summary>
+    public enum ErrorCategory
+    {
+        General,
+        File,
+        DataGridView,
+        Encryption,
+        API,
+        Translation,
+        AnonymousData,
+        FileAssociation,
+        Environment
+    }
+
+    /// <summary>
     /// Provides logging functionality with different log levels and error handling mechanisms.
     /// </summary>
     internal partial class Log
@@ -133,29 +149,11 @@ namespace Sales_Tracker.Classes
             return match.Success ? match.Value : "Unknown";
         }
 
-        /// <summary>
-        /// Determines error category based on the method name that called the error
-        /// </summary>
-        private static string DetermineErrorCategory([CallerMemberName] string callerMethod = "")
-        {
-            return callerMethod switch
-            {
-                string method when method.Contains("File") => "File",
-                string method when method.Contains("DataGridView") => "DataGridView",
-                string method when method.Contains("Encryption") => "Encryption",
-                string method when method.Contains("API") || method.Contains("ExchangeRate") || method.Contains("Translation") => "API",
-                string method when method.Contains("Language") || method.Contains("Translation") => "Translation",
-                string method when method.Contains("AnonymousData") => "AnonymousData",
-                string method when method.Contains("FileAssociation") => "FileAssociation",
-                string method when method.Contains("ENV") => "Environment",
-                _ => "General"
-            };
-        }
-
         private static void Error(
-            string message, string link,
-            [CallerLineNumber] int lineNumber = 0,
-            [CallerMemberName] string callerMethod = "")
+            string message,
+            string link,
+            ErrorCategory category,
+            [CallerLineNumber] int lineNumber = 0)
         {
             // Add link
             if (link != "")
@@ -178,8 +176,7 @@ namespace Sales_Tracker.Classes
             try
             {
                 string errorCode = ExtractErrorCode(message);
-                string errorCategory = DetermineErrorCategory(callerMethod);
-                AnonymousDataManager.AddErrorData(errorCode, errorCategory, lineNumber);
+                AnonymousDataManager.AddErrorData(errorCode, category.ToString(), lineNumber);
             }
             catch
             {
@@ -197,6 +194,7 @@ namespace Sales_Tracker.Classes
             Error("Error-3vknm9: File does not exist:" +
                 $"\n'{filePath}'.",
                 "",
+                ErrorCategory.File,
                 lineNumber);
         }
         public static void Error_FileAlreadyExists(
@@ -206,6 +204,7 @@ namespace Sales_Tracker.Classes
             Error("Error-djrr3r: File already exists:" +
                 $"\n'{filePath}'.",
                 "",
+                ErrorCategory.File,
                 lineNumber);
         }
         public static void Error_DestinationFileAlreadyExists(
@@ -215,6 +214,7 @@ namespace Sales_Tracker.Classes
             Error("Error-8g8we7: The destination file already exists:" +
                 $"\n'{filePath}'.",
                 "",
+                ErrorCategory.File,
                 lineNumber);
         }
         public static void Error_TheSourceAndDestinationAreTheSame(
@@ -225,6 +225,7 @@ namespace Sales_Tracker.Classes
                 $"\nSource: '{source}'." +
                 $"\nDestination: '{destination}'.",
                 "",
+                ErrorCategory.File,
                 lineNumber);
         }
         public static void Error_WriteToFile(
@@ -234,6 +235,7 @@ namespace Sales_Tracker.Classes
             Error("Error-w7f3k2: Failed to write to file:" +
                 $"\n'{filePath}'.",
                 "",
+                ErrorCategory.File,
                 lineNumber);
         }
         public static void Error_ReadFile(
@@ -243,6 +245,7 @@ namespace Sales_Tracker.Classes
             Error("Error-r9d5m1: Failed to read the file:" +
                 $"\n'{filePath}'.",
                 "",
+                ErrorCategory.File,
                 lineNumber);
         }
         public static void Error_Save(
@@ -252,6 +255,7 @@ namespace Sales_Tracker.Classes
             Error($"Error-s4v8n6: Failed to save. {info}." +
                 $"\n'{filePath}'.",
                 "",
+                ErrorCategory.File,
                 lineNumber);
         }
 
@@ -262,6 +266,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-d3g7c4: Cell is empty in DataGridView:'{dataGridViewName}'.",
                 "",
+                ErrorCategory.DataGridView,
                 lineNumber);
         }
         public static void Error_RowIsOutOfRange(
@@ -269,6 +274,7 @@ namespace Sales_Tracker.Classes
         {
             Error("Error-r6w9o2: Row is out of range.",
                 "",
+                ErrorCategory.DataGridView,
                 lineNumber);
         }
 
@@ -279,6 +285,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-i2e5h8: Error initializing EncryptionHelper. {info}.",
                 "",
+                ErrorCategory.Encryption,
                 lineNumber);
         }
         public static void Error_Encryption(
@@ -287,6 +294,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-e7n9c1: Error during encryption. {info}.",
                 "",
+                ErrorCategory.Encryption,
                 lineNumber);
         }
         public static void Error_Decryption(
@@ -295,6 +303,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-d4c8r3: Error during decryption. {info}.",
                 "",
+                ErrorCategory.Encryption,
                 lineNumber);
         }
 
@@ -305,6 +314,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-g8x2r5: Error getting exchange rates. {info}.",
                 "",
+                ErrorCategory.API,
                 lineNumber);
         }
         public static void Error_TranslationAPIRequestFailed(
@@ -313,6 +323,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-t5a7p9: API request failed: {info}.",
                 "",
+                ErrorCategory.API,
                 lineNumber);
         }
         public static void Error_EnhancingSearch(
@@ -321,6 +332,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-e3n6s1: Error enhancing search: {info}.",
                 "",
+                ErrorCategory.API,
                 lineNumber);
         }
         public static void Error_ExportingChart(
@@ -329,6 +341,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-x4p8c2: Failed to export chart: {info}.",
                 "",
+                ErrorCategory.General,
                 lineNumber);
         }
 
@@ -339,6 +352,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-g9t3l7: Error getting the translation. {info}.",
                 "",
+                ErrorCategory.Translation,
                 lineNumber);
         }
         public static void Error_Translation(
@@ -347,6 +361,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-t2l8n4: AI Query Translation failed: {info}.",
                 "",
+                ErrorCategory.Translation,
                 lineNumber);
         }
 
@@ -357,6 +372,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-a6d5c9: Error collecting anonymous usage data. {info}.",
                 "",
+                ErrorCategory.AnonymousData,
                 lineNumber);
         }
 
@@ -367,6 +383,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-r7f2a8: Error registering file associations: {info}.",
                 "",
+                ErrorCategory.FileAssociation,
                 lineNumber);
         }
 
@@ -377,6 +394,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-v3f6n1: ENV file '{fileName}' not found relative to solution.",
                 "",
+                ErrorCategory.Environment,
                 lineNumber);
         }
         public static void Error_ENVKeyNotFound(
@@ -385,6 +403,7 @@ namespace Sales_Tracker.Classes
         {
             Error($"Error-v8k4n5: ENV key {key} not found.",
                 "",
+                ErrorCategory.Environment,
                 lineNumber);
         }
     }
