@@ -68,8 +68,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error initializing NetSparkleUpdateManager: {ex.Message}");
-                Log.Write(0, $"Stack trace: {ex.StackTrace}");
+                Log.Error_InitializeUpdateManager($"{ex.Message}\nStack trace: {ex.StackTrace}");
             }
         }
 
@@ -95,8 +94,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error checking for updates: {ex.Message}");
-                Log.Write(0, $"Stack trace: {ex.StackTrace}");
+                Log.Error_CheckForUpdates($"{ex.Message}\nStack trace: {ex.StackTrace}");
 
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
@@ -152,8 +150,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error starting update: {ex.Message}");
-                Log.Write(0, $"Stack trace: {ex.StackTrace}");
+                Log.Error_StartUpdate($"{ex.Message}\nStack trace: {ex.StackTrace}");
                 _isUpdating = false;
 
                 UpdateDownloadCompleted?.Invoke(null, new UpdateDownloadCompletedEventArgs
@@ -203,7 +200,7 @@ namespace Sales_Tracker.Classes
                 // Verify the file exists
                 if (!File.Exists(filePath))
                 {
-                    Log.Write(0, $"Download failed: file does not exist");
+                    Log.Error_DownloadUpdate($"Downloaded file does not exist at path: {filePath}");
 
                     CustomMessageBox.Show(
                     "Download Error",
@@ -224,7 +221,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Download failed: {ex.Message}");
+                Log.Error_DownloadUpdate($"{ex.Message}");
                 throw;
             }
         }
@@ -259,7 +256,7 @@ namespace Sales_Tracker.Classes
 
                     if (installerProcess == null)
                     {
-                        Log.Write(0, "Failed to start installer process - Process.Start returned null");
+                        Log.Error_ApplyUpdate("Failed to start installer process - Process.Start returned null");
 
                         // Show error message to user
                         CustomMessageBox.Show(
@@ -276,7 +273,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error applying update and restarting: {ex.Message}");
+                Log.Error_ApplyUpdate($"{ex.Message}");
 
                 // Show error to user
                 CustomMessageBox.Show(
@@ -398,7 +395,7 @@ namespace Sales_Tracker.Classes
         private static void OnDownloadHadError(AppCastItem item, string? path, Exception exception)
         {
             _isUpdating = false;
-            Log.Write(0, $"Download error for version {item.Version}: {exception.Message}");
+            Log.Error_DownloadUpdate($"Download error for version {item.Version}: {exception.Message}");
 
             UpdateDownloadCompleted?.Invoke(null, new UpdateDownloadCompletedEventArgs
             {

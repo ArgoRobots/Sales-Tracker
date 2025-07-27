@@ -406,5 +406,52 @@ namespace Sales_Tracker.Classes
                 ErrorCategory.Environment,
                 lineNumber);
         }
+
+        // Auto update
+        public static void Error_InitializeUpdateManager(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-u1i8m3: Error initializing NetSparkleUpdateManager. {info}.",
+                "",
+                ErrorCategory.API,
+                lineNumber);
+        }
+        public static void Error_CheckForUpdates(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-u2c7k9: Error checking for updates. {info}.",
+                "",
+                ErrorCategory.API,
+                lineNumber);
+        }
+        public static void Error_StartUpdate(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-u3s5n2: Error starting update. {info}.",
+                "",
+                ErrorCategory.API,
+                lineNumber);
+        }
+        public static void Error_DownloadUpdate(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-u4d6w8: Error downloading update. {info}.",
+                "",
+                ErrorCategory.API,
+                lineNumber);
+        }
+        public static void Error_ApplyUpdate(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-u5a4r1: Error applying update and restarting. {info}.",
+                "",
+                ErrorCategory.API,
+                lineNumber);
+        }
     }
 }
