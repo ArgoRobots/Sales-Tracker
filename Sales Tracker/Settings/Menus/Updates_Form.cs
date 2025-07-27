@@ -116,6 +116,7 @@ namespace Sales_Tracker.Settings.Menus
             {
                 AutoStart = true,
                 ProgressColor = CustomColors.AccentBlue,
+                Anchor = AnchorStyles.Top
             };
             _progressIndicator.Location = new Point(
                 (Width - _progressIndicator.Width) / 2,

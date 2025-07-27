@@ -239,7 +239,7 @@ namespace Sales_Tracker.Classes
                 Log.Write(2, "Applying update and restarting application");
 
                 // Save any pending work before restart
-                CustomControls.SaveAll();
+                CustomControls.SaveAll(false);
 
                 // Set a flag to indicate we should auto-open the most recent company
                 DataFileManager.SetValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate, bool.TrueString);

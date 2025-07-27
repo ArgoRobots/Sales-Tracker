@@ -10,6 +10,7 @@ using Sales_Tracker.Startup.Menus;
 using Sales_Tracker.Theme;
 using System.Drawing.Drawing2D;
 using System.Globalization;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker.UI
 {
@@ -339,31 +340,39 @@ namespace Sales_Tracker.UI
             string value = DataFileManager.GetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial);
             return bool.TryParse(value, out bool boolResult) && boolResult;
         }
-        public static void SaveAll()
+        public static void SaveAll(bool showLabel = true)
         {
-            MainMenu_Form.Instance.Saved_Label.Visible = true;
+            if (!showLabel)
+            {
+                if (ArgoCompany.AreAnyChangesMade())
+                {
+                    ArgoCompany.SaveAll();
+                }
+                return;
+            }
+
+            Label label = MainMenu_Form.Instance.Saved_Label;
+            label.Visible = true;
 
             if (ArgoCompany.AreAnyChangesMade())
             {
-                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.AccentGreen;
-                MainMenu_Form.Instance.Saved_Label.Text = "Saving...";
+                label.ForeColor = CustomColors.AccentGreen;
+                label.Text = "Saving...";
                 ArgoCompany.SaveAll();
-                MainMenu_Form.Instance.Saved_Label.Text = "Saved";
+                label.Text = "Saved";
             }
             else
             {
-                MainMenu_Form.Instance.Saved_Label.ForeColor = CustomColors.Text;
-                MainMenu_Form.Instance.Saved_Label.Text = "No changes found";
+                label.ForeColor = CustomColors.Text;
+                label.Text = "No changes found";
             }
 
-            System.Windows.Forms.Timer timer = new()
-            {
-                Interval = 3000
-            };
+            Timer timer = new() { Interval = 3000 };
             timer.Tick += (_, _) =>
             {
-                MainMenu_Form.Instance.Saved_Label.Visible = false;
+                label.Visible = false;
                 timer.Stop();
+                timer.Dispose();
             };
             timer.Start();
         }
