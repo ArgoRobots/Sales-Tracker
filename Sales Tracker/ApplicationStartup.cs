@@ -107,7 +107,7 @@ namespace Sales_Tracker
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error ensuring default language translations: {ex.Message}");
+                Log.Error_EnsureDefaultLanguageTranslations($"{ex.Message}");
             }
         }
 
@@ -196,6 +196,8 @@ namespace Sales_Tracker
             }
             catch (Exception ex)
             {
+                Log.Error_OpenCompanyFromCommandLine($"{ex.Message}");
+
                 // Show a regular MessageBox in case CustomMessageBox is unavailable
                 MessageBox.Show($"Error opening file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -231,9 +233,9 @@ namespace Sales_Tracker
 
                 return TryOpenCompanyFromCommandLine([mostRecentCompany]);
             }
-            catch
+            catch (Exception ex)
             {
-                Log.Write(0, $"Error reopening the company after an update");
+                Log.Error_AutoOpenRecentCompanyAfterUpdate($"{ex.Message}");
                 return false;
             }
         }

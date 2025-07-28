@@ -51,7 +51,7 @@ namespace Sales_Tracker.Theme
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(0, $"Error starting theme listener: {ex.Message}");
+                    Log.Error_StartThemeListener(ex.Message);
                 }
             });
         }

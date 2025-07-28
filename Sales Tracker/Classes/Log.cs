@@ -364,6 +364,15 @@ namespace Sales_Tracker.Classes
                 ErrorCategory.Translation,
                 lineNumber);
         }
+        public static void Error_SaveTranslationCache(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-t7c4s2: Failed to save translation cache. {info}.",
+                "",
+                ErrorCategory.Translation,
+                lineNumber);
+        }
 
         // Anonymous usage data errors
         public static void Error_AnonymousDataCollection(
@@ -387,7 +396,7 @@ namespace Sales_Tracker.Classes
                 lineNumber);
         }
 
-        // ENV
+        // ENV errors
         public static void Error_ENVFileNotFound(
             string fileName,
             [CallerLineNumber] int lineNumber = 0)
@@ -407,7 +416,7 @@ namespace Sales_Tracker.Classes
                 lineNumber);
         }
 
-        // Auto update
+        // Auto update errors
         public static void Error_InitializeUpdateManager(
             string info,
             [CallerLineNumber] int lineNumber = 0)
@@ -451,6 +460,95 @@ namespace Sales_Tracker.Classes
             Error($"Error-u5a4r1: Error applying update and restarting. {info}.",
                 "",
                 ErrorCategory.API,
+                lineNumber);
+        }
+
+        // Secrets Manager errors
+        public static void Error_CreateEncryptedSecretsFile(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-s1c9e4: Error creating encrypted secrets file. {info}.",
+                "",
+                ErrorCategory.Encryption,
+                lineNumber);
+        }
+        public static void Error_SecretsFileNotFound(
+            string filePath,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-s2f7n8: Encrypted secrets file not found: '{filePath}'.",
+                "",
+                ErrorCategory.File,
+                lineNumber);
+        }
+        public static void Error_DecryptSecretsFile(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-s3d2r6: Failed to decrypt secrets file. {info}.",
+                "",
+                ErrorCategory.Encryption,
+                lineNumber);
+        }
+        public static void Error_LoadEncryptedSecrets(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-s4l5k1: Error loading encrypted secrets. {info}.",
+                "",
+                ErrorCategory.Encryption,
+                lineNumber);
+        }
+
+        // Application Startup errors
+        public static void Error_EnsureDefaultLanguageTranslations(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-a1l7t9: Error ensuring default language translations. {info}.",
+                "",
+                ErrorCategory.Translation,
+                lineNumber);
+        }
+        public static void Error_OpenCompanyFromCommandLine(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-a2o5c8: Error opening company from command line. {info}.",
+                "",
+                ErrorCategory.File,
+                lineNumber);
+        }
+        public static void Error_AutoOpenRecentCompanyAfterUpdate(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-a3u6r4: Error auto-opening recent company after update. {info}.",
+                "",
+                ErrorCategory.File,
+                lineNumber);
+        }
+
+        // Theme Change Detector error
+        public static void Error_StartThemeListener(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-t1s8l5: Error starting theme listener. {info}.",
+                "",
+                ErrorCategory.General,
+                lineNumber);
+        }
+
+        // Registry Watcher error
+        public static void Error_RegistryWatcher(
+            string info,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            Error($"Error-r9w3k7: Registry watcher error. {info}.",
+                "",
+                ErrorCategory.General,
                 lineNumber);
         }
     }

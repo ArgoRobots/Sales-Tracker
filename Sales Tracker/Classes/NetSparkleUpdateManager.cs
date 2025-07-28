@@ -29,7 +29,7 @@ namespace Sales_Tracker.Classes
 
         // Installer arguments discovered by running: & ".\Argo Sales Tracker Installer V.1.0.4.exe" /?
         // in the directory where the exe is located.
-        // These arguements are used for silent installation without user interaction.
+        // These arguements are used for silent installation without user interaction. (this needs to be improved)
         private const string SILENT_INSTALL_ARGUMENT = "/exenoui /norestart";
 
         // Public properties
@@ -68,7 +68,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Error_InitializeUpdateManager($"{ex.Message}\nStack trace: {ex.StackTrace}");
+                Log.Error_InitializeUpdateManager(ex.Message);
             }
         }
 
@@ -94,7 +94,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Error_CheckForUpdates($"{ex.Message}\nStack trace: {ex.StackTrace}");
+                Log.Error_CheckForUpdates(ex.Message);
 
                 UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                 {
@@ -150,7 +150,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Error_StartUpdate($"{ex.Message}\nStack trace: {ex.StackTrace}");
+                Log.Error_StartUpdate(ex.Message);
                 _isUpdating = false;
 
                 UpdateDownloadCompleted?.Invoke(null, new UpdateDownloadCompletedEventArgs
@@ -297,31 +297,24 @@ namespace Sales_Tracker.Classes
             if (status == UpdateStatus.UpdateAvailable)
             {
 
-                // Try to get the available version from the sparkle updater
-                try
+                // Gget the available version from the sparkle updater
+                if (_sparkle != null && _sparkle.LatestAppCastItems != null && _sparkle.LatestAppCastItems.Count > 0)
                 {
-                    if (_sparkle != null && _sparkle.LatestAppCastItems != null && _sparkle.LatestAppCastItems.Count > 0)
+                    AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
+                    _availableVersion = latestItem.Version;
+
+                    // Skip update if versions are identical
+                    if (currentVersion == _availableVersion)
                     {
-                        AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
-                        _availableVersion = latestItem.Version;
+                        _availableVersion = null;
 
-                        // Skip update if versions are identical
-                        if (currentVersion == _availableVersion)
+                        UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
                         {
-                            _availableVersion = null;
-
-                            UpdateCheckCompleted?.Invoke(null, new UpdateCheckCompletedEventArgs
-                            {
-                                IsUpdateAvailable = false,
-                                CurrentVersion = currentVersion
-                            });
-                            return;
-                        }
+                            IsUpdateAvailable = false,
+                            CurrentVersion = currentVersion
+                        });
+                        return;
                     }
-                }
-                catch (Exception ex)
-                {
-                    Log.Write(1, $"Could not extract version from AppCast: {ex.Message}");
                 }
 
                 _updateAvailable = true;

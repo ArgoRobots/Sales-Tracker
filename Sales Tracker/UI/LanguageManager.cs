@@ -589,7 +589,7 @@ namespace Sales_Tracker.UI
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Failed to save translation cache: {ex.Message}");
+                Log.Error_SaveTranslationCache(ex.Message);
             }
         }
 

@@ -64,7 +64,7 @@ namespace Sales_Tracker.Theme
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(0, $"Registry watcher specific error: {ex.Message}");
+                    Log.Error_RegistryWatcher($"{ex.Message}");
                 }
             }
         }

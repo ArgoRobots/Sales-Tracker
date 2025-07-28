@@ -13,12 +13,21 @@
         {
             if (!File.Exists(envFilePath))
             {
+                Log.Error_FileDoesNotExist(envFilePath);
                 throw new FileNotFoundException($"Environment file not found: {envFilePath}");
             }
 
-            string envContent = File.ReadAllText(envFilePath);
-            string encryptedContent = EncryptionManager.EncryptString(envContent, EncryptionManager.AesKey, EncryptionManager.AesIV);
-            File.WriteAllText(Directories.SecretsFilePath, encryptedContent);
+            try
+            {
+                string envContent = File.ReadAllText(envFilePath);
+                string encryptedContent = EncryptionManager.EncryptString(envContent, EncryptionManager.AesKey, EncryptionManager.AesIV);
+                File.WriteAllText(Directories.SecretsFilePath, encryptedContent);
+            }
+            catch (Exception ex)
+            {
+                Log.Error_CreateEncryptedSecretsFile($"{ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -28,7 +37,7 @@
         {
             if (!File.Exists(Directories.SecretsFilePath))
             {
-                Log.Write(0, $"Encrypted secrets file not found");
+                Log.Error_SecretsFileNotFound(Directories.SecretsFilePath);
                 return [];
             }
 
@@ -39,7 +48,7 @@
 
                 if (string.IsNullOrEmpty(decryptedContent))
                 {
-                    Log.Write(0, "Failed to decrypt secrets file - content is null or empty");
+                    Log.Error_DecryptSecretsFile("Content is null or empty after decryption");
                     return [];
                 }
 
@@ -47,7 +56,7 @@
             }
             catch (Exception ex)
             {
-                Log.Write(0, $"Error loading encrypted secrets: {ex.Message}");
+                Log.Error_LoadEncryptedSecrets($"{ex.Message}");
                 return [];
             }
         }
