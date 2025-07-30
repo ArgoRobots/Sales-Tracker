@@ -52,7 +52,7 @@ namespace Sales_Tracker.Theme
                     if (!firstRun && !Equals(currentValue, previousValue))
                     {
                         RegChanged?.Invoke(this, EventArgs.Empty);
-                        Log.Write(1, $"Windows theme changed to: {(currentValue?.ToString() == "0" ? "Dark" : "Light")}");
+                        Log.WriteWithFormat(1, "Windows theme changed to: {0}", (currentValue?.ToString() == "0" ? "Dark" : "Light"));
                     }
 
                     // Update tracking variables

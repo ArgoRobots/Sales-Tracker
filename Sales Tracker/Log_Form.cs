@@ -24,12 +24,13 @@ namespace Sales_Tracker
 
             ThemeManager.SetThemeForForm(this);
             ThemeManager.CustomizeScrollBar(Log_RichTextBox);
+
             Log_RichTextBox.Text = Log.LogText;
-            Log_RichTextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            Log_RichTextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
 
             InitializeTranslatedLogLevels();
-
             LanguageManager.UpdateLanguageForControl(this);
+            Log_RichTextBox.Text = TranslateExistingLogText(Log_RichTextBox.Text);
 
             // Hide caret
             Log_RichTextBox.MouseDown += (_, _) =>
@@ -45,10 +46,72 @@ namespace Sales_Tracker
             translatedLogLevelColors = new Dictionary<string, Color>
             {
                 { "[" + LanguageManager.TranslateString("Error") +"]", CustomColors.AccentRed },
-                { "[" +  LanguageManager.TranslateString("Debug") +"]", CustomColors.DebugText },
-                { "[" +  LanguageManager.TranslateString("General") +"]", CustomColors.DebugText },
-                { "[" +  LanguageManager.TranslateString("Product manager") +"]", CustomColors.DebugText }
+                { "[" + LanguageManager.TranslateString("Debug") +"]", CustomColors.DebugText },
+                { "[" + LanguageManager.TranslateString("General") +"]", CustomColors.DebugText },
+                { "[" + LanguageManager.TranslateString("Product manager") +"]", CustomColors.DebugText },
+                { "[" + LanguageManager.TranslateString("Password manager") + "]", CustomColors.DebugText }
             };
+        }
+        private static string TranslateExistingLogText(string logText)
+        {
+            if (string.IsNullOrEmpty(logText))
+            {
+                return logText;
+            }
+
+            // Get the current language abbreviation
+            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
+            if (targetLanguageAbbreviation == "en")
+            {
+                return logText;  // No translation needed for English
+            }
+
+            // Mtch log entries: <timestamp> [LogLevel] message
+            Regex logEntryPattern = LogEntryRegex();
+
+            // Dictionary of English log levels to their translated versions
+            Dictionary<string, string> logLevelTranslations = new()
+            {
+                ["[Error]"] = "[" + LanguageManager.TranslateString("Error") + "]",
+                ["[Debug]"] = "[" + LanguageManager.TranslateString("Debug") + "]",
+                ["[General]"] = "[" + LanguageManager.TranslateString("General") + "]",
+                ["[Product manager]"] = "[" + LanguageManager.TranslateString("Product manager") + "]",
+                ["[Password manager]"] = "[" + LanguageManager.TranslateString("Password manager") + "]"
+            };
+
+            MatchCollection matches = logEntryPattern.Matches(logText);
+            string result = logText;
+
+            foreach (Match match in matches)
+            {
+                string timestamp = match.Groups[1].Value;
+                string logLevel = match.Groups[2].Value;
+                string message = match.Groups[3].Value;
+
+                // Translate the log level
+                string translatedLogLevel = logLevel;
+                if (logLevelTranslations.TryGetValue(logLevel, out string translatedLevel))
+                {
+                    translatedLogLevel = translatedLevel;
+                }
+
+                // For existing messages, try basic translation but don't expect placeholders
+                string translatedMessage = LanguageManager.TranslateString(message);
+
+                string replacement = $"{timestamp} {translatedLogLevel} {translatedMessage}";
+                result = result.Replace(match.Value, replacement);
+            }
+
+            return result;
+        }
+        private static string GetDefaultLanguageAbbreviation(string targetLanguageName = null)
+        {
+            targetLanguageName ??= Properties.Settings.Default.Language;
+
+            List<KeyValuePair<string, string>> languages = LanguageManager.GetLanguages();
+            string languageAbbreviation = languages.FirstOrDefault(l => l.Key == targetLanguageName).Value;
+
+            return string.IsNullOrEmpty(languageAbbreviation) ? "en" : languageAbbreviation;
         }
         public void AnimateButtons()
         {
@@ -89,7 +152,7 @@ namespace Sales_Tracker
                 int originalLength = Log_RichTextBox.SelectionLength;
 
                 // Set the time to gray
-                MatchCollection matches = MyRegex().Matches(Log_RichTextBox.Text);
+                MatchCollection matches = TimeRegex().Matches(Log_RichTextBox.Text);
                 foreach (Match m in matches.Cast<Match>())
                 {
                     Log_RichTextBox.SelectionStart = m.Index;
@@ -142,7 +205,12 @@ namespace Sales_Tracker
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool HideCaret(IntPtr hWnd);
 
-        [GeneratedRegex("<*\\d+:\\d+:\\d+:\\d+>*", RegexOptions.Multiline)]
-        private static partial Regex MyRegex();
+        // Regex for timestamp format: <14:20:07.98>
+        [GeneratedRegex(@"<\d+:\d+:\d+\.\d+>", RegexOptions.Multiline)]
+        private static partial Regex TimeRegex();
+
+        // Regex for log entry format: <timestamp> [LogLevel] message
+        [GeneratedRegex(@"^(<\d+:\d+:\d+\.\d+>)\s*(\[[^\]]+\])\s*(.*)$", RegexOptions.Multiline)]
+        private static partial Regex LogEntryRegex();
     }
 }

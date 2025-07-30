@@ -198,7 +198,7 @@ namespace Sales_Tracker.Classes
                 if (responseObject?.usage != null)
                 {
                     LastTokenUsage = responseObject.usage.total_tokens;
-                    Log.Write(2, $"Token usage for query translation: {LastTokenUsage}");
+                    Log.WriteWithFormat(2, "Token usage for query translation: {0}", LastTokenUsage);
                 }
                 else
                 {

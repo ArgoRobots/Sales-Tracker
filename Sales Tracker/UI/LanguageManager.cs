@@ -20,7 +20,6 @@ namespace Sales_Tracker.UI
         private static readonly Dictionary<string, Rectangle> _controlBoundsCache = [];
         private static readonly Dictionary<Control, float> _originalFontSizes = [];
         private static readonly Dictionary<string, Size> _formSizeCache = [];
-        private static readonly Dictionary<string, string> _stringControlCache = [];
 
         // Constants
         private static readonly string
@@ -66,19 +65,6 @@ namespace Sales_Tracker.UI
                 TranslationCache = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(
                     combinedCache.TranslationCache.ToString());
             }
-
-            if (combinedCache?.StringControlCache != null)
-            {
-                dynamic loadedStringCache = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                    combinedCache.StringControlCache.ToString());
-                if (loadedStringCache != null)
-                {
-                    foreach (var kvp in loadedStringCache)
-                    {
-                        _stringControlCache[kvp.Key] = kvp.Value;
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -91,14 +77,14 @@ namespace Sales_Tracker.UI
 
             if (string.IsNullOrEmpty(languageAbbreviation))
             {
-                Log.Write(1, $"Skipping download for language: {languageName}");
+                Log.WriteWithFormat(1, "Skipping download for language: {0}", languageName);
                 return false;
             }
 
             // Check if language already exists in cache
             if (TranslationCache.ContainsKey(languageAbbreviation))
             {
-                Log.Write(1, $"Found language '{languageName}' in cache");
+                Log.WriteWithFormat(1, "Found language '{0}' in cache", languageName);
                 return true;  // Consider cached language as success
             }
 
@@ -113,7 +99,7 @@ namespace Sales_Tracker.UI
             {
                 string downloadUrl = $"https://argorobots.com/resources/downloads/languages/{languageAbbreviation}.json";
 
-                Log.Write(1, $"Downloading language file from: {downloadUrl}");
+                Log.WriteWithFormat(1, "Downloading language file from: {0}", downloadUrl);
 
                 HttpResponseMessage response = await _httpClient.GetAsync(downloadUrl, cancellationToken);
 
@@ -136,7 +122,7 @@ namespace Sales_Tracker.UI
                 if (languageAbbreviation == "en")
                 {
                     Directories.WriteTextToFile(Directories.English_file, jsonContent);
-                    Log.Write(1, $"Successfully saved English translations to {Directories.English_file}");
+                    Log.WriteWithFormat(1, "Successfully saved English translations to {0}", Directories.English_file);
                 }
 
                 // Merge downloaded translations with existing cache
@@ -153,7 +139,7 @@ namespace Sales_Tracker.UI
                 }
 
                 SaveCacheToFile();
-                Log.Write(1, $"Successfully merged translations for {languageName}");
+                Log.WriteWithFormat(1, "Successfully merged translations for {0}", languageName);
                 return true;
             }
             catch (Exception ex)
@@ -196,7 +182,7 @@ namespace Sales_Tracker.UI
             string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation(targetLanguageName);
             if (targetLanguageAbbreviation == null) { return; }
 
-            Log.Write(2, $"Translating application language to {targetLanguageName}...");
+            Log.WriteWithFormat(2, "Translating application language to {0}...", targetLanguageName);
 
             List<Control> controlsList = [MainMenu_Form.Instance];
 
@@ -358,7 +344,7 @@ namespace Sales_Tracker.UI
                     break;
             }
         }
-        private static string GetCachedTranslation(string targetLanguageAbbreviation, string controlKey, string originalText)
+        public static string GetCachedTranslation(string targetLanguageAbbreviation, string controlKey, string originalText)
         {
             if (string.IsNullOrEmpty(originalText))
             {
@@ -544,16 +530,10 @@ namespace Sales_Tracker.UI
                 return;
             }
 
-            // Check if control should not be cached normally
+            // Skip caching for controls marked as DoNotCache
             if (control.AccessibleDescription == AccessibleDescriptionManager.DoNotCache)
             {
-                // Cache as string instead
-                string stringCacheKey = GetStringKey(control.Text);
-                if (!_stringControlCache.ContainsKey(stringCacheKey))
-                {
-                    _stringControlCache[stringCacheKey] = control.Text;
-                }
-                return;  // Don't proceed with normal bounds caching
+                return;
             }
 
             string controlKey = GetControlKey(control);
@@ -577,14 +557,7 @@ namespace Sales_Tracker.UI
         {
             try
             {
-                var combinedCache = new
-                {
-                    TranslationCache = TranslationCache ?? [],
-                    StringControlCache = _stringControlCache ?? []
-                };
-
-                string jsonContent = JsonConvert.SerializeObject(combinedCache, Formatting.Indented);
-
+                string jsonContent = JsonConvert.SerializeObject(TranslationCache, Formatting.Indented);
                 Directories.WriteTextToFile(Directories.Translations_file, jsonContent);
             }
             catch (Exception ex)

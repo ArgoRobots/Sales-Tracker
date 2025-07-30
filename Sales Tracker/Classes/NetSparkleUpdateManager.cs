@@ -80,7 +80,7 @@ namespace Sales_Tracker.Classes
         {
             if (_isUpdating || _sparkle == null)
             {
-                Log.Write(1, $"Cannot check for updates: IsUpdating={_isUpdating}, Sparkle={_sparkle != null}");
+                Log.WriteWithFormat(1, "Cannot check for updates: IsUpdating={0}, Sparkle={1}", _isUpdating, _sparkle != null);
                 return false;
             }
 
@@ -134,7 +134,7 @@ namespace Sales_Tracker.Classes
         {
             if (!_updateAvailable || _isUpdating || _sparkle == null)
             {
-                Log.Write(2, $"Cannot start update: UpdateAvailable={_updateAvailable}, IsUpdating={_isUpdating}, Sparkle={_sparkle != null}");
+                Log.WriteWithFormat(2, "Cannot start update: UpdateAvailable={0}, IsUpdating={1}, Sparkle={2}", _updateAvailable, _isUpdating, _sparkle != null);
                 return false;
             }
 
@@ -143,7 +143,7 @@ namespace Sales_Tracker.Classes
                 _isUpdating = true;
 
                 AppCastItem updateItem = _sparkle.LatestAppCastItems[0];
-                Log.Write(2, $"Starting download for version {updateItem.Version}");
+                Log.WriteWithFormat(2, "Starting download for version {0}", updateItem.Version);
 
                 await DownloadUpdate(updateItem);
                 return true;
@@ -194,7 +194,7 @@ namespace Sales_Tracker.Classes
                     byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
                     await File.WriteAllBytesAsync(filePath, fileBytes);
 
-                    Log.Write(2, $"Download completed. File size: {Tools.ConvertBytesToReadableSize(fileBytes.Length)}");
+                    Log.WriteWithFormat(2, "Download completed. File size: {0}", Tools.ConvertBytesToReadableSize(fileBytes.Length));
                 }
 
                 // Verify the file exists
@@ -368,7 +368,7 @@ namespace Sales_Tracker.Classes
         private static void OnDownloadStarted(AppCastItem item, string path)
         {
             _availableVersion = item.Version;
-            Log.Write(2, $"Download started for version: {item.Version}");
+            Log.WriteWithFormat(2, "Download started for version: {0}", item.Version);
 
             UpdateDownloadStarted?.Invoke(null, new UpdateDownloadStartedEventArgs(item.Version ?? "Unknown"));
         }
@@ -376,7 +376,7 @@ namespace Sales_Tracker.Classes
         {
             _isUpdating = false;
             _installerPath = path;  // Store the installer path from NetSparkle
-            Log.Write(2, $"Download finished for version: {item.Version}, path: {path}");
+            Log.WriteWithFormat(2, "Download finished for version: {0}, path: {1}", item.Version, path);
 
             UpdateDownloadCompleted?.Invoke(null, new UpdateDownloadCompletedEventArgs
             {

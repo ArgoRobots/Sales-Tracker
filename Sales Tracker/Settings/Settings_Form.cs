@@ -242,7 +242,7 @@ namespace Sales_Tracker.Settings
             Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
 
             // Remove previous messages that mention language changes
-            string message = "Changed the language to";
+            string message = LanguageManager.TranslateString("Changed the language to");
             MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
 
             // Add the new language change message

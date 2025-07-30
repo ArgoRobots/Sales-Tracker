@@ -49,7 +49,7 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                Log.Write(1, $"Internet connectivity check failed: {ex.Message}");
+                Log.WriteWithFormat(1, "Internet connectivity check failed: {0}", ex.Message);
                 return false;
             }
         }

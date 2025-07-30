@@ -148,7 +148,7 @@ namespace Sales_Tracker.Settings.Menus
                 {
                     AnonymousDataManager.ExportOrganizedData(dialog.FileName, true);
 
-                    Log.Write(2, $"Exported organized anonymous usage data to '{Path.GetFileName(dialog.FileName)}'");
+                    Log.WriteWithFormat(2, "Exported organized anonymous usage data to '{0}'", Path.GetFileName(dialog.FileName));
 
                     CustomMessageBox.Show("Export Successful",
                         "Successfully exported anonymous usage data.",

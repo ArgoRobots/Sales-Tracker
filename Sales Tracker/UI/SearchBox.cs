@@ -310,7 +310,7 @@ namespace Sales_Tracker.UI
 
             // Calculate elapsed time in milliseconds
             double elapsedTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
-            Log.Write(1, "Elapsed time for updating the SearchBox: " + elapsedTime + " ms");
+            Log.WriteWithFormat(1, "Elapsed time for updating the SearchBox: {0} ms", elapsedTime);
         }
         private static int CalculateTermScore(string source, string term)
         {

@@ -447,7 +447,7 @@ namespace Sales_Tracker.Classes
                 if (targetRow == null)
                 {
                     string transactionType = isPurchase ? "purchase" : "sale";
-                    Log.Write(1, $"{transactionType} {transactionId} not found for receipt {receiptFileName}");
+                    Log.WriteWithFormat(1, "{0} {1} not found for receipt {2}", transactionType, transactionId, receiptFileName);
                     continue;
                 }
 
@@ -1626,7 +1626,7 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 // Log the error but don't stop the export
-                Log.Write(1, $"Failed to get exchange rate for {targetCurrency}: {ex.Message}");
+                Log.WriteWithFormat(1, "Failed to get exchange rate for {0}: {1}", targetCurrency, ex.Message);
             }
 
             return 1.0m;  // Fallback to 1:1 ratio

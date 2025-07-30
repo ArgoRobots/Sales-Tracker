@@ -40,7 +40,7 @@ namespace Sales_Tracker.Classes
         public static void SaveAll()
         {
             Directories.CreateArgoTarFileFromDirectory(Directories.TempCompany_dir, Directories.ArgoCompany_file, true);
-            Log.Write(2, $"Saved '{Directories.CompanyName}'");
+            Log.WriteWithFormat(2, "Saved '{0}'", Directories.CompanyName);
             ResetChanges();
 
             DataFileManager.SetValue(AppDataSettings.ChangesMade, false.ToString());
@@ -62,7 +62,7 @@ namespace Sales_Tracker.Classes
             {
                 // Create a tar file from the temp directory directly to the new location
                 Directories.CreateArgoTarFileFromDirectory(Directories.TempCompany_dir, dialog.FileName, true);
-                Log.Write(2, $"Saved '{Path.GetFileNameWithoutExtension(dialog.FileName)}' to new location");
+                Log.WriteWithFormat(2, "Saved '{0}' to new location", Path.GetFileNameWithoutExtension(dialog.FileName));
             }
         }
 

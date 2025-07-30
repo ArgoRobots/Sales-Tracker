@@ -42,7 +42,7 @@ namespace Sales_Tracker.Classes
                 AnonymousDataManager.AddOpenAIUsageData("gpt-3.5-turbo", stopwatch.ElapsedMilliseconds, _queryTranslator.LastTokenUsage);
 
                 IsUsingAIQuery = true;
-                Log.Write(2, $"AI translated '{naturalLanguageQuery}' to '{_translatedQuery}' (Used {_queryTranslator.LastTokenUsage} tokens)");
+                Log.WriteWithFormat(2, "AI translated '{0}' to '{1}' (Used {2} tokens)", naturalLanguageQuery, _translatedQuery, _queryTranslator.LastTokenUsage);
                 MainMenu_Form.Instance.RefreshDataGridViewAndCharts();
             }
             catch (Exception ex)

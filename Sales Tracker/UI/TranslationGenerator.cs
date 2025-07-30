@@ -102,7 +102,6 @@ namespace Sales_Tracker.UI
                     // Settings
                     typeof(General_Form),
                     typeof(Security_Form),
-                    typeof(Updates_Form),
                     typeof(Settings_Form),
 
                     // Startup
@@ -128,6 +127,7 @@ namespace Sales_Tracker.UI
                     typeof(Products_Form),
                     typeof(Receipts_Form),
                     typeof(Upgrade_Form),
+                    typeof(Updates_Form),
                     typeof(Welcome_Form),
                 ];
 
@@ -174,6 +174,10 @@ namespace Sales_Tracker.UI
                 progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count, "Scanning source code for CustomMessageBox calls...");
                 Dictionary<string, string> messageBoxStrings = CollectAllCustomMessageBoxCalls();
 
+                // Get all Log.Write calls from source code
+                progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count + messageBoxStrings.Count, "Scanning source code for Log.Write calls...");
+                Dictionary<string, string> logWriteStrings = CollectAllLogWriteCalls();
+
                 // Merge all collections
                 foreach (KeyValuePair<string, string> kvp in translateStringCalls)
                 {
@@ -191,7 +195,15 @@ namespace Sales_Tracker.UI
                     }
                 }
 
-                Log.Write(1, $"Total texts collected: {sourceTexts.Count} ({translateStringCalls.Count} from TranslateString calls, {messageBoxStrings.Count} from CustomMessageBox calls)");
+                foreach (KeyValuePair<string, string> kvp in logWriteStrings)
+                {
+                    if (!sourceTexts.ContainsKey(kvp.Key))
+                    {
+                        sourceTexts[kvp.Key] = kvp.Value;
+                    }
+                }
+
+                Log.WriteWithFormat(1, "Total texts collected: {0} ({1} from TranslateString calls, {2} from CustomMessageBox calls, {3} from Log.Write/WriteWithFormat calls)", sourceTexts.Count, translateStringCalls.Count, messageBoxStrings.Count, logWriteStrings.Count);
 
                 // Pre-filter and optimize texts
                 sourceTexts = FilterAndOptimizeTexts(sourceTexts);
@@ -243,7 +255,7 @@ namespace Sales_Tracker.UI
                     string outputPath = Path.Combine(outputDirectory, $"{language.Value}.json");
                     await GenerateLanguageJsonFile(translations, outputPath, language.Value);
 
-                    Log.Write(1, $"Completed translations for {language.Key} ({translations.Count} texts)");
+                    Log.WriteWithFormat(1, "Completed translations for {0} ({1} texts)", language.Key, translations.Count);
                 }
 
                 progressForm.CompleteProgress();
@@ -283,7 +295,7 @@ namespace Sales_Tracker.UI
                 optimizedTexts[kvp.Key] = text;
             }
 
-            Log.Write(1, $"Optimized texts: {sourceTexts.Count} -> {optimizedTexts.Count} (saved {sourceTexts.Count - optimizedTexts.Count} unnecessary translations)");
+            Log.WriteWithFormat(1, "Optimized texts: {0} -> {1} (saved {2} unnecessary translations)", sourceTexts.Count, optimizedTexts.Count, sourceTexts.Count - optimizedTexts.Count);
             return optimizedTexts;
         }
 
@@ -296,7 +308,7 @@ namespace Sales_Tracker.UI
             Dictionary<string, string> results = [];
             List<Dictionary<string, string>> batches = CreateBatches(textsToTranslate, _maxBatchSize);
 
-            Log.Write(1, $"Starting translation for {targetLanguageAbbreviation}: {textsToTranslate.Count} texts in {batches.Count} batches");
+            Log.WriteWithFormat(1, "Starting translation for {0}: {1} texts in {2} batches", targetLanguageAbbreviation, textsToTranslate.Count, batches.Count);
 
             for (int i = 0; i < batches.Count; i++)
             {
@@ -324,14 +336,14 @@ namespace Sales_Tracker.UI
                         }
 
                         // Log progress
-                        Log.Write(1, $"Completed batch {i + 1}/{batches.Count} ({batchCharacters} characters, {_charactersUsedThisHour} total this hour)");
+                        Log.WriteWithFormat(1, "Completed batch {0}/{1} ({2} characters, {3} total this hour)", i + 1, batches.Count, batchCharacters, _charactersUsedThisHour);
                         break;  // Success, exit retry loop
                     }
                     catch (HttpRequestException ex) when ((ex.Message.Contains("429") || ex.Message.Contains("rate")) && retryCount < maxRetries)
                     {
                         retryCount++;
                         int backoffDelay = (int)Math.Pow(2, retryCount) * 5000;  // 10s, 20s, 40s
-                        Log.Write(1, $"Rate limit hit on batch {i + 1}, attempt {retryCount}/{maxRetries}. Waiting {backoffDelay / 1000}s before retry...");
+                        Log.WriteWithFormat(1, "Rate limit hit on batch {0}, attempt {1}/{2}. Waiting {3}s before retry...", i + 1, retryCount, maxRetries, backoffDelay / 1000);
 
                         await Task.Delay(backoffDelay, cancellationToken).ConfigureAwait(false);
                     }
@@ -346,7 +358,7 @@ namespace Sales_Tracker.UI
                             {
                                 results[kvp.Key] = kvp.Value;
                             }
-                            Log.Write(1, $"Using original texts for batch {i + 1} after {maxRetries} failed attempts");
+                            Log.WriteWithFormat(1, "Using original texts for batch {0} after {1} failed attempts", i + 1, maxRetries);
                             break;
                         }
 
@@ -399,7 +411,7 @@ namespace Sales_Tracker.UI
                 batches.Add(currentBatch);
             }
 
-            Log.Write(1, $"Created {batches.Count} batches from {items.Count} items");
+            Log.WriteWithFormat(1, "Created {0} batches from {1} items", batches.Count, items.Count);
             return batches;
         }
 
@@ -427,7 +439,7 @@ namespace Sales_Tracker.UI
                     TimeSpan waitTime = _hourlyResetTime - now;
                     if (waitTime > TimeSpan.Zero)
                     {
-                        Log.Write(1, $"Hourly character limit would be exceeded. Waiting {waitTime.TotalMinutes:F1} minutes until reset...");
+                        Log.WriteWithFormat(1, "Hourly character limit would be exceeded. Waiting {0} minutes until reset...", waitTime.TotalMinutes.ToString("F1"));
                         // Wait until the hour resets
                         await Task.Delay(waitTime, cancellationToken).ConfigureAwait(false);
                         _charactersUsedThisHour = 0;
@@ -449,7 +461,7 @@ namespace Sales_Tracker.UI
                     TimeSpan waitTime = oldestRequest.AddMinutes(1) - now;
                     if (waitTime > TimeSpan.Zero)
                     {
-                        Log.Write(1, $"Request rate limit reached. Waiting {waitTime.TotalSeconds:F0} seconds...");
+                        Log.WriteWithFormat(1, "Request rate limit reached. Waiting {0} seconds...", waitTime.TotalSeconds.ToString("F0"));
                         await Task.Delay(waitTime, cancellationToken).ConfigureAwait(false);
                     }
                     _requestTimestamps.Dequeue();
@@ -647,17 +659,17 @@ namespace Sales_Tracker.UI
 
                 foreach (string file in csFiles)
                 {
-                    if (ShouldSkipFile(file)) continue;
+                    if (ShouldSkipFile(file)) { continue; }
 
                     string content = File.ReadAllText(file);
                     ExtractTranslateStringCalls(content, collectedStrings, Path.GetFileName(file));
                 }
 
-                Log.Write(1, $"Auto-collected {collectedStrings.Count} TranslateString calls from source code");
+                Log.WriteWithFormat(1, "Auto-collected {0} TranslateString calls from source code", collectedStrings.Count);
             }
             catch (Exception ex)
             {
-                Log.Write(1, $"Error collecting TranslateString calls: {ex.Message}");
+                Log.WriteWithFormat(1, "Error collecting TranslateString calls: {0}", ex.Message);
             }
 
             return collectedStrings;
@@ -685,17 +697,17 @@ namespace Sales_Tracker.UI
 
                 foreach (string file in csFiles)
                 {
-                    if (ShouldSkipFile(file)) continue;
+                    if (ShouldSkipFile(file)) { continue; }
 
                     string content = File.ReadAllText(file);
                     ExtractCustomMessageBoxCalls(content, messageBoxStrings, Path.GetFileName(file));
                 }
 
-                Log.Write(1, $"Auto-collected {messageBoxStrings.Count} CustomMessageBox calls from source code");
+                Log.WriteWithFormat(1, "Auto-collected {0} CustomMessageBox calls from source code", messageBoxStrings.Count);
             }
             catch (Exception ex)
             {
-                Log.Write(1, $"Error collecting CustomMessageBox calls: {ex.Message}");
+                Log.WriteWithFormat(1, "Error collecting CustomMessageBox calls: {0}", ex.Message);
             }
 
             return messageBoxStrings;
@@ -849,7 +861,7 @@ namespace Sales_Tracker.UI
                     if (!collectedStrings.ContainsKey(key))
                     {
                         collectedStrings[key] = processedText;
-                        Log.Write(2, $"Found TranslateString: '{processedText}' -> Key: '{key}' in {fileName}");
+                        Log.WriteWithFormat(2, "Found TranslateString: '{0}' -> Key: '{1}' in {2}", processedText, key, fileName);
                     }
                 }
             }
@@ -888,7 +900,7 @@ namespace Sales_Tracker.UI
                         if (!messageBoxStrings.ContainsKey(titleKey))
                         {
                             messageBoxStrings[titleKey] = title;
-                            Log.Write(2, $"Found CustomMessageBox title: '{title}' -> Key: '{titleKey}' in {fileName}");
+                            Log.WriteWithFormat(2, "Found CustomMessageBox title: '{0}' -> Key: '{1}' in {2}", title, titleKey, fileName);
                         }
                     }
 
@@ -899,7 +911,7 @@ namespace Sales_Tracker.UI
                         if (!messageBoxStrings.ContainsKey(messageKey))
                         {
                             messageBoxStrings[messageKey] = message;
-                            Log.Write(2, $"Found CustomMessageBox message: '{message}' -> Key: '{messageKey}' in {fileName}");
+                            Log.WriteWithFormat(2, "Found CustomMessageBox message: '{0}' -> Key: '{1}' in {2}", message, messageKey, fileName);
                         }
                     }
                 }
@@ -1023,7 +1035,295 @@ namespace Sales_Tracker.UI
                     if (!collectedStrings.ContainsKey(key))
                     {
                         collectedStrings[key] = variable.Value;
-                        Log.Write(2, $"Found TranslateString variable: '{variable.Value}' ({variable.Key}) -> Key: '{key}' in {fileName}");
+                        Log.WriteWithFormat(2, "Found TranslateString variable: '{0}' ({1}) -> Key: '{2}' in {3}", variable.Value, variable.Key, key, fileName);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Automatically scans source files for Log.Write calls and extracts text strings.
+        /// </summary>
+        private static Dictionary<string, string> CollectAllLogWriteCalls()
+        {
+            Dictionary<string, string> logWriteStrings = [];
+
+            try
+            {
+                string projectDirectory = FindProjectDirectory();
+
+                if (projectDirectory == null)
+                {
+                    Log.Write(1, "Could not find source directory for Log.Write collection");
+                    return logWriteStrings;
+                }
+
+                // Search all .cs files for Log.Write calls
+                string[] csFiles = Directory.GetFiles(projectDirectory, "*.cs", SearchOption.AllDirectories);
+
+                foreach (string file in csFiles)
+                {
+                    if (ShouldSkipFile(file)) { continue; }
+
+                    string content = File.ReadAllText(file);
+                    ExtractLogWriteCalls(content, logWriteStrings, Path.GetFileName(file));
+                }
+
+                Log.WriteWithFormat(1, "Auto-collected {0} Log.Write/WriteWithFormat calls from source code", logWriteStrings.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(1, "Error collecting Log.Write/WriteWithFormat calls: {0}", ex.Message);
+            }
+
+            return logWriteStrings;
+        }
+
+        /// <summary>
+        /// Extracts Log.Write call strings from source code content.
+        /// </summary>
+        private static void ExtractLogWriteCalls(string content, Dictionary<string, string> logWriteStrings, string fileName)
+        {
+            // ============ LOG.WRITE PATTERNS ============
+
+            // Pattern 1: Basic Log.Write calls
+            // Log.Write(1, "message text")
+            string pattern = @"Log\.Write\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.)*?)""";
+            ExtractLogMatches(content, pattern, logWriteStrings, fileName, false);
+
+            // Pattern 2: String interpolation
+            // Log.Write(1, $"message with {variable}")
+            string interpolationPattern = @"Log\.Write\s*\(\s*\d+\s*,\s*\$""((?:[^""\\]|\\.)*?)""";
+            ExtractLogMatchesWithInterpolation(content, interpolationPattern, logWriteStrings, fileName);
+
+            // Pattern 3: Verbatim strings
+            // Log.Write(1, @"message with actual newlines")
+            string verbatimPattern = @"Log\.Write\s*\(\s*\d+\s*,\s*@""((?:[^""]|"""")*)""";
+            ExtractLogMatches(content, verbatimPattern, logWriteStrings, fileName, true);
+
+            // Pattern 4: Multi-line strings
+            string multilinePattern = @"Log\.Write\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.|[\r\n])*?)""";
+            ExtractLogMatches(content, multilinePattern, logWriteStrings, fileName, false);
+
+            // Pattern 5: String concatenation with + operator
+            // Log.Write(1, "message part 1" + variable + "message part 2")
+            ExtractLogConcatenationMatches(content, logWriteStrings, fileName);
+
+            // Pattern 6: Variable references
+            ExtractLogVariableReferences(content, logWriteStrings, fileName);
+
+            // ============ LOG.WRITEWITHFORMAT PATTERNS ============
+
+            // Pattern 7: Basic Log.WriteWithFormat calls
+            // Log.WriteWithFormat(1, "message template {0}", variable)
+            string writeWithFormatPattern = @"Log\.WriteWithFormat\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
+            ExtractLogWriteWithFormatMatches(content, writeWithFormatPattern, logWriteStrings, fileName, false);
+
+            // Pattern 8: Verbatim strings for WriteWithFormat
+            // Log.WriteWithFormat(1, @"message template {0}", variable)
+            string writeWithFormatVerbatimPattern = @"Log\.WriteWithFormat\s*\(\s*\d+\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
+            ExtractLogWriteWithFormatMatches(content, writeWithFormatVerbatimPattern, logWriteStrings, fileName, true);
+
+            // Pattern 9: Multi-line strings for WriteWithFormat
+            string writeWithFormatMultilinePattern = @"Log\.WriteWithFormat\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.|[\r\n])*?)""\s*,";
+            ExtractLogWriteWithFormatMatches(content, writeWithFormatMultilinePattern, logWriteStrings, fileName, false);
+        }
+
+        /// <summary>
+        /// Extracts Log.WriteWithFormat template strings.
+        /// </summary>
+        private static void ExtractLogWriteWithFormatMatches(string content, string pattern, Dictionary<string, string> logWriteStrings, string fileName, bool isVerbatim)
+        {
+            MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 2)
+                {
+                    string template = match.Groups[1].Value.Trim();
+
+                    // Process strings based on type
+                    if (isVerbatim)
+                    {
+                        template = ProcessVerbatimString(template);
+                    }
+                    else
+                    {
+                        template = ProcessEscapedCharacters(template);
+                    }
+
+                    // Process template
+                    if (!string.IsNullOrWhiteSpace(template))
+                    {
+                        string templateKey = LanguageManager.GetStringKey(template);
+                        if (!logWriteStrings.ContainsKey(templateKey))
+                        {
+                            logWriteStrings[templateKey] = template;
+                            Log.WriteWithFormat(2, "Found Log.WriteWithFormat template: '{0}' -> Key: '{1}' in {2}", template, templateKey, fileName);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extracts Log.Write matches with string interpolation, removing interpolation placeholders.
+        /// </summary>
+        private static void ExtractLogMatchesWithInterpolation(string content, string pattern, Dictionary<string, string> logWriteStrings, string fileName)
+        {
+            MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 2)
+                {
+                    string message = match.Groups[1].Value.Trim();
+                    message = ProcessEscapedCharacters(message);
+
+                    // Remove interpolation placeholders {variable} and replace with generic placeholder
+                    message = InterpolationPattern().Replace(message, "{0}");
+
+                    // Process message
+                    if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        string messageKey = LanguageManager.GetStringKey(message);
+                        if (!logWriteStrings.ContainsKey(messageKey))
+                        {
+                            logWriteStrings[messageKey] = message;
+                            Log.WriteWithFormat(2, "Found Log.Write interpolated message: '{0}' -> Key: '{1}' in {2}", message, messageKey, fileName);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extracts Log.Write matches with string concatenation, capturing only the string literal parts.
+        /// </summary>
+        private static void ExtractLogConcatenationMatches(string content, Dictionary<string, string> logWriteStrings, string fileName)
+        {
+            // Look for Log.Write calls that contain string concatenation
+            string fullCallPattern = @"Log\.Write\s*\(\s*\d+\s*,\s*([^;)]+)\s*\)";
+            MatchCollection matches = Regex.Matches(content, fullCallPattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 2)
+                {
+                    string fullExpression = match.Groups[1].Value.Trim();
+
+                    // Extract all string literals from the concatenation
+                    string stringLiteralPattern = @"""((?:[^""\\]|\\.)*)""";
+                    MatchCollection stringMatches = Regex.Matches(fullExpression, stringLiteralPattern);
+
+                    foreach (Match stringMatch in stringMatches)
+                    {
+                        if (stringMatch.Groups.Count >= 2)
+                        {
+                            string stringLiteral = stringMatch.Groups[1].Value.Trim();
+                            stringLiteral = ProcessEscapedCharacters(stringLiteral);
+
+                            // Only process non-empty strings that aren't just whitespace
+                            if (!string.IsNullOrWhiteSpace(stringLiteral) && stringLiteral.Length > 2)
+                            {
+                                string messageKey = LanguageManager.GetStringKey(stringLiteral);
+                                if (!logWriteStrings.ContainsKey(messageKey))
+                                {
+                                    logWriteStrings[messageKey] = stringLiteral;
+                                    Log.WriteWithFormat(2, "Found Log.Write concatenated string: '{0}' -> Key: '{1}' in {2}", stringLiteral, messageKey, fileName);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extracts Log.Write matches and adds the message text to collection with proper string handling.
+        /// </summary>
+        private static void ExtractLogMatches(string content, string pattern, Dictionary<string, string> logWriteStrings, string fileName, bool isVerbatim)
+        {
+            MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 2)
+                {
+                    string message = match.Groups[1].Value.Trim();
+
+                    // Process strings based on type
+                    if (isVerbatim)
+                    {
+                        message = ProcessVerbatimString(message);
+                    }
+                    else
+                    {
+                        message = ProcessEscapedCharacters(message);
+                    }
+
+                    // Process message
+                    if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        string messageKey = LanguageManager.GetStringKey(message);
+                        if (!logWriteStrings.ContainsKey(messageKey))
+                        {
+                            logWriteStrings[messageKey] = message;
+                            Log.WriteWithFormat(2, "Found Log.Write message: '{0}' -> Key: '{1}' in {2}", message, messageKey, fileName);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Attempts to find variable references passed to Log.Write calls.
+        /// </summary>
+        private static void ExtractLogVariableReferences(string content, Dictionary<string, string> logWriteStrings, string fileName)
+        {
+            // Look for patterns like:
+            // const string SomeText = "value";
+            // static readonly string SomeText = "value";
+            // string someVar = "value";
+            string variablePattern = @"(?:const\s+string|static\s+readonly\s+string|string)\s+(\w+)\s*=\s*""((?:[^""\\]|\\.)*)""(?:\s*;|\s*,)";
+            MatchCollection variableMatches = Regex.Matches(content, variablePattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            Dictionary<string, string> variables = [];
+            foreach (Match match in variableMatches)
+            {
+                if (match.Groups.Count >= 3)
+                {
+                    string varName = match.Groups[1].Value;
+                    string varValue = ProcessEscapedCharacters(match.Groups[2].Value);
+                    variables[varName] = varValue;
+                }
+            }
+
+            // Also look for verbatim string variables
+            string verbatimVariablePattern = @"(?:const\s+string|static\s+readonly\s+string|string)\s+(\w+)\s*=\s*@""((?:[^""]|"""")*)""(?:\s*;|\s*,)";
+            MatchCollection verbatimVariableMatches = Regex.Matches(content, verbatimVariablePattern, RegexOptions.Multiline | RegexOptions.Singleline);
+
+            foreach (Match match in verbatimVariableMatches)
+            {
+                if (match.Groups.Count >= 3)
+                {
+                    string varName = match.Groups[1].Value;
+                    string varValue = ProcessVerbatimString(match.Groups[2].Value);
+                    variables[varName] = varValue;
+                }
+            }
+
+            // Now find Log.Write calls using these variables
+            foreach (KeyValuePair<string, string> variable in variables)
+            {
+                string usagePattern = $@"Log\.Write\s*\(\s*\d+\s*,\s*{variable.Key}\s*\)";
+                if (Regex.IsMatch(content, usagePattern))
+                {
+                    string key = LanguageManager.GetStringKey(variable.Value);
+                    if (!logWriteStrings.ContainsKey(key))
+                    {
+                        logWriteStrings[key] = variable.Value;
+                        Log.WriteWithFormat(2, "Found Log.Write variable: '{0}' ({1}) -> Key: '{2}' in {3}", variable.Value, variable.Key, key, fileName);
                     }
                 }
             }
@@ -1039,7 +1339,7 @@ namespace Sales_Tracker.UI
             {
                 string jsonContent = JsonConvert.SerializeObject(translations, Formatting.Indented);
                 await File.WriteAllTextAsync(outputPath, jsonContent);
-                Log.Write(1, $"Generated translation file for {languageCode} at {outputPath}");
+                Log.WriteWithFormat(1, "Generated translation file for {0} at {1}", languageCode, outputPath);
             }
             catch (Exception ex)
             {

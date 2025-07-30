@@ -109,7 +109,7 @@ namespace Sales_Tracker.Classes
                 }
                 catch (Exception ex)
                 {
-                    Log.Write(2, $"Geo-location service {endpoint} failed: {ex.Message}");
+                    Log.WriteWithFormat(1, "Geo-location service {0} failed: {1}", endpoint, ex.Message);
                     continue;  // Try next service
                 }
             }

@@ -68,7 +68,7 @@ namespace Sales_Tracker
 
                 if (string.IsNullOrEmpty(languageInfo.Value))
                 {
-                    Log.Write(1, $"Unknown default language: {defaultLanguage}");
+                    Log.WriteWithFormat(1, "Unknown default language: {0}", defaultLanguage);
                     return;
                 }
 
@@ -81,7 +81,7 @@ namespace Sales_Tracker
 
                 if (!translationsAvailable)
                 {
-                    Log.Write(1, $"Translations file missing or empty for default language '{defaultLanguage}'. Downloading...");
+                    Log.WriteWithFormat(1, "Translations file missing or empty for default language '{0}'. Downloading...", defaultLanguage);
 
                     // Download the language file for the default language
                     bool downloadSuccess = await LanguageManager.DownloadAndMergeLanguageJson(defaultLanguage);
@@ -97,11 +97,11 @@ namespace Sales_Tracker
 
                     if (downloadSuccess)
                     {
-                        Log.Write(1, $"Successfully downloaded translations for default language '{defaultLanguage}'");
+                        Log.WriteWithFormat(1, "Successfully downloaded translations for default language '{0}'", defaultLanguage);
                     }
                     else
                     {
-                        Log.Write(1, $"Failed to download translations for default language '{defaultLanguage}'. App will use original text.");
+                        Log.WriteWithFormat(1, "Failed to download translations for default language '{0}'. App will use original text.", defaultLanguage);
                     }
                 }
             }

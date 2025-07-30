@@ -595,7 +595,7 @@ namespace Sales_Tracker.Classes
             // Create zip archive from temporary directory
             ZipFile.CreateFromDirectory(tempDirPath, finalZipPath);
 
-            Log.Write(2, $"Backed up '{uniqueName}'");
+            Log.WriteWithFormat(2, "Backed up '{0}'", uniqueName);
 
             // Clean up temporary directory and files
             if (Directory.Exists(tempDirPath))

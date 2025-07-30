@@ -243,7 +243,7 @@ namespace Sales_Tracker.Classes
                     }
                     catch (Exception ex)
                     {
-                        Log.Write(1, $"Error in UI updates: {ex.Message}");
+                        Log.WriteWithFormat(1, "Error in UI updates: {0}", ex.Message);
                         uiUpdateTcs.SetException(ex);
                     }
                 }));
@@ -263,7 +263,7 @@ namespace Sales_Tracker.Classes
                 string fullMessage = $"{message} {oldCurrency} to {newCurrency}";
                 CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
 
-                Log.Write(2, $"Currency conversion completed: {oldCurrency} to {newCurrency}");
+                Log.WriteWithFormat(2, "Currency conversion completed: {0} to {1}", oldCurrency, newCurrency);
                 return true;  // Success
             }
             catch (Exception ex)
@@ -329,7 +329,7 @@ namespace Sales_Tracker.Classes
             catch (Exception ex)
             {
                 // Log but don't crash the entire operation
-                Log.Write(1, $"Warning: Error updating currency for row: {ex.Message}");
+                Log.WriteWithFormat(1, "Warning: Error updating currency for row: {0}", ex.Message);
             }
         }
         private static void UpdateRowWithOriginalValues(DataGridViewRow row, TagData tagData)

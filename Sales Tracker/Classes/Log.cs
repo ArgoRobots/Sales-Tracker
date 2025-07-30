@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Sales_Tracker.UI;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Sales_Tracker.Classes
@@ -110,23 +111,23 @@ namespace Sales_Tracker.Classes
             switch (index)
             {
                 case 0:
-                    newText += "[Error] ";
+                    newText += "[" + LanguageManager.TranslateString("Error") + "] ";
                     break;
 
                 case 1:
-                    newText += "[Debug] ";
+                    newText += "[" + LanguageManager.TranslateString("Debug") + "] ";
                     break;
 
                 case 2:
-                    newText += "[General] ";
+                    newText += "[" + LanguageManager.TranslateString("General") + "] ";
                     break;
 
                 case 3:
-                    newText += "[Product manager] ";
+                    newText += "[" + LanguageManager.TranslateString("Product manager") + "] ";
                     break;
 
                 case 4:
-                    newText += "[Password manager] ";
+                    newText += "[" + LanguageManager.TranslateString("Password manager") + "] ";
                     break;
             }
             newText += text + "\n";
@@ -138,6 +139,34 @@ namespace Sales_Tracker.Classes
                     Log_Form.Instance.Log_RichTextBox.AppendText(newText)
                 );
             }
+        }
+
+        /// <summary>
+        /// Writes a log entry with formatting support for translation.
+        /// Log level index: 0 = [Error], 1 = [Debug], 2 = [General], 3 = [Product manager], 4 = [Password manager].
+        /// </summary>
+        public static void WriteWithFormat(byte index, string messageTemplate, params object[] args)
+        {
+            if (!Properties.Settings.Default.ShowDebugInfo && index == 1)
+            {
+                return;
+            }
+
+            string translatedMessage = LanguageManager.TranslateString(messageTemplate);
+
+            // If translation was found and has placeholders, use it
+            string finalMessage;
+            if (translatedMessage != messageTemplate && translatedMessage.Contains('{'))
+            {
+                finalMessage = string.Format(translatedMessage, args);
+            }
+            else
+            {
+                // Fall back to original template
+                finalMessage = string.Format(messageTemplate, args);
+            }
+
+            Write(index, finalMessage);
         }
 
         /// <summary>
