@@ -176,7 +176,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private async void GenerateTranslationsButton_Click(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.Language.ToString() != "English")
+            if (Properties.Settings.Default.Language != "English")
             {
                 CustomMessageBox.Show("Success", "The deafult language must be set to English.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);

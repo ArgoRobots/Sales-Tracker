@@ -11,7 +11,7 @@ namespace Sales_Tracker
     {
         // Properties
         private static Log_Form _instance;
-        private Dictionary<string, Color> translatedLogLevelColors;
+        private Dictionary<string, Color> _translatedLogLevelColors;
 
         // Getters
         public static Log_Form Instance => _instance;
@@ -43,13 +43,13 @@ namespace Sales_Tracker
         }
         private void InitializeTranslatedLogLevels()
         {
-            translatedLogLevelColors = new Dictionary<string, Color>
+            _translatedLogLevelColors = new Dictionary<string, Color>
             {
-                { "[" + LanguageManager.TranslateString("Error") +"]", CustomColors.AccentRed },
-                { "[" + LanguageManager.TranslateString("Debug") +"]", CustomColors.DebugText },
-                { "[" + LanguageManager.TranslateString("General") +"]", CustomColors.DebugText },
-                { "[" + LanguageManager.TranslateString("Product manager") +"]", CustomColors.DebugText },
-                { "[" + LanguageManager.TranslateString("Password manager") + "]", CustomColors.DebugText }
+                { Log.GetTranslatedFormattedCategory(LogCategory.Error), CustomColors.AccentRed },
+                { Log.GetTranslatedFormattedCategory(LogCategory.Debug), CustomColors.DebugText },
+                { Log.GetTranslatedFormattedCategory(LogCategory.General), CustomColors.DebugText },
+                { Log.GetTranslatedFormattedCategory(LogCategory.ProductManager), CustomColors.DebugText },
+                { Log.GetTranslatedFormattedCategory(LogCategory.PasswordManager), CustomColors.DebugText }
             };
         }
         private static string TranslateExistingLogText(string logText)
@@ -59,24 +59,22 @@ namespace Sales_Tracker
                 return logText;
             }
 
-            // Get the current language abbreviation
-            string targetLanguageAbbreviation = GetDefaultLanguageAbbreviation();
-            if (targetLanguageAbbreviation == "en")
+            if (Properties.Settings.Default.Language == "English")
             {
                 return logText;  // No translation needed for English
             }
 
-            // Mtch log entries: <timestamp> [LogLevel] message
+            // Match log entries: <timestamp> [LogLevel] message
             Regex logEntryPattern = LogEntryRegex();
 
             // Dictionary of English log levels to their translated versions
             Dictionary<string, string> logLevelTranslations = new()
             {
-                ["[Error]"] = "[" + LanguageManager.TranslateString("Error") + "]",
-                ["[Debug]"] = "[" + LanguageManager.TranslateString("Debug") + "]",
-                ["[General]"] = "[" + LanguageManager.TranslateString("General") + "]",
-                ["[Product manager]"] = "[" + LanguageManager.TranslateString("Product manager") + "]",
-                ["[Password manager]"] = "[" + LanguageManager.TranslateString("Password manager") + "]"
+                ["[Error]"] = Log.GetTranslatedFormattedCategory(LogCategory.Error),
+                ["[Debug]"] = Log.GetTranslatedFormattedCategory(LogCategory.Debug),
+                ["[General]"] = Log.GetTranslatedFormattedCategory(LogCategory.General),
+                ["[Product manager]"] = Log.GetTranslatedFormattedCategory(LogCategory.ProductManager),
+                ["[Password manager]"] = Log.GetTranslatedFormattedCategory(LogCategory.PasswordManager)
             };
 
             MatchCollection matches = logEntryPattern.Matches(logText);
@@ -104,24 +102,14 @@ namespace Sales_Tracker
 
             return result;
         }
-        private static string GetDefaultLanguageAbbreviation(string targetLanguageName = null)
-        {
-            targetLanguageName ??= Properties.Settings.Default.Language;
-
-            List<KeyValuePair<string, string>> languages = LanguageManager.GetLanguages();
-            string languageAbbreviation = languages.FirstOrDefault(l => l.Key == targetLanguageName).Value;
-
-            return string.IsNullOrEmpty(languageAbbreviation) ? "en" : languageAbbreviation;
-        }
         public void AnimateButtons()
         {
             CustomControls.AnimateButtons([Clear_Button], Properties.Settings.Default.AnimateButtons);
         }
         public void RefreshLogColoring()
         {
-            // Reinitialize translated log levels and reapply coloring
             InitializeTranslatedLogLevels();
-            RichTextBox_TextChanged(Log_RichTextBox, EventArgs.Empty);
+            ApplyColorsToLogs();
         }
 
         // Form event handlers
@@ -142,47 +130,46 @@ namespace Sales_Tracker
         }
         private void RichTextBox_TextChanged(object sender, EventArgs e)
         {
-            // Temporarily disable redrawing to improve performance
-            Log_RichTextBox.SuspendLayout();
-
-            try
-            {
-                // Store current selection
-                int originalStart = Log_RichTextBox.SelectionStart;
-                int originalLength = Log_RichTextBox.SelectionLength;
-
-                // Set the time to gray
-                MatchCollection matches = TimeRegex().Matches(Log_RichTextBox.Text);
-                foreach (Match m in matches.Cast<Match>())
-                {
-                    Log_RichTextBox.SelectionStart = m.Index;
-                    Log_RichTextBox.SelectionLength = m.Length;
-                    Log_RichTextBox.SelectionColor = CustomColors.GrayText;
-                }
-
-                // Apply colors for each translated log level
-                if (translatedLogLevelColors != null)
-                {
-                    foreach (KeyValuePair<string, Color> logLevel in translatedLogLevelColors)
-                    {
-                        ApplyColorToLogLevel(logLevel.Key, logLevel.Value);
-                    }
-                }
-
-                // Restore original selection
-                Log_RichTextBox.SelectionStart = originalStart;
-                Log_RichTextBox.SelectionLength = originalLength;
-            }
-            finally
-            {
-                Log_RichTextBox.ResumeLayout();
-            }
+            ApplyColorsToLogs();
         }
 
         // Methods
+        private void ApplyColorsToLogs()
+        {
+            // Temporarily disable redrawing to improve performance
+            Log_RichTextBox.SuspendLayout();
+
+            // Store current selection
+            int originalStart = Log_RichTextBox.SelectionStart;
+            int originalLength = Log_RichTextBox.SelectionLength;
+
+            // Set the time to gray
+            MatchCollection matches = TimeRegex().Matches(Log_RichTextBox.Text);
+            foreach (Match m in matches.Cast<Match>())
+            {
+                Log_RichTextBox.SelectionStart = m.Index;
+                Log_RichTextBox.SelectionLength = m.Length;
+                Log_RichTextBox.SelectionColor = CustomColors.GrayText;
+            }
+
+            // Apply colors for each translated log level
+            if (_translatedLogLevelColors != null)
+            {
+                foreach (KeyValuePair<string, Color> logLevel in _translatedLogLevelColors)
+                {
+                    ApplyColorToLogLevel(logLevel.Key, logLevel.Value);
+                }
+            }
+
+            // Restore original selection
+            Log_RichTextBox.SelectionStart = originalStart;
+            Log_RichTextBox.SelectionLength = originalLength;
+
+            Log_RichTextBox.ResumeLayout();
+        }
         private void ApplyColorToLogLevel(string logLevelText, Color color)
         {
-            if (string.IsNullOrEmpty(logLevelText)) return;
+            if (string.IsNullOrEmpty(logLevelText)) { return; }
 
             int start = 0;
             int lastIndex = Log_RichTextBox.Text.LastIndexOf(logLevelText);
@@ -190,7 +177,7 @@ namespace Sales_Tracker
             while (start <= lastIndex)
             {
                 int index = Log_RichTextBox.Text.IndexOf(logLevelText, start);
-                if (index == -1) break;
+                if (index == -1) { break; }
 
                 Log_RichTextBox.SelectionStart = index;
                 Log_RichTextBox.SelectionLength = logLevelText.Length;

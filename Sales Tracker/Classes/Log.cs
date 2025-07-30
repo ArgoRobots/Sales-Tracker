@@ -20,6 +20,15 @@ namespace Sales_Tracker.Classes
         Environment
     }
 
+    public enum LogCategory
+    {
+        Error = 0,
+        Debug = 1,
+        General = 2,
+        ProductManager = 3,
+        PasswordManager = 4
+    }
+
     /// <summary>
     /// Provides logging functionality with different log levels and error handling mechanisms.
     /// </summary>
@@ -108,28 +117,7 @@ namespace Sales_Tracker.Classes
 
             string newText = "<" + Tools.FormatTime(DateTime.Now) + "> ";
 
-            switch (index)
-            {
-                case 0:
-                    newText += "[" + LanguageManager.TranslateString("Error") + "] ";
-                    break;
-
-                case 1:
-                    newText += "[" + LanguageManager.TranslateString("Debug") + "] ";
-                    break;
-
-                case 2:
-                    newText += "[" + LanguageManager.TranslateString("General") + "] ";
-                    break;
-
-                case 3:
-                    newText += "[" + LanguageManager.TranslateString("Product manager") + "] ";
-                    break;
-
-                case 4:
-                    newText += "[" + LanguageManager.TranslateString("Password manager") + "] ";
-                    break;
-            }
+            newText += GetTranslatedFormattedCategory((LogCategory)index) + " ";
             newText += text + "\n";
             LogText += newText;
 
@@ -176,6 +164,19 @@ namespace Sales_Tracker.Classes
         {
             Match match = ErrorCodeRegex().Match(message);
             return match.Success ? match.Value : "Unknown";
+        }
+
+        public static string GetTranslatedFormattedCategory(LogCategory category)
+        {
+            return category switch
+            {
+                LogCategory.Error => "[" + LanguageManager.TranslateString("Error") + "]",
+                LogCategory.Debug => "[" + LanguageManager.TranslateString("Debug") + "]",
+                LogCategory.General => "[" + LanguageManager.TranslateString("General") + "]",
+                LogCategory.ProductManager => "[" + LanguageManager.TranslateString("Product manager") + "]",
+                LogCategory.PasswordManager => "[" + LanguageManager.TranslateString("Password manager") + "]",
+                _ => ""
+            };
         }
 
         private static void Error(
