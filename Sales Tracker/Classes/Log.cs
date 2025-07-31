@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Sales_Tracker.UI;
+﻿using Sales_Tracker.UI;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -37,30 +36,13 @@ namespace Sales_Tracker.Classes
     internal partial class Log
     {
         // Properties
-        public static string LogText { get; set; } = string.Empty; // Legacy support
+        public static string LogText { get; set; }
         private static readonly List<LogEntry> _logEntries = [];
-        private static readonly object _logLock = new();
-        private static readonly int MaxInMemoryEntries = 1000; // Keep last 1000 in memory
-
-        // File path for persistent storage
-        private static string LogEntriesFile => Path.Combine(Directories.Logs_dir, "current_session.json");
-
-        static Log()
-        {
-            LoadLogEntriesFromFile();
-        }
+        private static readonly Lock _logLock = new();
+        private static readonly int MaxInMemoryEntries = 1000;  // Keep last 1000 in memory
 
         [GeneratedRegex(@"Error-[a-zA-Z0-9]+")]
         private static partial Regex ErrorCodeRegex();
-
-        // Get all log entries (for display)
-        public static IReadOnlyList<LogEntry> GetLogEntries()
-        {
-            lock (_logLock)
-            {
-                return _logEntries.AsReadOnly();
-            }
-        }
 
         // Get formatted log text for current language
         public static string GetFormattedLogText(string languageCode = null)
@@ -82,8 +64,7 @@ namespace Sales_Tracker.Classes
             lock (_logLock)
             {
                 _logEntries.Clear();
-                LogText = string.Empty;
-                SaveLogEntriesToFile();
+                LogText = "";
             }
 
             // Update UI if form is open
@@ -98,9 +79,6 @@ namespace Sales_Tracker.Classes
         // Save logs
         public static void SaveLogs()
         {
-            // Save current session first
-            SaveLogEntriesToFile();
-
             // Then create timestamped backup as before
             Directories.CreateDirectory(Directories.Logs_dir);
 
@@ -224,14 +202,7 @@ namespace Sales_Tracker.Classes
                     _logEntries.Clear();
                     _logEntries.AddRange(entriesToKeep);
 
-                    // Rebuild LogText
-                    RebuildLegacyLogText();
-                }
-
-                // Save to file periodically (every 10 entries to reduce I/O)
-                if (_logEntries.Count % 10 == 0)
-                {
-                    SaveLogEntriesToFile();
+                    RebuilLogText();
                 }
             }
 
@@ -246,8 +217,7 @@ namespace Sales_Tracker.Classes
                 );
             }
         }
-
-        private static void RebuildLegacyLogText()
+        private static void RebuilLogText()
         {
             StringBuilder sb = new();
             foreach (LogEntry entry in _logEntries)
@@ -258,54 +228,6 @@ namespace Sales_Tracker.Classes
                 sb.AppendLine(timestamp + GetEnglishFormattedCategory(entry.Category) + " " + englishMessage);
             }
             LogText = sb.ToString();
-        }
-
-        // File persistence methods
-        private static void SaveLogEntriesToFile()
-        {
-            try
-            {
-                Directories.CreateDirectory(Directories.Logs_dir);
-
-                // Only save recent entries to file to keep file size manageable
-                List<LogEntry> entriesToSave = _logEntries.TakeLast(MaxInMemoryEntries).ToList();
-
-                string json = JsonConvert.SerializeObject(entriesToSave, Formatting.None);
-                File.WriteAllText(LogEntriesFile, json);
-            }
-            catch (Exception ex)
-            {
-                // Avoid infinite recursion - just write to legacy log
-                LogText += $"<{Tools.FormatTime(DateTime.Now)}> [Error] Failed to save log entries: {ex.Message}\n";
-            }
-        }
-
-        private static void LoadLogEntriesFromFile()
-        {
-            try
-            {
-                if (File.Exists(LogEntriesFile))
-                {
-                    string json = File.ReadAllText(LogEntriesFile);
-                    if (!string.IsNullOrWhiteSpace(json))
-                    {
-                        List<LogEntry>? entries = JsonConvert.DeserializeObject<List<LogEntry>>(json);
-                        if (entries != null)
-                        {
-                            lock (_logLock)
-                            {
-                                _logEntries.AddRange(entries);
-                                RebuildLegacyLogText();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Silently fail - don't want to break app startup
-                LogText += $"<{Tools.FormatTime(DateTime.Now)}> [Error] Failed to load log entries: {ex.Message}\n";
-            }
         }
 
         /// <summary>
@@ -332,7 +254,6 @@ namespace Sales_Tracker.Classes
             Match match = ErrorCodeRegex().Match(message);
             return match.Success ? match.Value : "Unknown";
         }
-
         public static string GetTranslatedFormattedCategory(LogCategory category)
         {
             return category switch

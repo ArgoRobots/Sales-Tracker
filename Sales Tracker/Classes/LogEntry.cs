@@ -26,7 +26,6 @@ namespace Sales_Tracker.Classes
             string translatedTemplate = LanguageManager.TranslateString(Template);
             return Arguments?.Length > 0 ? string.Format(translatedTemplate, Arguments) : translatedTemplate;
         }
-
         public string GetDisplayText(string languageCode = null)
         {
             string timestamp = "<" + Tools.FormatTime(Timestamp) + "> ";
@@ -35,7 +34,6 @@ namespace Sales_Tracker.Classes
 
             return timestamp + categoryText + " " + message + "\n";
         }
-
         private static string GetTranslatedCategory(LogCategory category, string languageCode = null)
         {
             languageCode ??= LanguageManager.GetDefaultLanguageAbbreviation() ?? "en";
