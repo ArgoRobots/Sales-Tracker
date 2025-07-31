@@ -1,5 +1,7 @@
-﻿using Sales_Tracker.UI;
+﻿using Newtonsoft.Json;
+using Sales_Tracker.UI;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Sales_Tracker.Classes
@@ -35,14 +37,71 @@ namespace Sales_Tracker.Classes
     internal partial class Log
     {
         // Properties
-        public static string LogText { get; set; }
+        public static string LogText { get; set; } = string.Empty; // Legacy support
+        private static readonly List<LogEntry> _logEntries = [];
+        private static readonly object _logLock = new();
+        private static readonly int MaxInMemoryEntries = 1000; // Keep last 1000 in memory
+
+        // File path for persistent storage
+        private static string LogEntriesFile => Path.Combine(Directories.Logs_dir, "current_session.json");
+
+        static Log()
+        {
+            LoadLogEntriesFromFile();
+        }
 
         [GeneratedRegex(@"Error-[a-zA-Z0-9]+")]
         private static partial Regex ErrorCodeRegex();
 
+        // Get all log entries (for display)
+        public static IReadOnlyList<LogEntry> GetLogEntries()
+        {
+            lock (_logLock)
+            {
+                return _logEntries.AsReadOnly();
+            }
+        }
+
+        // Get formatted log text for current language
+        public static string GetFormattedLogText(string languageCode = null)
+        {
+            lock (_logLock)
+            {
+                StringBuilder sb = new();
+                foreach (LogEntry entry in _logEntries)
+                {
+                    sb.Append(entry.GetDisplayText(languageCode));
+                }
+                return sb.ToString();
+            }
+        }
+
+        // Clear all logs
+        public static void ClearLogs()
+        {
+            lock (_logLock)
+            {
+                _logEntries.Clear();
+                LogText = string.Empty;
+                SaveLogEntriesToFile();
+            }
+
+            // Update UI if form is open
+            if (Tools.IsFormOpen<Log_Form>())
+            {
+                Log_Form.Instance.Log_RichTextBox.InvokeIfRequired(() =>
+                    Log_Form.Instance.Log_RichTextBox.Clear()
+                );
+            }
+        }
+
         // Save logs
         public static void SaveLogs()
         {
+            // Save current session first
+            SaveLogEntriesToFile();
+
+            // Then create timestamped backup as before
             Directories.CreateDirectory(Directories.Logs_dir);
 
             DateTime time = DateTime.Now;
@@ -62,7 +121,9 @@ namespace Sales_Tracker.Classes
 
                 if (!File.Exists(directory))
                 {
-                    Directories.WriteTextToFile(directory, LogText);
+                    // Save in English for the backup file
+                    string englishLogText = GetFormattedLogText("en");
+                    Directories.WriteTextToFile(directory, englishLogText);
                     break;
                 }
                 count++;
@@ -70,6 +131,7 @@ namespace Sales_Tracker.Classes
 
             CleanupOldLogFiles();
         }
+
         private static void CleanupOldLogFiles()
         {
             byte maxFiles = 30;
@@ -92,14 +154,14 @@ namespace Sales_Tracker.Classes
                         }
                         catch (Exception ex)
                         {
-                            LogText += $"Failed to delete old log file {file.FullName}: {ex.Message}\n";
+                            WriteLogEntry(LogCategory.Error, "Failed to delete old log file {0}: {1}", file.FullName, ex.Message);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogText += $"Error during log cleanup: {ex.Message}\n";
+                WriteLogEntry(LogCategory.Error, "Error during log cleanup: {0}", ex.Message);
             }
         }
 
@@ -115,18 +177,7 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            string newText = "<" + Tools.FormatTime(DateTime.Now) + "> ";
-
-            newText += GetTranslatedFormattedCategory((LogCategory)index) + " ";
-            newText += text + "\n";
-            LogText += newText;
-
-            if (Tools.IsFormOpen<Log_Form>())
-            {
-                Log_Form.Instance.Log_RichTextBox.InvokeIfRequired(() =>
-                    Log_Form.Instance.Log_RichTextBox.AppendText(newText)
-                );
-            }
+            WriteLogEntry((LogCategory)index, text);
         }
 
         /// <summary>
@@ -140,25 +191,141 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
-            string translatedMessage = LanguageManager.TranslateString(messageTemplate);
-
-            // If translation was found and has placeholders, use it
-            string finalMessage;
-            if (translatedMessage != messageTemplate && translatedMessage.Contains('{'))
-            {
-                finalMessage = string.Format(translatedMessage, args);
-            }
-            else
-            {
-                // Fall back to original template
-                finalMessage = string.Format(messageTemplate, args);
-            }
-
-            Write(index, finalMessage);
+            WriteLogEntry((LogCategory)index, messageTemplate, args);
         }
 
         /// <summary>
-        /// Extracts error code from error message (e.g., "Error-3vknm9" from the message)
+        /// Core method that handles storing and displaying log entries.
+        /// </summary>
+        private static void WriteLogEntry(LogCategory category, string template, params object[] args)
+        {
+            LogEntry entry = new()
+            {
+                Timestamp = DateTime.Now,
+                Category = category,
+                Template = template,
+                Arguments = args?.Length > 0 ? args : null
+            };
+
+            lock (_logLock)
+            {
+                _logEntries.Add(entry);
+
+                // Update legacy LogText for backwards compatibility
+                string englishMessage = args?.Length > 0 ? string.Format(template, args) : template;
+                string timestamp = "<" + Tools.FormatTime(entry.Timestamp) + "> ";
+                LogText += timestamp + GetEnglishFormattedCategory(category) + " " + englishMessage + "\n";
+
+                // Maintain memory limit
+                if (_logEntries.Count > MaxInMemoryEntries)
+                {
+                    // Remove oldest entries but keep the essential ones
+                    List<LogEntry> entriesToKeep = _logEntries.Skip(_logEntries.Count - MaxInMemoryEntries).ToList();
+                    _logEntries.Clear();
+                    _logEntries.AddRange(entriesToKeep);
+
+                    // Rebuild LogText
+                    RebuildLegacyLogText();
+                }
+
+                // Save to file periodically (every 10 entries to reduce I/O)
+                if (_logEntries.Count % 10 == 0)
+                {
+                    SaveLogEntriesToFile();
+                }
+            }
+
+            // Update UI if form is open
+            if (Tools.IsFormOpen<Log_Form>())
+            {
+                string currentLanguage = LanguageManager.GetDefaultLanguageAbbreviation() ?? "en";
+                string displayText = entry.GetDisplayText(currentLanguage);
+
+                Log_Form.Instance.Log_RichTextBox.InvokeIfRequired(() =>
+                    Log_Form.Instance.Log_RichTextBox.AppendText(displayText)
+                );
+            }
+        }
+
+        private static void RebuildLegacyLogText()
+        {
+            StringBuilder sb = new();
+            foreach (LogEntry entry in _logEntries)
+            {
+                string englishMessage = entry.Arguments?.Length > 0 ?
+                    string.Format(entry.Template, entry.Arguments) : entry.Template;
+                string timestamp = "<" + Tools.FormatTime(entry.Timestamp) + "> ";
+                sb.AppendLine(timestamp + GetEnglishFormattedCategory(entry.Category) + " " + englishMessage);
+            }
+            LogText = sb.ToString();
+        }
+
+        // File persistence methods
+        private static void SaveLogEntriesToFile()
+        {
+            try
+            {
+                Directories.CreateDirectory(Directories.Logs_dir);
+
+                // Only save recent entries to file to keep file size manageable
+                List<LogEntry> entriesToSave = _logEntries.TakeLast(MaxInMemoryEntries).ToList();
+
+                string json = JsonConvert.SerializeObject(entriesToSave, Formatting.None);
+                File.WriteAllText(LogEntriesFile, json);
+            }
+            catch (Exception ex)
+            {
+                // Avoid infinite recursion - just write to legacy log
+                LogText += $"<{Tools.FormatTime(DateTime.Now)}> [Error] Failed to save log entries: {ex.Message}\n";
+            }
+        }
+
+        private static void LoadLogEntriesFromFile()
+        {
+            try
+            {
+                if (File.Exists(LogEntriesFile))
+                {
+                    string json = File.ReadAllText(LogEntriesFile);
+                    if (!string.IsNullOrWhiteSpace(json))
+                    {
+                        List<LogEntry>? entries = JsonConvert.DeserializeObject<List<LogEntry>>(json);
+                        if (entries != null)
+                        {
+                            lock (_logLock)
+                            {
+                                _logEntries.AddRange(entries);
+                                RebuildLegacyLogText();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Silently fail - don't want to break app startup
+                LogText += $"<{Tools.FormatTime(DateTime.Now)}> [Error] Failed to load log entries: {ex.Message}\n";
+            }
+        }
+
+        /// <summary>
+        /// Gets the English formatted category (always returns English regardless of current language).
+        /// </summary>
+        public static string GetEnglishFormattedCategory(LogCategory category)
+        {
+            return category switch
+            {
+                LogCategory.Error => "[Error]",
+                LogCategory.Debug => "[Debug]",
+                LogCategory.General => "[General]",
+                LogCategory.ProductManager => "[Product manager]",
+                LogCategory.PasswordManager => "[Password manager]",
+                _ => ""
+            };
+        }
+
+        /// <summary>
+        /// Extracts error code from error message (e.g., "Error-3vknm9" from the message).
         /// </summary>
         private static string ExtractErrorCode(string message)
         {
@@ -180,32 +347,40 @@ namespace Sales_Tracker.Classes
         }
 
         private static void Error(
-            string message,
+            string messageTemplate,
             string link,
             ErrorCategory category,
-            [CallerLineNumber] int lineNumber = 0)
+            [CallerLineNumber] int lineNumber = 0,
+            params object[] args)
         {
-            // Add link
-            if (link != "")
+            // Build the complete message template
+            string fullTemplate = messageTemplate;
+
+            // Add link template if provided
+            if (!string.IsNullOrEmpty(link))
             {
-                message += "\nMore information: " + link;
-                CustomMessageBoxVariables.LinkStart = message.Length - link.Length;
+                fullTemplate += "\nMore information: " + link;
+                CustomMessageBoxVariables.LinkStart = messageTemplate.Length + 19;  // "\nMore information: ".Length
                 CustomMessageBoxVariables.Link = link;
                 CustomMessageBoxVariables.LinkLength = link.Length;
             }
 
-            // Prepare debug info
-            string debugInfo = "\nDebug info:";
-            debugInfo += $"\nLine: '{lineNumber}'.";
-            debugInfo += $"\nStack trace\n: '{Environment.StackTrace}'.";
+            // Add debug info template
+            fullTemplate += "\nDebug info:\nLine: '{" + args.Length + "}'.\nStack trace\n: '{" + (args.Length + 1) + "}'.";
 
-            // Log error with debug info
-            Write(0, message + debugInfo);
+            // Combine args with debug info
+            List<object> allArgs = [];
+            if (args != null) { allArgs.AddRange(args); }
+            allArgs.Add(lineNumber);
+            allArgs.Add(Environment.StackTrace);
+
+            // Log error with template
+            WriteLogEntry(LogCategory.Error, fullTemplate, allArgs.ToArray());
 
             // Add to anonymous data collection
             try
             {
-                string errorCode = ExtractErrorCode(message);
+                string errorCode = ExtractErrorCode(messageTemplate);
                 AnonymousDataManager.AddErrorData(errorCode, category.ToString(), lineNumber);
             }
             catch
@@ -213,7 +388,21 @@ namespace Sales_Tracker.Classes
                 // Silently fail to avoid recursive error logging
             }
 
-            CustomMessageBox.Show("Error", message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+            // Show message box with formatted text (in current language)
+            string currentLanguage = LanguageManager.GetDefaultLanguageAbbreviation() ?? "en";
+            string displayMessage;
+
+            if (currentLanguage == "en")
+            {
+                displayMessage = string.Format(fullTemplate, allArgs.ToArray());
+            }
+            else
+            {
+                string translatedTemplate = LanguageManager.TranslateString(fullTemplate);
+                displayMessage = string.Format(translatedTemplate, allArgs.ToArray());
+            }
+
+            CustomMessageBox.Show("Error", displayMessage, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
         }
 
         // File errors
@@ -221,72 +410,71 @@ namespace Sales_Tracker.Classes
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-3vknm9: File does not exist:" +
-                $"\n'{filePath}'.",
+            Error("Error-3vknm9: File does not exist:\n'{0}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                filePath);
         }
         public static void Error_FileAlreadyExists(
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-djrr3r: File already exists:" +
-                $"\n'{filePath}'.",
+            Error("Error-djrr3r: File already exists:\n'{0}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                filePath);
         }
         public static void Error_DestinationFileAlreadyExists(
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-8g8we7: The destination file already exists:" +
-                $"\n'{filePath}'.",
+            Error("Error-8g8we7: The destination file already exists:\n'{0}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                filePath);
         }
         public static void Error_TheSourceAndDestinationAreTheSame(
             string source, string destination,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-h88tzd: The source and destination files are the same." +
-                $"\nSource: '{source}'." +
-                $"\nDestination: '{destination}'.",
+            Error("Error-h88tzd: The source and destination files are the same.\nSource: '{0}'.\nDestination: '{1}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                source, destination);
         }
         public static void Error_WriteToFile(
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-w7f3k2: Failed to write to file:" +
-                $"\n'{filePath}'.",
+            Error("Error-w7f3k2: Failed to write to file:\n'{0}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                filePath);
         }
         public static void Error_ReadFile(
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error("Error-r9d5m1: Failed to read the file:" +
-                $"\n'{filePath}'.",
+            Error("Error-r9d5m1: Failed to read the file:\n'{0}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                filePath);
         }
         public static void Error_Save(
             string info, string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-s4v8n6: Failed to save. {info}." +
-                $"\n'{filePath}'.",
+            Error("Error-s4v8n6: Failed to save. {0}.\n'{1}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                info, filePath);
         }
 
         // DataGridView errors
@@ -294,10 +482,11 @@ namespace Sales_Tracker.Classes
             string dataGridViewName,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-d3g7c4: Cell is empty in DataGridView:'{dataGridViewName}'.",
+            Error("Error-d3g7c4: Cell is empty in DataGridView:'{0}'.",
                 "",
                 ErrorCategory.DataGridView,
-                lineNumber);
+                lineNumber,
+                dataGridViewName);
         }
         public static void Error_RowIsOutOfRange(
             [CallerLineNumber] int lineNumber = 0)
@@ -313,28 +502,31 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-i2e5h8: Error initializing EncryptionHelper. {info}.",
+            Error("Error-i2e5h8: Error initializing EncryptionHelper. {0}.",
                 "",
                 ErrorCategory.Encryption,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_Encryption(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-e7n9c1: Error during encryption. {info}.",
+            Error("Error-e7n9c1: Error during encryption. {0}.",
                 "",
                 ErrorCategory.Encryption,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_Decryption(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-d4c8r3: Error during decryption. {info}.",
+            Error("Error-d4c8r3: Error during decryption. {0}.",
                 "",
                 ErrorCategory.Encryption,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // API errors
@@ -342,37 +534,41 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-g8x2r5: Error getting exchange rates. {info}.",
+            Error("Error-g8x2r5: Error getting exchange rates. {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_TranslationAPIRequestFailed(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-t5a7p9: API request failed: {info}.",
+            Error("Error-t5a7p9: API request failed: {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_EnhancingSearch(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-e3n6s1: Error enhancing search: {info}.",
+            Error("Error-e3n6s1: Error enhancing search: {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_ExportingChart(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-x4p8c2: Failed to export chart: {info}.",
+            Error("Error-x4p8c2: Failed to export chart: {0}.",
                 "",
                 ErrorCategory.General,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // Language translation errors
@@ -380,28 +576,31 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-g9t3l7: Error getting the translation. {info}.",
+            Error("Error-g9t3l7: Error getting the translation. {0}.",
                 "",
                 ErrorCategory.Translation,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_Translation(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-t2l8n4: AI Query Translation failed: {info}.",
+            Error("Error-t2l8n4: AI Query Translation failed: {0}.",
                 "",
                 ErrorCategory.Translation,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_SaveTranslationCache(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-t7c4s2: Failed to save translation cache. {info}.",
+            Error("Error-t7c4s2: Failed to save translation cache. {0}.",
                 "",
                 ErrorCategory.Translation,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // Anonymous usage data errors
@@ -409,10 +608,11 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-a6d5c9: Error collecting anonymous usage data. {info}.",
+            Error("Error-a6d5c9: Error collecting anonymous usage data. {0}.",
                 "",
                 ErrorCategory.AnonymousData,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // File association errors
@@ -420,10 +620,11 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-r7f2a8: Error registering file associations: {info}.",
+            Error("Error-r7f2a8: Error registering file associations: {0}.",
                 "",
                 ErrorCategory.FileAssociation,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // ENV errors
@@ -431,19 +632,21 @@ namespace Sales_Tracker.Classes
             string fileName,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-v3f6n1: ENV file '{fileName}' not found relative to solution.",
+            Error("Error-v3f6n1: ENV file '{0}' not found relative to solution.",
                 "",
                 ErrorCategory.Environment,
-                lineNumber);
+                lineNumber,
+                fileName);
         }
         public static void Error_ENVKeyNotFound(
             string key,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-v8k4n5: ENV key {key} not found.",
+            Error("Error-v8k4n5: ENV key {0} not found.",
                 "",
                 ErrorCategory.Environment,
-                lineNumber);
+                lineNumber,
+                key);
         }
 
         // Auto update errors
@@ -451,46 +654,51 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-u1i8m3: Error initializing NetSparkleUpdateManager. {info}.",
+            Error("Error-u1i8m3: Error initializing NetSparkleUpdateManager. {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_CheckForUpdates(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-u2c7k9: Error checking for updates. {info}.",
+            Error("Error-u2c7k9: Error checking for updates. {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_StartUpdate(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-u3s5n2: Error starting update. {info}.",
+            Error("Error-u3s5n2: Error starting update. {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_DownloadUpdate(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-u4d6w8: Error downloading update. {info}.",
+            Error("Error-u4d6w8: Error downloading update. {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_ApplyUpdate(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-u5a4r1: Error applying update and restarting. {info}.",
+            Error("Error-u5a4r1: Error applying update and restarting. {0}.",
                 "",
                 ErrorCategory.API,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // Secrets Manager errors
@@ -498,37 +706,41 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-s1c9e4: Error creating encrypted secrets file. {info}.",
+            Error("Error-s1c9e4: Error creating encrypted secrets file. {0}.",
                 "",
                 ErrorCategory.Encryption,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_SecretsFileNotFound(
             string filePath,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-s2f7n8: Encrypted secrets file not found: '{filePath}'.",
+            Error("Error-s2f7n8: Encrypted secrets file not found: '{0}'.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                filePath);
         }
         public static void Error_DecryptSecretsFile(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-s3d2r6: Failed to decrypt secrets file. {info}.",
+            Error("Error-s3d2r6: Failed to decrypt secrets file. {0}.",
                 "",
                 ErrorCategory.Encryption,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_LoadEncryptedSecrets(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-s4l5k1: Error loading encrypted secrets. {info}.",
+            Error("Error-s4l5k1: Error loading encrypted secrets. {0}.",
                 "",
                 ErrorCategory.Encryption,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // Application Startup errors
@@ -536,28 +748,31 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-a1l7t9: Error ensuring default language translations. {info}.",
+            Error("Error-a1l7t9: Error ensuring default language translations. {0}.",
                 "",
                 ErrorCategory.Translation,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_OpenCompanyFromCommandLine(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-a2o5c8: Error opening company from command line. {info}.",
+            Error("Error-a2o5c8: Error opening company from command line. {0}.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                info);
         }
         public static void Error_AutoOpenRecentCompanyAfterUpdate(
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-a3u6r4: Error auto-opening recent company after update. {info}.",
+            Error("Error-a3u6r4: Error auto-opening recent company after update. {0}.",
                 "",
                 ErrorCategory.File,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // Theme Change Detector error
@@ -565,10 +780,11 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-t1s8l5: Error starting theme listener. {info}.",
+            Error("Error-t1s8l5: Error starting theme listener. {0}.",
                 "",
                 ErrorCategory.General,
-                lineNumber);
+                lineNumber,
+                info);
         }
 
         // Registry Watcher error
@@ -576,10 +792,11 @@ namespace Sales_Tracker.Classes
             string info,
             [CallerLineNumber] int lineNumber = 0)
         {
-            Error($"Error-r9w3k7: Registry watcher error. {info}.",
+            Error("Error-r9w3k7: Registry watcher error. {0}.",
                 "",
                 ErrorCategory.General,
-                lineNumber);
+                lineNumber,
+                info);
         }
     }
 }

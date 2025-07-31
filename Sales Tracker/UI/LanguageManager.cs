@@ -36,6 +36,7 @@ namespace Sales_Tracker.UI
 
         // Getters and setters
         public static Dictionary<string, Dictionary<string, string>> TranslationCache { get; set; }
+        public static Dictionary<string, string> EnglishCache { get; set; }
 
         // Init.
         /// <summary>
@@ -44,26 +45,39 @@ namespace Sales_Tracker.UI
         public static void InitLanguageManager()
         {
             TranslationCache = [];
+            EnglishCache = [];
 
-            // Load translation cache
-            if (!File.Exists(Directories.Translations_file))
+            // Load non-English translation cache
+            if (File.Exists(Directories.Translations_file))
             {
-                return;
+                string cacheContent = File.ReadAllText(Directories.Translations_file);
+
+                if (!string.IsNullOrWhiteSpace(cacheContent))
+                {
+                    dynamic? combinedCache = JsonConvert.DeserializeObject<dynamic>(cacheContent);
+
+                    if (combinedCache?.TranslationCache != null)
+                    {
+                        TranslationCache = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(
+                            combinedCache.TranslationCache.ToString());
+                    }
+                }
             }
 
-            string cacheContent = File.ReadAllText(Directories.Translations_file);
-
-            if (string.IsNullOrWhiteSpace(cacheContent))
+            // Load English translations from separate file into separate cache
+            if (File.Exists(Directories.English_file))
             {
-                return;
-            }
+                string englishContent = File.ReadAllText(Directories.English_file);
 
-            dynamic? combinedCache = JsonConvert.DeserializeObject<dynamic>(cacheContent);
+                if (!string.IsNullOrWhiteSpace(englishContent))
+                {
+                    Dictionary<string, string> englishTranslations = JsonConvert.DeserializeObject<Dictionary<string, string>>(englishContent);
 
-            if (combinedCache?.TranslationCache != null)
-            {
-                TranslationCache = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(
-                    combinedCache.TranslationCache.ToString());
+                    if (englishTranslations != null && englishTranslations.Count > 0)
+                    {
+                        EnglishCache = englishTranslations;
+                    }
+                }
             }
         }
 
@@ -81,8 +95,16 @@ namespace Sales_Tracker.UI
                 return false;
             }
 
-            // Check if language already exists in cache
-            if (TranslationCache.ContainsKey(languageAbbreviation))
+            // Check if language already exists in cache (or English cache for English)
+            if (languageAbbreviation == "en")
+            {
+                if (EnglishCache.Count > 0)
+                {
+                    Log.WriteWithFormat(1, "Found English language in cache");
+                    return true;
+                }
+            }
+            else if (TranslationCache.ContainsKey(languageAbbreviation))
             {
                 Log.WriteWithFormat(1, "Found language '{0}' in cache", languageName);
                 return true;  // Consider cached language as success
@@ -118,24 +140,33 @@ namespace Sales_Tracker.UI
                     return false;
                 }
 
-                // Special handling for English - save to dedicated English file
+                // Handle English separately
                 if (languageAbbreviation == "en")
                 {
+                    // Save to dedicated English file
                     Directories.WriteTextToFile(Directories.English_file, jsonContent);
                     Log.WriteWithFormat(1, "Successfully saved English translations to {0}", Directories.English_file);
-                }
 
-                // Merge downloaded translations with existing cache
-                if (!TranslationCache.TryGetValue(languageAbbreviation, out Dictionary<string, string> existingTranslations))
-                {
-                    existingTranslations = [];
-                    TranslationCache[languageAbbreviation] = existingTranslations;
+                    // Merge into English cache
+                    foreach (KeyValuePair<string, string> kvp in downloadedTranslations)
+                    {
+                        EnglishCache[kvp.Key] = kvp.Value;
+                    }
                 }
-
-                // Merge translations, giving priority to downloaded translations
-                foreach (KeyValuePair<string, string> kvp in downloadedTranslations)
+                else
                 {
-                    existingTranslations[kvp.Key] = kvp.Value;
+                    // Merge downloaded translations with existing cache for other languages
+                    if (!TranslationCache.TryGetValue(languageAbbreviation, out Dictionary<string, string> existingTranslations))
+                    {
+                        existingTranslations = [];
+                        TranslationCache[languageAbbreviation] = existingTranslations;
+                    }
+
+                    // Merge translations, giving priority to downloaded translations
+                    foreach (KeyValuePair<string, string> kvp in downloadedTranslations)
+                    {
+                        existingTranslations[kvp.Key] = kvp.Value;
+                    }
                 }
 
                 SaveCacheToFile();
@@ -243,7 +274,7 @@ namespace Sales_Tracker.UI
             // Final UI updates
             if (Tools.IsFormOpen<Log_Form>() && Log_Form.Instance.IsHandleCreated)
             {
-                Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.RefreshLogColoring));
+                Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.SetLogColoringAndTranslate));
             }
 
             if (Tools.IsFormOpen<General_Form>() && General_Form.Instance.IsHandleCreated)
@@ -351,19 +382,39 @@ namespace Sales_Tracker.UI
                 return originalText;
             }
 
-            if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations))
+            // Handle English separately
+            if (targetLanguageAbbreviation == "en")
             {
                 // Try control-specific translation first
-                if (controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
+                if (EnglishCache.TryGetValue(controlKey, out string cachedTranslation))
                 {
                     return cachedTranslation;
                 }
 
                 // Try string-based translation
                 string stringKey = GetStringKey(originalText);
-                if (controlTranslations.TryGetValue(stringKey, out string stringTranslation))
+                if (EnglishCache.TryGetValue(stringKey, out string stringTranslation))
                 {
                     return stringTranslation;
+                }
+            }
+            else
+            {
+                // Handle other languages
+                if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations))
+                {
+                    // Try control-specific translation first
+                    if (controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
+                    {
+                        return cachedTranslation;
+                    }
+
+                    // Try string-based translation
+                    string stringKey = GetStringKey(originalText);
+                    if (controlTranslations.TryGetValue(stringKey, out string stringTranslation))
+                    {
+                        return stringTranslation;
+                    }
                 }
             }
 
@@ -654,7 +705,7 @@ namespace Sales_Tracker.UI
                 new("Ukrainian", "uk"),         // Ukraine
             ];
         }
-        private static string? GetDefaultLanguageAbbreviation(string targetLanguageName = null)
+        public static string? GetDefaultLanguageAbbreviation(string targetLanguageName = null)
         {
             targetLanguageName ??= Properties.Settings.Default.Language;
 
