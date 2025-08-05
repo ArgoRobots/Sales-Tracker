@@ -154,8 +154,7 @@ namespace Sales_Tracker.Passwords
         // Methods
         private void ValidatePasswordInputs()
         {
-            // Call the updated ValidatePassword method that now returns a tuple with requirement flags
-            (bool isValid, bool lengthValid, bool uppercaseValid, bool digitValid, bool specialCharValid) = PasswordManager.ValidatePasswordWithFlags(
+            PasswordValidationResult result = PasswordManager.ValidatePasswordWithFlags(
                 LengthRequirement_Label,
                 UppercaseRequirement_Label,
                 NumberRequirement_Label,
@@ -164,10 +163,10 @@ namespace Sales_Tracker.Passwords
             );
 
             // Update checkmark visibility based on validation results
-            Length_Checkmark.Visible = lengthValid;
-            Uppercase_Checkmark.Visible = uppercaseValid;
-            Number_Checkmark.Visible = digitValid;
-            SpecialChar_Checkmark.Visible = specialCharValid;
+            Length_Checkmark.Visible = result.LengthValid;
+            Uppercase_Checkmark.Visible = result.UppercaseValid;
+            Number_Checkmark.Visible = result.DigitValid;
+            SpecialChar_Checkmark.Visible = result.SpecialCharValid;
 
             // Check if both password fields have content before showing match status
             if (!string.IsNullOrEmpty(Password_TextBox.Text) && !string.IsNullOrEmpty(ConfirmPassword_TextBox.Text))
@@ -189,7 +188,7 @@ namespace Sales_Tracker.Passwords
                 }
 
                 // Only enable the button if all requirements are met AND passwords match
-                SetPassword_Button.Enabled = isValid && passwordsMatch;
+                SetPassword_Button.Enabled = result.IsValid && passwordsMatch;
             }
             else
             {

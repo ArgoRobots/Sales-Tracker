@@ -117,16 +117,16 @@ namespace Sales_Tracker.Startup.Menus
             Guna2Button button = (Guna2Button)sender;
 
             string companyName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
-            if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(companyName))
-            {
-                return;
-            }
-
             string newDir = Directory.GetParent(button.Tag.ToString()).FullName;
 
             Directories.SetDirectories(newDir, companyName);
 
             if (!PasswordManager.EnterPassword())
+            {
+                return;
+            }
+
+            if (!ArgoCompany.OnlyAllowOneInstanceOfACompany(companyName))
             {
                 return;
             }

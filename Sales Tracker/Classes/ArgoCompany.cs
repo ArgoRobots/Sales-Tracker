@@ -320,7 +320,7 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Only allow one instance of a company to be open at a time
+        /// Only allow one instance of a company to be open at a time.
         /// </summary>
         /// <returns>
         /// True if a mutex is created. False if a mutex already exists.

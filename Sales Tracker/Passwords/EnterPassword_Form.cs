@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.DataClasses;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using Windows.Security.Credentials;
@@ -8,41 +9,178 @@ namespace Sales_Tracker.Passwords
 {
     public partial class EnterPassword_Form : BaseForm
     {
+        // Properties
+        private readonly bool _requiresAccountantSelection;
+        private readonly bool _requiresPassword;
+        private Guna2TextBox _accountant_TextBox;
+
         // Init.
-        public EnterPassword_Form() : this(true) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
-        public EnterPassword_Form(bool allowWindowsHello = true)
+        public EnterPassword_Form() : this(true, false, true) { }  // This is needed for TranslationGenerator.GenerateAllLanguageTranslationFiles()
+        public EnterPassword_Form(bool allowWindowsHello = true, bool requiresAccountantSelection = false, bool requiresPassword = true)
         {
             InitializeComponent();
 
+            _requiresAccountantSelection = requiresAccountantSelection;
+            _requiresPassword = requiresPassword;
+
             PasswordManager.IsPasswordValid = false;
+            MainMenu_Form.SelectedAccountant = null;
+
+            if (_requiresAccountantSelection)
+            {
+                ConstructAccountantControls();
+            }
+
             AddEventHandlersToTextBoxes();
             ThemeManager.SetThemeForForm(this);
             LanguageManager.UpdateLanguageForControl(this);
             SetWindowsHelloControls(allowWindowsHello);
+            AdjustFormLayout();
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        private void ConstructAccountantControls()
+        {
+            // Accountant textbox
+            _accountant_TextBox = new Guna2TextBox
+            {
+                Size = new Size(350, 50),
+                Font = new Font("Segoe UI", 10),
+                FillColor = CustomColors.ControlBack,
+                BorderColor = CustomColors.ControlBorder,
+                ForeColor = CustomColors.Text,
+                PlaceholderText = "Accountant",
+                Name = "Accountant_TextBox"
+            };
+            _accountant_TextBox.HoverState.BorderColor = CustomColors.AccentBlue;
+            _accountant_TextBox.FocusedState.BorderColor = CustomColors.AccentBlue;
+            _accountant_TextBox.FocusedState.FillColor = CustomColors.ControlBack;
+
+            Controls.Add(_accountant_TextBox);
+
+            // Set up search box for accountants
+            List<SearchResult> accountantResults = SearchBox.ConvertToSearchResults(PasswordManager.GetAccountantList());
+            SearchBox.Attach(_accountant_TextBox, this, () => accountantResults, 200, false, true, false, true);
+        }
+        private void AdjustFormLayout()
+        {
+            int currentY = Password_TextBox.Top;
+            const int spacing = 20;
+
+            // Position accountant controls if they exist
+            if (_requiresAccountantSelection)
+            {
+                _accountant_TextBox.Location = new Point((Width - _accountant_TextBox.Width) / 2, currentY);
+                currentY += _accountant_TextBox.Height + spacing;
+            }
+
+            // Position password controls if they exist
+            if (_requiresPassword)
+            {
+                EnterPassword_Label.Text = LanguageManager.TranslateString("Log in");
+                EnterPassword_Label.Left = (Width - EnterPassword_Label.Width) / 2;
+
+                Password_TextBox.Location = new Point((Width - Password_TextBox.Width) / 2, currentY);
+                currentY += Password_TextBox.Height + spacing;
+            }
+            else
+            {
+                Password_TextBox.Visible = false;
+            }
+
+            // Position Enter button
+            Enter_Button.Location = new Point((Width - Enter_Button.Width) / 2, currentY);
+            currentY += Enter_Button.Height + spacing;
+
+            // Adjust form height
+            int baseHeight = 200;
+            int additionalHeight = 0;
+
+            if (_requiresAccountantSelection) { additionalHeight += 80; }
+            if (_requiresPassword) { additionalHeight += 80; }
+
+            Height = baseHeight + additionalHeight;
+
+            // Update Windows Hello button position if it exists
+            if (_windowsHello_Button != null)
+            {
+                _windowsHello_Button.Top = currentY;
+                _windowsHello_Button.Left = (Width - _windowsHello_Button.Width) / 2;
+                Height += 70;
+            }
+
+            // Update message label position
+            if (Controls.Contains(Message_LinkLabel))
+            {
+                Message_LinkLabel.Top = _windowsHello_Button == null ? Enter_Button.Bottom + 30 : _windowsHello_Button.Bottom + 30;
+                Message_LinkLabel.Left = (Width - Message_LinkLabel.Width) / 2;
+
+                if (_requiresPassword)
+                {
+                    Height += 70;
+                }
+            }
         }
         private void AddEventHandlersToTextBoxes()
         {
-            TextBoxManager.Attach(Password_TextBox);
+            if (_requiresPassword)
+            {
+                TextBoxManager.Attach(Password_TextBox);
+            }
+
+            if (_requiresAccountantSelection)
+            {
+                TextBoxValidation.OnlyAllowLetters(_accountant_TextBox);
+                TextBoxManager.Attach(_accountant_TextBox);
+                _accountant_TextBox.TextChanged += ValidateInputs;
+                _accountant_TextBox.KeyDown += Accountant_TextBox_KeyDown;
+            }
         }
 
         // Form event handlers
         private void EnterPassword_Form_Shown(object sender, EventArgs e)
         {
             LoadingPanel.HideBlankLoadingPanel(this);
-            Password_TextBox.Focus();
+
+            // Focus the first required field
+            if (_requiresAccountantSelection)
+            {
+                _accountant_TextBox.Focus();
+            }
+            else if (_requiresPassword)
+            {
+                Password_TextBox.Focus();
+            }
         }
 
         // Event handlers
         private void Enter_Button_Click(object sender, EventArgs e)
         {
-            CheckPassword();
+            ProcessEntry();
+        }
+        private void Password_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValidateInputs(null, null);
         }
         private void Password_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                CheckPassword();
+                ProcessEntry();
+                e.SuppressKeyPress = true;
+            }
+        }
+        private void Accountant_TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (_requiresPassword)
+                {
+                    Password_TextBox.Focus();
+                }
+                else
+                {
+                    ProcessEntry();
+                }
                 e.SuppressKeyPress = true;
             }
         }
@@ -50,39 +188,57 @@ namespace Sales_Tracker.Passwords
         {
             Tools.OpenLink("https://argorobots.com/upgrade/index.html");
         }
+        private void ValidateInputs(object sender, EventArgs e)
+        {
+            bool accountantValid = !_requiresAccountantSelection ||
+                (!string.IsNullOrWhiteSpace(_accountant_TextBox.Text) && _accountant_TextBox.Tag?.ToString() != "0");
+
+            bool passwordValid = !_requiresPassword || !string.IsNullOrWhiteSpace(Password_TextBox.Text);
+
+            Enter_Button.Enabled = accountantValid && passwordValid;
+        }
 
         // Windows Hello
-        private Guna2Button WindowsHello_Button;
+        private Guna2Button _windowsHello_Button;
         private void ConstructWindowsHelloButton()
         {
-            if (WindowsHello_Button != null) { return; }
+            if (_windowsHello_Button != null) { return; }
 
-            WindowsHello_Button = new()
+            _windowsHello_Button = new()
             {
                 Anchor = AnchorStyles.Top,
                 BorderRadius = 2,
                 BorderThickness = 1,
                 Enabled = false,
                 Font = new Font("Segoe UI", 10),
-                Top = 310,
                 Size = new Size(215, 50),
                 Text = "Windows Hello"
             };
-            WindowsHello_Button.Left = (ClientSize.Width - WindowsHello_Button.Width) / 2;
-            WindowsHello_Button.Click += WindowsHello_Button_Click;
-            Controls.Add(WindowsHello_Button);
-            ThemeManager.SetThemeForControls([WindowsHello_Button]);
+            _windowsHello_Button.Click += WindowsHello_Button_Click;
+            Controls.Add(_windowsHello_Button);
+            ThemeManager.SetThemeForControls([_windowsHello_Button]);
         }
         private async void WindowsHello_Button_Click(object sender, EventArgs e)
         {
-            // https://stackoverflow.com/questions/78856599/how-to-add-windows-hello-in-c-sharp-net-8-winforms
-
             SetMessageText("Authorizing...");
             DisableControlsForAuthentication();
 
             bool result = await RunWindowsHello();
             if (result)
             {
+                // Handle accountant selection for Windows Hello
+                if (_requiresAccountantSelection && MainMenu_Form.Instance.AccountantList.Count >= 2)
+                {
+                    if (string.IsNullOrWhiteSpace(_accountant_TextBox.Text) || _accountant_TextBox.Tag?.ToString() == "0")
+                    {
+                        EnableControlsForAuthentication();
+                        CustomMessageBox.Show("Accountant Required", "Please select an accountant first.", CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                        _accountant_TextBox.Focus();
+                        return;
+                    }
+                    MainMenu_Form.SelectedAccountant = _accountant_TextBox.Text;
+                }
+
                 PasswordManager.IsPasswordValid = true;
                 Close();
             }
@@ -115,7 +271,7 @@ namespace Sales_Tracker.Passwords
                 bool supported = await KeyCredentialManager.IsSupportedAsync();
                 if (supported)
                 {
-                    WindowsHello_Button.Enabled = true;
+                    _windowsHello_Button.Enabled = true;
                     Controls.Remove(Message_LinkLabel);
                 }
                 else
@@ -123,15 +279,12 @@ namespace Sales_Tracker.Passwords
                     SetMessageText("Windows Hello is not supported on this device");
                 }
 
-                Message_LinkLabel.Top = WindowsHello_Button.Top - 40;
-                Height = 460;
+                // Position will be set in AdjustFormLayout
             }
             else
             {
                 SetMessageText("Upgrade now to enable Windows Hello");
                 Message_LinkLabel.LinkArea = new LinkArea(Message_LinkLabel.Text.IndexOf("Upgrade now"), "Upgrade now".Length);
-                Message_LinkLabel.Top = Enter_Button.Bottom + 20;
-                Height = 410;
             }
         }
         private void SetMessageText(string text)
@@ -144,27 +297,57 @@ namespace Sales_Tracker.Passwords
         // Methods
         private void EnableControlsForAuthentication()
         {
-            Password_TextBox.Enabled = true;
+            if (_requiresPassword) { Password_TextBox.Enabled = true; }
+            if (_requiresAccountantSelection) { _accountant_TextBox.Enabled = true; }
             Enter_Button.Enabled = true;
-            WindowsHello_Button.Enabled = true;
+            if (_windowsHello_Button != null) { _windowsHello_Button.Enabled = true; }
         }
         private void DisableControlsForAuthentication()
         {
-            Password_TextBox.Enabled = false;
+            if (_requiresPassword) { Password_TextBox.Enabled = false; }
+            if (_requiresAccountantSelection) { _accountant_TextBox.Enabled = false; }
             Enter_Button.Enabled = false;
-            WindowsHello_Button.Enabled = false;
+            if (_windowsHello_Button != null) { _windowsHello_Button.Enabled = false; }
         }
-        private void CheckPassword()
+        private void ProcessEntry()
         {
-            if (PasswordManager.Password == Password_TextBox.Text)
+            bool valid = true;
+
+            // Validate accountant selection if required
+            if (_requiresAccountantSelection)
             {
-                PasswordManager.IsPasswordValid = true;
-                Close();
+                if (string.IsNullOrWhiteSpace(_accountant_TextBox.Text) || _accountant_TextBox.Tag?.ToString() == "0")
+                {
+                    CustomMessageBox.Show("Invalid Accountant", "Please select a valid accountant from the list.",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    _accountant_TextBox.Focus();
+                    valid = false;
+                }
+                else
+                {
+                    MainMenu_Form.SelectedAccountant = _accountant_TextBox.Text;
+                }
             }
-            else
+
+            // Validate password if required
+            if (_requiresPassword && valid)
             {
-                CustomMessageBox.Show("Incorrect passowrd", "The password is incorrect.", CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
-                Password_TextBox.Focus();
+                if (PasswordManager.Password == Password_TextBox.Text)
+                {
+                    PasswordManager.IsPasswordValid = true;
+                }
+                else
+                {
+                    CustomMessageBox.Show("Incorrect password", "The password is incorrect.",
+                        CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
+                    Password_TextBox.Focus();
+                    valid = false;
+                }
+            }
+
+            if (valid)
+            {
+                Close();
             }
         }
     }

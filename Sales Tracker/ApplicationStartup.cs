@@ -33,7 +33,6 @@ namespace Sales_Tracker
             ArgoCompany.InitCacheFiles();
             EncryptionManager.Initialize();
             DotEnv.Load();
-            PasswordManager.Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
             LanguageManager.InitLanguageManager();
 
             TextBoxManager.ConstructRightClickTextBoxMenu();

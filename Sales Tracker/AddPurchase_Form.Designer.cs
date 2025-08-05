@@ -701,7 +701,7 @@ namespace Sales_Tracker
             MultipleItems_CheckBox.CheckedState.BorderThickness = 0;
             MultipleItems_CheckBox.CheckedState.FillColor = Color.FromArgb(94, 148, 255);
             MultipleItems_CheckBox.CustomizableEdges = customizableEdges30;
-            MultipleItems_CheckBox.Location = new Point(1160, 45);
+            MultipleItems_CheckBox.Location = new Point(1178, 52);
             MultipleItems_CheckBox.Name = "MultipleItems_CheckBox";
             MultipleItems_CheckBox.ShadowDecoration.CustomizableEdges = customizableEdges31;
             MultipleItems_CheckBox.Size = new Size(20, 20);
@@ -717,7 +717,7 @@ namespace Sales_Tracker
             MultipleItems_Label.Anchor = AnchorStyles.Top;
             MultipleItems_Label.AutoSize = true;
             MultipleItems_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            MultipleItems_Label.Location = new Point(1178, 35);
+            MultipleItems_Label.Location = new Point(1196, 42);
             MultipleItems_Label.Name = "MultipleItems_Label";
             MultipleItems_Label.Padding = new Padding(5);
             MultipleItems_Label.Size = new Size(282, 40);

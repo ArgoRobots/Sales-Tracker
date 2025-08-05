@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Enter_Button = new Guna.UI2.WinForms.Guna2Button();
             Password_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
             EnterPassword_Label = new Label();
@@ -45,13 +45,14 @@
             Enter_Button.BorderColor = Color.LightGray;
             Enter_Button.BorderRadius = 2;
             Enter_Button.BorderThickness = 1;
-            Enter_Button.CustomizableEdges = customizableEdges5;
+            Enter_Button.CustomizableEdges = customizableEdges1;
+            Enter_Button.Enabled = false;
             Enter_Button.FillColor = Color.White;
-            Enter_Button.Font = new Font("Segoe UI", 10);
+            Enter_Button.Font = new Font("Segoe UI", 10F);
             Enter_Button.ForeColor = Color.Black;
             Enter_Button.Location = new Point(232, 208);
             Enter_Button.Name = "Enter_Button";
-            Enter_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            Enter_Button.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Enter_Button.Size = new Size(215, 50);
             Enter_Button.TabIndex = 59;
             Enter_Button.Tag = "";
@@ -61,7 +62,7 @@
             // Password_TextBox
             // 
             Password_TextBox.Anchor = AnchorStyles.Top;
-            Password_TextBox.CustomizableEdges = customizableEdges7;
+            Password_TextBox.CustomizableEdges = customizableEdges3;
             Password_TextBox.DefaultText = "";
             Password_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             Password_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -74,13 +75,13 @@
             Password_TextBox.Margin = new Padding(4, 5, 4, 5);
             Password_TextBox.MaxLength = 32;
             Password_TextBox.Name = "Password_TextBox";
-            Password_TextBox.PasswordChar = '\0';
             Password_TextBox.PlaceholderText = "Password";
             Password_TextBox.SelectedText = "";
-            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            Password_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges4;
             Password_TextBox.ShortcutsEnabled = false;
             Password_TextBox.Size = new Size(350, 50);
             Password_TextBox.TabIndex = 58;
+            Password_TextBox.TextChanged += Password_TextBox_TextChanged;
             Password_TextBox.KeyDown += Password_TextBox_KeyDown;
             // 
             // EnterPassword_Label

@@ -36,6 +36,7 @@ namespace Sales_Tracker
         public static string CurrencySymbol { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static bool IsProgramLoading { get; set; }
+        public static string SelectedAccountant { get; set; }
 
         // Init.
         public MainMenu_Form()
