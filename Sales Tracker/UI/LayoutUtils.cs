@@ -6,7 +6,7 @@
         /// Recalculates and repositions a checkbox and label to fit within form boundaries.
         /// Positions them from the right edge, with fallback to left positioning if needed.
         /// </summary>
-        public static void RecalculateCheckboxLabelLayout(Control checkbox, Label label, Form form, int rightMargin = 20, int spacing = 8)
+        public static void RecalculateCheckboxLabelLayout(Control checkbox, Label label, Form form, int rightMargin = 20)
         {
             if (checkbox == null || label == null || form == null)
             {
@@ -20,7 +20,7 @@
 
             // Position the checkbox to the left of the label
             checkbox.Location = new Point(
-                label.Left - spacing - checkbox.Width,
+                label.Left - checkbox.Width + 3,
                 checkbox.Top);
 
             // Ensure the checkbox doesn't go off the left side of the form
@@ -30,7 +30,7 @@
                 checkbox.Left = 20;
                 // And reposition label to the right of checkbox
                 label.Location = new Point(
-                    checkbox.Right + spacing,
+                    checkbox.Right - 3,
                     label.Top);
             }
         }

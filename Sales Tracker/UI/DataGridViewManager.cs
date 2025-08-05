@@ -1253,9 +1253,6 @@ namespace Sales_Tracker.UI
                     case "product":
                         ValidateFormTextBox(purchaseForm.ProductName_TextBox, value);
                         break;
-                    case "accountant":
-                        ValidateFormTextBox(purchaseForm.AccountantName_TextBox, value);
-                        break;
                     case "company":
                         ValidateProductPathCompany(purchaseForm.ProductName_TextBox, value);
                         break;
@@ -1272,9 +1269,6 @@ namespace Sales_Tracker.UI
                 {
                     case "product":
                         ValidateFormTextBox(saleForm.ProductName_TextBox, value);
-                        break;
-                    case "accountant":
-                        ValidateFormTextBox(saleForm.AccountantName_TextBox, value);
                         break;
                     case "company":
                         ValidateProductPathCompany(saleForm.ProductName_TextBox, value);

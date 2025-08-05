@@ -176,7 +176,7 @@ namespace Sales_Tracker.Passwords
             List<string> accountants = GetAccountantList();
             bool requiresAccountantSelection = accountants.Count >= 2 && allowWindowsHello;
 
-            Password ??= EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
+            Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
             bool requiresPassword = Password != null;
 
             // Auto-select single accountant

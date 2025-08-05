@@ -96,11 +96,8 @@ namespace Sales_Tracker
             (DateTime? returnDate, string returnReason, string returnedBy, _) = ReturnManager.GetReturnInfo(_transactionRow);
 
             ReturnInfo_Label.Text = $"{LanguageManager.TranslateString("Returned on")}: {returnDate?.ToString("MM/dd/yyyy HH:mm") ?? LanguageManager.TranslateString("Unknown")}\n" +
-                                   $"{LanguageManager.TranslateString("Reason")}: {returnReason ?? LanguageManager.TranslateString("No reason provided")}";
-
-            // Add this back after the accountant system has been redone
-            //\n" +
-            //          $"{LanguageManager.TranslateString("Returned by")}: {returnedBy ?? LanguageManager.TranslateString("Unknown")}";
+                                    $"{LanguageManager.TranslateString("Reason")}: {returnReason ?? LanguageManager.TranslateString("No reason provided")}\n" +
+                                    $"{LanguageManager.TranslateString("Returned by")}: {returnedBy ?? LanguageManager.TranslateString("Unknown")}";
         }
         private void CreateItemSelectionControls()
         {

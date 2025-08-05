@@ -1333,9 +1333,6 @@ namespace Sales_Tracker
                     case nameof(MainMenu_Form.DataGridViewTag.Company):
                         UpdateCompanyInProductPath(purchaseForm.ProductName_TextBox, listOfOldValues[0], newText);
                         break;
-                    case nameof(MainMenu_Form.DataGridViewTag.Accountant):
-                        UpdateTextBox(purchaseForm.AccountantName_TextBox, listOfOldValues[0], newText);
-                        break;
                 }
             }
 
@@ -1351,9 +1348,6 @@ namespace Sales_Tracker
                         break;
                     case nameof(MainMenu_Form.DataGridViewTag.Company):
                         UpdateCompanyInProductPath(saleForm.ProductName_TextBox, listOfOldValues[0], newText);
-                        break;
-                    case nameof(MainMenu_Form.DataGridViewTag.Accountant):
-                        UpdateTextBox(saleForm.AccountantName_TextBox, listOfOldValues[0], newText);
                         break;
                 }
             }
