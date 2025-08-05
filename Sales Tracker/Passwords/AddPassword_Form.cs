@@ -110,41 +110,11 @@ namespace Sales_Tracker.Passwords
         }
         private void PasswordEye_Button_Click(object sender, EventArgs e)
         {
-            bool isDarkTheme = ThemeManager.IsDarkTheme();
-
-            // Toggle the password char
-            if (Password_TextBox.PasswordChar == '\0')
-            {
-                Password_TextBox.PasswordChar = '•';
-                PasswordEye_Button.Image = isDarkTheme ? Resources.ViewWhite : Resources.ViewBlack;
-            }
-            else
-            {
-                Password_TextBox.PasswordChar = '\0';
-                PasswordEye_Button.Image = isDarkTheme ? Resources.HideWhite : Resources.HideBlack;
-            }
-
-            // Set focus back to the password field
-            Password_TextBox.Focus();
+            PasswordManager.TogglePasswordVisibility(Password_TextBox, PasswordEye_Button);
         }
         private void ConfirmPasswordEye_Button_Click(object sender, EventArgs e)
         {
-            bool isDarkTheme = ThemeManager.IsDarkTheme();
-
-            // Toggle the password char
-            if (ConfirmPassword_TextBox.PasswordChar == '\0')
-            {
-                ConfirmPassword_TextBox.PasswordChar = '•';
-                ConfirmPasswordEye_Button.Image = isDarkTheme ? Resources.ViewWhite : Resources.ViewBlack;
-            }
-            else
-            {
-                ConfirmPassword_TextBox.PasswordChar = '\0';
-                ConfirmPasswordEye_Button.Image = isDarkTheme ? Resources.HideWhite : Resources.HideBlack;
-            }
-
-            // Set focus back to the confirm password field
-            ConfirmPassword_TextBox.Focus();
+            PasswordManager.TogglePasswordVisibility(ConfirmPassword_TextBox, PasswordEye_Button);
         }
         private void SetPassword_Button_Click(object sender, EventArgs e)
         {
@@ -178,16 +148,16 @@ namespace Sales_Tracker.Passwords
 
                 if (passwordsMatch)
                 {
-                    PasswordsMatch_Label.Text = "Passwords match";
+                    PasswordsMatch_Label.Text = LanguageManager.TranslateString("Passwords match");
                     PasswordsMatch_Label.ForeColor = CustomColors.AccentGreen;
                 }
                 else
                 {
-                    PasswordsMatch_Label.Text = "Passwords do not match";
+                    PasswordsMatch_Label.Text = LanguageManager.TranslateString("Passwords do not match");
                     PasswordsMatch_Label.ForeColor = CustomColors.AccentRed;
                 }
 
-                // Only enable the button if all requirements are met AND passwords match
+                // Enable the button if all requirements are met
                 SetPassword_Button.Enabled = result.IsValid && passwordsMatch;
             }
             else

@@ -113,7 +113,7 @@
             SetPassword_Button.Name = "SetPassword_Button";
             SetPassword_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             SetPassword_Button.Size = new Size(250, 50);
-            SetPassword_Button.TabIndex = 3;
+            SetPassword_Button.TabIndex = 5;
             SetPassword_Button.Tag = "";
             SetPassword_Button.Text = "Set password";
             SetPassword_Button.Click += SetPassword_Button_Click;
@@ -201,7 +201,7 @@
             ConfirmPassword_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges6;
             ConfirmPassword_TextBox.ShortcutsEnabled = false;
             ConfirmPassword_TextBox.Size = new Size(350, 50);
-            ConfirmPassword_TextBox.TabIndex = 2;
+            ConfirmPassword_TextBox.TabIndex = 3;
             ConfirmPassword_TextBox.TextChanged += ConfirmPassword_TextBox_TextChanged;
             ConfirmPassword_TextBox.KeyDown += ConfirmPassword_TextBox_KeyDown;
             // 
@@ -236,7 +236,7 @@
             PasswordEye_Button.ShadowDecoration.CustomizableEdges = customizableEdges7;
             PasswordEye_Button.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             PasswordEye_Button.Size = new Size(34, 34);
-            PasswordEye_Button.TabIndex = 0;
+            PasswordEye_Button.TabIndex = 2;
             PasswordEye_Button.Click += PasswordEye_Button_Click;
             // 
             // ConfirmPasswordEye_Button
@@ -257,7 +257,7 @@
             ConfirmPasswordEye_Button.ShadowDecoration.CustomizableEdges = customizableEdges8;
             ConfirmPasswordEye_Button.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             ConfirmPasswordEye_Button.Size = new Size(34, 34);
-            ConfirmPasswordEye_Button.TabIndex = 0;
+            ConfirmPasswordEye_Button.TabIndex = 4;
             ConfirmPasswordEye_Button.Click += ConfirmPasswordEye_Button_Click;
             // 
             // Length_Checkmark
@@ -277,7 +277,7 @@
             Length_Checkmark.ShadowDecoration.CustomizableEdges = customizableEdges9;
             Length_Checkmark.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             Length_Checkmark.Size = new Size(34, 34);
-            Length_Checkmark.TabIndex = 7;
+            Length_Checkmark.TabIndex = 0;
             Length_Checkmark.Visible = false;
             // 
             // Number_Checkmark
@@ -297,7 +297,7 @@
             Number_Checkmark.ShadowDecoration.CustomizableEdges = customizableEdges10;
             Number_Checkmark.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             Number_Checkmark.Size = new Size(34, 34);
-            Number_Checkmark.TabIndex = 8;
+            Number_Checkmark.TabIndex = 0;
             Number_Checkmark.Visible = false;
             // 
             // Uppercase_Checkmark
@@ -317,7 +317,7 @@
             Uppercase_Checkmark.ShadowDecoration.CustomizableEdges = customizableEdges11;
             Uppercase_Checkmark.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             Uppercase_Checkmark.Size = new Size(34, 34);
-            Uppercase_Checkmark.TabIndex = 9;
+            Uppercase_Checkmark.TabIndex = 0;
             Uppercase_Checkmark.Visible = false;
             // 
             // SpecialChar_Checkmark
@@ -337,7 +337,7 @@
             SpecialChar_Checkmark.ShadowDecoration.CustomizableEdges = customizableEdges12;
             SpecialChar_Checkmark.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             SpecialChar_Checkmark.Size = new Size(34, 34);
-            SpecialChar_Checkmark.TabIndex = 10;
+            SpecialChar_Checkmark.TabIndex = 0;
             SpecialChar_Checkmark.Visible = false;
             // 
             // AddPassword_Form

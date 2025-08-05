@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 using Windows.Security.Credentials;
@@ -32,11 +33,26 @@ namespace Sales_Tracker.Passwords
             }
 
             AddEventHandlersToTextBoxes();
-            ThemeManager.SetThemeForForm(this);
+            UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
             SetWindowsHelloControls(allowWindowsHello);
             AdjustFormLayout();
             LoadingPanel.ShowBlankLoadingPanel(this);
+        }
+        private void UpdateTheme()
+        {
+            ThemeManager.SetThemeForForm(this);
+
+            PasswordEye_Button.BackColor = CustomColors.ControlBack;
+
+            if (ThemeManager.IsDarkTheme())
+            {
+                PasswordEye_Button.Image = Resources.ViewWhite;
+            }
+            else
+            {
+                PasswordEye_Button.Image = Resources.ViewBlack;
+            }
         }
         private void ConstructAccountantControls()
         {
@@ -45,15 +61,9 @@ namespace Sales_Tracker.Passwords
             {
                 Size = new Size(350, 50),
                 Font = new Font("Segoe UI", 10),
-                FillColor = CustomColors.ControlBack,
-                BorderColor = CustomColors.ControlBorder,
-                ForeColor = CustomColors.Text,
-                PlaceholderText = "Accountant",
+                PlaceholderText = LanguageManager.TranslateString("Accountant"),
                 Name = "Accountant_TextBox"
             };
-            _accountant_TextBox.HoverState.BorderColor = CustomColors.AccentBlue;
-            _accountant_TextBox.FocusedState.BorderColor = CustomColors.AccentBlue;
-            _accountant_TextBox.FocusedState.FillColor = CustomColors.ControlBack;
 
             Controls.Add(_accountant_TextBox);
 
@@ -80,6 +90,7 @@ namespace Sales_Tracker.Passwords
                 EnterPassword_Label.Left = (Width - EnterPassword_Label.Width) / 2;
 
                 Password_TextBox.Location = new Point((Width - Password_TextBox.Width) / 2, currentY);
+                PasswordEye_Button.Top = Password_TextBox.Top + (Password_TextBox.Height - PasswordEye_Button.Height) / 2;
                 currentY += Password_TextBox.Height + spacing;
             }
             else
@@ -155,6 +166,7 @@ namespace Sales_Tracker.Passwords
         // Event handlers
         private void Enter_Button_Click(object sender, EventArgs e)
         {
+            CloseAllPanels(null, null);
             ProcessEntry();
         }
         private void Password_TextBox_TextChanged(object sender, EventArgs e)
@@ -168,6 +180,11 @@ namespace Sales_Tracker.Passwords
                 ProcessEntry();
                 e.SuppressKeyPress = true;
             }
+        }
+        private void PasswordEye_Button_Click(object sender, EventArgs e)
+        {
+            CloseAllPanels(null, null);
+            PasswordManager.TogglePasswordVisibility(Password_TextBox, PasswordEye_Button);
         }
         private void Accountant_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -349,6 +366,10 @@ namespace Sales_Tracker.Passwords
             {
                 Close();
             }
+        }
+        private void CloseAllPanels(object sender, EventArgs e)
+        {
+            SearchBox.CloseSearchBox();
         }
     }
 }

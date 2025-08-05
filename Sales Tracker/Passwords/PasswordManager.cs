@@ -1,4 +1,6 @@
-﻿using Sales_Tracker.Classes;
+﻿using Guna.UI2.WinForms;
+using Sales_Tracker.Classes;
+using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.Passwords
@@ -174,7 +176,7 @@ namespace Sales_Tracker.Passwords
             List<string> accountants = GetAccountantList();
             bool requiresAccountantSelection = accountants.Count >= 2 && allowWindowsHello;
 
-            Password = EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
+            Password ??= EncryptionManager.GetPasswordFromFile(Directories.ArgoCompany_file, EncryptionManager.AesKey, EncryptionManager.AesIV);
             bool requiresPassword = Password != null;
 
             // Auto-select single accountant
@@ -199,6 +201,30 @@ namespace Sales_Tracker.Passwords
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Toggles the visibility of the password characters in a <see cref="TextBox"/> by switching 
+        /// between the plain text and a masked character. Also updates the associated eye icon 
+        /// based on the current application theme.
+        /// </summary>
+        public static void TogglePasswordVisibility(Guna2TextBox textBox, Guna2CircleButton eyeButton)
+        {
+            bool isDarkTheme = ThemeManager.IsDarkTheme();
+
+            // Toggle the password character
+            if (textBox.PasswordChar == '\0')
+            {
+                textBox.PasswordChar = '•';
+                eyeButton.Image = isDarkTheme ? Resources.ViewWhite : Resources.ViewBlack;
+            }
+            else
+            {
+                textBox.PasswordChar = '\0';
+                eyeButton.Image = isDarkTheme ? Resources.HideWhite : Resources.HideBlack;
+            }
+
+            textBox.Focus();
         }
     }
 }
