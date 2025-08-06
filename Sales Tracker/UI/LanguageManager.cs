@@ -84,7 +84,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Downloads and merges language JSON for the specified language.
         /// </summary>
-        /// <returns>True if successful, false if failed or skipped</returns>
+        /// <returns>True if successful, false if failed or skipped.</returns>
         public static async Task<bool> DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
         {
             string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == languageName).Value;
@@ -183,7 +183,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// Updates the application's language translation by downloading and merging the language JSON.
         /// </summary>
-        /// <returns>True if translation was successful, false if failed (e.g., no internet)</returns>
+        /// <returns>True if translation was successful, false if failed (e.g., no internet).</returns>
         public static async Task<bool> UpdateApplicationLanguage(string targetLanguageName, CancellationToken cancellationToken = default)
         {
             bool downloadSuccess = await DownloadAndMergeLanguageJson(targetLanguageName, cancellationToken);

@@ -90,7 +90,7 @@ namespace Sales_Tracker.UI
         /// <summary>
         /// If there is no data, then it adds a Label to the control.
         /// </summary>
-        /// <returns>True if there is any data, False if there is no data.</returns>
+        /// <returns>True if there is any data, otherwise false.</returns>
         public static bool ManageNoDataLabelOnControl(bool hasData, Control control)
         {
             Label existingLabel = control.Controls.OfType<Label>().FirstOrDefault(label =>

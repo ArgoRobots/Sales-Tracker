@@ -336,9 +336,9 @@ namespace Sales_Tracker.Startup.Menus
             AccountantName_Label.Font = new Font("Segoe UI", 12F);
             AccountantName_Label.Location = new Point(48, 263);
             AccountantName_Label.Name = "AccountantName_Label";
-            AccountantName_Label.Size = new Size(202, 32);
+            AccountantName_Label.Size = new Size(473, 32);
             AccountantName_Label.TabIndex = 0;
-            AccountantName_Label.Text = "Accountant name";
+            AccountantName_Label.Text = "Accountant name - You can add more later";
             // 
             // ConfigureCompany_Form
             // 

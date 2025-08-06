@@ -1083,9 +1083,7 @@ namespace Sales_Tracker
         /// <summary>
         /// Toggles the visibility of a menu and updates the button's image accordingly.
         /// </summary>
-        /// <returns>
-        /// True if the menu was closed; False if the menu was opened.
-        /// </returns>
+        /// <returns>True if the menu was closed; False if the menu was opened.</returns>
         private bool ToggleMenu(Control menu, Guna2Button button, Image grayImage, Image whiteImage, bool alignRight)
         {
             if (Controls.Contains(menu))

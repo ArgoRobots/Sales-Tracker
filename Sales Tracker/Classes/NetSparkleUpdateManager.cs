@@ -75,7 +75,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Check for updates asynchronously.
         /// </summary>
-        /// <returns>True if update is available, false otherwise</returns>
+        /// <returns>True if update is available, otherwise false.</returns>
         public static async Task<bool> CheckForUpdatesAsync()
         {
             if (_isUpdating || _sparkle == null)
@@ -129,7 +129,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Start downloading and installing the available update.
         /// </summary>
-        /// <returns>True if download started successfully</returns>
+        /// <returns>True if download started successfully.</returns>
         public static async Task<bool> StartUpdateAsync()
         {
             if (!_updateAvailable || _isUpdating || _sparkle == null)

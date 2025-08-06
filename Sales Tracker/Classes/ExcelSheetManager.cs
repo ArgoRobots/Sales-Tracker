@@ -699,7 +699,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Validates if a product exists in the appropriate category list.
         /// </summary>
-        /// <returns>InvalidValueAction indicating whether to continue, skip, or cancel</returns>
+        /// <returns>InvalidValueAction indicating whether to continue, skip, or cancel.</returns>
         private static InvalidValueAction ValidateProductExists(
             string productName,
             string categoryName,
@@ -852,7 +852,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Checks if an item already exists and asks the user if they want to add it anyway.
         /// </summary>
-        /// <returns>True if the item should be added, false if it should be skipped</returns>
+        /// <returns>True if the item should be added, false if it should be skipped.</returns>
         private static bool CheckIfItemExists(
             string itemNumber,
             HashSet<string> existingItems,

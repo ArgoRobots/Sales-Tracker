@@ -143,7 +143,7 @@ namespace Sales_Tracker
         /// <summary>
         /// Handles opening a company directly from command line arguments.
         /// </summary>
-        /// <returns>True if file was successfully opened, otherwise false</returns>
+        /// <returns>True if file was successfully opened, otherwise false.</returns>
         public static bool TryOpenCompanyFromCommandLine(string[] args)
         {
             try
@@ -206,7 +206,7 @@ namespace Sales_Tracker
         /// <summary>
         /// Auto-opens the most recent company after an update if the flag is set.
         /// </summary>
-        /// <returns>True if a company was automatically opened, false otherwise</returns>
+        /// <returns>True if a company was automatically opened, otherwise false.</returns>
         public static bool TryAutoOpenRecentCompanyAfterUpdate()
         {
             try

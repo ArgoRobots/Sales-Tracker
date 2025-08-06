@@ -17,7 +17,7 @@ namespace Sales_Tracker.UI
         /// - +term for required terms
         /// - Regular terms for fuzzy matching
         /// </summary>
-        /// <returns>True if the row matches the search criteria; otherwise, false.</returns>
+        /// <returns>True if the row matches the search criteria, otherwise false.</returns>
         public static bool FilterRowByAdvancedSearch(DataGridViewRow row, string searchText, SearchOptions searchOptions = null)
         {
             ArgumentNullException.ThrowIfNull(row);

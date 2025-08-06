@@ -23,7 +23,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Validates a license key with the server.
         /// </summary>
-        /// <returns>True if the license is valid, false otherwise</returns>
+        /// <returns>True if the license is valid, otherwise false.</returns>
         public async Task<bool> ValidateKeyAsync(string licenseKey = null)
         {
             licenseKey ??= Properties.Settings.Default.LicenseKey;
@@ -101,7 +101,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Checks if the application can connect to argorobots.com.
         /// </summary>
-        /// <returns>True if available, otherwise false</returns>
+        /// <returns>True if available, otherwise false.</returns>
         private static bool IsArgoServerAvailable()
         {
             try

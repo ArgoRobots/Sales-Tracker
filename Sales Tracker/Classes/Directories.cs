@@ -447,7 +447,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Imports an Argo Tar file into a directory.
         /// </summary>
-        /// <returns> The file name without the (num) and the extension. </returns>
+        /// <returns>The file name without the (num) and the extension.</returns>
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
@@ -640,7 +640,6 @@ namespace Sales_Tracker.Classes
         /// Generates a new unique file name when a file already exists.
         /// Appends a number to the filename to make it unique.
         /// </summary>
-        /// <returns>New unique file name</returns>
         public static string GetNewFileNameIfItAlreadyExists(string filePath)
         {
             // Check if the file already exists and get a new name if necessary
@@ -661,7 +660,6 @@ namespace Sales_Tracker.Classes
         /// Generates a new unique directory name when a directory already exists.
         /// Appends a number to the directory name to make it unique.
         /// </summary>
-        /// <returns>New unique directory path</returns>
         public static string GetNewDirectoryNameIfItAlreadyExists(string directoryPath)
         {
             // Check if the directory already exists and get a new name if necessary
