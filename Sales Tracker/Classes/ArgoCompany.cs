@@ -39,6 +39,10 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static void SaveAll()
         {
+            // Save the current application version
+            string currentVersion = Tools.GetVersionNumber();
+            DataFileManager.SetValue(AppDataSettings.AppVersion, currentVersion);
+
             Directories.CreateArgoTarFileFromDirectory(Directories.TempCompany_dir, Directories.ArgoCompany_file, true);
             Log.WriteWithFormat(2, "Saved '{0}'", Directories.CompanyName);
             ResetChanges();
@@ -130,10 +134,15 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Opens a company file at the specified location.
         /// </summary>
-        /// <returns>True if successfully opened, false otherwise</returns>
+        /// <returns>True if successfully opened, otherwise false.</returns>
         private static bool OpenCompanyFromPath(string filePath, string name)
         {
             Directories.SetDirectories(filePath, Path.GetFileNameWithoutExtension(name));
+
+            if (!VersionCompatibilityChecker.HandleFileVersionCompatibility(filePath))
+            {
+                return false;
+            }
 
             if (!PasswordManager.EnterPassword())
             {
@@ -237,6 +246,11 @@ namespace Sales_Tracker.Classes
                 return;
             }
 
+            if (!VersionCompatibilityChecker.HandleFileVersionCompatibility(filePath))
+            {
+                return;
+            }
+
             // Save current company
             if (AreAnyChangesMade())
             {
@@ -289,7 +303,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Checks if any rows in the given DataGridView are visible.
         /// </summary>
-        /// <returns>True if any rows are visible, false otherwise</returns>
+        /// <returns>True if any rows are visible, otherwise false.</returns>
         private static bool AreRowsVisible(DataGridView dataGridView)
         {
             foreach (DataGridViewRow row in dataGridView.Rows)
@@ -305,7 +319,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Ensures only one instance of a company can be open at a time.
         /// </summary>
-        /// <returns>True if this is the only instance, false if another instance exists</returns>
+        /// <returns>True if this is the only instance, false if another instance exists.</returns>
         public static bool OnlyAllowOneInstanceOfACompany(string companyFilePath)
         {
             if (!CreateMutex(companyFilePath))
@@ -322,9 +336,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Only allow one instance of a company to be open at a time.
         /// </summary>
-        /// <returns>
-        /// True if a mutex is created. False if a mutex already exists.
-        /// </returns>
+        /// <returns>True if a mutex is created. False if a mutex already exists.</returns>
         public static bool CreateMutex(string companyFilePath)
         {
             string uniqueMutexName = "Global\\MyApplication_" + GetUniqueCompanyIdentifier(companyFilePath);
@@ -340,7 +352,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// Generates a unique identifier for a company based on its file path.
         /// </summary>
-        /// <returns>Base64 encoded unique identifier</returns>
+        /// <returns>Base64 encoded unique identifier.</returns>
         public static string GetUniqueCompanyIdentifier(string companyFilePath)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(companyFilePath));
@@ -349,9 +361,7 @@ namespace Sales_Tracker.Classes
         /// <summary>
         /// This will prompt the user to recover any unsaved work.
         /// </summary>
-        /// <returns>
-        /// True if unsaved work was recovered. False if no work was recovered.
-        /// </returns>
+        /// <returns>True if unsaved work was recovered. False if no work was recovered.</returns>
         public static void RecoverUnsavedWork()
         {
             List<string> companies = Directories.GetListOfAllDirectoriesInDirectory(Directories.AppData_dir);

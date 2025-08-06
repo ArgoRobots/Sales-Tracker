@@ -118,8 +118,14 @@ namespace Sales_Tracker.Startup.Menus
 
             string companyName = Path.GetFileNameWithoutExtension(button.Tag.ToString());
             string newDir = Directory.GetParent(button.Tag.ToString()).FullName;
+            string filePath = newDir + @"\" + companyName + ArgoFiles.ArgoCompanyFileExtension;
 
             Directories.SetDirectories(newDir, companyName);
+
+            if (!VersionCompatibilityChecker.HandleFileVersionCompatibility(filePath))
+            {
+                return;
+            }
 
             if (!PasswordManager.EnterPassword())
             {
@@ -131,7 +137,6 @@ namespace Sales_Tracker.Startup.Menus
                 return;
             }
 
-            string filePath = newDir + @"\" + companyName + ArgoFiles.ArgoCompanyFileExtension;
             DataFileManager.AppendValue(GlobalAppDataSettings.RecentCompanies, filePath);
 
             List<string> listOfDirectories = Directories.GetListOfAllDirectoryNamesInDirectory(Directories.AppData_dir);

@@ -14,7 +14,8 @@
     public enum AppDataSettings
     {
         ChangesMade,  // bool
-        DefaultCurrencyType  // string
+        DefaultCurrencyType,  // string
+        AppVersion  // string
     }
 
     /// <summary>

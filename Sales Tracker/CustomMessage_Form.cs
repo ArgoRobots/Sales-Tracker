@@ -46,6 +46,10 @@ namespace Sales_Tracker
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
+        private void CustomMessage_Form_Resize(object sender, EventArgs e)
+        {
+            SetMessageLabelmaxWidth();
+        }
 
         // Methods
         private void SetMessageBox(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
@@ -63,6 +67,7 @@ namespace Sales_Tracker
             CustomMessageBoxVariables.Reset();
             Controls.Add(Icon_PictureBox);
 
+            SetMessageLabelmaxWidth();
             Height = 150 + Message_Label.Height;
 
             // Set icon
@@ -186,6 +191,10 @@ namespace Sales_Tracker
                 FormBorderStyle = FormBorderStyle.FixedToolWindow;
                 changed_Panel.AutoScroll = false;
             }
+        }
+        private void SetMessageLabelmaxWidth()
+        {
+            Message_Label.MaximumSize = new Size(Width - Message_Label.Left - 40, 0);
         }
 
         // Things that have changed

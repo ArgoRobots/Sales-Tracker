@@ -161,12 +161,11 @@
             // Message_Label
             // 
             Message_Label.AutoSize = true;
-            Message_Label.Font = new Font("Segoe UI", 11.25F);
+            Message_Label.Font = new Font("Segoe UI Emoji", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Message_Label.LinkArea = new LinkArea(0, 0);
             Message_Label.Location = new Point(115, 13);
-            Message_Label.MaximumSize = new Size(640, 0);
             Message_Label.Name = "Message_Label";
-            Message_Label.Size = new Size(104, 31);
+            Message_Label.Size = new Size(107, 32);
             Message_Label.TabIndex = 2;
             Message_Label.Text = "message";
             Message_Label.LinkClicked += Message_Label_LinkClicked;
@@ -285,6 +284,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             TopMost = true;
             Shown += CustomMessage_Form_Shown;
+            Resize += CustomMessage_Form_Resize;
             ((System.ComponentModel.ISupportInitialize)Icon_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
