@@ -41,7 +41,11 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                ShowErrorMessageOnUIThread("Service Initialization Error", $"Failed to initialize Google Sheets service: {ex.Message}");
+                MainMenu_Form.Instance.InvokeIfRequired(() =>
+                    CustomMessageBox.ShowWithFormat("Service Initialization Error", "Failed to initialize Google Sheets service: {0}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
+                    ex.Message)
+                );
                 return false;
             }
         }
@@ -219,7 +223,11 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                ShowErrorMessageOnUIThread("Export Error", $"Failed to export chart to Google Sheets: {ex.Message}");
+                MainMenu_Form.Instance.InvokeIfRequired(() =>
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export chart to Google Sheets: {0}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
+                    ex.Message)
+                );
                 throw;
             }
             finally
@@ -403,7 +411,11 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                ShowErrorMessageOnUIThread("Export Error", $"Failed to export chart to Google Sheets: {ex.Message}");
+                MainMenu_Form.Instance.InvokeIfRequired(() =>
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export chart to Google Sheets: {0}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
+                    ex.Message)
+                );
                 throw;
             }
             finally
@@ -602,7 +614,11 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                ShowErrorMessageOnUIThread("Export Error", $"Failed to export multi-dataset chart to Google Sheets: {ex.Message}");
+                MainMenu_Form.Instance.InvokeIfRequired(() =>
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export multi-dataset chart to Google Sheets: {0}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
+                    ex.Message)
+                );
                 throw;
             }
             finally
@@ -799,7 +815,11 @@ namespace Sales_Tracker.Classes
             }
             catch (Exception ex)
             {
-                ShowErrorMessageOnUIThread("Export Error", $"Failed to export multi-dataset count chart to Google Sheets: {ex.Message}");
+                MainMenu_Form.Instance.InvokeIfRequired(() =>
+                    CustomMessageBox.ShowWithFormat("Export Error", "Failed to export multi-dataset count chart to Google Sheets: {0}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
+                    ex.Message)
+                );
                 throw;
             }
             finally
@@ -808,12 +828,6 @@ namespace Sales_Tracker.Classes
             }
         }
 
-        private static void ShowErrorMessageOnUIThread(string title, string message)
-        {
-            MainMenu_Form.Instance.InvokeIfRequired(() =>
-                CustomMessageBox.Show(title, message, CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok)
-            );
-        }
         private static void TrackGoogleSheetsExport(Stopwatch stopwatch)
         {
             stopwatch.Stop();
