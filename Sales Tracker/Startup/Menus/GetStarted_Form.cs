@@ -312,11 +312,13 @@ namespace Sales_Tracker.Startup.Menus
             if (RightClickOpenRecent_Panel.Tag is Guna2Button btn)
             {
                 string companyDir = btn.Tag.ToString();
+                string companyName = Path.GetFileNameWithoutExtension(companyDir);
+
                 if (File.Exists(companyDir))
                 {
                     CustomMessageBoxResult result = CustomMessageBox.Show(
                         "Delete company",
-                        $"Are you sure you want to delete this company? It will be moved to the recycle bin.",
+                        $"Are you sure you want to delete '{companyName}'? It will be moved to the recycle bin.",
                         CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.YesNo);
 
                     if (result == CustomMessageBoxResult.Yes)
