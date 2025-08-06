@@ -41,6 +41,8 @@ namespace Sales_Tracker.Startup.Menus
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Back_Button = new Guna.UI2.WinForms.Guna2Button();
             Create_Button = new Guna.UI2.WinForms.Guna2Button();
             ConfigureNewCompany_Label = new Label();
@@ -55,8 +57,13 @@ namespace Sales_Tracker.Startup.Menus
             ThreeDots_Button = new Guna.UI2.WinForms.Guna2Button();
             Currency_Label = new Label();
             Currency_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            WarningAccountant_PictureBox = new PictureBox();
+            WarningAccountant_Label = new Label();
+            AccountantName_TextBox = new Guna.UI2.WinForms.Guna2TextBox();
+            AccountantName_Label = new Label();
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)WarningAccountant_PictureBox).BeginInit();
             SuspendLayout();
             // 
             // Back_Button
@@ -155,7 +162,7 @@ namespace Sales_Tracker.Startup.Menus
             Directory_TextBox.Font = new Font("Segoe UI", 11F);
             Directory_TextBox.ForeColor = SystemColors.ControlText;
             Directory_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Directory_TextBox.Location = new Point(48, 330);
+            Directory_TextBox.Location = new Point(48, 450);
             Directory_TextBox.Margin = new Padding(4, 5, 4, 5);
             Directory_TextBox.Name = "Directory_TextBox";
             Directory_TextBox.PlaceholderText = "";
@@ -171,7 +178,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             Directory_Label.AutoSize = true;
             Directory_Label.Font = new Font("Segoe UI", 12F);
-            Directory_Label.Location = new Point(48, 293);
+            Directory_Label.Location = new Point(48, 413);
             Directory_Label.Name = "Directory_Label";
             Directory_Label.Size = new Size(111, 32);
             Directory_Label.TabIndex = 0;
@@ -194,7 +201,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             WarningDir_Label.AutoSize = true;
             WarningDir_Label.Font = new Font("Segoe UI", 10F);
-            WarningDir_Label.Location = new Point(94, 398);
+            WarningDir_Label.Location = new Point(94, 518);
             WarningDir_Label.Name = "WarningDir_Label";
             WarningDir_Label.Size = new Size(86, 28);
             WarningDir_Label.TabIndex = 0;
@@ -205,7 +212,7 @@ namespace Sales_Tracker.Startup.Menus
             // WarningDir_PictureBox
             // 
             WarningDir_PictureBox.Image = Properties.Resources.ExclamationMark;
-            WarningDir_PictureBox.Location = new Point(60, 398);
+            WarningDir_PictureBox.Location = new Point(60, 518);
             WarningDir_PictureBox.Name = "WarningDir_PictureBox";
             WarningDir_PictureBox.Size = new Size(28, 28);
             WarningDir_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -236,7 +243,7 @@ namespace Sales_Tracker.Startup.Menus
             ThreeDots_Button.Font = new Font("Segoe UI", 9F);
             ThreeDots_Button.ForeColor = Color.White;
             ThreeDots_Button.Image = Properties.Resources.ThreeDotsBlack;
-            ThreeDots_Button.Location = new Point(1190, 330);
+            ThreeDots_Button.Location = new Point(1190, 450);
             ThreeDots_Button.Name = "ThreeDots_Button";
             ThreeDots_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             ThreeDots_Button.Size = new Size(60, 60);
@@ -247,10 +254,10 @@ namespace Sales_Tracker.Startup.Menus
             // 
             Currency_Label.AutoSize = true;
             Currency_Label.Font = new Font("Segoe UI", 12F);
-            Currency_Label.Location = new Point(48, 475);
+            Currency_Label.Location = new Point(48, 563);
             Currency_Label.Name = "Currency_Label";
             Currency_Label.Size = new Size(190, 32);
-            Currency_Label.TabIndex = 273;
+            Currency_Label.TabIndex = 0;
             Currency_Label.Text = "Default currency";
             Currency_Label.Click += CloseAllPanels;
             // 
@@ -266,7 +273,7 @@ namespace Sales_Tracker.Startup.Menus
             Currency_TextBox.Font = new Font("Segoe UI", 11F);
             Currency_TextBox.ForeColor = SystemColors.ControlText;
             Currency_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            Currency_TextBox.Location = new Point(48, 512);
+            Currency_TextBox.Location = new Point(48, 600);
             Currency_TextBox.Margin = new Padding(4, 5, 4, 5);
             Currency_TextBox.Name = "Currency_TextBox";
             Currency_TextBox.PlaceholderText = "";
@@ -276,11 +283,72 @@ namespace Sales_Tracker.Startup.Menus
             Currency_TextBox.Size = new Size(200, 50);
             Currency_TextBox.TabIndex = 275;
             // 
+            // WarningAccountant_PictureBox
+            // 
+            WarningAccountant_PictureBox.Image = Properties.Resources.ExclamationMark;
+            WarningAccountant_PictureBox.Location = new Point(60, 368);
+            WarningAccountant_PictureBox.Name = "WarningAccountant_PictureBox";
+            WarningAccountant_PictureBox.Size = new Size(28, 28);
+            WarningAccountant_PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            WarningAccountant_PictureBox.TabIndex = 279;
+            WarningAccountant_PictureBox.TabStop = false;
+            WarningAccountant_PictureBox.Visible = false;
+            // 
+            // WarningAccountant_Label
+            // 
+            WarningAccountant_Label.AutoSize = true;
+            WarningAccountant_Label.Font = new Font("Segoe UI", 10F);
+            WarningAccountant_Label.Location = new Point(94, 368);
+            WarningAccountant_Label.Name = "WarningAccountant_Label";
+            WarningAccountant_Label.Size = new Size(86, 28);
+            WarningAccountant_Label.TabIndex = 0;
+            WarningAccountant_Label.Text = "Warning";
+            WarningAccountant_Label.Visible = false;
+            // 
+            // AccountantName_TextBox
+            // 
+            AccountantName_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            AccountantName_TextBox.CustomizableEdges = customizableEdges13;
+            AccountantName_TextBox.DefaultText = "Your name";
+            AccountantName_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
+            AccountantName_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
+            AccountantName_TextBox.DisabledState.ForeColor = Color.FromArgb(138, 138, 138);
+            AccountantName_TextBox.DisabledState.PlaceholderForeColor = Color.FromArgb(138, 138, 138);
+            AccountantName_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+            AccountantName_TextBox.Font = new Font("Segoe UI", 11F);
+            AccountantName_TextBox.ForeColor = SystemColors.ControlText;
+            AccountantName_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            AccountantName_TextBox.Location = new Point(48, 300);
+            AccountantName_TextBox.Margin = new Padding(4, 5, 4, 5);
+            AccountantName_TextBox.Name = "AccountantName_TextBox";
+            AccountantName_TextBox.PlaceholderText = "";
+            AccountantName_TextBox.SelectedText = "";
+            AccountantName_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges14;
+            AccountantName_TextBox.ShortcutsEnabled = false;
+            AccountantName_TextBox.Size = new Size(1135, 60);
+            AccountantName_TextBox.TabIndex = 278;
+            AccountantName_TextBox.TextChanged += AccountantName_TextBox_TextChanged;
+            AccountantName_TextBox.Click += CloseAllPanels;
+            // 
+            // AccountantName_Label
+            // 
+            AccountantName_Label.AutoSize = true;
+            AccountantName_Label.Font = new Font("Segoe UI", 12F);
+            AccountantName_Label.Location = new Point(48, 263);
+            AccountantName_Label.Name = "AccountantName_Label";
+            AccountantName_Label.Size = new Size(202, 32);
+            AccountantName_Label.TabIndex = 0;
+            AccountantName_Label.Text = "Accountant name";
+            // 
             // ConfigureCompany_Form
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1320, 825);
+            Controls.Add(WarningAccountant_PictureBox);
+            Controls.Add(WarningAccountant_Label);
+            Controls.Add(AccountantName_TextBox);
+            Controls.Add(AccountantName_Label);
             Controls.Add(Currency_TextBox);
             Controls.Add(Currency_Label);
             Controls.Add(WarningDir_PictureBox);
@@ -303,6 +371,7 @@ namespace Sales_Tracker.Startup.Menus
             Click += ConfigureCompany_Form_Click;
             ((System.ComponentModel.ISupportInitialize)WarningDir_PictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)WarningName_PictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)WarningAccountant_PictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -322,5 +391,9 @@ namespace Sales_Tracker.Startup.Menus
         public Guna.UI2.WinForms.Guna2Button Back_Button;
         private Label Currency_Label;
         private Guna.UI2.WinForms.Guna2TextBox Currency_TextBox;
+        private PictureBox WarningAccountant_PictureBox;
+        private Label WarningAccountant_Label;
+        private Guna.UI2.WinForms.Guna2TextBox AccountantName_TextBox;
+        private Label AccountantName_Label;
     }
 }

@@ -459,6 +459,18 @@ namespace Sales_Tracker.UI
                 return;
             }
 
+            if (MainMenu_Form.Instance.AccountantList.Count == 1)
+            {
+                CustomMessageBox.Show(
+                    "Delete the accountant",
+                    "You must have at least one accountant.",
+                    CustomMessageBoxIcon.Info,
+                    CustomMessageBoxButtons.Ok);
+
+                e.Cancel = true;
+                return;
+            }
+
             // Remove accountant from list
             MainMenu_Form.Instance.AccountantList.Remove(valueBeingRemoved);
 

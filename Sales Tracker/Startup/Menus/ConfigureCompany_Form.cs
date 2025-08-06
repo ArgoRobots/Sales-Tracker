@@ -44,6 +44,7 @@ namespace Sales_Tracker.Startup.Menus
         private void SetAccessibleDescriptions()
         {
             CompanyName_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+            AccountantName_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Directory_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
@@ -52,6 +53,8 @@ namespace Sales_Tracker.Startup.Menus
             byte searchBoxMaxHeight = 200;
 
             TextBoxManager.Attach(CompanyName_TextBox);
+            TextBoxValidation.OnlyAllowLetters(AccountantName_TextBox);
+            TextBoxManager.Attach(AccountantName_TextBox);
             TextBoxManager.Attach(Directory_TextBox);
             TextBoxManager.Attach(Currency_TextBox);
 
@@ -152,6 +155,10 @@ namespace Sales_Tracker.Startup.Menus
             // Set default currency
             DataFileManager.SetValue(AppDataSettings.DefaultCurrencyType, Currency_TextBox.Text);
 
+            // Set accountant name
+            MainMenu_Form.SelectedAccountant = AccountantName_TextBox.Text;
+            Directories.WriteTextToFile(Directories.Accountants_file, AccountantName_TextBox.Text);
+
             ArgoCompany.SaveAll();
             ArgoCompany.CreateMutex(CompanyName_TextBox.Text);
 
@@ -217,17 +224,32 @@ namespace Sales_Tracker.Startup.Menus
             if (string.IsNullOrEmpty(CompanyName_TextBox.Text))
             {
                 CustomControls.SetGTextBoxToInvalid(CompanyName_TextBox);
-                ShowWarningForCompanyName("Company name cannot be empty");
+                ShowWarningForCompanyName(LanguageManager.TranslateString("Company name cannot be empty"));
             }
             else if (invalidChars.Any(CompanyName_TextBox.Text.Contains))
             {
                 CustomControls.SetGTextBoxToInvalid(CompanyName_TextBox);
-                ShowWarningForCompanyName("Company name contains invalid characters");
+                ShowWarningForCompanyName(LanguageManager.TranslateString("Company name contains invalid characters"));
             }
             else
             {
                 CustomControls.SetGTextBoxToValid(CompanyName_TextBox);
                 HideWarningForCompanyName();
+            }
+
+            ValidateInputs();
+        }
+        private void AccountantName_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(AccountantName_TextBox.Text))
+            {
+                CustomControls.SetGTextBoxToInvalid(AccountantName_TextBox);
+                ShowWarningForAccountantName(LanguageManager.TranslateString("Accountant name cannot be empty"));
+            }
+            else
+            {
+                CustomControls.SetGTextBoxToValid(AccountantName_TextBox);
+                HideWarningForAccountantName();
             }
 
             ValidateInputs();
@@ -239,22 +261,22 @@ namespace Sales_Tracker.Startup.Menus
             if (string.IsNullOrEmpty(Directory_TextBox.Text))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory("Directory cannot be empty");
+                ShowWarningForDirectory(LanguageManager.TranslateString("Directory cannot be empty"));
             }
             else if (invalidChars.Any(Directory_TextBox.Text.Contains))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory("Directory contains invalid characters");
+                ShowWarningForDirectory(LanguageManager.TranslateString("Directory contains invalid characters"));
             }
             else if (!Directory_TextBox.Text.Contains('\\'))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory("Directory must contain a backslash (\\)");
+                ShowWarningForDirectory(LanguageManager.TranslateString("Directory must contain a backslash (\\)"));
             }
             else if (!Directory.Exists(Directory_TextBox.Text))
             {
                 CustomControls.SetGTextBoxToInvalid(Directory_TextBox);
-                ShowWarningForDirectory("Directory does not exist");
+                ShowWarningForDirectory(LanguageManager.TranslateString("Directory does not exist"));
             }
             else
             {
@@ -268,7 +290,7 @@ namespace Sales_Tracker.Startup.Menus
         // Warning labels
         private void ShowWarningForDirectory(string text)
         {
-            WarningDir_Label.Text = LanguageManager.TranslateString(text);
+            WarningDir_Label.Text = text;
             WarningDir_PictureBox.Visible = true;
             WarningDir_Label.Visible = true;
         }
@@ -277,9 +299,20 @@ namespace Sales_Tracker.Startup.Menus
             WarningDir_PictureBox.Visible = false;
             WarningDir_Label.Visible = false;
         }
+        private void ShowWarningForAccountantName(string text)
+        {
+            WarningAccountant_Label.Text = text;
+            WarningAccountant_PictureBox.Visible = true;
+            WarningAccountant_Label.Visible = true;
+        }
+        private void HideWarningForAccountantName()
+        {
+            WarningAccountant_PictureBox.Visible = false;
+            WarningAccountant_Label.Visible = false;
+        }
         private void ShowWarningForCompanyName(string text)
         {
-            WarningName_Label.Text = LanguageManager.TranslateString(text);
+            WarningName_Label.Text = text;
             WarningName_PictureBox.Visible = true;
             WarningName_Label.Visible = true;
         }
@@ -294,8 +327,9 @@ namespace Sales_Tracker.Startup.Menus
         {
             if (_isProgramLoading) { return; }
 
-            Create_Button.Enabled = CustomControls.IsGTextBoxInvalid(CompanyName_TextBox)
-                && CustomControls.IsGTextBoxInvalid(Directory_TextBox)
+            Create_Button.Enabled = CustomControls.IsGTextBoxValid(CompanyName_TextBox)
+                && CustomControls.IsGTextBoxValid(AccountantName_TextBox)
+                && CustomControls.IsGTextBoxValid(Directory_TextBox)
                 && !string.IsNullOrWhiteSpace(Currency_TextBox.Text) && Currency_TextBox.Tag?.ToString() != "0";
         }
         private void CloseAllPanels(object sender, EventArgs e)
