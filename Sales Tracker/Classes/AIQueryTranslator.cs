@@ -35,7 +35,7 @@ namespace Sales_Tracker.Classes
         /// Translates a natural language query into structured search parameters.
         /// </summary>
         /// <param name="naturalLanguageQuery">The user's search query in natural language</param>
-        /// <returns>A structured search query that can be used with SearchDataGridView</returns>
+        /// <returns>A structured search query that can be used with SearchDataGridView.</returns>
         public async Task<string> TranslateQueryAsync(string naturalLanguageQuery)
         {
             try
@@ -148,6 +148,9 @@ namespace Sales_Tracker.Classes
 
             promptBuilder.AppendLine("\nQuery: \"orders from europe\"");
             promptBuilder.AppendLine("Translation: \"+Country of origin:France|Germany|United Kingdom|Italy|Spain|Netherlands|Sweden|Switzerland|Norway|Finland|Belgium|Denmark|Austria|Portugal|Greece|Ireland\"");
+
+            promptBuilder.AppendLine("\nQuery: \"orders from europe but not france\"");
+            promptBuilder.AppendLine("Translation: \"+Country of origin:Germany|United Kingdom|Italy|Spain|Netherlands|Sweden|Switzerland|Norway|Finland|Belgium|Denmark|Austria|Portugal|Greece|Ireland\"");
 
             promptBuilder.AppendLine("\nQuery: \"sales to asian countries last month\"");
             promptBuilder.AppendLine("Translation: \"+Country of destination:China|Japan|South Korea|India|Taiwan|Singapore|Vietnam|Thailand|Malaysia|Indonesia|Philippines +Date:>2023-12-01\"");
