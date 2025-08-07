@@ -1225,7 +1225,7 @@ namespace Sales_Tracker.UI
         {
             CustomMessageBox.ShowWithFormat(
                 "Cannot be {0}",
-                "This {1} is being used by a transaction and cannot be {0}d",
+                "This {1} is being used by a transaction and cannot be {0}",
                 CustomMessageBoxIcon.Exclamation,
                 CustomMessageBoxButtons.Ok,
                 action, type);
