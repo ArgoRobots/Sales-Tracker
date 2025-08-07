@@ -459,10 +459,22 @@ namespace Sales_Tracker.UI
                 return;
             }
 
+            if (MainMenu_Form.SelectedAccountant == valueBeingRemoved)
+            {
+                CustomMessageBox.Show(
+                    "Cannot delete accountant",
+                    "You cannot delete the accountant you are currently signed in as.",
+                    CustomMessageBoxIcon.Info,
+                    CustomMessageBoxButtons.Ok);
+
+                e.Cancel = true;
+                return;
+            }
+
             if (MainMenu_Form.Instance.AccountantList.Count == 1)
             {
                 CustomMessageBox.Show(
-                    "Delete the accountant",
+                    "Cannot delete accountant",
                     "You must have at least one accountant.",
                     CustomMessageBoxIcon.Info,
                     CustomMessageBoxButtons.Ok);
@@ -1225,8 +1237,8 @@ namespace Sales_Tracker.UI
         {
             CustomMessageBox.ShowWithFormat(
                 "Cannot be {0}",
-                "This {1} is being used by a transaction and cannot be {0}",
-                CustomMessageBoxIcon.Exclamation,
+                "This {1} is being used by a transaction and cannot be {0}.",
+                CustomMessageBoxIcon.Info,
                 CustomMessageBoxButtons.Ok,
                 action, type);
         }
