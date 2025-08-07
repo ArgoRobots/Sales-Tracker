@@ -86,9 +86,6 @@ namespace Sales_Tracker.Passwords
             // Position password controls if they exist
             if (_requiresPassword)
             {
-                EnterPassword_Label.Text = LanguageManager.TranslateString("Log in");
-                EnterPassword_Label.Left = (Width - EnterPassword_Label.Width) / 2;
-
                 Password_TextBox.Location = new Point((Width - Password_TextBox.Width) / 2, currentY);
                 PasswordEye_Button.Top = Password_TextBox.Top + (Password_TextBox.Height - PasswordEye_Button.Height) / 2;
                 currentY += Password_TextBox.Height + spacing;
@@ -98,8 +95,19 @@ namespace Sales_Tracker.Passwords
                 Password_TextBox.Visible = false;
             }
 
+            if (_requiresPassword && _requiresAccountantSelection)
+            {
+                EnterPassword_Label.Text = LanguageManager.TranslateString("Log in");
+            }
+            else if (_requiresAccountantSelection)
+            {
+                EnterPassword_Label.Text = LanguageManager.TranslateString("Select user");
+            }
+
+            EnterPassword_Label.Left = (Width - EnterPassword_Label.Width) / 2;
+
             // Position Enter button
-            Enter_Button.Location = new Point((Width - Enter_Button.Width) / 2, currentY);
+            Enter_Button.Location = new Point((Width - Enter_Button.Width) / 2, currentY + spacing);
             currentY += Enter_Button.Height + spacing;
 
             // Adjust form height
