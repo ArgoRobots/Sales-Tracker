@@ -756,6 +756,7 @@ namespace Sales_Tracker
                 }
             }
 
+            CompanyLogo.Cleanup();
             AnonymousDataManager.TrackSessionEnd();
             ThemeChangeDetector.StopListeningForThemeChanges();
             Log.SaveLogs();

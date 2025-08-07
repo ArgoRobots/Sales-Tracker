@@ -11,18 +11,11 @@ namespace Sales_Tracker.UI
         private static PictureBox _companyLogo;
         private static bool _isLogoHovered = false;
         private static Bitmap _cameraIcon;
-        private static readonly SolidBrush _overlayBrush;
 
         // Getters
         public static Guna2Panel CompanyLogoRightClick_Panel { get; private set; }
 
-        // Static constructor for one-time initialization
-        static CompanyLogo()
-        {
-            _overlayBrush = new SolidBrush(Color.FromArgb(128, 0, 0, 0));
-        }
-
-        // Methods
+        // Public methods
         public static void ConstructCompanyLogoRightClickMenu()
         {
             CompanyLogoRightClick_Panel = CustomControls.ConstructPanelForMenu(
@@ -63,6 +56,15 @@ namespace Sales_Tracker.UI
                 RemoveLogoControl();
             }
         }
+        public static void Cleanup()
+        {
+            _companyLogo?.Image?.Dispose();
+            _companyLogo?.Dispose();
+            _cameraIcon?.Dispose();
+            CompanyLogoRightClick_Panel?.Dispose();
+        }
+
+        // Private methods
         private static void CreateLogoIfNeeded()
         {
             if (_companyLogo != null) { return; }
@@ -180,8 +182,10 @@ namespace Sales_Tracker.UI
         {
             if (!_isLogoHovered || _cameraIcon == null) { return; }
 
+            SolidBrush overlayBrush = new(Color.FromArgb(128, 0, 0, 0));
+
             // Draw semi-transparent overlay using cached brush
-            e.Graphics.FillRectangle(_overlayBrush, _companyLogo.ClientRectangle);
+            e.Graphics.FillRectangle(overlayBrush, _companyLogo.ClientRectangle);
 
             // Draw camera icon in center
             int iconSize = 32;
@@ -243,7 +247,7 @@ namespace Sales_Tracker.UI
             MainMenu_Form.Instance.Controls.Add(CompanyLogoRightClick_Panel);
             CompanyLogoRightClick_Panel.BringToFront();
         }
-        public static void BrowseForCompanyLogo()
+        private static void BrowseForCompanyLogo()
         {
             using OpenFileDialog dialog = new();
 
@@ -261,17 +265,42 @@ namespace Sales_Tracker.UI
 
             try
             {
-                // Update settings
+                // Copy the logo file to application data directory
+                string logoFileName = $"company_logo{Path.GetExtension(dialog.FileName)}";
+                string logoDestinationPath = Path.Combine(Directories.TempCompany_dir, logoFileName);
+
+                // Remove old logo file if it exists
+                RemoveOldLogoFile();
+
+                // Copy the new logo file
+                File.Copy(dialog.FileName, logoDestinationPath, true);
+
+                // Update settings with the copied file path
                 string oldLogoPath = Properties.Settings.Default.CompanyLogoPath;
-                Properties.Settings.Default.CompanyLogoPath = dialog.FileName;
+                Properties.Settings.Default.CompanyLogoPath = logoDestinationPath;
                 Properties.Settings.Default.Save();
 
-                LogLogoChange(oldLogoPath, dialog.FileName);
+                LogLogoChange(oldLogoPath, dialog.FileName);  // Log with original filename for user clarity
                 LoadCompanyLogoImage();
             }
-            catch
+            catch (Exception ex)
             {
-                ShowImageError();
+                ShowImageError(ex.Message);
+            }
+        }
+        private static void RemoveOldLogoFile()
+        {
+            string currentLogoPath = Properties.Settings.Default.CompanyLogoPath;
+            if (!string.IsNullOrEmpty(currentLogoPath) && File.Exists(currentLogoPath))
+            {
+                try
+                {
+                    File.Delete(currentLogoPath);
+                }
+                catch (Exception ex)
+                {
+                    Log.Write(1, $"Could not delete old logo file: {ex.Message}");
+                }
             }
         }
         private static void LogLogoChange(string oldLogoPath, string newLogoPath)
@@ -284,16 +313,19 @@ namespace Sales_Tracker.UI
                 MainMenu_Form.SettingsThatHaveChangedInFile, 3, message);
             Log.Write(2, $"Company logo updated: {newLogoPath}");
         }
-        private static void ShowImageError()
+        private static void ShowImageError(string errorMessage)
         {
-            CustomMessageBox.Show("Invalid Image",
-                "The selected file is not a valid image or cannot be loaded.",
-                CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok);
+            CustomMessageBox.ShowWithFormat("Invalid Image",
+                "The selected file is not a valid image or cannot be loaded.\n\nError: {0}",
+                CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok,
+                errorMessage);
 
             Log.Error_WriteToFile("Failed to load selected logo image");
         }
-        public static void RemoveCompanyLogo()
+        private static void RemoveCompanyLogo()
         {
+            RemoveOldLogoFile();
+
             Properties.Settings.Default.CompanyLogoPath = "";
             Properties.Settings.Default.Save();
 
