@@ -25,6 +25,9 @@
     <Compile Update="Loading_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="MainMenu_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Passwords\AddPassword_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,9 +65,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Log_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="MainMenu_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="ModifyRow_Form.cs">

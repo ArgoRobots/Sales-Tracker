@@ -17,7 +17,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Sales_Tracker
 {
-    public partial class MainMenu_Form : BaseForm
+    public partial class MainMenu_Form : Form
     {
         // Admin mode can only be enabled by directly setting it to true here
         public readonly static bool EnableAdminMode = true && Tools.IsRunningInVisualStudio();
@@ -67,6 +67,7 @@ namespace Sales_Tracker
             AnimateCharts();
             InitializeAISearch();
             RemoveUpgradeButtonIfFullVersion();
+            CompanyLogo.SetCompanyLogo();
             UpdateMainMenuFormText();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
@@ -1399,7 +1400,7 @@ namespace Sales_Tracker
             CompanyName_Label.Text = CustomControls.Rename_TextBox.Text;
             ArgoCompany.Rename(CustomControls.Rename_TextBox.Text);
             CustomControls.Rename_TextBox.Clear();
-            MoveEditButton();
+            SetEditButtonLocation();
             CenterAndResizeControls();
             UpdateMainMenuFormText();
 
@@ -1415,11 +1416,11 @@ namespace Sales_Tracker
         public void SetCompanyLabel()
         {
             CompanyName_Label.Text = Directories.CompanyName;
-            MoveEditButton();
+            SetEditButtonLocation();
         }
-        private void MoveEditButton()
+        public void SetEditButtonLocation()
         {
-            Edit_Button.Left = CompanyName_Label.Left + CompanyName_Label.Width + 5;
+            Edit_Button.Left = CompanyName_Label.Right + 5;
         }
 
         // Search DataGridView getters and setters
@@ -2903,6 +2904,7 @@ namespace Sales_Tracker
                 CustomControls.RecentlyOpenedMenu,
                 CustomControls.HelpMenu,
                 CustomControls.ControlDropDown_Panel,
+                CompanyLogo.CompanyLogoRightClick_Panel,
                 GetStarted_Form.RightClickOpenRecent_Panel,
                 DataGridViewManager.RightClickDataGridView_Panel,
                 RightClickGunaChartMenu.RightClickGunaChart_Panel
@@ -2916,9 +2918,10 @@ namespace Sales_Tracker
         {
             DataGridViewManager.RightClickDataGridView_Panel.Parent?.Controls.Remove(DataGridViewManager.RightClickDataGridView_Panel);
             Controls.Remove(RightClickGunaChartMenu.RightClickGunaChart_Panel);
+            Controls.Remove(CompanyLogo.CompanyLogoRightClick_Panel);
             DataGridViewManager.DoNotDeleteRows = false;
         }
-        private void CloseAllPanels(object sender, EventArgs? e)
+        public void CloseAllPanels(object sender, EventArgs? e)
         {
             CustomControls.CloseAllPanels();
         }

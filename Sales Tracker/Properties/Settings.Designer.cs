@@ -238,5 +238,29 @@ namespace Sales_Tracker.Properties {
                 this["AnimateCharts"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowCompanyLogo {
+            get {
+                return ((bool)(this["ShowCompanyLogo"]));
+            }
+            set {
+                this["ShowCompanyLogo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CompanyLogoPath {
+            get {
+                return ((string)(this["CompanyLogoPath"]));
+            }
+            set {
+                this["CompanyLogoPath"] = value;
+            }
+        }
     }
 }

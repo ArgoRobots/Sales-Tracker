@@ -731,7 +731,6 @@
         public Guna.UI2.WinForms.Guna2Button Save_Button;
         public Guna.UI2.WinForms.Guna2Button Help_Button;
         public System.Windows.Forms.Label Saved_Label;
-        private Label CompanyName_Label;
         public Guna.UI2.WinForms.Guna2Button Edit_Button;
         public Label Total_Label;
         public Label Quantity_Label;
@@ -757,5 +756,6 @@
         public Label Discount_Label;
         public Guna.UI2.WinForms.Guna2Button Upgrade_Button;
         public Guna.UI2.WinForms.Guna2TextBox Search_TextBox;
+        public Label CompanyName_Label;
     }
 }

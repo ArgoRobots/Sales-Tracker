@@ -6,7 +6,7 @@ using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
 {
-    public partial class General_Form : BaseForm
+    public partial class General_Form : Form
     {
         // Properties
         private static General_Form _instance;
@@ -222,6 +222,7 @@ namespace Sales_Tracker.Settings.Menus
             AnimateButtons_CheckBox.Checked = Properties.Settings.Default.AnimateButtons;
             AnimateCharts_CheckBox.Checked = Properties.Settings.Default.AnimateCharts;
             ShowHasReceiptColumn_CheckBox.Checked = Properties.Settings.Default.ShowHasReceiptColumn;
+            ShowCompanyLogo_CheckBox.Checked = Properties.Settings.Default.ShowCompanyLogo;
             EnableAISearch_CheckBox.Checked = Properties.Settings.Default.AISearchEnabled;
         }
         public void PopulateThemeComboBox()

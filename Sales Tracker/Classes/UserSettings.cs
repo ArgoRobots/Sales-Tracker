@@ -21,6 +21,17 @@ namespace Sales_Tracker.Classes
             Properties.Settings settings = Properties.Settings.Default;
             General_Form form = General_Form.Instance;
 
+            // Handle currency change
+            string oldCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
+            if (oldCurrency != form.Currency_TextBox.Text)
+            {
+                bool currencyUpdateSuccess = await UpdateCurrencyAsync(oldCurrency);
+                if (!currencyUpdateSuccess)
+                {
+                    return false;  // Currency update was cancelled or failed
+                }
+            }
+
             // Handle theme change - Use SelectedIndex instead of Text to work with translations
             if (settings.ColorTheme != GetThemeNameFromIndex(form.ColorTheme_ComboBox.SelectedIndex))
             {
@@ -72,15 +83,13 @@ namespace Sales_Tracker.Classes
                 MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
             }
 
-            // Handle currency change
-            string oldCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
-            if (oldCurrency != form.Currency_TextBox.Text)
+            // Handle company logo visibility
+            if (settings.ShowCompanyLogo != form.ShowCompanyLogo_CheckBox.Checked)
             {
-                bool currencyUpdateSuccess = await UpdateCurrencyAsync(oldCurrency);
-                if (!currencyUpdateSuccess)
-                {
-                    return false;  // Currency update was cancelled or failed
-                }
+                UpdateSetting("Show company logo", settings.ShowCompanyLogo, form.ShowCompanyLogo_CheckBox.Checked,
+                    value => settings.ShowCompanyLogo = value);
+
+                CompanyLogo.SetCompanyLogo();
             }
 
             return true;  // All settings were successfully saved

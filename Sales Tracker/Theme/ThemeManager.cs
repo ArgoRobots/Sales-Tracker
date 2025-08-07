@@ -77,7 +77,7 @@ namespace Sales_Tracker.Theme
                         break;
 
                     case PictureBox pictureBox:
-                        pictureBox.BackColor = CustomColors.MainBackground;
+                        pictureBox.BackColor = Color.Transparent;
                         break;
 
                     case RichTextBox richTextBox:
