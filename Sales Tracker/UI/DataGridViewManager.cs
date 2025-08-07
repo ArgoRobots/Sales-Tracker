@@ -247,9 +247,9 @@ namespace Sales_Tracker.UI
                         AddUnderlineToCell(cell);
                         string type = MainMenu_Form.Instance.Selected == MainMenu_Form.SelectedOption.Purchases ? "purchase" : "sale";
 
-                        CustomMessageBox.ShowWithFormat("Note for {0} {1}", cell.Tag?.ToString(),
-                            CustomMessageBoxIcon.Info,
-                            CustomMessageBoxButtons.Ok,
+                        CustomMessageBox.ShowWithFormat("Note for {0} {1}",
+                            cell.Tag?.ToString(),
+                            CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok,
                             type, idCell);
                     }
                 }

@@ -442,19 +442,22 @@ namespace Sales_Tracker
                 _isMessageBoxShowing = false;
             }
         }
-        public static CustomMessageBoxResult ShowWithFormat(string title, string messageTemplate,
+        public static CustomMessageBoxResult ShowWithFormat(string titleTemplate, string messageTemplate,
             CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons, params object[] args)
         {
+            // Format the title
+            string translatedTitle = LanguageManager.TranslateString(titleTemplate);
+            string formattedTitle = translatedTitle != titleTemplate && translatedTitle.Contains('{')
+                ? string.Format(translatedTitle, args)
+                : string.Format(titleTemplate, args);
+
+            // Format the message
             string translatedMessage = LanguageManager.TranslateString(messageTemplate);
+            string formattedMessage = translatedMessage != messageTemplate && translatedMessage.Contains('{')
+                ? string.Format(translatedMessage, args)
+                : string.Format(messageTemplate, args);
 
-            // If translation was found and has placeholders, use it
-            if (translatedMessage != messageTemplate && translatedMessage.Contains('{'))
-            {
-                return Show(title, string.Format(translatedMessage, args), icon, buttons);
-            }
-
-            // Fall back to original template
-            return Show(title, string.Format(messageTemplate, args), icon, buttons);
+            return Show(formattedTitle, formattedMessage, icon, buttons);
         }
     }
 
