@@ -2,18 +2,17 @@
 
 ## Introduction
 
-**Argo Sales Tracker** is an app designed to help small to medium sized companies manage their finances. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, overpriced, and overcomplicated. Argo Sales Tracker offers advanced features while remaining easy to use, filling the gap between basic spreadsheets (e.g., Excel or Google Sheets) and enterprise-level software.
+**Argo Sales Tracker** is a Windows app designed to help small to medium sized companies manage their finances. It was created out of the need for a one-time payment solution, as most existing sales trackers are subscription-based, very overpriced, and have a high learning curve. Argo Sales Tracker offers advanced features while remaining easy to use, filling the gap between basic spreadsheets and enterprise-level solutions.
 
 ## Features
 
-- **Importing data from spreadsheets**: import your existing sales, purchases, products, or other data from a spreadsheet.
-- **Track Purchases and Sales**: Add and manage purchases and sales.
-- **Accept returned products**: Track returned products and the reasons they were returned.
-- **Accountants Integration**: Keep track of accountants working with the sales data.
-- **Product Management**: Add, edit, and organize your products with ease.
-- **Receipts and Exporting**: Export receipts and sales data for your records.
-- **Custom Date Ranges**: Filter purchases and sales with custom date ranges.
-- **Charts and Analytics**: Visualize your data using charts to gain insights into sales trends and performance.
+- **Import data from spreadsheets**: import your existing sales, purchases, products, and other data from spreadsheets.
+- **Track Purchases and Sales**: Add purchases and sales.
+- **Return products**: Track returned products and the reasons they were returned.
+- **Product management**: Add, edit, and organize your products with ease.
+- **Receipts**: Attach receipts to your transactions and keep them organized.
+- **Custom date ranges**: Filter transactions using custom date ranges.
+- **Analytics dashboard**: Visualize your data using charts to gain insights into sales trends and performance.
 
 ## Technologies used
 
@@ -40,11 +39,10 @@ After building the solution, press F5 to run the application in Debug mode, or `
 
 To use the program effectively, follow these steps:
 
-1. **Add an accountant**: The first step is to add an accountant that will be associated with the sales and purchases.
-2. **Add companies**: Enter the companies you will be buying from.
-3. **Add categories**: Organize your products by creating categories, making it easier to manage inventory and track sales. For example, if your company buys many different types of robotic components, you can add the categories "Bolts, nuts, screws, ball bearings, motors, etc.
-4. **Add products**: Once categories are set, you can create products within those categories.
-5. **Add sales and purchases**: After setting up accountants, companies, categories, and products, you can start adding sales and purchases into the system.
+1. **Add companies**: Enter the companies you will be buying from.
+2. **Add categories**: Organize your products by creating categories, making it easier to manage inventory and track sales. For example, if your company buys many different types of robotic components, you can add the categories "Bolts, nuts, screws, ball bearings, etc.
+3. **Add products**: Once categories are set, you can create products within those categories.
+4. **Add sales and purchases**: Now you can start adding purchases and sales into the system and watch the charts update in real time.
 
 ## Publishing Argo Sales Tracker to a .exe file
 The `.exe` installer for Argo Sales Tracker is built using [Advanced Installer Professional Edition](https://www.advancedinstaller.com/) to ensure a smooth and professional installation experience.
