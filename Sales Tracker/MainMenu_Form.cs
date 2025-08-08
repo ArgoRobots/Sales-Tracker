@@ -27,6 +27,7 @@ namespace Sales_Tracker
         public static readonly string _noteTextKey = "note", _rowTagKey = "RowTag", _itemsKey = "Items", _purchaseDataKey = "PurchaseData", _tagKey = "Tag";
         private static readonly byte _chartTop = 220;
         private static readonly short _analyticChartTop = 310;
+        private static Guna2Button _upgrade_Button;
 
         // Getters and setters
         public static MainMenu_Form Instance => _instance;
@@ -54,6 +55,8 @@ namespace Sales_Tracker
             SetCompanyLabel();
             LoadData();
             LoadCustomColumnHeaders();
+            CreateUpgradeButtonIfNeeded();
+            CompanyLogo.SetCompanyLogo();
             UpdateTheme();
             Guna2TextBoxIconHoverEffect.Initialize(Search_TextBox);
             SetAccessibleDescriptions();
@@ -66,8 +69,6 @@ namespace Sales_Tracker
             AnimateButtons();
             AnimateCharts();
             InitializeAISearch();
-            RemoveUpgradeButtonIfFullVersion();
-            CompanyLogo.SetCompanyLogo();
             UpdateMainMenuFormText();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
@@ -126,7 +127,6 @@ namespace Sales_Tracker
         {
             CustomTooltip.SetToolTip(File_Button, "", "File");
             CustomTooltip.SetToolTip(Save_Button, "", "Save");
-            CustomTooltip.SetToolTip(Upgrade_Button, "", "Upgrade to full version");
             CustomTooltip.SetToolTip(Help_Button, "", "Help");
         }
         public void ResetData()
@@ -285,7 +285,10 @@ namespace Sales_Tracker
             Top_Panel.BackColor = CustomColors.ToolbarBackground;
             File_Button.FillColor = CustomColors.ToolbarBackground;
             Save_Button.FillColor = CustomColors.ToolbarBackground;
-            Upgrade_Button.FillColor = CustomColors.ToolbarBackground;
+            if (_upgrade_Button != null)
+            {
+                _upgrade_Button.FillColor = CustomColors.ToolbarBackground;
+            }
             Help_Button.FillColor = CustomColors.ToolbarBackground;
 
             ReselectButton();
@@ -372,12 +375,26 @@ namespace Sales_Tracker
         {
             TextBoxManager.Attach(Search_TextBox);
         }
-        public static void RemoveUpgradeButtonIfFullVersion()
+        public void CreateUpgradeButtonIfNeeded()
         {
-            if (Properties.Settings.Default.LicenseActivated)
+            if (!Properties.Settings.Default.LicenseActivated)
             {
-                Instance.Top_Panel.Controls.Remove(Instance.Upgrade_Button);
+                _upgrade_Button = new Guna2Button
+                {
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                    Image = Resources.Upgrade,
+                    ImageSize = new Size(32, 32),
+                    Size = new Size(45, 45),
+                    Left = Help_Button.Left - 45
+                };
+                _upgrade_Button.Click += Upgrade_Button_Click;
+                Top_Panel.Controls.Add(_upgrade_Button);
+                CustomTooltip.SetToolTip(_upgrade_Button, "", "Upgrade to full version");
             }
+        }
+        public void RemoveUpgradeButton()
+        {
+            Top_Panel.Controls.Remove(_upgrade_Button);
         }
         public void AnimateButtons()
         {

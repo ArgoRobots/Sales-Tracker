@@ -231,7 +231,7 @@ namespace Sales_Tracker
                 }
                 await Task.Delay(500);
 
-                MainMenu_Form.RemoveUpgradeButtonIfFullVersion();
+                MainMenu_Form.Instance.RemoveUpgradeButton();
 
                 progressCircle.Visible = false;
                 successLabel.Visible = true;
