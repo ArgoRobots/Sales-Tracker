@@ -548,6 +548,7 @@
             // LineChart_ToggleSwitch
             // 
             LineChart_ToggleSwitch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            LineChart_ToggleSwitch.Animated = true;
             LineChart_ToggleSwitch.AutoRoundedCorners = true;
             LineChart_ToggleSwitch.BackColor = Color.Transparent;
             LineChart_ToggleSwitch.CheckedState.BorderColor = Color.FromArgb(94, 148, 255);
