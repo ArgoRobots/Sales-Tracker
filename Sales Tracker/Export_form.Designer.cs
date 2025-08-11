@@ -329,7 +329,8 @@
             // 
             // Export_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1178, 674);
             Controls.Add(Currency_TextBox);

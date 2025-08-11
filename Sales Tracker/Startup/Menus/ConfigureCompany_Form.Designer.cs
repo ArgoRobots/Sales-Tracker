@@ -342,7 +342,8 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // ConfigureCompany_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1320, 825);
             Controls.Add(WarningAccountant_PictureBox);

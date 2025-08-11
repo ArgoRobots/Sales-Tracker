@@ -591,7 +591,8 @@ namespace Sales_Tracker
             // 
             // DateRange_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(520, 620);
             Controls.Add(Main_Panel);
             FormBorderStyle = FormBorderStyle.None;

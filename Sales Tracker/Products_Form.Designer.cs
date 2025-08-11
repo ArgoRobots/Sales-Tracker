@@ -508,7 +508,8 @@ namespace Sales_Tracker
             // 
             // Products_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1626, 794);
             Controls.Add(Total_Label);
             Controls.Add(Sale_RadioButton);

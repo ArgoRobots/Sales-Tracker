@@ -103,7 +103,8 @@
             // 
             // ItemsInTransaction_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1776, 542);
             Controls.Add(Title_Label);
             Controls.Add(Items_DataGridView);

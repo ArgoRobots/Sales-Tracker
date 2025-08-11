@@ -264,7 +264,8 @@
             // 
             // CustomMessage_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(778, 194);
             Controls.Add(Skip_Button);
             Controls.Add(Retry_Button);

@@ -33,7 +33,8 @@
             // 
             // Startup_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1296, 766);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);

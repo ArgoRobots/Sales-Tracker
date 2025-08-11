@@ -138,8 +138,8 @@
             // 
             // EULA_Form
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleDimensions = new SizeF(144F, 144F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(1128, 814);
             Controls.Add(Decline_Button);
             Controls.Add(Accept_Button);

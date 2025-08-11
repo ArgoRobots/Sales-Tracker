@@ -108,7 +108,8 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Updates_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(728, 444);
             Controls.Add(NotNow_Button);

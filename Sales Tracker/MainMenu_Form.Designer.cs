@@ -216,7 +216,7 @@
             AddPurchase_Button.FillColor = Color.White;
             AddPurchase_Button.Font = new Font("Segoe UI", 9F);
             AddPurchase_Button.ForeColor = Color.Black;
-            AddPurchase_Button.Location = new Point(1155, 19);
+            AddPurchase_Button.Location = new Point(1155, 20);
             AddPurchase_Button.Name = "AddPurchase_Button";
             AddPurchase_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
             AddPurchase_Button.Size = new Size(200, 50);
@@ -257,7 +257,7 @@
             Products_Button.FillColor = Color.White;
             Products_Button.Font = new Font("Segoe UI", 10F);
             Products_Button.ForeColor = Color.Black;
-            Products_Button.Location = new Point(1567, 19);
+            Products_Button.Location = new Point(1567, 20);
             Products_Button.Name = "Products_Button";
             Products_Button.ShadowDecoration.CustomizableEdges = customizableEdges14;
             Products_Button.Size = new Size(200, 50);
@@ -661,7 +661,8 @@
             // 
             // MainMenu_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(2404, 1562);
             Controls.Add(TimeRange_Button);
             Controls.Add(ShowingResultsFor_Label);

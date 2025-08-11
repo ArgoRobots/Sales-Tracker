@@ -108,7 +108,8 @@
             // 
             // ModifyRow_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(878, 324);
             Controls.Add(Panel);
             Controls.Add(Save_Button);

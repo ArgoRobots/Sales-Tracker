@@ -117,7 +117,8 @@
             // 
             // Tutorial_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1100, 650);
             Controls.Add(Documentation_LinkLabel);
             Controls.Add(YouTube_LinkLabel);

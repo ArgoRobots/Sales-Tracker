@@ -100,7 +100,7 @@ namespace Sales_Tracker.Settings.Menus
             General_Label.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold);
             General_Label.Location = new Point(566, 37);
             General_Label.Name = "General_Label";
-            General_Label.Size = new Size(118, 40);
+            General_Label.Size = new Size(155, 51);
             General_Label.TabIndex = 249;
             General_Label.Text = "General";
             // 
@@ -111,7 +111,7 @@ namespace Sales_Tracker.Settings.Menus
             Language_Label.Font = new Font("Segoe UI", 10F);
             Language_Label.Location = new Point(518, 172);
             Language_Label.Name = "Language_Label";
-            Language_Label.Size = new Size(97, 28);
+            Language_Label.Size = new Size(134, 37);
             Language_Label.TabIndex = 0;
             Language_Label.Text = "Language";
             Language_Label.Click += CloseAllPanels;
@@ -141,7 +141,7 @@ namespace Sales_Tracker.Settings.Menus
             Currency_Label.Font = new Font("Segoe UI", 10F);
             Currency_Label.Location = new Point(461, 227);
             Currency_Label.Name = "Currency_Label";
-            Currency_Label.Size = new Size(154, 28);
+            Currency_Label.Size = new Size(209, 37);
             Currency_Label.TabIndex = 0;
             Currency_Label.Text = "Default currency";
             Currency_Label.Click += CloseAllPanels;
@@ -154,7 +154,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowDebugInfo_Label.Location = new Point(381, 359);
             ShowDebugInfo_Label.Name = "ShowDebugInfo_Label";
             ShowDebugInfo_Label.Padding = new Padding(5);
-            ShowDebugInfo_Label.Size = new Size(234, 38);
+            ShowDebugInfo_Label.Size = new Size(315, 47);
             ShowDebugInfo_Label.TabIndex = 0;
             ShowDebugInfo_Label.Tag = "";
             ShowDebugInfo_Label.Text = "Show debug info in logs";
@@ -168,7 +168,7 @@ namespace Sales_Tracker.Settings.Menus
             SendAnonymousInformation_Label.Location = new Point(225, 397);
             SendAnonymousInformation_Label.Name = "SendAnonymousInformation_Label";
             SendAnonymousInformation_Label.Padding = new Padding(5);
-            SendAnonymousInformation_Label.Size = new Size(390, 38);
+            SendAnonymousInformation_Label.Size = new Size(527, 47);
             SendAnonymousInformation_Label.TabIndex = 0;
             SendAnonymousInformation_Label.Tag = "";
             SendAnonymousInformation_Label.Text = "Send anonymous statistics and usage data";
@@ -182,7 +182,7 @@ namespace Sales_Tracker.Settings.Menus
             PurchaseReceipts_Label.Location = new Point(288, 435);
             PurchaseReceipts_Label.Name = "PurchaseReceipts_Label";
             PurchaseReceipts_Label.Padding = new Padding(5);
-            PurchaseReceipts_Label.Size = new Size(327, 38);
+            PurchaseReceipts_Label.Size = new Size(440, 47);
             PurchaseReceipts_Label.TabIndex = 0;
             PurchaseReceipts_Label.Tag = "";
             PurchaseReceipts_Label.Text = "Make purchase receipts mandatory";
@@ -196,7 +196,7 @@ namespace Sales_Tracker.Settings.Menus
             SalesReceipts_Label.Location = new Point(325, 473);
             SalesReceipts_Label.Name = "SalesReceipts_Label";
             SalesReceipts_Label.Padding = new Padding(5);
-            SalesReceipts_Label.Size = new Size(290, 38);
+            SalesReceipts_Label.Size = new Size(391, 47);
             SalesReceipts_Label.TabIndex = 0;
             SalesReceipts_Label.Tag = "";
             SalesReceipts_Label.Text = "Make sales receipts mandatory";
@@ -209,7 +209,7 @@ namespace Sales_Tracker.Settings.Menus
             ColorTheme_Label.Font = new Font("Segoe UI", 10F);
             ColorTheme_Label.Location = new Point(495, 282);
             ColorTheme_Label.Name = "ColorTheme_Label";
-            ColorTheme_Label.Size = new Size(120, 28);
+            ColorTheme_Label.Size = new Size(164, 37);
             ColorTheme_Label.TabIndex = 0;
             ColorTheme_Label.Text = "Color theme";
             ColorTheme_Label.Click += CloseAllPanels;
@@ -386,7 +386,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowTooltips_Label.Location = new Point(472, 321);
             ShowTooltips_Label.Name = "ShowTooltips_Label";
             ShowTooltips_Label.Padding = new Padding(5);
-            ShowTooltips_Label.Size = new Size(143, 38);
+            ShowTooltips_Label.Size = new Size(190, 47);
             ShowTooltips_Label.TabIndex = 250;
             ShowTooltips_Label.Tag = "";
             ShowTooltips_Label.Text = "Show tooltips";
@@ -418,7 +418,7 @@ namespace Sales_Tracker.Settings.Menus
             AnimateButtons_Label.Location = new Point(404, 511);
             AnimateButtons_Label.Name = "AnimateButtons_Label";
             AnimateButtons_Label.Padding = new Padding(5);
-            AnimateButtons_Label.Size = new Size(211, 38);
+            AnimateButtons_Label.Size = new Size(282, 47);
             AnimateButtons_Label.TabIndex = 252;
             AnimateButtons_Label.Tag = "";
             AnimateButtons_Label.Text = "Animate button clicks";
@@ -450,7 +450,7 @@ namespace Sales_Tracker.Settings.Menus
             ShowHasReceiptColumn_Label.Location = new Point(217, 587);
             ShowHasReceiptColumn_Label.Name = "ShowHasReceiptColumn_Label";
             ShowHasReceiptColumn_Label.Padding = new Padding(5);
-            ShowHasReceiptColumn_Label.Size = new Size(398, 38);
+            ShowHasReceiptColumn_Label.Size = new Size(537, 47);
             ShowHasReceiptColumn_Label.TabIndex = 254;
             ShowHasReceiptColumn_Label.Tag = "";
             ShowHasReceiptColumn_Label.Text = "Show \"Has receipt\" column for transactions";
@@ -500,7 +500,7 @@ namespace Sales_Tracker.Settings.Menus
             EnableAISearch_Label.Location = new Point(297, 663);
             EnableAISearch_Label.Name = "EnableAISearch_Label";
             EnableAISearch_Label.Padding = new Padding(5);
-            EnableAISearch_Label.Size = new Size(318, 38);
+            EnableAISearch_Label.Size = new Size(430, 47);
             EnableAISearch_Label.TabIndex = 257;
             EnableAISearch_Label.Tag = "";
             EnableAISearch_Label.Text = "Enable AI search (full version only)";
@@ -550,7 +550,7 @@ namespace Sales_Tracker.Settings.Menus
             AnimateCharts_Label.Location = new Point(463, 549);
             AnimateCharts_Label.Name = "AnimateCharts_Label";
             AnimateCharts_Label.Padding = new Padding(5);
-            AnimateCharts_Label.Size = new Size(152, 38);
+            AnimateCharts_Label.Size = new Size(203, 47);
             AnimateCharts_Label.TabIndex = 260;
             AnimateCharts_Label.Tag = "";
             AnimateCharts_Label.Text = "Animate charts";
@@ -582,14 +582,15 @@ namespace Sales_Tracker.Settings.Menus
             ShowCompanyLogo_Label.Location = new Point(413, 625);
             ShowCompanyLogo_Label.Name = "ShowCompanyLogo_Label";
             ShowCompanyLogo_Label.Padding = new Padding(5);
-            ShowCompanyLogo_Label.Size = new Size(202, 38);
+            ShowCompanyLogo_Label.Size = new Size(270, 47);
             ShowCompanyLogo_Label.TabIndex = 262;
             ShowCompanyLogo_Label.Tag = "";
             ShowCompanyLogo_Label.Text = "Show company logo";
             // 
             // General_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);
             Controls.Add(ShowCompanyLogo_CheckBox);

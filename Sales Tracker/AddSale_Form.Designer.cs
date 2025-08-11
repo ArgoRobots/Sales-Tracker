@@ -680,7 +680,8 @@ namespace Sales_Tracker
             // 
             // AddSale_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1514, 639);
             Controls.Add(MultipleItems_CheckBox);
             Controls.Add(MultipleItems_Label);

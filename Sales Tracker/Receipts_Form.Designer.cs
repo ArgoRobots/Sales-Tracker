@@ -423,7 +423,8 @@
             // 
             // Receipts_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1418, 794);
             Controls.Add(SelectAll_Button);
             Controls.Add(Total_Label);

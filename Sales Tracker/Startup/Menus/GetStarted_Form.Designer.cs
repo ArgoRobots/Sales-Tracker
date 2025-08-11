@@ -121,7 +121,8 @@ namespace Sales_Tracker.Startup.Menus
             // 
             // GetStarted_Form
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(250, 250, 250);
             ClientSize = new Size(1320, 825);
             Controls.Add(OpenCompany_Button);
