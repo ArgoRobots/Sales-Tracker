@@ -25,7 +25,7 @@ namespace Sales_Tracker.Charts
         public static string AccountantsTransactions => Translate("Transactions managed by accountants");
 
         // Comparative Analysis Charts
-        public static string SalesVsExpenses => Translate("Total expenses vs. total sales");
+        public static string SalesVsExpenses => Translate("Total expenses vs. total revenue");
         public static string AverageTransactionValue => Translate("Average transaction value");
         public static string TotalTransactions => Translate("Total transactions");
         public static string AverageShippingCosts => Translate("Average shipping costs");
@@ -34,11 +34,11 @@ namespace Sales_Tracker.Charts
         public static string GrowthRates => Translate("Expenses and revenue growth rates");
 
         // Returns Analysis Charts
-        public static string ReturnsOverTime => Translate("Returns Over Time");
-        public static string ReturnReasons => Translate("Return Reasons Distribution");
-        public static string ReturnFinancialImpact => Translate("Financial Impact of Returns");
-        public static string ReturnsByCategory => Translate("Returns by Category");
-        public static string ReturnsByProduct => Translate("Returns by Product");
-        public static string PurchaseVsSaleReturns => Translate("Purchase vs Sale Returns");
+        public static string ReturnsOverTime => Translate("Returns over time");
+        public static string ReturnReasons => Translate("Return reasons distribution");
+        public static string ReturnFinancialImpact => Translate("Financial impact of returns");
+        public static string ReturnsByCategory => Translate("Returns by category");
+        public static string ReturnsByProduct => Translate("Returns by product");
+        public static string PurchaseVsSaleReturns => Translate("Purchase vs. sale returns");
     }
 }
