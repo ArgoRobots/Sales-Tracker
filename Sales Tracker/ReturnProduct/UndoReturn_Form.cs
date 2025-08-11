@@ -108,7 +108,7 @@ namespace Sales_Tracker
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = CustomColors.Text,
                 AutoSize = true,
-                Location = new Point(ReturnInfo_Label.Left, ReturnInfo_Label.Bottom + 10)
+                Location = new Point(ReturnInformation_Label.Left, ReturnInfo_Label.Bottom + 10)
             };
             Controls.Add(_selectItemsLabel);
 
@@ -220,12 +220,7 @@ namespace Sales_Tracker
             // Adjust form height to accommodate new controls
             int additionalHeight = _itemsPanel.Bottom - ReturnInfo_Label.Bottom;
             Height += additionalHeight;
-            MinimumSize = new Size(Width, Height);
-
-            // Move existing controls down
-            UndoReason_Label.Top += additionalHeight;
-            UndoReason_TextBox.Top += additionalHeight;
-            CharacterCount_Label.Top += additionalHeight;
+            MinimumSize = Size;
 
             // Update validation since we now need at least one item selected for partial undos
             ValidateInputs();

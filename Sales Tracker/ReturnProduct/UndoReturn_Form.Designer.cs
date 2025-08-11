@@ -37,12 +37,12 @@ namespace Sales_Tracker
         /// </summary>
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges9 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Title_Label = new Label();
             TransactionInfo_Label = new Label();
             ReturnInfo_Label = new Label();
@@ -78,12 +78,12 @@ namespace Sales_Tracker
             // 
             // ReturnInfo_Label
             // 
-            ReturnInfo_Label.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ReturnInfo_Label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ReturnInfo_Label.AutoEllipsis = true;
             ReturnInfo_Label.Font = new Font("Segoe UI", 11F);
-            ReturnInfo_Label.Location = new Point(72, 315);
+            ReturnInfo_Label.Location = new Point(72, 325);
             ReturnInfo_Label.Name = "ReturnInfo_Label";
-            ReturnInfo_Label.Size = new Size(609, 145);
+            ReturnInfo_Label.Size = new Size(609, 100);
             ReturnInfo_Label.TabIndex = 3;
             ReturnInfo_Label.Text = "Return info...";
             // 
@@ -92,7 +92,7 @@ namespace Sales_Tracker
             UndoReason_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             UndoReason_Label.AutoSize = true;
             UndoReason_Label.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            UndoReason_Label.Location = new Point(42, 468);
+            UndoReason_Label.Location = new Point(42, 438);
             UndoReason_Label.Name = "UndoReason_Label";
             UndoReason_Label.Size = new Size(272, 30);
             UndoReason_Label.TabIndex = 4;
@@ -103,7 +103,7 @@ namespace Sales_Tracker
             UndoReason_TextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             UndoReason_TextBox.BorderRadius = 6;
             UndoReason_TextBox.Cursor = Cursors.IBeam;
-            UndoReason_TextBox.CustomizableEdges = customizableEdges7;
+            UndoReason_TextBox.CustomizableEdges = customizableEdges1;
             UndoReason_TextBox.DefaultText = "";
             UndoReason_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
             UndoReason_TextBox.DisabledState.FillColor = Color.FromArgb(226, 226, 226);
@@ -112,14 +112,14 @@ namespace Sales_Tracker
             UndoReason_TextBox.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
             UndoReason_TextBox.Font = new Font("Segoe UI", 9F);
             UndoReason_TextBox.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            UndoReason_TextBox.Location = new Point(42, 506);
+            UndoReason_TextBox.Location = new Point(42, 476);
             UndoReason_TextBox.Margin = new Padding(6, 8, 6, 8);
             UndoReason_TextBox.MaxLength = 500;
             UndoReason_TextBox.Multiline = true;
             UndoReason_TextBox.Name = "UndoReason_TextBox";
             UndoReason_TextBox.PlaceholderText = "";
             UndoReason_TextBox.SelectedText = "";
-            UndoReason_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            UndoReason_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             UndoReason_TextBox.Size = new Size(670, 120);
             UndoReason_TextBox.TabIndex = 5;
             UndoReason_TextBox.TextChanged += UndoReason_TextBox_TextChanged;
@@ -130,7 +130,7 @@ namespace Sales_Tracker
             UndoReturn_Button.BorderColor = Color.LightGray;
             UndoReturn_Button.BorderRadius = 2;
             UndoReturn_Button.BorderThickness = 1;
-            UndoReturn_Button.CustomizableEdges = customizableEdges9;
+            UndoReturn_Button.CustomizableEdges = customizableEdges3;
             UndoReturn_Button.DisabledState.BorderColor = Color.DarkGray;
             UndoReturn_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             UndoReturn_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -139,10 +139,10 @@ namespace Sales_Tracker
             UndoReturn_Button.FillColor = Color.White;
             UndoReturn_Button.Font = new Font("Segoe UI", 10F);
             UndoReturn_Button.ForeColor = Color.Black;
-            UndoReturn_Button.Location = new Point(540, 685);
+            UndoReturn_Button.Location = new Point(540, 655);
             UndoReturn_Button.Margin = new Padding(4, 5, 4, 5);
             UndoReturn_Button.Name = "UndoReturn_Button";
-            UndoReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            UndoReturn_Button.ShadowDecoration.CustomizableEdges = customizableEdges4;
             UndoReturn_Button.Size = new Size(200, 45);
             UndoReturn_Button.TabIndex = 6;
             UndoReturn_Button.Text = "Undo Return";
@@ -154,7 +154,7 @@ namespace Sales_Tracker
             Cancel_Button.BorderColor = Color.LightGray;
             Cancel_Button.BorderRadius = 2;
             Cancel_Button.BorderThickness = 1;
-            Cancel_Button.CustomizableEdges = customizableEdges11;
+            Cancel_Button.CustomizableEdges = customizableEdges5;
             Cancel_Button.DisabledState.BorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.CustomBorderColor = Color.DarkGray;
             Cancel_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -162,10 +162,10 @@ namespace Sales_Tracker
             Cancel_Button.FillColor = Color.White;
             Cancel_Button.Font = new Font("Segoe UI", 10F);
             Cancel_Button.ForeColor = Color.Black;
-            Cancel_Button.Location = new Point(332, 685);
+            Cancel_Button.Location = new Point(332, 655);
             Cancel_Button.Margin = new Padding(4, 5, 4, 5);
             Cancel_Button.Name = "Cancel_Button";
-            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            Cancel_Button.ShadowDecoration.CustomizableEdges = customizableEdges6;
             Cancel_Button.Size = new Size(200, 45);
             Cancel_Button.TabIndex = 7;
             Cancel_Button.Text = "Cancel";
@@ -185,7 +185,7 @@ namespace Sales_Tracker
             // 
             ReturnInformation_Label.AutoSize = true;
             ReturnInformation_Label.Font = new Font("Segoe UI", 11F);
-            ReturnInformation_Label.Location = new Point(44, 280);
+            ReturnInformation_Label.Location = new Point(44, 290);
             ReturnInformation_Label.Name = "ReturnInformation_Label";
             ReturnInformation_Label.Size = new Size(199, 30);
             ReturnInformation_Label.TabIndex = 11;
@@ -196,7 +196,7 @@ namespace Sales_Tracker
             CharacterCount_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             CharacterCount_Label.AutoSize = true;
             CharacterCount_Label.Font = new Font("Segoe UI", 10F);
-            CharacterCount_Label.Location = new Point(648, 634);
+            CharacterCount_Label.Location = new Point(648, 604);
             CharacterCount_Label.Name = "CharacterCount_Label";
             CharacterCount_Label.Size = new Size(64, 28);
             CharacterCount_Label.TabIndex = 12;
@@ -206,7 +206,7 @@ namespace Sales_Tracker
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(753, 744);
+            ClientSize = new Size(753, 714);
             Controls.Add(CharacterCount_Label);
             Controls.Add(ReturnInformation_Label);
             Controls.Add(TransactionDetails_Label);
@@ -221,7 +221,7 @@ namespace Sales_Tracker
             Margin = new Padding(4, 5, 4, 5);
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(775, 800);
+            MinimumSize = new Size(775, 770);
             Name = "UndoReturn_Form";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
