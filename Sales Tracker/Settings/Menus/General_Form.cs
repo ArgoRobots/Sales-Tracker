@@ -123,7 +123,7 @@ namespace Sales_Tracker.Settings.Menus
         private void MoreInformation_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Tools.OpenLink("https://argorobots.com/documentation/index.html#anonymous-data");
+            Tools.OpenLink("https://argorobots.com/documentation/index.php#anonymous-data");
         }
         private void ExportData_Button_Click(object sender, EventArgs e)
         {

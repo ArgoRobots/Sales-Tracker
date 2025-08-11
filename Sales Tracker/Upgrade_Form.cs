@@ -73,7 +73,7 @@ namespace Sales_Tracker
         // Event handlers
         private void Upgrade_Button_Click(object sender, EventArgs e)
         {
-            Tools.OpenLink("https://argorobots.com/upgrade/index.html");
+            Tools.OpenLink("https://argorobots.com/upgrade/index.php");
         }
         private void EnterKey_Button_Click(object sender, EventArgs e)
         {
@@ -82,7 +82,7 @@ namespace Sales_Tracker
         }
         private void LearnMore_Button_Click(object sender, EventArgs e)
         {
-            Tools.OpenLink("https://argorobots.com/documentation/index.html#version-comparison");
+            Tools.OpenLink("https://argorobots.com/documentation/index.php#version-comparison");
         }
 
         // EnterKey_Panel

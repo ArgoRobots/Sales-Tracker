@@ -95,7 +95,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void WhatsNew_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Tools.OpenLink("https://argorobots.com/whats-new/index.html");
+            Tools.OpenLink("https://argorobots.com/whats-new/index.php");
         }
 
         // Update Manager Event Handlers

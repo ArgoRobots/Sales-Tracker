@@ -688,7 +688,7 @@ namespace Sales_Tracker.ImportSpreadsheet
         private void OpenTutorial_Button_Click(object sender, EventArgs e)
         {
             CloseAllPanels(null, null);
-            Tools.OpenLink("https://argorobots.com/documentation/index.html#spreadsheets");
+            Tools.OpenLink("https://argorobots.com/documentation/index.php#spreadsheets");
         }
         private async void IncludeHeaderRow_CheckBox_CheckedChanged(object sender, EventArgs e)
         {

@@ -211,7 +211,7 @@ namespace Sales_Tracker.Passwords
         }
         private void Message_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Tools.OpenLink("https://argorobots.com/upgrade/index.html");
+            Tools.OpenLink("https://argorobots.com/upgrade/index.php");
         }
         private void ValidateInputs(object sender, EventArgs e)
         {

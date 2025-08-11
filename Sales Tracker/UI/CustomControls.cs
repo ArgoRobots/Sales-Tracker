@@ -394,13 +394,13 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("What's new", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                Tools.OpenLink("https://argorobots.com/whats-new/index.html");
+                Tools.OpenLink("https://argorobots.com/whats-new/index.php");
             };
 
             menuBtn = ConstructBtnForMenu("Documentaion", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                Tools.OpenLink("https://argorobots.com/documentation/index.html");
+                Tools.OpenLink("https://argorobots.com/documentation/index.php");
             };
 
             menuBtn = ConstructBtnForMenu("Show logs", PanelBtnWidth, true, flowPanel);
@@ -421,7 +421,7 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("About", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
-                Tools.OpenLink("https://argorobots.com/about-us/index.html");
+                Tools.OpenLink("https://argorobots.com/about-us/index.php");
             };
 
             menuBtn = ConstructBtnForMenu("Share feedback", PanelBtnWidth, true, flowPanel);

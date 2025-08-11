@@ -42,7 +42,7 @@ namespace Sales_Tracker
 
         private void Documentation_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Tools.OpenLink("https://argorobots.com/documentation/index.html");
+            Tools.OpenLink("https://argorobots.com/documentation/index.php");
         }
     }
 }
