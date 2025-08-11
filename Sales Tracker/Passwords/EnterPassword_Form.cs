@@ -102,6 +102,7 @@ namespace Sales_Tracker.Passwords
             else if (_requiresAccountantSelection)
             {
                 EnterPassword_Label.Text = LanguageManager.TranslateString("Select user");
+                PasswordEye_Button.Visible = false;
             }
 
             EnterPassword_Label.Left = (Width - EnterPassword_Label.Width) / 2;
