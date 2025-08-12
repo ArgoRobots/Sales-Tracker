@@ -381,13 +381,15 @@ namespace Sales_Tracker
         {
             if (!Properties.Settings.Default.LicenseActivated)
             {
+                int height = Top_Panel.Height;
+
                 _upgrade_Button = new Guna2Button
                 {
                     Anchor = AnchorStyles.Top | AnchorStyles.Right,
                     Image = Resources.Upgrade,
                     ImageSize = new Size(32, 32),
-                    Size = new Size(45, 45),
-                    Left = Help_Button.Left - 45
+                    Size = new Size(height, height),
+                    Left = Help_Button.Left - height
                 };
                 _upgrade_Button.Click += Upgrade_Button_Click;
                 Top_Panel.Controls.Add(_upgrade_Button);

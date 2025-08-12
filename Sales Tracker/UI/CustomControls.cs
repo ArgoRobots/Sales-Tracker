@@ -162,7 +162,6 @@ namespace Sales_Tracker.UI
                 Font = new Font("Segoe UI", 10),
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = true,
-                Top = 1,
                 Name = FormatControlName(text, "_Label"),
                 Text = text,
                 AccessibleDescription = AccessibleDescriptionManager.AlignRight,
@@ -193,8 +192,9 @@ namespace Sales_Tracker.UI
             };
             control.Controls.Add(KeyShortcut);
 
-            // The .AutoSize property does not work until the control has been added
+            // Position it after adding so AutoSize is calculated
             KeyShortcut.Left = control.Width - KeyShortcut.Width - offsetForKeyboardShortcutOrArrow;
+            KeyShortcut.Top = (control.Height - KeyShortcut.Height) / 2;  // Center vertically
         }
 
         // FileMenu

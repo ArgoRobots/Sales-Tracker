@@ -219,22 +219,20 @@ namespace Sales_Tracker
         }
         private void SetCustomRangeControls()
         {
-            if (Custom_RadioButton.Checked)
+            foreach (Control control in GetCustomRangeControls())
             {
-                foreach (Control control in GetCustomRangeControls())
+                if (Custom_RadioButton.Checked)
                 {
                     Main_Panel.Controls.Add(control);
                 }
-                Main_Panel.Height = 620;
-            }
-            else
-            {
-                foreach (Control control in GetCustomRangeControls())
+                else
                 {
                     Main_Panel.Controls.Remove(control);
                 }
-                Main_Panel.Height = 420;
             }
+
+            Control bottomControl = Custom_RadioButton.Checked ? To_DateTimePicker : Custom_RadioButton;
+            Main_Panel.Height = bottomControl.Bottom + Main_Panel.Height - Bottom_Separator.Bottom + 50;
         }
         public List<Control> GetCustomRangeControls()
         {
