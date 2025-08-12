@@ -17,7 +17,8 @@ namespace Sales_Tracker.UI
         // Properties
         private static DataGridViewRow _removedRow;
         private static readonly byte _rowHeight = 35, _columnHeaderHeight = 60;
-        private static readonly string _deleteAction = "deleted", _moveAction = "move";
+        private static readonly string _deleteAction = LanguageManager.TranslateString("deleted");
+        private static readonly string _moveAction = LanguageManager.TranslateString("moved");
         private static DataGridViewCell _currentlyHoveredNoteCell;
         private static bool _isMouseDown;
 
