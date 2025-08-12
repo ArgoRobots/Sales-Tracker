@@ -927,7 +927,7 @@ namespace Sales_Tracker
             int width = _panelWidth + _spaceOnSidesOfPanel;
             _flowPanel = new()
             {
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom,
+                Anchor = AnchorStyles.Top,
                 Location = new Point((ClientSize.Width - width) / 2, _topForPanels + _labelPanelHeight + CustomControls.SpaceBetweenControls),
                 Size = new Size(width, _panelAndTextBoxHeight + CustomControls.SpaceBetweenControls),
                 Padding = new Padding(_spaceOnSidesOfPanel / 2, 0, _spaceOnSidesOfPanel / 2, 0),
@@ -974,11 +974,10 @@ namespace Sales_Tracker
 
             _flowPanel.MinimumSize = new Size(_flowPanel.Width, Math.Min(totalHeight, _flowPanelMaxHeight));
             _flowPanel.Height = _flowPanel.MinimumSize.Height;
-            _flowPanel.Anchor = AnchorStyles.None;
-            MinimumSize = new Size(Width, _flowPanel.Bottom + 200);
-            _flowPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             _flowPanel.Top = _topForPanels + _labelPanelHeight + CustomControls.SpaceBetweenControls;
             _addButton.Top = _flowPanel.Bottom + CustomControls.SpaceBetweenControls;
+
+            MinimumSize = new Size(Width, _flowPanel.Bottom + 200);
         }
 
         // Warning labels
