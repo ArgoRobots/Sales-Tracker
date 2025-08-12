@@ -49,7 +49,7 @@ namespace Sales_Tracker.Settings.Menus
             Security_Label.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold);
             Security_Label.Location = new Point(564, 37);
             Security_Label.Name = "Security_Label";
-            Security_Label.Size = new Size(160, 51);
+            Security_Label.Size = new Size(123, 40);
             Security_Label.TabIndex = 326;
             Security_Label.Text = "Security";
             // 
@@ -101,7 +101,7 @@ namespace Sales_Tracker.Settings.Menus
             EncryptFiles_Label.Margin = new Padding(0);
             EncryptFiles_Label.Name = "EncryptFiles_Label";
             EncryptFiles_Label.Padding = new Padding(5);
-            EncryptFiles_Label.Size = new Size(391, 47);
+            EncryptFiles_Label.Size = new Size(291, 38);
             EncryptFiles_Label.TabIndex = 328;
             EncryptFiles_Label.Text = "Encrypt Argo Sales Tracker files";
             EncryptFiles_Label.Click += EncryptFiles_Label_Click;
@@ -128,7 +128,7 @@ namespace Sales_Tracker.Settings.Menus
             // 
             // Security_Form
             // 
-            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1250, 865);

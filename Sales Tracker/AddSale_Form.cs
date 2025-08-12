@@ -150,6 +150,7 @@ namespace Sales_Tracker
             {
                 if (_addButton == null)
                 {
+                    CalculatePanelDimensions();
                     ConstructFlowPanel();
                     ConstructAddButton();
                     ConstructControlsForMultipleProducts();
@@ -165,10 +166,6 @@ namespace Sales_Tracker
         {
             Tools.OpenForm(new Products_Form(false));
             CheckIfProductsExist();
-        }
-        private void WarningAccountant_LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Tools.OpenForm(new Accountants_Form());
         }
         private void Receipt_Button_Click(object sender, EventArgs e)
         {
@@ -607,13 +604,26 @@ namespace Sales_Tracker
             ValidateInputs(null, null);
         }
 
+        // Properties for multiple items
+        private readonly byte _panelAndTextBoxHeight = 45, _labelPanelHeight = 30, _circleButtonHeight = 38, _spaceOnSidesOfPanel = 100;
+        private readonly short _flowPanelMaxHeight = 300;
+        private int _topForPanels, _panelWidth;
+        private readonly List<Guna2Panel> _panelsForMultipleProducts_List = [];
+        private Guna2Panel _labelPanel;
+        private Guna2CircleButton _addButton;
+        private FlowLayoutPanel _flowPanel;
+        private enum TextBoxnames
+        {
+            name,
+            quantity,
+            pricePerUnit
+        }
+
         // Methods for multiple items
         private List<Control> GetControlsForSingleProduct()
         {
             return [ProductName_TextBox, ProductName_Label, Quantity_TextBox, Quantity_Label, PricePerUnit_TextBox, PricePerUnit_Label];
         }
-        private readonly byte _panelAndTextBoxHeight = 45, _labelPanelHeight = 30, _circleButtonHeight = 38, _spaceOnSidesOfPanel = 100;
-        private readonly short _panelWidth = 673, _flowPanelMaxHeight = 300, _topForPanels = 570;
         private void SetControlsForSingleProduct()
         {
             byte space = CustomControls.SpaceBetweenControls;
@@ -668,7 +678,7 @@ namespace Sales_Tracker
             _labelPanel.Visible = false;
             _flowPanel.Visible = false;
             _addButton.Visible = false;
-            MinimumSize = new Size(Width, 695);
+            MinimumSize = new Size(Width, Notes_TextBox.Bottom + 100);
             Size = MinimumSize;
 
             SetReceiptLabelLocation();
@@ -736,14 +746,6 @@ namespace Sales_Tracker
                 _addButton.Visible = true;
             }
         }
-        private readonly List<Guna2Panel> _panelsForMultipleProducts_List = [];
-        private enum TextBoxnames
-        {
-            name,
-            quantity,
-            pricePerUnit
-        }
-        private Guna2Panel _labelPanel;
         private void ConstructControlsForMultipleProducts()
         {
             Guna2Panel panel = new()
@@ -897,8 +899,6 @@ namespace Sales_Tracker
             SetHeightAndAddButton();
             ValidateInputs(null, null);
         }
-        private Guna2CircleButton _addButton;
-        private FlowLayoutPanel _flowPanel;
         private void ConstructFlowPanel()
         {
             int width = _panelWidth + _spaceOnSidesOfPanel;
@@ -954,7 +954,21 @@ namespace Sales_Tracker
             _flowPanel.Top = _topForPanels + _labelPanelHeight + CustomControls.SpaceBetweenControls;
             _addButton.Top = _flowPanel.Bottom + CustomControls.SpaceBetweenControls;
 
-            MinimumSize = new Size(Width, _flowPanel.Bottom + 200);
+            MinimumSize = new Size(Width, _flowPanel.Bottom + 150);
+        }
+        private void CalculatePanelDimensions()
+        {
+            _topForPanels = Notes_TextBox.Bottom + 20;
+
+            // Calculate width based on the content that needs to fit in the panels
+            byte space = CustomControls.SpaceBetweenControls;
+            int contentWidth = ProductName_TextBox.Width + space +
+                             PricePerUnit_TextBox.Width + space +
+                             Quantity_TextBox.Width + space +
+                             _circleButtonHeight + space;  // For the minus button
+
+            // Set panel width based on content
+            _panelWidth = contentWidth;
         }
 
         // Warning labels

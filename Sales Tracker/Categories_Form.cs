@@ -12,6 +12,7 @@ namespace Sales_Tracker
         // Properties
         private static Categories_Form _instance;
         private readonly MainMenu_Form.SelectedOption _oldOption;
+        private readonly int _topForDataGridView;
 
         // Getters
         public static Categories_Form Instance => _instance;
@@ -25,6 +26,7 @@ namespace Sales_Tracker
             _instance = this;
 
             _oldOption = MainMenu_Form.Instance.Selected;
+            _topForDataGridView = ShowingResultsFor_Label.Bottom + 20;
             ConstructDataGridViews();
             LoadCategories();
             CheckRadioButton(checkPurchaseRadioButton);
@@ -212,7 +214,6 @@ namespace Sales_Tracker
             { Column.CategoryName, "Category" },
         };
         private Guna2DataGridView selectedDataGridView;
-        private const byte topForDataGridView = 250;
 
         // DataGridView getters
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -224,8 +225,8 @@ namespace Sales_Tracker
         private void CenterDataGridView()
         {
             if (selectedDataGridView == null) { return; }
-            selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - topForDataGridView - 70);
-            selectedDataGridView.Location = new Point((ClientSize.Width - selectedDataGridView.Width) / 2, topForDataGridView);
+            selectedDataGridView.Size = new Size(ClientSize.Width - 80, ClientSize.Height - _topForDataGridView - 70);
+            selectedDataGridView.Location = new Point((ClientSize.Width - selectedDataGridView.Width) / 2, _topForDataGridView);
         }
         private void ConstructDataGridViews()
         {
@@ -234,13 +235,13 @@ namespace Sales_Tracker
             Purchase_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(Purchase_DataGridView, "purchases_DataGridView", size, ColumnHeaders, null, this);
             Purchase_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
-            Purchase_DataGridView.Location = new Point((ClientSize.Width - Purchase_DataGridView.Width) / 2, topForDataGridView);
+            Purchase_DataGridView.Location = new Point((ClientSize.Width - Purchase_DataGridView.Width) / 2, _topForDataGridView);
             Purchase_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
 
             Sale_DataGridView = new();
             DataGridViewManager.InitializeDataGridView(Sale_DataGridView, "sales_DataGridView", size, ColumnHeaders, null, this);
             Sale_DataGridView.ColumnWidthChanged -= DataGridViewManager.DataGridView_ColumnWidthChanged;
-            Sale_DataGridView.Location = new Point((ClientSize.Width - Sale_DataGridView.Width) / 2, topForDataGridView);
+            Sale_DataGridView.Location = new Point((ClientSize.Width - Sale_DataGridView.Width) / 2, _topForDataGridView);
             Sale_DataGridView.Tag = MainMenu_Form.DataGridViewTag.Category;
             ThemeManager.CustomizeScrollBar(Sale_DataGridView);
         }

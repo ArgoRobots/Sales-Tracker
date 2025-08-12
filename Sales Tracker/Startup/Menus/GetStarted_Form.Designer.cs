@@ -91,7 +91,7 @@ namespace Sales_Tracker.Startup.Menus
             // 
             OpenRecent_Label.AutoSize = true;
             OpenRecent_Label.Font = new Font("Segoe UI", 12F);
-            OpenRecent_Label.Location = new Point(45, 115);
+            OpenRecent_Label.Location = new Point(45, 110);
             OpenRecent_Label.Name = "OpenRecent_Label";
             OpenRecent_Label.Size = new Size(147, 32);
             OpenRecent_Label.TabIndex = 0;

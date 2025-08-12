@@ -25,8 +25,7 @@ namespace Sales_Tracker
         // Properties
         private static MainMenu_Form _instance;
         public static readonly string _noteTextKey = "note", _rowTagKey = "RowTag", _itemsKey = "Items", _purchaseDataKey = "PurchaseData", _tagKey = "Tag";
-        private static readonly byte _chartTop = 220;
-        private static readonly short _analyticChartTop = 310;
+        private static int _chartTop, _analyticChartTop;
         private static Guna2Button _upgrade_Button;
 
         // Getters and setters
@@ -73,6 +72,9 @@ namespace Sales_Tracker
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
             NetSparkleUpdateManager.CheckForUpdates();
+
+            _chartTop = Purchases_Button.Bottom + 20;
+            _analyticChartTop = _analyticsTabButtons_Panel.Bottom + 20;
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void ConstructMainCharts()
