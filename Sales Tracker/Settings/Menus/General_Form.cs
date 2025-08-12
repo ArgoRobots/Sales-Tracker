@@ -23,6 +23,7 @@ namespace Sales_Tracker.Settings.Menus
             InitializeAdminModeControls();
             ThemeManager.SetThemeForForm(this);
             SetAccessibleDescription();
+            AlignLabels();
             LanguageManager.UpdateLanguageForControl(this);
             UpdateControls();
             AddEventHandlersToTextBoxes();
@@ -40,24 +41,26 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void SetAccessibleDescription()
         {
-            Language_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            Currency_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            ColorTheme_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            ShowTooltips_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            ShowDebugInfo_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            SendAnonymousInformation_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            PurchaseReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            SalesReceipts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            AnimateButtons_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            AnimateCharts_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            ShowHasReceiptColumn_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-            EnableAISearch_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
-
             Language_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
             Currency_TextBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
 
             // Prevent automatic translation since we handle it manually
             ColorTheme_ComboBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
+        }
+        private void AlignLabels()
+        {
+            Language_Label.Left = Language_TextBox.Left - Language_Label.Width - 2;
+            Currency_Label.Left = Currency_TextBox.Left - Currency_Label.Width - 2;
+            ColorTheme_Label.Left = ColorTheme_ComboBox.Left - ColorTheme_Label.Width - 2;
+            ShowTooltips_Label.Left = ShowTooltips_CheckBox.Left - ShowTooltips_Label.Width - 2;
+            ShowDebugInfo_Label.Left = ShowDebugInfo_CheckBox.Left - ShowDebugInfo_Label.Width - 2;
+            SendAnonymousInformation_Label.Left = SendAnonymousInformation_CheckBox.Left - SendAnonymousInformation_Label.Width - 2;
+            PurchaseReceipts_Label.Left = PurchaseReceipts_CheckBox.Left - PurchaseReceipts_Label.Width - 2;
+            SalesReceipts_Label.Left = SalesReceipts_CheckBox.Left - SalesReceipts_Label.Width - 2;
+            AnimateButtons_Label.Left = AnimateButtons_CheckBox.Left - AnimateButtons_Label.Width - 2;
+            AnimateCharts_Label.Left = AnimateCharts_CheckBox.Left - AnimateCharts_Label.Width - 2;
+            ShowHasReceiptColumn_Label.Left = ShowHasReceiptColumn_CheckBox.Left - ShowHasReceiptColumn_Label.Width - 2;
+            EnableAISearch_Label.Left = EnableAISearch_CheckBox.Left - EnableAISearch_Label.Width - 2;
         }
         private void AddEventHandlersToTextBoxes()
         {

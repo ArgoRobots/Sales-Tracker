@@ -30,6 +30,7 @@ namespace Sales_Tracker.Settings.Menus
             SetPasswordButton();
             UpdateTheme();
             SetAccessibleDescriptions();
+            AlignLabels();
             LanguageManager.UpdateLanguageForControl(this);
             CenterEncryptControls();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -41,8 +42,11 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void SetAccessibleDescriptions()
         {
-            EncryptFiles_Label.AccessibleDescription = AccessibleDescriptionManager.AlignRight;
             AddPassword_Button.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
+        }
+        private void AlignLabels()
+        {
+            EncryptFiles_Label.Left = EncryptFiles_CheckBox.Left - EncryptFiles_Label.Width - 2;
         }
         public void CenterEncryptControls()
         {

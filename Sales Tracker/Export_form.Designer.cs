@@ -263,7 +263,6 @@
             // 
             // Currency_TextBox
             // 
-            Currency_TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Currency_TextBox.CustomizableEdges = customizableEdges11;
             Currency_TextBox.DefaultText = "";
             Currency_TextBox.DisabledState.BorderColor = Color.FromArgb(208, 208, 208);
