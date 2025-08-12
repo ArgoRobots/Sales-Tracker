@@ -662,8 +662,10 @@ namespace Sales_Tracker.UI
             return
             [
                 new("Albanian", "sq"),          // Albania
+                new("Arabic", "ar"),            // Middle East, North Africa
                 new("Basque", "eu"),            // Basque Country
                 new("Belarusian", "be"),        // Belarus
+                new("Bengali", "bn"),           // Bangladesh, India
                 new("Bosnian", "bs"),           // Bosnia and Herzegovina
                 new("Bulgarian", "bg"),         // Bulgaria
                 new("Catalan", "ca"),           // Catalonia
@@ -675,13 +677,17 @@ namespace Sales_Tracker.UI
                 new("Dutch", "nl"),             // Netherlands, Belgium
                 new("English", "en"),           // North America, UK, Australia
                 new("Estonian", "et"),          // Estonia
+                new("Filipino", "fil"),         // Philippines
                 new("Finnish", "fi"),           // Finland
                 new("French", "fr"),            // France, Canada, Belgium
                 new("Galician", "gl"),          // Galicia
                 new("German", "de"),            // Germany, Austria
                 new("Greek", "el"),             // Greece
+                new("Hebrew", "he"),            // Israel
+                new("Hindi", "hi"),             // India
                 new("Hungarian", "hu"),         // Hungary
                 new("Icelandic", "is"),         // Iceland
+                new("Indonesian", "id"),        // Indonesia
                 new("Irish", "ga"),             // Ireland
                 new("Italian", "it"),           // Italy
                 new("Japanese", "ja"),          // Japan
@@ -690,8 +696,10 @@ namespace Sales_Tracker.UI
                 new("Lithuanian", "lt"),        // Lithuania
                 new("Luxembourgish", "lb"),     // Luxembourg
                 new("Macedonian", "mk"),        // North Macedonia
+                new("Malay", "ms"),             // Malaysia, Brunei
                 new("Maltese", "mt"),           // Malta
                 new("Norwegian", "no"),         // Norway
+                new("Persian", "fa"),           // Iran, Afghanistan
                 new("Polish", "pl"),            // Poland
                 new("Portuguese", "pt"),        // Portugal, Brazil
                 new("Romanian", "ro"),          // Romania
@@ -700,9 +708,13 @@ namespace Sales_Tracker.UI
                 new("Slovak", "sk"),            // Slovakia
                 new("Slovenian", "sl"),         // Slovenia
                 new("Spanish", "es"),           // Spain, Latin America
+                new("Swahili", "sw"),           // East Africa
                 new("Swedish", "sv"),           // Sweden
+                new("Thai", "th"),              // Thailand
                 new("Turkish", "tr"),           // Turkey
                 new("Ukrainian", "uk"),         // Ukraine
+                new("Urdu", "ur"),              // Pakistan, India
+                new("Vietnamese", "vi"),        // Vietnam
             ];
         }
         public static string? GetDefaultLanguageAbbreviation(string targetLanguageName = null)
