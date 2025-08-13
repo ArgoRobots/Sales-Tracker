@@ -70,6 +70,11 @@ namespace Sales_Tracker.UI
         // Construct things for menus
         public static Guna2Panel ConstructPanelForMenu(Size size, string name)
         {
+            float scale = DpiHelper.GetRelativeDpiScale();
+
+            // Only scale width, height is pre-calculated with scaled values
+            Size scaledSize = new((int)(size.Width * scale), size.Height);
+
             Guna2Panel panel = new()
             {
                 BorderStyle = DashStyle.Solid,
@@ -77,41 +82,49 @@ namespace Sales_Tracker.UI
                 BorderThickness = 1,
                 BorderRadius = 4,
                 FillColor = CustomColors.PanelBtn,
-                Size = size,
+                Size = scaledSize,
                 Name = name
             };
 
-            int half = SpaceForPanel / 2;
+            int scaledHalf = (int)(SpaceForPanel * scale / 2);
             FlowLayoutPanel flowLayoutPanel = new()
             {
                 BackColor = CustomColors.PanelBtn,
-                Size = new Size(size.Width - SpaceForPanel, size.Height - SpaceForPanel),
-                Location = new Point(half, half)
+                Size = new Size(scaledSize.Width - (int)(SpaceForPanel * scale), scaledSize.Height - (int)(SpaceForPanel * scale)),
+                Location = new Point(scaledHalf, scaledHalf)
             };
             panel.Controls.Add(flowLayoutPanel);
             return panel;
         }
         public static Guna2Separator ConstructSeperator(int width, Control control)
         {
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledWidth = (int)(width * scale);
+            int scaledMargin = (int)(5 * scale);
+
             Guna2Separator seperator = new()
             {
                 FillColor = CustomColors.ControlBorder,
                 BackColor = CustomColors.PanelBtn,
-                Size = new Size(width, 1),
-                Margin = new Padding(0, 5, 0, 5)
+                Size = new Size(scaledWidth, 1),
+                Margin = new Padding(0, scaledMargin, 0, scaledMargin)
             };
             control.Controls.Add(seperator);
             return seperator;
         }
         public static Guna2Button ConstructBtnForMenu(string text, int width, bool closeAllPanels, Control control)
         {
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledWidth = (int)(width * scale);
+            int scaledHeight = (int)(PanelButtonHeight * scale);
+
             Guna2Button menuBtn = new()
             {
-                Size = new Size(width, PanelButtonHeight),
+                Size = new Size(scaledWidth, scaledHeight),
                 FillColor = CustomColors.PanelBtn,
                 ForeColor = CustomColors.Text,
                 TextAlign = HorizontalAlignment.Left,
-                Font = new Font("Segoe UI", 10),
+                Font = new Font("Segoe UI", 10),  // Keep font same size
                 Text = LanguageManager.TranslateString(text),
                 Name = FormatControlName(text, "_Button"),
                 Margin = new Padding(0),
@@ -190,10 +203,15 @@ namespace Sales_Tracker.UI
                 Guna2Button btn = (Guna2Button)label.Parent;
                 btn.PerformClick();
             };
+
             control.Controls.Add(KeyShortcut);
 
             // Position it after adding so AutoSize is calculated
-            KeyShortcut.Left = control.Width - KeyShortcut.Width - offsetForKeyboardShortcutOrArrow;
+            // Scale the offset for the larger button
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledOffset = (int)(offsetForKeyboardShortcutOrArrow * scale);
+
+            KeyShortcut.Left = control.Width - KeyShortcut.Width - scaledOffset;
             KeyShortcut.Top = (control.Height - KeyShortcut.Height) / 2;  // Center vertically
         }
 
@@ -203,17 +221,25 @@ namespace Sales_Tracker.UI
         public static Guna2Button OpenRecentCompany_Button { get; set; }
         private static void ConstructFileMenu()
         {
-            FileMenu = ConstructPanelForMenu(new Size(PanelWidth, 9 * PanelButtonHeight + spaceForSeperator * 2 + SpaceForPanel), "fileMenu_Panel");
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledButtonHeight = (int)(PanelButtonHeight * scale);
+            int scaledSeparatorSpace = (int)(spaceForSeperator * scale);
+            int scaledSpaceForPanel = (int)(SpaceForPanel * scale);
+
+            // Calculate height using scaled values: 9 buttons + 2 separators + panel padding
+            int calculatedHeight = 9 * scaledButtonHeight + scaledSeparatorSpace * 2 + scaledSpaceForPanel;
+
+            FileMenu = ConstructPanelForMenu(new Size(PanelWidth, calculatedHeight), "fileMenu_Panel");
             FlowLayoutPanel flowPanel = (FlowLayoutPanel)FileMenu.Controls[0];
 
             Guna2Button menuBtn = ConstructBtnForMenu("Create new company", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenForm(new Startup_Form(["autoClickButton"]));
             };
 
             menuBtn = ConstructBtnForMenu("Open company", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 ArgoCompany.OpenCompanyWhenACompanyIsAlreadyOpen();
             };
@@ -241,34 +267,34 @@ namespace Sales_Tracker.UI
 
             menuBtn = ConstructBtnForMenu("Save", PanelBtnWidth, true, flowPanel);
             menuBtn.Name = "Save";
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 SaveAll();
             };
             ConstructKeyShortcut("Ctrl+S", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Save as...", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 ArgoCompany.SaveAs();
             };
             ConstructKeyShortcut("Ctrl+Shift+S", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Export as...", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenForm(new Export_Form());
             };
             ConstructKeyShortcut("Ctrl+E", menuBtn);
 
             menuBtn = ConstructBtnForMenu("Export receipts", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 Tools.OpenForm(new Receipts_Form());
             };
 
             menuBtn = ConstructBtnForMenu("Import spreadsheet", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 if (ShouldShowTutorial())
                 {
@@ -283,7 +309,7 @@ namespace Sales_Tracker.UI
             ConstructSeperator(PanelBtnWidth, flowPanel);
 
             menuBtn = ConstructBtnForMenu("Show company in folder", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
+            menuBtn.Click += (sender, e) =>
             {
                 Tools.ShowFileInFolder(Directories.ArgoCompany_file);
             };
@@ -318,7 +344,7 @@ namespace Sales_Tracker.UI
                     string text = Path.GetFileNameWithoutExtension(companyDir);
                     Guna2Button menuBtn = ConstructBtnForMenu(text, PanelBtnWidth, true, flowPanel);
                     menuBtn.Tag = companyDir;
-                    menuBtn.MouseEnter += (_, _) => CascadingMenu.KeepMenuOpen();
+                    menuBtn.MouseEnter += (sender, e) => CascadingMenu.KeepMenuOpen();
                     menuBtn.Click += (sender, e) =>
                     {
                         Guna2Button button = (Guna2Button)sender;
@@ -330,8 +356,12 @@ namespace Sales_Tracker.UI
 
             SetRightClickMenuHeight(RecentlyOpenedMenu);
 
+            // Use scaled button height for positioning
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledButtonHeight = (int)(PanelButtonHeight * scale);
+
             RecentlyOpenedMenu.Location = new Point(FileMenu.Right,
-                FileMenu.Top + PanelButtonHeight * 2);
+                FileMenu.Top + scaledButtonHeight * 2);
 
             MainMenu_Form.Instance.Controls.Add(RecentlyOpenedMenu);
             RecentlyOpenedMenu.BringToFront();
@@ -612,8 +642,12 @@ namespace Sales_Tracker.UI
             FlowLayoutPanel flowPanel = panel.Controls.OfType<FlowLayoutPanel>().FirstOrDefault();
             int controlCount = flowPanel.Controls.Cast<Control>().Count(c => c.Visible);
 
-            panel.Height = controlCount * PanelButtonHeight + SpaceForPanel;
-            flowPanel.Height = controlCount * PanelButtonHeight;
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledButtonHeight = (int)(PanelButtonHeight * scale);
+            int scaledSpaceForPanel = (int)(SpaceForPanel * scale);
+
+            panel.Height = controlCount * scaledButtonHeight + scaledSpaceForPanel;
+            flowPanel.Height = controlCount * scaledButtonHeight;
         }
         private static string FormatControlName(string text, string suffix)
         {
