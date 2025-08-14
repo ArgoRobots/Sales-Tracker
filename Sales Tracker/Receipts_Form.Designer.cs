@@ -102,7 +102,7 @@
             Search_TextBox.Location = new Point(1000, 199);
             Search_TextBox.Margin = new Padding(4, 5, 4, 5);
             Search_TextBox.Name = "Search_TextBox";
-            Search_TextBox.PlaceholderText = "";
+            Search_TextBox.PlaceholderText = "Search for receipts";
             Search_TextBox.SelectedText = "";
             Search_TextBox.ShadowDecoration.CustomizableEdges = customizableEdges2;
             Search_TextBox.Size = new Size(300, 50);
