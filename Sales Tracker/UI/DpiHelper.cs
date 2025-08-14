@@ -7,7 +7,6 @@
 
         /// <summary>
         /// Gets the relative DPI scale factor compared to the design baseline DPI.
-        /// Returns a scale factor where higher system DPI results in larger scaling values for UI elements.
         /// </summary>
         public static float GetRelativeDpiScale()
         {

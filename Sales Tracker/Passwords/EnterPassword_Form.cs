@@ -56,10 +56,12 @@ namespace Sales_Tracker.Passwords
         }
         private void ConstructAccountantControls()
         {
+            float scale = DpiHelper.GetRelativeDpiScale();
+
             // Accountant textbox
             _accountant_TextBox = new Guna2TextBox
             {
-                Size = new Size(350, 50),
+                Size = new Size(Password_TextBox.Width, (int)(50 * scale)),  // Match Password_TextBox width
                 Font = new Font("Segoe UI", 10),
                 PlaceholderText = LanguageManager.TranslateString("Accountant"),
                 Name = "Accountant_TextBox"
@@ -69,12 +71,14 @@ namespace Sales_Tracker.Passwords
 
             // Set up search box for accountants
             List<SearchResult> accountantResults = SearchBox.ConvertToSearchResults(PasswordManager.GetAccountantList());
-            SearchBox.Attach(_accountant_TextBox, this, () => accountantResults, 200, false, true, false, true);
+            SearchBox.Attach(_accountant_TextBox, this, () => accountantResults, (int)(200 * scale), false, true, false, true);
         }
         private void AdjustFormLayout()
         {
+            float scale = DpiHelper.GetRelativeDpiScale();
+
             int currentY = Password_TextBox.Top;
-            const int spacing = 20;
+            int spacing = (int)(20 * scale);
 
             // Position accountant controls if they exist
             if (_requiresAccountantSelection)
@@ -111,12 +115,12 @@ namespace Sales_Tracker.Passwords
             Enter_Button.Location = new Point((Width - Enter_Button.Width) / 2, currentY + spacing);
             currentY += Enter_Button.Height + spacing;
 
-            // Adjust form height
-            int baseHeight = 200;
+            // Adjust form height with scaling
+            int baseHeight = (int)(200 * scale);
             int additionalHeight = 0;
 
-            if (_requiresAccountantSelection) { additionalHeight += 80; }
-            if (_requiresPassword) { additionalHeight += 80; }
+            if (_requiresAccountantSelection) { additionalHeight += (int)(80 * scale); }
+            if (_requiresPassword) { additionalHeight += (int)(80 * scale); }
 
             Height = baseHeight + additionalHeight;
 
@@ -125,18 +129,19 @@ namespace Sales_Tracker.Passwords
             {
                 _windowsHello_Button.Top = currentY;
                 _windowsHello_Button.Left = (Width - _windowsHello_Button.Width) / 2;
-                Height += 70;
+                Height += (int)(70 * scale);
             }
 
             // Update message label position
             if (Controls.Contains(Message_LinkLabel))
             {
-                Message_LinkLabel.Top = _windowsHello_Button == null ? Enter_Button.Bottom + 30 : _windowsHello_Button.Bottom + 30;
+                int messageSpacing = (int)(30 * scale);
+                Message_LinkLabel.Top = _windowsHello_Button == null ? Enter_Button.Bottom + messageSpacing : _windowsHello_Button.Bottom + messageSpacing;
                 Message_LinkLabel.Left = (Width - Message_LinkLabel.Width) / 2;
 
                 if (_requiresPassword)
                 {
-                    Height += 70;
+                    Height += (int)(70 * scale);
                 }
             }
         }
@@ -230,6 +235,8 @@ namespace Sales_Tracker.Passwords
         {
             if (_windowsHello_Button != null) { return; }
 
+            float scale = DpiHelper.GetRelativeDpiScale();
+
             _windowsHello_Button = new()
             {
                 Anchor = AnchorStyles.Top,
@@ -237,7 +244,7 @@ namespace Sales_Tracker.Passwords
                 BorderThickness = 1,
                 Enabled = false,
                 Font = new Font("Segoe UI", 10),
-                Size = new Size(215, 50),
+                Size = new Size((int)(215 * scale), (int)(50 * scale)),
                 Text = "Windows Hello"
             };
             _windowsHello_Button.Click += WindowsHello_Button_Click;

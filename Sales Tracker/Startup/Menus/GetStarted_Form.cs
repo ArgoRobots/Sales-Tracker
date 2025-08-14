@@ -88,13 +88,16 @@ namespace Sales_Tracker.Startup.Menus
             }
 
             // Construct a button for each company
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledButtonHeight = (int)(60 * scale);
+
             foreach (string companyDir in validCompanyDirs)
             {
                 Guna2Button btn = new()
                 {
                     BackColor = CustomColors.ControlBack,
                     FillColor = CustomColors.ControlBack,
-                    Size = new Size(CalculateButtonWidth(), 60),
+                    Size = new Size(CalculateButtonWidth(), scaledButtonHeight),
                     Text = Path.GetFileNameWithoutExtension(companyDir),
                     Font = new Font("Segoe UI", 11),
                     Tag = companyDir,

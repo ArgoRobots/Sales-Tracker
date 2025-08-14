@@ -605,8 +605,12 @@ namespace Sales_Tracker
         }
 
         // Properties for multiple items
-        private readonly byte _panelAndTextBoxHeight = 45, _labelPanelHeight = 30, _circleButtonHeight = 38, _spaceOnSidesOfPanel = 100;
-        private readonly short _flowPanelMaxHeight = 300;
+        private static int PanelAndTextBoxHeight => (int)(45 * DpiHelper.GetRelativeDpiScale());
+        private static int LabelPanelHeight => (int)(30 * DpiHelper.GetRelativeDpiScale());
+        private static int CircleButtonHeight => (int)(38 * DpiHelper.GetRelativeDpiScale());
+        private static int SpaceOnSidesOfPanel => (int)(100 * DpiHelper.GetRelativeDpiScale());
+        private static int FlowPanelMaxHeight => (int)(300 * DpiHelper.GetRelativeDpiScale());
+
         private int _topForPanels, _panelWidth;
         private readonly List<Guna2Panel> _panelsForMultipleProducts_List = [];
         private Guna2Panel _labelPanel;
@@ -678,7 +682,9 @@ namespace Sales_Tracker
             _labelPanel.Visible = false;
             _flowPanel.Visible = false;
             _addButton.Visible = false;
-            MinimumSize = new Size(Width, Notes_TextBox.Bottom + 100);
+
+            float scale = DpiHelper.GetRelativeDpiScale();
+            MinimumSize = new Size(Width, Notes_TextBox.Bottom + (int)(100 * scale));
             Size = MinimumSize;
 
             SetReceiptLabelLocation();
@@ -750,7 +756,7 @@ namespace Sales_Tracker
         {
             Guna2Panel panel = new()
             {
-                Size = new Size(_panelWidth, _panelAndTextBoxHeight),
+                Size = new Size(_panelWidth, PanelAndTextBoxHeight),
                 FillColor = CustomColors.MainBackground
             };
             _panelsForMultipleProducts_List.Add(panel);
@@ -761,7 +767,7 @@ namespace Sales_Tracker
                 {
                     Location = new Point((ClientSize.Width - _panelWidth) / 2, _topForPanels),
                     Anchor = AnchorStyles.Top,
-                    Size = new Size(_panelWidth, _labelPanelHeight),
+                    Size = new Size(_panelWidth, LabelPanelHeight),
                     FillColor = CustomColors.MainBackground,
                     Visible = false
                 };
@@ -773,8 +779,9 @@ namespace Sales_Tracker
             {
                 ConstructLabel(ProductName_Label.Text, 0, _labelPanel);
             }
+            float scale = DpiHelper.GetRelativeDpiScale();
             Guna2TextBox textBox = ConstructTextBox(0, ProductName_TextBox.Width, TextBoxnames.name.ToString(), CustomControls.KeyPressValidation.None, false, panel);
-            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, 150, true, false, true, true);
+            SearchBox.Attach(textBox, this, GetSearchResultsForProducts, (int)(150 * scale), true, false, true, true);  // Apply scaling
 
             // Price per unit
             int left = textBox.Right + CustomControls.SpaceBetweenControls;
@@ -796,7 +803,7 @@ namespace Sales_Tracker
             left = textBox.Right + CustomControls.SpaceBetweenControls;
             if (_panelsForMultipleProducts_List.Count > 1)
             {
-                ConstructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (_panelAndTextBoxHeight - _circleButtonHeight) / 2 + textBox.Top), panel);
+                ConstructMinusButton(new Point(left + CustomControls.SpaceBetweenControls, (PanelAndTextBoxHeight - CircleButtonHeight) / 2 + textBox.Top), panel);  // Use scaled properties
             }
 
             SuspendLayout();
@@ -822,7 +829,7 @@ namespace Sales_Tracker
         {
             Guna2TextBox textBox = new()
             {
-                Size = new Size(width, _panelAndTextBoxHeight),
+                Size = new Size(width, PanelAndTextBoxHeight),
                 Name = name,
                 Left = left,
                 FillColor = CustomColors.ControlBack,
@@ -871,7 +878,7 @@ namespace Sales_Tracker
                 FillColor = CustomColors.MainBackground,
                 BackColor = CustomColors.MainBackground,
                 Location = location,
-                Size = new Size(_circleButtonHeight, _circleButtonHeight),
+                Size = new Size(CircleButtonHeight, CircleButtonHeight),
                 ImageSize = new Size(32, 32),
                 PressedColor = CustomColors.ControlBack
             };
@@ -901,14 +908,14 @@ namespace Sales_Tracker
         }
         private void ConstructFlowPanel()
         {
-            int width = _panelWidth + _spaceOnSidesOfPanel;
+            int width = _panelWidth + SpaceOnSidesOfPanel;
             _flowPanel = new()
             {
                 Anchor = AnchorStyles.Top,
                 AutoScroll = true,
-                Location = new Point((ClientSize.Width - width) / 2, _topForPanels + _labelPanelHeight + CustomControls.SpaceBetweenControls),
-                Size = new Size(width, _panelAndTextBoxHeight + CustomControls.SpaceBetweenControls),
-                Padding = new Padding(_spaceOnSidesOfPanel / 2, 0, _spaceOnSidesOfPanel / 2, 0),
+                Location = new Point((ClientSize.Width - width) / 2, _topForPanels + LabelPanelHeight + CustomControls.SpaceBetweenControls),
+                Size = new Size(width, PanelAndTextBoxHeight + CustomControls.SpaceBetweenControls),
+                Padding = new Padding(SpaceOnSidesOfPanel / 2, 0, SpaceOnSidesOfPanel / 2, 0),
                 Visible = false
             };
             ThemeManager.CustomizeScrollBar(_flowPanel);
@@ -922,9 +929,9 @@ namespace Sales_Tracker
                 FillColor = CustomColors.MainBackground,
                 BackColor = CustomColors.MainBackground,
                 Location = new Point(0, 60),
-                Size = new Size(_circleButtonHeight, _circleButtonHeight),
+                Size = new Size(CircleButtonHeight, CircleButtonHeight),
                 ImageSize = new Size(32, 32),
-                Left = _flowPanel.Left + _spaceOnSidesOfPanel / 2,
+                Left = _flowPanel.Left + SpaceOnSidesOfPanel / 2,
                 PressedColor = CustomColors.ControlBack,
                 Visible = false,
                 Anchor = AnchorStyles.Top
@@ -949,23 +956,25 @@ namespace Sales_Tracker
         {
             int totalHeight = _panelsForMultipleProducts_List.Sum(panel => panel.Height + panel.Margin.Top + panel.Margin.Bottom);
 
-            _flowPanel.MinimumSize = new Size(_flowPanel.Width, Math.Min(totalHeight, _flowPanelMaxHeight));
+            _flowPanel.MinimumSize = new Size(_flowPanel.Width, Math.Min(totalHeight, FlowPanelMaxHeight));
             _flowPanel.Height = _flowPanel.MinimumSize.Height;
-            _flowPanel.Top = _topForPanels + _labelPanelHeight + CustomControls.SpaceBetweenControls;
+            _flowPanel.Top = _topForPanels + LabelPanelHeight + CustomControls.SpaceBetweenControls;
             _addButton.Top = _flowPanel.Bottom + CustomControls.SpaceBetweenControls;
 
-            MinimumSize = new Size(Width, _flowPanel.Bottom + 150);
+            float scale = DpiHelper.GetRelativeDpiScale();
+            MinimumSize = new Size(Width, _flowPanel.Bottom + (int)(150 * scale));
         }
         private void CalculatePanelDimensions()
         {
-            _topForPanels = Notes_TextBox.Bottom + 20;
+            float scale = DpiHelper.GetRelativeDpiScale();
+            _topForPanels = Notes_TextBox.Bottom + (int)(20 * scale);
 
             // Calculate width based on the content that needs to fit in the panels
             byte space = CustomControls.SpaceBetweenControls;
             int contentWidth = ProductName_TextBox.Width + space +
                              PricePerUnit_TextBox.Width + space +
                              Quantity_TextBox.Width + space +
-                             _circleButtonHeight + space;  // For the minus button
+                             CircleButtonHeight + space;  // For the minus button (now scaled)
 
             // Set panel width based on content
             _panelWidth = contentWidth;
