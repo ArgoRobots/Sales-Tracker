@@ -5,10 +5,28 @@
         // I designed this app with my Windows display scale set to 150%
         private static readonly float DESIGN_DPI_SCALE = 1.5f;
 
+        private static float? _cachedDpiScale = null;
+
         /// <summary>
         /// Gets the relative DPI scale factor compared to the design baseline DPI.
         /// </summary>
         public static float GetRelativeDpiScale()
+        {
+            // Return cached value if already calculated
+            if (_cachedDpiScale.HasValue)
+            {
+                return _cachedDpiScale.Value;
+            }
+
+            // Calculate and cache the DPI scale
+            _cachedDpiScale = CalculateDpiScale();
+            return _cachedDpiScale.Value;
+        }
+
+        /// <summary>
+        /// Calculates the current DPI scale factor.
+        /// </summary>
+        private static float CalculateDpiScale()
         {
             try
             {

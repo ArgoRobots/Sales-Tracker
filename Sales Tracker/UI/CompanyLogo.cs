@@ -69,10 +69,16 @@ namespace Sales_Tracker.UI
         {
             if (_companyLogo != null) { return; }
 
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int leftMargin = (int)(18 * scale);
+
+            // Calculate logo size as 80% of MainTop_Panel height
+            int logoSize = (int)(MainMenu_Form.Instance.MainTop_Panel.Height * 0.8f);
+
             _companyLogo = new PictureBox
             {
-                Size = new Size(60, 60),
-                Location = new Point(18, (MainMenu_Form.Instance.MainTop_Panel.Height - 60) / 2),
+                Size = new Size(logoSize, logoSize),
+                Location = new Point(leftMargin, (MainMenu_Form.Instance.MainTop_Panel.Height - logoSize) / 2),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 BorderStyle = BorderStyle.None,
                 Cursor = Cursors.Hand,
@@ -98,13 +104,15 @@ namespace Sales_Tracker.UI
             _companyLogo.Dispose();
             _companyLogo = null;
 
-            // Move company name back to original position
-            MainMenu_Form.Instance.CompanyName_Label.Left = 18;
+            // Move company name back to original position with scaled margin
+            float scale = DpiHelper.GetRelativeDpiScale();
+            MainMenu_Form.Instance.CompanyName_Label.Left = (int)(18 * scale);
             MainMenu_Form.Instance.SetEditButtonLocation();
         }
         private static void UpdateLogoPosition()
         {
-            MainMenu_Form.Instance.CompanyName_Label.Left = _companyLogo.Right + 10;
+            float scale = DpiHelper.GetRelativeDpiScale();
+            MainMenu_Form.Instance.CompanyName_Label.Left = _companyLogo.Right + (int)(10 * scale);
             MainMenu_Form.Instance.SetEditButtonLocation();
         }
         private static void LoadCompanyLogoImage()
@@ -135,7 +143,10 @@ namespace Sales_Tracker.UI
         }
         private static Bitmap CreateDefaultLogoImage()
         {
-            Bitmap defaultLogo = new(60, 60);
+            // Get current logo size dynamically
+            int logoSize = _companyLogo?.Width ?? (int)(MainMenu_Form.Instance.MainTop_Panel.Height * 0.8f);
+
+            Bitmap defaultLogo = new(logoSize, logoSize);
 
             using (Graphics g = Graphics.FromImage(defaultLogo))
             {
@@ -143,15 +154,18 @@ namespace Sales_Tracker.UI
 
                 using (SolidBrush backgroundBrush = new(CustomColors.AccentBlue))
                 {
-                    g.FillRectangle(backgroundBrush, 0, 0, 60, 60);
+                    g.FillRectangle(backgroundBrush, 0, 0, logoSize, logoSize);
                 }
 
                 string initials = GetCompanyInitials(Directories.CompanyName);
-                using Font font = new("Segoe UI", 16, FontStyle.Bold);
+
+                // Scale font size based on logo size (roughly 25% of logo size)
+                float fontSize = logoSize * 0.25f;
+                using Font font = new("Segoe UI", fontSize, FontStyle.Bold);
                 using SolidBrush textBrush = new(Color.White);
                 SizeF textSize = g.MeasureString(initials, font);
-                float x = (60 - textSize.Width) / 2;
-                float y = (60 - textSize.Height) / 2;
+                float x = (logoSize - textSize.Width) / 2;
+                float y = (logoSize - textSize.Height) / 2;
                 g.DrawString(initials, font, textBrush, x, y);
             }
 
@@ -170,8 +184,12 @@ namespace Sales_Tracker.UI
             _isLogoHovered = true;
             _companyLogo.Invalidate();
 
-            // Create camera icon on first hover
-            _cameraIcon ??= CreateCameraIcon();
+            // Create camera icon on first hover with appropriate size
+            if (_cameraIcon == null)
+            {
+                int iconSize = (int)(_companyLogo.Width * 0.5f);
+                _cameraIcon = CreateCameraIcon(iconSize);
+            }
         }
         private static void CompanyLogo_MouseLeave(object sender, EventArgs e)
         {
@@ -187,31 +205,62 @@ namespace Sales_Tracker.UI
             // Draw semi-transparent overlay using cached brush
             e.Graphics.FillRectangle(overlayBrush, _companyLogo.ClientRectangle);
 
-            // Draw camera icon in center
-            int iconSize = 32;
+            // Scale camera icon based on logo size (roughly 50% of logo size)
+            int iconSize = (int)(_companyLogo.Width * 0.5f);
             int x = (_companyLogo.Width - iconSize) / 2;
             int y = (_companyLogo.Height - iconSize) / 2;
+
+            // Create scaled camera icon if current one doesn't match size
+            if (_cameraIcon.Width != iconSize)
+            {
+                _cameraIcon?.Dispose();
+                _cameraIcon = CreateCameraIcon(iconSize);
+            }
+
             e.Graphics.DrawImage(_cameraIcon, x, y, iconSize, iconSize);
         }
-        private static Bitmap CreateCameraIcon()
+        private static Bitmap CreateCameraIcon(int size = 32)
         {
-            Bitmap icon = new(32, 32);
+            Bitmap icon = new(size, size);
 
             using (Graphics g = Graphics.FromImage(icon))
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
 
-                using Pen whitePen = new(Color.White, 2);
+                // Scale pen width and measurements based on icon size
+                float scale = size / 32f;
+                float penWidth = 2f * scale;
+
+                using Pen whitePen = new(Color.White, penWidth);
                 using SolidBrush whiteBrush = new(Color.White);
 
+                // Scale all measurements proportionally
+                float bodyX = 4 * scale;
+                float bodyY = 12 * scale;
+                float bodyWidth = 24 * scale;
+                float bodyHeight = 14 * scale;
+
+                float topX = 9 * scale;
+                float topY = 8 * scale;
+                float topWidth = 8 * scale;
+                float topHeight = 4 * scale;
+
+                float lensX = 12 * scale;
+                float lensY = 16 * scale;
+                float lensSize = 8 * scale;
+
+                float centerX = 14 * scale;
+                float centerY = 18 * scale;
+                float centerSize = 4 * scale;
+
                 // Draw camera body
-                g.DrawRectangle(whitePen, 4, 12, 24, 14);
+                g.DrawRectangle(whitePen, bodyX, bodyY, bodyWidth, bodyHeight);
                 // Draw camera top
-                g.DrawRectangle(whitePen, 9, 8, 8, 4);
+                g.DrawRectangle(whitePen, topX, topY, topWidth, topHeight);
                 // Draw lens
-                g.DrawEllipse(whitePen, 12, 16, 8, 8);
+                g.DrawEllipse(whitePen, lensX, lensY, lensSize, lensSize);
                 // Draw lens center
-                g.FillEllipse(whiteBrush, 14, 18, 4, 4);
+                g.FillEllipse(whiteBrush, centerX, centerY, centerSize, centerSize);
             }
 
             return icon;

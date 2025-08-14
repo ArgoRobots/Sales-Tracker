@@ -20,9 +20,9 @@ namespace Sales_Tracker.UI
         private static List<SearchResult> _resultList;
         private static int _maxHeight;
         private static bool _increaseWidth, _translateText, _allowTextBoxEmpty, _sortAlphabetically;
-        private static readonly short extraWidth = 350;
         public const string AddLine = "ADD LINE CONTROL";
         private static Action _validationCallback;
+        private static int ExtraWidth => (int)(350 * DpiHelper.GetRelativeDpiScale());
 
         // Getters
         public static Guna2Panel SearchResultBoxContainer { get; private set; }
@@ -83,10 +83,11 @@ namespace Sales_Tracker.UI
             };
             DebounceTimer.Tick += DebounceTimer_Tick;
 
+            float scale = DpiHelper.GetRelativeDpiScale();
             _noResults_Label = new()
             {
                 Text = "No results",
-                Height = 30,
+                Height = (int)(30 * scale),
                 ForeColor = CustomColors.Text,
                 Font = new Font("Segoe UI", 10),
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -194,8 +195,9 @@ namespace Sales_Tracker.UI
             metaList = metaList.OrderByDescending(x => x.Score).ToList();
 
             // Add results to _searchResultBox
+            float scale = DpiHelper.GetRelativeDpiScale();
             int yOffset = 1;
-            int buttonHeight = 35;
+            int buttonHeight = (int)(35 * scale);
             int controlIndex = 0;
 
             // Construct buttons
@@ -215,7 +217,7 @@ namespace Sales_Tracker.UI
                         SearchResultControls.Add(separator);
                     }
                     separator.Visible = true;
-                    separator.Location = new Point(10, yOffset + 12);
+                    separator.Location = new Point((int)(10 * scale), yOffset + (int)(12 * scale));
                 }
                 else
                 {
@@ -231,11 +233,11 @@ namespace Sales_Tracker.UI
                             Font = new Font("Segoe UI", 10),
                             FillColor = CustomColors.ControlBack,
                             ForeColor = CustomColors.Text,
-                            Height = buttonHeight,
+                            Height = buttonHeight,  // Already scaled above
                             Left = 1,
                             BorderColor = CustomColors.AccentBlue,
                             ImageAlign = HorizontalAlignment.Left,
-                            ImageSize = new Size(25, 13),  // Country flags have different ratios. This is just a good size
+                            ImageSize = new Size((int)(25 * scale), (int)(13 * scale)),
                             TextAlign = HorizontalAlignment.Left
                         };
                         btn.Click += (sender, e) =>
@@ -246,7 +248,7 @@ namespace Sales_Tracker.UI
                             CustomControls.CloseAllPanels();
                         };
 
-                        int padding = btn.Image != null ? 25 : 0;
+                        int padding = btn.Image != null ? (int)(25 * scale) : 0;
                         int availableWidth = btn.Width - padding;
                         btn.Text = Tools.AddEllipsisToString(btn.Text, btn.Font, availableWidth);
 
@@ -265,7 +267,7 @@ namespace Sales_Tracker.UI
             }
 
             // Set width
-            int containerWidth = textBox.Width + (increaseWidth ? extraWidth : 0);
+            int containerWidth = textBox.Width + (increaseWidth ? ExtraWidth : 0);
             SearchResultBoxContainer.Width = containerWidth;
             SearchResultBox.Width = containerWidth - 3;
 
@@ -283,8 +285,8 @@ namespace Sales_Tracker.UI
                 _noResults_Label.Width = SearchResultBox.Width;
                 SearchResultBox.Controls.Add(_noResults_Label);
 
-                SearchResultBox.Height = 50;
-                SearchResultBoxContainer.Height = SearchResultBox.Height + 10;
+                SearchResultBox.Height = (int)(50 * scale);
+                SearchResultBoxContainer.Height = SearchResultBox.Height + (int)(10 * scale);
                 SearchResultBox.AutoScroll = false;
             }
             else
@@ -292,7 +294,7 @@ namespace Sales_Tracker.UI
                 SearchResultBox.Controls.Remove(_noResults_Label);
 
                 SearchResultBox.Height = totalHeight;
-                SearchResultBoxContainer.Height = totalHeight + 10;
+                SearchResultBoxContainer.Height = totalHeight + (int)(10 * scale);
                 SearchResultBox.AutoScroll = false;
             }
 
@@ -325,7 +327,7 @@ namespace Sales_Tracker.UI
         }
         private static int CalculateControlWidth(int count, Guna2TextBox textBox, bool increaseWidth)
         {
-            int baseWidth = textBox.Width + (increaseWidth ? extraWidth : 0);
+            int baseWidth = textBox.Width + (increaseWidth ? ExtraWidth : 0);
             if (count > 12)
             {
                 return baseWidth - SystemInformation.VerticalScrollBarWidth - 4;
