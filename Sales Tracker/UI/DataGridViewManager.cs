@@ -16,11 +16,12 @@ namespace Sales_Tracker.UI
     {
         // Properties
         private static DataGridViewRow _removedRow;
-        private static readonly byte _rowHeight = 35, _columnHeaderHeight = 60;
         private static readonly string _deleteAction = LanguageManager.TranslateString("deleted");
         private static readonly string _moveAction = LanguageManager.TranslateString("moved");
         private static DataGridViewCell _currentlyHoveredNoteCell;
         private static bool _isMouseDown;
+        private static int RowHeight => (int)(35 * DpiHelper.GetRelativeDpiScale());
+        private static int ColumnHeaderHeight => (int)(60 * DpiHelper.GetRelativeDpiScale());
 
         // Getters
         public static bool DoNotDeleteRows { get; set; }
@@ -34,9 +35,9 @@ namespace Sales_Tracker.UI
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToResizeRows = false;
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridView.ColumnHeadersHeight = _columnHeaderHeight;
+            dataGridView.ColumnHeadersHeight = ColumnHeaderHeight;
             dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView.RowTemplate.Height = _rowHeight;
+            dataGridView.RowTemplate.Height = RowHeight;
             dataGridView.RowTemplate.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
             dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);

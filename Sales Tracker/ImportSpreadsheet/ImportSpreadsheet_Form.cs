@@ -745,7 +745,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
                 Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
-                Top = 280,
+                Top = Currency_TextBox.Bottom + 50,
                 Spacing = _panelPadding
             };
         }
