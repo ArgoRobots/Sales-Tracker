@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.UI
+﻿using Guna.UI2.WinForms;
+
+namespace Sales_Tracker.UI
 {
     public static class DpiHelper
     {
@@ -21,6 +23,13 @@
             // Calculate and cache the DPI scale
             _cachedDpiScale = CalculateDpiScale();
             return _cachedDpiScale.Value;
+        }
+
+        public static void ScaleComboBox(Guna2ComboBox comboBox)
+        {
+            float scale = GetRelativeDpiScale();
+
+            comboBox.ItemHeight = (int)(comboBox.ItemHeight * scale);
         }
 
         /// <summary>

@@ -21,6 +21,7 @@ namespace Sales_Tracker
             InitializeComponent();
 
             _isProgramLoading = true;
+            DpiHelper.ScaleComboBox(FileType_ComboBox);
             StoreOriginalPositions();
             AddEventHandlersToTextBoxes();
             SetControls();

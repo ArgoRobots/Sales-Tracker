@@ -39,6 +39,7 @@ namespace Sales_Tracker.ReturnProduct
                 _items = [];
             }
 
+            DpiHelper.ScaleComboBox(ReturnReason_ComboBox);
             ReturnReason_ComboBox.Items.AddRange(ReturnReasons.GetReturnReasons().Cast<object>().ToArray());
             LoadTransactionData();
             if (_hasMultipleItems)

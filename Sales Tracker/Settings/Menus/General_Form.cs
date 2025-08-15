@@ -20,6 +20,7 @@ namespace Sales_Tracker.Settings.Menus
             InitializeComponent();
             _instance = this;
 
+            DpiHelper.ScaleComboBox(ColorTheme_ComboBox);
             InitializeAdminModeControls();
             ThemeManager.SetThemeForForm(this);
             SetAccessibleDescription();
@@ -82,11 +83,13 @@ namespace Sales_Tracker.Settings.Menus
                 return;
             }
 
+            float scale = DpiHelper.GetRelativeDpiScale();
+
             Guna2Button generateTranslationsButton = new()
             {
                 Text = LanguageManager.TranslateString("Generate Translations"),
-                Size = new Size(200, 40),
-                Location = new Point((Width - 200) / 2, EnableAISearch_CheckBox.Bottom + 80),
+                Size = new Size((int)(200 * scale), (int)(40 * scale)),
+                Location = new Point((Width - (int)(200 * scale)) / 2, EnableAISearch_CheckBox.Bottom + (int)(80 * scale)),
                 Anchor = AnchorStyles.Top
             };
             generateTranslationsButton.Click += GenerateTranslationsButton_Click;
