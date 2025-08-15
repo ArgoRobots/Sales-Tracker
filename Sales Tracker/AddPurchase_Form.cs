@@ -23,6 +23,7 @@ namespace Sales_Tracker
             _instance = this;
 
             AddEventHandlersToTextBoxes();
+            DpiHelper.ScaleImageButton(RemoveReceipt_ImageButton);
             Date_DateTimePicker.Value = DateTime.Now;
             Date_DateTimePicker.MaxDate = DateTime.Now;
             CheckIfProductsExist();

@@ -25,15 +25,8 @@ namespace Sales_Tracker.UI
             return _cachedDpiScale.Value;
         }
 
-        public static void ScaleComboBox(Guna2ComboBox comboBox)
-        {
-            float scale = GetRelativeDpiScale();
-
-            comboBox.ItemHeight = (int)(comboBox.ItemHeight * scale);
-        }
-
         /// <summary>
-        /// Calculates the current DPI scale factor.
+        /// Gets the current DPI scale factor.
         /// </summary>
         private static float CalculateDpiScale()
         {
@@ -47,6 +40,39 @@ namespace Sales_Tracker.UI
             {
                 return 1.0f;
             }
+        }
+
+        /// <summary>
+        /// Scales the item height of a ComboBox based on the current DPI scale.
+        /// </summary>
+        public static void ScaleComboBox(Guna2ComboBox comboBox)
+        {
+            float scale = GetRelativeDpiScale();
+
+            comboBox.ItemHeight = (int)(comboBox.ItemHeight * scale);
+        }
+
+        /// <summary>
+        /// Scales the image size of a Button based on the current DPI scale.
+        /// </summary>
+        public static void ScaleImageSize(Guna2Button button)
+        {
+            float scale = GetRelativeDpiScale();
+            int scaledWidth = (int)(button.ImageSize.Width * scale);
+            int scaledHeight = (int)(button.ImageSize.Height * scale);
+
+            button.ImageSize = new(scaledWidth, scaledHeight);
+        }
+
+        /// <summary>
+        /// Scales the image size of an ImageButton based on the current DPI scale.
+        /// </summary>
+        public static void ScaleImageButton(Guna2ImageButton button)
+        {
+            float scale = GetRelativeDpiScale();
+            int scaledImageSize = (int)(button.ImageSize.Width * scale);
+
+            button.ImageSize = new(scaledImageSize, scaledImageSize);
         }
     }
 }

@@ -69,6 +69,7 @@ namespace Sales_Tracker
             AnimateCharts();
             InitializeAISearch();
             UpdateMainMenuFormText();
+            ScaleButtonImages();
             _ = AnonymousDataManager.TryUploadDataOnStartupAsync();
             AnonymousDataManager.TrackSessionStart();
             NetSparkleUpdateManager.CheckForUpdates();
@@ -381,13 +382,15 @@ namespace Sales_Tracker
         {
             if (!Properties.Settings.Default.LicenseActivated)
             {
+                float scale = DpiHelper.GetRelativeDpiScale();
                 int height = Top_Panel.Height;
+                int scaledImageSize = (int)(32 * scale);
 
                 _upgrade_Button = new Guna2Button
                 {
                     Anchor = AnchorStyles.Top | AnchorStyles.Right,
                     Image = Resources.Upgrade,
-                    ImageSize = new Size(32, 32),
+                    ImageSize = new Size(scaledImageSize, scaledImageSize),
                     Size = new Size(height, height),
                     Left = Help_Button.Left - height
                 };
@@ -449,6 +452,12 @@ namespace Sales_Tracker
                     Log.Write(1, "AI Search disabled: No API key found");
                 }
             }
+        }
+        private void ScaleButtonImages()
+        {
+            DpiHelper.ScaleImageSize(File_Button);
+            DpiHelper.ScaleImageSize(Save_Button);
+            DpiHelper.ScaleImageSize(Help_Button);
         }
 
         // Add rows from file
