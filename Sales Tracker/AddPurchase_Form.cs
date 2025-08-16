@@ -294,9 +294,9 @@ namespace Sales_Tracker
             string defaultCurrency = DataFileManager.GetValue(AppDataSettings.DefaultCurrencyType);
 
             // Convert default currency to USD
-            decimal deafultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);
-            decimal chargedDifferenceUSD = Math.Round(chargedDifference * deafultToUSD, 2);
-            decimal chargedUSD = Math.Round(charged * deafultToUSD, 2);
+            decimal defaultToUSD = Currency.GetExchangeRate(defaultCurrency, "USD", date);
+            decimal chargedDifferenceUSD = Math.Round(chargedDifference * defaultToUSD, 2);
+            decimal chargedUSD = Math.Round(charged * defaultToUSD, 2);
 
             // Store the USD and default values in the tag
             TagData purchaseData = new()

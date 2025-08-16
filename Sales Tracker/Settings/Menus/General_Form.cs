@@ -185,7 +185,7 @@ namespace Sales_Tracker.Settings.Menus
         {
             if (Properties.Settings.Default.Language != "English")
             {
-                CustomMessageBox.Show("Success", "The deafult language must be set to English.",
+                CustomMessageBox.Show("Success", "The default language must be set to English.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
