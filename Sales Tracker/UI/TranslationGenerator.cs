@@ -347,6 +347,10 @@ namespace Sales_Tracker.UI
 
                         await Task.Delay(backoffDelay, cancellationToken).ConfigureAwait(false);
                     }
+                    catch (OperationCanceledException)
+                    {
+                        return [];  // Exit if cancelled
+                    }
                     catch (Exception ex)
                     {
                         Log.Error_GetTranslation($"Batch translation failed on attempt {retryCount + 1}: {ex.Message}");
