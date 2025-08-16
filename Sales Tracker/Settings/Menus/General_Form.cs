@@ -62,6 +62,7 @@ namespace Sales_Tracker.Settings.Menus
             AnimateCharts_Label.Left = AnimateCharts_CheckBox.Left - AnimateCharts_Label.Width - 2;
             ShowHasReceiptColumn_Label.Left = ShowHasReceiptColumn_CheckBox.Left - ShowHasReceiptColumn_Label.Width - 2;
             EnableAISearch_Label.Left = EnableAISearch_CheckBox.Left - EnableAISearch_Label.Width - 2;
+            ShowCompanyLogo_Label.Left = ShowCompanyLogo_CheckBox.Left - ShowCompanyLogo_Label.Width - 2;
         }
         private void AddEventHandlersToTextBoxes()
         {
