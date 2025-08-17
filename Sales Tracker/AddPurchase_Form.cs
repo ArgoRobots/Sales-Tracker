@@ -639,7 +639,7 @@ namespace Sales_Tracker
         private int _topForPanels, _panelWidth;
         private readonly List<Guna2Panel> _panelsForMultipleProducts_List = [];
         private Guna2Panel _labelPanel;
-        private Guna2CircleButton _addButton;
+        private CustomCircleButton _addButton;
         private FlowLayoutPanel _flowPanel;
         private enum TextBoxnames
         {
@@ -897,23 +897,23 @@ namespace Sales_Tracker
         }
         private void ConstructMinusButton(Point location, Control parent)
         {
-            Guna2CircleButton minusButton = new()
+            CustomCircleButton minusButton = new()
             {
                 FillColor = CustomColors.MainBackground,
-                BackColor = CustomColors.MainBackground,
                 Location = location,
                 Size = new Size(CircleButtonHeight, CircleButtonHeight),
-                ImageSize = new Size(32, 32),
                 PressedColor = CustomColors.ControlBack
             };
+
             if (ThemeManager.IsDarkTheme())
             {
-                minusButton.Image = Resources.MinusWhite;
+                minusButton.ButtonImage = Resources.MinusWhite;
             }
             else
             {
-                minusButton.Image = Resources.MinusBlack;
+                minusButton.ButtonImage = Resources.MinusBlack;
             }
+
             minusButton.Click += MinusButton_Click;
             parent.Controls.Add(minusButton);
         }
@@ -921,7 +921,7 @@ namespace Sales_Tracker
         {
             CloseAllPanels(null, null);
 
-            Guna2CircleButton button = (Guna2CircleButton)sender;
+            CustomCircleButton button = (CustomCircleButton)sender;
             Guna2Panel panel = (Guna2Panel)button.Parent;
 
             _flowPanel.Controls.Remove(panel);
@@ -948,26 +948,26 @@ namespace Sales_Tracker
         }
         private void ConstructAddButton()
         {
-            _addButton = new()
+            _addButton = new CustomCircleButton()
             {
                 FillColor = CustomColors.MainBackground,
-                BackColor = CustomColors.MainBackground,
                 Location = new Point(0, 60),
                 Size = new Size(CircleButtonHeight, CircleButtonHeight),
-                ImageSize = new Size(32, 32),
                 Left = _flowPanel.Left + SpaceOnSidesOfPanel / 2,
                 PressedColor = CustomColors.ControlBack,
                 Visible = false,
                 Anchor = AnchorStyles.Top
             };
+
             if (ThemeManager.IsDarkTheme())
             {
-                _addButton.Image = Resources.AddWhite;
+                _addButton.ButtonImage = Resources.AddWhite;
             }
             else
             {
-                _addButton.Image = Resources.AddBlack;
+                _addButton.ButtonImage = Resources.AddBlack;
             }
+
             _addButton.Click += (_, _) =>
             {
                 CloseAllPanels(null, null);

@@ -986,7 +986,9 @@ namespace Sales_Tracker.UI
         private static string ProcessVerbatimString(string input)
         {
             if (string.IsNullOrEmpty(input))
+            {
                 return input;
+            }
 
             // In verbatim strings, "" becomes "
             return input.Replace("\"\"", "\"");
@@ -1212,31 +1214,29 @@ namespace Sales_Tracker.UI
 
             foreach (Match match in matches)
             {
-                if (match.Groups.Count >= 2)
+                if (match.Groups.Count < 2) { continue; }
+
+                string fullExpression = match.Groups[1].Value.Trim();
+
+                // Extract all string literals from the concatenation
+                string stringLiteralPattern = @"""((?:[^""\\]|\\.)*)""";
+                MatchCollection stringMatches = Regex.Matches(fullExpression, stringLiteralPattern);
+
+                foreach (Match stringMatch in stringMatches)
                 {
-                    string fullExpression = match.Groups[1].Value.Trim();
+                    if (stringMatch.Groups.Count < 2) { continue; }
 
-                    // Extract all string literals from the concatenation
-                    string stringLiteralPattern = @"""((?:[^""\\]|\\.)*)""";
-                    MatchCollection stringMatches = Regex.Matches(fullExpression, stringLiteralPattern);
+                    string stringLiteral = stringMatch.Groups[1].Value.Trim();
+                    stringLiteral = ProcessEscapedCharacters(stringLiteral);
 
-                    foreach (Match stringMatch in stringMatches)
+                    // Only process non-empty strings that aren't just whitespace
+                    if (!string.IsNullOrWhiteSpace(stringLiteral) && stringLiteral.Length > 2)
                     {
-                        if (stringMatch.Groups.Count >= 2)
+                        string messageKey = LanguageManager.GetStringKey(stringLiteral);
+                        if (!logWriteStrings.ContainsKey(messageKey))
                         {
-                            string stringLiteral = stringMatch.Groups[1].Value.Trim();
-                            stringLiteral = ProcessEscapedCharacters(stringLiteral);
-
-                            // Only process non-empty strings that aren't just whitespace
-                            if (!string.IsNullOrWhiteSpace(stringLiteral) && stringLiteral.Length > 2)
-                            {
-                                string messageKey = LanguageManager.GetStringKey(stringLiteral);
-                                if (!logWriteStrings.ContainsKey(messageKey))
-                                {
-                                    logWriteStrings[messageKey] = stringLiteral;
-                                    Log.WriteWithFormat(2, "Found Log.Write concatenated string: '{0}' -> Key: '{1}' in {2}", stringLiteral, messageKey, fileName);
-                                }
-                            }
+                            logWriteStrings[messageKey] = stringLiteral;
+                            Log.WriteWithFormat(2, "Found Log.Write concatenated string: '{0}' -> Key: '{1}' in {2}", stringLiteral, messageKey, fileName);
                         }
                     }
                 }
