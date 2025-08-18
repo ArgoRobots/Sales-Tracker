@@ -29,7 +29,7 @@ namespace Sales_Tracker.Classes
 
         // Installer arguments discovered by running: & ".\Argo Sales Tracker Installer V.1.0.4.exe" /?
         // in the directory where the exe is located.
-        // These arguements are used for silent installation without user interaction. (this needs to be improved)
+        // These arguements are used for silent installation without user interaction.
         private const string SILENT_INSTALL_ARGUMENT = "/exenoui /norestart";
 
         // Public properties
@@ -303,8 +303,8 @@ namespace Sales_Tracker.Classes
                     AppCastItem latestItem = _sparkle.LatestAppCastItems[0];
                     _availableVersion = latestItem.Version;
 
-                    // Skip update if versions are identical
-                    if (currentVersion == _availableVersion)
+                    // Skip update if versions are identical OR current version is newer
+                    if (currentVersion == _availableVersion || IsCurrentVersionNewer(currentVersion, _availableVersion))
                     {
                         _availableVersion = null;
 
@@ -363,6 +363,22 @@ namespace Sales_Tracker.Classes
                     Error = errorMessage,
                     CurrentVersion = currentVersion
                 });
+            }
+        }
+        private static bool IsCurrentVersionNewer(string currentVersion, string availableVersion)
+        {
+            try
+            {
+                // Parse versions (assuming format like "1.0.6")
+                Version current = new(currentVersion);
+                Version available = new(availableVersion);
+
+                return current > available;
+            }
+            catch
+            {
+                // If parsing fails, fall back to string comparison
+                return string.Compare(currentVersion, availableVersion, StringComparison.OrdinalIgnoreCase) > 0;
             }
         }
         private static void OnDownloadStarted(AppCastItem item, string path)
