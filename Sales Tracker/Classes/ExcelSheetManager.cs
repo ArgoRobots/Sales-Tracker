@@ -20,7 +20,7 @@ namespace Sales_Tracker.Classes
         private const string _currencyFormatPattern = "\"$\"#,##0.00";
         private const string _numberFormatPattern = "0";
 
-        // Rollback tracking classes
+        // Rollback tracking class
         public class ImportSession
         {
             public List<string> AddedAccountants { get; set; } = [];
@@ -29,13 +29,25 @@ namespace Sales_Tracker.Classes
             public List<DataGridViewRow> AddedPurchaseRows { get; set; } = [];
             public List<DataGridViewRow> AddedSaleRows { get; set; } = [];
             public List<Category> AddedCategories { get; set; } = [];
+            public HashSet<string> SkippedTransactionIds { get; set; } = [];
             public bool IsCancelled { get; set; } = false;
+            public ImportUserChoices UserChoices { get; set; } = new ImportUserChoices();
             public bool HasChanges()
             {
                 return AddedAccountants.Count > 0 || AddedCompanies.Count > 0 ||
                        AddedProducts.Count > 0 || AddedPurchaseRows.Count > 0 ||
                        AddedSaleRows.Count > 0 || AddedCategories.Count > 0;
             }
+        }
+
+        public class ImportUserChoices
+        {
+            public bool? DuplicateItemChoice { get; set; } = null;  // null = ask, true = yes to all, false = no to all
+            public bool? CountryNotFoundChoice { get; set; } = null;
+            public bool? ProductNotFoundChoice { get; set; } = null;
+            public bool? DuplicateAccountantChoice { get; set; } = null;
+            public bool? DuplicateCompanyChoice { get; set; } = null;
+            public bool? DuplicateProductChoice { get; set; } = null;
         }
 
         public enum InvalidValueAction
@@ -75,6 +87,7 @@ namespace Sales_Tracker.Classes
             public int SaleTransactionsImported { get; set; }
             public int ReceiptsImported { get; set; }
             public int SkippedRows { get; set; }
+            public int ItemRowsProcessed { get; set; }
             public List<ImportError> Errors { get; set; } = [];
             public bool WasCancelled { get; set; }
 
@@ -151,20 +164,78 @@ namespace Sales_Tracker.Classes
 
                 if (existingItems.Contains(itemNameLower))
                 {
-                    CustomMessageBox.ShowWithFormat(
-                        "{0} already exists",
-                        "The {0} {1} already exists and will not be imported.",
-                        CustomMessageBoxIcon.Question,
-                        CustomMessageBoxButtons.Ok,
-                        itemTypeName, itemTypeName.ToLowerInvariant(), itemName);
+                    // Check if user has already made a "to all" choice for this entity type
+                    bool? existingChoice = itemTypeName switch
+                    {
+                        "Accountant" => session.UserChoices.DuplicateAccountantChoice,
+                        "Company" => session.UserChoices.DuplicateCompanyChoice,
+                        _ => null
+                    };
+
+                    bool shouldSkip = false;
+
+                    if (existingChoice.HasValue)
+                    {
+                        shouldSkip = !existingChoice.Value; // If choice is false, skip (don't import)
+                    }
+                    else
+                    {
+                        // Show dialog with "Yes to All" and "No to All" options
+                        CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
+                            "{0} already exists",
+                            "The {1} '{2}' already exists. Would you like to import it anyway?",
+                            CustomMessageBoxIcon.Question,
+                            CustomMessageBoxButtons.YesNoAll,
+                            itemTypeName, itemTypeName.ToLowerInvariant(), itemName);
+
+                        switch (result)
+                        {
+                            case CustomMessageBoxResult.Yes:
+                                shouldSkip = false; // Import this one
+                                break;
+                            case CustomMessageBoxResult.No:
+                                shouldSkip = true; // Skip this one
+                                break;
+                            case CustomMessageBoxResult.YesAll:
+                                // Import all duplicates from now on
+                                if (itemTypeName == "Accountant")
+                                {
+                                    session.UserChoices.DuplicateAccountantChoice = true;
+                                }
+                                else if (itemTypeName == "Company")
+                                {
+                                    session.UserChoices.DuplicateCompanyChoice = true;
+                                }
+                                shouldSkip = false;
+                                break;
+                            case CustomMessageBoxResult.NoAll:
+                                // Skip all duplicates from now on
+                                if (itemTypeName == "Accountant")
+                                {
+                                    session.UserChoices.DuplicateAccountantChoice = false;
+                                }
+                                else if (itemTypeName == "Company")
+                                {
+                                    session.UserChoices.DuplicateCompanyChoice = false;
+                                }
+                                shouldSkip = true;
+                                break;
+                            default:
+                                shouldSkip = true;
+                                break;
+                        }
+                    }
+
+                    if (shouldSkip)
+                    {
+                        continue;
+                    }
                 }
-                else
-                {
-                    existingList.Add(itemName);
-                    addedDuringImport.Add(itemNameLower);
-                    addedItems?.Add(itemName); // Track for rollback
-                    wasSomethingImported = true;
-                }
+
+                existingList.Add(itemName);
+                addedDuringImport.Add(itemNameLower);
+                addedItems?.Add(itemName);  // Track for rollback
+                wasSomethingImported = true;
             }
 
             // Only save if not using session tracking (immediate save mode)
@@ -218,7 +289,7 @@ namespace Sales_Tracker.Classes
 
                 countryOfOrigin = Country.NormalizeCountryName(countryOfOrigin);
 
-                if (!ValidateCountry(countryOfOrigin))
+                if (!ValidateCountry(countryOfOrigin, session))
                 {
                     continue;
                 }
@@ -241,7 +312,8 @@ namespace Sales_Tracker.Classes
                     categoryName,
                     productNameLower,
                     productName,
-                    purchase))
+                    purchase,
+                    session))
                 {
                     continue;
                 }
@@ -282,28 +354,57 @@ namespace Sales_Tracker.Classes
 
             return wasSomethingImported;
         }
-        private static bool ValidateCountry(string countryName)
+        private static bool ValidateCountry(string countryName, ImportSession session)
         {
             bool countryExists = Country.CountrySearchResults.Any(
                 c => c.Name.Equals(countryName, StringComparison.OrdinalIgnoreCase));
 
             if (!countryExists)
             {
+                // Check if user has already made a "to all" choice
+                if (session.UserChoices.CountryNotFoundChoice.HasValue)
+                {
+                    return session.UserChoices.CountryNotFoundChoice.Value;
+                }
+
                 CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Country does not exist",
                     "Country '{0}' does not exist in the system. Please check the tutorial for more information. Do you want to skip this product and continue?",
                     CustomMessageBoxIcon.Exclamation,
-                    CustomMessageBoxButtons.YesNo,
+                    CustomMessageBoxButtons.YesNoAll,
                     countryName);
 
-                return result != CustomMessageBoxResult.Yes;
+                switch (result)
+                {
+                    case CustomMessageBoxResult.Yes:
+                        return false;  // Skip this product
+                    case CustomMessageBoxResult.No:
+                        return true;  // Don't skip, continue with invalid country
+                    case CustomMessageBoxResult.YesAll:
+                        session.UserChoices.CountryNotFoundChoice = false;  // Skip all invalid countries
+                        return false;
+                    case CustomMessageBoxResult.NoAll:
+                        session.UserChoices.CountryNotFoundChoice = true;  // Continue with all invalid countries
+                        return true;
+                    default:
+                        return false;
+                }
             }
 
             return true;
         }
         private static void EnsureCompanyExists(string companyName, ImportSession session)
         {
-            if (!MainMenu_Form.Instance.CompanyList.Contains(companyName))
+            if (string.IsNullOrWhiteSpace(companyName))
+            {
+                return;
+            }
+
+            // Check if company already exists (case-insensitive)
+            bool companyExists = MainMenu_Form.Instance.CompanyList.Any(c =>
+                c.Equals(companyName, StringComparison.OrdinalIgnoreCase));
+
+            if (!companyExists)
             {
                 MainMenu_Form.Instance.CompanyList.Add(companyName);
                 session.AddedCompanies.Add(companyName);  // Track for rollback
@@ -340,24 +441,45 @@ namespace Sales_Tracker.Classes
             string categoryName,
             string productNameLower,
             string productName,
-            bool purchase)
+            bool purchase,
+            ImportSession session)
         {
             if (existingProducts.TryGetValue(categoryName, out HashSet<string> existingCategoryProducts) &&
                 existingCategoryProducts.Contains(productNameLower))
             {
+                // Check if user has already made a "to all" choice for duplicate products
+                if (session.UserChoices.DuplicateProductChoice.HasValue)
+                {
+                    return !session.UserChoices.DuplicateProductChoice.Value;  // If choice is false, return true (exists, don't import)
+                }
+
                 string type = purchase ? "purchase" : "sale";
 
-                CustomMessageBox.ShowWithFormat(
+                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Product already exists",
-                    "The product for {0} '{1}' already exists and will not be imported.",
+                    "The product for {0} '{1}' already exists. Would you like to import it anyway?",
                     CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.Ok,
+                    CustomMessageBoxButtons.YesNoAll,
                     type, productName);
 
-                return true;
+                switch (result)
+                {
+                    case CustomMessageBoxResult.Yes:
+                        return false;  // Don't skip, import this one
+                    case CustomMessageBoxResult.No:
+                        return true;  // Skip this one
+                    case CustomMessageBoxResult.YesAll:
+                        session.UserChoices.DuplicateProductChoice = true;  // Import all duplicates
+                        return false;
+                    case CustomMessageBoxResult.NoAll:
+                        session.UserChoices.DuplicateProductChoice = false;  // Skip all duplicates
+                        return true;
+                    default:
+                        return true; // Default to skip
+                }
             }
 
-            return false;
+            return false;  // Product doesn't exist, proceed with import
         }
         private static Product AddProductToCategory(
             Category category,
@@ -406,7 +528,7 @@ namespace Sales_Tracker.Classes
             }
             return ImportTransactionData(worksheet, includeHeader, false, sourceCurrency, session);
         }
-        public static int ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase)
+        public static int ImportReceiptsData(IXLWorksheet worksheet, bool includeHeader, string receiptsFolderPath, bool isPurchase, ImportSession session = null)
         {
             IEnumerable<IXLRow> rowsToProcess = includeHeader
                 ? worksheet.RowsUsed()
@@ -424,6 +546,18 @@ namespace Sales_Tracker.Classes
                     string.IsNullOrWhiteSpace(receiptFileName) ||
                     string.IsNullOrWhiteSpace(receiptsFolderPath) ||
                     receiptFileName == ReadOnlyVariables.EmptyCell)
+                {
+                    continue;
+                }
+
+                // Skip item rows (rows without transaction IDs)
+                if (string.IsNullOrEmpty(transactionId) || transactionId == ReadOnlyVariables.EmptyCell)
+                {
+                    continue;
+                }
+
+                // Skip receipt if the transaction was skipped during import
+                if (session != null && session.SkippedTransactionIds.Contains(transactionId))
                 {
                     continue;
                 }
@@ -538,7 +672,7 @@ namespace Sales_Tracker.Classes
                 : worksheet.RowsUsed().Skip(1);
 
             int newRowIndex = -1;
-            int currentRowNumber = includeHeader ? 1 : 2;  // Track the actual Excel row number
+            int currentRowNumber = includeHeader ? 1 : 2;
             int successfulTransactions = 0;
 
             Guna2DataGridView targetGridView = isPurchase
@@ -570,29 +704,31 @@ namespace Sales_Tracker.Classes
                     break;
                 }
 
-                currentRowNumber++;  // Increment for each row we process
+                currentRowNumber++;
                 string transactionNumber = row.Cell(1).GetValue<string>();
 
-                if (string.IsNullOrEmpty(transactionNumber))
+                // Check if this is an item row (part of a multi-item transaction)
+                if (string.IsNullOrEmpty(transactionNumber) || transactionNumber == ReadOnlyVariables.EmptyCell)
                 {
-                    summary.SkippedRows++;
+                    // This is an item row, not a main transaction row
+                    // Item rows are processed by ImportItemsInTransaction, so we just skip them here
+                    summary.ItemRowsProcessed++;
                     continue;
                 }
 
                 // Check if this row's transaction number already exists
-                if (transactionNumber != ReadOnlyVariables.EmptyCell)
-                {
-                    bool shouldContinue = CheckIfItemExists(
-                        transactionNumber,
-                        existingTransactionNumbers,
-                        addedDuringImport,
-                        itemType);
+                bool shouldContinue = CheckIfItemExists(
+                    transactionNumber,
+                    existingTransactionNumbers,
+                    addedDuringImport,
+                    itemType,
+                    session);
 
-                    if (!shouldContinue)
-                    {
-                        summary.SkippedRows++;
-                        continue;
-                    }
+                if (!shouldContinue)
+                {
+                    summary.SkippedRows++;
+                    session.SkippedTransactionIds.Add(transactionNumber);
+                    continue;
                 }
 
                 // Create a new row
@@ -606,12 +742,12 @@ namespace Sales_Tracker.Classes
                     case ImportTransactionResult.Cancel:
                         session.IsCancelled = true;
                         summary.WasCancelled = true;
-                        return summary;  // Cancel the import
+                        return summary;
                     case ImportTransactionResult.Skip:
                         summary.SkippedRows++;
-                        continue;  // Skip this transaction, continue with next
+                        session.SkippedTransactionIds.Add(transactionNumber);
+                        continue;
                     case ImportTransactionResult.Failed:
-                        // Add error to summary
                         summary.Errors.Add(new ImportError
                         {
                             TransactionId = transactionNumber,
@@ -620,9 +756,9 @@ namespace Sales_Tracker.Classes
                             FieldName = "Transaction Import",
                             InvalidValue = "Technical failure during import"
                         });
-                        return summary;  // Technical failure, stop import
+                        return summary;
                     case ImportTransactionResult.Success:
-                        break;  // Continue processing this transaction
+                        break;
                 }
 
                 ImportTransactionResult itemsImportResult = ImportItemsInTransaction(row, newRow, currentRowNumber, worksheetName, sourceCurrency, session);
@@ -632,10 +768,11 @@ namespace Sales_Tracker.Classes
                     case ImportTransactionResult.Cancel:
                         session.IsCancelled = true;
                         summary.WasCancelled = true;
-                        return summary;  // Cancel the import
+                        return summary;
                     case ImportTransactionResult.Skip:
                         summary.SkippedRows++;
-                        continue;  // Skip this transaction, continue with next
+                        session.SkippedTransactionIds.Add(transactionNumber);
+                        continue;
                     case ImportTransactionResult.Failed:
                         summary.Errors.Add(new ImportError
                         {
@@ -645,9 +782,9 @@ namespace Sales_Tracker.Classes
                             FieldName = "Items Import",
                             InvalidValue = "Technical failure during items import"
                         });
-                        return summary;  // Technical failure, stop import
+                        return summary;
                     case ImportTransactionResult.Success:
-                        break;  // Continue processing this transaction
+                        break;
                 }
 
                 // Add the row to the DataGridView
@@ -687,7 +824,6 @@ namespace Sales_Tracker.Classes
                 summary.SaleTransactionsImported = successfulTransactions;
             }
 
-            // Update "Has Receipt" column for all imported rows
             if (summary.HasAnyImports)
             {
                 MainMenu_Form.Instance.SetHasReceiptColumnVisibilty();
@@ -706,11 +842,18 @@ namespace Sales_Tracker.Classes
             bool isPurchase,
             string transactionId,
             int rowNumber,
-            string worksheetName)
+            string worksheetName,
+            ImportSession session)
         {
             if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(categoryName))
             {
                 return InvalidValueAction.Continue;  // Empty values are handled elsewhere
+            }
+
+            // Skip validation for "Multiple items" placeholder
+            if (productName.Equals("Multiple items", StringComparison.OrdinalIgnoreCase))
+            {
+                return InvalidValueAction.Continue;
             }
 
             List<Category> categoryList = isPurchase
@@ -730,7 +873,8 @@ namespace Sales_Tracker.Classes
                     transactionId,
                     rowNumber,
                     worksheetName,
-                    $"Category '{categoryName}' does not exist");
+                    $"Category '{categoryName}' does not exist",
+                    session);
             }
 
             // Check if product exists in the category
@@ -741,12 +885,13 @@ namespace Sales_Tracker.Classes
             {
                 // Product doesn't exist in the category
                 return ShowProductNotFoundError(
-                    productName,
-                    categoryName,
-                    transactionId,
-                    rowNumber,
-                    worksheetName,
-                    $"Product '{productName}' does not exist in category '{categoryName}'");
+                  productName,
+                  categoryName,
+                  transactionId,
+                  rowNumber,
+                  worksheetName,
+                  $"Product '{productName}' does not exist in category '{categoryName}'",
+                  session);
             }
 
             return InvalidValueAction.Continue;
@@ -761,8 +906,17 @@ namespace Sales_Tracker.Classes
             string transactionId,
             int rowNumber,
             string worksheetName,
-            string errorDescription)
+            string errorDescription,
+            ImportSession session)
         {
+            // Check if user has already made a "to all" choice
+            if (session.UserChoices.ProductNotFoundChoice.HasValue)
+            {
+                return session.UserChoices.ProductNotFoundChoice.Value
+                    ? InvalidValueAction.Skip
+                    : InvalidValueAction.Cancel;
+            }
+
             string message = "Product not found during transaction import:\n\n" +
                              "Worksheet: {0}\n" +
                              "Row: {1}\n" +
@@ -785,7 +939,7 @@ namespace Sales_Tracker.Classes
             {
                 CustomMessageBoxResult.Skip => InvalidValueAction.Skip,
                 CustomMessageBoxResult.Cancel => InvalidValueAction.Cancel,
-                _ => InvalidValueAction.Cancel // Default to cancel for safety
+                _ => InvalidValueAction.Cancel
             };
         }
 
@@ -857,32 +1011,47 @@ namespace Sales_Tracker.Classes
             string itemNumber,
             HashSet<string> existingItems,
             HashSet<string> addedDuringImport,
-            string itemTypeName)
+            string itemTypeName,
+            ImportSession session)
         {
             bool alreadyExistsInSystem = existingItems.Contains(itemNumber);
             bool alreadyAddedDuringImport = addedDuringImport.Contains(itemNumber);
 
-            if (alreadyExistsInSystem)
+            if (alreadyExistsInSystem || alreadyAddedDuringImport)
             {
+                // Check if user has already made a "to all" choice
+                if (session.UserChoices.DuplicateItemChoice.HasValue)
+                {
+                    return session.UserChoices.DuplicateItemChoice.Value;
+                }
+
+                string duplicateType = alreadyExistsInSystem ? "already exists" : "appears multiple times in this spreadsheet";
+                string message = alreadyExistsInSystem
+                    ? "The {1} #{2} already exists. Would you like to add this {3} anyways?"
+                    : "The {1} #{2} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?";
+
                 CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
-                    "{0} # already exists",
-                    "The {1} #{2} already exists. Would you like to add this {3} anyways?",
+                    $"{itemTypeName} # {duplicateType}",
+                    message,
                     CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNo,
+                    CustomMessageBoxButtons.YesNoAll,
                     itemTypeName, itemTypeName.ToLowerInvariant(), itemNumber, itemTypeName.ToLowerInvariant());
 
-                return result == CustomMessageBoxResult.Yes;
-            }
-            else if (alreadyAddedDuringImport)
-            {
-                CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
-                    "Duplicate {0} # in Spreadsheet",
-                    "The {1} #{2} appears multiple times in this spreadsheet. Would you like to add this duplicate anyways?",
-                    CustomMessageBoxIcon.Question,
-                    CustomMessageBoxButtons.YesNo,
-                    itemTypeName, itemTypeName.ToLowerInvariant(), itemNumber);
-
-                return result == CustomMessageBoxResult.Yes;
+                switch (result)
+                {
+                    case CustomMessageBoxResult.Yes:
+                        return true;
+                    case CustomMessageBoxResult.No:
+                        return false;
+                    case CustomMessageBoxResult.YesAll:
+                        session.UserChoices.DuplicateItemChoice = true;
+                        return true;
+                    case CustomMessageBoxResult.NoAll:
+                        session.UserChoices.DuplicateItemChoice = false;
+                        return false;
+                    default:
+                        return false;
+                }
             }
 
             return true;
@@ -937,7 +1106,8 @@ namespace Sales_Tracker.Classes
                 isPurchase,
                 transactionId,
                 rowNumber,
-                worksheetName);
+                worksheetName,
+                session);
 
             switch (productValidationResult)
             {
@@ -1128,7 +1298,8 @@ namespace Sales_Tracker.Classes
                         isPurchase,
                         transactionId,
                         baseRowNumber + currentRowOffset,
-                        worksheetName);
+                        worksheetName,
+                        session);
 
                     switch (productValidationResult)
                     {
@@ -1411,27 +1582,24 @@ namespace Sales_Tracker.Classes
             worksheet.Cell(1, messageCellIndex).Style.Font.Bold = true;
 
             string currencyFormatPattern = $"\"{currencySymbol}\"#,##0.00";
-            string receiptFileName = ReadOnlyVariables.EmptyCell;
             int currentRow = 2;
-            int rowForReceipt = 2;
 
             // Add transactions
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
+                string receiptFileName = ReadOnlyVariables.EmptyCell;
+                int rowForReceipt = currentRow;
+
                 switch (row.Tag)
                 {
                     case (List<string> itemList, TagData tagData) when itemList.Count > 0:
-                        // Is there a receipt
+                        // Check if there's a receipt in the item list
                         byte receiptOffset = 0;
                         string receipt = itemList[^1];
                         if (receipt.StartsWith(ReadOnlyVariables.Receipt_text))
                         {
                             receiptOffset = 1;
                             receiptFileName = Path.GetFileName(receipt);
-                        }
-                        else
-                        {
-                            worksheet.Cell(currentRow, receiptCellIndex).Value = ReadOnlyVariables.EmptyCell;
                         }
 
                         AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern);
@@ -1448,15 +1616,23 @@ namespace Sales_Tracker.Classes
 
                     case (string tagString, TagData tagData):
                         AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern);
-                        receiptFileName = Path.GetFileName(tagString);
+
+                        if (!string.IsNullOrEmpty(tagString))
+                        {
+                            receiptFileName = Path.GetFileName(tagString);
+                        }
+                        break;
+
+                    case TagData tagData:
+                        // Transaction with no items and no receipt
+                        AddRowToWorksheet(worksheet, row, currentRow, tagData, targetCurrency, currencyFormatPattern);
                         break;
                 }
 
-                // Add receipt to the last cell
+                // Add receipt to the main transaction row (not item rows)
                 worksheet.Cell(rowForReceipt, receiptCellIndex).Value = receiptFileName;
 
                 currentRow++;
-                rowForReceipt = currentRow;  // This ensures that the receipt is not added to the bottom of a transaction with multiple items
             }
 
             worksheet.Columns().AdjustToContents();

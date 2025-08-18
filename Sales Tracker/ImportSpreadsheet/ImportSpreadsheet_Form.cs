@@ -490,9 +490,16 @@ namespace Sales_Tracker.ImportSpreadsheet
                 message = $"Successfully imported {string.Join(", ", importedItems.Take(importedItems.Count - 1))}, and {importedItems.Last()}.";
             }
 
+            // Only show skipped rows if there were actual problems (not just item rows)
             if (summary.SkippedRows > 0)
             {
-                message += $"\n\n{summary.SkippedRows} row{(summary.SkippedRows == 1 ? "" : "s")} {(summary.SkippedRows == 1 ? "was" : "were")} skipped due to error{(summary.SkippedRows == 1 ? "" : "s")}.";
+                message += $"\n\n{summary.SkippedRows} transaction{(summary.SkippedRows == 1 ? "" : "s")} {(summary.SkippedRows == 1 ? "was" : "were")} skipped.";
+            }
+
+            // Show item rows information if there were multi-item transactions
+            if (summary.ItemRowsProcessed > 0)
+            {
+                message += $"\n{summary.ItemRowsProcessed} item{(summary.ItemRowsProcessed == 1 ? "" : "s")} processed within multi-item transactions.";
             }
 
             if (summary.Errors.Count > 0)
@@ -617,7 +624,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true);
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, true, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
@@ -640,7 +647,7 @@ namespace Sales_Tracker.ImportSpreadsheet
                         // Import receipts if receipts folder is specified
                         if (!string.IsNullOrEmpty(_receiptsFolderPath) && Directory.Exists(_receiptsFolderPath))
                         {
-                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false);
+                            int importedReceiptCount = ExcelSheetManager.ImportReceiptsData(worksheet, includeheader, _receiptsFolderPath, false, importSession);
                             aggregatedSummary.ReceiptsImported += importedReceiptCount;
                         }
                         break;
@@ -745,7 +752,7 @@ namespace Sales_Tracker.ImportSpreadsheet
             {
                 Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
                 Size = new Size(_panelPadding * 6 + _panelWidth * 3 + 50, _panelHeight * 2 + _panelPadding),
-                Top = Currency_TextBox.Bottom + 50,
+                Top = Currency_TextBox.Bottom + 40,
                 Spacing = _panelPadding
             };
         }

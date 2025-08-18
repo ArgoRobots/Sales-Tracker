@@ -31,6 +31,8 @@ namespace Sales_Tracker
             LanguageManager.UpdateLanguageForControl(Ok_Button);
             LanguageManager.UpdateLanguageForControl(Cancel_Button);
             LanguageManager.UpdateLanguageForControl(Skip_Button);
+            LanguageManager.UpdateLanguageForControl(YesAll_Button);
+            LanguageManager.UpdateLanguageForControl(NoAll_Button);
             LanguageManager.UpdateLanguageForControl(this);
 
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -103,6 +105,8 @@ namespace Sales_Tracker
             Controls.Remove(DontSave_Button);
             Controls.Remove(Retry_Button);
             Controls.Remove(Skip_Button);
+            Controls.Remove(YesAll_Button);
+            Controls.Remove(NoAll_Button);
 
             // Set buttons
             byte buttonSpace = 35;
@@ -115,6 +119,19 @@ namespace Sales_Tracker
                     Controls.Add(No_Button);
                     Yes_Button.Focus();
                     break;
+
+                case CustomMessageBoxButtons.YesNoAll:
+                    NoAll_Button.Left = Width - NoAll_Button.Width - buttonSpace;
+                    No_Button.Left = NoAll_Button.Left - No_Button.Width - CustomControls.SpaceBetweenControls;
+                    YesAll_Button.Left = No_Button.Left - YesAll_Button.Width - CustomControls.SpaceBetweenControls;
+                    Yes_Button.Left = YesAll_Button.Left - Yes_Button.Width - CustomControls.SpaceBetweenControls;
+                    Controls.Add(Yes_Button);
+                    Controls.Add(YesAll_Button);
+                    Controls.Add(No_Button);
+                    Controls.Add(NoAll_Button);
+                    Yes_Button.Focus();
+                    break;
+
                 case CustomMessageBoxButtons.Ok:
                     Ok_Button.Left = Width - Ok_Button.Width - buttonSpace;
                     Controls.Add(Ok_Button);
@@ -336,6 +353,16 @@ namespace Sales_Tracker
             Result = CustomMessageBoxResult.Yes;
             Close();
         }
+        private void YesAll_Button_Click(object sender, EventArgs e)
+        {
+            Result = CustomMessageBoxResult.YesAll;
+            Close();
+        }
+        private void NoAll_Button_Click(object sender, EventArgs e)
+        {
+            Result = CustomMessageBoxResult.NoAll;
+            Close();
+        }
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             Result = CustomMessageBoxResult.Cancel;
@@ -384,6 +411,7 @@ namespace Sales_Tracker
     public enum CustomMessageBoxButtons
     {
         YesNo,
+        YesNoAll,
         Ok,
         OkCancel,
         SaveDontSaveCancel,
@@ -397,6 +425,8 @@ namespace Sales_Tracker
         Cancel,
         Yes,
         No,
+        YesAll,
+        NoAll,
         Save,
         DontSave,
         Retry,

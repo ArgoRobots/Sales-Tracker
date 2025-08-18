@@ -44,6 +44,10 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Icon_PictureBox = new PictureBox();
             Ok_Button = new Guna.UI2.WinForms.Guna2Button();
             No_Button = new Guna.UI2.WinForms.Guna2Button();
@@ -54,6 +58,8 @@
             DontSave_Button = new Guna.UI2.WinForms.Guna2Button();
             Retry_Button = new Guna.UI2.WinForms.Guna2Button();
             Skip_Button = new Guna.UI2.WinForms.Guna2Button();
+            YesAll_Button = new Guna.UI2.WinForms.Guna2Button();
+            NoAll_Button = new Guna.UI2.WinForms.Guna2Button();
             ((System.ComponentModel.ISupportInitialize)Icon_PictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -262,11 +268,59 @@
             Skip_Button.Text = "Skip";
             Skip_Button.Click += Skip_Button_Click;
             // 
+            // YesAll_Button
+            // 
+            YesAll_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            YesAll_Button.BorderColor = Color.LightGray;
+            YesAll_Button.BorderRadius = 4;
+            YesAll_Button.BorderThickness = 1;
+            YesAll_Button.CustomizableEdges = customizableEdges17;
+            YesAll_Button.DisabledState.BorderColor = Color.DarkGray;
+            YesAll_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            YesAll_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            YesAll_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            YesAll_Button.FillColor = SystemColors.Window;
+            YesAll_Button.FocusedColor = Color.FromArgb(0, 192, 192);
+            YesAll_Button.Font = new Font("Segoe UI", 9F);
+            YesAll_Button.ForeColor = Color.Black;
+            YesAll_Button.Location = new Point(224, 137);
+            YesAll_Button.Name = "YesAll_Button";
+            YesAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            YesAll_Button.Size = new Size(150, 45);
+            YesAll_Button.TabIndex = 9;
+            YesAll_Button.Text = "Yes to all";
+            YesAll_Button.Click += YesAll_Button_Click;
+            // 
+            // NoAll_Button
+            // 
+            NoAll_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            NoAll_Button.BorderColor = Color.LightGray;
+            NoAll_Button.BorderRadius = 4;
+            NoAll_Button.BorderThickness = 1;
+            NoAll_Button.CustomizableEdges = customizableEdges19;
+            NoAll_Button.DisabledState.BorderColor = Color.DarkGray;
+            NoAll_Button.DisabledState.CustomBorderColor = Color.DarkGray;
+            NoAll_Button.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            NoAll_Button.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            NoAll_Button.FillColor = SystemColors.Window;
+            NoAll_Button.FocusedColor = Color.FromArgb(0, 192, 192);
+            NoAll_Button.Font = new Font("Segoe UI", 9F);
+            NoAll_Button.ForeColor = Color.Black;
+            NoAll_Button.Location = new Point(380, 137);
+            NoAll_Button.Name = "NoAll_Button";
+            NoAll_Button.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            NoAll_Button.Size = new Size(150, 45);
+            NoAll_Button.TabIndex = 10;
+            NoAll_Button.Text = "No to all";
+            NoAll_Button.Click += NoAll_Button_Click;
+            // 
             // CustomMessage_Form
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(778, 194);
+            Controls.Add(NoAll_Button);
+            Controls.Add(YesAll_Button);
             Controls.Add(Skip_Button);
             Controls.Add(Retry_Button);
             Controls.Add(Message_Label);
@@ -302,5 +356,7 @@
         public Guna.UI2.WinForms.Guna2Button DontSave_Button;
         public Guna.UI2.WinForms.Guna2Button Retry_Button;
         public Guna.UI2.WinForms.Guna2Button Skip_Button;
+        public Guna.UI2.WinForms.Guna2Button YesAll_Button;
+        public Guna.UI2.WinForms.Guna2Button NoAll_Button;
     }
 }
