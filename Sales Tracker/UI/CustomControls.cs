@@ -459,16 +459,16 @@ namespace Sales_Tracker.UI
                 Tools.OpenLink("https://argorobots.com/contact-us/index.php");
             };
 
+            menuBtn = ConstructBtnForMenu("Community", PanelBtnWidth, true, flowPanel);
+            menuBtn.Click += (_, _) =>
+            {
+                Tools.OpenLink("https://argorobots.com/community/index.php");
+            };
+
             menuBtn = ConstructBtnForMenu("About", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (_, _) =>
             {
                 Tools.OpenLink("https://argorobots.com/about-us/index.php");
-            };
-
-            menuBtn = ConstructBtnForMenu("Share feedback", PanelBtnWidth, true, flowPanel);
-            menuBtn.Click += (_, _) =>
-            {
-                Tools.OpenLink("https://argorobots.com/contact-us/index.php");
             };
 
             menuBtn = ConstructBtnForMenu("Clear cache", PanelBtnWidth, true, flowPanel);
