@@ -115,9 +115,13 @@ namespace Sales_Tracker.UI
         public static Guna2Button ConstructBtnForMenu(string text, int width, bool closeAllPanels, Control control, bool scaleFontSize = false)
         {
             float scale = DpiHelper.GetRelativeDpiScale();
+
             int scaledWidth = (int)(width * scale);
             int scaledHeight = (int)(PanelButtonHeight * scale);
-            float fontSize = scaleFontSize ? 10 * scale : 10;
+
+            float fontSize = scaleFontSize && scale < 1
+                ? 10 * scale
+                : 10;
 
             Guna2Button menuBtn = new()
             {

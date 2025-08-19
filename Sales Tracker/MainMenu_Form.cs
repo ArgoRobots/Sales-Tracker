@@ -1815,7 +1815,8 @@ namespace Sales_Tracker
         }
 
         // DataGridView properties
-        public SelectedOption Selected;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SelectedOption Selected { get; set; }
 
         // DataGridView getters
         public Guna2DataGridView Purchase_DataGridView { get; private set; }
