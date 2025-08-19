@@ -1,8 +1,10 @@
-﻿using Microsoft.Win32;
+﻿using LiveChartsCore.SkiaSharpView;
+using Microsoft.Win32;
 using Sales_Tracker.Classes;
 using Sales_Tracker.Passwords;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
+using SkiaSharp;
 
 namespace Sales_Tracker
 {
@@ -40,6 +42,8 @@ namespace Sales_Tracker
             CustomControls.ConstructRightClickRename();
 
             _ = Task.Run(EnsureDefaultLanguageTranslationsAsync);
+
+            SetLiveChartTitleFont();
 
             ThemeChangeDetector.StartListeningForThemeChanges();
             RegisterFileAssociationOnFirstRun();
@@ -108,6 +112,19 @@ namespace Sales_Tracker
             {
                 Log.Error_EnsureDefaultLanguageTranslations($"{ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Configures LiveCharts font for proper Unicode text rendering, fixing the rendering of non-Latin languages.
+        /// </summary>
+        private static void SetLiveChartTitleFont()
+        {
+            // I use "Segoe UI" for my app, but for some reason it doesn't work here. "Nirmala UI" seems to work for every language.
+            LiveChartsCore.LiveCharts.Configure(config => config
+                .AddSkiaSharp()
+                .AddDefaultMappers()
+                .HasGlobalSKTypeface(SKTypeface.FromFamilyName("Nirmala UI"))
+            );
         }
 
         /// <summary>
