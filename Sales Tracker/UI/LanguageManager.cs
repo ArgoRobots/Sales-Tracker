@@ -280,6 +280,7 @@ namespace Sales_Tracker.UI
             if (Tools.IsFormOpen<General_Form>() && General_Form.Instance.IsHandleCreated)
             {
                 General_Form.Instance.BeginInvoke(new Action(General_Form.Instance.PopulateThemeComboBox));
+                General_Form.Instance.BeginInvoke(new Action(General_Form.Instance.AlignLabels));
             }
 
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));

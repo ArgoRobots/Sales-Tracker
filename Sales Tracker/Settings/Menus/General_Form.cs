@@ -48,7 +48,7 @@ namespace Sales_Tracker.Settings.Menus
             // Prevent automatic translation since we handle it manually
             ColorTheme_ComboBox.AccessibleDescription = AccessibleDescriptionManager.DoNotTranslate;
         }
-        private void AlignLabels()
+        public void AlignLabels()
         {
             Language_Label.Left = Language_TextBox.Left - Language_Label.Width - 2;
             Currency_Label.Left = Currency_TextBox.Left - Currency_Label.Width - 2;
