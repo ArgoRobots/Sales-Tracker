@@ -1615,20 +1615,6 @@ namespace Sales_Tracker
                     ? LanguageManager.TranslateString("year")
                     : string.Format(LanguageManager.TranslateString("{0} years"), years);
             }
-            else if (timeSpan.TotalDays >= 30)
-            {
-                int months = (int)(timeSpan.TotalDays / 30);
-                return months == 1
-                    ? LanguageManager.TranslateString("month")
-                    : string.Format(LanguageManager.TranslateString("{0} months"), months);
-            }
-            else if (timeSpan.TotalDays >= 7)
-            {
-                int weeks = (int)(timeSpan.TotalDays / 7);
-                return weeks == 1
-                    ? LanguageManager.TranslateString("week")
-                    : string.Format(LanguageManager.TranslateString("{0} weeks"), weeks);
-            }
             else
             {
                 int days = (int)timeSpan.TotalDays;
