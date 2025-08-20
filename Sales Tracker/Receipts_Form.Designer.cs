@@ -388,7 +388,7 @@
             // 
             // Total_Label
             // 
-            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Total_Label.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             Total_Label.AutoSize = true;
             Total_Label.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Total_Label.Location = new Point(18, 715);
