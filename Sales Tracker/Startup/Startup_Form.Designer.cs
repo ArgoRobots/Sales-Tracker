@@ -35,10 +35,10 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1296, 766);
+            ClientSize = new Size(1298, 764);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);
-            MinimumSize = new Size(1039, 722);
+            MinimumSize = new Size(1040, 740);
             Name = "Startup_Form";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Argo Sales Tracker";

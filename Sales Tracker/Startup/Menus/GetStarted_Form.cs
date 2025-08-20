@@ -79,18 +79,18 @@ namespace Sales_Tracker.Startup.Menus
         // Recent companies
         private void LoadListOfRecentCompanies()
         {
+            float scale = DpiHelper.GetRelativeDpiScale();
+            int scaledButtonHeight = (int)(60 * scale);
+
             List<string> validCompanyDirs = ArgoCompany.GetValidRecentCompanyPaths(false);
 
             if (validCompanyDirs.Count == 0)
             {
-                LabelManager.AddNoRecentlyOpenedCompanies(OpenRecent_FlowLayoutPanel, CalculateButtonWidth());
+                LabelManager.AddNoRecentlyOpenedCompanies(OpenRecent_FlowLayoutPanel, CalculateButtonWidth(), scaledButtonHeight);
                 return;
             }
 
             // Construct a button for each company
-            float scale = DpiHelper.GetRelativeDpiScale();
-            int scaledButtonHeight = (int)(60 * scale);
-
             foreach (string companyDir in validCompanyDirs)
             {
                 Guna2Button btn = new()

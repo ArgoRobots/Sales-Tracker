@@ -141,13 +141,18 @@ namespace Sales_Tracker.UI
                 label.Location = new Point((control.Width - label.Width) / 2, (control.Height - label.Height) / 2);
             }
         }
-        public static void AddNoRecentlyOpenedCompanies(Control parent, int labelWidth)
+        public static void AddNoRecentlyOpenedCompanies(Control parent, int labelWidth, int labelHeight)
         {
+            float scale = DpiHelper.GetRelativeDpiScale();
+
+            int scaledWidth = (int)(labelWidth * scale);
+            int scaledHeight = (int)(labelHeight * scale);
+
             parent.Controls.Add(new Label
             {
                 Text = LanguageManager.TranslateString("No recently opened companies"),
                 Name = "NoRecentlyOpenedCompanies_Label",
-                Size = new Size(labelWidth, CustomControls.PanelButtonHeight),
+                Size = new Size(scaledWidth, scaledHeight),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Segoe UI", 10, FontStyle.Italic),
                 ForeColor = CustomColors.Text
