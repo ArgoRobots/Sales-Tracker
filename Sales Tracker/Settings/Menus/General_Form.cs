@@ -24,8 +24,8 @@ namespace Sales_Tracker.Settings.Menus
             InitializeAdminModeControls();
             ThemeManager.SetThemeForForm(this);
             SetAccessibleDescription();
-            AlignLabels();
             LanguageManager.UpdateLanguageForControl(this);
+            AlignLabels();
             UpdateControls();
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
