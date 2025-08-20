@@ -114,7 +114,7 @@ namespace Sales_Tracker.Startup.Menus
         }
         private void Btn_MouseDown(object? sender, MouseEventArgs e)
         {
-            Controls.Remove(RightClickOpenRecent_Panel);
+            CloseAllPanels(null, null);
 
             if (e.Button != MouseButtons.Left) { return; }
             Guna2Button button = (Guna2Button)sender;
@@ -293,10 +293,17 @@ namespace Sales_Tracker.Startup.Menus
 
             Guna2Button button = (Guna2Button)RightClickOpenRecent_Panel.Tag;
 
+            CustomControls.Rename_TextBox.Location = new Point(
+                OpenRecent_FlowLayoutPanel.Left + button.Left + 1,
+                OpenRecent_FlowLayoutPanel.Top + button.Top);
+
+            if (CustomControls.Rename_TextBox.Font.Size != button.Font.Size)
+            {
+                CustomControls.Rename_TextBox.Font = new Font(CustomControls.Rename_TextBox.Font.FontFamily, button.Font.Size);
+            }
+
             CustomControls.Rename_TextBox.Text = button.Text;
-            CustomControls.Rename_TextBox.Location = new Point(OpenRecent_FlowLayoutPanel.Left + button.Left + 1, OpenRecent_FlowLayoutPanel.Top + button.Top);
-            CustomControls.Rename_TextBox.Size = new Size(button.Width, button.Height);
-            CustomControls.Rename_TextBox.Font = button.Font;
+            CustomControls.Rename_TextBox.Size = button.Size;
             Controls.Add(CustomControls.Rename_TextBox);
             CustomControls.Rename_TextBox.Focus();
             CustomControls.Rename_TextBox.SelectAll();

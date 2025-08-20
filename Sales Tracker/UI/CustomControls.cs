@@ -622,7 +622,6 @@ namespace Sales_Tracker.UI
             Rename_TextBox = new Guna2TextBox
             {
                 Font = new Font("Segoe UI", 10),
-                Top = 1,
                 MaxLength = 30,
                 ForeColor = CustomColors.Text,
                 FillColor = CustomColors.ControlBack,
