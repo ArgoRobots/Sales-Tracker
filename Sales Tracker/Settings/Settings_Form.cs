@@ -16,7 +16,7 @@ namespace Sales_Tracker.Settings
         private CancellationTokenSource _translationCts = new();
         private bool _isClosing = false;
 
-        // Getters and setters
+        // Getters
         public static Settings_Form Instance => _instance;
 
         // Init.
@@ -264,6 +264,7 @@ namespace Sales_Tracker.Settings
                             MainMenu_Form.Instance?.RecalculateWorldMapControlsLayout();
                             AddPurchase_Form.Instance?.RecalculateMultipleItemsLayout();
                             AddSale_Form.Instance?.RecalculateMultipleItemsLayout();
+                            Upgrade_Form.Instance?.CenterLabels();
                         }
                         catch (Exception ex)
                         {

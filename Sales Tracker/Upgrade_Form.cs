@@ -9,31 +9,43 @@ namespace Sales_Tracker
 {
     public partial class Upgrade_Form : BaseForm
     {
+        // Properties
+        private static Upgrade_Form _instance;
+
+        // Getters
+        public static Upgrade_Form Instance => _instance;
+
         // Init.
         public Upgrade_Form()
         {
             InitializeComponent();
+            _instance = this;
+
             ConstructEnterKeyPanel();
             UpdateTheme();
             SetAccessibleDescriptions();
             LanguageManager.UpdateLanguageForControl(this);
-            CenterControls();
+            CenterButton();
+            CenterLabels();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
-        private void CenterControls()
+        int CenterHorizontally(Control control) => control.Left = (ClientSize.Width - Benifits_Panel.Width - control.Width) / 2;
+        private void CenterButton()
         {
-            int CenterHorizontally(Control control) => (ClientSize.Width - Benifits_Panel.Width - control.Width) / 2;
+            CenterHorizontally(Upgrade_Button);
+            CenterHorizontally(EnterKey_Button);
 
-            // Center controls
-            UpgradeTitle_Label.Left = CenterHorizontally(UpgradeTitle_Label);
-            UpgradeSubTitle_Label.Left = CenterHorizontally(UpgradeSubTitle_Label);
-            DollarAmount_Label.Left = CenterHorizontally(DollarAmount_Label);
-            Upgrade_Button.Left = CenterHorizontally(Upgrade_Button);
-            EnterKey_Button.Left = CenterHorizontally(EnterKey_Button);
-
-            StripeLogo_ImageButton.Left = CenterHorizontally(StripeLogo_ImageButton);
+            CenterHorizontally(StripeLogo_ImageButton);
             PayPalLogo_ImageButton.Left = StripeLogo_ImageButton.Left - PayPalLogo_ImageButton.Width - CustomControls.SpaceBetweenControls;
             Square_ImageButton.Left = StripeLogo_ImageButton.Right + CustomControls.SpaceBetweenControls;
+        }
+        public void CenterLabels()
+        {
+            CenterHorizontally(UpgradeTitle_Label);
+            CenterHorizontally(UpgradeSubTitle_Label);
+            CenterHorizontally(DollarAmount_Label);
+
+            _enterLicense_Label.Left = (_enterKey_Panel.Width - _enterLicense_Label.Width) / 2;
         }
         private void UpdateTheme()
         {
@@ -44,17 +56,17 @@ namespace Sales_Tracker
 
             // For EnterKey_Panel
             ThemeManager.MakeGButtonBluePrimary(_verifyLicense_Button);
-            _backButton.FillColor = CustomColors.MainBackground;
+            _back_Button.FillColor = CustomColors.MainBackground;
 
             if (ThemeManager.IsDarkTheme())
             {
                 Square_ImageButton.Image = Resources.SquareLogoWhite;
-                _backButton.Image = Resources.BackArrowWhite;
+                _back_Button.Image = Resources.BackArrowWhite;
             }
             else
             {
                 Square_ImageButton.Image = Resources.SquareLogoBlack;
-                _backButton.Image = Resources.BackArrowBlack;
+                _back_Button.Image = Resources.BackArrowBlack;
             }
         }
         private void SetAccessibleDescriptions()
@@ -87,8 +99,8 @@ namespace Sales_Tracker
 
         // EnterKey_Panel
         private Panel _enterKey_Panel;
-        private Guna2Button _verifyLicense_Button, _backButton;
-        private Label _errorLabel;
+        private Guna2Button _verifyLicense_Button, _back_Button;
+        private Label _error_Label, _enterLicense_Label;
         private Guna2TextBox _license_TextBox;
         private void ConstructEnterKeyPanel()
         {
@@ -101,7 +113,7 @@ namespace Sales_Tracker
             };
             Controls.Add(_enterKey_Panel);
 
-            Label title_Label = new()
+            _enterLicense_Label = new()
             {
                 ForeColor = CustomColors.Text,
                 AutoSize = true,
@@ -111,7 +123,7 @@ namespace Sales_Tracker
                 Name = "EnterYourLicense_Label",
                 Anchor = AnchorStyles.Top
             };
-            _enterKey_Panel.Controls.Add(title_Label);
+            _enterKey_Panel.Controls.Add(_enterLicense_Label);
 
             _license_TextBox = new()
             {
@@ -136,14 +148,14 @@ namespace Sales_Tracker
             _verifyLicense_Button.Click += VerifyLicense_Button_Click;
             _enterKey_Panel.Controls.Add(_verifyLicense_Button);
 
-            _backButton = new()
+            _back_Button = new()
             {
                 Size = new Size(50, 45),
                 ImageSize = new Size(40, 40),
-                Location = new Point(title_Label.Top, title_Label.Top)
+                Location = new Point(_enterLicense_Label.Top, _enterLicense_Label.Top)
             };
-            _backButton.Click += BackButton_Click;
-            _enterKey_Panel.Controls.Add((_backButton));
+            _back_Button.Click += BackButton_Click;
+            _enterKey_Panel.Controls.Add((_back_Button));
 
             // Set locations
             _license_TextBox.Location = new Point((
@@ -151,8 +163,6 @@ namespace Sales_Tracker
                 (_enterKey_Panel.Height - _license_TextBox.Height - CustomControls.SpaceBetweenControls - _verifyLicense_Button.Height) / 2);
 
             _verifyLicense_Button.Location = new Point(_license_TextBox.Left, _license_TextBox.Bottom + CustomControls.SpaceBetweenControls);
-
-            title_Label.Left = (_enterKey_Panel.Width - title_Label.Width) / 2;
         }
         private async void VerifyLicense_Button_Click(object sender, EventArgs e)
         {
@@ -256,9 +266,9 @@ namespace Sales_Tracker
         private void SetLicenseInvalid()
         {
             // Create error label if it doesn't exist
-            if (_errorLabel == null)
+            if (_error_Label == null)
             {
-                _errorLabel = new()
+                _error_Label = new()
                 {
                     AutoSize = true,
                     Font = new Font("Segoe UI", 11),
@@ -266,16 +276,16 @@ namespace Sales_Tracker
                     TextAlign = ContentAlignment.MiddleCenter,
                     Visible = false
                 };
-                _enterKey_Panel.Controls.Add(_errorLabel);
+                _enterKey_Panel.Controls.Add(_error_Label);
             }
 
             // Set label properties
-            _errorLabel.Text = LanguageManager.TranslateString("Invalid license key");
-            _errorLabel.Location = new Point(
-                (_enterKey_Panel.Width - _errorLabel.Width) / 2,
+            _error_Label.Text = LanguageManager.TranslateString("Invalid license key");
+            _error_Label.Location = new Point(
+                (_enterKey_Panel.Width - _error_Label.Width) / 2,
                 _verifyLicense_Button.Bottom + 10
             );
-            _errorLabel.Visible = true;
+            _error_Label.Visible = true;
 
             // Disable button
             _verifyLicense_Button.Enabled = false;
@@ -285,7 +295,7 @@ namespace Sales_Tracker
 
             // Reset to allow user to try again
             _verifyLicense_Button.Enabled = true;
-            _errorLabel.Visible = false;
+            _error_Label.Visible = false;
         }
         private async Task ShowErrorAndShake()
         {
@@ -301,7 +311,7 @@ namespace Sales_Tracker
             await Task.Delay(3000);
 
             // Hide error message and reset button
-            _errorLabel.Visible = false;
+            _error_Label.Visible = false;
             _verifyLicense_Button.Enabled = true;
             _verifyLicense_Button.Text = LanguageManager.TranslateString("Verify License");
         }
