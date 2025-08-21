@@ -233,6 +233,7 @@ namespace Sales_Tracker.UI
 
             // Add other controls
             controlsList.Add(CustomControls.ControlsDropDown_Button);
+            controlsList.AddRange(MainMenu_Form.TimeRangePanel);
             controlsList.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
             controlsList.AddRange(MainMenu_Form.Instance.GetMainControls());
 
@@ -392,6 +393,12 @@ namespace Sales_Tracker.UI
                     return cachedTranslation;
                 }
 
+                // Try special case handling
+                if (TryGetDateRangeFormTranslation(EnglishCache, controlKey, out string specialTranslation))
+                {
+                    return specialTranslation;
+                }
+
                 // Try string-based translation
                 string stringKey = GetStringKey(originalText);
                 if (EnglishCache.TryGetValue(stringKey, out string stringTranslation))
@@ -410,6 +417,12 @@ namespace Sales_Tracker.UI
                         return cachedTranslation;
                     }
 
+                    // Try special case handling
+                    if (TryGetDateRangeFormTranslation(controlTranslations, controlKey, out string specialTranslation))
+                    {
+                        return specialTranslation;
+                    }
+
                     // Try string-based translation
                     string stringKey = GetStringKey(originalText);
                     if (controlTranslations.TryGetValue(stringKey, out string stringTranslation))
@@ -421,6 +434,22 @@ namespace Sales_Tracker.UI
 
             // If no cached translation is found, return original
             return originalText;
+        }
+
+        /// <summary>
+        /// Attempts to find translation for TimeRangePanel controls by converting MainMenu_Form keys to DateRange_Form keys.
+        /// </summary>
+        private static bool TryGetDateRangeFormTranslation(Dictionary<string, string> cache, string controlKey, out string translation)
+        {
+            translation = null;
+
+            if (controlKey.StartsWith("Main_Panel") && MainMenu_Form.TimeRangePanel != null)
+            {
+                string dateRangeKey = controlKey.Replace("Main_Panel", "DateRange_Form.Main_Panel");
+                return cache.TryGetValue(dateRangeKey, out translation);
+            }
+
+            return false;
         }
         private static void TranslateLinkLabelFromCache(LinkLabel linkLabel, string targetLanguageAbbreviation)
         {

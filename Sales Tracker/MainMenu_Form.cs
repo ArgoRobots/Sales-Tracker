@@ -1346,7 +1346,7 @@ namespace Sales_Tracker
             Controls.Remove(TimeRangePanel);
         }
 
-        // Timer for loading the charts
+        // Search timer
         private Timer searchTimer;
         private bool timerRunning = false;
         private void InitiateSearchTimer()
