@@ -121,7 +121,7 @@ namespace Sales_Tracker.Settings
         }
 
         // Left menu buttons
-        private Guna2Button selectedButton;
+        private Guna2Button _selectedButton;
         private void GeneralButton_Click(object sender, EventArgs e)
         {
             SwitchForm(FormGeneral, sender);
@@ -244,7 +244,7 @@ namespace Sales_Tracker.Settings
                     }
 
                     // Check again if form is closing before creating new token
-                    if (_isClosing) return false;
+                    if (_isClosing) { return false; }
 
                     // Create a new cancellation token source
                     _translationCts = new CancellationTokenSource();
@@ -401,16 +401,16 @@ namespace Sales_Tracker.Settings
             }
 
             // Unselect button
-            if (selectedButton != null)
+            if (_selectedButton != null)
             {
-                selectedButton.FillColor = CustomColors.ControlBack;
+                _selectedButton.FillColor = CustomColors.ControlBack;
                 if (ThemeManager.IsDarkTheme())
                 {
-                    selectedButton.ForeColor = Color.White;
+                    _selectedButton.ForeColor = Color.White;
                 }
                 else
                 {
-                    selectedButton.ForeColor = Color.Black;
+                    _selectedButton.ForeColor = Color.Black;
                 }
             }
 
@@ -428,7 +428,7 @@ namespace Sales_Tracker.Settings
             form.BringToFront();
 
             // Save
-            selectedButton = button;
+            _selectedButton = button;
         }
         private void CloseAllPanels(object sender, EventArgs e)
         {

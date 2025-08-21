@@ -286,8 +286,11 @@ namespace Sales_Tracker.Classes
                 CustomMessageBoxVariables.LinkLength = link.Length;
             }
 
-            // Add debug info template
-            fullTemplate += "\nDebug info:\nLine: '{" + args.Length + "}'.\nStack trace\n: '{" + (args.Length + 1) + "}'.";
+            // Add debug info for admins
+            if (MainMenu_Form.IsAdminMode)
+            {
+                fullTemplate += "\nDebug info:\nLine: '{" + args.Length + "}'.\nStack trace\n: '{" + (args.Length + 1) + "}'.";
+            }
 
             // Combine args with debug info
             List<object> allArgs = [];

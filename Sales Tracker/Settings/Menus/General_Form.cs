@@ -78,7 +78,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void InitializeAdminModeControls()
         {
-            if (!MainMenu_Form.EnableAdminMode)
+            if (!MainMenu_Form.IsAdminMode)
             {
                 return;
             }

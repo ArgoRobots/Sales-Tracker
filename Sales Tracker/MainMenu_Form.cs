@@ -20,7 +20,7 @@ namespace Sales_Tracker
     public partial class MainMenu_Form : Form
     {
         // Admin mode can only be enabled by directly setting it to true here
-        public readonly static bool EnableAdminMode = true && Tools.IsRunningInVisualStudio();
+        public static bool IsAdminMode { get; } = true && Tools.IsRunningInVisualStudio();
 
         // Properties
         private static MainMenu_Form _instance;
