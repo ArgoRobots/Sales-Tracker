@@ -281,7 +281,7 @@ namespace Sales_Tracker.Classes
             if (!string.IsNullOrEmpty(link))
             {
                 fullTemplate += "\nMore information: " + link;
-                CustomMessageBoxVariables.LinkStart = messageTemplate.Length + 19;  // "\nMore information: ".Length
+                CustomMessageBoxVariables.LinkStart = messageTemplate.Length + 19;  // Highlight "More information: "
                 CustomMessageBoxVariables.Link = link;
                 CustomMessageBoxVariables.LinkLength = link.Length;
             }
