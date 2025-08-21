@@ -127,7 +127,7 @@ namespace Sales_Tracker.UI
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Log.Error_GetTranslation($"Failed to download language file. Status: {response.StatusCode}");
+                    Log.Error_GetTranslation("Failed to download language file");
                     return false;
                 }
 
@@ -173,9 +173,9 @@ namespace Sales_Tracker.UI
                 Log.WriteWithFormat(1, "Successfully merged translations for {0}", languageName);
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
-                Log.Error_GetTranslation($"Failed to download language file: {ex.Message}");
+                Log.Error_GetTranslation("Failed to download language file");
                 return false;
             }
         }

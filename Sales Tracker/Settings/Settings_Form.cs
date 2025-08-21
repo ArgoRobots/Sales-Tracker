@@ -14,6 +14,7 @@ namespace Sales_Tracker.Settings
         private readonly Form FormSecurity = new Security_Form();
         private string _originalLanguage;
         private CancellationTokenSource _translationCts = new();
+        private bool _isClosing = false;
 
         // Getters and setters
         public static Settings_Form Instance => _instance;
@@ -56,22 +57,67 @@ namespace Sales_Tracker.Settings
         {
             LoadingPanel.HideBlankLoadingPanel(this);
         }
-        private void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
+        private async void Settings_Form_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _isClosing = true;
+
+            // If there's an active translation, try to cancel it gracefully
+            if (_translationCts != null && !_translationCts.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    // Cancel the operation
+                    _translationCts.Cancel();
+
+                    // Give a brief moment for cancellation to take effect
+                    await Task.Delay(100);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Token source was already disposed, that's fine
+                }
+                catch (Exception ex)
+                {
+                    Log.Error_WriteToFile($"Error during translation cancellation: {ex.Message}");
+                }
+            }
+
+            // Clean up event handlers
             LoadingPanel.CancelRequested -= OnTranslationCancelled;
 
-            // Cancel any ongoing translation
-            _translationCts?.Cancel();
-            _translationCts?.Dispose();
+            // Dispose cancellation token
+            try
+            {
+                _translationCts?.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Already disposed, ignore
+            }
 
             CustomControls.CloseAllPanels();
         }
         private void OnTranslationCancelled(object sender, EventArgs e)
         {
-            _translationCts?.Cancel();
+            if (_isClosing) { return; }
+
+            try
+            {
+                _translationCts?.Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Token source was already disposed, that's fine
+            }
+
             LoadingPanel.HideLoadingScreen(this);
-            CustomMessageBox.Show("Translation Cancelled", "The language translation was cancelled.",
-                CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+
+            // Only show message if form is not closing
+            if (!_isClosing && !IsDisposed && IsHandleCreated)
+            {
+                CustomMessageBox.Show("Translation Cancelled", "The language translation was cancelled.",
+                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+            }
         }
 
         // Left menu buttons
@@ -88,13 +134,15 @@ namespace Sales_Tracker.Settings
         // Bottom buttons
         private async void ResetToDefault_Button_Click(object sender, EventArgs e)
         {
+            if (_isClosing) { return; }
+
             CustomControls.CloseAllPanels();
 
             CustomMessageBoxResult result = CustomMessageBox.Show(
                 "Reset settings", "All settings will be reset to default.",
                 CustomMessageBoxIcon.Question, CustomMessageBoxButtons.OkCancel);
 
-            if (result == CustomMessageBoxResult.Ok)
+            if (result == CustomMessageBoxResult.Ok && !_isClosing)
             {
                 UserSettings.ResetAllToDefault();
                 await ApplyChanges();
@@ -102,16 +150,21 @@ namespace Sales_Tracker.Settings
         }
         private async void Ok_Button_Click(object sender, EventArgs e)
         {
+            if (_isClosing) { return; }
+
             CustomControls.CloseAllPanels();
             SetButtonsEnabled(false);
 
             bool success = await ApplyChanges();
 
-            SetButtonsEnabled(true);
-
-            if (success)
+            if (!_isClosing)
             {
-                Close();
+                SetButtonsEnabled(true);
+
+                if (success)
+                {
+                    Close();
+                }
             }
         }
         private void Cancel_Button_Click(object sender, EventArgs e)
@@ -120,30 +173,44 @@ namespace Sales_Tracker.Settings
         }
         private async void Apply_Button_Click(object sender, EventArgs e)
         {
+            if (_isClosing) { return; }
+
             CustomControls.CloseAllPanels();
             SetButtonsEnabled(false);
 
             bool success = await ApplyChanges();
 
-            SetButtonsEnabled(true);
-
-            if (success && HasLanguageChanged())
+            if (!_isClosing)
             {
-                CustomMessageBox.Show("Translation Complete", "Language has been successfully updated.",
-                    CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                SetButtonsEnabled(true);
+
+                if (success && HasLanguageChanged())
+                {
+                    CustomMessageBox.Show("Translation Complete", "Language has been successfully updated.",
+                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                }
             }
         }
 
         // Methods
         private void SetButtonsEnabled(bool enabled)
         {
-            Ok_Button.Enabled = enabled;
-            Apply_Button.Enabled = enabled;
-            Cancel_Button.Enabled = enabled;
-            ResetToDefault_Button.Enabled = enabled;
+            if (_isClosing || IsDisposed) { return; }
 
-            General_Button.Enabled = enabled;
-            Security_Button.Enabled = enabled;
+            try
+            {
+                Ok_Button.Enabled = enabled;
+                Apply_Button.Enabled = enabled;
+                Cancel_Button.Enabled = enabled;
+                ResetToDefault_Button.Enabled = enabled;
+
+                General_Button.Enabled = enabled;
+                Security_Button.Enabled = enabled;
+            }
+            catch (ObjectDisposedException)
+            {
+                // Form was disposed, ignore
+            }
         }
 
         /// <summary>
@@ -152,37 +219,60 @@ namespace Sales_Tracker.Settings
         /// </summary>
         private async Task<bool> ApplyChanges()
         {
+            if (_isClosing) { return false; }
+
             try
             {
                 bool success = await UserSettings.SaveUserSettingsAsync();
 
-                if (!success)
+                if (!success || _isClosing)
                 {
-                    return false;  // Settings save was cancelled or failed
+                    return false;  // Settings save was cancelled or failed, or form is closing
                 }
 
                 if (HasLanguageChanged())
                 {
                     // Dispose of previous cancellation token source
-                    _translationCts?.Cancel();
-                    _translationCts?.Dispose();
+                    try
+                    {
+                        _translationCts?.Cancel();
+                        _translationCts?.Dispose();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // Already disposed, that's fine
+                    }
+
+                    // Check again if form is closing before creating new token
+                    if (_isClosing) return false;
 
                     // Create a new cancellation token source
                     _translationCts = new CancellationTokenSource();
 
                     bool languageSuccess = await UpdateLanguageAsync();
-                    if (!languageSuccess)
+                    if (!languageSuccess || _isClosing)
                     {
-                        return false;  // Language update was cancelled or failed
+                        return false;  // Language update was cancelled or failed, or form is closing
                     }
 
-                    Security_Form.Instance.CenterEncryptControls();
-                    MainMenu_Form.Instance?.RecalculateWorldMapControlsLayout();
-                    AddPurchase_Form.Instance?.RecalculateMultipleItemsLayout();
-                    AddSale_Form.Instance?.RecalculateMultipleItemsLayout();
+                    // Only update UI if form is still open
+                    if (!_isClosing && !IsDisposed)
+                    {
+                        try
+                        {
+                            Security_Form.Instance?.CenterEncryptControls();
+                            MainMenu_Form.Instance?.RecalculateWorldMapControlsLayout();
+                            AddPurchase_Form.Instance?.RecalculateMultipleItemsLayout();
+                            AddSale_Form.Instance?.RecalculateMultipleItemsLayout();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error_WriteToFile($"Error updating UI after language change: {ex.Message}");
+                        }
+                    }
                 }
 
-                return true;
+                return !_isClosing;  // Return false if form closed during operation
             }
             catch (Exception ex)
             {
@@ -192,8 +282,15 @@ namespace Sales_Tracker.Settings
         }
         private async Task<bool> UpdateLanguageAsync()
         {
+            if (_isClosing) { return false; }
+
             try
             {
+                if (!IsHandleCreated || IsDisposed || _isClosing)
+                {
+                    return false;
+                }
+
                 LoadingPanel.ShowLoadingScreen(this, "Translating application to new language...", true, _translationCts);
 
                 try
@@ -201,37 +298,69 @@ namespace Sales_Tracker.Settings
                     string currentLanguage = General_Form.Instance.Language_TextBox.Text;
                     bool success = await LanguageManager.UpdateApplicationLanguage(currentLanguage, _translationCts.Token);
 
-                    if (success && !_translationCts.Token.IsCancellationRequested)
+                    if (success && !_translationCts.Token.IsCancellationRequested && !_isClosing)
                     {
                         _originalLanguage = General_Form.Instance.Language_TextBox.Text;
                         UpdateLanguage();
-                        LoadingPanel.HideLoadingScreen(this);
+
+                        // Only hide loading screen if form is still valid
+                        if (!IsDisposed && IsHandleCreated && !_isClosing)
+                        {
+                            LoadingPanel.HideLoadingScreen(this);
+                        }
                         return true;
                     }
                     else
                     {
-                        LoadingPanel.HideLoadingScreen(this);
+                        // Only hide loading screen if form is still valid
+                        if (!IsDisposed && IsHandleCreated && !_isClosing)
+                        {
+                            LoadingPanel.HideLoadingScreen(this);
+                        }
                         return false;  // Translation was cancelled or failed
                     }
                 }
                 catch (OperationCanceledException)
                 {
                     Log.Write(1, "Language translation was cancelled");
-                    LoadingPanel.HideLoadingScreen(this);
+
+                    // Only hide loading screen if form is still valid
+                    if (!IsDisposed && IsHandleCreated && !_isClosing)
+                    {
+                        LoadingPanel.HideLoadingScreen(this);
+                    }
                     return false;
                 }
             }
+            catch (ObjectDisposedException)
+            {
+                // Form was disposed during operation
+                return false;
+            }
             catch (Exception ex)
             {
-                LoadingPanel.HideLoadingScreen(this);
+                // Only hide loading screen if form is still valid
+                if (!IsDisposed && IsHandleCreated && !_isClosing)
+                {
+                    LoadingPanel.HideLoadingScreen(this);
+                }
                 Log.Error_GetTranslation(ex.Message);
                 return false;
             }
         }
         private bool HasLanguageChanged()
         {
-            string currentLanguage = General_Form.Instance.Language_TextBox.Text;
-            return !string.Equals(_originalLanguage, currentLanguage, StringComparison.OrdinalIgnoreCase);
+            if (_isClosing || General_Form.Instance == null) { return false; }
+
+            try
+            {
+                string currentLanguage = General_Form.Instance.Language_TextBox.Text;
+                return !string.Equals(_originalLanguage, currentLanguage, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -239,20 +368,29 @@ namespace Sales_Tracker.Settings
         /// </summary>
         private static void UpdateLanguage()
         {
-            Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
+            try
+            {
+                Properties.Settings.Default.Language = General_Form.Instance.Language_TextBox.Text;
 
-            // Remove previous messages that mention language changes
-            string message = LanguageManager.TranslateString("Changed the language to");
-            MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
+                // Remove previous messages that mention language changes
+                string message = LanguageManager.TranslateString("Changed the language to");
+                MainMenu_Form.SettingsThatHaveChangedInFile.RemoveAll(x => x.Contains(message));
 
-            // Add the new language change message
-            string fullMessage = $"{message} {Properties.Settings.Default.Language}";
-            CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
+                // Add the new language change message
+                string fullMessage = $"{message} {Properties.Settings.Default.Language}";
+                CustomMessage_Form.AddThingThatHasChangedAndLogMessage(MainMenu_Form.SettingsThatHaveChangedInFile, 2, fullMessage);
+            }
+            catch (Exception ex)
+            {
+                Log.Error_WriteToFile($"Error updating language setting: {ex.Message}");
+            }
         }
 
         // Misc.
         private void SwitchForm(Form form, object btnSender)
         {
+            if (_isClosing) { return; }
+
             CustomControls.CloseAllPanels();
             Guna2Button button = (Guna2Button)btnSender;
 

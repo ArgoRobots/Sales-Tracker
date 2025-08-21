@@ -25,7 +25,6 @@ namespace Sales_Tracker.Settings.Menus
             ThemeManager.SetThemeForForm(this);
             SetAccessibleDescription();
             LanguageManager.UpdateLanguageForControl(this);
-            AlignLabels();
             UpdateControls();
             AddEventHandlersToTextBoxes();
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -103,6 +102,7 @@ namespace Sales_Tracker.Settings.Menus
         private void General_form_Shown(object sender, EventArgs e)
         {
             General_Label.Focus();  // Deselect controls
+            AlignLabels();
             LoadingPanel.HideBlankLoadingPanel(this);
         }
 
