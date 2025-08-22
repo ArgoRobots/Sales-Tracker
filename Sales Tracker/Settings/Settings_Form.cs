@@ -26,12 +26,23 @@ namespace Sales_Tracker.Settings
             _instance = this;
             _originalLanguage = Properties.Settings.Default.Language;
 
+            SetChildForm(FormGeneral);
+            SetChildForm(FormSecurity);
             UpdateTheme();
             General_Button.PerformClick();
             AnimateButtons();
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
             LoadingPanel.CancelRequested += OnTranslationCancelled;
+        }
+        private void SetChildForm(Form form)
+        {
+            form.TopLevel = false;
+            form.Visible = true;
+            form.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            form.Dock = DockStyle.Fill;
+
+            FormBack_Panel.Controls.Add(form);
         }
         private void UpdateTheme()
         {
@@ -254,23 +265,6 @@ namespace Sales_Tracker.Settings
                     {
                         return false;  // Language update was cancelled or failed, or form is closing
                     }
-
-                    // Only update UI if form is still open
-                    if (!_isClosing && !IsDisposed)
-                    {
-                        try
-                        {
-                            Security_Form.Instance?.CenterEncryptControls();
-                            MainMenu_Form.Instance?.RecalculateWorldMapControlsLayout();
-                            AddPurchase_Form.Instance?.RecalculateMultipleItemsLayout();
-                            AddSale_Form.Instance?.RecalculateMultipleItemsLayout();
-                            Upgrade_Form.Instance?.CenterLabels();
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error_WriteToFile($"Error updating UI after language change: {ex.Message}");
-                        }
-                    }
                 }
 
                 return !_isClosing;  // Return false if form closed during operation
@@ -421,11 +415,6 @@ namespace Sales_Tracker.Settings
             form.BringToFront();
 
             // Show form
-            form.TopLevel = false;
-            form.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            form.Dock = DockStyle.Fill;
-            form.Visible = true;
-            FormBack_Panel.Controls.Add(form);
             form.BringToFront();
 
             // Save

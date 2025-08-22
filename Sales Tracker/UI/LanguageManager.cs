@@ -273,19 +273,41 @@ namespace Sales_Tracker.UI
             SaveCacheToFile();
 
             // Final UI updates
-            if (Tools.IsFormOpen<Log_Form>() && Log_Form.Instance.IsHandleCreated)
+            if (Tools.IsFormOpen<Log_Form>())
             {
                 Log_Form.Instance.BeginInvoke(new Action(Log_Form.Instance.SetLogColoringAndTranslate));
             }
 
-            if (Tools.IsFormOpen<General_Form>() && General_Form.Instance.IsHandleCreated)
+            if (Tools.IsFormOpen<General_Form>())
             {
                 General_Form.Instance.BeginInvoke(new Action(General_Form.Instance.PopulateThemeComboBox));
                 General_Form.Instance.BeginInvoke(new Action(General_Form.Instance.AlignLabels));
             }
 
+            if (Tools.IsFormOpen<Security_Form>())
+            {
+                Security_Form.Instance.SetPasswordButton();
+                Security_Form.Instance.BeginInvoke(new Action(Security_Form.Instance.CenterEncryptControls));
+            }
+
+            if (Tools.IsFormOpen<AddPurchase_Form>())
+            {
+                AddPurchase_Form.Instance.BeginInvoke(new Action(AddPurchase_Form.Instance.RecalculateMultipleItemsLayout));
+            }
+
+            if (Tools.IsFormOpen<AddSale_Form>())
+            {
+                AddSale_Form.Instance.BeginInvoke(new Action(AddSale_Form.Instance.RecalculateMultipleItemsLayout));
+            }
+
+            if (Tools.IsFormOpen<Upgrade_Form>())
+            {
+                Upgrade_Form.Instance.BeginInvoke(new Action(Upgrade_Form.Instance.CenterLabels));
+            }
+
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.CenterAndResizeControls));
             MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RefreshDataGridViewAndCharts));
+            MainMenu_Form.Instance.BeginInvoke(new Action(MainMenu_Form.Instance.RecalculateWorldMapControlsLayout));
         }
 
         /// <summary>

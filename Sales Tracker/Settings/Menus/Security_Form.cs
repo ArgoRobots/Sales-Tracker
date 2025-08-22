@@ -50,12 +50,11 @@ namespace Sales_Tracker.Settings.Menus
         }
         public void CenterEncryptControls()
         {
-            int spacing = EncryptFiles_CheckBox.Location.X - (EncryptFiles_Label.Location.X + EncryptFiles_Label.Width);
-            int totalWidth = EncryptFiles_Label.Width + spacing + EncryptFiles_CheckBox.Width;
+            int totalWidth = EncryptFiles_Label.Width + EncryptFiles_CheckBox.Width - 2;
             int startX = (ClientSize.Width - totalWidth) / 2;
 
             EncryptFiles_Label.Left = startX;
-            EncryptFiles_CheckBox.Left = EncryptFiles_Label.Left + EncryptFiles_Label.Width + spacing;
+            EncryptFiles_CheckBox.Left = EncryptFiles_Label.Left + EncryptFiles_Label.Width - 2;
         }
         private void SetWindowsHelloButton()
         {

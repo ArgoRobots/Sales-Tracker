@@ -14,9 +14,9 @@ namespace Sales_Tracker.Passwords
             InitializeComponent();
 
             AddEventHandlersToTextBoxes();
-            AlignValidationLabels();
             UpdateTheme();
             LanguageManager.UpdateLanguageForControl(this);
+            AlignValidationLabels();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void AlignValidationLabels()
@@ -114,7 +114,7 @@ namespace Sales_Tracker.Passwords
         }
         private void ConfirmPasswordEye_Button_Click(object sender, EventArgs e)
         {
-            PasswordManager.TogglePasswordVisibility(ConfirmPassword_TextBox, PasswordEye_Button);
+            PasswordManager.TogglePasswordVisibility(ConfirmPassword_TextBox, ConfirmPasswordEye_Button);
         }
         private void SetPassword_Button_Click(object sender, EventArgs e)
         {
