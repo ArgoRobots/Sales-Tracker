@@ -17,29 +17,15 @@ namespace Sales_Tracker
         public CustomMessage_Form(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
             InitializeComponent();
-            DoubleBuffered = true;
 
             ThemeManager.SetThemeForForm(this);
-
             SetMessageBox(title, message, icon, buttons);
-
             SetAccessibleDescriptions();
-            LanguageManager.UpdateLanguageForControl(Save_Button);
-            LanguageManager.UpdateLanguageForControl(DontSave_Button);
-            LanguageManager.UpdateLanguageForControl(Yes_Button);
-            LanguageManager.UpdateLanguageForControl(No_Button);
-            LanguageManager.UpdateLanguageForControl(Ok_Button);
-            LanguageManager.UpdateLanguageForControl(Cancel_Button);
-            LanguageManager.UpdateLanguageForControl(Skip_Button);
-            LanguageManager.UpdateLanguageForControl(YesAll_Button);
-            LanguageManager.UpdateLanguageForControl(NoAll_Button);
             LanguageManager.UpdateLanguageForControl(this);
-
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetAccessibleDescriptions()
         {
-            AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
             Message_Label.AccessibleDescription = AccessibleDescriptionManager.DoNotCache;
         }
 
@@ -50,12 +36,17 @@ namespace Sales_Tracker
         }
         private void CustomMessage_Form_Resize(object sender, EventArgs e)
         {
-            SetMessageLabelmaxWidth();
+            SetMessageLabelMaxWidth();
         }
 
         // Methods
         private void SetMessageBox(string title, string message, CustomMessageBoxIcon icon, CustomMessageBoxButtons buttons)
         {
+            if (title == "" && message == "")
+            {
+                return;
+            }
+
             string translatedTitle = LanguageManager.TranslateString(title);
             string translatedMessage = LanguageManager.TranslateString(message);
 
@@ -69,7 +60,7 @@ namespace Sales_Tracker
             CustomMessageBoxVariables.Reset();
             Controls.Add(Icon_PictureBox);
 
-            SetMessageLabelmaxWidth();
+            SetMessageLabelMaxWidth();
             Height = 150 + Message_Label.Height;
 
             // Set icon
@@ -209,7 +200,7 @@ namespace Sales_Tracker
                 changed_Panel.AutoScroll = false;
             }
         }
-        private void SetMessageLabelmaxWidth()
+        private void SetMessageLabelMaxWidth()
         {
             Message_Label.MaximumSize = new Size(Width - Message_Label.Left - 40, 0);
         }
