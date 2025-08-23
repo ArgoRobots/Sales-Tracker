@@ -10,15 +10,19 @@ namespace Sales_Tracker
 {
     public partial class Export_Form : BaseForm
     {
-        // Properties
+        private static Export_Form _instance;
         private int _originalDirectoryLabelY, _originalDirectoryTextBoxY, _originalWarningDirLabelY, _originalWarningDirPictureBoxY;
         private static Action _validationCallback;
         private static bool _isProgramLoading;
+
+        // Getters
+        public static Export_Form Instance => _instance;
 
         // Init.
         public Export_Form()
         {
             InitializeComponent();
+            _instance = this;
 
             _isProgramLoading = true;
             DpiHelper.ScaleComboBox(FileType_ComboBox);
@@ -27,6 +31,7 @@ namespace Sales_Tracker
             SetControls();
             UpdateTheme();
             SetAccessibleDescriptions();
+            AnimateButtons();
             _isProgramLoading = false;
             LanguageManager.UpdateLanguageForControl(this);
             LoadingPanel.ShowBlankLoadingPanel(this);
@@ -104,6 +109,11 @@ namespace Sales_Tracker
 
             SearchBox.Attach(Currency_TextBox, this, Currency.GetSearchResults, searchBoxMaxHeight, false, false, false, false);
         }
+        public void AnimateButtons()
+        {
+            CustomControls.AnimateButtons([Export_Button]);
+        }
+
 
         // Form event handlers
         private void Export_Form_Shown(object sender, EventArgs e)

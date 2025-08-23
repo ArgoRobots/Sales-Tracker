@@ -51,7 +51,7 @@ namespace Sales_Tracker
         }
         public void AnimateButtons()
         {
-            CustomControls.AnimateButtons([Clear_Button], Properties.Settings.Default.AnimateButtons);
+            CustomControls.AnimateButtons([Clear_Button]);
         }
         public void SetLogColoringAndTranslate()
         {

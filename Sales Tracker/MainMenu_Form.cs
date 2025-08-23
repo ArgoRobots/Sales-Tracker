@@ -418,7 +418,7 @@ namespace Sales_Tracker
                Accountants_Button,
                TimeRange_Button,
             ];
-            CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
+            CustomControls.AnimateButtons(buttons);
         }
         public void AnimateCharts()
         {

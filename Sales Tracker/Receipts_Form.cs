@@ -84,7 +84,7 @@ namespace Sales_Tracker
                ClearFilters_Button,
                ExportSelected_Button
             ];
-            CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
+            CustomControls.AnimateButtons(buttons);
         }
 
         // Form event handlers

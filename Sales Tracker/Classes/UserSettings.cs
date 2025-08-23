@@ -61,8 +61,9 @@ namespace Sales_Tracker.Classes
                     value => settings.AnimateButtons = value);
 
                 Settings_Form.Instance.AnimateButtons();
-                MainMenu_Form.Instance.AnimateButtons();
+                Export_Form.Instance.AnimateButtons();
                 Log_Form.Instance?.AnimateButtons();
+                MainMenu_Form.Instance.AnimateButtons();
                 Receipts_Form.Instance?.AnimateButtons();
             }
 

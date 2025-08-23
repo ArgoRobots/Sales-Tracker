@@ -699,11 +699,14 @@ namespace Sales_Tracker.UI
         }
 
         // Animate buttons
-        public static void AnimateButtons(IEnumerable<Guna2Button> buttons, bool animate)
+        /// <summary>
+        /// Sets the Animated property for a list of buttons if the setting is enabled.
+        /// </summary>
+        public static void AnimateButtons(IEnumerable<Guna2Button> buttons)
         {
             foreach (Guna2Button button in buttons)
             {
-                button.Animated = animate;
+                button.Animated = Properties.Settings.Default.AnimateButtons;
             }
         }
 

@@ -60,7 +60,7 @@ namespace Sales_Tracker.Settings
                ResetToDefault_Button,
                Apply_Button,
             ];
-            CustomControls.AnimateButtons(buttons, Properties.Settings.Default.AnimateButtons);
+            CustomControls.AnimateButtons(buttons);
         }
 
         // Form event handlers
