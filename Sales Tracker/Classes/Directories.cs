@@ -35,6 +35,7 @@ namespace Sales_Tracker.Classes
         public static string English_file { get; set; }
         public static string SecretsFilePath { get; private set; }
         public static string CompanyDataFileName => "appSettings" + ArgoFiles.TxtFileExtension;
+        public static string TranlationsReferenceFolderName => "GeneratedTranslations";
 
         // Methods
         /// <summary>

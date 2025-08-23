@@ -189,7 +189,7 @@ namespace Sales_Tracker.Classes
             {
                 _logEntries.Add(entry);
 
-                // Update legacy LogText for backwards compatibility
+                // Update LogText
                 string englishMessage = args?.Length > 0 ? string.Format(template, args) : template;
                 string timestamp = "<" + Tools.FormatTime(entry.Timestamp) + "> ";
                 LogText += timestamp + GetEnglishFormattedCategory(category) + " " + englishMessage + "\n";

@@ -40,6 +40,12 @@
     <Compile Update="ReturnProduct\UndoReturn_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Settings\Menus\General_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Settings\Menus\LanguageSelection_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="UI\CustomCircleButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -83,9 +89,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Receipts_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Settings\Menus\General_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Settings\Menus\Security_Form.cs">

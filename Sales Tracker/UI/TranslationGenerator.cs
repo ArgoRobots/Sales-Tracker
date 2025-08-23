@@ -29,12 +29,9 @@ namespace Sales_Tracker.UI
         private static readonly byte _maxBatchSize = 10;
         private static readonly byte _maxRequestsPerMinute = 60;
         private static readonly byte _requestDelay_MS = 100;
-        private static readonly int _maxCharactersPerRequest = 45000;  // Safety buffer below 50,000 limit
-        private static readonly int _maxCharactersPerHour = 2000000;   // F0 tier limit
+        private static readonly int _maxCharactersPerRequest = 45000;
         private static readonly SemaphoreSlim _rateLimiter = new(1, 1);
         private static readonly Queue<DateTime> _requestTimestamps = new();
-        private static int _charactersUsedThisHour = 0;
-        private static DateTime _hourlyResetTime = DateTime.UtcNow.AddHours(1);
 
         // Constants
         private static readonly string _placeholder_text = "Placeholder",
@@ -64,216 +61,312 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Generates translation JSON files for all supported languages based on the current application's text.
-        /// Shows a progress dialog with progress tracking.
-        /// Features fully automated string collection from source code.
+        /// Generates translation files for selected languages, only translating new or changed content.
         /// </summary>
-        public static async Task GenerateAllLanguageTranslationFiles()
+        public static async Task<bool> GenerateSelectedLanguageTranslationFiles(
+            List<string> selectedLanguageCodes,
+            string referenceFolder,
+            TranslationProgress_Form progressForm,
+            CancellationToken cancellationToken = default)
         {
-            // Check for internet connection
-            if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("generating translations", true))
-            {
-                Log.Write(1, "Translation generation cancelled - no internet connection");
-                return;
-            }
-
-            TranslationProgress_Form progressForm = new();
-            Tools.OpenForm(progressForm);
-
             try
             {
-                // List of form types to process
-                Type[] formTypes =
-                [
-                    // ImportSpreadsheet
-                    typeof(ImportSpreadsheet_Form),
-                    typeof(Setup_Form),
-                    typeof(Tutorial_Form),
+                // Collect all source texts
+                progressForm.UpdateTranslationProgress(0, "Collecting source texts...");
+                Dictionary<string, string> sourceTexts = CollectAllSourceTexts(progressForm, cancellationToken);
 
-                    // Passwords
-                    typeof(AddPassword_Form),
-                    typeof(EnterPassword_Form),
-                    typeof(PasswordManager_Form),
+                if (cancellationToken.IsCancellationRequested) { return false; }
 
-                    // ReturnProduct
-                    typeof(ReturnProduct_Form),
-                    typeof(UndoReturn_Form),
+                // Initialize progress
+                progressForm.Initialize(selectedLanguageCodes.Count, sourceTexts.Count);
 
-                    // Settings
-                    typeof(General_Form),
-                    typeof(Security_Form),
-                    typeof(Settings_Form),
+                bool allSuccessful = true;
 
-                    // Startup
-                    typeof(ConfigureCompany_Form),
-                    typeof(GetStarted_Form),
-                    typeof(Startup_Form),
-
-                    // Main
-                    typeof(Accountants_Form),
-                    typeof(AddPurchase_Form),
-                    typeof(AddSale_Form),
-                    typeof(Categories_Form),
-                    typeof(Companies_Form),
-                    typeof(CustomMessage_Form),
-                    typeof(DateRange_Form),
-                    typeof(EULA_Form),
-                    typeof(Export_Form),
-                    typeof(ItemsInTransaction_Form),
-                    typeof(Loading_Form),
-                    typeof(Log_Form),
-                    typeof(MainMenu_Form),
-                    typeof(ModifyRow_Form),
-                    typeof(Products_Form),
-                    typeof(Receipts_Form),
-                    typeof(Upgrade_Form),
-                    typeof(Updates_Form),
-                    typeof(Welcome_Form),
-                ];
-
-                List<Form> openForms = Application.OpenForms.Cast<Form>().ToList();
-                List<Control> controlsToTranslate = [];
-
-                // Process each form type
-                foreach (Type formType in formTypes)
+                for (int langIndex = 0; langIndex < selectedLanguageCodes.Count; langIndex++)
                 {
-                    if (progressForm.IsCancelled) { return; }
+                    string languageCode = selectedLanguageCodes[langIndex];
 
-                    // Check if the form is already open or create a new instance
-                    Form formInstance = openForms.FirstOrDefault(f => f.GetType() == formType)
-                        ?? (Form)Activator.CreateInstance(formType);
+                    if (cancellationToken.IsCancellationRequested) { return false; }
 
-                    controlsToTranslate.Add(formInstance);
-                }
+                    // Get language name for display
+                    string languageName = LanguageManager.GetLanguages()
+                        .FirstOrDefault(l => l.Value == languageCode).Key ?? languageCode;
 
-                // Add UI panels
-                controlsToTranslate.AddRange(MainMenu_Form.GetMenus().Cast<Control>());
+                    progressForm.UpdateLanguage(languageName, langIndex);
 
-                // Add other controls
-                controlsToTranslate.Add(CustomControls.ControlsDropDown_Button);
-                controlsToTranslate.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
-                controlsToTranslate.AddRange(MainMenu_Form.Instance.GetMainControls());
-                controlsToTranslate.AddRange(DateRange_Form.Instance.GetCustomRangeControls());
+                    // Load existing translations if they exist
+                    Dictionary<string, string> existingTranslations = LoadExistingTranslations(referenceFolder, languageCode);
 
-                // Create output directory
-                string outputDirectory = Path.Combine(Directories.Downloads_dir, "Sales Tracker Translations");
-                Directory.CreateDirectory(outputDirectory);
+                    // Determine what needs to be translated
+                    Dictionary<string, string> textsToTranslate = GetTextsNeedingTranslation(sourceTexts, existingTranslations);
 
-                // Collect all texts to translate (English source)
-                progressForm.UpdateLanguage("English", 0);
-                progressForm.UpdateTranslationProgress(0, "Collecting UI control texts...");
+                    progressForm.UpdateTranslationProgress(0,
+                        $"Found {textsToTranslate.Count} new/changed texts to translate out of {sourceTexts.Count} total");
 
-                // Collect UI control texts
-                Dictionary<string, string> sourceTexts = CollectTextsToTranslate(controlsToTranslate);
+                    Dictionary<string, string> finalTranslations;
 
-                // Get all TranslateString calls from source code
-                progressForm.UpdateTranslationProgress(sourceTexts.Count, "Scanning source code for TranslateString calls...");
-                Dictionary<string, string> translateStringCalls = CollectAllTranslateStringCalls();
-
-                // Get all CustomMessageBox calls from source code
-                progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count, "Scanning source code for CustomMessageBox calls...");
-                Dictionary<string, string> messageBoxStrings = CollectAllCustomMessageBoxCalls();
-
-                // Get all Log.Write calls from source code
-                progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count + messageBoxStrings.Count, "Scanning source code for Log.Write calls...");
-                Dictionary<string, string> logWriteStrings = CollectAllLogWriteCalls();
-
-                // Merge all collections
-                foreach (KeyValuePair<string, string> kvp in translateStringCalls)
-                {
-                    if (!sourceTexts.ContainsKey(kvp.Key))
+                    if (languageCode == "en")
                     {
-                        sourceTexts[kvp.Key] = kvp.Value;
-                    }
-                }
-
-                foreach (KeyValuePair<string, string> kvp in messageBoxStrings)
-                {
-                    if (!sourceTexts.ContainsKey(kvp.Key))
-                    {
-                        sourceTexts[kvp.Key] = kvp.Value;
-                    }
-                }
-
-                foreach (KeyValuePair<string, string> kvp in logWriteStrings)
-                {
-                    if (!sourceTexts.ContainsKey(kvp.Key))
-                    {
-                        sourceTexts[kvp.Key] = kvp.Value;
-                    }
-                }
-
-                Log.WriteWithFormat(1, "Total texts collected: {0} ({1} from TranslateString calls, {2} from CustomMessageBox calls, {3} from Log.Write/WriteWithFormat calls)", sourceTexts.Count, translateStringCalls.Count, messageBoxStrings.Count, logWriteStrings.Count);
-
-                // Pre-filter and optimize texts
-                sourceTexts = FilterAndOptimizeTexts(sourceTexts);
-
-                List<KeyValuePair<string, string>> languages = LanguageManager.GetLanguages();
-
-                // Initialize progress form with totals
-                progressForm.Initialize(languages.Count, sourceTexts.Count);
-
-                // Reset hourly tracking
-                _charactersUsedThisHour = 0;
-                _hourlyResetTime = DateTime.UtcNow.AddHours(1);
-
-                // Process each language
-                for (int langIndex = 0; langIndex < languages.Count; langIndex++)
-                {
-                    KeyValuePair<string, string> language = languages[langIndex];
-
-                    if (progressForm.IsCancelled)
-                    {
-                        progressForm.Close();
-                        return;
-                    }
-
-                    progressForm.UpdateLanguage(language.Key, langIndex);
-
-                    Dictionary<string, string> translations;
-
-                    if (language.Value == "en")
-                    {
-                        // For English, just use the source texts
+                        // For English, use source texts
+                        finalTranslations = sourceTexts;
                         progressForm.UpdateTranslationProgress(sourceTexts.Count, "Using source texts for English...");
-                        translations = sourceTexts;
+                    }
+                    else if (textsToTranslate.Count == 0)
+                    {
+                        // No new translations needed
+                        finalTranslations = MergeTranslations(existingTranslations, sourceTexts);
+                        progressForm.UpdateTranslationProgress(sourceTexts.Count, "No new translations needed");
                     }
                     else
                     {
-                        // For other languages, translate using API
-                        translations = await BatchTranslateTexts(sourceTexts, language.Value, progressForm, progressForm.CancellationToken);
+                        // Translate only the new/changed texts
+                        Dictionary<string, string> newTranslations = await BatchTranslateTexts(
+                            textsToTranslate, languageCode, progressForm, cancellationToken);
 
-                        if (progressForm.IsCancelled)
+                        if (cancellationToken.IsCancellationRequested) { return false; }
+
+                        // Merge existing and new translations
+                        finalTranslations = MergeTranslations(existingTranslations, newTranslations);
+
+                        // Add any missing source texts as fallbacks
+                        foreach (KeyValuePair<string, string> kvp in sourceTexts)
                         {
-                            progressForm.Close();
-                            return;
+                            if (!finalTranslations.ContainsKey(kvp.Key))
+                            {
+                                finalTranslations[kvp.Key] = kvp.Value;
+                            }
                         }
                     }
 
-                    // Generate the JSON file
-                    progressForm.UpdateTranslationProgress(sourceTexts.Count, $"Saving {language.Key} translations to file...");
-                    string outputPath = Path.Combine(outputDirectory, $"{language.Value}.json");
-                    await GenerateLanguageJsonFile(translations, outputPath, language.Value);
+                    // Save translation file
+                    progressForm.UpdateTranslationProgress(sourceTexts.Count, $"Saving {languageName} translations...");
+                    string outputPath = Path.Combine(referenceFolder, $"{languageCode}.json");
+                    await GenerateLanguageJsonFile(finalTranslations, outputPath, languageCode);
 
-                    Log.WriteWithFormat(1, "Completed translations for {0} ({1} texts)", language.Key, translations.Count);
+                    Log.WriteWithFormat(1, "Completed translations for {0}: {1} total texts ({2} newly translated)",
+                        languageName, finalTranslations.Count, textsToTranslate.Count);
                 }
 
                 progressForm.CompleteProgress();
-                Log.Write(1, "Translation generation complete - fully automated!");
+                return allSuccessful;
             }
             catch (OperationCanceledException)
             {
-                Log.Write(1, "Translation generation was cancelled by user");
-                progressForm.Close();
+                Log.Write(1, "Translation generation was cancelled");
+                return false;
             }
             catch (Exception ex)
             {
                 Log.Error_GetTranslation($"Translation generation failed: {ex.Message}");
-                progressForm.Close();
+                return false;
             }
         }
 
-        // API Translation Methods
+        /// <summary>
+        /// Loads existing translations from a file if it exists.
+        /// </summary>
+        private static Dictionary<string, string> LoadExistingTranslations(string referenceFolder, string languageCode)
+        {
+            string filePath = Path.Combine(referenceFolder, $"{languageCode}.json");
+
+            if (!File.Exists(filePath))
+            {
+                return [];
+            }
+
+            try
+            {
+                string content = File.ReadAllText(filePath);
+                Dictionary<string, string>? translations = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+                return translations ?? [];
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(1, "Failed to load existing translations for {0}: {1}", languageCode, ex.Message);
+                return [];
+            }
+        }
+
+        /// <summary>
+        /// Determines which texts need translation by comparing source texts with existing translations.
+        /// </summary>
+        private static Dictionary<string, string> GetTextsNeedingTranslation(
+            Dictionary<string, string> sourceTexts,
+            Dictionary<string, string> existingTranslations)
+        {
+            Dictionary<string, string> textsToTranslate = [];
+
+            foreach (KeyValuePair<string, string> kvp in sourceTexts)
+            {
+                string key = kvp.Key;
+                string sourceText = kvp.Value;
+
+                // Need translation if:
+                // 1. Key doesn't exist in existing translations
+                // 2. The source text has changed (we can't easily detect this with text-based keys, 
+                //    so we rely on the key not existing)
+                if (!existingTranslations.TryGetValue(key, out string? value) || string.IsNullOrEmpty(value))
+                {
+                    textsToTranslate[key] = sourceText;
+                }
+            }
+
+            return textsToTranslate;
+        }
+
+        /// <summary>
+        /// Merges existing translations with new translations, prioritizing new ones.
+        /// </summary>
+        private static Dictionary<string, string> MergeTranslations(
+            Dictionary<string, string> existingTranslations,
+            Dictionary<string, string> newTranslations)
+        {
+            Dictionary<string, string> merged = new(existingTranslations);
+
+            foreach (KeyValuePair<string, string> kvp in newTranslations)
+            {
+                merged[kvp.Key] = kvp.Value;
+            }
+
+            return merged;
+        }
+
+        /// <summary>
+        /// Collects all source texts from the application.
+        /// </summary>
+        private static Dictionary<string, string> CollectAllSourceTexts(
+            TranslationProgress_Form progressForm,
+            CancellationToken cancellationToken = default)
+        {
+            // Get form types to process
+            Type[] formTypes = GetFormTypes();
+
+            List<Form> openForms = Application.OpenForms.Cast<Form>().ToList();
+            List<Control> controlsToTranslate = [];
+
+            // Process each form type
+            foreach (Type formType in formTypes)
+            {
+                if (cancellationToken.IsCancellationRequested) break;
+
+                Form formInstance = openForms.FirstOrDefault(f => f.GetType() == formType)
+                    ?? (Form)Activator.CreateInstance(formType);
+
+                controlsToTranslate.Add(formInstance);
+            }
+
+            // Add other controls
+            controlsToTranslate.AddRange(GetAdditionalControls());
+
+            // Collect UI control texts
+            progressForm.UpdateTranslationProgress(0, "Collecting UI control texts...");
+            Dictionary<string, string> sourceTexts = CollectTextsToTranslate(controlsToTranslate);
+
+            // Get TranslateString calls
+            progressForm.UpdateTranslationProgress(sourceTexts.Count, "Scanning for TranslateString calls...");
+            Dictionary<string, string> translateStringCalls = CollectAllTranslateStringCalls();
+
+            // Get CustomMessageBox calls
+            progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count,
+                "Scanning for CustomMessageBox calls...");
+            Dictionary<string, string> messageBoxStrings = CollectAllCustomMessageBoxCalls();
+
+            // Get Log.Write calls
+            progressForm.UpdateTranslationProgress(sourceTexts.Count + translateStringCalls.Count + messageBoxStrings.Count,
+                "Scanning for Log.Write calls...");
+            Dictionary<string, string> logWriteStrings = CollectAllLogWriteCalls();
+
+            // Merge all collections
+            MergeStringCollections(sourceTexts, translateStringCalls, messageBoxStrings, logWriteStrings);
+
+            // Filter and optimize
+            sourceTexts = FilterAndOptimizeTexts(sourceTexts);
+
+            Log.WriteWithFormat(1, "Collected {0} total texts for translation", sourceTexts.Count);
+
+            return sourceTexts;
+        }
+
+        private static Type[] GetFormTypes()
+        {
+            return
+            [
+                // ImportSpreadsheet
+                typeof(ImportSpreadsheet_Form),
+                typeof(Setup_Form),
+                typeof(Tutorial_Form),
+
+                // Passwords
+                typeof(AddPassword_Form),
+                typeof(EnterPassword_Form),
+                typeof(PasswordManager_Form),
+
+                // ReturnProduct
+                typeof(ReturnProduct_Form),
+                typeof(UndoReturn_Form),
+
+                // Settings
+                typeof(General_Form),
+                typeof(Security_Form),
+                typeof(Settings_Form),
+
+                // Startup
+                typeof(ConfigureCompany_Form),
+                typeof(GetStarted_Form),
+                typeof(Startup_Form),
+
+                // Main forms
+                typeof(Accountants_Form),
+                typeof(AddPurchase_Form),
+                typeof(AddSale_Form),
+                typeof(Categories_Form),
+                typeof(Companies_Form),
+                typeof(CustomMessage_Form),
+                typeof(DateRange_Form),
+                typeof(EULA_Form),
+                typeof(Export_Form),
+                typeof(ItemsInTransaction_Form),
+                typeof(Loading_Form),
+                typeof(Log_Form),
+                typeof(MainMenu_Form),
+                typeof(ModifyRow_Form),
+                typeof(Products_Form),
+                typeof(Receipts_Form),
+                typeof(Upgrade_Form),
+                typeof(Updates_Form),
+                typeof(Welcome_Form),
+            ];
+        }
+        private static List<Control> GetAdditionalControls()
+        {
+            List<Control> controls = [];
+
+            // Add UI panels
+            controls.AddRange(MainMenu_Form.GetMenus().Cast<Control>());
+
+            // Add other controls
+            controls.Add(CustomControls.ControlsDropDown_Button);
+            controls.AddRange(MainMenu_Form.Instance.GetAnalyticsControls());
+            controls.AddRange(MainMenu_Form.Instance.GetMainControls());
+            controls.AddRange(DateRange_Form.Instance.GetCustomRangeControls());
+
+            return controls;
+        }
+
+        private static void MergeStringCollections(Dictionary<string, string> sourceTexts,
+            params Dictionary<string, string>[] collections)
+        {
+            foreach (Dictionary<string, string> collection in collections)
+            {
+                foreach (KeyValuePair<string, string> kvp in collection)
+                {
+                    if (!sourceTexts.ContainsKey(kvp.Key))
+                    {
+                        sourceTexts[kvp.Key] = kvp.Value;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Pre-filters and optimizes texts to reduce API usage.
@@ -295,12 +388,13 @@ namespace Sales_Tracker.UI
                 optimizedTexts[kvp.Key] = text;
             }
 
-            Log.WriteWithFormat(1, "Optimized texts: {0} -> {1} (saved {2} unnecessary translations)", sourceTexts.Count, optimizedTexts.Count, sourceTexts.Count - optimizedTexts.Count);
+            Log.WriteWithFormat(1, "Optimized texts: {0} -> {1} (saved {2} unnecessary translations)",
+                sourceTexts.Count, optimizedTexts.Count, sourceTexts.Count - optimizedTexts.Count);
             return optimizedTexts;
         }
 
         /// <summary>
-        /// Batch translates multiple texts with enhanced rate limiting and progress updates.
+        /// Batch translates multiple texts with rate limiting and progress updates.
         /// </summary>
         private static async Task<Dictionary<string, string>> BatchTranslateTexts(Dictionary<string, string> textsToTranslate,
             string targetLanguageAbbreviation, TranslationProgress_Form progressForm, CancellationToken cancellationToken = default)
@@ -308,17 +402,16 @@ namespace Sales_Tracker.UI
             Dictionary<string, string> results = [];
             List<Dictionary<string, string>> batches = CreateBatches(textsToTranslate, _maxBatchSize);
 
-            Log.WriteWithFormat(1, "Starting translation for {0}: {1} texts in {2} batches", targetLanguageAbbreviation, textsToTranslate.Count, batches.Count);
+            Log.WriteWithFormat(1, "Starting translation for {0}: {1} texts in {2} batches",
+                targetLanguageAbbreviation, textsToTranslate.Count, batches.Count);
 
             for (int i = 0; i < batches.Count; i++)
             {
                 Dictionary<string, string> batch = batches[i];
                 cancellationToken.ThrowIfCancellationRequested();
 
-                // Calculate characters in this batch
-                int batchCharacters = batch.Values.Sum(text => text.Length);
-
-                await WaitForRateLimit(batchCharacters, cancellationToken).ConfigureAwait(false);
+                // Apply rate limiting
+                await WaitForRateLimit(cancellationToken).ConfigureAwait(false);
 
                 int retryCount = 0;
                 const byte maxRetries = 3;
@@ -328,28 +421,31 @@ namespace Sales_Tracker.UI
                     try
                     {
                         progressForm.UpdateBatchProgress(i, batches.Count, batch.Count);
-                        Dictionary<string, string> batchResults = await TranslateBatch(batch, targetLanguageAbbreviation, cancellationToken).ConfigureAwait(false);
+                        Dictionary<string, string> batchResults = await TranslateBatch(batch, targetLanguageAbbreviation, cancellationToken)
+                            .ConfigureAwait(false);
 
                         foreach (KeyValuePair<string, string> kvp in batchResults)
                         {
                             results[kvp.Key] = kvp.Value;
                         }
 
-                        // Log progress
-                        Log.WriteWithFormat(1, "Completed batch {0}/{1} ({2} characters, {3} total this hour)", i + 1, batches.Count, batchCharacters, _charactersUsedThisHour);
-                        break;  // Success, exit retry loop
+                        int batchCharacters = batch.Values.Sum(text => text.Length);
+                        Log.WriteWithFormat(1, "Completed batch {0}/{1} ({2} characters)",
+                            i + 1, batches.Count, batchCharacters);
+                        break;
                     }
                     catch (HttpRequestException ex) when ((ex.Message.Contains("429") || ex.Message.Contains("rate")) && retryCount < maxRetries)
                     {
                         retryCount++;
-                        int backoffDelay = (int)Math.Pow(2, retryCount) * 5000;  // 10s, 20s, 40s
-                        Log.WriteWithFormat(1, "Rate limit hit on batch {0}, attempt {1}/{2}. Waiting {3}s before retry...", i + 1, retryCount, maxRetries, backoffDelay / 1000);
+                        int backoffDelay = (int)Math.Pow(2, retryCount) * 5000;
+                        Log.WriteWithFormat(1, "Rate limit hit on batch {0}, attempt {1}/{2}. Waiting {3}s before retry...",
+                            i + 1, retryCount, maxRetries, backoffDelay / 1000);
 
                         await Task.Delay(backoffDelay, cancellationToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        return [];  // Exit if cancelled
+                        return [];
                     }
                     catch (Exception ex)
                     {
@@ -420,36 +516,14 @@ namespace Sales_Tracker.UI
         }
 
         /// <summary>
-        /// Enhanced rate limiting with character tracking.
+        /// Rate limiting for per-minute request limits only (hourly limits removed for pay-as-you-go).
         /// </summary>
-        private static async Task WaitForRateLimit(int charactersInBatch, CancellationToken cancellationToken = default)
+        private static async Task WaitForRateLimit(CancellationToken cancellationToken = default)
         {
             await _rateLimiter.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 DateTime now = DateTime.UtcNow;
-
-                // Reset hourly character counter if needed
-                if (now >= _hourlyResetTime)
-                {
-                    _charactersUsedThisHour = 0;
-                    _hourlyResetTime = now.AddHours(1);
-                    Log.Write(1, "Hourly character limit reset");
-                }
-
-                // Check if this batch would exceed hourly character limit
-                if (_charactersUsedThisHour + charactersInBatch > _maxCharactersPerHour)
-                {
-                    TimeSpan waitTime = _hourlyResetTime - now;
-                    if (waitTime > TimeSpan.Zero)
-                    {
-                        Log.WriteWithFormat(1, "Hourly character limit would be exceeded. Waiting {0} minutes until reset...", waitTime.TotalMinutes.ToString("F1"));
-                        // Wait until the hour resets
-                        await Task.Delay(waitTime, cancellationToken).ConfigureAwait(false);
-                        _charactersUsedThisHour = 0;
-                        _hourlyResetTime = DateTime.UtcNow.AddHours(1);
-                    }
-                }
 
                 // Remove old request timestamps (older than 1 minute)
                 DateTime cutoff = now.AddMinutes(-1);
@@ -471,9 +545,8 @@ namespace Sales_Tracker.UI
                     _requestTimestamps.Dequeue();
                 }
 
-                // Add current request timestamp and update character usage
+                // Add current request timestamp
                 _requestTimestamps.Enqueue(now);
-                _charactersUsedThisHour += charactersInBatch;
             }
             finally
             {

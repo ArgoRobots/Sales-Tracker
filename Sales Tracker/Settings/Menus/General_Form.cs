@@ -181,28 +181,35 @@ namespace Sales_Tracker.Settings.Menus
                     CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
             }
         }
-        private async void GenerateTranslationsButton_Click(object sender, EventArgs e)
+        private void GenerateTranslationsButton_Click(object sender, EventArgs e)
         {
             if (Properties.Settings.Default.Language != "English")
             {
-                CustomMessageBox.Show("Success", "The default language must be set to English.",
+                CustomMessageBox.Show("Language Setting", "The default language must be set to English to generate translations.",
                     CustomMessageBoxIcon.Exclamation, CustomMessageBoxButtons.Ok);
                 return;
             }
 
             try
             {
-                await TranslationGenerator.GenerateAllLanguageTranslationFiles();
+                // Open the new language selection form
+                LanguageSelection_Form languageForm = new();
+                DialogResult result = languageForm.ShowDialog(this);
 
-                CustomMessageBox.Show("Success", "Translation files generated successfully.",
-                    CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                if (result == DialogResult.OK)
+                {
+                    CustomMessageBox.Show("Success", "Translation files generated successfully.",
+                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    Log.Write(1, "Translation generation cancelled by user");
+                }
             }
             catch (Exception ex)
             {
-                CustomMessageBox.ShowWithFormat("Error", "Error generating translations: {0}",
-                    CustomMessageBoxIcon.Error,
-                    CustomMessageBoxButtons.Ok,
-                    ex.Message);
+                CustomMessageBox.ShowWithFormat("Error", "Error opening translation generator: {0}",
+                    CustomMessageBoxIcon.Error, CustomMessageBoxButtons.Ok, ex.Message);
             }
         }
 

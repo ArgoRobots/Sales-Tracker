@@ -368,7 +368,13 @@ namespace Sales_Tracker.Classes
 
             foreach (string company in companies)
             {
-                if (company + @"\" == Directories.Cache_dir) { continue; }
+                string translationsFolder = Path.Combine(Directories.AppData_dir, Directories.TranlationsReferenceFolderName);
+
+                if (company + @"\" == Directories.Cache_dir ||
+                    company == translationsFolder)
+                {
+                    continue;
+                }
 
                 // If there are no changes
                 string filepath = Path.Combine(company, Directories.CompanyDataFileName);
