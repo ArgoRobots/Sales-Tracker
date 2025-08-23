@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 
 namespace Sales_Tracker.UI

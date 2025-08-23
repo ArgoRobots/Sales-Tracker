@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.UI;
+﻿using Sales_Tracker.Language;
 
 namespace Sales_Tracker.ReturnProduct
 {

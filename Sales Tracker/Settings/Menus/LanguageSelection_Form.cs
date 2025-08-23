@@ -1,8 +1,8 @@
 ﻿using Guna.UI2.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
-using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Settings.Menus
 {
@@ -282,14 +282,28 @@ namespace Sales_Tracker.Settings.Menus
 
             try
             {
-                bool success = await TranslationGenerator.GenerateSelectedLanguageTranslationFiles(
+                TranslationResult result = await TranslationGenerator.GenerateSelectedLanguageTranslationFiles(
                     selectedLanguages, _referenceFolder, progressForm, progressForm.CancellationToken);
 
-                if (success && !progressForm.IsCancelled)
+                if (result.Success && !progressForm.IsCancelled)
                 {
-                    CustomMessageBox.Show("Success",
-                        $"Translation files generated successfully in:\n{_referenceFolder}",
-                        CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
+                    // Build detailed success message
+                    string message = $"Translation files generated successfully in:\n{_referenceFolder}\n\n";
+                    message += $"Summary:\n";
+                    message += $"• Total source texts: {result.TotalSourceTexts:N0}\n";
+                    message += $"• New translations created: {result.TotalNewTranslations:N0}\n";
+                    message += $"• Languages processed: {result.LanguagesProcessed}\n";
+
+                    if (result.TranslationsByLanguage.Any(kvp => kvp.Value > 0))
+                    {
+                        message += "\nNew translations by language:\n";
+                        foreach (KeyValuePair<string, int> kvp in result.TranslationsByLanguage.Where(x => x.Value > 0))
+                        {
+                            message += $"• {kvp.Key}: {kvp.Value:N0}\n";
+                        }
+                    }
+
+                    CustomMessageBox.Show("Success", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
 
                     // Refresh status after completion
                     UpdateLanguageStatus();

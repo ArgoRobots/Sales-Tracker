@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
 
@@ -196,12 +197,7 @@ namespace Sales_Tracker.Settings.Menus
                 LanguageSelection_Form languageForm = new();
                 DialogResult result = languageForm.ShowDialog(this);
 
-                if (result == DialogResult.OK)
-                {
-                    CustomMessageBox.Show("Success", "Translation files generated successfully.",
-                        CustomMessageBoxIcon.Info, CustomMessageBoxButtons.Ok);
-                }
-                else if (result == DialogResult.Cancel)
+                if (result == DialogResult.Cancel)
                 {
                     Log.Write(1, "Translation generation cancelled by user");
                 }

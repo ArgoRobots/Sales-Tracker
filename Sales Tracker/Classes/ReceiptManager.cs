@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.UI;
 using System.Diagnostics;
 

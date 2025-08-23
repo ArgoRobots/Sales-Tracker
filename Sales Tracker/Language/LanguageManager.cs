@@ -3,9 +3,10 @@ using Newtonsoft.Json;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.Settings.Menus;
+using Sales_Tracker.UI;
 using System.Text.RegularExpressions;
 
-namespace Sales_Tracker.UI
+namespace Sales_Tracker.Language
 {
     /// <summary>
     /// Manages language translation and caching for user interface controls.

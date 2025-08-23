@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Sales_Tracker.UI;
+using Sales_Tracker.Language;
 using System.Security.Cryptography;
 using System.Text;
 

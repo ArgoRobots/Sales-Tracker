@@ -1,6 +1,7 @@
 ﻿using Ookii.Dialogs.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Language;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;

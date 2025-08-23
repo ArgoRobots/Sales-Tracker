@@ -1,4 +1,4 @@
-﻿using Sales_Tracker.UI;
+﻿using Sales_Tracker.Language;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;

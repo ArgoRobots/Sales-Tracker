@@ -9,11 +9,12 @@ using Sales_Tracker.Settings;
 using Sales_Tracker.Settings.Menus;
 using Sales_Tracker.Startup;
 using Sales_Tracker.Startup.Menus;
+using Sales_Tracker.UI;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Sales_Tracker.UI
+namespace Sales_Tracker.Language
 {
     /// <summary>
     /// Utility class for generating translation JSON files for all application forms and controls.
@@ -48,6 +49,7 @@ namespace Sales_Tracker.UI
         [GeneratedRegex(@"[^\w]")]
         private static partial Regex NonWordCharacters();
 
+        // Init.
         /// <summary>
         /// Initialize the HTTP client with API credentials.
         /// </summary>
@@ -60,33 +62,47 @@ namespace Sales_Tracker.UI
             _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Region", "canadacentral");
         }
 
+        // Methods
+        // Update the method signature in TranslationGenerator.cs
         /// <summary>
         /// Generates translation files for selected languages, only translating new or changed content.
         /// </summary>
-        public static async Task<bool> GenerateSelectedLanguageTranslationFiles(
+        public static async Task<TranslationResult> GenerateSelectedLanguageTranslationFiles(
             List<string> selectedLanguageCodes,
             string referenceFolder,
             TranslationProgress_Form progressForm,
             CancellationToken cancellationToken = default)
         {
+            TranslationResult result = new();
+
             try
             {
                 // Collect all source texts
                 progressForm.UpdateTranslationProgress(0, "Collecting source texts...");
                 Dictionary<string, string> sourceTexts = CollectAllSourceTexts(progressForm, cancellationToken);
+                result.TotalSourceTexts = sourceTexts.Count;
 
-                if (cancellationToken.IsCancellationRequested) { return false; }
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    result.Success = false;
+                    return result;
+                }
 
                 // Initialize progress
                 progressForm.Initialize(selectedLanguageCodes.Count, sourceTexts.Count);
 
                 bool allSuccessful = true;
+                int totalNewTranslations = 0;
 
                 for (int langIndex = 0; langIndex < selectedLanguageCodes.Count; langIndex++)
                 {
                     string languageCode = selectedLanguageCodes[langIndex];
 
-                    if (cancellationToken.IsCancellationRequested) { return false; }
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        result.Success = false;
+                        return result;
+                    }
 
                     // Get language name for display
                     string languageName = LanguageManager.GetLanguages()
@@ -99,6 +115,7 @@ namespace Sales_Tracker.UI
 
                     // Determine what needs to be translated
                     Dictionary<string, string> textsToTranslate = GetTextsNeedingTranslation(sourceTexts, existingTranslations);
+                    int newTranslationsForThisLanguage = textsToTranslate.Count;
 
                     progressForm.UpdateTranslationProgress(0,
                         $"Found {textsToTranslate.Count} new/changed texts to translate out of {sourceTexts.Count} total");
@@ -116,6 +133,7 @@ namespace Sales_Tracker.UI
                         // No new translations needed
                         finalTranslations = MergeTranslations(existingTranslations, sourceTexts);
                         progressForm.UpdateTranslationProgress(sourceTexts.Count, "No new translations needed");
+                        newTranslationsForThisLanguage = 0;
                     }
                     else
                     {
@@ -123,7 +141,11 @@ namespace Sales_Tracker.UI
                         Dictionary<string, string> newTranslations = await BatchTranslateTexts(
                             textsToTranslate, languageCode, progressForm, cancellationToken);
 
-                        if (cancellationToken.IsCancellationRequested) { return false; }
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            result.Success = false;
+                            return result;
+                        }
 
                         // Merge existing and new translations
                         finalTranslations = MergeTranslations(existingTranslations, newTranslations);
@@ -138,27 +160,37 @@ namespace Sales_Tracker.UI
                         }
                     }
 
+                    // Track translations for this language
+                    result.TranslationsByLanguage[languageName] = newTranslationsForThisLanguage;
+                    totalNewTranslations += newTranslationsForThisLanguage;
+
                     // Save translation file
                     progressForm.UpdateTranslationProgress(sourceTexts.Count, $"Saving {languageName} translations...");
                     string outputPath = Path.Combine(referenceFolder, $"{languageCode}.json");
                     await GenerateLanguageJsonFile(finalTranslations, outputPath, languageCode);
 
                     Log.WriteWithFormat(1, "Completed translations for {0}: {1} total texts ({2} newly translated)",
-                        languageName, finalTranslations.Count, textsToTranslate.Count);
+                        languageName, finalTranslations.Count, newTranslationsForThisLanguage);
                 }
 
+                result.Success = allSuccessful;
+                result.TotalNewTranslations = totalNewTranslations;
+                result.LanguagesProcessed = selectedLanguageCodes.Count;
+
                 progressForm.CompleteProgress();
-                return allSuccessful;
+                return result;
             }
             catch (OperationCanceledException)
             {
                 Log.Write(1, "Translation generation was cancelled");
-                return false;
+                result.Success = false;
+                return result;
             }
             catch (Exception ex)
             {
                 Log.Error_GetTranslation($"Translation generation failed: {ex.Message}");
-                return false;
+                result.Success = false;
+                return result;
             }
         }
 

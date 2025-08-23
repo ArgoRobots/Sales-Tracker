@@ -1,6 +1,7 @@
 ﻿using LiveChartsCore.SkiaSharpView;
 using Microsoft.Win32;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Language;
 using Sales_Tracker.Passwords;
 using Sales_Tracker.Theme;
 using Sales_Tracker.UI;
