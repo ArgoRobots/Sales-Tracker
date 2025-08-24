@@ -294,15 +294,6 @@ namespace Sales_Tracker.Settings.Menus
                     message += $"• New translations created: {result.TotalNewTranslations:N0}\n";
                     message += $"• Languages processed: {result.LanguagesProcessed}\n";
 
-                    if (result.TranslationsByLanguage.Any(kvp => kvp.Value > 0))
-                    {
-                        message += "\nNew translations by language:\n";
-                        foreach (KeyValuePair<string, int> kvp in result.TranslationsByLanguage.Where(x => x.Value > 0))
-                        {
-                            message += $"• {kvp.Key}: {kvp.Value:N0}\n";
-                        }
-                    }
-
                     CustomMessageBox.Show("Success", message, CustomMessageBoxIcon.Success, CustomMessageBoxButtons.Ok);
 
                     // Refresh status after completion

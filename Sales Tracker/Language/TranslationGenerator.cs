@@ -114,7 +114,9 @@ namespace Sales_Tracker.Language
                     Dictionary<string, string> existingTranslations = LoadExistingTranslations(referenceFolder, languageCode);
 
                     // Determine what needs to be translated
-                    Dictionary<string, string> textsToTranslate = GetTextsNeedingTranslation(sourceTexts, existingTranslations);
+                    Dictionary<string, string> textsToTranslate = GetTextsNeedingTranslation(
+                        sourceTexts, existingTranslations, languageCode, referenceFolder);
+
                     int newTranslationsForThisLanguage = textsToTranslate.Count;
 
                     progressForm.UpdateTranslationProgress(0,
@@ -124,14 +126,31 @@ namespace Sales_Tracker.Language
 
                     if (languageCode == "en")
                     {
-                        // For English, use source texts
+                        // For English, use source texts directly
                         finalTranslations = sourceTexts;
                         progressForm.UpdateTranslationProgress(sourceTexts.Count, "Using source texts for English...");
+
+                        // Log what changed for English
+                        if (newTranslationsForThisLanguage > 0)
+                        {
+                            Log.WriteWithFormat(1, "Updated {0} English texts out of {1} total",
+                                newTranslationsForThisLanguage, sourceTexts.Count);
+                        }
                     }
                     else if (textsToTranslate.Count == 0)
                     {
                         // No new translations needed
-                        finalTranslations = MergeTranslations(existingTranslations, sourceTexts);
+                        finalTranslations = new Dictionary<string, string>(existingTranslations);
+
+                        // Only add English fallbacks for completely new keys
+                        foreach (KeyValuePair<string, string> kvp in sourceTexts)
+                        {
+                            if (!finalTranslations.ContainsKey(kvp.Key))
+                            {
+                                finalTranslations[kvp.Key] = kvp.Value;
+                            }
+                        }
+
                         progressForm.UpdateTranslationProgress(sourceTexts.Count, "No new translations needed");
                         newTranslationsForThisLanguage = 0;
                     }
@@ -219,27 +238,70 @@ namespace Sales_Tracker.Language
             }
         }
 
+        // Replace the GetTextsNeedingTranslation method in TranslationGenerator.cs
         /// <summary>
         /// Determines which texts need translation by comparing source texts with existing translations.
+        /// For English: always regenerate since it's free and ensures accuracy.
+        /// For other languages: compare current source against the English version that was previously translated.
         /// </summary>
         private static Dictionary<string, string> GetTextsNeedingTranslation(
             Dictionary<string, string> sourceTexts,
-            Dictionary<string, string> existingTranslations)
+            Dictionary<string, string> existingTranslations,
+            string languageCode,
+            string referenceFolder)
         {
             Dictionary<string, string> textsToTranslate = [];
+
+            // Always regenerate English translations (no API cost)
+            if (languageCode == "en")
+            {
+                Log.Write(1, "Regenerating all English translations (no API cost)");
+                return sourceTexts;
+            }
+
+            // For other languages, load the English reference to compare against
+            Dictionary<string, string> englishReference = LoadExistingTranslations(referenceFolder, "en");
 
             foreach (KeyValuePair<string, string> kvp in sourceTexts)
             {
                 string key = kvp.Key;
-                string sourceText = kvp.Value;
+                string currentSourceText = kvp.Value;
 
-                // Need translation if:
-                // 1. Key doesn't exist in existing translations
-                // 2. The source text has changed (we can't easily detect this with text-based keys, 
-                //    so we rely on the key not existing)
-                if (!existingTranslations.TryGetValue(key, out string? value) || string.IsNullOrEmpty(value))
+                bool needsTranslation = false;
+
+                // Need translation if the key doesn't exist in existing translations
+                if (!existingTranslations.TryGetValue(key, out string? existingTranslation) ||
+                    string.IsNullOrEmpty(existingTranslation))
                 {
-                    textsToTranslate[key] = sourceText;
+                    needsTranslation = true;
+                    Log.WriteWithFormat(2, "Key '{0}' missing translation for {1}", key, languageCode);
+                }
+                // Need translation if the source text has changed since last translation
+                else if (englishReference.TryGetValue(key, out string? previousEnglishText))
+                {
+                    if (previousEnglishText != currentSourceText)
+                    {
+                        needsTranslation = true;
+                        Log.WriteWithFormat(2, "Source text changed for key '{0}': '{1}' -> '{2}'",
+                            key, previousEnglishText, currentSourceText);
+                    }
+                }
+                // Only mark as needing translation if no English reference exists AND no existing translation
+                else if (englishReference.Count == 0)
+                {
+                    // No English reference file exists - this is probably the first run
+                    // Don't re-translate existing translations
+                    Log.WriteWithFormat(2, "No English reference file - keeping existing translation for key '{0}'", key);
+                }
+                else
+                {
+                    needsTranslation = true;
+                    Log.WriteWithFormat(2, "New text for key '{0}': '{1}'", key, currentSourceText);
+                }
+
+                if (needsTranslation)
+                {
+                    textsToTranslate[key] = currentSourceText;
                 }
             }
 
@@ -771,7 +833,7 @@ namespace Sales_Tracker.Language
                     if (ShouldSkipFile(file)) { continue; }
 
                     string content = File.ReadAllText(file);
-                    ExtractTranslateStringCalls(content, collectedStrings, Path.GetFileName(file));
+                    ExtractTranslateStringCalls(content, collectedStrings);
                 }
 
                 Log.WriteWithFormat(1, "Auto-collected {0} TranslateString calls from source code", collectedStrings.Count);
@@ -809,7 +871,7 @@ namespace Sales_Tracker.Language
                     if (ShouldSkipFile(file)) { continue; }
 
                     string content = File.ReadAllText(file);
-                    ExtractCustomMessageBoxCalls(content, messageBoxStrings, Path.GetFileName(file));
+                    ExtractCustomMessageBoxCalls(content, messageBoxStrings);
                 }
 
                 Log.WriteWithFormat(1, "Auto-collected {0} CustomMessageBox calls from source code", messageBoxStrings.Count);
@@ -860,94 +922,94 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Extracts LanguageManager.TranslateString call strings from source code content.
         /// </summary>
-        private static void ExtractTranslateStringCalls(string content, Dictionary<string, string> collectedStrings, string fileName)
+        private static void ExtractTranslateStringCalls(string content, Dictionary<string, string> collectedStrings)
         {
             // Pattern 1: Direct LanguageManager.TranslateString calls
             // LanguageManager.TranslateString("text with \n newlines and \" quotes")
             string simplePattern = @"LanguageManager\.TranslateString\s*\(\s*""((?:[^""\\]|\\.)*)""";
-            ExtractMatches(content, simplePattern, collectedStrings, fileName, false);
+            ExtractMatches(content, simplePattern, collectedStrings, false);
 
             // Pattern 2: String interpolation
             // LanguageManager.TranslateString($"text with \n and {variable}")
             string interpolationPattern = @"LanguageManager\.TranslateString\s*\(\s*\$""((?:[^""\\]|\\.)*)""";
-            ExtractMatches(content, interpolationPattern, collectedStrings, fileName, false);
+            ExtractMatches(content, interpolationPattern, collectedStrings, false);
 
             // Pattern 3: Verbatim strings
             // LanguageManager.TranslateString(@"text with actual newlines and "" quotes")
             string verbatimPattern = @"LanguageManager\.TranslateString\s*\(\s*@""((?:[^""]|"""")*)""";
-            ExtractMatches(content, verbatimPattern, collectedStrings, fileName, true);
+            ExtractMatches(content, verbatimPattern, collectedStrings, true);
 
             // Pattern 4: Multi-line regular strings
             string multilinePattern = @"LanguageManager\.TranslateString\s*\(\s*""((?:[^""\\]|\\.|[\r\n])*?)""";
-            ExtractMatches(content, multilinePattern, collectedStrings, fileName, false);
+            ExtractMatches(content, multilinePattern, collectedStrings, false);
 
             // Pattern 5: Constants or readonly strings assigned to TranslateString calls
-            ExtractVariableReferences(content, collectedStrings, fileName);
+            ExtractVariableReferences(content, collectedStrings);
 
             // Translate("text")
             string translateSimplePattern = @"Translate\s*\(\s*""((?:[^""\\]|\\.)*)""";
-            ExtractMatches(content, translateSimplePattern, collectedStrings, fileName, false);
+            ExtractMatches(content, translateSimplePattern, collectedStrings, false);
 
             // Pattern 6: Translate() wrapper - string interpolation
             // Translate($"text with {variable}")
             string translateInterpolationPattern = @"Translate\s*\(\s*\$""((?:[^""\\]|\\.)*)""";
-            ExtractMatches(content, translateInterpolationPattern, collectedStrings, fileName, false);
+            ExtractMatches(content, translateInterpolationPattern, collectedStrings, false);
 
             // Pattern 7: Translate() wrapper - verbatim strings
             // Translate(@"text with actual newlines")
             string translateVerbatimPattern = @"Translate\s*\(\s*@""((?:[^""]|"""")*)""";
-            ExtractMatches(content, translateVerbatimPattern, collectedStrings, fileName, true);
+            ExtractMatches(content, translateVerbatimPattern, collectedStrings, true);
 
             // Pattern 8: Translate() wrapper - multi-line strings
             string translateMultilinePattern = @"Translate\s*\(\s*""((?:[^""\\]|\\.|[\r\n])*?)""";
-            ExtractMatches(content, translateMultilinePattern, collectedStrings, fileName, false);
+            ExtractMatches(content, translateMultilinePattern, collectedStrings, false);
 
             // Pattern 9: Constants or readonly strings assigned to TranslateString calls
-            ExtractVariableReferences(content, collectedStrings, fileName);
+            ExtractVariableReferences(content, collectedStrings);
         }
 
         /// <summary>
         /// Extracts CustomMessageBox.Show and CustomMessageBox.ShowWithFormat call strings from source code content.
         /// </summary>
-        private static void ExtractCustomMessageBoxCalls(string content, Dictionary<string, string> messageBoxStrings, string fileName)
+        private static void ExtractCustomMessageBoxCalls(string content, Dictionary<string, string> messageBoxStrings)
         {
             // Pattern 1: Basic CustomMessageBox.Show calls
             string pattern = @"CustomMessageBox\.Show\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
-            ExtractMessageBoxMatches(content, pattern, messageBoxStrings, fileName, false);
+            ExtractMessageBoxMatches(content, pattern, messageBoxStrings, false);
 
             // Pattern 2: String interpolation
             string interpolationPattern = @"CustomMessageBox\.Show\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*\$""((?:[^""\\]|\\.)*?)""\s*,";
-            ExtractMessageBoxMatches(content, interpolationPattern, messageBoxStrings, fileName, false);
+            ExtractMessageBoxMatches(content, interpolationPattern, messageBoxStrings, false);
 
             // Pattern 3: Multi-line strings
             string multiLinePattern = @"CustomMessageBox\.Show\s*\(\s*@""((?:[^""]|"""")*?)""\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
-            ExtractMessageBoxMatches(content, multiLinePattern, messageBoxStrings, fileName, true);
+            ExtractMessageBoxMatches(content, multiLinePattern, messageBoxStrings, true);
 
             // Pattern 4: Basic CustomMessageBox.ShowWithFormat calls
             string showWithFormatPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatPattern, messageBoxStrings, fileName, false);
+            ExtractMessageBoxMatches(content, showWithFormatPattern, messageBoxStrings, false);
 
             // Pattern 5: String interpolation for ShowWithFormat
             string showWithFormatInterpolationPattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*\$""((?:[^""\\]|\\.)*?)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatInterpolationPattern, messageBoxStrings, fileName, false);
+            ExtractMessageBoxMatches(content, showWithFormatInterpolationPattern, messageBoxStrings, false);
 
             // Pattern 6: Multi-line strings for ShowWithFormat
             string showWithFormatMultiLinePattern = @"CustomMessageBox\.ShowWithFormat\s*\(\s*@""((?:[^""]|"""")*?)""\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatMultiLinePattern, messageBoxStrings, fileName, true);
+            ExtractMessageBoxMatches(content, showWithFormatMultiLinePattern, messageBoxStrings, true);
 
             // Pattern 7: Mixed patterns - Show with interpolated title, ShowWithFormat with regular message
             string showWithFormatMixedPattern1 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*\$""((?:[^""\\]|\\.)*?)""\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatMixedPattern1, messageBoxStrings, fileName, false);
+            ExtractMessageBoxMatches(content, showWithFormatMixedPattern1, messageBoxStrings, false);
 
             // Pattern 8: Mixed patterns - Show with regular title, ShowWithFormat with verbatim message
             string showWithFormatMixedPattern2 = @"CustomMessageBox\.ShowWithFormat\s*\(\s*""((?:[^""\\]|\\.)*?)""\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
-            ExtractMessageBoxMatches(content, showWithFormatMixedPattern2, messageBoxStrings, fileName, true);
+            ExtractMessageBoxMatches(content, showWithFormatMixedPattern2, messageBoxStrings, true);
         }
 
         /// <summary>
         /// Extracts matches from regex pattern with improved handling for escaped characters and newlines.
         /// </summary>
-        private static void ExtractMatches(string content, string pattern, Dictionary<string, string> collectedStrings, string fileName, bool isVerbatim)
+        private static void ExtractMatches(string content, string pattern, Dictionary<string, string> collectedStrings, bool isVerbatim)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -970,7 +1032,6 @@ namespace Sales_Tracker.Language
                     if (!collectedStrings.ContainsKey(key))
                     {
                         collectedStrings[key] = processedText;
-                        Log.WriteWithFormat(2, "Found TranslateString: '{0}' -> Key: '{1}' in {2}", processedText, key, fileName);
                     }
                 }
             }
@@ -979,7 +1040,7 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Extracts CustomMessageBox matches and adds both title and message to collection with proper string handling.
         /// </summary>
-        private static void ExtractMessageBoxMatches(string content, string pattern, Dictionary<string, string> messageBoxStrings, string fileName, bool isVerbatim)
+        private static void ExtractMessageBoxMatches(string content, string pattern, Dictionary<string, string> messageBoxStrings, bool isVerbatim)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -1009,7 +1070,6 @@ namespace Sales_Tracker.Language
                         if (!messageBoxStrings.ContainsKey(titleKey))
                         {
                             messageBoxStrings[titleKey] = title;
-                            Log.WriteWithFormat(2, "Found CustomMessageBox title: '{0}' -> Key: '{1}' in {2}", title, titleKey, fileName);
                         }
                     }
 
@@ -1020,7 +1080,6 @@ namespace Sales_Tracker.Language
                         if (!messageBoxStrings.ContainsKey(messageKey))
                         {
                             messageBoxStrings[messageKey] = message;
-                            Log.WriteWithFormat(2, "Found CustomMessageBox message: '{0}' -> Key: '{1}' in {2}", message, messageKey, fileName);
                         }
                     }
                 }
@@ -1102,7 +1161,7 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Attempts to find variable references passed to TranslateString.
         /// </summary>
-        private static void ExtractVariableReferences(string content, Dictionary<string, string> collectedStrings, string fileName)
+        private static void ExtractVariableReferences(string content, Dictionary<string, string> collectedStrings)
         {
             // Look for patterns like:
             // const string SomeText = "value";
@@ -1146,7 +1205,6 @@ namespace Sales_Tracker.Language
                     if (!collectedStrings.ContainsKey(key))
                     {
                         collectedStrings[key] = variable.Value;
-                        Log.WriteWithFormat(2, "Found TranslateString variable: '{0}' ({1}) -> Key: '{2}' in {3}", variable.Value, variable.Key, key, fileName);
                     }
                 }
             }
@@ -1177,7 +1235,7 @@ namespace Sales_Tracker.Language
                     if (ShouldSkipFile(file)) { continue; }
 
                     string content = File.ReadAllText(file);
-                    ExtractLogWriteCalls(content, logWriteStrings, Path.GetFileName(file));
+                    ExtractLogWriteCalls(content, logWriteStrings);
                 }
 
                 Log.WriteWithFormat(1, "Auto-collected {0} Log.Write/WriteWithFormat calls from source code", logWriteStrings.Count);
@@ -1193,57 +1251,57 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Extracts Log.Write call strings from source code content.
         /// </summary>
-        private static void ExtractLogWriteCalls(string content, Dictionary<string, string> logWriteStrings, string fileName)
+        private static void ExtractLogWriteCalls(string content, Dictionary<string, string> logWriteStrings)
         {
             // ============ LOG.WRITE PATTERNS ============
 
             // Pattern 1: Basic Log.Write calls
             // Log.Write(1, "message text")
             string pattern = @"Log\.Write\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.)*?)""";
-            ExtractLogMatches(content, pattern, logWriteStrings, fileName, false);
+            ExtractLogMatches(content, pattern, logWriteStrings, false);
 
             // Pattern 2: String interpolation
             // Log.Write(1, $"message with {variable}")
             string interpolationPattern = @"Log\.Write\s*\(\s*\d+\s*,\s*\$""((?:[^""\\]|\\.)*?)""";
-            ExtractLogMatchesWithInterpolation(content, interpolationPattern, logWriteStrings, fileName);
+            ExtractLogMatchesWithInterpolation(content, interpolationPattern, logWriteStrings);
 
             // Pattern 3: Verbatim strings
             // Log.Write(1, @"message with actual newlines")
             string verbatimPattern = @"Log\.Write\s*\(\s*\d+\s*,\s*@""((?:[^""]|"""")*)""";
-            ExtractLogMatches(content, verbatimPattern, logWriteStrings, fileName, true);
+            ExtractLogMatches(content, verbatimPattern, logWriteStrings, true);
 
             // Pattern 4: Multi-line strings
             string multilinePattern = @"Log\.Write\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.|[\r\n])*?)""";
-            ExtractLogMatches(content, multilinePattern, logWriteStrings, fileName, false);
+            ExtractLogMatches(content, multilinePattern, logWriteStrings, false);
 
             // Pattern 5: String concatenation with + operator
             // Log.Write(1, "message part 1" + variable + "message part 2")
-            ExtractLogConcatenationMatches(content, logWriteStrings, fileName);
+            ExtractLogConcatenationMatches(content, logWriteStrings);
 
             // Pattern 6: Variable references
-            ExtractLogVariableReferences(content, logWriteStrings, fileName);
+            ExtractLogVariableReferences(content, logWriteStrings);
 
             // ============ LOG.WRITEWITHFORMAT PATTERNS ============
 
             // Pattern 7: Basic Log.WriteWithFormat calls
             // Log.WriteWithFormat(1, "message template {0}", variable)
             string writeWithFormatPattern = @"Log\.WriteWithFormat\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.)*?)""\s*,";
-            ExtractLogWriteWithFormatMatches(content, writeWithFormatPattern, logWriteStrings, fileName, false);
+            ExtractLogWriteWithFormatMatches(content, writeWithFormatPattern, logWriteStrings, false);
 
             // Pattern 8: Verbatim strings for WriteWithFormat
             // Log.WriteWithFormat(1, @"message template {0}", variable)
             string writeWithFormatVerbatimPattern = @"Log\.WriteWithFormat\s*\(\s*\d+\s*,\s*@""((?:[^""]|"""")*?)""\s*,";
-            ExtractLogWriteWithFormatMatches(content, writeWithFormatVerbatimPattern, logWriteStrings, fileName, true);
+            ExtractLogWriteWithFormatMatches(content, writeWithFormatVerbatimPattern, logWriteStrings, true);
 
             // Pattern 9: Multi-line strings for WriteWithFormat
             string writeWithFormatMultilinePattern = @"Log\.WriteWithFormat\s*\(\s*\d+\s*,\s*""((?:[^""\\]|\\.|[\r\n])*?)""\s*,";
-            ExtractLogWriteWithFormatMatches(content, writeWithFormatMultilinePattern, logWriteStrings, fileName, false);
+            ExtractLogWriteWithFormatMatches(content, writeWithFormatMultilinePattern, logWriteStrings, false);
         }
 
         /// <summary>
         /// Extracts Log.WriteWithFormat template strings.
         /// </summary>
-        private static void ExtractLogWriteWithFormatMatches(string content, string pattern, Dictionary<string, string> logWriteStrings, string fileName, bool isVerbatim)
+        private static void ExtractLogWriteWithFormatMatches(string content, string pattern, Dictionary<string, string> logWriteStrings, bool isVerbatim)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -1270,7 +1328,6 @@ namespace Sales_Tracker.Language
                         if (!logWriteStrings.ContainsKey(templateKey))
                         {
                             logWriteStrings[templateKey] = template;
-                            Log.WriteWithFormat(2, "Found Log.WriteWithFormat template: '{0}' -> Key: '{1}' in {2}", template, templateKey, fileName);
                         }
                     }
                 }
@@ -1280,7 +1337,7 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Extracts Log.Write matches with string interpolation, removing interpolation placeholders.
         /// </summary>
-        private static void ExtractLogMatchesWithInterpolation(string content, string pattern, Dictionary<string, string> logWriteStrings, string fileName)
+        private static void ExtractLogMatchesWithInterpolation(string content, string pattern, Dictionary<string, string> logWriteStrings)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -1301,7 +1358,6 @@ namespace Sales_Tracker.Language
                         if (!logWriteStrings.ContainsKey(messageKey))
                         {
                             logWriteStrings[messageKey] = message;
-                            Log.WriteWithFormat(2, "Found Log.Write interpolated message: '{0}' -> Key: '{1}' in {2}", message, messageKey, fileName);
                         }
                     }
                 }
@@ -1311,7 +1367,7 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Extracts Log.Write matches with string concatenation, capturing only the string literal parts.
         /// </summary>
-        private static void ExtractLogConcatenationMatches(string content, Dictionary<string, string> logWriteStrings, string fileName)
+        private static void ExtractLogConcatenationMatches(string content, Dictionary<string, string> logWriteStrings)
         {
             // Look for Log.Write calls that contain string concatenation
             string fullCallPattern = @"Log\.Write\s*\(\s*\d+\s*,\s*([^;)]+)\s*\)";
@@ -1341,7 +1397,6 @@ namespace Sales_Tracker.Language
                         if (!logWriteStrings.ContainsKey(messageKey))
                         {
                             logWriteStrings[messageKey] = stringLiteral;
-                            Log.WriteWithFormat(2, "Found Log.Write concatenated string: '{0}' -> Key: '{1}' in {2}", stringLiteral, messageKey, fileName);
                         }
                     }
                 }
@@ -1351,7 +1406,7 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Extracts Log.Write matches and adds the message text to collection with proper string handling.
         /// </summary>
-        private static void ExtractLogMatches(string content, string pattern, Dictionary<string, string> logWriteStrings, string fileName, bool isVerbatim)
+        private static void ExtractLogMatches(string content, string pattern, Dictionary<string, string> logWriteStrings, bool isVerbatim)
         {
             MatchCollection matches = Regex.Matches(content, pattern, RegexOptions.Multiline | RegexOptions.Singleline);
 
@@ -1378,7 +1433,6 @@ namespace Sales_Tracker.Language
                         if (!logWriteStrings.ContainsKey(messageKey))
                         {
                             logWriteStrings[messageKey] = message;
-                            Log.WriteWithFormat(2, "Found Log.Write message: '{0}' -> Key: '{1}' in {2}", message, messageKey, fileName);
                         }
                     }
                 }
@@ -1388,7 +1442,7 @@ namespace Sales_Tracker.Language
         /// <summary>
         /// Attempts to find variable references passed to Log.Write calls.
         /// </summary>
-        private static void ExtractLogVariableReferences(string content, Dictionary<string, string> logWriteStrings, string fileName)
+        private static void ExtractLogVariableReferences(string content, Dictionary<string, string> logWriteStrings)
         {
             // Look for patterns like:
             // const string SomeText = "value";
@@ -1432,7 +1486,6 @@ namespace Sales_Tracker.Language
                     if (!logWriteStrings.ContainsKey(key))
                     {
                         logWriteStrings[key] = variable.Value;
-                        Log.WriteWithFormat(2, "Found Log.Write variable: '{0}' ({1}) -> Key: '{2}' in {3}", variable.Value, variable.Key, key, fileName);
                     }
                 }
             }
