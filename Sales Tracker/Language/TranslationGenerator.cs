@@ -183,6 +183,9 @@ namespace Sales_Tracker.Language
                     result.TranslationsByLanguage[languageName] = newTranslationsForThisLanguage;
                     totalNewTranslations += newTranslationsForThisLanguage;
 
+                    // Clean up obsolete translations for all languages (including English)
+                    finalTranslations = CleanupObsoleteTranslations(finalTranslations, sourceTexts, languageCode);
+
                     // Save translation file
                     progressForm.UpdateTranslationProgress(sourceTexts.Count, $"Saving {languageName} translations...");
                     string outputPath = Path.Combine(referenceFolder, $"{languageCode}.json");
@@ -323,6 +326,39 @@ namespace Sales_Tracker.Language
             }
 
             return merged;
+        }
+
+        /// <summary>
+        /// Removes obsolete translations that no longer exist in the source texts.
+        /// </summary>
+        private static Dictionary<string, string> CleanupObsoleteTranslations(
+            Dictionary<string, string> translations,
+            Dictionary<string, string> sourceTexts,
+            string languageCode)
+        {
+            Dictionary<string, string> cleanedTranslations = [];
+            int removedCount = 0;
+
+            foreach (KeyValuePair<string, string> kvp in translations)
+            {
+                // Keep translation if it still exists in source texts
+                if (sourceTexts.ContainsKey(kvp.Key))
+                {
+                    cleanedTranslations[kvp.Key] = kvp.Value;
+                }
+                else
+                {
+                    removedCount++;
+                    Log.WriteWithFormat(2, "Removed obsolete translation for key '{0}' in {1}", kvp.Key, languageCode);
+                }
+            }
+
+            if (removedCount > 0)
+            {
+                Log.WriteWithFormat(1, "Cleaned up {0} obsolete translations for {1}", removedCount, languageCode);
+            }
+
+            return cleanedTranslations;
         }
 
         /// <summary>
