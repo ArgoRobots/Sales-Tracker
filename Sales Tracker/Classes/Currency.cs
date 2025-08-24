@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Sales_Tracker.AnonymousData;
 using Sales_Tracker.DataClasses;
 using Sales_Tracker.UI;
 

@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using Sales_Tracker.AnonymousData;
 using System.Diagnostics;
 
 namespace Sales_Tracker.Classes
