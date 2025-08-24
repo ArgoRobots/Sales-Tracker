@@ -110,89 +110,19 @@ namespace Sales_Tracker.Language
 
                     progressForm.UpdateLanguage(languageName, langIndex);
 
-                    // Load existing translations if they exist
-                    Dictionary<string, string> existingTranslations = LoadExistingTranslations(referenceFolder, languageCode);
+                    (Dictionary<string, string> finalTranslations, int newTranslationsCount) = await ProcessSingleLanguage(
+                        languageCode, sourceTexts, referenceFolder, progressForm, cancellationToken);
 
-                    // Determine what needs to be translated
-                    Dictionary<string, string> textsToTranslate = GetTextsNeedingTranslation(
-                        sourceTexts, existingTranslations, languageCode, referenceFolder);
+                    result.TranslationsByLanguage[languageName] = newTranslationsCount;
+                    totalNewTranslations += newTranslationsCount;
 
-                    int newTranslationsForThisLanguage = textsToTranslate.Count;
-
-                    progressForm.UpdateTranslationProgress(0,
-                        $"Found {textsToTranslate.Count} new/changed texts to translate out of {sourceTexts.Count} total");
-
-                    Dictionary<string, string> finalTranslations;
-
-                    if (languageCode == "en")
-                    {
-                        // For English, use source texts directly
-                        finalTranslations = sourceTexts;
-                        progressForm.UpdateTranslationProgress(sourceTexts.Count, "Using source texts for English...");
-
-                        // Log what changed for English
-                        if (newTranslationsForThisLanguage > 0)
-                        {
-                            Log.WriteWithFormat(1, "Updated {0} English texts out of {1} total",
-                                newTranslationsForThisLanguage, sourceTexts.Count);
-                        }
-                    }
-                    else if (textsToTranslate.Count == 0)
-                    {
-                        // No new translations needed
-                        finalTranslations = new Dictionary<string, string>(existingTranslations);
-
-                        // Only add English fallbacks for completely new keys
-                        foreach (KeyValuePair<string, string> kvp in sourceTexts)
-                        {
-                            if (!finalTranslations.ContainsKey(kvp.Key))
-                            {
-                                finalTranslations[kvp.Key] = kvp.Value;
-                            }
-                        }
-
-                        progressForm.UpdateTranslationProgress(sourceTexts.Count, "No new translations needed");
-                        newTranslationsForThisLanguage = 0;
-                    }
-                    else
-                    {
-                        // Translate only the new/changed texts
-                        Dictionary<string, string> newTranslations = await BatchTranslateTexts(
-                            textsToTranslate, languageCode, progressForm, cancellationToken);
-
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            result.Success = false;
-                            return result;
-                        }
-
-                        // Merge existing and new translations
-                        finalTranslations = MergeTranslations(existingTranslations, newTranslations);
-
-                        // Add any missing source texts as fallbacks
-                        foreach (KeyValuePair<string, string> kvp in sourceTexts)
-                        {
-                            if (!finalTranslations.ContainsKey(kvp.Key))
-                            {
-                                finalTranslations[kvp.Key] = kvp.Value;
-                            }
-                        }
-                    }
-
-                    // Track translations for this language
-                    result.TranslationsByLanguage[languageName] = newTranslationsForThisLanguage;
-                    totalNewTranslations += newTranslationsForThisLanguage;
-
-                    // Clean up obsolete translations for all languages (including English)
+                    // Clean up and save
                     finalTranslations = CleanupObsoleteTranslations(finalTranslations, sourceTexts, languageCode);
-
-                    // Save translation file
-                    progressForm.UpdateTranslationProgress(sourceTexts.Count, $"Saving {languageName} translations...");
                     string outputPath = Path.Combine(referenceFolder, $"{languageCode}.json");
                     await GenerateLanguageJsonFile(finalTranslations, outputPath, languageCode);
 
                     Log.WriteWithFormat(1, "Completed translations for {0}: {1} total texts ({2} newly translated)",
-                        languageName, finalTranslations.Count, newTranslationsForThisLanguage);
+                        languageName, finalTranslations.Count, newTranslationsCount);
                 }
 
                 result.Success = allSuccessful;
@@ -214,6 +144,61 @@ namespace Sales_Tracker.Language
                 result.Success = false;
                 return result;
             }
+        }
+
+        private static async Task<(Dictionary<string, string> translations, int newCount)> ProcessSingleLanguage(
+            string languageCode,
+            Dictionary<string, string> sourceTexts,
+            string referenceFolder,
+            TranslationProgress_Form progressForm,
+            CancellationToken cancellationToken)
+        {
+            Dictionary<string, string> existingTranslations = LoadExistingTranslations(referenceFolder, languageCode);
+
+            // English is simple - just return source texts
+            if (languageCode == "en")
+            {
+                progressForm.UpdateTranslationProgress(sourceTexts.Count, "Using source texts for English...");
+                return (sourceTexts, sourceTexts.Count);
+            }
+
+            // For other languages, determine what needs translation
+            Dictionary<string, string> textsToTranslate = GetTextsNeedingTranslation(sourceTexts, existingTranslations, languageCode, referenceFolder);
+
+            progressForm.UpdateTranslationProgress(0, $"Found {textsToTranslate.Count} new/changed texts to translate");
+
+            if (textsToTranslate.Count == 0)
+            {
+                // Keep existing translations, add English fallbacks for new keys
+                Dictionary<string, string> result = new(existingTranslations);
+                foreach (KeyValuePair<string, string> kvp in sourceTexts.Where(s => !result.ContainsKey(s.Key)))
+                {
+                    result[kvp.Key] = kvp.Value;
+                }
+
+                progressForm.UpdateTranslationProgress(sourceTexts.Count, "No new translations needed");
+                return (result, 0);
+            }
+
+            // Translate new/changed texts
+            Dictionary<string, string> newTranslations = await BatchTranslateTexts(textsToTranslate, languageCode, progressForm, cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return (existingTranslations, 0);
+            }
+
+            // Merge everything together
+            Dictionary<string, string> finalTranslations = new(existingTranslations);
+            foreach (KeyValuePair<string, string> kvp in newTranslations)
+            {
+                finalTranslations[kvp.Key] = kvp.Value;
+            }
+            foreach (KeyValuePair<string, string> kvp in sourceTexts.Where(s => !finalTranslations.ContainsKey(s.Key)))
+            {
+                finalTranslations[kvp.Key] = kvp.Value;
+            }
+
+            return (finalTranslations, textsToTranslate.Count);
         }
 
         /// <summary>
@@ -253,79 +238,31 @@ namespace Sales_Tracker.Language
             string languageCode,
             string referenceFolder)
         {
-            Dictionary<string, string> textsToTranslate = [];
-
-            // Always regenerate English translations (no API cost)
             if (languageCode == "en")
             {
-                Log.Write(1, "Regenerating all English translations (no API cost)");
-                return sourceTexts;
+                return sourceTexts;  // Always regenerate English (no API cost)
             }
 
-            // For other languages, load the English reference to compare against
             Dictionary<string, string> englishReference = LoadExistingTranslations(referenceFolder, "en");
+            Dictionary<string, string> textsToTranslate = [];
 
-            foreach (KeyValuePair<string, string> kvp in sourceTexts)
+            foreach ((string key, string currentText) in sourceTexts)
             {
-                string key = kvp.Key;
-                string currentSourceText = kvp.Value;
-
-                bool needsTranslation = false;
-
-                // Need translation if the key doesn't exist in existing translations
-                if (!existingTranslations.TryGetValue(key, out string? existingTranslation) ||
-                    string.IsNullOrEmpty(existingTranslation))
-                {
-                    needsTranslation = true;
-                    Log.WriteWithFormat(2, "Key '{0}' missing translation for {1}", key, languageCode);
-                }
-                // Need translation if the source text has changed since last translation
-                else if (englishReference.TryGetValue(key, out string? previousEnglishText))
-                {
-                    if (previousEnglishText != currentSourceText)
-                    {
-                        needsTranslation = true;
-                        Log.WriteWithFormat(2, "Source text changed for key '{0}': '{1}' -> '{2}'",
-                            key, previousEnglishText, currentSourceText);
-                    }
-                }
-                // Only mark as needing translation if no English reference exists AND no existing translation
-                else if (englishReference.Count == 0)
-                {
-                    // No English reference file exists - this is probably the first run
-                    // Don't re-translate existing translations
-                    Log.WriteWithFormat(2, "No English reference file - keeping existing translation for key '{0}'", key);
-                }
-                else
-                {
-                    needsTranslation = true;
-                    Log.WriteWithFormat(2, "New text for key '{0}': '{1}'", key, currentSourceText);
-                }
+                // Need translation if missing or if source text changed
+                bool needsTranslation = !existingTranslations.ContainsKey(key) ||
+                                       string.IsNullOrEmpty(existingTranslations[key]) ||
+                                       (englishReference.TryGetValue(key, out string? oldEnglish) && oldEnglish != currentText);
 
                 if (needsTranslation)
                 {
-                    textsToTranslate[key] = currentSourceText;
+                    textsToTranslate[key] = currentText;
                 }
             }
 
+            Log.WriteWithFormat(2, "Language {0}: {1} texts need translation out of {2} total",
+                languageCode, textsToTranslate.Count, sourceTexts.Count);
+
             return textsToTranslate;
-        }
-
-        /// <summary>
-        /// Merges existing translations with new translations, prioritizing new ones.
-        /// </summary>
-        private static Dictionary<string, string> MergeTranslations(
-            Dictionary<string, string> existingTranslations,
-            Dictionary<string, string> newTranslations)
-        {
-            Dictionary<string, string> merged = new(existingTranslations);
-
-            foreach (KeyValuePair<string, string> kvp in newTranslations)
-            {
-                merged[kvp.Key] = kvp.Value;
-            }
-
-            return merged;
         }
 
         /// <summary>
