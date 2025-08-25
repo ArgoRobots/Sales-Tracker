@@ -118,9 +118,8 @@ namespace Sales_Tracker.Language
 
             try
             {
-                string downloadUrl = $"https://argorobots.com/resources/downloads/languages/{languageAbbreviation}.json";
-
-                Log.WriteWithFormat(1, "Downloading language file from: {0}", downloadUrl);
+                string currentVersion = Tools.GetVersionNumber();
+                string downloadUrl = $"https://argorobots.com/resources/downloads/versions/{currentVersion}/languages/{languageAbbreviation}.json";
 
                 HttpResponseMessage response = await _httpClient.GetAsync(downloadUrl, cancellationToken);
 
@@ -333,7 +332,8 @@ namespace Sales_Tracker.Language
                     break;
 
                 case Label label:
-                    string translatedLabelText = GetCachedTranslationByText(targetLanguageAbbreviation, label.Text);
+                    string controlKey = GetControlKey(label); // Use control key instead of text key
+                    string translatedLabelText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, controlKey, label.Text);
                     label.InvokeIfRequired(() =>
                     {
                         label.Text = translatedLabelText;
@@ -342,7 +342,8 @@ namespace Sales_Tracker.Language
                     break;
 
                 case Guna2Button guna2Button:
-                    string translatedButtonText = GetCachedTranslationByText(targetLanguageAbbreviation, guna2Button.Text);
+                    string buttonKey = GetControlKey(guna2Button); // Use control key instead of text key
+                    string translatedButtonText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, buttonKey, guna2Button.Text);
                     guna2Button.InvokeIfRequired(() =>
                     {
                         AdjustButtonFontSize(guna2Button, translatedButtonText);
@@ -350,12 +351,14 @@ namespace Sales_Tracker.Language
                     break;
 
                 case RichTextBox textBox:
-                    textBox.Text = GetCachedTranslationByText(targetLanguageAbbreviation, textBox.Text);
+                    string textBoxKey = GetControlKey(textBox);
+                    textBox.Text = GetCachedTranslationByControlKey(targetLanguageAbbreviation, textBoxKey, textBox.Text);
                     break;
 
                 case Guna2TextBox guna2TextBox:
-                    guna2TextBox.Text = GetCachedTranslationByText(targetLanguageAbbreviation, guna2TextBox.Text);
-                    guna2TextBox.PlaceholderText = GetCachedTranslationByText(targetLanguageAbbreviation, guna2TextBox.PlaceholderText);
+                    string guna2TextBoxKey = GetControlKey(guna2TextBox);
+                    guna2TextBox.Text = GetCachedTranslationByControlKey(targetLanguageAbbreviation, guna2TextBoxKey, guna2TextBox.Text);
+                    guna2TextBox.PlaceholderText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, $"{guna2TextBoxKey}_{_placeholder_text}", guna2TextBox.PlaceholderText);
                     break;
 
                 case Guna2ComboBox guna2ComboBox:
@@ -363,10 +366,13 @@ namespace Sales_Tracker.Language
                     {
                         int selectedIndex = guna2ComboBox.SelectedIndex;
                         List<object> translatedItems = [];
+                        string comboBoxKey = GetControlKey(guna2ComboBox);
+
                         for (int i = 0; i < guna2ComboBox.Items.Count; i++)
                         {
                             string originalText = guna2ComboBox.Items[i].ToString();
-                            string translatedText = GetCachedTranslationByText(targetLanguageAbbreviation, originalText);
+                            string itemKey = $"{comboBoxKey}_{_item_text}_{i}";
+                            string translatedText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, itemKey, originalText);
                             translatedItems.Add(translatedText);
                         }
                         guna2ComboBox.Items.Clear();
@@ -379,21 +385,57 @@ namespace Sales_Tracker.Language
                     break;
 
                 case Guna2DataGridView gunaDataGridView:
+                    string dataGridKey = GetControlKey(gunaDataGridView);
                     foreach (DataGridViewColumn column in gunaDataGridView.Columns)
                     {
+                        string columnKey = $"{dataGridKey}_{_column_text}_{column.Name}";
                         if (column.HeaderCell is DataGridViewImageHeaderCell imageHeaderCell)
                         {
-                            string translatedHeaderText = GetCachedTranslationByText(targetLanguageAbbreviation, imageHeaderCell.HeaderText);
+                            string translatedHeaderText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, columnKey, imageHeaderCell.HeaderText);
                             imageHeaderCell.HeaderText = translatedHeaderText;
                         }
                         else
                         {
-                            column.HeaderText = GetCachedTranslationByText(targetLanguageAbbreviation, column.HeaderText);
+                            column.HeaderText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, columnKey, column.HeaderText);
                         }
                     }
                     gunaDataGridView.Refresh();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Gets cached translation using control-based key with fallback to original text.
+        /// </summary>
+        private static string GetCachedTranslationByControlKey(string targetLanguageAbbreviation, string controlKey, string originalText)
+        {
+            if (string.IsNullOrEmpty(originalText))
+            {
+                return originalText;
+            }
+
+            // Handle English separately
+            if (targetLanguageAbbreviation == "en")
+            {
+                if (EnglishCache.TryGetValue(controlKey, out string cachedTranslation))
+                {
+                    return cachedTranslation;
+                }
+            }
+            else
+            {
+                // Handle other languages
+                if (TranslationCache.TryGetValue(targetLanguageAbbreviation, out Dictionary<string, string>? controlTranslations))
+                {
+                    if (controlTranslations.TryGetValue(controlKey, out string cachedTranslation))
+                    {
+                        return cachedTranslation;
+                    }
+                }
+            }
+
+            // If no cached translation is found, return original
+            return originalText;
         }
 
         /// <summary>
@@ -444,9 +486,10 @@ namespace Sales_Tracker.Language
                 string linkText = fullText.Substring(linkStart, linkLength).Trim();
                 string textAfterLink = fullText.Substring(linkStart + linkLength).Trim();
 
-                string translatedTextBefore = GetCachedTranslationByText(targetLanguageAbbreviation, textBeforeLink);
-                string translatedLink = GetCachedTranslationByText(targetLanguageAbbreviation, linkText);
-                string translatedTextAfter = GetCachedTranslationByText(targetLanguageAbbreviation, textAfterLink);
+                string controlKey = GetControlKey(linkLabel);
+                string translatedTextBefore = GetCachedTranslationByControlKey(targetLanguageAbbreviation, $"{controlKey}_{_before_text}", textBeforeLink);
+                string translatedLink = GetCachedTranslationByControlKey(targetLanguageAbbreviation, $"{controlKey}_{_link_text}", linkText);
+                string translatedTextAfter = GetCachedTranslationByControlKey(targetLanguageAbbreviation, $"{controlKey}_{_after_text}", textAfterLink);
 
                 bool hasNewLineBefore = fullText.Substring(0, linkStart).EndsWith('\n');
                 string finalText = (hasNewLineBefore ? translatedTextBefore + "\n" : translatedTextBefore) + " " +
@@ -457,7 +500,8 @@ namespace Sales_Tracker.Language
             }
             else
             {
-                string translatedFullText = GetCachedTranslationByText(targetLanguageAbbreviation, fullText.Trim());
+                string controlKey = GetControlKey(linkLabel);
+                string translatedFullText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, $"{controlKey}_{_full_text}", fullText.Trim());
                 linkLabel.Text = translatedFullText;
             }
         }
@@ -731,7 +775,7 @@ namespace Sales_Tracker.Language
 
         // Get keys - updated for text-based keys
         /// <summary>
-        /// Gets a unique key for a control (kept for backward compatibility).
+        /// Gets a unique key for a control.
         /// </summary>
         public static string GetControlKey(Control control, string section = null)
         {
