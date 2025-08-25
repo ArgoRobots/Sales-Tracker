@@ -43,8 +43,15 @@ namespace Sales_Tracker.Classes
                 return $"{timespan.TotalSeconds:F2}s";
             }
 
-            // For longer durations
-            return $"{timespan.Minutes}m {timespan.Seconds}s";
+            // For durations less than 1 hour
+            if (timespan.TotalHours < 1)
+            {
+                return $"{timespan.Minutes}m {timespan.Seconds}s";
+            }
+
+            // For durations of 1 hour or more
+            int hours = (int)timespan.TotalHours;
+            return $"{hours}h {timespan.Minutes}m {timespan.Seconds}s";
         }
 
         // General
