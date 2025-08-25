@@ -81,6 +81,14 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestFormatDurationHours()
+        {
+            long duration = 3725000; // 1 hour, 2 minutes and 5 seconds
+            string result = Tools.FormatDuration(duration);
+            Assert.AreEqual("1h 2m 5s", result);
+        }
+
+        [TestMethod]
         public void TestConvertBytesToReadableSize()
         {
             // Test bytes
