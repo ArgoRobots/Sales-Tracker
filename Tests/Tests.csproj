@@ -10,6 +10,18 @@
     <TargetFramework>net9.0-windows10.0.26100.1</TargetFramework>
     <TargetPlatformVersion>10.0.22621.1</TargetPlatformVersion>
     <Platforms>AnyCPU;x86;x64</Platforms>
+
+    <!-- Disable null warnings -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <NoWarn>$(NoWarn);CS8625</NoWarn>
+    <NoWarn>$(NoWarn);CS8600</NoWarn>
+    <NoWarn>$(NoWarn);CS8601</NoWarn>
+    <NoWarn>$(NoWarn);CS8602</NoWarn>
+    <NoWarn>$(NoWarn);CS8604</NoWarn>
+    <NoWarn>$(NoWarn);CS8618</NoWarn>
+    <NoWarn>$(NoWarn);CS8622</NoWarn>
+    <NoWarn>$(NoWarn);IDE0305</NoWarn>
+    <NoWarn>$(NoWarn);IDE0057</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
