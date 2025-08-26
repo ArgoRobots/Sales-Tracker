@@ -31,7 +31,9 @@ namespace Sales_Tracker.Language
             _full_text = "full";
 
         [GeneratedRegex(@"[^\w{}]")]
-        private static partial Regex NonWordCharacters();
+        private static partial Regex NonWordCharactersRegex();
+
+        private static readonly Regex _nonWordCharactersRegex = NonWordCharactersRegex();
 
         // Getters and setters
         public static Dictionary<string, Dictionary<string, string>> TranslationCache { get; set; }
@@ -779,15 +781,14 @@ namespace Sales_Tracker.Language
         /// </summary>
         public static string GetControlKey(Control control, string section = null)
         {
+            // Collect parent names from the current control up to the root
             List<string> parentNames = [];
-            Control currentControl = control;
 
-            // Loop through all parent controls and add their names to the list
-            while (currentControl != null)
+            for (Control currentControl = control; currentControl != null; currentControl = currentControl.Parent)
             {
                 if (!string.IsNullOrEmpty(currentControl.Name))
                 {
-                    parentNames.Insert(0, currentControl.Name);  // Add the parent names in reverse order (top-down)
+                    parentNames.Add(currentControl.Name);
                 }
 
                 // Stop if we encounter a form that is not the current control (a form within a form)
@@ -795,9 +796,10 @@ namespace Sales_Tracker.Language
                 {
                     break;
                 }
-
-                currentControl = currentControl.Parent;
             }
+
+            // Reverse to get top-down order
+            parentNames.Reverse();
 
             // Join the parent names with a period
             string key = string.Join(".", parentNames);
@@ -830,7 +832,7 @@ namespace Sales_Tracker.Language
             }
 
             // Remove non-word characters and use shortened prefix to save space
-            string cleanText = NonWordCharacters().Replace(text.ToLowerInvariant(), "");
+            string cleanText = _nonWordCharactersRegex.Replace(text.ToLowerInvariant(), "");
 
             // Limit length to avoid extremely long keys
             if (cleanText.Length > 50)
