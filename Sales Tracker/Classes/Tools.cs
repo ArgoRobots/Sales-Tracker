@@ -139,8 +139,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string AddEllipsisToString(string text, Font font, int availableWidth)
         {
-            using Graphics g = Graphics.FromHwnd(IntPtr.Zero);
-            SizeF textSize = g.MeasureString(text, font);
+            Size textSize = TextRenderer.MeasureText(text, font);
 
             // If text fits, return it as-is
             if (textSize.Width <= availableWidth)
@@ -151,13 +150,13 @@ namespace Sales_Tracker.Classes
             // Binary search for the optimal truncation point
             int low = 0;
             int high = text.Length;
-            string ellipsis = "...";
+            const string ellipsis = "...";
 
             while (low < high)
             {
                 int mid = (low + high + 1) / 2;
                 string truncated = text[..mid] + ellipsis;
-                SizeF truncatedSize = g.MeasureString(truncated, font);
+                Size truncatedSize = TextRenderer.MeasureText(truncated, font);
 
                 if (truncatedSize.Width <= availableWidth)
                 {
