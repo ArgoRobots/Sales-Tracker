@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Sales_Tracker.Classes;
-using Sales_Tracker.UI;
+using Sales_Tracker.Language;
 
 namespace Tests
 {
@@ -34,19 +34,8 @@ namespace Tests
                 {
                     "fr", new Dictionary<string, string>
                     {
-                        { "single_string_ThePurchaseAlreadyExistsWouldYouLikeToAddThisPurchaseAnyways", "L'achat existe déjà. Voulez-vous ajouter cet achat quand même?" },
-                        { "single_string_AmountChargedIsNotEqualToTheTotalPriceOfThePurchase", "Le montant facturé n'est pas égal au prix total de l'achat" },
-                        { "single_string_TestMessageWithVariable", "Message de test avec variable" },
-                        { "single_string_SimpleTestMessage", "Message de test simple" }
-                    }
-                },
-                {
-                    "de", new Dictionary<string, string>
-                    {
-                        { "single_string_ThePurchaseAlreadyExistsWouldYouLikeToAddThisPurchaseAnyways", "Der Kauf existiert bereits. Möchten Sie diesen Kauf trotzdem hinzufügen?" },
-                        { "single_string_AmountChargedIsNotEqualToTheTotalPriceOfThePurchase", "Der berechnete Betrag entspricht nicht dem Gesamtpreis des Kaufs" },
-                        { "single_string_TestMessageWithVariable", "Testnachricht mit Variable" },
-                        { "single_string_SimpleTestMessage", "Einfache Testnachricht" }
+                        { "str_thepurchase{0}alreadyexistswouldyouliketoaddthispu", "Le {0} d’achat existe déjà. Souhaitez-vous quand même ajouter cet achat ?" },
+                        { "str_amountcharged{0}{1}{2}isnotequaltothetotalpriceoft", "Le montant facturé ({0}{1} {2}) n’est pas égal au prix total de l’achat ({3}{4} {5}). La différence sera prise en compte." },
                     }
                 }
             };
@@ -62,63 +51,37 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestKeyGeneration_ConsistentAcrossVariableFormats()
-        {
-            // Arrange - Different variable formats for the same message
-            string[] messageVariants =
-            [
-                "The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
-                "The purchase {purchaseNumber} already exists. Would you like to add this purchase anyways?"
-            ];
-
-            string expectedKey = "single_string_ThePurchaseAlreadyExistsWouldYouLikeToAddThisPurchaseAnyways";
-
-            // Act & Assert
-            foreach (string? message in messageVariants)
-            {
-                string key = LanguageManager.GetStringKey(message);
-
-                Assert.AreEqual(expectedKey, key,
-                    $"Key generation failed for: '{message}'");
-            }
-        }
-
-        [TestMethod]
-        public void TestTranslateString_FindsTranslation()
+        public void TestKeyGeneration()
         {
             // Arrange
-            Sales_Tracker.Properties.Settings.Default.Language = "French";  // Set to French for testing
-
-            // Test messages with variables that should find translations
-            Dictionary<string, string> testCases = new()
+            Dictionary<string, string> messageVariants = new()
             {
-                { "The purchase #{purchaseNumber} already exists. Would you like to add this purchase anyways?",
-                  "L'achat existe déjà. Voulez-vous ajouter cet achat quand même?" },
-                { "Amount charged ${amount} is not equal to the total price of the purchase {total}",
-                  "Le montant facturé n'est pas égal au prix total de l'achat" }
+                { "The purchase #{0} already exists. Would you like to add this purchase anyways?",
+                  "str_thepurchase{0}alreadyexistswouldyouliketoaddthispu" },
+                { "The sale #{0} already exists. Would you like to add this sale anyways?",
+                  "str_thesale{0}alreadyexistswouldyouliketoaddthissalean" }
             };
 
             // Act & Assert
-            foreach (KeyValuePair<string, string> testCase in testCases)
+            foreach (KeyValuePair<string, string> variant in messageVariants)
             {
-                // Try to translate the normalized message
-                string translation = LanguageManager.TranslateString(testCase.Key);
+                string key = LanguageManager.GetStringKey(variant.Key);
 
-                Assert.AreEqual(testCase.Value, translation,
-                    $"Translation failed for: '{testCase.Key}' (normalized: '{testCase.Key}')");
+                Assert.AreEqual(variant.Value, key,
+                    $"Key generation failed for: '{variant.Key}'");
             }
         }
 
         [TestMethod]
-        public void TestGetStringKey_GeneratesExpectedFormat()
+        public void TestKeyGenerationWithFormats()
         {
             // Arrange
             Dictionary<string, string?> testCases = new()
             {
-                { "Simple message", "single_string_SimpleMessage" },
-                { "Message with spaces", "single_string_MessageWithSpaces" },
-                { "Message with punctuation!", "single_string_MessageWithPunctuation" },
-                { "message with MIXED case", "single_string_MessageWithMixedCase" }
+                { "Simple message", "str_simplemessage" },
+                { "Message with spaces", "str_messagewithspaces" },
+                { "Message with # punctuation!", "str_messagewithpunctuation" },
+                { "message with MIXED case", "str_messagewithmixedcase" }
             };
 
             // Act & Assert
@@ -127,6 +90,32 @@ namespace Tests
                 string result = LanguageManager.GetStringKey(testCase.Key);
                 Assert.AreEqual(testCase.Value, result,
                     $"Key generation failed for: '{testCase.Key}'");
+            }
+        }
+
+        [TestMethod]
+        public void TestTranslateString()
+        {
+            // Arrange
+            Sales_Tracker.Properties.Settings.Default.Language = "French";  // Set to French for testing
+
+            // Test messages with variables that should find translations
+            Dictionary<string, string> testCases = new()
+            {
+                { "The purchase #{0} already exists. Would you like to add this purchase anyways?",
+                  "Le {0} d’achat existe déjà. Souhaitez-vous quand même ajouter cet achat ?" },
+                { "Amount charged ({0}{1} {2}) is not equal to the total price of the purchase ({3}{4} {5}). The difference will be accounted for.",
+                  "Le montant facturé ({0}{1} {2}) n’est pas égal au prix total de l’achat ({3}{4} {5}). La différence sera prise en compte." }
+            };
+
+            // Act & Assert
+            foreach (KeyValuePair<string, string> testCase in testCases)
+            {
+                // Try to translate the message
+                string translation = LanguageManager.TranslateString(testCase.Key);
+
+                Assert.AreEqual(testCase.Value, translation,
+                    $"Translation failed for: '{testCase.Key}'");
             }
         }
 

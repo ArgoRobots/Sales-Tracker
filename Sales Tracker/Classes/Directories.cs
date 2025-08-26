@@ -204,7 +204,7 @@ namespace Sales_Tracker.Classes
             DirectoryInfo dirInfo = new(directoryPath);
 
             // Add size of files
-            foreach (FileInfo file in dirInfo.GetFiles("*", SearchOption.AllDirectories))
+            foreach (FileInfo file in dirInfo.EnumerateFiles("*", SearchOption.AllDirectories))
             {
                 size += file.Length;
             }
@@ -237,7 +237,7 @@ namespace Sales_Tracker.Classes
                 return false;
             }
 
-            File.Copy(source, destination);
+            File.Copy(source, destination, overwrite);
             return true;
         }
 
@@ -263,12 +263,12 @@ namespace Sales_Tracker.Classes
         {
             if (!File.Exists(sourceFileName))
             {
-                Log.Error_FileDoesNotExist(destinationFileName);
+                Log.Error_FileDoesNotExist(sourceFileName);
                 return false;
             }
             if (File.Exists(destinationFileName))
             {
-                Log.Error_DestinationFileAlreadyExists(sourceFileName);
+                Log.Error_DestinationFileAlreadyExists(destinationFileName);
                 return false;
             }
             if (sourceFileName == destinationFileName)

@@ -51,6 +51,21 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestCopyFileOverwrite()
+        {
+            string sourceFile = Path.Combine(_testDirectory, "TestFile.txt");
+            Directories.CreateFile(sourceFile);
+
+            string destinationFile = Path.Combine(_testDirectory, "CopiedFile.txt");
+            // Create destination file to test overwrite behaviour
+            Directories.CreateFile(destinationFile);
+
+            bool result = Directories.CopyFile(sourceFile, destinationFile, true);
+            Assert.IsTrue(result, "File copy with overwrite should succeed.");
+            Assert.IsTrue(File.Exists(destinationFile), "Destination file should still exist after overwrite.");
+        }
+
+        [TestMethod]
         public void TestDeleteFile()
         {
             string file = Path.Combine(_testDirectory, "TestFile.txt");

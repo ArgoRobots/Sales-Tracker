@@ -332,7 +332,7 @@ namespace Sales_Tracker.Language
                     break;
 
                 case Label label:
-                    string controlKey = GetControlKey(label); // Use control key instead of text key
+                    string controlKey = GetControlKey(label);
                     string translatedLabelText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, controlKey, label.Text);
                     label.InvokeIfRequired(() =>
                     {
@@ -342,7 +342,7 @@ namespace Sales_Tracker.Language
                     break;
 
                 case Guna2Button guna2Button:
-                    string buttonKey = GetControlKey(guna2Button); // Use control key instead of text key
+                    string buttonKey = GetControlKey(guna2Button);
                     string translatedButtonText = GetCachedTranslationByControlKey(targetLanguageAbbreviation, buttonKey, guna2Button.Text);
                     guna2Button.InvokeIfRequired(() =>
                     {

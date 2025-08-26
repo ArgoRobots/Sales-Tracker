@@ -220,7 +220,7 @@ namespace Sales_Tracker
             {
                 CustomMessageBoxResult result = CustomMessageBox.ShowWithFormat(
                     "Purchase # already exists",
-                    "The purchase {0} already exists. Would you like to add this purchase anyways?",
+                    "The purchase #{0} already exists. Would you like to add this purchase anyways?",
                     CustomMessageBoxIcon.Question,
                     CustomMessageBoxButtons.YesNo,
                     $"#{purchaseNumber}");

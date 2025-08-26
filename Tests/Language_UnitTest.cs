@@ -1,7 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Newtonsoft.Json;
 using Sales_Tracker.Classes;
-using Sales_Tracker.UI;
+using Sales_Tracker.Language;
 using System.Windows.Forms;
 
 namespace Tests
