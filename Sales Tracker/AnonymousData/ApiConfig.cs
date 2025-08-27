@@ -1,4 +1,5 @@
 ﻿using Sales_Tracker.Classes;
+using Sales_Tracker.Encryption;
 
 namespace Sales_Tracker.AnonymousData
 {

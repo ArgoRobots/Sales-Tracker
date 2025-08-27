@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Sales_Tracker.AnonymousData;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Encryption;
 using Sales_Tracker.UI;
 
 namespace Sales_Tracker.Classes

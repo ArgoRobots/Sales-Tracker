@@ -531,7 +531,7 @@ namespace Sales_Tracker.Language
         /// Downloads and updates all existing translations after an application upgrade.
         /// </summary>
         /// <returns>True if all updates were successful, false if any failed</returns>
-        public static async Task<bool> UpdateAllExistingTranslationsAfterUpgrade(CancellationToken cancellationToken = default)
+        public static async Task<bool> UpdateExistingTranslationsAfterUpgrade(CancellationToken cancellationToken = default)
         {
             try
             {

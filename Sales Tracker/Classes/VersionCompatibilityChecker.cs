@@ -1,4 +1,5 @@
-﻿using System.Formats.Tar;
+﻿using Sales_Tracker.Encryption;
+using System.Formats.Tar;
 
 namespace Sales_Tracker.Classes
 {

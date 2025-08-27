@@ -1,6 +1,7 @@
 ﻿using LiveChartsCore.SkiaSharpView;
 using Microsoft.Win32;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Encryption;
 using Sales_Tracker.Language;
 using Sales_Tracker.Passwords;
 using Sales_Tracker.Theme;
@@ -148,7 +149,7 @@ namespace Sales_Tracker
             if (AutoOpenAfterUpdate)
             {
                 // Update all existing translations in background
-                bool updateSuccess = await LanguageManager.UpdateAllExistingTranslationsAfterUpgrade();
+                bool updateSuccess = await LanguageManager.UpdateExistingTranslationsAfterUpgrade();
 
                 if (updateSuccess)
                 {

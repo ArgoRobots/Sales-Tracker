@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Encryption;
 using Sales_Tracker.Language;
 
 namespace Tests

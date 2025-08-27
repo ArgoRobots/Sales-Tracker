@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.Classes
+﻿using Sales_Tracker.Classes;
+
+namespace Sales_Tracker.Encryption
 {
     /// <summary>
     /// Creates and reads an encrypted secrets file next to the executable.

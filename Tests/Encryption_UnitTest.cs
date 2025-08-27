@@ -1,4 +1,5 @@
 using Sales_Tracker.Classes;
+using Sales_Tracker.Encryption;
 using System.Security.Cryptography;
 using System.Text;
 

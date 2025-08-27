@@ -1,4 +1,6 @@
-﻿namespace Sales_Tracker.Classes
+﻿using Sales_Tracker.Classes;
+
+namespace Sales_Tracker.Encryption
 {
     /// <summary>
     /// Provides functionality to load environment variables from encrypted secrets file

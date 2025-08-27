@@ -1,5 +1,6 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
+using Sales_Tracker.Encryption;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
 using System.Formats.Tar;

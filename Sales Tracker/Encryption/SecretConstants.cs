@@ -1,4 +1,4 @@
-﻿namespace Sales_Tracker.Classes
+﻿namespace Sales_Tracker.Encryption
 {
     /// <summary>
     /// Contains hardcoded secret constants used for encryption.

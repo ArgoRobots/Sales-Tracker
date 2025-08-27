@@ -1,7 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿using Sales_Tracker.Classes;
+using System.Security.Cryptography;
 using System.Text;
 
-namespace Sales_Tracker.Classes
+namespace Sales_Tracker.Encryption
 {
     /// <summary>
     /// The EncryptionManager class provides functionality for encrypting and decrypting data, including
