@@ -34,6 +34,7 @@ namespace Sales_Tracker.Encryption
 
         /// <summary>
         /// Loads and decrypts the secrets file, returning the environment variables as a dictionary.
+        /// In production, this file is included in the installation folder.
         /// </summary>
         public static Dictionary<string, string> LoadEncryptedSecrets()
         {

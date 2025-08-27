@@ -35,6 +35,10 @@ namespace Sales_Tracker.Encryption
                 Log.Error_ENVFileNotFound(Path.GetFileName(Directories.SecretsFilePath));
             }
         }
+
+        /// <summary>
+        /// In production, this file is included in the installation folder.
+        /// </summary>
         private static void LoadFromEncryptedSecrets()
         {
             Dictionary<string, string> secrets = ProductionSecretsManager.LoadEncryptedSecrets();

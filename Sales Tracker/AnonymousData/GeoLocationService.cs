@@ -80,10 +80,7 @@ namespace Sales_Tracker.AnonymousData
                 Region = data.region?.ToString() ?? "Unknown",
                 City = data.city?.ToString() ?? "Unknown",
                 Timezone = data.timezone?.ToString() ?? "Unknown",
-                ISP = data.isp?.ToString() ?? "Unknown",
-                IsVPN = data.proxy == true,
-                Latitude = (double)(data.lat ?? 0.0),
-                Longitude = (double)(data.lon ?? 0.0)
+                IsVPN = data.proxy == true
             };
         }
         private static GeoLocationData ParseIpApiCoResponse(dynamic data)
@@ -95,16 +92,11 @@ namespace Sales_Tracker.AnonymousData
                 Region = data.region?.ToString() ?? "Unknown",
                 City = data.city?.ToString() ?? "Unknown",
                 Timezone = data.timezone?.ToString() ?? "Unknown",
-                ISP = data.org?.ToString() ?? "Unknown",
-                IsVPN = false,  // ipapi.co doesn't provide VPN detection in free tier
-                Latitude = (double)(data.latitude ?? 0.0),
-                Longitude = (double)(data.longitude ?? 0.0)
+                IsVPN = false  // ipapi.co doesn't provide VPN detection in free tier
             };
         }
         private static GeoLocationData ParseIpInfoResponse(dynamic data)
         {
-            string[]? location = data.loc?.ToString()?.Split(',');
-
             return new GeoLocationData
             {
                 Country = data.country?.ToString() ?? "Unknown",
@@ -112,10 +104,7 @@ namespace Sales_Tracker.AnonymousData
                 Region = data.region?.ToString() ?? "Unknown",
                 City = data.city?.ToString() ?? "Unknown",
                 Timezone = data.timezone?.ToString() ?? "Unknown",
-                ISP = data.org?.ToString() ?? "Unknown",
-                IsVPN = false,  // ipinfo.io doesn't provide VPN detection in free tier
-                Latitude = location?.Length >= 2 && double.TryParse(location[0], out double lat) ? lat : 0.0,
-                Longitude = location?.Length >= 2 && double.TryParse(location[1], out double lon) ? lon : 0.0
+                IsVPN = false  // ipinfo.io doesn't provide VPN detection in free tier
             };
         }
         public static string HashIP(string ip, string salt = "AnonymousTracker2025")

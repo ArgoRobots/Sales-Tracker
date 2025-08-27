@@ -65,8 +65,7 @@ namespace Sales_Tracker.AnonymousData
                 ["countryCode"] = _sessionLocation?.CountryCode ?? "Unknown",
                 ["region"] = _sessionLocation?.Region ?? "Unknown",
                 ["city"] = _sessionLocation?.City ?? "Unknown",
-                ["timezone"] = _sessionLocation?.Timezone ?? "Unknown",
-                ["isp"] = _sessionLocation?.ISP ?? "Unknown"
+                ["timezone"] = _sessionLocation?.Timezone ?? "Unknown"
             };
 
             if (_sessionLocation?.IsVPN == true)
@@ -77,12 +76,6 @@ namespace Sales_Tracker.AnonymousData
             if (!string.IsNullOrEmpty(_sessionHashedIP) && _sessionHashedIP != "IPUnavailable")
             {
                 dataPoint["hashedIP"] = _sessionHashedIP;
-            }
-
-            if (_sessionLocation?.Latitude != 0.0 || _sessionLocation?.Longitude != 0.0)
-            {
-                dataPoint["latitude"] = _sessionLocation?.Latitude ?? 0.0;
-                dataPoint["longitude"] = _sessionLocation?.Longitude ?? 0.0;
             }
 
             return dataPoint;
