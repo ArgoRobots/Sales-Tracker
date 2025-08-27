@@ -159,6 +159,16 @@
         }
 
         /// <summary>
+        /// Generic method to get values for any enum type key.
+        /// </summary>
+        /// <param name="filePath">Optional file path. If not provided, it will use the default based on the enum type.</param>
+        public static bool GetBoolValue<TEnum>(TEnum key, string? filePath = null) where TEnum : Enum
+        {
+            string stringValue = GetValue(key, filePath);
+            return bool.TryParse(stringValue, out bool value) && value;
+        }
+
+        /// <summary>
         /// Removes a value from a setting. If the setting contains multiple instances of the value, all are removed.
         /// </summary>
         public static void RemoveValue<TEnum>(TEnum key, string removeValue) where TEnum : Enum

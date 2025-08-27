@@ -696,8 +696,8 @@ namespace Sales_Tracker
             Log.Write(2, "Argo Sales Tracker has finished starting");
 
             // Check if the user has accepted the EULA
-            string eulaAccepted = DataFileManager.GetValue(GlobalAppDataSettings.EULAAccepted);
-            if (string.IsNullOrEmpty(eulaAccepted) || !bool.TryParse(eulaAccepted, out bool eulaAcceptedBool) || !eulaAcceptedBool)
+            bool eulaAccepted = DataFileManager.GetBoolValue(GlobalAppDataSettings.EULAAccepted);
+            if (!eulaAccepted)
             {
                 // The user hasn't accepted the EULA yet, show the EULA form
                 EULA_Form eulaForm = new();
@@ -709,8 +709,8 @@ namespace Sales_Tracker
             }
 
             // Check if the welcome form should be shown
-            string value = DataFileManager.GetValue(GlobalAppDataSettings.ShowWelcomeForm);
-            if (bool.TryParse(value, out bool boolResult) && boolResult)
+            bool showWelcomeForm = DataFileManager.GetBoolValue(GlobalAppDataSettings.ShowWelcomeForm);
+            if (showWelcomeForm)
             {
                 new Welcome_Form().ShowDialog();
             }

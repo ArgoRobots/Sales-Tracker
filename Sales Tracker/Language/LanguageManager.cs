@@ -55,12 +55,11 @@ namespace Sales_Tracker.Language
 
                 if (!string.IsNullOrWhiteSpace(cacheContent))
                 {
-                    dynamic? combinedCache = JsonConvert.DeserializeObject<dynamic>(cacheContent);
+                    Dictionary<string, Dictionary<string, string>> translations = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(cacheContent);
 
-                    if (combinedCache?.TranslationCache != null)
+                    if (translations != null)
                     {
-                        TranslationCache = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(
-                            combinedCache.TranslationCache.ToString());
+                        TranslationCache = translations;
                     }
                 }
             }
@@ -86,7 +85,7 @@ namespace Sales_Tracker.Language
         /// Downloads and merges language JSON for the specified language.
         /// </summary>
         /// <returns>True if successful, false if failed or skipped.</returns>
-        public static async Task<bool> DownloadAndMergeLanguageJson(string languageName, CancellationToken cancellationToken = default)
+        public static async Task<bool> DownloadAndMergeLanguageJson(string languageName, bool overwrite, CancellationToken cancellationToken = default)
         {
             string languageAbbreviation = GetLanguages().FirstOrDefault(l => l.Key == languageName).Value;
 
@@ -97,18 +96,21 @@ namespace Sales_Tracker.Language
             }
 
             // Check if language already exists in cache (or English cache for English)
-            if (languageAbbreviation == "en")
+            if (!overwrite)
             {
-                if (EnglishCache.Count > 0)
+                if (languageAbbreviation == "en")
                 {
-                    Log.WriteWithFormat(1, "Found English language in cache");
-                    return true;
+                    if (EnglishCache.Count > 0)
+                    {
+                        Log.WriteWithFormat(1, "Found English language in cache");
+                        return true;
+                    }
                 }
-            }
-            else if (TranslationCache.ContainsKey(languageAbbreviation))
-            {
-                Log.WriteWithFormat(1, "Found language '{0}' in cache", languageName);
-                return true;  // Consider cached language as success
+                else if (TranslationCache.ContainsKey(languageAbbreviation))
+                {
+                    Log.WriteWithFormat(1, "Found language '{0}' in cache", languageName);
+                    return true;  // Consider cached language as success
+                }
             }
 
             // Check for internet connection
@@ -121,7 +123,7 @@ namespace Sales_Tracker.Language
             try
             {
                 string currentVersion = Tools.GetVersionNumber();
-                string downloadUrl = $"https://argorobots.com/resources/downloads/versions/{currentVersion}/languages/{languageAbbreviation}.json";
+                string downloadUrl = $"https://dev.argorobots.com/resources/downloads/versions/{currentVersion}/languages/{languageAbbreviation}.json";
 
                 HttpResponseMessage response = await _httpClient.GetAsync(downloadUrl, cancellationToken);
 
@@ -145,7 +147,6 @@ namespace Sales_Tracker.Language
                 {
                     // Save to dedicated English file
                     Directories.WriteTextToFile(Directories.English_file, jsonContent);
-                    Log.WriteWithFormat(1, "Successfully saved English translations to {0}", Directories.English_file);
 
                     // Merge into English cache
                     foreach (KeyValuePair<string, string> kvp in downloadedTranslations)
@@ -186,7 +187,7 @@ namespace Sales_Tracker.Language
         /// <returns>True if translation was successful, false if failed (e.g., no internet).</returns>
         public static async Task<bool> UpdateApplicationLanguage(string targetLanguageName, CancellationToken cancellationToken = default)
         {
-            bool downloadSuccess = await DownloadAndMergeLanguageJson(targetLanguageName, cancellationToken);
+            bool downloadSuccess = await DownloadAndMergeLanguageJson(targetLanguageName, false, cancellationToken);
 
             if (downloadSuccess)
             {
@@ -268,8 +269,6 @@ namespace Sales_Tracker.Language
 
             // Wait for all UI updates to complete
             await Task.WhenAll(updateTasks);
-
-            SaveCacheToFile();
 
             // Final UI updates
             if (Tools.IsFormOpen<Log_Form>())
@@ -528,6 +527,86 @@ namespace Sales_Tracker.Language
             return GetCachedTranslationByText(targetLanguageAbbreviation, text);
         }
 
+        /// <summary>
+        /// Downloads and updates all existing translations after an application upgrade.
+        /// </summary>
+        /// <returns>True if all updates were successful, false if any failed</returns>
+        public static async Task<bool> UpdateAllExistingTranslationsAfterUpgrade(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                // Get list of all languages that are currently cached/downloaded
+                HashSet<string> languagesToUpdate = [];
+
+                // Add languages from TranslationCache (non-English translations)
+                if (TranslationCache != null)
+                {
+                    foreach (string languageCode in TranslationCache.Keys)
+                    {
+                        // Find the language name by abbreviation
+                        KeyValuePair<string, string> languageInfo = GetLanguages().FirstOrDefault(l => l.Value == languageCode);
+                        if (!string.IsNullOrEmpty(languageInfo.Key))
+                        {
+                            languagesToUpdate.Add(languageInfo.Key);
+                        }
+                    }
+                }
+
+                // Add English if it exists in cache
+                if (EnglishCache != null && EnglishCache.Count > 0)
+                {
+                    languagesToUpdate.Add("English");
+                }
+
+                if (languagesToUpdate.Count == 0)
+                {
+                    Log.Write(1, "No existing translations found to update");
+                    return true;
+                }
+
+                Log.WriteWithFormat(1, "Found {0} languages to update: {1}",
+                    languagesToUpdate.Count, string.Join(", ", languagesToUpdate));
+
+                // Check internet connection before attempting downloads
+                if (!await InternetConnectionManager.CheckInternetAndShowMessageAsync("updating translations", true))
+                {
+                    Log.Write(1, "Translation update cancelled - no internet connection");
+                    return false;
+                }
+
+                int successCount = 0;
+                int totalCount = languagesToUpdate.Count;
+
+                // Download updates for each language
+                foreach (string languageName in languagesToUpdate)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        Log.Write(1, "Translation update cancelled by user");
+                        return false;
+                    }
+
+                    bool success = await DownloadAndMergeLanguageJson(languageName, true, cancellationToken);
+
+                    if (success)
+                    {
+                        successCount++;
+                    }
+                    else
+                    {
+                        Log.WriteWithFormat(0, "Failed to update translations for {0}", languageName);
+                    }
+                }
+
+                return successCount == totalCount;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteWithFormat(0, "Error during bulk translation update: {0}", ex.Message);
+                return false;
+            }
+        }
+
         // Helper methods for UI adjustments
         /// <summary>
         /// Adjusts label position based on original bounds and current form size.
@@ -775,7 +854,7 @@ namespace Sales_Tracker.Language
             }
         }
 
-        // Get keys - updated for text-based keys
+        // Get keys
         /// <summary>
         /// Gets a unique key for a control.
         /// </summary>

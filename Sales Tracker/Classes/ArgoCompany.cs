@@ -378,8 +378,8 @@ namespace Sales_Tracker.Classes
 
                 // If there are no changes
                 string filepath = Path.Combine(company, Directories.CompanyDataFileName);
-                string? value = DataFileManager.GetValue(AppDataSettings.ChangesMade, filepath);
-                if (bool.TryParse(value, out bool boolResult) && !boolResult)
+                bool changesMade = DataFileManager.GetBoolValue(AppDataSettings.ChangesMade, filepath);
+                if (!changesMade)
                 {
                     // Delete the temp folder
                     Directories.DeleteDirectory(company, true);

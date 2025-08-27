@@ -304,7 +304,8 @@ namespace Sales_Tracker.UI
             menuBtn = ConstructBtnForMenu("Import spreadsheet", PanelBtnWidth, true, flowPanel);
             menuBtn.Click += (sender, e) =>
             {
-                if (ShouldShowTutorial())
+                bool importSpreadsheetTutorial = DataFileManager.GetBoolValue(GlobalAppDataSettings.ImportSpreadsheetTutorial);
+                if (importSpreadsheetTutorial)
                 {
                     Tools.OpenForm(new Setup_Form());
                 }
@@ -373,11 +374,6 @@ namespace Sales_Tracker.UI
 
             MainMenu_Form.Instance.Controls.Add(RecentlyOpenedMenu);
             RecentlyOpenedMenu.BringToFront();
-        }
-        private static bool ShouldShowTutorial()
-        {
-            string value = DataFileManager.GetValue(GlobalAppDataSettings.ImportSpreadsheetTutorial);
-            return bool.TryParse(value, out bool boolResult) && boolResult;
         }
         public static void SaveAll(bool showLabel = true)
         {

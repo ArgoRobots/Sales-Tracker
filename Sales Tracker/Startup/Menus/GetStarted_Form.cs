@@ -33,7 +33,6 @@ namespace Sales_Tracker.Startup.Menus
             LoadListOfRecentCompanies();
             SetFlowLayoutPanel();
             UpdateTheme();
-            ValidateKeyAsync();
             LoadingPanel.ShowBlankLoadingPanel(this);
         }
         private void SetAccessibleDescriptions()
@@ -63,11 +62,6 @@ namespace Sales_Tracker.Startup.Menus
                 CreateCompany_Button.Image = Resources.CreateFileBlack;
                 OpenCompany_Button.Image = Resources.OpenFolderBlack;
             }
-        }
-        private static async void ValidateKeyAsync()
-        {
-            LicenseManager licenseManager = new();
-            await licenseManager.ValidateKeyAsync();
         }
 
         // Form event handlers

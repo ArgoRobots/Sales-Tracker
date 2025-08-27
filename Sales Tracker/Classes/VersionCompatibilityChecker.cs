@@ -27,7 +27,7 @@ namespace Sales_Tracker.Classes
                         currentVersion,
                         filePath
                     );
-                    return false;
+                    return true;
                 }
 
                 return true;
@@ -78,13 +78,11 @@ namespace Sales_Tracker.Classes
                             decryptedTempFile = Path.GetTempFileName();
                             EncryptionManager.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionManager.AesKey, EncryptionManager.AesIV);
                             sourceFile = decryptedTempFile;
-                            Log.Write(1, "Decrypted company file for version extraction");
                         }
                     }
 
                     // Extract the tar file to temp directory
                     TarFile.ExtractToDirectory(sourceFile, tempDir, true);
-                    Log.WriteWithFormat(1, "Extracted company file to temp directory for version check: {0}", tempDir);
 
                     // Find the company data file in the extracted directory
                     string[] dataFiles = Directory.GetFiles(tempDir, Directories.CompanyDataFileName, SearchOption.AllDirectories);

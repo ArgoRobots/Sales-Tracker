@@ -14,6 +14,22 @@ namespace Sales_Tracker
     /// </summary>
     public static class ApplicationStartup
     {
+        // Properties
+        private static bool? _autoOpenAfterUpdate = null;
+
+        /// <summary>
+        /// Gets the auto-open flag value, calculating it only once.
+        /// </summary>
+        private static bool AutoOpenAfterUpdate
+        {
+            get
+            {
+                _autoOpenAfterUpdate ??= DataFileManager.GetBoolValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate);
+                return _autoOpenAfterUpdate.Value;
+            }
+        }
+
+        // Methods
         /// <summary>
         /// This method performs essential startup tasks including:
         /// - Setting up visual styles and high DPI mode
@@ -41,13 +57,22 @@ namespace Sales_Tracker
             TextBoxManager.ConstructRightClickTextBoxMenu();
             SearchBox.ConstructSearchBox();
             CustomControls.ConstructRightClickRename();
+            ThemeChangeDetector.StartListeningForThemeChanges();
 
             _ = Task.Run(EnsureDefaultLanguageTranslationsAsync);
+            _ = Task.Run(HandlePostUpgradeTranslationUpdate);
+
+            LicenseManager licenseManager = new();
+            _ = licenseManager.ValidateKeyAsync();
 
             SetLiveChartTitleFont();
-
-            ThemeChangeDetector.StartListeningForThemeChanges();
             RegisterFileAssociationOnFirstRun();
+
+            if (AutoOpenAfterUpdate)
+            {
+                // Clear the auto-open flag
+                DataFileManager.SetValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate, bool.FalseString);
+            }
         }
 
         /// <summary>
@@ -88,7 +113,7 @@ namespace Sales_Tracker
                     Log.WriteWithFormat(1, "Translations file missing or empty for default language '{0}'. Downloading...", defaultLanguage);
 
                     // Download the language file for the default language
-                    bool downloadSuccess = await LanguageManager.DownloadAndMergeLanguageJson(defaultLanguage);
+                    bool downloadSuccess = await LanguageManager.DownloadAndMergeLanguageJson(defaultLanguage, false);
 
                     // Apply the translations to any open forms if the startup forms are still shown
                     if (MainMenu_Form.Instance == null)
@@ -116,11 +141,32 @@ namespace Sales_Tracker
         }
 
         /// <summary>
+        /// Checks if this is the first run after an upgrade and updates all translations if needed.
+        /// </summary>
+        private static async Task HandlePostUpgradeTranslationUpdate()
+        {
+            if (AutoOpenAfterUpdate)
+            {
+                // Update all existing translations in background
+                bool updateSuccess = await LanguageManager.UpdateAllExistingTranslationsAfterUpgrade();
+
+                if (updateSuccess)
+                {
+                    Log.WriteWithFormat(2, "All translations updated successfully");
+                }
+                else
+                {
+                    Log.WriteWithFormat(0, "Translations update completed with failures");
+                }
+            }
+        }
+
+        /// <summary>
         /// Configures LiveCharts font for proper Unicode text rendering, fixing the rendering of non-Latin languages.
         /// </summary>
         private static void SetLiveChartTitleFont()
         {
-            // I use "Segoe UI" for my app, but for some reason it doesn't work here. "Nirmala UI" seems to work for every language.
+            // I use "Segoe UI" for my app, but for some reason it doesn't work here. "Nirmala UI" seems to work for most languages.
             LiveChartsCore.LiveCharts.Configure(config => config
                 .AddSkiaSharp()
                 .AddDefaultMappers()
@@ -229,15 +275,10 @@ namespace Sales_Tracker
         {
             try
             {
-                // Check if we should auto-open the most recent company
-                string? autoOpenFlag = DataFileManager.GetValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate);
-                if (!bool.TryParse(autoOpenFlag, out bool shouldAutoOpen) || !shouldAutoOpen)
+                if (!AutoOpenAfterUpdate)
                 {
                     return false;
                 }
-
-                // Clear the flag
-                DataFileManager.SetValue(GlobalAppDataSettings.AutoOpenRecentAfterUpdate, bool.FalseString);
 
                 // Get the most recent company
                 List<string> recentCompanies = ArgoCompany.GetValidRecentCompanyPaths(excludeCurrentCompany: false);

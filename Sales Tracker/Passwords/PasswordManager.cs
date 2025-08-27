@@ -2,6 +2,7 @@
 using Sales_Tracker.Classes;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
+using System.Formats.Tar;
 
 namespace Sales_Tracker.Passwords
 {
@@ -119,13 +120,11 @@ namespace Sales_Tracker.Passwords
                             decryptedTempFile = Path.GetTempFileName();
                             EncryptionManager.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionManager.AesKey, EncryptionManager.AesIV);
                             sourceFile = decryptedTempFile;
-                            Log.Write(1, "Decrypted company file for accountants extraction");
                         }
                     }
 
                     // Extract the tar file to temp directory
-                    System.Formats.Tar.TarFile.ExtractToDirectory(sourceFile, tempDir, true);
-                    Log.WriteWithFormat(1, "Extracted company file to temp directory: {0}", tempDir);
+                    TarFile.ExtractToDirectory(sourceFile, tempDir, true);
 
                     // Find the accountants file in the extracted directory
                     string[] accountantFiles = Directory.GetFiles(tempDir, "accountants.txt", SearchOption.AllDirectories);
@@ -135,7 +134,6 @@ namespace Sales_Tracker.Passwords
                         string accountantsFile = accountantFiles[0];
                         List<string> accountants = Directories.ReadAllLinesInFile(accountantsFile).ToList();
 
-                        Log.WriteWithFormat(1, "Found {0} accountants in extracted file", accountants.Count);
                         return accountants;
                     }
                     else
