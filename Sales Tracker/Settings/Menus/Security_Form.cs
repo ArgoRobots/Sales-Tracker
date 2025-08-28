@@ -59,7 +59,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void SetWindowsHelloButton()
         {
-            if (PasswordManager.Password == null)
+            if (!PasswordManager.HasPassword)
             {
                 Controls.Remove(EnableWindowsHello_Button);
             }
@@ -107,8 +107,7 @@ namespace Sales_Tracker.Settings.Menus
         }
         private void AddPassword_Button_Click(object sender, EventArgs e)
         {
-            string password = PasswordManager.Password;
-            if (password == null)
+            if (!PasswordManager.HasPassword)
             {
                 Tools.OpenForm(new AddPassword_Form());
             }
@@ -200,15 +199,14 @@ namespace Sales_Tracker.Settings.Menus
         // Methods
         public void SetPasswordButton()
         {
-            string password = PasswordManager.Password;
-            if (password == null)
-            {
-                AddPassword_Button.Text = LanguageManager.TranslateString("Add password protection");
-            }
-            else
+            if (PasswordManager.HasPassword)
             {
                 AddPassword_Button.Text = LanguageManager.TranslateString("Manage password");
                 Controls.Add(EnableWindowsHello_Button);
+            }
+            else
+            {
+                AddPassword_Button.Text = LanguageManager.TranslateString("Add password protection");
             }
         }
         public void UpdateControls()

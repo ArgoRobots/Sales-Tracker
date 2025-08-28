@@ -70,51 +70,92 @@ namespace Sales_Tracker.Encryption
         {
             try
             {
-                // Read the file content as bytes
+                // Read footer information to get the count
+                FooterData? footerData = FooterManager.ReadFooter(inputFile);
+                if (footerData == null)
+                {
+                    Log.Error_Decryption("Could not read footer information");
+                    return (null, []);
+                }
+
+                int footerLineCount = FooterManager.GetFooterLineCount(footerData);
+
+                // Read the file content as bytes and as text lines
                 byte[] fileContentBytes = File.ReadAllBytes(inputFile);
+                string[] allLines = File.ReadAllLines(inputFile);
 
-                string[] footerLines = [];
-
-                // Find the position of the last two newline characters
-                int newlineCount = 0;
-                int footerStartIndex = -1;
-
-                for (int i = fileContentBytes.Length - 1; i >= 0; i--)
+                if (allLines.Length < footerLineCount)
                 {
-                    if (fileContentBytes[i] == '\n')
-                    {
-                        newlineCount++;
-                        if (newlineCount == 2)
-                        {
-                            footerStartIndex = i + 1;
-                            break;
-                        }
-                    }
+                    Log.Error_Decryption("File does not have expected footer structure");
+                    return (null, []);
                 }
 
-                // Ensure footerStartIndex was found
-                if (footerStartIndex != -1)
-                {
-                    // Extract the footer content from the identified position
-                    string footerContent = Encoding.UTF8.GetString(fileContentBytes, footerStartIndex, fileContentBytes.Length - footerStartIndex);
-                    footerLines = footerContent.Split([Environment.NewLine], StringSplitOptions.None);
+                // Extract footer lines for return
+                string[] footerLines = allLines[^footerLineCount..];
 
-                    fileContentBytes = fileContentBytes[..(footerStartIndex - 2)];
-                }
-                else
-                {
-                    Log.Error_Decryption("Footer start index not found");
-                }
+                // Calculate the encrypted content size by reconstructing just the footer portion
+                // and subtracting it from the total file size
+                string[] contentLines = allLines[..^footerLineCount];
+                string contentPortion = string.Join(Environment.NewLine, contentLines);
 
-                // Check if the length of the data is valid for decryption
-                if (fileContentBytes.Length % 16 != 0)
+                // The encrypted content should be exactly the size of the content portion
+                byte[] expectedContentBytes = Encoding.UTF8.GetBytes(contentPortion);
+
+                // But we need to work with the actual bytes to avoid encoding issues
+                // So let's find where the first footer line starts in the byte array
+
+                string firstFooterLine = footerLines[0];
+                byte[] footerLineBytes = Encoding.UTF8.GetBytes(firstFooterLine);
+
+                // Search for the first footer line in the file bytes
+                int footerStartByte = FindByteSequence(fileContentBytes, footerLineBytes);
+
+                if (footerStartByte == -1)
                 {
-                    Log.Error_Decryption($"The input data length {fileContentBytes.Length} is not a multiple of the AES block size (16 bytes)");
+                    Log.Error_Decryption($"Could not find footer line '{firstFooterLine}' in file bytes");
                     return (null, footerLines);
                 }
 
-                // Create a MemoryStream from the byte array
-                using MemoryStream inputMemoryStream = new(fileContentBytes);
+                // The encrypted content ends at the newline before the footer
+                // Work backwards from footerStartByte to find the preceding newline
+                int encryptedContentEnd = footerStartByte;
+
+                // Check if there's a newline just before the footer line
+                if (encryptedContentEnd > 0 && fileContentBytes[encryptedContentEnd - 1] == '\n')
+                {
+                    encryptedContentEnd--;
+
+                    // Check for \r\n (Windows line endings)
+                    if (encryptedContentEnd > 0 && fileContentBytes[encryptedContentEnd - 1] == '\r')
+                    {
+                        encryptedContentEnd--;
+                    }
+                }
+
+                // Extract encrypted content bytes
+                byte[] encryptedContentBytes = new byte[encryptedContentEnd];
+                Array.Copy(fileContentBytes, 0, encryptedContentBytes, 0, encryptedContentEnd);
+
+                // Validate the encrypted content length
+                if (encryptedContentBytes.Length % 16 != 0)
+                {
+                    Log.Error_Decryption($"The encrypted content length {encryptedContentBytes.Length} is not a multiple of the AES block size (16 bytes)");
+
+                    // Show some context around the boundary for debugging
+                    int contextStart = Math.Max(0, encryptedContentEnd - 32);
+                    int contextLength = Math.Min(64, fileContentBytes.Length - contextStart);
+                    byte[] contextBytes = new byte[contextLength];
+                    Array.Copy(fileContentBytes, contextStart, contextBytes, 0, contextLength);
+
+                    // Convert to hex for easier debugging
+                    string hexContext = Convert.ToHexString(contextBytes);
+                    Log.WriteWithFormat(1, "Hex context around boundary: {0}", hexContext);
+
+                    return (null, footerLines);
+                }
+
+                // Create a MemoryStream from the encrypted content bytes
+                using MemoryStream inputMemoryStream = new(encryptedContentBytes);
 
                 // Decrypt the content
                 MemoryStream decryptedStream = new();
@@ -135,6 +176,30 @@ namespace Sales_Tracker.Encryption
                 Log.Error_Decryption(ex.Message);
                 return (null, []);
             }
+        }
+
+        /// <summary>
+        /// Finds a byte sequence within a byte array and returns the starting index.
+        /// </summary>
+        private static int FindByteSequence(byte[] haystack, byte[] needle)
+        {
+            for (int i = 0; i <= haystack.Length - needle.Length; i++)
+            {
+                bool found = true;
+                for (int j = 0; j < needle.Length; j++)
+                {
+                    if (haystack[i + j] != needle[j])
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         /// <summary>
@@ -187,48 +252,6 @@ namespace Sales_Tracker.Encryption
                 Log.Error_Decryption(ex.Message);
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Retrieves the password stored in the specified file, decrypting it if necessary.
-        /// </summary>
-        /// <returns>The decrypted password, or null if retrieval or decryption fails.</returns>
-        public static string? GetPasswordFromFile(string inputFile, byte[] key, byte[] iv)
-        {
-            if (!File.Exists(inputFile))
-            {
-                return null;
-            }
-
-            // Read all lines from the file
-            string[] lines = File.ReadAllLines(inputFile);
-            if (lines.Length < 2)
-            {
-                return null;
-            }
-
-            string secondLastLine = lines[^2];
-            string lastLine = lines[^1];
-            string password;
-
-            // Check if the file is encrypted
-            if (secondLastLine.Split(':')[1] == encryptedValue)
-            {
-                // Decrypt footer
-                (MemoryStream decryptedStream, string[] footerLines) = DecryptFileToMemoryStream(inputFile, key, iv);
-                if (decryptedStream == null)
-                {
-                    return null;
-                }
-                password = footerLines[^1];
-            }
-            else
-            {
-                password = lastLine;
-            }
-
-            string decryptedPassword = DecryptString(password, key, iv).Split(':')[1];
-            return string.IsNullOrEmpty(decryptedPassword) ? null : decryptedPassword;
         }
 
         /// <summary>

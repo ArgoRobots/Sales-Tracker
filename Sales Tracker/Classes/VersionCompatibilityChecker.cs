@@ -1,5 +1,4 @@
 ﻿using Sales_Tracker.Encryption;
-using System.Formats.Tar;
 
 namespace Sales_Tracker.Classes
 {
@@ -18,7 +17,7 @@ namespace Sales_Tracker.Classes
         {
             try
             {
-                string fileVersion = GetVersionFromCompanyFile(filePath);
+                string fileVersion = FooterManager.GetVersion(filePath);
                 string currentVersion = Tools.GetVersionNumber();
 
                 if (!IsFileVersionCompatible(fileVersion, currentVersion))
@@ -37,89 +36,6 @@ namespace Sales_Tracker.Classes
             {
                 Log.Write(1, $"Error validating file version: {ex.Message}");
                 return true;  // Default to compatible on error to avoid blocking access
-            }
-        }
-
-        /// <summary>
-        /// Extracts and reads the version information from a company file entirely in memory.
-        /// Similar to GetAccountantList() method in PasswordManager, but for version data.
-        /// </summary>
-        private static string? GetVersionFromCompanyFile(string companyFilePath)
-        {
-            try
-            {
-                // Check if the company file exists
-                if (!File.Exists(companyFilePath))
-                {
-                    Log.WriteWithFormat(1, "Company file not found: {0}", companyFilePath);
-                    return null;
-                }
-
-                // Create a temporary directory for extraction
-                string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directories.CreateDirectory(tempDir);
-
-                string sourceFile = companyFilePath;
-                string decryptedTempFile = null;
-
-                try
-                {
-                    // Check if the file is encrypted and decrypt if necessary
-                    using (FileStream fs = new(sourceFile, FileMode.Open, FileAccess.Read))
-                    using (StreamReader reader = new(fs))
-                    {
-                        // Read to the end to find encryption markers
-                        string content = reader.ReadToEnd();
-                        string[] lines = content.Split([Environment.NewLine], StringSplitOptions.None);
-
-                        if (lines.Length >= 2 && lines[^2].Contains(EncryptionManager.encryptedTag) &&
-                            lines[^2].Split(':')[1] == EncryptionManager.encryptedValue)
-                        {
-                            // File is encrypted, decrypt it first
-                            decryptedTempFile = Path.GetTempFileName();
-                            EncryptionManager.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionManager.AesKey, EncryptionManager.AesIV);
-                            sourceFile = decryptedTempFile;
-                        }
-                    }
-
-                    // Extract the tar file to temp directory
-                    TarFile.ExtractToDirectory(sourceFile, tempDir, true);
-
-                    // Find the company data file in the extracted directory
-                    string[] dataFiles = Directory.GetFiles(tempDir, Directories.CompanyDataFileName, SearchOption.AllDirectories);
-
-                    if (dataFiles.Length > 0)
-                    {
-                        string companyDataFile = dataFiles[0];
-                        string version = DataFileManager.GetValue(AppDataSettings.AppVersion, companyDataFile);
-
-                        Log.WriteWithFormat(1, "Found version in company file: {0}", version ?? "null");
-                        return version;
-                    }
-                    else
-                    {
-                        Log.Write(1, "No company data file found in company archive - assuming older format");
-                        return null;  // Older format without version info
-                    }
-                }
-                finally
-                {
-                    // Clean up temporary files
-                    if (decryptedTempFile != null && File.Exists(decryptedTempFile))
-                    {
-                        File.Delete(decryptedTempFile);
-                    }
-
-                    if (Directory.Exists(tempDir))
-                    {
-                        Directories.DeleteDirectory(tempDir, true);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.WriteWithFormat(1, "Error extracting version from company file: {0}", ex.Message);
-                return null;  // Default to compatible on error
             }
         }
 

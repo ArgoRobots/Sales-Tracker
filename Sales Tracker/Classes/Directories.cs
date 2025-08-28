@@ -384,8 +384,8 @@ namespace Sales_Tracker.Classes
 
         // Tar files
         /// <summary>
-        /// Creates an encrypted Argo Tar file from a directory.
-        /// Handles both encrypted and unencrypted file creation based on application settings.
+        /// Creates an encrypted Argo Tar file from a directory with complete footer information.
+        /// Ensures clean separation between content and footer.
         /// </summary>
         public static void CreateArgoTarFileFromDirectory(string sourceDirectory, string destinationFile, bool overwrite)
         {
@@ -396,48 +396,50 @@ namespace Sales_Tracker.Classes
                     destinationFile = GetNewFileNameIfItAlreadyExists(destinationFile);
                 }
 
-                // Use MemoryStream to securely hold the tar data, avoiding the security risk of writing it to a temporary file
+                // Use MemoryStream to securely hold the tar data
                 using MemoryStream tarMemoryStream = new();
 
                 // Create the tar file in memory
                 TarFile.CreateFromDirectory(sourceDirectory, tarMemoryStream, true);
-
                 tarMemoryStream.Seek(0, SeekOrigin.Begin);
 
-                if (Properties.Settings.Default.EncryptFiles)
+                bool shouldEncryptFile = Properties.Settings.Default.EncryptFiles;
+
+                // Create the complete file content in memory first, then write it all at once
+                using MemoryStream completeFileStream = new();
+
+                if (shouldEncryptFile)
                 {
-                    // Encrypt the tar data in memory
-                    MemoryStream encryptedMemoryStream = EncryptionManager.EncryptStream(tarMemoryStream, EncryptionManager.AesKey, EncryptionManager.AesIV);
+                    // Encrypt the tar data and write to complete file stream
+                    using MemoryStream encryptedMemoryStream = EncryptionManager.EncryptStream(tarMemoryStream, EncryptionManager.AesKey, EncryptionManager.AesIV);
                     encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
-
-                    // Write the encrypted data to the destination file
-                    using (FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        encryptedMemoryStream.CopyTo(destFileStream);
-                    }
-
-                    // Encrypt the password
-                    string encryptedPassword = EncryptionManager.EncryptString(EncryptionManager.passwordTag + PasswordManager.Password, EncryptionManager.AesKey, EncryptionManager.AesIV);
-
-                    // Create and append the footer
-                    string footer = Environment.NewLine + EncryptionManager.encryptedTag + EncryptionManager.encryptedValue + Environment.NewLine + encryptedPassword;
-                    File.AppendAllText(destinationFile, footer);
+                    encryptedMemoryStream.CopyTo(completeFileStream);
                 }
                 else
                 {
-                    // Write the unencrypted data to the destination file
-                    using (FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        tarMemoryStream.CopyTo(destFileStream);
-                    }
-
-                    // Encrypt the password
-                    string encryptedPassword = EncryptionManager.EncryptString(EncryptionManager.passwordTag + PasswordManager.Password, EncryptionManager.AesKey, EncryptionManager.AesIV);
-
-                    // Create and append the footer with the encrypted password
-                    string footer = Environment.NewLine + EncryptionManager.encryptedTag + Environment.NewLine + encryptedPassword;
-                    File.AppendAllText(destinationFile, footer);
+                    // Write unencrypted tar data to complete file stream
+                    tarMemoryStream.CopyTo(completeFileStream);
                 }
+
+                // Create footer data
+                FooterData footer = new()
+                {
+                    Accountants = MainMenu_Form.Instance.AccountantList?.ToList() ?? [],
+                    Version = Tools.GetVersionNumber(),
+                    IsEncrypted = shouldEncryptFile,
+                    Password = PasswordManager.Password
+                };
+
+                // Add footer to the complete file stream in memory
+                WriteFooterToStream(completeFileStream, footer);
+
+                // Write the complete file (content + footer) to disk in one operation
+                using FileStream destFileStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                completeFileStream.Seek(0, SeekOrigin.Begin);
+                completeFileStream.CopyTo(destFileStream);
+
+                Log.WriteWithFormat(1, "Created company file with footer - Version: {0}, Accountants: {1}",
+                    footer.Version, footer.Accountants.Count);
             }
             catch (Exception ex)
             {
@@ -447,9 +449,76 @@ namespace Sales_Tracker.Classes
         }
 
         /// <summary>
-        /// Imports an Argo Tar file into a directory.
+        /// Writes footer data to a stream (used internally for creating files in memory).
         /// </summary>
-        /// <returns>The file name without the (num) and the extension.</returns>
+        private static void WriteFooterToStream(MemoryStream stream, FooterData footer)
+        {
+            List<string> footerLines = [];
+
+            if (footer.Accountants?.Count > 0)
+            {
+                string accountantList = string.Join(",", footer.Accountants);
+                string accountantLine = $"accountants:{accountantList}";
+
+                if (footer.IsEncrypted)
+                {
+                    accountantLine = EncryptionManager.EncryptString(accountantLine, EncryptionManager.AesKey, EncryptionManager.AesIV);
+                }
+
+                footerLines.Add(accountantLine);
+            }
+
+            if (!string.IsNullOrEmpty(footer.Version))
+            {
+                string versionLine = $"version:{footer.Version}";
+
+                if (footer.IsEncrypted)
+                {
+                    versionLine = EncryptionManager.EncryptString(versionLine, EncryptionManager.AesKey, EncryptionManager.AesIV);
+                }
+
+                footerLines.Add(versionLine);
+            }
+
+            // Always add encryption marker
+            if (footer.IsEncrypted)
+            {
+                footerLines.Add(EncryptionManager.encryptedTag + EncryptionManager.encryptedValue);
+            }
+            else
+            {
+                footerLines.Add(EncryptionManager.encryptedTag);
+            }
+
+            // Always add password (always encrypted)
+            if (!string.IsNullOrEmpty(footer.Password))
+            {
+                string passwordLine = EncryptionManager.EncryptString(EncryptionManager.passwordTag + footer.Password, EncryptionManager.AesKey, EncryptionManager.AesIV);
+                footerLines.Add(passwordLine);
+            }
+            else
+            {
+                // Even if no password, add an encrypted empty password line to maintain structure
+                string passwordLine = EncryptionManager.EncryptString(EncryptionManager.passwordTag, EncryptionManager.AesKey, EncryptionManager.AesIV);
+                footerLines.Add(passwordLine);
+            }
+
+            // Write footer lines to stream with consistent line endings
+            using StreamWriter writer = new(stream, System.Text.Encoding.UTF8, leaveOpen: true);
+
+            foreach (string line in footerLines)
+            {
+                writer.Write(Environment.NewLine);
+                writer.Write(line);
+            }
+
+            writer.Flush();
+        }
+
+        /// <summary>
+        /// Simplified Imports an Argo Tar file into a directory.
+        /// Uses a simpler approach that avoids DecryptFileToMemoryStream.
+        /// </summary>
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, List<string> listOfThingNames, bool askUserToRename)
         {
             string thingName = Path.GetFileNameWithoutExtension(sourceFile);
@@ -459,22 +528,12 @@ namespace Sales_Tracker.Classes
 
             try
             {
-                // Check if the file is encrypted and decrypt if necessary
-                using (FileStream fs = new(sourceFile, FileMode.Open, FileAccess.Read))
-                using (StreamReader reader = new(fs))
+                if (FooterManager.IsEncrypted(sourceFile))
                 {
-                    List<string> lines = [];
-                    while (!reader.EndOfStream)
-                    {
-                        lines.Add(reader.ReadLine());
-                    }
+                    decryptedTempFile = Path.GetTempFileName();
 
-                    if (lines[^2].Split(':')[1] == EncryptionManager.encryptedValue)
-                    {
-                        decryptedTempFile = Path.GetTempFileName();
-                        EncryptionManager.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionManager.AesKey, EncryptionManager.AesIV);
-                        sourceFile = decryptedTempFile;
-                    }
+                    EncryptionManager.DecryptAndWriteToFile(sourceFile, decryptedTempFile, EncryptionManager.AesKey, EncryptionManager.AesIV);
+                    sourceFile = decryptedTempFile;
                 }
 
                 extractedDir = GetTopDirectoryFromTarFile(sourceFile);
@@ -548,6 +607,7 @@ namespace Sales_Tracker.Classes
                 {
                     int pathStartIndex = line.IndexOf("path=") + 5;
                     int pathEndIndex = line.IndexOf('/', pathStartIndex);
+
                     if (pathEndIndex != -1)
                     {
                         return line.Substring(pathStartIndex, pathEndIndex - pathStartIndex);

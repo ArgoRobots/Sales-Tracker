@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using Sales_Tracker.Classes;
 using Sales_Tracker.DataClasses;
+using Sales_Tracker.Encryption;
 using Sales_Tracker.Language;
 using Sales_Tracker.Properties;
 using Sales_Tracker.Theme;
@@ -71,7 +72,8 @@ namespace Sales_Tracker.Passwords
             Controls.Add(_accountant_TextBox);
 
             // Set up search box for accountants
-            List<SearchResult> accountantResults = SearchBox.ConvertToSearchResults(PasswordManager.GetAccountantList());
+            List<string> accountants = FooterManager.GetAccountants(Directories.ArgoCompany_file);
+            List<SearchResult> accountantResults = SearchBox.ConvertToSearchResults(accountants);
             SearchBox.Attach(_accountant_TextBox, this, () => accountantResults, (int)(200 * scale), false, true, false, true);
         }
         private void AdjustFormLayout()
@@ -366,7 +368,7 @@ namespace Sales_Tracker.Passwords
             // Validate password if required
             if (_requiresPassword && valid)
             {
-                if (PasswordManager.Password == Password_TextBox.Text)
+                if (PasswordManager.HasPassword)
                 {
                     PasswordManager.IsPasswordValid = true;
                 }
