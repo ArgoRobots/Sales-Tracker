@@ -521,7 +521,7 @@ namespace Sales_Tracker.Classes
         /// </summary>
         public static string ImportArgoTarFile(string sourceFile, string destinationDirectory, List<string> listOfThingNames, bool askUserToRename)
         {
-            string thingName = Path.GetFileNameWithoutExtension(sourceFile);
+            string companyName = Path.GetFileNameWithoutExtension(sourceFile);
             string tempDir = destinationDirectory + ArgoCompany.GetUniqueCompanyIdentifier(AppData_dir);
             string decryptedTempFile = null;
             string extractedDir;
@@ -538,10 +538,10 @@ namespace Sales_Tracker.Classes
 
                 extractedDir = GetTopDirectoryFromTarFile(sourceFile);
 
-                // Check if the thing already exists
-                if (listOfThingNames.Contains(thingName))
+                // Check if the company name already exists
+                if (listOfThingNames.Contains(companyName))
                 {
-                    string suggestedThingName = Tools.AddNumberForAStringThatAlreadyExists(thingName, listOfThingNames);
+                    string suggestedCompanyName = Tools.AddNumberForAStringThatAlreadyExists(companyName, listOfThingNames);
 
                     CustomMessageBoxResult? result = null;
                     if (askUserToRename)
@@ -551,7 +551,7 @@ namespace Sales_Tracker.Classes
                             "Do you want to rename '{0}' to '{1}'? There is already an Argo company with the same name.",
                             CustomMessageBoxIcon.Question,
                             CustomMessageBoxButtons.YesNo,
-                            thingName, suggestedThingName);
+                            companyName, suggestedCompanyName);
                     }
                     if (result == CustomMessageBoxResult.Yes || !askUserToRename)
                     {
@@ -559,12 +559,12 @@ namespace Sales_Tracker.Classes
                         CreateDirectory(tempDir, true);
                         TarFile.ExtractToDirectory(sourceFile, tempDir, false);
 
-                        // Rename thing in file and move it out of the temp directory
-                        Directory.Move(tempDir + "\\" + thingName, destinationDirectory + suggestedThingName);
+                        // Rename company in file and move it out of the temp directory
+                        Directory.Move(tempDir + "\\" + companyName, destinationDirectory + suggestedCompanyName);
                         DeleteDirectory(tempDir, true);
 
-                        thingName = suggestedThingName;
-                        extractedDir = suggestedThingName;
+                        companyName = suggestedCompanyName;
+                        extractedDir = suggestedCompanyName;
                     }
                     else { return ""; }
                 }
@@ -574,10 +574,10 @@ namespace Sales_Tracker.Classes
                     TarFile.ExtractToDirectory(sourceFile, destinationDirectory, false);
                 }
 
-                string newDestinationDirectory = destinationDirectory + thingName;
+                string newDestinationDirectory = destinationDirectory + companyName;
 
                 // If the .ArgoSales file was renamed
-                if (thingName != extractedDir)
+                if (companyName != extractedDir)
                 {
                     RenameFolder(destinationDirectory + extractedDir, newDestinationDirectory);
                 }
@@ -592,7 +592,7 @@ namespace Sales_Tracker.Classes
                 }
             }
 
-            return thingName;
+            return companyName;
         }
 
         /// <summary>
