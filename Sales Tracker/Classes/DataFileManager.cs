@@ -8,6 +8,7 @@
         RecentCompanies,  // string[]
         EULAAccepted,  // bool
         UploadTime_AnonymousData,  // DateTime string
+        LastUploadedLine_AnonymousData,  // string
         LastUpdateCheck,  // bool
         AutoOpenRecentAfterUpdate  // bool
     }

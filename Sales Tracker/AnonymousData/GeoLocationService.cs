@@ -11,7 +11,7 @@ namespace Sales_Tracker.AnonymousData
         private static DateTime _lastFetched = DateTime.MinValue;
         private static readonly TimeSpan CacheExpiry = TimeSpan.FromHours(12);
         private static readonly string[] GeoApiEndpoints = [
-            "http://ip-api.com/json/?fields=status,country,countryCode,region,city,timezone,isp,proxy,lat,lon",
+            "http://ip-api.com/json/?fields=status,country,countryCode,region,city,timezone,proxy",
             "https://ipapi.co/json/",
             "https://ipinfo.io/json"
         ];
