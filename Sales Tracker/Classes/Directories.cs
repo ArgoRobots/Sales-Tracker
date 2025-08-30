@@ -424,7 +424,7 @@ namespace Sales_Tracker.Classes
                 // Create footer data
                 FooterData footer = new()
                 {
-                    Accountants = MainMenu_Form.Instance.AccountantList?.ToList() ?? [],
+                    Accountants = MainMenu_Form.Instance?.AccountantList?.ToList() ?? [],
                     Version = Tools.GetVersionNumber(),
                     IsEncrypted = shouldEncryptFile,
                     Password = PasswordManager.Password
