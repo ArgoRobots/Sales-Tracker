@@ -25,7 +25,7 @@ namespace Sales_Tracker.Classes
         private static bool _updateAvailable = false;
         private static string? _availableVersion;
         private static string? _installerPath;
-        private const string APP_CAST_URL = "https://dev.argorobots.com/update.xml";
+        private const string APP_CAST_URL = "https://argorobots.com/update.xml";
 
         // Installer arguments discovered by running: & ".\Argo Sales Tracker Installer V.1.0.4.exe" /?
         // in the directory where the exe is located.
